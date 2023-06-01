@@ -1,0 +1,20 @@
+mutation UpvotePost($id: String!, $postId: String!, $userAddress: String!) {
+  upsertOneUpvote(
+    where: { id: $id }
+    update: {
+      post: { connect: { id: $postId } }
+      user: { connect: { walletAddress: $userAddress } }
+    }
+    create: {
+      post: { connect: { id: $postId } }
+      user: {
+        connectOrCreate: {
+          where: { walletAddress: $userAddress }
+          create: { walletAddress: $userAddress }
+        }
+      }
+    }
+  ) {
+    id
+  }
+}

@@ -1,0 +1,7 @@
+query Organization($slug: String!) {
+  findUniqueOrganization(where: { slug: $slug }) {
+    id
+    name
+    slug
+  }
+}

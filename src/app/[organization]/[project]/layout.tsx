@@ -1,0 +1,33 @@
+import request from "graphql-request";
+
+import { ProjectDocument } from "generated/graphql";
+import app from "lib/config/app";
+import { API_BASE_URL } from "lib/config/env";
+
+import type { ProjectQuery, ProjectQueryVariables } from "generated/graphql";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
+interface MetadataParams {
+  params: { project: string };
+}
+
+export const generateMetadata = async ({
+  params,
+}: MetadataParams): Promise<Metadata> => {
+  const projectSlug = params.project;
+
+  const project: ProjectQuery = await request({
+    url: API_BASE_URL!,
+    document: ProjectDocument,
+    variables: { projectSlug } as ProjectQueryVariables,
+  });
+
+  return {
+    title: `${project.findFirstProject?.name} | ${app.name}`,
+  };
+};
+
+const ProjectLayout = ({ children }: { children: ReactNode }) => children;
+
+export default ProjectLayout;

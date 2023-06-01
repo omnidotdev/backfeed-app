@@ -1,0 +1,8 @@
+query Projects($organizationId: String) {
+  findManyProject(where: { organizationId: { equals: $organizationId } }) {
+    id
+    name
+    description
+    slug
+  }
+}

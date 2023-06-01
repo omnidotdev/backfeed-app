@@ -1,0 +1,75 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "unused-imports"
+  ],
+  "rules": {
+    // allow non-null assertion operators
+    "@typescript-eslint/no-non-null-assertion": "off",
+    // warn for TS comments (e.g. `@ts-ignore`)
+    "@typescript-eslint/ban-ts-comment": "warn",
+    // disallow unused variables
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    // prevent multiple components per file
+    "react/no-multi-comp": "error",
+    // enforce arrow functions for React components
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    // warn on use of type `any`
+    "@typescript-eslint/no-explicit-any": "warn",
+    // explicitly handle promises (e.g. `await`, `void`)
+    "@typescript-eslint/no-floating-promises": "error",
+    // enforce type imports
+    "@typescript-eslint/consistent-type-imports": "error",
+    // prevent duplicate imports
+    "@typescript-eslint/no-duplicate-imports": "error",
+    // remove unused imports
+    "unused-imports/no-unused-imports": "warn",
+    // enforce import group order
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "caseInsensitive": true,
+          "order": "asc"
+        },
+        // separate external dependencies from internal dependencies
+        "groups": [
+          "builtin",
+          "external",
+          [
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object"
+          ],
+          "type"
+        ],
+        "newlines-between": "always"
+      }
+    ]
+  }
+}

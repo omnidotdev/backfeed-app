@@ -1,0 +1,19 @@
+.next
+.swc
+.yarn/*
+!.yarn/releases
+node_modules
+coverage
+generated
+
+# editor
+.vscode
+
+# environment
+*.env*
+
+# below are safe to commit: https://nextjs.org/docs/basic-features/environment-variables
+!.env
+!.env.development
+!.env.production
+!.env.local.template

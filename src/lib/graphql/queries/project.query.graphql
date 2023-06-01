@@ -1,0 +1,15 @@
+query Project($organizationId: String, $projectSlug: String!) {
+  findFirstProject(
+    where: {
+      AND: {
+        organizationId: { equals: $organizationId }
+        slug: { equals: $projectSlug }
+      }
+    }
+  ) {
+    id
+    name
+    image
+    description
+  }
+}

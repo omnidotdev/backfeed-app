@@ -1,0 +1,5 @@
+mutation DeleteUpvote($upvoteId: String!) {
+  deleteOneUpvote(where: { id: $upvoteId }) {
+    id
+  }
+}

@@ -1,0 +1,14 @@
+query Posts($projectId: String!) {
+  findManyPost(where: { AND: { project: { id: { equals: $projectId } } } }) {
+    id
+    createdAt
+    title
+    description
+    author {
+      walletAddress
+    }
+    upvotes {
+      id
+    }
+  }
+}
