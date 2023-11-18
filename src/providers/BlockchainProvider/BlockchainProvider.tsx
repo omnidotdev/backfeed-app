@@ -1,7 +1,7 @@
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiConfig as WagmiProvider } from "wagmi";
 
-import wagmiConfig, { chains } from "lib/config/wagmi";
+import wagmiConfig, { chains } from "lib/config/wagmi.config";
 import rainbowKitTheme from "lib/theme/rainbowKitTheme";
 
 import type { ReactNode } from "react";

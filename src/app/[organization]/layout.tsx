@@ -1,8 +1,8 @@
 import { request } from "graphql-request";
 
 import { OrganizationDocument } from "generated/graphql";
-import app from "lib/config/app";
-import { API_BASE_URL } from "lib/config/env";
+import app from "lib/config/app.config";
+import { API_BASE_URL } from "lib/config/env.config";
 
 import type {
   OrganizationQuery,

@@ -1,15 +1,14 @@
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-import Providers from "./providers";
+import Providers from "app/providers";
 import { Layout } from "components/layout";
+import app from "lib/config/app.config";
 import fonts from "lib/theme/fonts";
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Backfeed",
-  description: "Streamlined user feedback 📣",
+  title: app.name,
+  description: app.description,
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
@@ -33,9 +32,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
     <body className={fonts.primary.className}>
       <Providers>
         <Layout>{children}</Layout>
-
-        {/* NB: by default, RQ dev tools are only included in `NODE_ENV=development` environments */}
-        <ReactQueryDevtools />
       </Providers>
     </body>
   </html>

@@ -1,6 +1,6 @@
 import { request } from "graphql-request";
 
-import { API_BASE_URL } from "lib/config/env";
+import { API_BASE_URL } from "lib/config/env.config";
 
 import type { Variables } from "graphql-request";
 

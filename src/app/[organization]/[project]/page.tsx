@@ -19,7 +19,7 @@ import { useAccount } from "wagmi";
 
 import { Feed, CreateFeedbackModal } from "components/feedback";
 import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
-import { NODE_ENV } from "lib/config/env";
+import { NODE_ENV } from "lib/config/env.config";
 
 // ? change all params to unique IDs instead of readable slugs?
 
