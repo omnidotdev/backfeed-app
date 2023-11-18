@@ -2,12 +2,12 @@
   "name": "backfeed",
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn graphql:generate:watch\" \"next dev\"",
+    "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"next dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
-    "graphql:generate:watch": "yarn graphql:generate -w",
+    "graphql:generate:watch": "bun graphql:generate -w",
     "prepare": "husky install"
   },
   "devDependencies": {
