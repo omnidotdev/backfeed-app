@@ -8,7 +8,10 @@ import { configureChains, createConfig, mainnet } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
-import { ALCHEMY_API_KEY, WALLETCONNECT_PROJECT_ID } from "lib/config/env";
+import {
+  ALCHEMY_API_KEY,
+  WALLETCONNECT_PROJECT_ID,
+} from "lib/config/env.config";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
