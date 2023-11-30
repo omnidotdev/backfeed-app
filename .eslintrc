@@ -16,8 +16,14 @@
   "rules": {
     // allow non-null assertion operators
     "@typescript-eslint/no-non-null-assertion": "off",
-    // warn for TS comments (e.g. `@ts-ignore`)
-    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/ban-ts-comment": [
+      "error",
+      // allow evasive TS directives if a description is specified
+      {
+        "ts-ignore": "allow-with-description",
+        "ts-nocheck": "allow-with-description"
+      }
+    ],
     // disallow unused variables
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -44,7 +50,7 @@
     // enforce type imports
     "@typescript-eslint/consistent-type-imports": "error",
     // prevent duplicate imports
-    "@typescript-eslint/no-duplicate-imports": "error",
+    "import/no-duplicates": "error",
     // remove unused imports
     "unused-imports/no-unused-imports": "warn",
     // enforce import group order
@@ -71,5 +77,36 @@
         "newlines-between": "always"
       }
     ]
-  }
+  },
+  "overrides": [
+    // unit tests
+    {
+      "files": [
+        "*.test.{ts,tsx}"
+      ],
+      "env": {
+        "jest": true
+      },
+      "plugins": [
+        "jest",
+        "jest-dom",
+        "testing-library"
+      ],
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest/style",
+        "plugin:jest-dom/recommended",
+        "plugin:testing-library/react"
+      ]
+    },
+    // E2E tests
+    {
+      "files": [
+        "src/__tests__/e2e/*.spec.ts"
+      ],
+      "extends": [
+        "plugin:playwright/playwright-test"
+      ]
+    }
+  ]
 }

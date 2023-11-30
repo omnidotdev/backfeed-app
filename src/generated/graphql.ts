@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, UseQueryOptions, UseInfiniteQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { useGraphqlClient } from 'lib/hooks';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -10,7 +10,7 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string | number; output: string; }
+  ID: { input: string; output: string; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
@@ -18,22 +18,26 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export enum TransactionIsolationLevel {
+  ReadUncommitted = 'ReadUncommitted',
+  ReadCommitted = 'ReadCommitted',
+  RepeatableRead = 'RepeatableRead',
+  Serializable = 'Serializable'
+}
+
+export enum UserScalarFieldEnum {
+  Id = 'id',
+  CreatedAt = 'createdAt',
+  UpdatedAt = 'updatedAt',
+  WalletAddress = 'walletAddress'
+}
+
 export enum OrganizationScalarFieldEnum {
   Id = 'id',
   CreatedAt = 'createdAt',
   UpdatedAt = 'updatedAt',
   Name = 'name',
   Slug = 'slug'
-}
-
-export enum PostScalarFieldEnum {
-  Id = 'id',
-  CreatedAt = 'createdAt',
-  UpdatedAt = 'updatedAt',
-  Title = 'title',
-  Description = 'description',
-  AuthorId = 'authorId',
-  ProjectId = 'projectId'
 }
 
 export enum ProjectScalarFieldEnum {
@@ -47,21 +51,14 @@ export enum ProjectScalarFieldEnum {
   OrganizationId = 'organizationId'
 }
 
-export enum QueryMode {
-  Default = 'default',
-  Insensitive = 'insensitive'
-}
-
-export enum SortOrder {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-export enum TransactionIsolationLevel {
-  ReadUncommitted = 'ReadUncommitted',
-  ReadCommitted = 'ReadCommitted',
-  RepeatableRead = 'RepeatableRead',
-  Serializable = 'Serializable'
+export enum PostScalarFieldEnum {
+  Id = 'id',
+  CreatedAt = 'createdAt',
+  UpdatedAt = 'updatedAt',
+  Title = 'title',
+  Description = 'description',
+  AuthorId = 'authorId',
+  ProjectId = 'projectId'
 }
 
 export enum UpvoteScalarFieldEnum {
@@ -72,11 +69,19 @@ export enum UpvoteScalarFieldEnum {
   UserId = 'userId'
 }
 
-export enum UserScalarFieldEnum {
-  Id = 'id',
-  CreatedAt = 'createdAt',
-  UpdatedAt = 'updatedAt',
-  WalletAddress = 'walletAddress'
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+export enum QueryMode {
+  Default = 'default',
+  Insensitive = 'insensitive'
+}
+
+export enum NullsOrder {
+  First = 'first',
+  Last = 'last'
 }
 
 export type UserWhereInput = {
@@ -2082,6 +2087,35 @@ export type MutationUpsertOneUpvoteArgs = {
   update: UpvoteUpdateInput;
 };
 
+export type OrganizationQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+}>;
+
+
+export type OrganizationQuery = { __typename?: 'Query', findUniqueOrganization?: { __typename?: 'Organization', id: string, name: string, slug: string } | null };
+
+export type PostsQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+
+export type PostsQuery = { __typename?: 'Query', findManyPost: Array<{ __typename?: 'Post', id: string, createdAt: any, title: string, description: string, author: { __typename?: 'User', walletAddress: string }, upvotes: Array<{ __typename?: 'Upvote', id: string }> }> };
+
+export type ProjectQueryVariables = Exact<{
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectSlug: Scalars['String']['input'];
+}>;
+
+
+export type ProjectQuery = { __typename?: 'Query', findFirstProject?: { __typename?: 'Project', id: string, name: string, image?: string | null, description?: string | null } | null };
+
+export type ProjectsQueryVariables = Exact<{
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ProjectsQuery = { __typename?: 'Query', findManyProject: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, slug: string }> };
+
 export type CreatePostMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   title: Scalars['String']['input'];
@@ -2115,106 +2149,8 @@ export type UpvotePostMutationVariables = Exact<{
 
 export type UpvotePostMutation = { __typename?: 'Mutation', upsertOneUpvote: { __typename?: 'Upvote', id: string } };
 
-export type OrganizationQueryVariables = Exact<{
-  slug: Scalars['String']['input'];
-}>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', findUniqueOrganization?: { __typename?: 'Organization', id: string, name: string, slug: string } | null };
-
-export type PostsQueryVariables = Exact<{
-  projectId: Scalars['String']['input'];
-}>;
-
-
-export type PostsQuery = { __typename?: 'Query', findManyPost: Array<{ __typename?: 'Post', id: string, createdAt: any, title: string, description: string, author: { __typename?: 'User', walletAddress: string }, upvotes: Array<{ __typename?: 'Upvote', id: string }> }> };
-
-export type ProjectQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  projectSlug: Scalars['String']['input'];
-}>;
-
-
-export type ProjectQuery = { __typename?: 'Query', findFirstProject?: { __typename?: 'Project', id: string, name: string, image?: string | null, description?: string | null } | null };
-
-export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type ProjectsQuery = { __typename?: 'Query', findManyProject: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, slug: string }> };
-
-
-export const CreatePostDocument = `
-    mutation CreatePost($projectId: String!, $title: String!, $description: String!, $userAddress: String!) {
-  createOnePost(
-    data: {author: {connectOrCreate: {where: {walletAddress: $userAddress}, create: {walletAddress: $userAddress}}}, project: {connect: {id: $projectId}}, title: $title, description: $description}
-  ) {
-    title
-  }
-}
-    `;
-export const useCreatePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>) =>
-    useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
-      ['CreatePost'],
-      useGraphqlClient<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument),
-      options
-    );
-export const DeletePostDocument = `
-    mutation DeletePost($postId: String!) {
-  deleteOnePost(where: {id: $postId}) {
-    id
-  }
-}
-    `;
-export const useDeletePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeletePostMutation, TError, DeletePostMutationVariables, TContext>) =>
-    useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
-      ['DeletePost'],
-      useGraphqlClient<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument),
-      options
-    );
-export const DeleteUpvoteDocument = `
-    mutation DeleteUpvote($upvoteId: String!) {
-  deleteOneUpvote(where: {id: $upvoteId}) {
-    id
-  }
-}
-    `;
-export const useDeleteUpvoteMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>) =>
-    useMutation<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>(
-      ['DeleteUpvote'],
-      useGraphqlClient<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument),
-      options
-    );
-export const UpvotePostDocument = `
-    mutation UpvotePost($id: String!, $postId: String!, $userAddress: String!) {
-  upsertOneUpvote(
-    where: {id: $id}
-    update: {post: {connect: {id: $postId}}, user: {connect: {walletAddress: $userAddress}}}
-    create: {post: {connect: {id: $postId}}, user: {connectOrCreate: {where: {walletAddress: $userAddress}, create: {walletAddress: $userAddress}}}}
-  ) {
-    id
-  }
-}
-    `;
-export const useUpvotePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>) =>
-    useMutation<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>(
-      ['UpvotePost'],
-      useGraphqlClient<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument),
-      options
-    );
 export const OrganizationDocument = `
     query Organization($slug: String!) {
   findUniqueOrganization(where: {slug: $slug}) {
@@ -2224,30 +2160,30 @@ export const OrganizationDocument = `
   }
 }
     `;
+
 export const useOrganizationQuery = <
       TData = OrganizationQuery,
       TError = unknown
     >(
       variables: OrganizationQueryVariables,
       options?: UseQueryOptions<OrganizationQuery, TError, TData>
-    ) =>
-    useQuery<OrganizationQuery, TError, TData>(
+    ) => {
+    
+    return useQuery<OrganizationQuery, TError, TData>(
       ['Organization', variables],
       useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument).bind(null, variables),
       options
-    );
+    )};
 
 useOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization', variables];
-;
 
 export const useInfiniteOrganizationQuery = <
       TData = OrganizationQuery,
       TError = unknown
     >(
-      pageParamKey: keyof OrganizationQueryVariables,
       variables: OrganizationQueryVariables,
       options?: UseInfiniteQueryOptions<OrganizationQuery, TError, TData>
-    ) =>{
+    ) => {
     const query = useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument)
     return useInfiniteQuery<OrganizationQuery, TError, TData>(
       ['Organization.infinite', variables],
@@ -2255,9 +2191,7 @@ export const useInfiniteOrganizationQuery = <
       options
     )};
 
-
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
-;
 
 export const PostsDocument = `
     query Posts($projectId: String!) {
@@ -2275,30 +2209,30 @@ export const PostsDocument = `
   }
 }
     `;
+
 export const usePostsQuery = <
       TData = PostsQuery,
       TError = unknown
     >(
       variables: PostsQueryVariables,
       options?: UseQueryOptions<PostsQuery, TError, TData>
-    ) =>
-    useQuery<PostsQuery, TError, TData>(
+    ) => {
+    
+    return useQuery<PostsQuery, TError, TData>(
       ['Posts', variables],
       useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument).bind(null, variables),
       options
-    );
+    )};
 
 usePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts', variables];
-;
 
 export const useInfinitePostsQuery = <
       TData = PostsQuery,
       TError = unknown
     >(
-      pageParamKey: keyof PostsQueryVariables,
       variables: PostsQueryVariables,
       options?: UseInfiniteQueryOptions<PostsQuery, TError, TData>
-    ) =>{
+    ) => {
     const query = useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument)
     return useInfiniteQuery<PostsQuery, TError, TData>(
       ['Posts.infinite', variables],
@@ -2306,9 +2240,7 @@ export const useInfinitePostsQuery = <
       options
     )};
 
-
 useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
-;
 
 export const ProjectDocument = `
     query Project($organizationId: String, $projectSlug: String!) {
@@ -2322,30 +2254,30 @@ export const ProjectDocument = `
   }
 }
     `;
+
 export const useProjectQuery = <
       TData = ProjectQuery,
       TError = unknown
     >(
       variables: ProjectQueryVariables,
       options?: UseQueryOptions<ProjectQuery, TError, TData>
-    ) =>
-    useQuery<ProjectQuery, TError, TData>(
+    ) => {
+    
+    return useQuery<ProjectQuery, TError, TData>(
       ['Project', variables],
       useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument).bind(null, variables),
       options
-    );
+    )};
 
 useProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
-;
 
 export const useInfiniteProjectQuery = <
       TData = ProjectQuery,
       TError = unknown
     >(
-      pageParamKey: keyof ProjectQueryVariables,
       variables: ProjectQueryVariables,
       options?: UseInfiniteQueryOptions<ProjectQuery, TError, TData>
-    ) =>{
+    ) => {
     const query = useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument)
     return useInfiniteQuery<ProjectQuery, TError, TData>(
       ['Project.infinite', variables],
@@ -2353,9 +2285,7 @@ export const useInfiniteProjectQuery = <
       options
     )};
 
-
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
-;
 
 export const ProjectsDocument = `
     query Projects($organizationId: String) {
@@ -2367,30 +2297,30 @@ export const ProjectsDocument = `
   }
 }
     `;
+
 export const useProjectsQuery = <
       TData = ProjectsQuery,
       TError = unknown
     >(
       variables?: ProjectsQueryVariables,
       options?: UseQueryOptions<ProjectsQuery, TError, TData>
-    ) =>
-    useQuery<ProjectsQuery, TError, TData>(
+    ) => {
+    
+    return useQuery<ProjectsQuery, TError, TData>(
       variables === undefined ? ['Projects'] : ['Projects', variables],
       useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
       options
-    );
+    )};
 
 useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
-;
 
 export const useInfiniteProjectsQuery = <
       TData = ProjectsQuery,
       TError = unknown
     >(
-      pageParamKey: keyof ProjectsQueryVariables,
       variables?: ProjectsQueryVariables,
       options?: UseInfiniteQueryOptions<ProjectsQuery, TError, TData>
-    ) =>{
+    ) => {
     const query = useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument)
     return useInfiniteQuery<ProjectsQuery, TError, TData>(
       variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
@@ -2398,6 +2328,86 @@ export const useInfiniteProjectsQuery = <
       options
     )};
 
-
 useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
-;
+
+export const CreatePostDocument = `
+    mutation CreatePost($projectId: String!, $title: String!, $description: String!, $userAddress: String!) {
+  createOnePost(
+    data: {author: {connectOrCreate: {where: {walletAddress: $userAddress}, create: {walletAddress: $userAddress}}}, project: {connect: {id: $projectId}}, title: $title, description: $description}
+  ) {
+    title
+  }
+}
+    `;
+
+export const useCreatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>) => {
+    
+    return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+      ['CreatePost'],
+      useGraphqlClient<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument),
+      options
+    )};
+
+export const DeletePostDocument = `
+    mutation DeletePost($postId: String!) {
+  deleteOnePost(where: {id: $postId}) {
+    id
+  }
+}
+    `;
+
+export const useDeletePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeletePostMutation, TError, DeletePostMutationVariables, TContext>) => {
+    
+    return useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
+      ['DeletePost'],
+      useGraphqlClient<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument),
+      options
+    )};
+
+export const DeleteUpvoteDocument = `
+    mutation DeleteUpvote($upvoteId: String!) {
+  deleteOneUpvote(where: {id: $upvoteId}) {
+    id
+  }
+}
+    `;
+
+export const useDeleteUpvoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>(
+      ['DeleteUpvote'],
+      useGraphqlClient<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument),
+      options
+    )};
+
+export const UpvotePostDocument = `
+    mutation UpvotePost($id: String!, $postId: String!, $userAddress: String!) {
+  upsertOneUpvote(
+    where: {id: $id}
+    update: {post: {connect: {id: $postId}}, user: {connect: {walletAddress: $userAddress}}}
+    create: {post: {connect: {id: $postId}}, user: {connectOrCreate: {where: {walletAddress: $userAddress}, create: {walletAddress: $userAddress}}}}
+  ) {
+    id
+  }
+}
+    `;
+
+export const useUpvotePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>) => {
+    
+    return useMutation<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>(
+      ['UpvotePost'],
+      useGraphqlClient<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument),
+      options
+    )};
