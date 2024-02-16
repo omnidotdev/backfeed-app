@@ -15,7 +15,7 @@ import {
   BsFillMoonFill as MoonIcon,
 } from "react-icons/bs";
 
-import app from "lib/config/app.config";
+import { app } from "lib/config";
 
 /**
  * Layout header.

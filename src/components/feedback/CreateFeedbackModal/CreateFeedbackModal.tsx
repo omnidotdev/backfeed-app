@@ -68,7 +68,9 @@ const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
         description: data.description,
       });
 
-      void queryClient.invalidateQueries(usePostsQuery.getKey({ projectId }));
+      void queryClient.invalidateQueries({
+        queryKey: usePostsQuery.getKey({ projectId }),
+      });
 
       onClose();
     },

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "lib/config/env.config";
+import { API_BASE_URL } from "lib/config";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
@@ -41,6 +41,8 @@ const graphqlCodegenConfig: CodegenConfig = {
           func: "lib/hooks#useGraphqlClient",
           isReactHook: true,
         },
+        // https://github.com/dotansimha/graphql-code-generator-community/commit/935b51f0777047102cc1c33a1a18a4527902e0f9#diff-0e40fc3fdce3118ff7551a9e1fcd7216a6ec4951b18ea5d5f356999418e8383eR93-R98
+        reactQueryVersion: 5,
         // enable infinite query generation
         addInfiniteQuery: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys

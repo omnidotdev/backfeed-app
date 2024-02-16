@@ -1,6 +1,6 @@
 import Providers from "app/providers";
 import { Layout } from "components/layout";
-import app from "lib/config/app.config";
+import { app } from "lib/config";
 import fonts from "lib/theme/fonts";
 
 import type { Metadata } from "next";

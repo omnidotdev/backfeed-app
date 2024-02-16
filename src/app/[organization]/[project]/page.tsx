@@ -19,7 +19,7 @@ import { useAccount } from "wagmi";
 
 import { Feed, CreateFeedbackModal } from "components/feedback";
 import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
-import { NODE_ENV } from "lib/config/env.config";
+import { NODE_ENV } from "lib/config";
 
 // ? change all params to unique IDs instead of readable slugs?
 
@@ -37,14 +37,26 @@ const ProjectPage = () => {
 
   const { isConnected } = useAccount();
 
-  const { data: organization } = useOrganizationQuery(
-      { slug: params.organization },
-      { select: (data) => data.findUniqueOrganization }
+  const {
+      data: organization,
+      isPending: isOrganizationPending,
+      isError: isOrganizationError,
+    } = useOrganizationQuery(
+      { slug: params.organization as string },
+      {
+        select: (data) => data.findUniqueOrganization,
+      }
     ),
-    { data: project, isLoading: isProjectLoading } = useProjectQuery(
-      { organizationId: organization?.id, projectSlug: params.project },
+    { data: project, isPending: isProjectPending } = useProjectQuery(
+      {
+        organizationId: organization?.id,
+        projectSlug: params.project as string,
+      },
       { select: (data) => data.findFirstProject }
     );
+
+  if (isOrganizationPending) return <div>Loading...</div>;
+  if (isOrganizationError) return <div>Error</div>;
 
   return (
     <Flex direction="column" align={{ base: "center", md: "initial" }}>
@@ -55,7 +67,7 @@ const ProjectPage = () => {
       <Flex gap={6} direction={{ base: "column", md: "initial" }}>
         <Card p={6} w={{ md: "30%" }} align="center" gap={4}>
           <Flex gap={4}>
-            <SkeletonCircle isLoaded={!isProjectLoading}>
+            <SkeletonCircle isLoaded={!isProjectPending}>
               {project?.image && (
                 <Image
                   src={project?.image}
@@ -67,8 +79,8 @@ const ProjectPage = () => {
             </SkeletonCircle>
 
             <Skeleton
-              isLoaded={!isProjectLoading}
-              w={isProjectLoading ? "120px" : undefined}
+              isLoaded={!isProjectPending}
+              w={isProjectPending ? "120px" : undefined}
             >
               <Text fontWeight="bold" fontSize="xl">
                 {project?.name}
@@ -77,7 +89,7 @@ const ProjectPage = () => {
           </Flex>
 
           <SkeletonText
-            isLoaded={!isProjectLoading}
+            isLoaded={!isProjectPending}
             mt="4"
             noOfLines={4}
             spacing="4"

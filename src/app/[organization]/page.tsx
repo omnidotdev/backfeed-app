@@ -13,7 +13,7 @@ const OrganizationPage = () => {
   const params = useParams();
 
   const { data: organization } = useOrganizationQuery(
-      { slug: params.organization },
+      { slug: params.organization as string },
       { select: (data) => data.findUniqueOrganization }
     ),
     { data: projects } = useProjectsQuery(

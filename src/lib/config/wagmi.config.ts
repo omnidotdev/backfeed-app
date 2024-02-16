@@ -1,40 +1,22 @@
-import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import {
-  injectedWallet,
-  metaMaskWallet,
-  walletConnectWallet,
-} from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createConfig, mainnet } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
+"use client";
 
-import {
-  ALCHEMY_API_KEY,
-  WALLETCONNECT_PROJECT_ID,
-} from "lib/config/env.config";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { http } from "viem";
+import { mainnet } from "viem/chains";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
-  [alchemyProvider({ apiKey: ALCHEMY_API_KEY! }), publicProvider()]
-);
+import app from "./app.config";
+import { WALLETCONNECT_PROJECT_ID } from "./env.config";
 
-const connectors = connectorsForWallets([
-  {
-    groupName: "Providers",
-    wallets: [
-      metaMaskWallet({ chains }),
-      walletConnectWallet({ chains, projectId: WALLETCONNECT_PROJECT_ID }),
-      injectedWallet({ chains }),
-    ],
+/**
+ * wagmi config.
+ */
+const wagmiConfig = getDefaultConfig({
+  appName: app.name,
+  projectId: WALLETCONNECT_PROJECT_ID!,
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http(),
   },
-]);
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
 });
 
-export { chains };
 export default wagmiConfig;
