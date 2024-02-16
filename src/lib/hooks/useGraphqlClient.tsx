@@ -1,8 +1,6 @@
-import { request } from "graphql-request";
+import { graphqlFetch } from "lib/graphql";
 
-import { API_BASE_URL } from "lib/config/env";
-
-import type { Variables } from "graphql-request";
+import type { RequestOptions, Variables } from "graphql-request";
 
 /**
  * GraphQL request client.
@@ -11,15 +9,10 @@ import type { Variables } from "graphql-request";
  */
 const useGraphqlClient =
   <TData, TVariables extends Variables>(
-    query: string,
+    query: RequestOptions["document"],
     options?: RequestInit["headers"]
   ): ((variables?: TVariables) => Promise<TData>) =>
   async (variables?: TVariables) =>
-    await request({
-      url: API_BASE_URL!,
-      document: query,
-      variables,
-      requestHeaders: { ...options },
-    });
+    graphqlFetch({ query, variables, options });
 
 export default useGraphqlClient;

@@ -1,8 +1,7 @@
 import request from "graphql-request";
 
 import { ProjectDocument } from "generated/graphql";
-import app from "lib/config/app";
-import { API_BASE_URL } from "lib/config/env";
+import { API_BASE_URL, app } from "lib/config";
 
 import type { ProjectQuery, ProjectQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";

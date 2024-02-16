@@ -2,7 +2,7 @@
 
 import { Flex, chakra } from "@chakra-ui/react";
 
-import app from "lib/config/app";
+import { app } from "lib/config";
 
 /**
  * Layout footer.

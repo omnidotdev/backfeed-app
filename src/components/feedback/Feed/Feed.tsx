@@ -70,15 +70,21 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
 
   const { mutate: upvotePost } = useUpvotePostMutation({
       onSuccess: () =>
-        queryClient.invalidateQueries(usePostsQuery.getKey({ projectId })),
+        queryClient.invalidateQueries({
+          queryKey: usePostsQuery.getKey({ projectId }),
+        }),
     }),
     { mutate: deleteUpvote } = useDeleteUpvoteMutation({
       onSuccess: () =>
-        queryClient.invalidateQueries(usePostsQuery.getKey({ projectId })),
+        queryClient.invalidateQueries({
+          queryKey: usePostsQuery.getKey({ projectId }),
+        }),
     }),
     { mutate: deletePost } = useDeletePostMutation({
       onSuccess: () =>
-        queryClient.invalidateQueries(usePostsQuery.getKey({ projectId })),
+        queryClient.invalidateQueries({
+          queryKey: usePostsQuery.getKey({ projectId }),
+        }),
     });
 
   return (
