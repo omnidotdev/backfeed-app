@@ -27,7 +27,6 @@
     "dotenv": "^16.4.4",
     "dotenv-cli": "^7.3.0",
     "husky": "^9.1.6",
-    "lint-staged": "^15.2.2",
     "pino-pretty": "^10.3.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
