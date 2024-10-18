@@ -2,22 +2,22 @@
 
 import {
   Button,
-  Flex,
-  Text,
-  useDisclosure,
-  Icon,
   Card,
+  Flex,
+  Icon,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
+  Text,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
-import { Feed, CreateFeedbackModal } from "components/feedback";
+import { CreateFeedbackModal, Feed } from "components/feedback";
 import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
