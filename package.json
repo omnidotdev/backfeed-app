@@ -32,7 +32,7 @@
     "eslint-plugin-jest-dom": "^5.1.0",
     "eslint-plugin-playwright": "^1.1.0",
     "eslint-plugin-testing-library": "^6.2.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
+    "eslint-plugin-unused-imports": "^4.0.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "pino-pretty": "^10.3.1",
