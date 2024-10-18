@@ -74,7 +74,7 @@ const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
 
       onClose();
     },
-    [connectedAddress, createPost, onClose, projectId, queryClient],
+    [connectedAddress, createPost, onClose, projectId, queryClient]
   );
 
   return (

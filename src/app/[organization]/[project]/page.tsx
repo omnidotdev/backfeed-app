@@ -45,14 +45,14 @@ const ProjectPage = () => {
       { slug: params.organization as string },
       {
         select: (data) => data.findUniqueOrganization,
-      },
+      }
     ),
     { data: project, isPending: isProjectPending } = useProjectQuery(
       {
         organizationId: organization?.id,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.findFirstProject },
+      { select: (data) => data.findFirstProject }
     );
 
   if (isOrganizationPending) return <div>Loading...</div>;
