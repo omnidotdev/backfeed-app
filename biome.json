@@ -7,21 +7,18 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["src/generated/**"]
   },
   "formatter": {
-    "ignore": ["src/generated/**"],
     "enabled": true,
     "indentStyle": "space",
     "lineWidth": 80,
     "indentWidth": 2
   },
   "organizeImports": {
-    "ignore": ["src/generated/**"],
     "enabled": true
   },
   "linter": {
-    "ignore": ["src/generated/**"],
     "enabled": true,
     "rules": {
       "recommended": true,
