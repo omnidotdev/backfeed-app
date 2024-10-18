@@ -8,7 +8,7 @@
     "lint": "next lint",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^5.0.2",
