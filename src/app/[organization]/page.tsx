@@ -14,11 +14,11 @@ const OrganizationPage = () => {
 
   const { data: organization } = useOrganizationQuery(
       { slug: params.organization as string },
-      { select: (data) => data.findUniqueOrganization }
+      { select: (data) => data.findUniqueOrganization },
     ),
     { data: projects } = useProjectsQuery(
       { organizationId: organization?.id },
-      { select: (data) => data.findManyProject }
+      { select: (data) => data.findManyProject },
     );
 
   return (

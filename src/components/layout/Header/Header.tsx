@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  Button,
   Flex,
   HStack,
-  Button,
   Text,
   chakra,
   useColorMode,
@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
-  BsFillSunFill as SunIcon,
   BsFillMoonFill as MoonIcon,
+  BsFillSunFill as SunIcon,
 } from "react-icons/bs";
 
 import { app } from "lib/config";

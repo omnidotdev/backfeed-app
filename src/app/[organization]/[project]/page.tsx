@@ -2,22 +2,22 @@
 
 import {
   Button,
-  Flex,
-  Text,
-  useDisclosure,
-  Icon,
   Card,
+  Flex,
+  Icon,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
+  Text,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
-import { Feed, CreateFeedbackModal } from "components/feedback";
+import { CreateFeedbackModal, Feed } from "components/feedback";
 import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
@@ -45,14 +45,14 @@ const ProjectPage = () => {
       { slug: params.organization as string },
       {
         select: (data) => data.findUniqueOrganization,
-      }
+      },
     ),
     { data: project, isPending: isProjectPending } = useProjectQuery(
       {
         organizationId: organization?.id,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.findFirstProject }
+      { select: (data) => data.findFirstProject },
     );
 
   if (isOrganizationPending) return <div>Loading...</div>;
