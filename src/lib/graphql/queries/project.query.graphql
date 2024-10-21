@@ -1,4 +1,4 @@
-query Project($organizationId: String, $projectSlug: String!) {
+query Project($organizationId: Int, $projectSlug: String!) {
   allProjects(
     filter: {
       and: {

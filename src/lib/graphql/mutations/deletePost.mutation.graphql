@@ -1,4 +1,4 @@
-mutation DeletePost($postId: String!) {
+mutation DeletePost($postId: Int!) {
   deletePostByRowId(input: { rowId: $postId }) {
     clientMutationId
   }

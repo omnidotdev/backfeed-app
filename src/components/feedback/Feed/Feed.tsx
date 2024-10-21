@@ -32,13 +32,14 @@ import {
   useDeleteUpvoteMutation,
   usePostsQuery,
   useUpvotePostMutation,
+  useUserQuery,
 } from "generated/graphql";
 
 import type { FlexProps } from "@chakra-ui/react";
 import type { Post } from "generated/graphql";
 
 interface Props extends FlexProps {
-  projectId: string;
+  projectId?: number;
   enableDownvotes?: boolean;
 }
 
@@ -58,32 +59,36 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { address: connectedAddress } = useAccount();
+  const { address: connectedAddress } = useAccount(),
+    { data: user } = useUserQuery(
+      { walletAddress: connectedAddress! },
+      {
+        enabled: !!connectedAddress,
+        select: (data) => data.userByWalletAddress,
+      }
+    );
 
-  const {
-    data: posts = [
-      { id: "0", title: "0", description: "0", upvotes: [] },
-      { id: "1", title: "1", description: "1", upvotes: [] },
-    ],
-    isLoading: isPostsLoading,
-  } = usePostsQuery({ projectId }, { select: (data) => data.findManyPost });
+  const { data: posts, isLoading: isPostsLoading } = usePostsQuery(
+    { projectId: projectId! },
+    { select: (data) => data.allPosts?.nodes }
+  );
 
   const { mutate: upvotePost } = useUpvotePostMutation({
       onSuccess: () =>
         queryClient.invalidateQueries({
-          queryKey: usePostsQuery.getKey({ projectId }),
+          queryKey: usePostsQuery.getKey({ projectId: projectId! }),
         }),
     }),
     { mutate: deleteUpvote } = useDeleteUpvoteMutation({
       onSuccess: () =>
         queryClient.invalidateQueries({
-          queryKey: usePostsQuery.getKey({ projectId }),
+          queryKey: usePostsQuery.getKey({ projectId: projectId! }),
         }),
     }),
     { mutate: deletePost } = useDeletePostMutation({
       onSuccess: () =>
         queryClient.invalidateQueries({
-          queryKey: usePostsQuery.getKey({ projectId }),
+          queryKey: usePostsQuery.getKey({ projectId: projectId! }),
         }),
     });
 
@@ -91,10 +96,12 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
     <>
       <Flex direction="column" gap={4} {...rest}>
         {posts?.map((post) => {
-          const upvoteId = post.upvotes.find((upvote) => upvote.id)?.id;
+          const upvoteId = post?.upvotesByPostId?.nodes?.find(
+            (upvote) => upvote?.rowId
+          )?.rowId;
 
           return (
-            <Skeleton key={post.title} h={12} isLoaded={!isPostsLoading}>
+            <Skeleton key={post?.title} h={12} isLoaded={!isPostsLoading}>
               <Flex gap={6} align="center" h="100%">
                 <Flex direction="column" textAlign="center" userSelect="none">
                   {/* TODO CTA if not connected */}
@@ -107,16 +114,17 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                         upvoteId
                           ? deleteUpvote({ upvoteId })
                           : upvotePost({
-                              id: upvoteId || "",
-                              postId: post.id,
-                              userAddress: connectedAddress || "",
+                              upvote: {
+                                userId: user?.rowId!,
+                                postId: post?.rowId!,
+                              },
                             });
                       }
                     }}
                     {...voteIconProps}
                   />
                   <Text fontWeight="bold" fontSize="xl">
-                    {post.upvotes.length}
+                    {post?.upvotesByPostId?.nodes?.length}
                   </Text>
 
                   {enableDownvotes && (
@@ -139,9 +147,9 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                   w="100%"
                   p={2}
                 >
-                  <Text>{post.title}</Text>
+                  <Text>{post?.title}</Text>
                   {/* TODO truncate */}
-                  <Text color="gray.500">{post.description}</Text>
+                  <Text color="gray.500">{post?.description}</Text>
                 </Flex>
               </Flex>
             </Skeleton>
@@ -169,9 +177,9 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
               <Flex direction="column" gap={1}>
                 <Text fontSize="sm" opacity={0.8}>
                   <Icon as={PersonIcon} mr={2} /> Created by{" "}
-                  {activePost?.author.walletAddress === connectedAddress
+                  {activePost?.userByUserId?.walletAddress === connectedAddress
                     ? "you"
-                    : activePost?.author.walletAddress}
+                    : activePost?.userByUserId?.walletAddress}
                 </Text>
                 <Text fontSize="sm" opacity={0.8}>
                   <Icon as={CalendarIcon} mr={3} />
@@ -185,12 +193,12 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
             </Flex>
           </ModalBody>
 
-          {activePost?.author.walletAddress === connectedAddress && (
+          {activePost?.userByUserId?.walletAddress === connectedAddress && (
             <ModalFooter>
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  deletePost({ postId: activePost!.id });
+                  deletePost({ postId: activePost!.rowId });
                   onPostModalClose();
                 }}
               >

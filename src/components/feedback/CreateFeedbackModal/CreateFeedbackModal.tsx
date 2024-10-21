@@ -22,7 +22,11 @@ import { useForm } from "react-hook-form";
 import { useAccount } from "wagmi";
 import { z } from "zod";
 
-import { useCreatePostMutation, usePostsQuery } from "generated/graphql";
+import {
+  useCreatePostMutation,
+  usePostsQuery,
+  useUserQuery,
+} from "generated/graphql";
 
 import type { UseDisclosureProps } from "@chakra-ui/react";
 import type { CherrypickRequired } from "lib/types/util";
@@ -39,7 +43,7 @@ type Schema = z.infer<typeof schema>;
 
 interface Props
   extends CherrypickRequired<UseDisclosureProps, "isOpen" | "onClose"> {
-  projectId: string;
+  projectId?: number;
 }
 
 /**
@@ -48,7 +52,14 @@ interface Props
 const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
   const { mutate: createPost } = useCreatePostMutation();
 
-  const { address: connectedAddress } = useAccount();
+  const { address: connectedAddress } = useAccount(),
+    { data: user } = useUserQuery(
+      { walletAddress: connectedAddress! },
+      {
+        enabled: !!connectedAddress,
+        select: (data) => data.userByWalletAddress,
+      }
+    );
 
   const queryClient = useQueryClient();
 
@@ -62,19 +73,22 @@ const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
     async (data: FieldValues) => {
       // TODO character limit decrement counter in UI
       createPost({
-        projectId,
-        userAddress: connectedAddress!,
-        title: data.title,
-        description: data.description,
+        postInput: {
+          projectId: projectId!,
+          userId: user?.rowId!,
+          // walletAddress: connectedAddress!,
+          title: data.title,
+          description: data.description,
+        },
       });
 
       void queryClient.invalidateQueries({
-        queryKey: usePostsQuery.getKey({ projectId }),
+        queryKey: usePostsQuery.getKey({ projectId: projectId! }),
       });
 
       onClose();
     },
-    [connectedAddress, createPost, onClose, projectId, queryClient]
+    [createPost, onClose, projectId, user?.rowId, queryClient]
   );
 
   return (

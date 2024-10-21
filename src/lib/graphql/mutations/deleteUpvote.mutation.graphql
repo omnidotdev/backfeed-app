@@ -1,4 +1,4 @@
-mutation DeleteUpvote($upvoteId: String!) {
+mutation DeleteUpvote($upvoteId: Int!) {
   deleteUpvoteByRowId(input: { rowId: $upvoteId }) {
     clientMutationId
   }

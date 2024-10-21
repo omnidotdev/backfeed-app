@@ -26,7 +26,7 @@ export const generateMetadata = async ({
   });
 
   return {
-    title: `${organization.findUniqueOrganization?.name} | ${app.name}`,
+    title: `${organization.organizationBySlug?.name} | ${app.name}`,
   };
 };
 

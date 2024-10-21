@@ -1,9 +1,7 @@
 query Organization($slug: String!) {
-  allOrganizations(condition: { slug: $slug }) {
-    nodes {
-      rowId
-      name
-      slug
-    }
+  organizationBySlug(slug: $slug) {
+    rowId
+    name
+    slug
   }
 }
