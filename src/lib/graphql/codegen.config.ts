@@ -13,7 +13,7 @@ const graphqlCodegenConfig: CodegenConfig = {
   config: {
     // https://github.com/dotansimha/graphql-code-generator/issues/6935#issuecomment
     // https://stackoverflow.com/questions/74623455/how-to-ensure-enum-order-in-graphql
-    sort: false,
+    sort: true,
   },
   generates: {
     // TODO switch to client preset after DX improves, track https://github.com/dotansimha/graphql-code-generator/discussions/8773
