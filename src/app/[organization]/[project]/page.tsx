@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Card,
   Flex,
   Text,
   Icon,
@@ -16,7 +17,7 @@ import { useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
-import { Feed, CreateFeedbackModal } from "components/feedback";
+import { CreateFeedbackModal, Feed } from "components/feedback";
 import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
@@ -40,7 +41,7 @@ const ProjectPage = () => {
       { slug: params.organization as string },
       {
         select: (data) => data.findUniqueOrganization,
-      },
+      }
     ),
     {
       data: project,
@@ -51,7 +52,7 @@ const ProjectPage = () => {
         organizationId: organization?.id,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.findFirstProject },
+      { select: (data) => data.findFirstProject }
     );
 
   if (isOrganizationError) return <Center>Error</Center>;

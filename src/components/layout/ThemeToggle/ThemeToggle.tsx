@@ -20,7 +20,7 @@ const PandaExpand = sigil(Expand);
 const ThemeToggle = () => {
   const [colorMode, setColorMode] = useLocalStorage<ColorMode>(
     colorModeLocalStorageKey,
-    "light",
+    "light"
   );
 
   const syncColorMode = () =>
