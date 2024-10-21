@@ -1,5 +1,5 @@
 mutation CreatePost($postInput: PostInput!) {
-  createPost(input: {post: $postInput}) {
+  createPost(input: { post: $postInput }) {
     clientMutationId
   }
 }

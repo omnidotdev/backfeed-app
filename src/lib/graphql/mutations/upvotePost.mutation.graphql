@@ -1,5 +1,5 @@
 mutation UpvotePost($upvote: UpvoteInput!) {
-  createUpvote(input: {upvote: $upvote}) {
+  createUpvote(input: { upvote: $upvote }) {
     clientMutationId
   }
 }

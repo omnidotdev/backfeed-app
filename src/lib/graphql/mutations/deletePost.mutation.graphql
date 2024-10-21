@@ -1,5 +1,5 @@
 mutation DeletePost($postId: String!) {
-  deletePostByRowId(input: {rowId: $postId}) {
+  deletePostByRowId(input: { rowId: $postId }) {
     clientMutationId
   }
 }
