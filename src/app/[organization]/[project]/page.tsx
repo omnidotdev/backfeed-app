@@ -3,14 +3,14 @@
 import {
   Button,
   Card,
-  Flex,
-  Text,
-  Icon,
-  useDisclosure,
-  Skeleton,
   Center,
-  VStack,
+  Flex,
   HStack,
+  Icon,
+  Skeleton,
+  Text,
+  VStack,
+  useDisclosure,
 } from "@omnidev/sigil";
 import Image from "next/image";
 import { useParams } from "next/navigation";
