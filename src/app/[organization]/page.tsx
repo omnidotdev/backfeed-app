@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Flex, Text } from "@chakra-ui/react";
+import { Card, Flex, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -14,11 +14,11 @@ const OrganizationPage = () => {
 
   const { data: organization } = useOrganizationQuery(
       { slug: params.organization as string },
-      { select: (data) => data.findUniqueOrganization }
+      { select: (data) => data.findUniqueOrganization },
     ),
     { data: projects } = useProjectsQuery(
       { organizationId: organization?.id },
-      { select: (data) => data.findManyProject }
+      { select: (data) => data.findManyProject },
     );
 
   return (

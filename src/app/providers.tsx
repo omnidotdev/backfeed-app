@@ -1,7 +1,6 @@
 "use client";
 
-import baseTheme from "lib/theme/baseTheme";
-import { BlockchainProvider, QueryProvider, UIProvider } from "providers";
+import { BlockchainProvider, QueryProvider } from "providers";
 
 import type { ReactNode } from "react";
 
@@ -10,9 +9,7 @@ import type { ReactNode } from "react";
  */
 const Providers = ({ children }: { children: ReactNode }) => (
   <QueryProvider>
-    <BlockchainProvider>
-      <UIProvider theme={baseTheme}>{children}</UIProvider>
-    </BlockchainProvider>
+    <BlockchainProvider>{children}</BlockchainProvider>
   </QueryProvider>
 );
 

@@ -1,21 +1,13 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
+  Dialog,
   Flex,
-  FormControl,
-  FormLabel,
+  Button,
+  Label,
   Input,
   Textarea,
-  ModalFooter,
-  Button,
-  chakra,
-  FormErrorMessage,
-} from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+  Text,
+} from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -24,7 +16,7 @@ import { z } from "zod";
 
 import { useCreatePostMutation, usePostsQuery } from "generated/graphql";
 
-import type { UseDisclosureProps } from "@chakra-ui/react";
+import type { UseDisclosureOptions } from "@omnidev/sigil";
 import type { CherrypickRequired } from "lib/types/util";
 import type { FieldValues } from "react-hook-form";
 
@@ -36,16 +28,18 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 // TODO clear errors on modal close
-
 interface Props
-  extends CherrypickRequired<UseDisclosureProps, "isOpen" | "onClose"> {
+  extends CherrypickRequired<
+    UseDisclosureOptions,
+    "isOpen" | "onClose" | "onOpen"
+  > {
   projectId: string;
 }
 
 /**
  * Create new feedback post modal.
  */
-const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
+const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
   const { mutate: createPost } = useCreatePostMutation();
 
   const { address: connectedAddress } = useAccount();
@@ -74,69 +68,64 @@ const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
 
       onClose();
     },
-    [connectedAddress, createPost, onClose, projectId, queryClient]
+    [connectedAddress, createPost, onClose, projectId, queryClient],
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
+    <Dialog
+      open={isOpen}
+      onOpenChange={({ open }) => (open ? onOpen() : onClose())}
+      title="Create Feedback Post"
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Flex direction="column" gap={4}>
+          <Flex
+            flexDirection="column"
+            gap={2}
+            // isRequired
+            // NB: `isInvalid` determines whether `FormErrorMessage` components render
+            // isInvalid={!!errors.title}
+          >
+            <Label>Title</Label>
+            <Input
+              placeholder="Short, descriptive title"
+              _placeholder={{ color: "gray.500" }}
+              type="text"
+              {...register("title")}
+            />
 
-      <ModalContent>
-        <ModalHeader>Create Feedback Post</ModalHeader>
+            <Text color="red" fontSize="sm">
+              {errors.title?.message as string}
+            </Text>
+          </Flex>
 
-        <ModalCloseButton />
+          <Flex
+            id="description"
+            flexDirection="column"
+            gap={2}
+            // isRequired
+            // NB: `isInvalid` determines whether `FormErrorMessage` components render
+            // isInvalid={!!errors.title}
+          >
+            <Label>Description</Label>
+            <Textarea
+              placeholder="Describe additional details..."
+              _placeholder={{ color: "gray.500" }}
+              {...register("description")}
+            />
 
-        <chakra.form onSubmit={handleSubmit(onSubmit)}>
-          <ModalBody>
-            <Flex direction="column" gap={8}>
-              <FormControl
-                id="title"
-                isRequired
-                // NB: `isInvalid` determines whether `FormErrorMessage` components render
-                isInvalid={!!errors.title}
-              >
-                <FormLabel>Title</FormLabel>
-                <Input
-                  placeholder="Short, descriptive title"
-                  _placeholder={{ color: "gray.500" }}
-                  type="text"
-                  {...register("title")}
-                />
+            <Text color="red" fontSize="sm">
+              {errors.description?.message as string}
+            </Text>
+          </Flex>
+        </Flex>
 
-                <FormErrorMessage>
-                  {errors.title?.message as string}
-                </FormErrorMessage>
-              </FormControl>
-
-              <FormControl
-                id="description"
-                isRequired
-                // NB: `isInvalid` determines whether `FormErrorMessage` components render
-                isInvalid={!!errors.title}
-              >
-                <FormLabel>Description</FormLabel>
-                <Textarea
-                  placeholder="Describe additional details..."
-                  _placeholder={{ color: "gray.500" }}
-                  {...register("description")}
-                />
-
-                <FormErrorMessage>
-                  {errors.description?.message as string}
-                </FormErrorMessage>
-              </FormControl>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter>
-            {/* TODO close and invalidate query */}
-            <Button type="submit" isDisabled={isSubmitting}>
-              Create
-            </Button>
-          </ModalFooter>
-        </chakra.form>
-      </ModalContent>
-    </Modal>
+        {/* TODO close and invalidate query */}
+        <Button type="submit" disabled={isSubmitting}>
+          Create
+        </Button>
+      </form>
+    </Dialog>
   );
 };
 
