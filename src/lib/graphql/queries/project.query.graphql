@@ -1,6 +1,11 @@
 query Project($organizationId: String, $projectSlug: String!) {
   allProjects(
-    filter: {and: {organizationId: {equalTo: $organizationId}, slug: {equalTo: $projectSlug}}}
+    filter: {
+      and: {
+        organizationId: { equalTo: $organizationId }
+        slug: { equalTo: $projectSlug }
+      }
+    }
   ) {
     nodes {
       rowId

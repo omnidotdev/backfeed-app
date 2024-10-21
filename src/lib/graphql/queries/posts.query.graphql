@@ -1,5 +1,5 @@
 query Posts($projectId: String!) {
-  allPosts(filter: {projectId: {equalTo: $projectId}}) {
+  allPosts(filter: { projectId: { equalTo: $projectId } }) {
     nodes {
       rowId
       createdAt

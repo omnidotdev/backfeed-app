@@ -1,5 +1,5 @@
 query Projects($organizationId: String) {
-  allProjects(filter: {organizationId: {equalTo: $organizationId}}) {
+  allProjects(filter: { organizationId: { equalTo: $organizationId } }) {
     nodes {
       rowId
       name

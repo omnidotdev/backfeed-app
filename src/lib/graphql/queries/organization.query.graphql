@@ -1,5 +1,5 @@
 query Organization($slug: String!) {
-  allOrganizations(condition: {slug: $slug}) {
+  allOrganizations(condition: { slug: $slug }) {
     nodes {
       rowId
       name
