@@ -1,7 +1,9 @@
 query Organization($slug: String!) {
-  findUniqueOrganization(where: { slug: $slug }) {
-    id
-    name
-    slug
+  allOrganizations(condition: {slug: $slug}) {
+    nodes {
+      rowId
+      name
+      slug
+    }
   }
 }
