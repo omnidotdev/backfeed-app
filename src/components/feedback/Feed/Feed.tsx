@@ -3,10 +3,13 @@ import {
   Divider,
   Flex,
   VStack,
+  Stack,
   Dialog,
   Icon,
   Text,
+  Skeleton,
   useDisclosure,
+  Center,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -42,7 +45,6 @@ interface Props extends FlexProps {
 const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
   const [activePost, setActivePost] = useState<Post | null>();
 
-  // NB: Use standards if used explicitly in one file and singular disclosure needed
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const queryClient = useQueryClient();
@@ -50,11 +52,9 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
   const { address: connectedAddress } = useAccount();
 
   const {
-    data: posts = [
-      { id: "0", title: "0", description: "0", upvotes: [] },
-      { id: "1", title: "1", description: "1", upvotes: [] },
-    ],
+    data: posts,
     isLoading: isPostsLoading,
+    isError: isPostsError,
   } = usePostsQuery({ projectId }, { select: (data) => data.findManyPost });
 
   const { mutate: upvotePost } = useUpvotePostMutation({
@@ -88,56 +88,67 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
     }
   };
 
+  if (isPostsError) return <Center>Error</Center>;
+
   return (
     <>
-      <Flex flexDirection="column" gap={4} {...rest}>
-        {posts.map((post) => {
-          const upvoteId = post.upvotes.find((upvote) => upvote.id)?.id;
+      <Flex flexDirection="column" gap={4} w="full" {...rest}>
+        {isPostsLoading
+          ? [...Array(3)].map((_, idx) => (
+              <Stack key={idx} gap={4} w="full" mb={4} _last={{ mb: 0 }}>
+                <Skeleton w="40%" h={6} />
+                <Skeleton h={12} />
+              </Stack>
+            ))
+          : posts?.map((post) => {
+              const upvoteId = post.upvotes.find((upvote) => upvote.id)?.id;
 
-          return (
-            <Flex key={post.id} gap={4} h="100%">
-              <VStack gap={0}>
-                <Icon
-                  src={UpIcon}
-                  color={upvoteId ? "green.500" : "gray.400"}
-                  onClick={() => upvote(upvoteId, post.id)}
-                  cursor="pointer"
-                />
+              return (
+                <Flex key={post.id} gap={4} h="100%">
+                  <VStack gap={0}>
+                    <Icon
+                      src={UpIcon}
+                      color={upvoteId ? "green.500" : "gray.400"}
+                      onClick={() => upvote(upvoteId, post.id)}
+                      cursor="pointer"
+                    />
 
-                <Text fontWeight="bold" fontSize="xl">
-                  {post.upvotes.length}
-                </Text>
+                    <Text fontWeight="bold" fontSize="xl">
+                      {post.upvotes.length}
+                    </Text>
 
-                {enableDownvotes && (
-                  <Icon
-                    src={DownIcon}
-                    color={upvoteId ? "red.500" : "gray.400"}
+                    {enableDownvotes && (
+                      <Icon
+                        src={DownIcon}
+                        color={upvoteId ? "red.500" : "gray.400"}
+                        cursor="pointer"
+                      />
+                    )}
+                  </VStack>
+
+                  <Flex
                     cursor="pointer"
-                  />
-                )}
-              </VStack>
-
-              <Flex
-                cursor="pointer"
-                flexDirection="column"
-                onClick={() => {
-                  setActivePost(post as Post);
-                  onOpen();
-                }}
-              >
-                <Text>{post.title}</Text>
-                <Text color="gray.500" lineClamp={3}>
-                  {post.description}
-                </Text>
-              </Flex>
-            </Flex>
-          );
-        })}
+                    flexDirection="column"
+                    onClick={() => {
+                      setActivePost(post as Post);
+                      onOpen();
+                    }}
+                  >
+                    <Text>{post.title}</Text>
+                    <Text color="gray.500" lineClamp={3}>
+                      {post.description}
+                    </Text>
+                  </Flex>
+                </Flex>
+              );
+            })}
       </Flex>
 
       {activePost && (
+        // @ts-ignore not sure why this is throwing an error
         <Dialog
           open={isOpen}
+          // @ts-ignore not sure why this is throwing an error
           onOpenChange={({ open }) => (open ? onOpen() : onClose())}
           title="test"
         >

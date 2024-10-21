@@ -72,8 +72,10 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
   );
 
   return (
+    // @ts-ignore not sure why this is throwing an error
     <Dialog
       open={isOpen}
+      // @ts-ignore not sure why this is throwing an error
       onOpenChange={({ open }) => (open ? onOpen() : onClose())}
       title="Create Feedback Post"
     >

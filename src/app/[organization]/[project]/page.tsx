@@ -26,11 +26,7 @@ import { NODE_ENV } from "lib/config";
  * Project overview page.
  */
 const ProjectPage = () => {
-  const {
-    isOpen: isCreatePostModalOpen,
-    onOpen: onCreatePostModalOpen,
-    onClose: onCreatePostModalClose,
-  } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const params = useParams();
 
@@ -38,7 +34,7 @@ const ProjectPage = () => {
 
   const {
       data: organization,
-      isPending: isOrganizationPending,
+      isLoading: isOrganizationLoading,
       isError: isOrganizationError,
     } = useOrganizationQuery(
       { slug: params.organization as string },
@@ -46,7 +42,11 @@ const ProjectPage = () => {
         select: (data) => data.findUniqueOrganization,
       },
     ),
-    { data: project, isPending: isProjectPending } = useProjectQuery(
+    {
+      data: project,
+      isLoading: isProjectLoading,
+      isError: isProjectError,
+    } = useProjectQuery(
       {
         organizationId: organization?.id,
         projectSlug: params.project as string,
@@ -54,64 +54,81 @@ const ProjectPage = () => {
       { select: (data) => data.findFirstProject },
     );
 
-  if (isOrganizationPending) return <Center>Loading...</Center>;
   if (isOrganizationError) return <Center>Error</Center>;
+  if (isProjectError) return <Center>Error</Center>;
 
   return (
-    <Flex>
-      <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-        {organization?.name}
-      </Text>
+    <Flex flexDirection="column">
+      <Skeleton isLoaded={!isOrganizationLoading} w="1/6" h={8} mb={4}>
+        <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
+          {organization?.name} test
+        </Text>
+      </Skeleton>
 
       <Flex w="full" gap={4} flexDirection={{ base: "column", md: "row" }}>
         <VStack
           p={4}
-          bg="background.subtle"
+          bg="background.muted"
           gap={4}
           w={{ base: "full", md: "30%" }}
+          rounded="md"
         >
           <HStack>
-            {project?.image && (
-              <Image
-                src={project?.image}
-                alt={`${project?.image} image`}
-                width={40}
-                height={40}
-              />
-            )}
+            <Skeleton isLoaded={!isProjectLoading} w={10} h={10} rounded="full">
+              {project?.image && (
+                <Image
+                  src={project?.image}
+                  alt={`${project?.image} image`}
+                  width={40}
+                  height={40}
+                  style={{
+                    borderRadius: "50%",
+                    flexShrink: 0,
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+            </Skeleton>
 
-            <Text ml={2} fontWeight="bold" fontSize="xl">
-              {project?.name}
-            </Text>
+            <Skeleton isLoaded={!isProjectLoading} h={8} w={40}>
+              <Text ml={2} fontWeight="bold" fontSize="xl">
+                {project?.name}
+              </Text>
+            </Skeleton>
           </HStack>
 
-          <Text>{project?.description}</Text>
+          <Skeleton isLoaded={!isProjectLoading} w="full" h="full">
+            <Text>{project?.description}</Text>
+          </Skeleton>
         </VStack>
 
         <VStack
           p={4}
-          bg="background.subtle"
+          bg="background.muted"
           gap={4}
           w={{ base: "full", md: "70%" }}
+          rounded="md"
         >
           <Button
             // TODO remove env check once ready
             disabled={NODE_ENV !== "development" || !isConnected}
             alignSelf="flex-end"
             gap={2}
-            onClick={onCreatePostModalOpen}
+            onClick={onOpen}
           >
             <Icon src={PlusIcon} />
             Create Post
           </Button>
+
+          {/* TODO: Fetch project posts total count here to use for the Skeleton array count. */}
           <Feed projectId={project?.id || ""} overflow="auto" py={4} />
         </VStack>
       </Flex>
 
       <CreateFeedbackModal
-        isOpen={isCreatePostModalOpen}
-        onClose={onCreatePostModalClose}
-        onOpen={onCreatePostModalOpen}
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
         projectId={project?.id || ""}
       />
     </Flex>
@@ -120,61 +137,11 @@ const ProjectPage = () => {
 
 export default ProjectPage;
 
-// <Flex direction="column" align={{ baseToMd: "center", md: "initial" }}>
-//   <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-//     {organization?.name}
-//   </Text>
+// import { Skeleton } from "@omnidev/sigil";
 
-//   <Flex gap={6} direction={{ baseToMd: "column", md: "initial" }}>
-//     <Card
-//       p={6}
-//       w={{ baseToMd: "100%", md: "30%" }}
-//       alignItems="center"
-//       gap={4}
-//     >
-//       <HStack gap={4}>
-//         {project?.image && (
-//           <Image
-//             src={project?.image}
-//             alt={`${project?.image} image`}
-//             width={50}
-//             height={50}
-//           />
-//         )}
+// const Loading = () => {
+//   // Or a custom loading skeleton component
+//   return <Skeleton />;
+// };
 
-//         <Text fontWeight="bold" fontSize="xl">
-//           {project?.name}
-//         </Text>
-//       </HStack>
-
-//       {/* TODO collapsible menu on mobile */}
-//       {/* TODO overflow */}
-//       <Text>{project?.description}</Text>
-//     </Card>
-
-//     <Card p={6} w={{ baseToMd: "100%", md: "70%" }}>
-// <Tooltip
-//   hasArrow
-//   positioning={{ placement: "top" }}
-//   isDisabled={NODE_ENV !== "development" || !isConnected}
-//   trigger={
-//     <Button
-//       bgColor="red"
-//       // TODO remove env check once ready
-//       disabled={NODE_ENV !== "development" || !isConnected}
-//       alignSelf="flex-end"
-//       gap={2}
-//       onClick={onCreatePostModalOpen}
-//     >
-//       <Icon src={PlusIcon} />
-//       Create Post
-//     </Button>
-//   }
-// >
-//   Coming soon
-// </Tooltip>
-//       <Feed projectId={project?.id || ""} overflow="auto" py={4} />
-//     </Card>
-//   </Flex>
-
-// </Flex>
+// export default Loading;

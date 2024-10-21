@@ -28,6 +28,7 @@ const ThemeToggle = () => {
       ? document.documentElement.classList.add("dark")
       : document.documentElement.classList.remove("dark");
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(syncColorMode, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: sync color mode on color mode change
@@ -37,9 +38,8 @@ const ThemeToggle = () => {
     setColorMode(colorMode === "light" ? "dark" : "light");
 
   return (
-    // @ts-ignore
+    // @ts-ignore ignore missing props
     <PandaExpand
-      mr={{ lg: 2 }}
       onToggle={updateTheme}
       toggled={colorMode === "light"}
       css={{
