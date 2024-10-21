@@ -348,6 +348,17 @@ export type DeleteProjectByRowIdInput = {
   rowId: Scalars['Int']['input'];
 };
 
+/** All input for the `deleteProjectBySlugAndOrganizationId` mutation. */
+export type DeleteProjectBySlugAndOrganizationIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['Int']['input'];
+  slug: Scalars['String']['input'];
+};
+
 /** All input for the `deleteProject` mutation. */
 export type DeleteProjectInput = {
   /**
@@ -550,6 +561,8 @@ export type Mutation = {
   deleteProjectByName?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProjectByRowId?: Maybe<DeleteProjectPayload>;
+  /** Deletes a single `Project` using a unique key. */
+  deleteProjectBySlugAndOrganizationId?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Upvote` using its globally unique id. */
   deleteUpvote?: Maybe<DeleteUpvotePayload>;
   /** Deletes a single `Upvote` using a unique key. */
@@ -582,6 +595,8 @@ export type Mutation = {
   updateProjectByName?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProjectByRowId?: Maybe<UpdateProjectPayload>;
+  /** Updates a single `Project` using a unique key and a patch. */
+  updateProjectBySlugAndOrganizationId?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Upvote` using its globally unique id and a patch. */
   updateUpvote?: Maybe<UpdateUpvotePayload>;
   /** Updates a single `Upvote` using a unique key and a patch. */
@@ -688,6 +703,12 @@ export type MutationDeleteProjectByRowIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteProjectBySlugAndOrganizationIdArgs = {
+  input: DeleteProjectBySlugAndOrganizationIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUpvoteArgs = {
   input: DeleteUpvoteInput;
 };
@@ -780,6 +801,12 @@ export type MutationUpdateProjectByNameArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateProjectByRowIdArgs = {
   input: UpdateProjectByRowIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateProjectBySlugAndOrganizationIdArgs = {
+  input: UpdateProjectBySlugAndOrganizationIdInput;
 };
 
 
@@ -1318,6 +1345,8 @@ export type Query = Node & {
   projectByName?: Maybe<Project>;
   /** Get a single `Project`. */
   projectByRowId?: Maybe<Project>;
+  /** Get a single `Project`. */
+  projectBySlugAndOrganizationId?: Maybe<Project>;
   /**
    * Exposes the root query type nested one level down. This is helpful for Relay 1
    * which can only query top level fields if they are in a particular form.
@@ -1466,6 +1495,13 @@ export type QueryProjectByNameArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectByRowIdArgs = {
   rowId: Scalars['Int']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectBySlugAndOrganizationIdArgs = {
+  organizationId: Scalars['Int']['input'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1735,6 +1771,19 @@ export type UpdateProjectByRowIdInput = {
   /** An object where the defined keys will be set on the `Project` being updated. */
   projectPatch: ProjectPatch;
   rowId: Scalars['Int']['input'];
+};
+
+/** All input for the `updateProjectBySlugAndOrganizationId` mutation. */
+export type UpdateProjectBySlugAndOrganizationIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['Int']['input'];
+  /** An object where the defined keys will be set on the `Project` being updated. */
+  projectPatch: ProjectPatch;
+  slug: Scalars['String']['input'];
 };
 
 /** All input for the `updateProject` mutation. */
@@ -2189,12 +2238,12 @@ export type PostsQueryVariables = Exact<{
 export type PostsQuery = { __typename?: 'Query', allPosts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: number, createdAt?: any | null, title?: string | null, description?: string | null, userByUserId?: { __typename?: 'User', walletAddress?: string | null } | null, upvotesByPostId: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: number } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['Int']['input']>;
+  organizationId: Scalars['Int']['input'];
   projectSlug: Scalars['String']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', allProjects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: number, name?: string | null, image?: string | null, description?: string | null } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: number, name?: string | null, image?: string | null, description?: string | null } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId?: InputMaybe<Scalars['Int']['input']>;
@@ -2406,16 +2455,15 @@ export const useInfinitePostsQuery = <
 useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
 
 export const ProjectDocument = `
-    query Project($organizationId: Int, $projectSlug: String!) {
-  allProjects(
-    filter: {and: {organizationId: {equalTo: $organizationId}, slug: {equalTo: $projectSlug}}}
+    query Project($organizationId: Int!, $projectSlug: String!) {
+  projectBySlugAndOrganizationId(
+    slug: $projectSlug
+    organizationId: $organizationId
   ) {
-    nodes {
-      rowId
-      name
-      image
-      description
-    }
+    rowId
+    name
+    image
+    description
   }
 }
     `;

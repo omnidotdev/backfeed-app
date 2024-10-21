@@ -23,7 +23,7 @@ export const generateMetadata = async ({
   });
 
   return {
-    title: `${project.allProjects?.nodes?.[0]?.name} | ${app.name}`,
+    title: `${project?.projectBySlugAndOrganizationId?.name} | ${app.name}`,
   };
 };
 

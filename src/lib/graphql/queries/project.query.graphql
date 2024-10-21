@@ -1,17 +1,11 @@
-query Project($organizationId: Int, $projectSlug: String!) {
-  allProjects(
-    filter: {
-      and: {
-        organizationId: { equalTo: $organizationId }
-        slug: { equalTo: $projectSlug }
-      }
-    }
+query Project($organizationId: Int!, $projectSlug: String!) {
+  projectBySlugAndOrganizationId(
+    slug: $projectSlug
+    organizationId: $organizationId
   ) {
-    nodes {
-      rowId
-      name
-      image
-      description
-    }
+    rowId
+    name
+    image
+    description
   }
 }

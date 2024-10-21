@@ -49,10 +49,13 @@ const ProjectPage = () => {
     ),
     { data: project, isPending: isProjectPending } = useProjectQuery(
       {
-        organizationId: organization?.rowId,
+        organizationId: organization?.rowId!,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.allProjects?.nodes?.[0] }
+      {
+        enabled: !!organization,
+        select: (data) => data.projectBySlugAndOrganizationId,
+      }
     );
 
   if (isOrganizationPending) return <div>Loading...</div>;
