@@ -1,5 +1,5 @@
 mutation DeleteUpvote($upvoteId: Int!) {
-  deleteUpvoteByRowId(input: { rowId: $upvoteId }) {
+  deleteUpvote(input: { rowId: $upvoteId }) {
     clientMutationId
   }
 }

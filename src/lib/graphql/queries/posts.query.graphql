@@ -1,14 +1,14 @@
 query Posts($projectId: Int!) {
-  allPosts(filter: { projectId: { equalTo: $projectId } }) {
+  posts(filter: { projectId: { equalTo: $projectId } }) {
     nodes {
       rowId
       createdAt
       title
       description
-      userByUserId {
+      user {
         walletAddress
       }
-      upvotesByPostId {
+      upvotes {
         nodes {
           rowId
         }
