@@ -39,7 +39,7 @@ import type { FlexProps } from "@chakra-ui/react";
 import type { Post } from "generated/graphql";
 
 interface Props extends FlexProps {
-  projectId?: number;
+  projectId?: string;
   enableDownvotes?: boolean;
 }
 
@@ -70,7 +70,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
 
   const { data: posts, isLoading: isPostsLoading } = usePostsQuery(
     { projectId: projectId! },
-    { select: (data) => data.allPosts?.nodes }
+    { select: (data) => data.posts?.nodes }
   );
 
   const { mutate: upvotePost } = useUpvotePostMutation({
@@ -96,7 +96,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
     <>
       <Flex direction="column" gap={4} {...rest}>
         {posts?.map((post) => {
-          const upvoteId = post?.upvotesByPostId?.nodes?.find(
+          const upvoteId = post?.upvotes?.nodes?.find(
             (upvote) => upvote?.rowId
           )?.rowId;
 
@@ -124,7 +124,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                     {...voteIconProps}
                   />
                   <Text fontWeight="bold" fontSize="xl">
-                    {post?.upvotesByPostId?.nodes?.length}
+                    {post?.upvotes?.nodes?.length}
                   </Text>
 
                   {enableDownvotes && (
@@ -177,9 +177,9 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
               <Flex direction="column" gap={1}>
                 <Text fontSize="sm" opacity={0.8}>
                   <Icon as={PersonIcon} mr={2} /> Created by{" "}
-                  {activePost?.userByUserId?.walletAddress === connectedAddress
+                  {activePost?.user?.walletAddress === connectedAddress
                     ? "you"
-                    : activePost?.userByUserId?.walletAddress}
+                    : activePost?.user?.walletAddress}
                 </Text>
                 <Text fontSize="sm" opacity={0.8}>
                   <Icon as={CalendarIcon} mr={3} />
@@ -193,7 +193,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
             </Flex>
           </ModalBody>
 
-          {activePost?.userByUserId?.walletAddress === connectedAddress && (
+          {activePost?.user?.walletAddress === connectedAddress && (
             <ModalFooter>
               <Button
                 colorScheme="red"

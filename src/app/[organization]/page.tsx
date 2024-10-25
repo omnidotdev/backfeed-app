@@ -18,7 +18,7 @@ const OrganizationPage = () => {
     ),
     { data: projects } = useProjectsQuery(
       { organizationId: organization?.rowId },
-      { select: (data) => data.allProjects?.nodes }
+      { select: (data) => data.projects?.nodes }
     );
 
   return (

@@ -1,4 +1,4 @@
-query Posts($projectId: Int!) {
+query Posts($projectId: UUID!) {
   posts(filter: { projectId: { equalTo: $projectId } }) {
     nodes {
       rowId

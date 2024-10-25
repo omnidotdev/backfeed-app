@@ -1,4 +1,4 @@
-query Projects($organizationId: Int) {
+query Projects($organizationId: UUID) {
   projects(filter: { organizationId: { equalTo: $organizationId } }) {
     nodes {
       rowId

@@ -43,7 +43,7 @@ type Schema = z.infer<typeof schema>;
 
 interface Props
   extends CherrypickRequired<UseDisclosureProps, "isOpen" | "onClose"> {
-  projectId?: number;
+  projectId?: string;
 }
 
 /**

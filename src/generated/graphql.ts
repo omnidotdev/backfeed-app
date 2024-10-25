@@ -15,8 +15,9 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Cursor: { input: any; output: any; }
-  Datetime: { input: any; output: any; }
+  Cursor: { input: string; output: string; }
+  Datetime: { input: Date; output: Date; }
+  UUID: { input: string; output: string; }
 };
 
 /** All input for the create `Organization` mutation. */
@@ -248,7 +249,7 @@ export type DeleteOrganizationInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `Organization` mutation. */
@@ -302,7 +303,7 @@ export type DeletePostInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `Post` mutation. */
@@ -356,7 +357,7 @@ export type DeleteProjectBySlugAndOrganizationIdInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
   slug: Scalars['String']['input'];
 };
 
@@ -367,7 +368,7 @@ export type DeleteProjectInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `Project` mutation. */
@@ -411,8 +412,8 @@ export type DeleteUpvoteByPostIdAndUserIdInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  postId: Scalars['Int']['input'];
-  userId: Scalars['Int']['input'];
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `deleteUpvote` mutation. */
@@ -422,7 +423,7 @@ export type DeleteUpvoteInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `Upvote` mutation. */
@@ -476,7 +477,7 @@ export type DeleteUserInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `User` mutation. */
@@ -500,32 +501,6 @@ export type DeleteUserPayload = {
 /** The output of our delete `User` mutation. */
 export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
-};
-
-/** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
-export type IntFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Scalars['Int']['input']>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Scalars['Int']['input']>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Scalars['Int']['input']>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Scalars['Int']['input']>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Scalars['Int']['input']>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Scalars['Int']['input']>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Scalars['Int']['input']>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Scalars['Int']['input']>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -859,7 +834,7 @@ export type Organization = Node & {
   name?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
-  rowId: Scalars['Int']['output'];
+  rowId: Scalars['UUID']['output'];
   slug?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
@@ -886,7 +861,7 @@ export type OrganizationCondition = {
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -932,7 +907,7 @@ export type OrganizationFilter = {
   /** Some related `projects` exist. */
   projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<IntFilter>;
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -943,6 +918,7 @@ export type OrganizationFilter = {
 export type OrganizationInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -968,6 +944,7 @@ export enum OrganizationOrderBy {
 export type OrganizationPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -1003,15 +980,15 @@ export type Post = Node & {
   id: Scalars['ID']['output'];
   /** Reads a single `Project` that is related to this `Post`. */
   project?: Maybe<Project>;
-  projectId: Scalars['Int']['output'];
-  rowId: Scalars['Int']['output'];
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
   upvotes: UpvoteConnection;
   /** Reads a single `User` that is related to this `Post`. */
   user?: Maybe<User>;
-  userId: Scalars['Int']['output'];
+  userId: Scalars['UUID']['output'];
 };
 
 
@@ -1033,15 +1010,15 @@ export type PostCondition = {
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
-  projectId?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `userId` field. */
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A connection to a list of `Post` values. */
@@ -1081,9 +1058,9 @@ export type PostFilter = {
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
-  projectId?: InputMaybe<IntFilter>;
+  projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<IntFilter>;
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `title` field. */
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -1095,17 +1072,18 @@ export type PostFilter = {
   /** Filter by the object’s `user` relation. */
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
-  userId?: InputMaybe<IntFilter>;
+  userId?: InputMaybe<UuidFilter>;
 };
 
 /** An input for mutations affecting `Post` */
 export type PostInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  projectId: Scalars['Int']['input'];
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId: Scalars['Int']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** Methods to use when ordering `Post`. */
@@ -1133,10 +1111,11 @@ export enum PostOrderBy {
 export type PostPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  projectId?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A filter to be used against many `Upvote` object types. All fields are combined with a logical ‘and.’ */
@@ -1159,10 +1138,10 @@ export type Project = Node & {
   name?: Maybe<Scalars['String']['output']>;
   /** Reads a single `Organization` that is related to this `Project`. */
   organization?: Maybe<Organization>;
-  organizationId: Scalars['Int']['output'];
+  organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
-  rowId: Scalars['Int']['output'];
+  rowId: Scalars['UUID']['output'];
   slug?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
@@ -1190,9 +1169,9 @@ export type ProjectCondition = {
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['Int']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1240,13 +1219,13 @@ export type ProjectFilter = {
   /** Filter by the object’s `organization` relation. */
   organization?: InputMaybe<OrganizationFilter>;
   /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<IntFilter>;
+  organizationId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<ProjectToManyPostFilter>;
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<IntFilter>;
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -1259,7 +1238,8 @@ export type ProjectInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -1293,7 +1273,8 @@ export type ProjectPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['Int']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -1375,7 +1356,7 @@ export type QueryNodeArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryOrganizationArgs = {
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -1412,7 +1393,7 @@ export type QueryOrganizationsArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryPostArgs = {
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -1443,7 +1424,7 @@ export type QueryPostsArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectArgs = {
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -1461,7 +1442,7 @@ export type QueryProjectByNameArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectBySlugAndOrganizationIdArgs = {
-  organizationId: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
   slug: Scalars['String']['input'];
 };
 
@@ -1481,7 +1462,7 @@ export type QueryProjectsArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryUpvoteArgs = {
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -1493,8 +1474,8 @@ export type QueryUpvoteByIdArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryUpvoteByPostIdAndUserIdArgs = {
-  postId: Scalars['Int']['input'];
-  userId: Scalars['Int']['input'];
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 
@@ -1513,7 +1494,7 @@ export type QueryUpvotesArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryUserArgs = {
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -1619,6 +1600,32 @@ export type StringFilter = {
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
+export type UuidFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['UUID']['input']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['UUID']['input']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['UUID']['input']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['UUID']['input']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['UUID']['input']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['UUID']['input']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['UUID']['input']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['UUID']['input']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
 /** All input for the `updateOrganizationById` mutation. */
 export type UpdateOrganizationByIdInput = {
   /**
@@ -1665,7 +1672,7 @@ export type UpdateOrganizationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Organization` being updated. */
   patch: OrganizationPatch;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `Organization` mutation. */
@@ -1724,7 +1731,7 @@ export type UpdatePostInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Post` being updated. */
   patch: PostPatch;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `Post` mutation. */
@@ -1781,7 +1788,7 @@ export type UpdateProjectBySlugAndOrganizationIdInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
   /** An object where the defined keys will be set on the `Project` being updated. */
   patch: ProjectPatch;
   slug: Scalars['String']['input'];
@@ -1796,7 +1803,7 @@ export type UpdateProjectInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Project` being updated. */
   patch: ProjectPatch;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `Project` mutation. */
@@ -1843,8 +1850,8 @@ export type UpdateUpvoteByPostIdAndUserIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Upvote` being updated. */
   patch: UpvotePatch;
-  postId: Scalars['Int']['input'];
-  userId: Scalars['Int']['input'];
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `updateUpvote` mutation. */
@@ -1856,7 +1863,7 @@ export type UpdateUpvoteInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Upvote` being updated. */
   patch: UpvotePatch;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `Upvote` mutation. */
@@ -1915,7 +1922,7 @@ export type UpdateUserInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `User` being updated. */
   patch: UserPatch;
-  rowId: Scalars['Int']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `User` mutation. */
@@ -1947,12 +1954,12 @@ export type Upvote = Node & {
   id: Scalars['ID']['output'];
   /** Reads a single `Post` that is related to this `Upvote`. */
   post?: Maybe<Post>;
-  postId: Scalars['Int']['output'];
-  rowId: Scalars['Int']['output'];
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads a single `User` that is related to this `Upvote`. */
   user?: Maybe<User>;
-  userId: Scalars['Int']['output'];
+  userId: Scalars['UUID']['output'];
 };
 
 /** A condition to be used against `Upvote` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -1960,13 +1967,13 @@ export type UpvoteCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `postId` field. */
-  postId?: InputMaybe<Scalars['Int']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `userId` field. */
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A connection to a list of `Upvote` values. */
@@ -2004,23 +2011,24 @@ export type UpvoteFilter = {
   /** Filter by the object’s `post` relation. */
   post?: InputMaybe<PostFilter>;
   /** Filter by the object’s `postId` field. */
-  postId?: InputMaybe<IntFilter>;
+  postId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<IntFilter>;
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `user` relation. */
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
-  userId?: InputMaybe<IntFilter>;
+  userId?: InputMaybe<UuidFilter>;
 };
 
 /** An input for mutations affecting `Upvote` */
 export type UpvoteInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  postId: Scalars['Int']['input'];
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId: Scalars['Int']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** Methods to use when ordering `Upvote`. */
@@ -2043,9 +2051,10 @@ export enum UpvoteOrderBy {
 /** Represents an update to a `Upvote`. Fields that are set will be updated. */
 export type UpvotePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  postId?: InputMaybe<Scalars['Int']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type User = Node & {
@@ -2055,7 +2064,7 @@ export type User = Node & {
   id: Scalars['ID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
-  rowId: Scalars['Int']['output'];
+  rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
   upvotes: UpvoteConnection;
@@ -2091,7 +2100,7 @@ export type UserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `walletAddress` field. */
@@ -2135,7 +2144,7 @@ export type UserFilter = {
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<IntFilter>;
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `upvotes` relation. */
@@ -2149,6 +2158,7 @@ export type UserFilter = {
 /** An input for mutations affecting `User` */
 export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   walletAddress?: InputMaybe<Scalars['String']['input']>;
 };
@@ -2171,6 +2181,7 @@ export enum UserOrderBy {
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   walletAddress?: InputMaybe<Scalars['String']['input']>;
 };
@@ -2203,14 +2214,14 @@ export type CreatePostMutationVariables = Exact<{
 export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', clientMutationId?: string | null } | null };
 
 export type DeletePostMutationVariables = Exact<{
-  postId: Scalars['Int']['input'];
+  postId: Scalars['UUID']['input'];
 }>;
 
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
 export type DeleteUpvoteMutationVariables = Exact<{
-  upvoteId: Scalars['Int']['input'];
+  upvoteId: Scalars['UUID']['input'];
 }>;
 
 
@@ -2228,36 +2239,36 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: number, name?: string | null, slug?: string | null } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null } | null };
 
 export type PostsQueryVariables = Exact<{
-  projectId: Scalars['Int']['input'];
+  projectId: Scalars['UUID']['input'];
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: number, createdAt?: any | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', walletAddress?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: number } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', walletAddress?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
-  organizationId: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
   projectSlug: Scalars['String']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: number, name?: string | null, image?: string | null, description?: string | null } | null };
+export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name?: string | null, image?: string | null, description?: string | null } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['Int']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: number, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
 
 export type UserQueryVariables = Exact<{
   walletAddress: Scalars['String']['input'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', rowId: number } | null };
+export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', rowId: string } | null };
 
 
 
@@ -2283,7 +2294,7 @@ export const useCreatePostMutation = <
     )};
 
 export const DeletePostDocument = `
-    mutation DeletePost($postId: Int!) {
+    mutation DeletePost($postId: UUID!) {
   deletePost(input: {rowId: $postId}) {
     clientMutationId
   }
@@ -2304,7 +2315,7 @@ export const useDeletePostMutation = <
     )};
 
 export const DeleteUpvoteDocument = `
-    mutation DeleteUpvote($upvoteId: Int!) {
+    mutation DeleteUpvote($upvoteId: UUID!) {
   deleteUpvote(input: {rowId: $upvoteId}) {
     clientMutationId
   }
@@ -2395,7 +2406,7 @@ export const useInfiniteOrganizationQuery = <
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
 
 export const PostsDocument = `
-    query Posts($projectId: Int!) {
+    query Posts($projectId: UUID!) {
   posts(filter: {projectId: {equalTo: $projectId}}) {
     nodes {
       rowId
@@ -2455,7 +2466,7 @@ export const useInfinitePostsQuery = <
 useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
 
 export const ProjectDocument = `
-    query Project($organizationId: Int!, $projectSlug: String!) {
+    query Project($organizationId: UUID!, $projectSlug: String!) {
   projectBySlugAndOrganizationId(
     slug: $projectSlug
     organizationId: $organizationId
@@ -2508,7 +2519,7 @@ export const useInfiniteProjectQuery = <
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
 
 export const ProjectsDocument = `
-    query Projects($organizationId: Int) {
+    query Projects($organizationId: UUID) {
   projects(filter: {organizationId: {equalTo: $organizationId}}) {
     nodes {
       rowId
