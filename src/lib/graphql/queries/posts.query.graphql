@@ -9,6 +9,11 @@ query Posts($projectId: UUID!) {
         walletAddress
       }
       upvotes {
+        aggregates {
+          distinctCount {
+            rowId
+          }
+        }
         nodes {
           rowId
         }

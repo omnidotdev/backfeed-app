@@ -124,7 +124,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                     {...voteIconProps}
                   />
                   <Text fontWeight="bold" fontSize="xl">
-                    {post?.upvotes?.nodes?.length}
+                    {post?.upvotes?.aggregates?.distinctCount?.rowId}
                   </Text>
 
                   {enableDownvotes && (

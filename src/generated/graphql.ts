@@ -15,9 +15,36 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  BigInt: { input: any; output: any; }
   Cursor: { input: string; output: string; }
   Datetime: { input: Date; output: Date; }
   UUID: { input: string; output: string; }
+};
+
+/** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
+export type BigIntFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['BigInt']['input']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 /** All input for the create `Organization` mutation. */
@@ -503,6 +530,15 @@ export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
+export type HavingDatetimeFilter = {
+  equalTo?: InputMaybe<Scalars['Datetime']['input']>;
+  greaterThan?: InputMaybe<Scalars['Datetime']['input']>;
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
+  lessThan?: InputMaybe<Scalars['Datetime']['input']>;
+  lessThanOrEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
+  notEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -851,6 +887,13 @@ export type OrganizationProjectsArgs = {
   orderBy?: InputMaybe<Array<ProjectOrderBy>>;
 };
 
+export type OrganizationAggregates = {
+  __typename?: 'OrganizationAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<OrganizationDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
 /**
  * A condition to be used against `Organization` object types. All fields are
  * tested for equality and combined with a logical ‘and.’
@@ -871,14 +914,39 @@ export type OrganizationCondition = {
 /** A connection to a list of `Organization` values. */
 export type OrganizationConnection = {
   __typename?: 'OrganizationConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<OrganizationAggregates>;
   /** A list of edges which contains the `Organization` and cursor to aid in pagination. */
   edges: Array<Maybe<OrganizationEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<OrganizationAggregates>>;
   /** A list of `Organization` objects. */
   nodes: Array<Maybe<Organization>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Organization` you could get from the connection. */
   totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Organization` values. */
+export type OrganizationConnectionGroupedAggregatesArgs = {
+  groupBy: Array<OrganizationGroupBy>;
+  having?: InputMaybe<OrganizationHavingInput>;
+};
+
+export type OrganizationDistinctCountAggregates = {
+  __typename?: 'OrganizationDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of slug across the matching connection */
+  slug?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Organization` edge in the connection. */
@@ -914,6 +982,76 @@ export type OrganizationFilter = {
   updatedAt?: InputMaybe<DatetimeFilter>;
 };
 
+/** Grouping methods for `Organization` for usage during aggregation. */
+export enum OrganizationGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type OrganizationHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Organization` aggregates. */
+export type OrganizationHavingInput = {
+  AND?: InputMaybe<Array<OrganizationHavingInput>>;
+  OR?: InputMaybe<Array<OrganizationHavingInput>>;
+  average?: InputMaybe<OrganizationHavingAverageInput>;
+  distinctCount?: InputMaybe<OrganizationHavingDistinctCountInput>;
+  max?: InputMaybe<OrganizationHavingMaxInput>;
+  min?: InputMaybe<OrganizationHavingMinInput>;
+  stddevPopulation?: InputMaybe<OrganizationHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<OrganizationHavingStddevSampleInput>;
+  sum?: InputMaybe<OrganizationHavingSumInput>;
+  variancePopulation?: InputMaybe<OrganizationHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<OrganizationHavingVarianceSampleInput>;
+};
+
+export type OrganizationHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type OrganizationHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
 /** An input for mutations affecting `Organization` */
 export type OrganizationInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -934,6 +1072,24 @@ export enum OrganizationOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
+  ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
+  ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  ProjectsDistinctCountIdAsc = 'PROJECTS_DISTINCT_COUNT_ID_ASC',
+  ProjectsDistinctCountIdDesc = 'PROJECTS_DISTINCT_COUNT_ID_DESC',
+  ProjectsDistinctCountImageAsc = 'PROJECTS_DISTINCT_COUNT_IMAGE_ASC',
+  ProjectsDistinctCountImageDesc = 'PROJECTS_DISTINCT_COUNT_IMAGE_DESC',
+  ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
+  ProjectsDistinctCountNameDesc = 'PROJECTS_DISTINCT_COUNT_NAME_DESC',
+  ProjectsDistinctCountOrganizationIdAsc = 'PROJECTS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  ProjectsDistinctCountOrganizationIdDesc = 'PROJECTS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  ProjectsDistinctCountSlugAsc = 'PROJECTS_DISTINCT_COUNT_SLUG_ASC',
+  ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
+  ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -951,6 +1107,8 @@ export type OrganizationPatch = {
 
 /** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
 export type OrganizationToManyProjectFilter = {
+  /** Aggregates across related `Project` match the filter criteria. */
+  aggregates?: InputMaybe<ProjectAggregatesFilter>;
   /** Every related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   every?: InputMaybe<ProjectFilter>;
   /** No related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -1003,6 +1161,21 @@ export type PostUpvotesArgs = {
   orderBy?: InputMaybe<Array<UpvoteOrderBy>>;
 };
 
+export type PostAggregates = {
+  __typename?: 'PostAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<PostDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Post` object types. */
+export type PostAggregatesFilter = {
+  /** Distinct count aggregate over matching `Post` objects. */
+  distinctCount?: InputMaybe<PostDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Post` object to be included within the aggregate. */
+  filter?: InputMaybe<PostFilter>;
+};
+
 /** A condition to be used against `Post` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type PostCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -1024,14 +1197,53 @@ export type PostCondition = {
 /** A connection to a list of `Post` values. */
 export type PostConnection = {
   __typename?: 'PostConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<PostAggregates>;
   /** A list of edges which contains the `Post` and cursor to aid in pagination. */
   edges: Array<Maybe<PostEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<PostAggregates>>;
   /** A list of `Post` objects. */
   nodes: Array<Maybe<Post>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Post` you could get from the connection. */
   totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Post` values. */
+export type PostConnectionGroupedAggregatesArgs = {
+  groupBy: Array<PostGroupBy>;
+  having?: InputMaybe<PostHavingInput>;
+};
+
+export type PostDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  description?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type PostDistinctCountAggregates = {
+  __typename?: 'PostDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Post` edge in the connection. */
@@ -1075,6 +1287,79 @@ export type PostFilter = {
   userId?: InputMaybe<UuidFilter>;
 };
 
+/** Grouping methods for `Post` for usage during aggregation. */
+export enum PostGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Description = 'DESCRIPTION',
+  ProjectId = 'PROJECT_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type PostHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Post` aggregates. */
+export type PostHavingInput = {
+  AND?: InputMaybe<Array<PostHavingInput>>;
+  OR?: InputMaybe<Array<PostHavingInput>>;
+  average?: InputMaybe<PostHavingAverageInput>;
+  distinctCount?: InputMaybe<PostHavingDistinctCountInput>;
+  max?: InputMaybe<PostHavingMaxInput>;
+  min?: InputMaybe<PostHavingMinInput>;
+  stddevPopulation?: InputMaybe<PostHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<PostHavingStddevSampleInput>;
+  sum?: InputMaybe<PostHavingSumInput>;
+  variancePopulation?: InputMaybe<PostHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<PostHavingVarianceSampleInput>;
+};
+
+export type PostHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
 /** An input for mutations affecting `Post` */
 export type PostInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -1103,6 +1388,18 @@ export enum PostOrderBy {
   TitleDesc = 'TITLE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UpvotesCountAsc = 'UPVOTES_COUNT_ASC',
+  UpvotesCountDesc = 'UPVOTES_COUNT_DESC',
+  UpvotesDistinctCountCreatedAtAsc = 'UPVOTES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UpvotesDistinctCountCreatedAtDesc = 'UPVOTES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UpvotesDistinctCountIdAsc = 'UPVOTES_DISTINCT_COUNT_ID_ASC',
+  UpvotesDistinctCountIdDesc = 'UPVOTES_DISTINCT_COUNT_ID_DESC',
+  UpvotesDistinctCountPostIdAsc = 'UPVOTES_DISTINCT_COUNT_POST_ID_ASC',
+  UpvotesDistinctCountPostIdDesc = 'UPVOTES_DISTINCT_COUNT_POST_ID_DESC',
+  UpvotesDistinctCountUpdatedAtAsc = 'UPVOTES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UpvotesDistinctCountUpdatedAtDesc = 'UPVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UpvotesDistinctCountUserIdAsc = 'UPVOTES_DISTINCT_COUNT_USER_ID_ASC',
+  UpvotesDistinctCountUserIdDesc = 'UPVOTES_DISTINCT_COUNT_USER_ID_DESC',
   UserIdAsc = 'USER_ID_ASC',
   UserIdDesc = 'USER_ID_DESC'
 }
@@ -1120,6 +1417,8 @@ export type PostPatch = {
 
 /** A filter to be used against many `Upvote` object types. All fields are combined with a logical ‘and.’ */
 export type PostToManyUpvoteFilter = {
+  /** Aggregates across related `Upvote` match the filter criteria. */
+  aggregates?: InputMaybe<UpvoteAggregatesFilter>;
   /** Every related `Upvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   every?: InputMaybe<UpvoteFilter>;
   /** No related `Upvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -1158,6 +1457,21 @@ export type ProjectPostsArgs = {
   orderBy?: InputMaybe<Array<PostOrderBy>>;
 };
 
+export type ProjectAggregates = {
+  __typename?: 'ProjectAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ProjectDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Project` object types. */
+export type ProjectAggregatesFilter = {
+  /** Distinct count aggregate over matching `Project` objects. */
+  distinctCount?: InputMaybe<ProjectDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Project` object to be included within the aggregate. */
+  filter?: InputMaybe<ProjectFilter>;
+};
+
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ProjectCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -1181,14 +1495,56 @@ export type ProjectCondition = {
 /** A connection to a list of `Project` values. */
 export type ProjectConnection = {
   __typename?: 'ProjectConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ProjectAggregates>;
   /** A list of edges which contains the `Project` and cursor to aid in pagination. */
   edges: Array<Maybe<ProjectEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ProjectAggregates>>;
   /** A list of `Project` objects. */
   nodes: Array<Maybe<Project>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Project` you could get from the connection. */
   totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Project` values. */
+export type ProjectConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ProjectGroupBy>;
+  having?: InputMaybe<ProjectHavingInput>;
+};
+
+export type ProjectDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  description?: InputMaybe<BigIntFilter>;
+  image?: InputMaybe<BigIntFilter>;
+  name?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  slug?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectDistinctCountAggregates = {
+  __typename?: 'ProjectDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of image across the matching connection */
+  image?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of slug across the matching connection */
+  slug?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Project` edge in the connection. */
@@ -1232,6 +1588,80 @@ export type ProjectFilter = {
   updatedAt?: InputMaybe<DatetimeFilter>;
 };
 
+/** Grouping methods for `Project` for usage during aggregation. */
+export enum ProjectGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Description = 'DESCRIPTION',
+  Image = 'IMAGE',
+  OrganizationId = 'ORGANIZATION_ID',
+  Slug = 'SLUG',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type ProjectHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Project` aggregates. */
+export type ProjectHavingInput = {
+  AND?: InputMaybe<Array<ProjectHavingInput>>;
+  OR?: InputMaybe<Array<ProjectHavingInput>>;
+  average?: InputMaybe<ProjectHavingAverageInput>;
+  distinctCount?: InputMaybe<ProjectHavingDistinctCountInput>;
+  max?: InputMaybe<ProjectHavingMaxInput>;
+  min?: InputMaybe<ProjectHavingMinInput>;
+  stddevPopulation?: InputMaybe<ProjectHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ProjectHavingStddevSampleInput>;
+  sum?: InputMaybe<ProjectHavingSumInput>;
+  variancePopulation?: InputMaybe<ProjectHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ProjectHavingVarianceSampleInput>;
+};
+
+export type ProjectHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
 /** An input for mutations affecting `Project` */
 export type ProjectInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -1259,6 +1689,22 @@ export enum ProjectOrderBy {
   Natural = 'NATURAL',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PostsCountAsc = 'POSTS_COUNT_ASC',
+  PostsCountDesc = 'POSTS_COUNT_DESC',
+  PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountIdAsc = 'POSTS_DISTINCT_COUNT_ID_ASC',
+  PostsDistinctCountIdDesc = 'POSTS_DISTINCT_COUNT_ID_DESC',
+  PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
+  PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
+  PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
+  PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   SlugAsc = 'SLUG_ASC',
@@ -1281,6 +1727,8 @@ export type ProjectPatch = {
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
   /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   every?: InputMaybe<PostFilter>;
   /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -1962,6 +2410,21 @@ export type Upvote = Node & {
   userId: Scalars['UUID']['output'];
 };
 
+export type UpvoteAggregates = {
+  __typename?: 'UpvoteAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UpvoteDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Upvote` object types. */
+export type UpvoteAggregatesFilter = {
+  /** Distinct count aggregate over matching `Upvote` objects. */
+  distinctCount?: InputMaybe<UpvoteDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Upvote` object to be included within the aggregate. */
+  filter?: InputMaybe<UpvoteFilter>;
+};
+
 /** A condition to be used against `Upvote` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type UpvoteCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -1979,14 +2442,47 @@ export type UpvoteCondition = {
 /** A connection to a list of `Upvote` values. */
 export type UpvoteConnection = {
   __typename?: 'UpvoteConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UpvoteAggregates>;
   /** A list of edges which contains the `Upvote` and cursor to aid in pagination. */
   edges: Array<Maybe<UpvoteEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UpvoteAggregates>>;
   /** A list of `Upvote` objects. */
   nodes: Array<Maybe<Upvote>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Upvote` you could get from the connection. */
   totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Upvote` values. */
+export type UpvoteConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UpvoteGroupBy>;
+  having?: InputMaybe<UpvoteHavingInput>;
+};
+
+export type UpvoteDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type UpvoteDistinctCountAggregates = {
+  __typename?: 'UpvoteDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Upvote` edge in the connection. */
@@ -2020,6 +2516,78 @@ export type UpvoteFilter = {
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
   userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Upvote` for usage during aggregation. */
+export enum UpvoteGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  PostId = 'POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type UpvoteHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Upvote` aggregates. */
+export type UpvoteHavingInput = {
+  AND?: InputMaybe<Array<UpvoteHavingInput>>;
+  OR?: InputMaybe<Array<UpvoteHavingInput>>;
+  average?: InputMaybe<UpvoteHavingAverageInput>;
+  distinctCount?: InputMaybe<UpvoteHavingDistinctCountInput>;
+  max?: InputMaybe<UpvoteHavingMaxInput>;
+  min?: InputMaybe<UpvoteHavingMinInput>;
+  stddevPopulation?: InputMaybe<UpvoteHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UpvoteHavingStddevSampleInput>;
+  sum?: InputMaybe<UpvoteHavingSumInput>;
+  variancePopulation?: InputMaybe<UpvoteHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UpvoteHavingVarianceSampleInput>;
+};
+
+export type UpvoteHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UpvoteHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** An input for mutations affecting `Upvote` */
@@ -2095,6 +2663,13 @@ export type UserUpvotesArgs = {
   orderBy?: InputMaybe<Array<UpvoteOrderBy>>;
 };
 
+export type UserAggregates = {
+  __typename?: 'UserAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UserDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
 /** A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type UserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -2110,14 +2685,37 @@ export type UserCondition = {
 /** A connection to a list of `User` values. */
 export type UserConnection = {
   __typename?: 'UserConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UserAggregates>;
   /** A list of edges which contains the `User` and cursor to aid in pagination. */
   edges: Array<Maybe<UserEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UserAggregates>>;
   /** A list of `User` objects. */
   nodes: Array<Maybe<User>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `User` you could get from the connection. */
   totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `User` values. */
+export type UserConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UserGroupBy>;
+  having?: InputMaybe<UserHavingInput>;
+};
+
+export type UserDistinctCountAggregates = {
+  __typename?: 'UserDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of walletAddress across the matching connection */
+  walletAddress?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `User` edge in the connection. */
@@ -2155,6 +2753,76 @@ export type UserFilter = {
   walletAddress?: InputMaybe<StringFilter>;
 };
 
+/** Grouping methods for `User` for usage during aggregation. */
+export enum UserGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type UserHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `User` aggregates. */
+export type UserHavingInput = {
+  AND?: InputMaybe<Array<UserHavingInput>>;
+  OR?: InputMaybe<Array<UserHavingInput>>;
+  average?: InputMaybe<UserHavingAverageInput>;
+  distinctCount?: InputMaybe<UserHavingDistinctCountInput>;
+  max?: InputMaybe<UserHavingMaxInput>;
+  min?: InputMaybe<UserHavingMinInput>;
+  stddevPopulation?: InputMaybe<UserHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UserHavingStddevSampleInput>;
+  sum?: InputMaybe<UserHavingSumInput>;
+  variancePopulation?: InputMaybe<UserHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UserHavingVarianceSampleInput>;
+};
+
+export type UserHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
 /** An input for mutations affecting `User` */
 export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -2170,10 +2838,38 @@ export enum UserOrderBy {
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   Natural = 'NATURAL',
+  PostsCountAsc = 'POSTS_COUNT_ASC',
+  PostsCountDesc = 'POSTS_COUNT_DESC',
+  PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountIdAsc = 'POSTS_DISTINCT_COUNT_ID_ASC',
+  PostsDistinctCountIdDesc = 'POSTS_DISTINCT_COUNT_ID_DESC',
+  PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
+  PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
+  PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
+  PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UpvotesCountAsc = 'UPVOTES_COUNT_ASC',
+  UpvotesCountDesc = 'UPVOTES_COUNT_DESC',
+  UpvotesDistinctCountCreatedAtAsc = 'UPVOTES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UpvotesDistinctCountCreatedAtDesc = 'UPVOTES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UpvotesDistinctCountIdAsc = 'UPVOTES_DISTINCT_COUNT_ID_ASC',
+  UpvotesDistinctCountIdDesc = 'UPVOTES_DISTINCT_COUNT_ID_DESC',
+  UpvotesDistinctCountPostIdAsc = 'UPVOTES_DISTINCT_COUNT_POST_ID_ASC',
+  UpvotesDistinctCountPostIdDesc = 'UPVOTES_DISTINCT_COUNT_POST_ID_DESC',
+  UpvotesDistinctCountUpdatedAtAsc = 'UPVOTES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UpvotesDistinctCountUpdatedAtDesc = 'UPVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UpvotesDistinctCountUserIdAsc = 'UPVOTES_DISTINCT_COUNT_USER_ID_ASC',
+  UpvotesDistinctCountUserIdDesc = 'UPVOTES_DISTINCT_COUNT_USER_ID_DESC',
   WalletAddressAsc = 'WALLET_ADDRESS_ASC',
   WalletAddressDesc = 'WALLET_ADDRESS_DESC'
 }
@@ -2188,6 +2884,8 @@ export type UserPatch = {
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
   /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   every?: InputMaybe<PostFilter>;
   /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -2198,6 +2896,8 @@ export type UserToManyPostFilter = {
 
 /** A filter to be used against many `Upvote` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyUpvoteFilter = {
+  /** Aggregates across related `Upvote` match the filter criteria. */
+  aggregates?: InputMaybe<UpvoteAggregatesFilter>;
   /** Every related `Upvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   every?: InputMaybe<UpvoteFilter>;
   /** No related `Upvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -2246,7 +2946,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', walletAddress?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', walletAddress?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: any | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -2417,6 +3117,11 @@ export const PostsDocument = `
         walletAddress
       }
       upvotes {
+        aggregates {
+          distinctCount {
+            rowId
+          }
+        }
         nodes {
           rowId
         }
