@@ -25,6 +25,8 @@ export const generateMetadata = async ({
     variables: { slug } as OrganizationQueryVariables,
   });
 
+  console.log(organization);
+
   return {
     title: `${organization.findUniqueOrganization?.name} | ${app.name}`,
   };

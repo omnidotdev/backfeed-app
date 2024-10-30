@@ -95,6 +95,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
       <Flex flexDirection="column" gap={4} w="full" {...rest}>
         {isPostsLoading
           ? [...Array(3)].map((_, idx) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: idx needed as key
               <Stack key={idx} gap={4} w="full" mb={4} _last={{ mb: 0 }}>
                 <Skeleton w="40%" h={6} />
                 <Skeleton h={12} />
