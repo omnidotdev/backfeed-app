@@ -1,6 +1,6 @@
 query Organization($slug: String!) {
-  findUniqueOrganization(where: { slug: $slug }) {
-    id
+  organizationBySlug(slug: $slug) {
+    rowId
     name
     slug
   }

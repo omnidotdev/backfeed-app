@@ -16,14 +16,17 @@ export const generateMetadata = async ({
 }: MetadataParams): Promise<Metadata> => {
   const projectSlug = params.project;
 
-  const project: ProjectQuery = await request({
-    url: API_BASE_URL!,
-    document: ProjectDocument,
-    variables: { projectSlug } as ProjectQueryVariables,
-  });
+  console.log("projectSlug", projectSlug);
+
+  // const project: ProjectQuery = await request({
+  //   url: API_BASE_URL!,
+  //   document: ProjectDocument,
+  //   variables: { projectSlug } as ProjectQueryVariables,
+  // });
 
   return {
-    title: `${project.findFirstProject?.name} | ${app.name}`,
+    title: "test",
+    // title: `${project?.projectBySlugAndOrganizationId?.name} | ${app.name}`,
   };
 };
 

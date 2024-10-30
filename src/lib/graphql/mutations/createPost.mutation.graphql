@@ -1,22 +1,5 @@
-mutation CreatePost(
-  $projectId: String!
-  $title: String!
-  $description: String!
-  $userAddress: String!
-) {
-  createOnePost(
-    data: {
-      author: {
-        connectOrCreate: {
-          where: { walletAddress: $userAddress }
-          create: { walletAddress: $userAddress }
-        }
-      }
-      project: { connect: { id: $projectId } }
-      title: $title
-      description: $description
-    }
-  ) {
-    title
+mutation CreatePost($postInput: PostInput!) {
+  createPost(input: { post: $postInput }) {
+    clientMutationId
   }
 }

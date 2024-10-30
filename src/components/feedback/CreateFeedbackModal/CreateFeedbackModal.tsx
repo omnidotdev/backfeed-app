@@ -46,6 +46,9 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
 
   const queryClient = useQueryClient();
 
+  console.log("projectId", projectId);
+  console.log("connectedAddress", connectedAddress);
+
   const {
     handleSubmit,
     register,
@@ -54,18 +57,24 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
 
   const onSubmit = useCallback(
     async (data: FieldValues) => {
+      console.log("data", data);
       // TODO character limit decrement counter in UI
       createPost({
-        projectId,
-        userAddress: connectedAddress!,
-        title: data.title,
-        description: data.description,
+        postInput: {
+          projectId: projectId as string,
+          userId: connectedAddress!, // no userId at this moment
+          title: data.title,
+          description: data.description,
+        },
+        // projectId,
+        // userAddress: connectedAddress!,
+        // title: data.title,
+        // description: data.description,
       });
 
       void queryClient.invalidateQueries({
         queryKey: usePostsQuery.getKey({ projectId }),
       });
-
       onClose();
     },
     [connectedAddress, createPost, onClose, projectId, queryClient]

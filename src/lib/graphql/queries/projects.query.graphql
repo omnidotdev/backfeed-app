@@ -1,8 +1,10 @@
-query Projects($organizationId: String) {
-  findManyProject(where: { organizationId: { equals: $organizationId } }) {
-    id
-    name
-    description
-    slug
+query Projects($organizationId: UUID) {
+  projects(filter: { organizationId: { equalTo: $organizationId } }) {
+    nodes {
+      rowId
+      name
+      description
+      slug
+    }
   }
 }

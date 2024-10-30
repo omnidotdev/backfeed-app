@@ -35,32 +35,31 @@ const ProjectPage = () => {
 
   const {
       data: organization,
-      isLoading: isOrganizationLoading,
+      isPending: isOrganizationPending,
       isError: isOrganizationError,
     } = useOrganizationQuery(
       { slug: params.organization as string },
       {
-        select: (data) => data.findUniqueOrganization,
+        select: (data) => data.organizationBySlug,
       }
     ),
-    {
-      data: project,
-      isLoading: isProjectLoading,
-      isError: isProjectError,
-    } = useProjectQuery(
+    { data: project, isPending: isProjectPending } = useProjectQuery(
       {
-        organizationId: organization?.id,
+        organizationId: organization?.rowId!,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.findFirstProject }
+      {
+        enabled: !!organization,
+        select: (data) => data.projectBySlugAndOrganizationId,
+      }
     );
 
+  if (isOrganizationPending) return <Center>Loading...</Center>;
   if (isOrganizationError) return <Center>Error</Center>;
-  if (isProjectError) return <Center>Error</Center>;
 
   return (
     <Flex flexDirection="column">
-      <Skeleton isLoaded={!isOrganizationLoading} w="1/6" h={8} mb={4}>
+      <Skeleton isLoaded={!isOrganizationPending} w="1/6" h={8} mb={4}>
         <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
           {organization?.name} test
         </Text>
@@ -68,6 +67,7 @@ const ProjectPage = () => {
 
       <Flex w="full" gap={4} flexDirection={{ base: "column", md: "row" }}>
         <VStack
+          shadow="1px 1px 5px rgba(0,0,0,0.3)"
           p={4}
           bg="background.muted"
           gap={4}
@@ -75,7 +75,7 @@ const ProjectPage = () => {
           rounded="md"
         >
           <HStack>
-            <Skeleton isLoaded={!isProjectLoading} w={10} h={10} rounded="full">
+            <Skeleton isLoaded={!isProjectPending} w={10} h={10} rounded="full">
               {project?.image && (
                 <Image
                   src={project?.image}
@@ -91,19 +91,20 @@ const ProjectPage = () => {
               )}
             </Skeleton>
 
-            <Skeleton isLoaded={!isProjectLoading} h={8} w={40}>
+            <Skeleton isLoaded={!isProjectPending} h={8} w={40}>
               <Text ml={2} fontWeight="bold" fontSize="xl">
                 {project?.name}
               </Text>
             </Skeleton>
           </HStack>
 
-          <Skeleton isLoaded={!isProjectLoading} w="full" h="full">
+          <Skeleton isLoaded={!isProjectPending} w="full" h="full">
             <Text>{project?.description}</Text>
           </Skeleton>
         </VStack>
 
         <VStack
+          shadow="1px 1px 5px rgba(0,0,0,0.3)"
           p={4}
           bg="background.muted"
           gap={4}
@@ -122,7 +123,7 @@ const ProjectPage = () => {
           </Button>
 
           {/* TODO: Fetch project posts total count here to use for the Skeleton array count. */}
-          <Feed projectId={project?.id || ""} overflow="auto" py={4} />
+          <Feed projectId={project?.rowId || ""} overflow="auto" py={4} />
         </VStack>
       </Flex>
 
@@ -130,19 +131,10 @@ const ProjectPage = () => {
         isOpen={isOpen}
         onClose={onClose}
         onOpen={onOpen}
-        projectId={project?.id || ""}
+        projectId={project?.rowId || ""}
       />
     </Flex>
   );
 };
 
 export default ProjectPage;
-
-// import { Skeleton } from "@omnidev/sigil";
-
-// const Loading = () => {
-//   // Or a custom loading skeleton component
-//   return <Skeleton />;
-// };
-
-// export default Loading;
