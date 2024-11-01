@@ -76,7 +76,6 @@ const CreateFeedbackModal = ({ isOpen, onClose, projectId }: Props) => {
         postInput: {
           projectId: projectId!,
           userId: user?.rowId!,
-          // walletAddress: connectedAddress!,
           title: data.title,
           description: data.description,
         },
