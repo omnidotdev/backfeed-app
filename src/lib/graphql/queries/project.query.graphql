@@ -1,13 +1,9 @@
-query Project($organizationId: String, $projectSlug: String!) {
-  findFirstProject(
-    where: {
-      AND: {
-        organizationId: { equals: $organizationId }
-        slug: { equals: $projectSlug }
-      }
-    }
+query Project($organizationId: UUID!, $projectSlug: String!) {
+  projectBySlugAndOrganizationId(
+    slug: $projectSlug
+    organizationId: $organizationId
   ) {
-    id
+    rowId
     name
     image
     description

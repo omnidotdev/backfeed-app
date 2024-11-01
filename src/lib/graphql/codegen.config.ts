@@ -13,7 +13,7 @@ const graphqlCodegenConfig: CodegenConfig = {
   config: {
     // https://github.com/dotansimha/graphql-code-generator/issues/6935#issuecomment
     // https://stackoverflow.com/questions/74623455/how-to-ensure-enum-order-in-graphql
-    sort: false,
+    sort: true,
   },
   generates: {
     // TODO switch to client preset after DX improves, track https://github.com/dotansimha/graphql-code-generator/discussions/8773
@@ -34,6 +34,12 @@ const graphqlCodegenConfig: CodegenConfig = {
         },
       ],
       config: {
+        scalars: {
+          Date: "Date",
+          Datetime: "Date",
+          UUID: "string",
+          Cursor: "string",
+        },
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
         // fetcher: "graphql-request",
         // NB: the custom fetcher hook has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation

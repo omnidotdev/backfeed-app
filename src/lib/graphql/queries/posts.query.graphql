@@ -1,14 +1,23 @@
-query Posts($projectId: String!) {
-  findManyPost(where: { AND: { project: { id: { equals: $projectId } } } }) {
-    id
-    createdAt
-    title
-    description
-    author {
-      walletAddress
-    }
-    upvotes {
-      id
+query Posts($projectId: UUID!) {
+  posts(filter: { projectId: { equalTo: $projectId } }) {
+    nodes {
+      rowId
+      createdAt
+      title
+      description
+      user {
+        walletAddress
+      }
+      upvotes {
+        aggregates {
+          distinctCount {
+            rowId
+          }
+        }
+        nodes {
+          rowId
+        }
+      }
     }
   }
 }

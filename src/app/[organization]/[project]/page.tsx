@@ -44,15 +44,18 @@ const ProjectPage = () => {
     } = useOrganizationQuery(
       { slug: params.organization as string },
       {
-        select: (data) => data.findUniqueOrganization,
+        select: (data) => data.organizationBySlug,
       }
     ),
     { data: project, isPending: isProjectPending } = useProjectQuery(
       {
-        organizationId: organization?.id,
+        organizationId: organization?.rowId!,
         projectSlug: params.project as string,
       },
-      { select: (data) => data.findFirstProject }
+      {
+        enabled: !!organization,
+        select: (data) => data.projectBySlugAndOrganizationId,
+      }
     );
 
   if (isOrganizationPending) return <div>Loading...</div>;
@@ -121,14 +124,14 @@ const ProjectPage = () => {
             </Button>
           </Tooltip>
 
-          <Feed projectId={project?.id || ""} overflow="auto" py={4} />
+          <Feed projectId={project?.rowId} overflow="auto" py={4} />
         </Card>
       </Flex>
 
       <CreateFeedbackModal
         isOpen={isCreatePostModalOpen}
         onClose={onCreatePostModalClose}
-        projectId={project?.id || ""}
+        projectId={project?.rowId}
       />
     </Flex>
   );

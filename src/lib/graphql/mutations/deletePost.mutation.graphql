@@ -1,5 +1,5 @@
-mutation DeletePost($postId: String!) {
-  deleteOnePost(where: { id: $postId }) {
-    id
+mutation DeletePost($postId: UUID!) {
+  deletePost(input: { rowId: $postId }) {
+    clientMutationId
   }
 }
