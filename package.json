@@ -40,6 +40,7 @@
     "@rainbow-me/rainbowkit": "beta",
     "@tanstack/react-query": "^5.20.5",
     "@tanstack/react-query-devtools": "^5.20.5",
+    "babel-plugin-react-compiler": "^19.0.0-beta-63b359f-20241101",
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.5",
     "graphql": "^16.8.1",
