@@ -3,8 +3,8 @@
 import { Flex, HStack, Text, sigil } from "@omnidev/sigil";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-import { app } from "lib/config";
 import { ThemeToggle } from "components/layout";
+import { app } from "lib/config";
 
 /**
  * Layout header.
