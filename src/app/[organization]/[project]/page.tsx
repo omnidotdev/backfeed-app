@@ -2,8 +2,6 @@
 
 import {
   Button,
-  Card,
-  Center,
   Flex,
   HStack,
   Icon,
@@ -18,12 +16,7 @@ import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
 import { CreateFeedbackModal, Feed } from "components/feedback";
-import {
-  useOrganizationQuery,
-  useProjectQuery,
-  useProjectsQuery,
-  useUserQuery,
-} from "generated/graphql";
+import { useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
 // ? change all params to unique IDs instead of readable slugs?
