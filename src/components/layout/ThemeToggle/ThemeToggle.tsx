@@ -31,7 +31,6 @@ const ThemeToggle = () => {
       ? document.documentElement.classList.add("dark")
       : document.documentElement.classList.remove("dark");
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(syncColorMode, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: sync color mode on color mode change
