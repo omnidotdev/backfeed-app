@@ -15,5 +15,8 @@ coverage
 !.env.production
 !.env.local.template
 
+# misc
+next-env.d.ts
+
 **/generated/*
 !**/generated/.gitignore

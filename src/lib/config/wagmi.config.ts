@@ -17,6 +17,7 @@ const wagmiConfig = getDefaultConfig({
   transports: {
     [mainnet.id]: http(),
   },
+  ssr: true,
 });
 
 export default wagmiConfig;

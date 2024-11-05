@@ -1,15 +1,15 @@
 import {
   Button,
-  Center,
-  Dialog,
   Divider,
   Flex,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
   VStack,
+  Stack,
+  Dialog,
+  Icon,
+  Text,
+  Skeleton,
   useDisclosure,
+  Center,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -173,7 +173,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
         <Dialog
           open={isOpen}
           // @ts-ignore not sure why this is throwing an error
-          onOpenChange={({ open }) => (open ? onOpen() : onClose())}
+          onOpenChange={({ isOpen }) => (isOpen ? onOpen() : onClose())}
           title="test"
         >
           <Flex direction="column" gap={6} maxW="lg">

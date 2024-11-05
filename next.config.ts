@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   env: {
     ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
     WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
@@ -14,6 +15,9 @@ const nextConfig = {
     });
     return config;
   },
+  experimental: {
+    reactCompiler: true,
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
