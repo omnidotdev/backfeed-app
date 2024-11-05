@@ -9,7 +9,7 @@
     "lint": "biome lint src",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
-    "prepare": "panda codegen husky install"
+    "prepare": "panda codegen && husky"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -60,5 +60,7 @@
     "ws": "^8.16.0",
     "zod": "^3.22.4"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }
