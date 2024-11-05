@@ -1,8 +1,8 @@
 "use client";
 
 import { Card, Flex, Text, VStack } from "@omnidev/sigil";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 // import { useParams } from "next/navigation";
 import { useAccount } from "wagmi";
 
