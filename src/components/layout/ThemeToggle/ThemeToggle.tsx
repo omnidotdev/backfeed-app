@@ -3,6 +3,7 @@
 import { sigil, useLocalStorage } from "@omnidev/sigil";
 import { Expand } from "@theme-toggles/react";
 import { useEffect } from "react";
+import { useIsClient } from "usehooks-ts";
 
 import app from "lib/config/app.config";
 
@@ -23,6 +24,8 @@ const ThemeToggle = () => {
     "light"
   );
 
+  const isClient = useIsClient();
+
   const syncColorMode = () =>
     colorMode === "dark"
       ? document.documentElement.classList.add("dark")
@@ -36,6 +39,8 @@ const ThemeToggle = () => {
 
   const updateTheme = () =>
     setColorMode(colorMode === "light" ? "dark" : "light");
+
+  if (!isClient) return null;
 
   return (
     // @ts-ignore ignore missing props

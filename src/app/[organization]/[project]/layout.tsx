@@ -8,25 +8,22 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 interface MetadataParams {
-  params: Promise<{ project: string }>;
+  params: Promise<{ project: string; organization: string }>;
 }
 
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { project: projectSlug } = await params;
+  const { project: projectSlug, organization: organizationId } = await params;
 
-  console.log("projectSlug", projectSlug);
-
-  // const project: ProjectQuery = await request({
-  //   url: API_BASE_URL!,
-  //   document: ProjectDocument,
-  //   variables: { projectSlug } as ProjectQueryVariables,
-  // });
+  const project: ProjectQuery = await request({
+    url: API_BASE_URL!,
+    document: ProjectDocument,
+    variables: { projectSlug, organizationId } as ProjectQueryVariables,
+  });
 
   return {
-    title: "test",
-    // title: `${project?.projectBySlugAndOrganizationId?.name} | ${app.name}`,
+    title: `${project?.projectBySlugAndOrganizationId?.name} | ${app.name}`,
   };
 };
 
