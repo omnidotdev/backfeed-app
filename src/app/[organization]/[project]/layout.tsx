@@ -14,7 +14,7 @@ interface MetadataParams {
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const projectSlug = (await params).project;
+  const { project: projectSlug } = await params;
 
   const project: ProjectQuery = await request({
     url: API_BASE_URL!,
