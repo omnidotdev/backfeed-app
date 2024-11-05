@@ -1,10 +1,10 @@
 "use client";
 
-import { Flex, sigil, HStack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Text, sigil } from "@omnidev/sigil";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { app } from "lib/config";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 
 /**
  * Layout header.
