@@ -3,21 +3,14 @@
 import { Card, Flex, Text, VStack } from "@omnidev/sigil";
 import Image from "next/image";
 import Link from "next/link";
-// import { useParams } from "next/navigation";
 import { useAccount } from "wagmi";
 
-import {
-  useOrganizationQuery,
-  useProjectsQuery,
-  useUserQuery,
-} from "generated/graphql";
+import { useUserQuery } from "generated/graphql";
 
 /**
  * Organization overview page.
  */
 const OrganizationPage = () => {
-  // const params = useParams();
-
   const { address: connectedAddress } = useAccount();
 
   const { data: user } = useUserQuery(
@@ -28,8 +21,6 @@ const OrganizationPage = () => {
       select: (data) => data.userByWalletAddress,
     }
   );
-
-  console.log("user", user);
 
   const organizations = user?.userOrganizations?.nodes;
 
