@@ -12,13 +12,7 @@ import { app } from "lib/config";
 const Header = () => {
   return (
     <sigil.header>
-      <Flex
-        h={16}
-        // bgColor={bgColor}
-        px={4}
-        alignItems="center"
-        justifyContent="space-between"
-      >
+      <Flex h={16} px={4} alignItems="center" justifyContent="space-between">
         <HStack gap={8} alignItems="center">
           <Text fontWeight="bold" fontSize="lg">
             {app.name}
