@@ -1,0 +1,5 @@
+query User($walletAddress: String!) {
+  userByWalletAddress(walletAddress: $walletAddress) {
+    ...User
+  }
+}

@@ -3,9 +3,6 @@ query Project($organizationId: UUID!, $projectSlug: String!) {
     slug: $projectSlug
     organizationId: $organizationId
   ) {
-    rowId
-    name
-    image
-    description
+    ...Project
   }
 }

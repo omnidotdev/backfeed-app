@@ -18,7 +18,12 @@ import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
 import { CreateFeedbackModal, Feed } from "components/feedback";
-import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
+import {
+  useOrganizationQuery,
+  useProjectQuery,
+  useProjectsQuery,
+  useUserQuery,
+} from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
 // ? change all params to unique IDs instead of readable slugs?
@@ -33,35 +38,19 @@ const ProjectPage = () => {
 
   const { isConnected } = useAccount();
 
-  const {
-      data: organization,
-      isPending: isOrganizationPending,
-      isError: isOrganizationError,
-    } = useOrganizationQuery(
-      { slug: params.organization as string },
-      {
-        select: (data) => data.organizationBySlug,
-      }
-    ),
-    { data: project, isPending: isProjectPending } = useProjectQuery(
-      {
-        organizationId: organization?.rowId!,
-        projectSlug: params.project as string,
-      },
-      {
-        enabled: !!organization,
-        select: (data) => data.projectBySlugAndOrganizationId,
-      }
-    );
-
-  if (isOrganizationPending) return <Center>Loading...</Center>;
-  if (isOrganizationError) return <Center>Error</Center>;
+  const { data: project, isPending: isProjectPending } = useProjectQuery(
+    {
+      organizationId: params.organization as string,
+      projectSlug: params.project as string,
+    },
+    { select: (data) => data.projectBySlugAndOrganizationId }
+  );
 
   return (
     <Flex flexDirection="column">
-      <Skeleton isLoaded={!isOrganizationPending} w="1/6" h={8} mb={4}>
+      <Skeleton isLoaded={!isProjectPending} w="1/6" h={8} mb={4}>
         <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-          {organization?.name} test
+          {project?.name}
         </Text>
       </Skeleton>
 

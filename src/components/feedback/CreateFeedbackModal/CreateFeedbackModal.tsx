@@ -14,7 +14,11 @@ import { useForm } from "react-hook-form";
 import { useAccount } from "wagmi";
 import { z } from "zod";
 
-import { useCreatePostMutation, usePostsQuery } from "generated/graphql";
+import {
+  useCreatePostMutation,
+  usePostsQuery,
+  useUserQuery,
+} from "generated/graphql";
 
 import type { UseDisclosureOptions } from "@omnidev/sigil";
 import type { CherrypickRequired } from "lib/types/util";
@@ -33,7 +37,7 @@ interface Props
     UseDisclosureOptions,
     "isOpen" | "onClose" | "onOpen"
   > {
-  projectId: string;
+  projectId?: string;
 }
 
 /**
@@ -44,10 +48,15 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
 
   const { address: connectedAddress } = useAccount();
 
-  const queryClient = useQueryClient();
+  const { data: user } = useUserQuery(
+    { walletAddress: connectedAddress! },
+    {
+      enabled: !!connectedAddress,
+      select: (data) => data.userByWalletAddress,
+    }
+  );
 
-  console.log("projectId", projectId);
-  console.log("connectedAddress", connectedAddress);
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit,
@@ -62,22 +71,18 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
       createPost({
         postInput: {
           projectId: projectId as string,
-          userId: connectedAddress!, // no userId at this moment
+          userId: user?.rowId!,
           title: data.title,
           description: data.description,
         },
-        // projectId,
-        // userAddress: connectedAddress!,
-        // title: data.title,
-        // description: data.description,
       });
 
       void queryClient.invalidateQueries({
-        queryKey: usePostsQuery.getKey({ projectId }),
+        queryKey: usePostsQuery.getKey({ projectId: projectId! }),
       });
       onClose();
     },
-    [connectedAddress, createPost, onClose, projectId, queryClient]
+    [user, createPost, onClose, projectId, queryClient]
   );
 
   return (

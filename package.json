@@ -58,5 +58,6 @@
     "wagmi": "^2.5.7",
     "ws": "^8.16.0",
     "zod": "^3.22.4"
-  }
+  },
+  "trustedDependencies": ["@biomejs/biome"]
 }

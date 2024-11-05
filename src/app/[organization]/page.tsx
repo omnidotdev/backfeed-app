@@ -1,10 +1,16 @@
 "use client";
 
-import { Card, Flex, Text } from "@omnidev/sigil";
+import { Card, Flex, Text, VStack } from "@omnidev/sigil";
 import Link from "next/link";
+import Image from "next/image";
 // import { useParams } from "next/navigation";
+import { useAccount } from "wagmi";
 
-import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
+import {
+  useOrganizationQuery,
+  useProjectsQuery,
+  useUserQuery,
+} from "generated/graphql";
 
 /**
  * Organization overview page.
@@ -12,37 +18,47 @@ import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
 const OrganizationPage = () => {
   // const params = useParams();
 
-  const { data: organization } = useOrganizationQuery(
-    { slug: "beau" },
-    // { slug: params.organization as string },
-    { select: (data) => data.organizationBySlug }
+  const { address: connectedAddress } = useAccount();
+
+  const { data: user } = useUserQuery(
+    {
+      walletAddress: connectedAddress as string,
+    },
+    {
+      select: (data) => data.userByWalletAddress,
+    }
   );
 
-  const { data: projects } = useProjectsQuery(
-    { organizationId: organization?.rowId },
-    { select: (data) => data.projects?.nodes }
-  );
+  console.log("user", user);
 
-  console.log("organization", organization);
-  console.log("projects", projects);
+  const organizations = user?.userOrganizations?.nodes;
 
   return (
     <Flex direction="column" align="center" gap={4}>
-      {/* TODO: Problem here if slug equals organization? */}
-      <Text fontSize="xl" fontWeight="bold">
-        {organization?.name}
-      </Text>
+      {organizations?.map((organization) => (
+        <VStack key={organization?.organizationId}>
+          <Text fontWeight="bold">{organization?.organization?.name}</Text>
 
-      {projects?.map((project) => (
-        <Link
-          key={project?.name}
-          href={`/${organization?.slug}/${project?.slug}`}
-        >
-          <Card w="240px" p={4} gap={4} textAlign="center">
-            <Text fontWeight="bold">{project?.name}</Text>
-            <Text>{project?.description}</Text>
-          </Card>
-        </Link>
+          {organization?.organization?.projects?.nodes?.map((project) => (
+            <Link
+              key={project?.id}
+              href={`/${organization?.organizationId}/${project?.slug}`}
+            >
+              <Card cursor="pointer" p={4}>
+                {project?.image && (
+                  <Image
+                    alt={`${project?.name} image`}
+                    src={project?.image}
+                    height={40}
+                    width={40}
+                  />
+                )}
+                <Text>{project?.name}</Text>
+                <Text>{project?.description}</Text>
+              </Card>
+            </Link>
+          ))}
+        </VStack>
       ))}
     </Flex>
   );
