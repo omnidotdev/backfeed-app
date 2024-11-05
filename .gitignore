@@ -14,3 +14,6 @@ coverage
 !.env.development
 !.env.production
 !.env.local.template
+
+# misc
+next-env.d.ts
