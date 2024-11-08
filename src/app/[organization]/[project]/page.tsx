@@ -15,7 +15,7 @@ import { useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
-import { CreateFeedbackModal, Feed } from "components/feedback";
+import { CreateFeedbackDialog, Feed } from "components/feedback";
 import { useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
@@ -113,7 +113,7 @@ const ProjectPage = () => {
         </VStack>
       </Flex>
 
-      <CreateFeedbackModal
+      <CreateFeedbackDialog
         isOpen={isCreatePostDialogOpen}
         onClose={onCreatePostDialogClose}
         onOpen={onCreatePostDialogOpen}
