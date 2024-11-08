@@ -25,7 +25,11 @@ import { NODE_ENV } from "lib/config";
  * Project overview page.
  */
 const ProjectPage = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isCreatePostDialogOpen,
+    onOpen: onCreatePostDialogOpen,
+    onClose: onCreatePostDialogClose,
+  } = useDisclosure();
 
   const params = useParams();
 
@@ -98,7 +102,7 @@ const ProjectPage = () => {
             disabled={NODE_ENV !== "development" || !isConnected}
             alignSelf="flex-end"
             gap={2}
-            onClick={onOpen}
+            onClick={onCreatePostDialogOpen}
           >
             <Icon src={PlusIcon} />
             Create Post
@@ -110,9 +114,9 @@ const ProjectPage = () => {
       </Flex>
 
       <CreateFeedbackModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onOpen={onOpen}
+        isOpen={isCreatePostDialogOpen}
+        onClose={onCreatePostDialogClose}
+        onOpen={onCreatePostDialogOpen}
         projectId={project?.rowId || ""}
       />
     </Flex>

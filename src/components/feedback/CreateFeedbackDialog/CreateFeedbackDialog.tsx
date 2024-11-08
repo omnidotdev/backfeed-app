@@ -43,7 +43,12 @@ interface Props
 /**
  * Create new feedback post modal.
  */
-const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
+const CreateFeedbackDialog = ({
+  isOpen,
+  onOpen,
+  onClose,
+  projectId,
+}: Props) => {
   const { mutate: createPost } = useCreatePostMutation();
 
   const { address: connectedAddress } = useAccount();
@@ -144,4 +149,4 @@ const CreateFeedbackModal = ({ isOpen, onOpen, onClose, projectId }: Props) => {
   );
 };
 
-export default CreateFeedbackModal;
+export default CreateFeedbackDialog;
