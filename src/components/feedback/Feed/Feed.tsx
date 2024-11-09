@@ -46,7 +46,11 @@ interface Props extends FlexProps {
 const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
   const [activePost, setActivePost] = useState<Post | null>();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isPostDialogOpen,
+    onOpen: onPostDialogOpen,
+    onClose: onPostDialogClose,
+  } = useDisclosure();
 
   const queryClient = useQueryClient();
 
@@ -56,7 +60,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
       {
         enabled: !!connectedAddress,
         select: (data) => data.userByWalletAddress,
-      }
+      },
     );
 
   const {
@@ -65,7 +69,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
     isError: isPostsError,
   } = usePostsQuery(
     { projectId: projectId! },
-    { select: (data) => data?.posts?.nodes }
+    { select: (data) => data?.posts?.nodes },
   );
 
   const { mutate: upvotePost } = useUpvotePostMutation({
@@ -120,7 +124,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
             ))
           : posts?.map((post) => {
               const upvoteId = post?.upvotes?.nodes?.find(
-                (upvote) => upvote?.rowId
+                (upvote) => upvote?.rowId,
               )?.rowId;
 
               const postId = post?.rowId;
