@@ -7,22 +7,6 @@ const pandaConfig = defineConfig({
   presets: ["@pandacss/preset-base", sigilPreset],
   include: ["src/**/*.{ts,tsx}"],
   outdir: "src/generated/panda",
-  theme: {
-    extend: {
-      slotRecipes: {
-        // TODO bake into Sigil panda.config
-        switchRecipe: {
-          jsx: ["Switch"],
-        },
-      },
-      tokens: {
-        zIndex: {
-          header: { value: 7000 },
-          stickyHeader: { value: 999 },
-        },
-      },
-    },
-  },
 });
 
 export default pandaConfig;
