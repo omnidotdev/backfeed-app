@@ -159,7 +159,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                     flexDirection="column"
                     onClick={() => {
                       setActivePost(post as Post);
-                      onOpen();
+                      onPostDialogOpen();
                     }}
                   >
                     <Text>{post?.title}</Text>
@@ -175,9 +175,11 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
       {activePost && (
         // @ts-ignore not sure why this is throwing an error
         <Dialog
-          open={isOpen}
+          open={isPostDialogOpen}
           // @ts-ignore not sure why this is throwing an error
-          onOpenChange={({ isOpen }) => (isOpen ? onOpen() : onClose())}
+          onOpenChange={({ isOpen }) =>
+            isOpen ? onPostDialogOpen() : onPostDialogClose()
+          }
           title="test"
         >
           <Flex direction="column" gap={6} maxW="lg">
@@ -203,7 +205,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                 colorScheme="red"
                 onClick={() => {
                   deletePost({ postId: activePost!.id });
-                  onClose();
+                  onPostDialogClose();
                 }}
               >
                 Delete
