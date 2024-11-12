@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   env: {
-    ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
     WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
   },
   // https://github.com/vercel/next.js/issues/44273#issuecomment-1375170722

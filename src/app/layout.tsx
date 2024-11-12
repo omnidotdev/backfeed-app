@@ -6,6 +6,8 @@ import fonts from "lib/theme/fonts";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import "lib/styles/main.css";
+
 export const metadata: Metadata = {
   title: app.name,
   description: app.description,

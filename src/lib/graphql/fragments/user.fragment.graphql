@@ -1,0 +1,34 @@
+fragment User on User {
+  createdAt
+  id
+  rowId
+  updatedAt
+  walletAddress
+  userOrganizations {
+    nodes {
+      createdAt
+      organizationId
+      userId
+      organization {
+        id
+        createdAt
+        name
+        rowId
+        slug
+        updatedAt
+        projects {
+          nodes {
+            slug
+            rowId
+            organizationId
+            name
+            image
+            id
+            description
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}

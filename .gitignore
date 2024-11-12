@@ -17,3 +17,6 @@ coverage
 
 # misc
 next-env.d.ts
+
+**/generated/*
+!**/generated/.gitignore

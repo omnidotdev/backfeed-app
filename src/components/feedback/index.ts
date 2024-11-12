@@ -1,2 +1,2 @@
 export { default as Feed } from "./Feed/Feed";
-export { default as CreateFeedbackModal } from "./CreateFeedbackModal/CreateFeedbackModal";
+export { default as CreateFeedbackDialog } from "./CreateFeedbackDialog/CreateFeedbackDialog";

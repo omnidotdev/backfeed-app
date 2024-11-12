@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, chakra } from "@chakra-ui/react";
+import { sigil } from "@omnidev/sigil";
 
 import { app } from "lib/config";
 
@@ -8,16 +8,16 @@ import { app } from "lib/config";
  * Layout footer.
  */
 const Footer = () => (
-  <chakra.footer
-    as={Flex}
+  <sigil.footer
+    display="flex"
     pos="fixed"
-    justify="center"
+    justifyContent="center"
     mb={6}
     bottom={0}
     w="100%"
   >
     &copy; {new Date().getFullYear()} {app.organization}
-  </chakra.footer>
+  </sigil.footer>
 );
 
 export default Footer;

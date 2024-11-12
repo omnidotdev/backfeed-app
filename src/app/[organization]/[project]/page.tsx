@@ -2,23 +2,21 @@
 
 import {
   Button,
-  Card,
   Flex,
+  HStack,
   Icon,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText,
   Text,
-  Tooltip,
+  VStack,
   useDisclosure,
-} from "@chakra-ui/react";
+} from "@omnidev/sigil";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
-import { CreateFeedbackModal, Feed } from "components/feedback";
-import { useOrganizationQuery, useProjectQuery } from "generated/graphql";
+import { CreateFeedbackDialog, Feed } from "components/feedback";
+import { useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 
 // ? change all params to unique IDs instead of readable slugs?
@@ -28,110 +26,98 @@ import { NODE_ENV } from "lib/config";
  */
 const ProjectPage = () => {
   const {
-    isOpen: isCreatePostModalOpen,
-    onOpen: onCreatePostModalOpen,
-    onClose: onCreatePostModalClose,
+    isOpen: isCreatePostDialogOpen,
+    onOpen: onCreatePostDialogOpen,
+    onClose: onCreatePostDialogClose,
   } = useDisclosure();
 
   const params = useParams();
 
   const { isConnected } = useAccount();
 
-  const {
-      data: organization,
-      isPending: isOrganizationPending,
-      isError: isOrganizationError,
-    } = useOrganizationQuery(
-      { slug: params.organization as string },
-      {
-        select: (data) => data.organizationBySlug,
-      }
-    ),
-    { data: project, isPending: isProjectPending } = useProjectQuery(
-      {
-        organizationId: organization?.rowId!,
-        projectSlug: params.project as string,
-      },
-      {
-        enabled: !!organization,
-        select: (data) => data.projectBySlugAndOrganizationId,
-      }
-    );
-
-  if (isOrganizationPending) return <div>Loading...</div>;
-  if (isOrganizationError) return <div>Error</div>;
+  const { data: project, isPending: isProjectPending } = useProjectQuery(
+    {
+      organizationId: params.organization as string,
+      projectSlug: params.project as string,
+    },
+    { select: (data) => data.projectBySlugAndOrganizationId }
+  );
 
   return (
-    <Flex direction="column" align={{ base: "center", md: "initial" }}>
-      <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-        {organization?.name}
-      </Text>
+    <Flex flexDirection="column">
+      <Skeleton isLoaded={!isProjectPending} w="1/6" h={8} mb={4}>
+        <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
+          {project?.name}
+        </Text>
+      </Skeleton>
 
-      <Flex gap={6} direction={{ base: "column", md: "initial" }}>
-        <Card p={6} w={{ md: "30%" }} align="center" gap={4}>
-          <Flex gap={4}>
-            <SkeletonCircle isLoaded={!isProjectPending}>
+      <Flex w="full" gap={4} flexDirection={{ base: "column", md: "row" }}>
+        <VStack
+          shadow="1px 1px 5px rgba(0,0,0,0.3)"
+          p={4}
+          bg="background.muted"
+          gap={4}
+          w={{ base: "full", md: "30%" }}
+          rounded="md"
+        >
+          <HStack>
+            <Skeleton isLoaded={!isProjectPending} w={10} h={10} rounded="full">
               {project?.image && (
                 <Image
                   src={project?.image}
                   alt={`${project?.image} image`}
-                  width={50}
-                  height={50}
+                  width={40}
+                  height={40}
+                  style={{
+                    borderRadius: "50%",
+                    flexShrink: 0,
+                    objectFit: "cover",
+                  }}
                 />
               )}
-            </SkeletonCircle>
+            </Skeleton>
 
-            <Skeleton
-              isLoaded={!isProjectPending}
-              w={isProjectPending ? "120px" : undefined}
-            >
-              <Text fontWeight="bold" fontSize="xl">
+            <Skeleton isLoaded={!isProjectPending} h={8} w={40}>
+              <Text ml={2} fontWeight="bold" fontSize="xl">
                 {project?.name}
               </Text>
             </Skeleton>
-          </Flex>
+          </HStack>
 
-          <SkeletonText
-            isLoaded={!isProjectPending}
-            mt="4"
-            noOfLines={4}
-            spacing="4"
-            skeletonHeight="2"
-            w="100%"
-          >
-            {/* TODO collapsible menu on mobile */}
-            {/* TODO overflow */}
+          <Skeleton isLoaded={!isProjectPending} w="full" h="full">
             <Text>{project?.description}</Text>
-          </SkeletonText>
-        </Card>
+          </Skeleton>
+        </VStack>
 
-        <Card p={6} w={{ md: "70%" }}>
-          <Tooltip
-            hasArrow
-            isDisabled={NODE_ENV !== "development" || !isConnected}
-            label="Coming soon"
-            placement="top"
+        <VStack
+          shadow="1px 1px 5px rgba(0,0,0,0.3)"
+          p={4}
+          bg="background.muted"
+          gap={4}
+          w={{ base: "full", md: "70%" }}
+          rounded="md"
+        >
+          <Button
+            // TODO remove env check once ready
+            disabled={NODE_ENV !== "development" || !isConnected}
+            alignSelf="flex-end"
+            gap={2}
+            onClick={onCreatePostDialogOpen}
           >
-            <Button
-              // TODO remove env check once ready
-              isDisabled={NODE_ENV !== "development" || !isConnected}
-              alignSelf="flex-end"
-              gap={2}
-              onClick={onCreatePostModalOpen}
-            >
-              <Icon as={PlusIcon} />
-              Create Post
-            </Button>
-          </Tooltip>
+            <Icon src={PlusIcon} />
+            Create Post
+          </Button>
 
-          <Feed projectId={project?.rowId} overflow="auto" py={4} />
-        </Card>
+          {/* TODO: Fetch project posts total count here to use for the Skeleton array count. */}
+          <Feed projectId={project?.rowId || ""} overflow="auto" py={4} />
+        </VStack>
       </Flex>
 
-      <CreateFeedbackModal
-        isOpen={isCreatePostModalOpen}
-        onClose={onCreatePostModalClose}
-        projectId={project?.rowId}
+      <CreateFeedbackDialog
+        isOpen={isCreatePostDialogOpen}
+        onClose={onCreatePostDialogClose}
+        onOpen={onCreatePostDialogOpen}
+        projectId={project?.rowId || ""}
       />
     </Flex>
   );

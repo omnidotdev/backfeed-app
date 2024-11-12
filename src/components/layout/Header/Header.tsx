@@ -1,54 +1,35 @@
 "use client";
 
-import {
-  Button,
-  Flex,
-  HStack,
-  Text,
-  chakra,
-  useColorMode,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Flex, HStack, Text, sigil } from "@omnidev/sigil";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import {
-  BsFillMoonFill as MoonIcon,
-  BsFillSunFill as SunIcon,
-} from "react-icons/bs";
 
+import { ThemeToggle } from "components/layout";
 import { app } from "lib/config";
 
 /**
  * Layout header.
  */
 const Header = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
-
-  const bgColor = useColorModeValue("gray.100", "gray.900");
-
   return (
-    <chakra.header>
-      <Flex
-        h={16}
-        bgColor={bgColor}
-        px={4}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <HStack spacing={8} alignItems="center">
-          <Text fontWeight="bold" fontSize="lg">
-            {app.name}
-          </Text>
-        </HStack>
+    <sigil.header
+      display="flex"
+      h={16}
+      px={4}
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <HStack gap={8} alignItems="center">
+        <Text fontWeight="bold" fontSize="lg">
+          {app.name}
+        </Text>
+      </HStack>
 
-        <Flex alignItems="center" gap={3}>
-          <Button variant="ghost" onClick={toggleColorMode}>
-            {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-          </Button>
+      <Flex alignItems="center" gap={3}>
+        <ThemeToggle />
 
-          <ConnectButton showBalance={false} />
-        </Flex>
+        <ConnectButton showBalance={false} />
       </Flex>
-    </chakra.header>
+    </sigil.header>
   );
 };
 

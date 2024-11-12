@@ -3255,6 +3255,10 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
+
+export type UserFragment = { __typename?: 'User', createdAt?: Date | null, id: string, rowId: string, updatedAt?: Date | null, walletAddress?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', createdAt?: Date | null, organizationId: string, userId: string, organization?: { __typename?: 'Organization', id: string, createdAt?: Date | null, name?: string | null, rowId: string, slug?: string | null, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', slug?: string | null, rowId: string, organizationId: string, name?: string | null, image?: string | null, id: string, description?: string | null, createdAt?: Date | null } | null> } } | null } | null> } };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -3303,7 +3307,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name?: string | null, image?: string | null, description?: string | null } | null };
+export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3317,10 +3321,70 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', rowId: string } | null };
+export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', createdAt?: Date | null, id: string, rowId: string, updatedAt?: Date | null, walletAddress?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', createdAt?: Date | null, organizationId: string, userId: string, organization?: { __typename?: 'Organization', id: string, createdAt?: Date | null, name?: string | null, rowId: string, slug?: string | null, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', slug?: string | null, rowId: string, organizationId: string, name?: string | null, image?: string | null, id: string, description?: string | null, createdAt?: Date | null } | null> } } | null } | null> } } | null };
 
 
-
+export const ProjectFragmentDoc = `
+    fragment Project on Project {
+  createdAt
+  description
+  id
+  image
+  name
+  organizationId
+  rowId
+  slug
+  updatedAt
+  posts {
+    nodes {
+      createdAt
+      description
+      id
+      projectId
+      rowId
+      title
+      updatedAt
+      userId
+    }
+  }
+}
+    `;
+export const UserFragmentDoc = `
+    fragment User on User {
+  createdAt
+  id
+  rowId
+  updatedAt
+  walletAddress
+  userOrganizations {
+    nodes {
+      createdAt
+      organizationId
+      userId
+      organization {
+        id
+        createdAt
+        name
+        rowId
+        slug
+        updatedAt
+        projects {
+          nodes {
+            slug
+            rowId
+            organizationId
+            name
+            image
+            id
+            description
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}
+    `;
 export const CreatePostDocument = `
     mutation CreatePost($postInput: PostInput!) {
   createPost(input: {post: $postInput}) {
@@ -3525,13 +3589,10 @@ export const ProjectDocument = `
     slug: $projectSlug
     organizationId: $organizationId
   ) {
-    rowId
-    name
-    image
-    description
+    ...Project
   }
 }
-    `;
+    ${ProjectFragmentDoc}`;
 
 export const useProjectQuery = <
       TData = ProjectQuery,
@@ -3627,10 +3688,10 @@ useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variab
 export const UserDocument = `
     query User($walletAddress: String!) {
   userByWalletAddress(walletAddress: $walletAddress) {
-    rowId
+    ...User
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 
 export const useUserQuery = <
       TData = UserQuery,

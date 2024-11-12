@@ -1,5 +1,5 @@
 query User($walletAddress: String!) {
   userByWalletAddress(walletAddress: $walletAddress) {
-    rowId
+    ...User
   }
 }

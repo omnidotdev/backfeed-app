@@ -1,42 +1,55 @@
 "use client";
 
-import { Card, Flex, Text } from "@chakra-ui/react";
+import { Card, Flex, Text, VStack } from "@omnidev/sigil";
+import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useAccount } from "wagmi";
 
-import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
+import { useUserQuery } from "generated/graphql";
 
 /**
  * Organization overview page.
  */
 const OrganizationPage = () => {
-  const params = useParams();
+  const { address: connectedAddress } = useAccount();
 
-  const { data: organization } = useOrganizationQuery(
-      { slug: params.organization as string },
-      { select: (data) => data.organizationBySlug }
-    ),
-    { data: projects } = useProjectsQuery(
-      { organizationId: organization?.rowId },
-      { select: (data) => data.projects?.nodes }
-    );
+  const { data: user } = useUserQuery(
+    {
+      walletAddress: connectedAddress as string,
+    },
+    {
+      select: (data) => data.userByWalletAddress,
+    }
+  );
+
+  const organizations = user?.userOrganizations?.nodes;
 
   return (
-    <Flex direction="column" align="center">
-      <Text fontSize="xl" fontWeight="bold">
-        {organization?.name}
-      </Text>
+    <Flex direction="column" align="center" gap={4}>
+      {organizations?.map((organization) => (
+        <VStack key={organization?.organizationId}>
+          <Text fontWeight="bold">{organization?.organization?.name}</Text>
 
-      {projects?.map((project) => (
-        <Link
-          key={project?.name}
-          href={`/${organization?.slug}/${project?.slug}`}
-        >
-          <Card w="240px" p={4} gap={4} textAlign="center">
-            <Text fontWeight="bold">{project?.name}</Text>
-            <Text>{project?.description}</Text>
-          </Card>
-        </Link>
+          {organization?.organization?.projects?.nodes?.map((project) => (
+            <Link
+              key={project?.id}
+              href={`/${organization?.organizationId}/${project?.slug}`}
+            >
+              <Card cursor="pointer" p={4}>
+                {project?.image && (
+                  <Image
+                    alt={`${project?.name} image`}
+                    src={project?.image}
+                    height={40}
+                    width={40}
+                  />
+                )}
+                <Text>{project?.name}</Text>
+                <Text>{project?.description}</Text>
+              </Card>
+            </Link>
+          ))}
+        </VStack>
       ))}
     </Flex>
   );

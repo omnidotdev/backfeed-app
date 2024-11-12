@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Grid, chakra } from "@chakra-ui/react";
+import { Grid, Flex, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -19,7 +19,7 @@ interface Props {
  * Core application layout.
  */
 const Layout = ({ children }: Props) => (
-  <Grid templateRows="auto 1fr auto" w="100%" h="100%">
+  <Grid gridTemplateRows="auto 1fr auto" w="100%" h="100%">
     <Flex
       p={4}
       justify="center"
@@ -32,7 +32,7 @@ const Layout = ({ children }: Props) => (
 
     <Header />
 
-    <chakra.main p={6}>{children}</chakra.main>
+    <sigil.main p={6}>{children}</sigil.main>
 
     <Footer />
   </Grid>

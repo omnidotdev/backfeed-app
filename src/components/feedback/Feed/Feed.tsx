@@ -1,19 +1,16 @@
 import {
   Button,
+  Center,
+  Dialog,
   Divider,
   Flex,
   Icon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Skeleton,
+  Stack,
   Text,
+  VStack,
   useDisclosure,
-} from "@chakra-ui/react";
+} from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -35,15 +32,13 @@ import {
   useUserQuery,
 } from "generated/graphql";
 
-import type { FlexProps } from "@chakra-ui/react";
+import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
 
 interface Props extends FlexProps {
   projectId?: string;
   enableDownvotes?: boolean;
 }
-
-const voteIconProps = { w: 6, h: 6, cursor: "pointer" };
 
 /**
  * Feedback feed.
@@ -52,9 +47,9 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
   const [activePost, setActivePost] = useState<Post | null>();
 
   const {
-    isOpen: isPostModalOpen,
-    onOpen: onPostModalOpen,
-    onClose: onPostModalClose,
+    isOpen: isPostDialogOpen,
+    onOpen: onPostDialogOpen,
+    onClose: onPostDialogClose,
   } = useDisclosure();
 
   const queryClient = useQueryClient();
@@ -65,12 +60,16 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
       {
         enabled: !!connectedAddress,
         select: (data) => data.userByWalletAddress,
-      }
+      },
     );
 
-  const { data: posts, isLoading: isPostsLoading } = usePostsQuery(
+  const {
+    data: posts,
+    isLoading: isPostsLoading,
+    isError: isPostsError,
+  } = usePostsQuery(
     { projectId: projectId! },
-    { select: (data) => data.posts?.nodes }
+    { select: (data) => data?.posts?.nodes },
   );
 
   const { mutate: upvotePost } = useUpvotePostMutation({
@@ -92,122 +91,129 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
         }),
     });
 
+  const upvote = (postId: string) => {
+    if (connectedAddress) {
+      postId &&
+        upvotePost({
+          upvote: {
+            userId: user?.rowId!,
+            postId: postId,
+          },
+        });
+    }
+  };
+
+  const downvote = (upvoteId: string) => {
+    if (connectedAddress) {
+      upvoteId && deleteUpvote({ upvoteId });
+    }
+  };
+
+  if (isPostsError) return <Center>Error</Center>;
+
   return (
     <>
-      <Flex direction="column" gap={4} {...rest}>
-        {posts?.map((post) => {
-          const upvoteId = post?.upvotes?.nodes?.find(
-            (upvote) => upvote?.rowId
-          )?.rowId;
+      <Flex flexDirection="column" gap={4} w="full" {...rest}>
+        {isPostsLoading
+          ? [...Array(3)].map((_, idx) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: idx needed as key
+              <Stack key={idx} gap={4} w="full" mb={4} _last={{ mb: 0 }}>
+                <Skeleton w="40%" h={6} />
+                <Skeleton h={12} />
+              </Stack>
+            ))
+          : posts?.map((post) => {
+              const upvoteId = post?.upvotes?.nodes?.find(
+                (upvote) => upvote?.rowId,
+              )?.rowId;
 
-          return (
-            <Skeleton key={post?.title} h={12} isLoaded={!isPostsLoading}>
-              <Flex gap={6} align="center" h="100%">
-                <Flex direction="column" textAlign="center" userSelect="none">
-                  {/* TODO CTA if not connected */}
-                  <Icon
-                    as={UpIcon}
-                    mb={-0.5}
-                    color={upvoteId ? "green.500" : "gray.400"}
-                    onClick={() => {
-                      if (connectedAddress) {
-                        upvoteId
-                          ? deleteUpvote({ upvoteId })
-                          : upvotePost({
-                              upvote: {
-                                userId: user?.rowId!,
-                                postId: post?.rowId!,
-                              },
-                            });
-                      }
-                    }}
-                    {...voteIconProps}
-                  />
-                  <Text fontWeight="bold" fontSize="xl">
-                    {post?.upvotes?.aggregates?.distinctCount?.rowId}
-                  </Text>
+              const postId = post?.rowId;
 
-                  {enableDownvotes && (
+              return (
+                <Flex key={post?.rowId} gap={4} h="100%">
+                  <VStack gap={0}>
                     <Icon
-                      as={DownIcon}
-                      mt={-0.5}
-                      color={upvoteId ? "red.500" : "gray.400"}
-                      {...voteIconProps}
+                      src={UpIcon}
+                      color={upvoteId ? "green.500" : "gray.400"}
+                      onClick={() =>
+                        upvoteId ? downvote(upvoteId) : upvote(postId!)
+                      }
+                      cursor="pointer"
                     />
-                  )}
-                </Flex>
 
-                <Flex
-                  cursor="pointer"
-                  direction="column"
-                  onClick={() => {
-                    setActivePost(post as Post);
-                    onPostModalOpen();
-                  }}
-                  w="100%"
-                  p={2}
-                >
-                  <Text>{post?.title}</Text>
-                  {/* TODO truncate */}
-                  <Text color="gray.500">{post?.description}</Text>
+                    <Text fontWeight="bold" fontSize="xl">
+                      {post?.upvotes?.aggregates?.distinctCount?.rowId}
+                    </Text>
+
+                    {enableDownvotes && (
+                      <Icon
+                        src={DownIcon}
+                        color={upvoteId ? "red.500" : "gray.400"}
+                        cursor="pointer"
+                      />
+                    )}
+                  </VStack>
+
+                  <Flex
+                    cursor="pointer"
+                    flexDirection="column"
+                    onClick={() => {
+                      setActivePost(post as Post);
+                      onPostDialogOpen();
+                    }}
+                  >
+                    <Text>{post?.title}</Text>
+                    <Text color="gray.500" lineClamp={3}>
+                      {post?.description}
+                    </Text>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </Skeleton>
-          );
-        })}
+              );
+            })}
       </Flex>
 
-      <Modal
-        isOpen={isPostModalOpen}
-        onClose={() => {
-          setActivePost(null);
-          onPostModalClose();
-        }}
-        isCentered
-      >
-        <ModalOverlay />
-
-        <ModalContent>
-          <ModalHeader>{activePost?.title}</ModalHeader>
-
-          <ModalCloseButton />
-
-          <ModalBody pb={6}>
-            <Flex direction="column" gap={6}>
-              <Flex direction="column" gap={1}>
-                <Text fontSize="sm" opacity={0.8}>
-                  <Icon as={PersonIcon} mr={2} /> Created by{" "}
-                  {activePost?.user?.walletAddress === connectedAddress
-                    ? "you"
-                    : activePost?.user?.walletAddress}
-                </Text>
-                <Text fontSize="sm" opacity={0.8}>
-                  <Icon as={CalendarIcon} mr={3} />
-                  {dayjs().to(dayjs(activePost?.createdAt))}
-                </Text>
-              </Flex>
-
-              <Divider />
-
-              <Text>{activePost?.description}</Text>
+      {activePost && (
+        // @ts-ignore not sure why this is throwing an error
+        <Dialog
+          open={isPostDialogOpen}
+          // @ts-ignore not sure why this is throwing an error
+          onOpenChange={({ isOpen }) =>
+            isOpen ? onPostDialogOpen() : onPostDialogClose()
+          }
+          title="test"
+        >
+          <Flex direction="column" gap={6} maxW="lg">
+            <Flex direction="column" gap={1}>
+              <Text fontSize="sm" opacity={0.8}>
+                <Icon src={PersonIcon} mr={2} /> Created by{" "}
+                {activePost?.user?.walletAddress === connectedAddress
+                  ? "you"
+                  : activePost?.user?.walletAddress}
+              </Text>
+              <Text fontSize="sm" opacity={0.8}>
+                <Icon src={CalendarIcon} mr={3} />
+                {dayjs().to(dayjs(activePost?.createdAt))}
+              </Text>
             </Flex>
-          </ModalBody>
 
-          {activePost?.user?.walletAddress === connectedAddress && (
-            <ModalFooter>
+            <Divider />
+
+            <Text>{activePost?.description}</Text>
+
+            {activePost?.user?.walletAddress === connectedAddress && (
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  deletePost({ postId: activePost!.rowId });
-                  onPostModalClose();
+                  deletePost({ postId: activePost!.id });
+                  onPostDialogClose();
                 }}
               >
                 Delete
               </Button>
-            </ModalFooter>
-          )}
-        </ModalContent>
-      </Modal>
+            )}
+          </Flex>
+        </Dialog>
+      )}
     </>
   );
 };
