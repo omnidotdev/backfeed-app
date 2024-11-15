@@ -23,7 +23,7 @@ const Hero = () => {
     <Flex direction="column" align="center" gap={4} py={20} px={6} maxW="4xl">
       <Text
         as="h1"
-        fontSize="6xl"
+        fontSize={{ base: "4xl", xl: "6xl" }}
         fontWeight="bold"
         textAlign="center"
         lineHeight={1}
@@ -34,7 +34,7 @@ const Hero = () => {
       <Text
         as="h2"
         color="foreground.subtle"
-        fontSize="xl"
+        fontSize={{ base: "md", xl: "xl" }}
         fontWeight="medium"
         textAlign="center"
         lineHeight={1.5}

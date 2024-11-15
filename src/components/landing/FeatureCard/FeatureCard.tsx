@@ -10,13 +10,18 @@ interface Props {
 
 const FeatureCard = ({ title, description, featureIcon }: Props) => {
   return (
-    <Card aspectRatio={1} maxH="xs" headerProps={{ p: 4 }}>
-      <Stack align="flex-start" h="full">
-        <Icon src={featureIcon} w={10} h={10} color="foreground.muted" />
-        <Text fontSize="xl" fontWeight="bold" mb={2} mt={4}>
+    <Card aspectRatio={1} maxH="xs" headerProps={{ p: 0 }}>
+      <Stack align="flex-start" h="full" pt={6}>
+        <Icon src={featureIcon} w={8} h={8} color="foreground.muted" />
+        <Text fontSize={{ base: "lg", xlTo2xl: "md" }} fontWeight="bold" my={2}>
           {title}
         </Text>
-        <Text color="foreground.subtle" fontWeight="medium" mb={4}>
+        <Text
+          fontSize={{ base: "md", xlTo2xl: "sm" }}
+          color="foreground.subtle"
+          fontWeight="medium"
+          mb={4}
+        >
           {description}
         </Text>
       </Stack>

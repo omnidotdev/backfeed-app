@@ -11,13 +11,14 @@ const Features = () => {
       p={20}
       align="center"
       justify="space-around"
+      gap={8}
     >
       <Flex direction="column" align="center" textAlign="center">
-        <Text fontSize="3xl" fontWeight="bold" mb={3}>
+        <Text fontSize={{ base: "xl", xl: "3xl" }} fontWeight="bold" mb={3}>
           {app.landingPage.features.title}
         </Text>
         <Text
-          fontSize="lg"
+          fontSize={{ base: "md", xl: "lg" }}
           mb={4}
           color="foreground.muted"
           fontWeight="medium"
@@ -28,7 +29,7 @@ const Features = () => {
         </Text>
       </Flex>
 
-      <Grid gap={8} columns={{ base: 1, lg: 2, xl: 4 }}>
+      <Grid gap={8} columns={{ base: 1, md: 2, xl: 4 }}>
         {app.landingPage.features.pinned.map(({ title, description, Icon }) => (
           <FeatureCard
             key={title}
