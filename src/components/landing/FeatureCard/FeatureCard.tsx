@@ -9,7 +9,7 @@ interface Props {
 }
 
 const FeatureCard = ({ title, description, featureIcon }: Props) => {
-  const iconSize = useBreakpointValue({ base: 6, md: 8, xl: 10 });
+  const iconSize = useBreakpointValue({ base: 7, md: 8, xl: 10 });
 
   return (
     <Card aspectRatio={1} maxH="xs" headerProps={{ p: 0 }}>
