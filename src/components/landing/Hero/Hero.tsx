@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, useIsClient } from "@omnidev/sigil";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
@@ -15,7 +15,8 @@ interface ActionProps extends ButtonProps {
 }
 
 const Hero = () => {
-  const isTablet = useIsTablet();
+  const isMounted = useIsClient(),
+    isTablet = useIsTablet();
 
   const actions: ActionProps[] = [
     {
@@ -53,7 +54,12 @@ const Hero = () => {
       </Text>
       <Flex mt={6} gap={4}>
         {actions.map(({ label, icon: ActionIcon, ...rest }) => (
-          <Button key={label} size="lg" {...rest}>
+          <Button
+            key={label}
+            size="lg"
+            visibility={isMounted ? "visible" : "hidden"}
+            {...rest}
+          >
             {label}
             {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
           </Button>

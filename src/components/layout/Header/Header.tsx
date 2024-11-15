@@ -38,11 +38,13 @@ const Header = () => {
           <Link href="/">
             <HStack gap={2} alignItems="center">
               <Icon src={LuMessageSquarePlus} w={6} h={6} />
-              {isTablet && (
-                <Text fontWeight="bold" fontSize="lg">
-                  {app.name}
-                </Text>
-              )}
+              <Text
+                fontWeight="bold"
+                fontSize="lg"
+                display={{ base: "none", md: "block" }}
+              >
+                {app.name}
+              </Text>
             </HStack>
           </Link>
 

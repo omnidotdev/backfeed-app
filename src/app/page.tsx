@@ -1,24 +1,10 @@
 "use client";
 
-import { Flex } from "@omnidev/sigil";
+import { LandingPage } from "components/landing";
 
-import { Features, Hero } from "components/landing";
-
+// TODO: make dynamic when auth flow is implemented
 const HomePage = () => {
-  return (
-    <Flex direction="column" align="center" w="100%" h="100%">
-      <Hero />
-      <Flex
-        w="full"
-        h="full"
-        bgColor="background.muted"
-        align="center"
-        justify="center"
-      >
-        <Features />
-      </Flex>
-    </Flex>
-  );
+  return <LandingPage />;
 };
 
 export default HomePage;
