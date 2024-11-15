@@ -12,7 +12,7 @@ const Footer = () => (
     display="flex"
     pos="fixed"
     justifyContent="center"
-    mb={6}
+    p={6}
     bottom={0}
     w="100%"
   >

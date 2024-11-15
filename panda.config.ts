@@ -17,6 +17,11 @@ const pandaConfig = defineConfig({
       },
     ],
   },
+  conditions: {
+    extend: {
+      groupHover: "[role=group]:where(:hover, [data-hover]) &",
+    },
+  },
 });
 
 export default pandaConfig;
