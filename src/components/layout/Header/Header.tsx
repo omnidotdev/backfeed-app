@@ -1,9 +1,11 @@
 "use client";
 
-import { Flex, HStack, Text, sigil } from "@omnidev/sigil";
+import { Button, Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { LuMessageSquarePlus } from "react-icons/lu";
 
 import { ThemeToggle } from "components/layout";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 
 /**
@@ -14,20 +16,26 @@ const Header = () => {
     <sigil.header
       display="flex"
       h={16}
-      px={4}
+      p={4}
       alignItems="center"
       justifyContent="space-between"
+      // TODO: discuss why this style props is necessary
+      style={{
+        borderBottom: "1px solid",
+        borderColor: token("colors.border.subtle"),
+      }}
     >
-      <HStack gap={8} alignItems="center">
+      <HStack gap={2} alignItems="center">
+        <Icon src={LuMessageSquarePlus} w={6} h={6} />
         <Text fontWeight="bold" fontSize="lg">
           {app.name}
         </Text>
       </HStack>
 
-      <Flex alignItems="center" gap={3}>
+      <Flex alignItems="center" gap={6}>
         <ThemeToggle />
 
-        <ConnectButton showBalance={false} />
+        <Button>Get Started</Button>
       </Flex>
     </sigil.header>
   );

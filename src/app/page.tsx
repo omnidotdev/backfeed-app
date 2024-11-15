@@ -1,7 +1,13 @@
-import { app } from "lib/config";
+"use client";
+
+import { Flex } from "@omnidev/sigil";
 
 const HomePage = () => {
-  return <div>{app.name} is a feedback portal for the decentralized web.</div>;
+  return (
+    <Flex align="center" justify="center" w="100%" h="100%">
+      Landing Page
+    </Flex>
+  );
 };
 
 export default HomePage;

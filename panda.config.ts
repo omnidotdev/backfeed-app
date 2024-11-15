@@ -7,6 +7,16 @@ const pandaConfig = defineConfig({
   presets: ["@pandacss/preset-base", sigilPreset],
   include: ["src/**/*.{ts,tsx}"],
   outdir: "src/generated/panda",
+  staticCss: {
+    css: [
+      {
+        properties: {
+          color: ["*"],
+          backgroundColor: ["*"],
+        },
+      },
+    ],
+  },
 });
 
 export default pandaConfig;

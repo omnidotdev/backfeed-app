@@ -1,2 +1,6 @@
 @layer reset, base, tokens, recipes, utilities;
 @import url("@omnidev/sigil/index.css");
+
+body {
+  margin: 0;
+}

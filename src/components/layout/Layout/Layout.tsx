@@ -19,7 +19,7 @@ interface Props {
  * Core application layout.
  */
 const Layout = ({ children }: Props) => (
-  <Grid gridTemplateRows="auto 1fr auto" w="100%" h="100%">
+  <Grid gridTemplateRows="auto auto 1fr auto" w="100%" h="100dvh" gap={0}>
     <Flex
       p={4}
       justify="center"
