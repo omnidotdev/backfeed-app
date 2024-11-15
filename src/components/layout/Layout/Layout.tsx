@@ -32,7 +32,7 @@ const Layout = ({ children }: Props) => (
 
     <Header />
 
-    <sigil.main p={6}>{children}</sigil.main>
+    <sigil.main>{children}</sigil.main>
 
     <Footer />
   </Grid>
