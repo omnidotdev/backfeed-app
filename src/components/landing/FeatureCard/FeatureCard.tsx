@@ -18,7 +18,7 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => {
           src={featureIcon}
           w={iconSize}
           h={iconSize}
-          color="foreground.muted"
+          color="brand.primary"
         />
         <Text fontSize="lg" fontWeight="bold" my={2}>
           {title}
