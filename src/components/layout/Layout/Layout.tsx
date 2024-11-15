@@ -19,18 +19,26 @@ interface Props {
  * Core application layout.
  */
 const Layout = ({ children }: Props) => (
-  <Grid gridTemplateRows="auto auto 1fr auto" w="100%" h="100dvh" gap={0}>
-    <Flex
-      p={4}
-      justify="center"
-      bgColor="brand.primary.500"
-      color="white"
-      fontWeight="semibold"
-    >
-      ⚠️ {app.name} is early alpha software.
-    </Flex>
+  <Grid
+    position="relative"
+    gridTemplateRows="auto auto 1fr auto"
+    w="100%"
+    h="100dvh"
+    gap={0}
+  >
+    <Flex direction="column" position="sticky" top={0} zIndex="sticky">
+      <Flex
+        p={4}
+        justify="center"
+        bgColor="brand.primary.500"
+        color="white"
+        fontWeight="semibold"
+      >
+        ⚠️ {app.name} is early alpha software.
+      </Flex>
 
-    <Header />
+      <Header />
+    </Flex>
 
     <sigil.main>{children}</sigil.main>
 

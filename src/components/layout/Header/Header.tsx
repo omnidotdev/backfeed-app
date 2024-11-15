@@ -30,6 +30,7 @@ const Header = () => {
       style={{
         borderBottom: "1px solid",
         borderColor: token("colors.border.subtle"),
+        backgroundColor: token("colors.background.default"),
       }}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
