@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Flex, sigil } from "@omnidev/sigil";
+import { Flex, Grid, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
