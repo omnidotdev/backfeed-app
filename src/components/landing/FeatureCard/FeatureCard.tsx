@@ -1,4 +1,4 @@
-import { Card, Icon, Stack, Text, useBreakpointValue } from "@omnidev/sigil";
+import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { IconType } from "react-icons";
 
@@ -8,18 +8,19 @@ interface Props {
   featureIcon: IconType;
 }
 
+// TODO: use `Card` component once `CardHeader` is conditionally rendered
 const FeatureCard = ({ title, description, featureIcon }: Props) => {
-  const iconSize = useBreakpointValue({ base: 7, md: 8, xl: 10 });
-
   return (
-    <Card aspectRatio={1} maxH="xs" headerProps={{ p: 0 }}>
-      <Stack align="flex-start" h="full" pt={6}>
-        <Icon
-          src={featureIcon}
-          w={iconSize}
-          h={iconSize}
-          color="brand.primary"
-        />
+    <Flex
+      aspectRatio={1}
+      maxH="xs"
+      bgColor="background.default"
+      borderRadius="md"
+      boxShadow="lg"
+      p={6}
+    >
+      <Stack align="flex-start" h="full">
+        <Icon src={featureIcon} w={10} h={10} color="brand.primary" mb={2} />
         <Text fontSize="lg" fontWeight="bold" my={2}>
           {title}
         </Text>
@@ -32,7 +33,7 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => {
           {description}
         </Text>
       </Stack>
-    </Card>
+    </Flex>
   );
 };
 

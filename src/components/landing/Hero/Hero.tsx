@@ -1,29 +1,35 @@
 "use client";
 
-import { Button, Flex, Icon, Text, useBreakpoint } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
 import { useIsTablet } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
+
+interface ActionProps extends ButtonProps {
+  label: string;
+  icon?: IconType;
+}
 
 const Hero = () => {
   const isTablet = useIsTablet();
 
-  const actions = [
+  const actions: ActionProps[] = [
     {
       label: isTablet ? "Start Collecting Feedback" : "Start",
       icon: FiArrowRight,
     },
     {
       label: isTablet ? "Watch Demo" : "Demo",
-      variant: "outline" as ButtonProps["variant"],
+      variant: "outline",
     },
   ];
 
   return (
-    <Flex direction="column" align="center" gap={4} py={20} px={6} maxW="4xl">
+    <Flex direction="column" align="center" gap={4} py={20} px={8} maxW="4xl">
       <Text
         as="h1"
         fontSize={{ base: "4xl", xl: "6xl" }}
@@ -46,18 +52,12 @@ const Hero = () => {
         {app.landingPage.hero.description}
       </Text>
       <Flex mt={6} gap={4}>
-        {actions.map(
-          ({
-            label,
-            icon: ActionIcon,
-            variant = "solid" as ButtonProps["variant"],
-          }) => (
-            <Button key={label} variant={variant} size="lg">
-              {label}
-              {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
-            </Button>
-          )
-        )}
+        {actions.map(({ label, icon: ActionIcon, ...rest }) => (
+          <Button key={label} size="lg" {...rest}>
+            {label}
+            {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
+          </Button>
+        ))}
       </Flex>
     </Flex>
   );
