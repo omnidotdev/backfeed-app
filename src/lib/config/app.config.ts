@@ -1,8 +1,8 @@
 import {
-  IoChatboxOutline,
   IoBarChartOutline,
-  IoRocketOutline,
+  IoChatboxOutline,
   IoPulseOutline,
+  IoRocketOutline,
 } from "react-icons/io5";
 
 const app = {
