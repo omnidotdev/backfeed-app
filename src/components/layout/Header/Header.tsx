@@ -8,12 +8,15 @@ import { LuMessageSquarePlus } from "react-icons/lu";
 import { ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
+import { useIsTablet } from "lib/hooks";
 
 /**
  * Layout header.
  */
 const Header = () => {
   const pathname = usePathname();
+
+  const isTablet = useIsTablet();
 
   // TODO: make dynamic based on the current route and auth status
   const { landingPage } = navigationRoutes;
@@ -34,9 +37,11 @@ const Header = () => {
           <Link href="/">
             <HStack gap={2} alignItems="center">
               <Icon src={LuMessageSquarePlus} w={6} h={6} />
-              <Text fontWeight="bold" fontSize="lg">
-                {app.name}
-              </Text>
+              {isTablet && (
+                <Text fontWeight="bold" fontSize="lg">
+                  {app.name}
+                </Text>
+              )}
             </HStack>
           </Link>
 

@@ -1,20 +1,23 @@
 "use client";
 
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, useBreakpoint } from "@omnidev/sigil";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
+import { useIsTablet } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
 
 const Hero = () => {
+  const isTablet = useIsTablet();
+
   const actions = [
     {
-      label: "Start Collecting Feedback",
+      label: isTablet ? "Start Collecting Feedback" : "Start",
       icon: FiArrowRight,
     },
     {
-      label: "Watch Demo",
+      label: isTablet ? "Watch Demo" : "Demo",
       variant: "outline" as ButtonProps["variant"],
     },
   ];

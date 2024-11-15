@@ -8,19 +8,20 @@ const Features = () => {
     <Flex
       direction="column"
       h="100%"
-      p={20}
+      py={20}
+      px={12}
       align="center"
       justify="space-around"
       gap={8}
     >
       <Flex direction="column" align="center" textAlign="center">
-        <Text fontSize={{ base: "xl", xl: "3xl" }} fontWeight="bold" mb={3}>
+        <Text fontSize={{ base: "2xl", xl: "3xl" }} fontWeight="bold" mb={3}>
           {app.landingPage.features.title}
         </Text>
         <Text
           fontSize={{ base: "md", xl: "lg" }}
           mb={4}
-          color="foreground.muted"
+          color="foreground.subtle"
           fontWeight="medium"
           maxW="2xl"
           textAlign="center"

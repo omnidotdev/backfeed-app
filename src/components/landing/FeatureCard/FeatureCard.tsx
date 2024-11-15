@@ -1,4 +1,4 @@
-import { Card, Icon, Stack, Text } from "@omnidev/sigil";
+import { Card, Icon, Stack, Text, useBreakpointValue } from "@omnidev/sigil";
 
 import type { IconType } from "react-icons";
 
@@ -9,11 +9,18 @@ interface Props {
 }
 
 const FeatureCard = ({ title, description, featureIcon }: Props) => {
+  const iconSize = useBreakpointValue({ base: 6, md: 8, xl: 10 });
+
   return (
     <Card aspectRatio={1} maxH="xs" headerProps={{ p: 0 }}>
       <Stack align="flex-start" h="full" pt={6}>
-        <Icon src={featureIcon} w={8} h={8} color="foreground.muted" />
-        <Text fontSize={{ base: "lg", xlTo2xl: "md" }} fontWeight="bold" my={2}>
+        <Icon
+          src={featureIcon}
+          w={iconSize}
+          h={iconSize}
+          color="foreground.muted"
+        />
+        <Text fontSize="lg" fontWeight="bold" my={2}>
           {title}
         </Text>
         <Text
