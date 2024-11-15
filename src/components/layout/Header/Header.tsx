@@ -23,51 +23,51 @@ const Header = () => {
       display="flex"
       h={16}
       p={4}
-      alignItems="center"
-      justifyContent="space-between"
       // TODO: discuss why this style prop is necessary
       style={{
         borderBottom: "1px solid",
         borderColor: token("colors.border.subtle"),
       }}
     >
-      <Flex gap={6} alignItems="center">
-        <Link href="/">
-          <HStack gap={2} alignItems="center">
-            <Icon src={LuMessageSquarePlus} w={6} h={6} />
-            <Text fontWeight="bold" fontSize="lg">
-              {app.name}
-            </Text>
-          </HStack>
-        </Link>
+      <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
+        <Flex gap={4} alignItems="center">
+          <Link href="/">
+            <HStack gap={2} alignItems="center">
+              <Icon src={LuMessageSquarePlus} w={6} h={6} />
+              <Text fontWeight="bold" fontSize="lg">
+                {app.name}
+              </Text>
+            </HStack>
+          </Link>
 
-        {landingPage.map(({ label, href }) => {
-          const isActive = pathname === href;
+          {landingPage.map(({ label, href }) => {
+            const isActive = pathname === href;
 
-          return (
-            <Link key={href} href={href} role="group">
-              <Flex
-                h={10}
-                px={4}
-                align="center"
-                color={{
-                  base: "foreground.muted",
-                  _groupHover: "foreground.default",
-                }}
-                bgColor={isActive ? "background.muted" : "background.default"}
-                borderRadius="md"
-              >
-                {label}
-              </Flex>
-            </Link>
-          );
-        })}
-      </Flex>
+            return (
+              <Link key={href} href={href} role="group">
+                <Flex
+                  h={10}
+                  px={4}
+                  align="center"
+                  color={{
+                    base: "foreground.muted",
+                    _groupHover: "foreground.default",
+                  }}
+                  bgColor={isActive ? "background.muted" : "transparent"}
+                  borderRadius="md"
+                >
+                  {label}
+                </Flex>
+              </Link>
+            );
+          })}
+        </Flex>
 
-      <Flex alignItems="center" gap={6}>
-        <ThemeToggle />
+        <Flex alignItems="center" gap={6}>
+          <ThemeToggle />
 
-        <Button>Get Started</Button>
+          <Button>Get Started</Button>
+        </Flex>
       </Flex>
     </sigil.header>
   );
