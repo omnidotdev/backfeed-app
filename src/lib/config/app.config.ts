@@ -50,6 +50,10 @@ const app = {
   dashboardPage: {
     welcomeMessage: "Welcome back",
     description: "Here's what's happening with your feedback today.",
+    organizations: {
+      title: "Organizations",
+      description: "Manage your organizations and their feedback projects",
+    },
   },
 };
 

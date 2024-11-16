@@ -2,6 +2,8 @@ import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
+import { app } from "lib/config";
+
 const Organizations = () => {
   return (
     <Flex
@@ -19,12 +21,12 @@ const Organizations = () => {
           <Flex align="center" gap={2}>
             <Icon src={LuBuilding2} w={5} h={5} color="foreground.subtle" />
             <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-              Organizations
+              {app.dashboardPage.organizations.title}
             </Text>
           </Flex>
 
           <Text color="foreground.subtle" fontSize="sm">
-            Manage your organizations and their feedback projects
+            {app.dashboardPage.organizations.description}
           </Text>
         </Flex>
 
