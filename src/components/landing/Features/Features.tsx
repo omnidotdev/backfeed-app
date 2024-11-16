@@ -1,7 +1,36 @@
 import { Flex, Grid, Text } from "@omnidev/sigil";
+import {
+  IoBarChartOutline,
+  IoChatboxOutline,
+  IoPulseOutline,
+  IoRocketOutline,
+} from "react-icons/io5";
 
 import { FeatureCard } from "components/landing";
 import { app } from "lib/config";
+
+const FEATURES = [
+  {
+    title: app.landingPage.features.pinned.collection.title,
+    description: app.landingPage.features.pinned.collection.description,
+    Icon: IoChatboxOutline,
+  },
+  {
+    title: app.landingPage.features.pinned.analytics.title,
+    description: app.landingPage.features.pinned.analytics.description,
+    Icon: IoBarChartOutline,
+  },
+  {
+    title: app.landingPage.features.pinned.implementation.title,
+    description: app.landingPage.features.pinned.implementation.description,
+    Icon: IoRocketOutline,
+  },
+  {
+    title: app.landingPage.features.pinned.workflows.title,
+    description: app.landingPage.features.pinned.workflows.description,
+    Icon: IoPulseOutline,
+  },
+];
 
 /**
  * Landing page features section.
@@ -34,7 +63,7 @@ const Features = () => (
     </Flex>
 
     <Grid gap={8} columns={{ base: 1, md: 2, xl: 4 }}>
-      {app.landingPage.features.pinned.map(({ title, description, Icon }) => (
+      {FEATURES.map(({ title, description, Icon }) => (
         <FeatureCard
           key={title}
           title={title}
