@@ -15,6 +15,7 @@ const SessionInformation = () => {
       borderRadius="full"
       variant="icon"
       size="lg"
+      w={11}
       bgColor={{ base: "background.subtle", _hover: "background.muted" }}
       color="foreground.muted"
     >
