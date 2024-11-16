@@ -9,7 +9,13 @@ import { Features, Hero } from "components/landing";
  */
 const LandingPage = () => {
   return (
-    <Flex direction="column" align="center" w="100%" h="100%">
+    <Flex
+      direction="column"
+      align="center"
+      w="100%"
+      h="100%"
+      bgColor="background.default"
+    >
       <Hero />
       <Flex
         w="full"
