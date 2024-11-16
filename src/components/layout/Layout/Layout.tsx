@@ -21,7 +21,7 @@ interface Props {
 const Layout = ({ children }: Props) => (
   <Grid
     position="relative"
-    gridTemplateRows="auto auto 1fr auto"
+    gridTemplateRows="auto 1fr auto"
     w="100%"
     h="100dvh"
     gap={0}
