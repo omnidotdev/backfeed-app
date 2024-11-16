@@ -1,10 +1,9 @@
 "use client";
 
-import { useIsClient, useReadLocalStorage } from "@omnidev/sigil";
+import { useIsClient } from "@omnidev/sigil";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import { FeedbackCard } from "components/dashboard";
-import { colorModeLocalStorageKey } from "components/layout";
 import { token } from "generated/panda/tokens";
 
 const getRandonInteger = () => Math.floor(Math.random() * 100);
@@ -13,8 +12,7 @@ const getRandonInteger = () => Math.floor(Math.random() * 100);
  * Feedback overview section.
  */
 const FeedbackOverview = () => {
-  const theme = useReadLocalStorage(colorModeLocalStorageKey),
-    isClient = useIsClient();
+  const isClient = useIsClient();
 
   const DATA = [
     { name: "Mon", value: getRandonInteger() },
@@ -35,14 +33,7 @@ const FeedbackOverview = () => {
         <BarChart width={500} height={400} data={DATA}>
           <XAxis dataKey="name" axisLine={false} tickLine={false} />
           <YAxis axisLine={false} tickLine={false} />
-          <Bar
-            dataKey="value"
-            fill={
-              theme === "dark"
-                ? token("colors.brand.primary.900a")
-                : token("colors.brand.primary.400a")
-            }
-          />
+          <Bar dataKey="value" fill={token("colors.foreground.muted")} />
         </BarChart>
       )}
     </FeedbackCard>
