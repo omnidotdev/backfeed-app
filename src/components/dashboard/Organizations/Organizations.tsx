@@ -1,5 +1,13 @@
-import { Button, Collapsible, Flex, Grid, Icon, Text } from "@omnidev/sigil";
-import { FiMoreHorizontal, FiPlusCircle } from "react-icons/fi";
+import {
+  Button,
+  Collapsible,
+  Flex,
+  Grid,
+  Icon,
+  Text,
+  useDisclosure,
+} from "@omnidev/sigil";
+import { FiChevronDown, FiChevronUp, FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
 import { OrganizationCard } from "components/dashboard";
@@ -15,7 +23,11 @@ const ORGANIZATION = {
  * Organizations section.
  */
 const Organizations = () => {
-  const isLoaded = useDelay();
+  const {
+      isOpen: isOrganizationCollapseOpen,
+      onToggle: onToggleOrganizationCollapse,
+    } = useDisclosure(),
+    isLoaded = useDelay();
 
   const allOrganizations = Array(9).fill(ORGANIZATION);
   const pinnedOrganizations = allOrganizations.slice(0, 3);
@@ -77,7 +89,7 @@ const Organizations = () => {
             my={-4}
           >
             <Icon
-              src={FiMoreHorizontal}
+              src={isOrganizationCollapseOpen ? FiChevronUp : FiChevronDown}
               w={8}
               h={8}
               color="foreground.subtle"
@@ -87,6 +99,8 @@ const Organizations = () => {
         }
         flexDirection="column-reverse"
         gap={6}
+        open={isOrganizationCollapseOpen}
+        onOpenChange={onToggleOrganizationCollapse}
       >
         <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
           {restOrganizations.map(({ name, type }, index) => (
