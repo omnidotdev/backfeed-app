@@ -24,14 +24,8 @@ const Response = ({ sender, message, date, type, isLoaded = true }: Props) => {
     .exhaustive();
 
   return (
-    <Skeleton isLoaded={isLoaded}>
-      <Flex
-        direction="column"
-        gap={4}
-        py={3}
-        w="100%"
-        borderBottomWidth={{ base: "1px", _last: 0 }}
-      >
+    <Skeleton isLoaded={isLoaded} borderBottomWidth={{ base: "1px", _last: 0 }}>
+      <Flex direction="column" gap={4} py={3} w="100%">
         <Flex direction="column">
           <Flex align="center" justify="space-between">
             <Text fontWeight="semibold" fontSize="sm" mb={1}>
