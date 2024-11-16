@@ -54,6 +54,17 @@ const app = {
       title: "Organizations",
       description: "Manage your organizations and their feedback projects",
     },
+    aggregates: {
+      totalFeedback: {
+        title: "Total Feedback",
+      },
+      activeUsers: {
+        title: "Active Users",
+      },
+      avgResponseTime: {
+        title: "Avg. Response Time",
+      },
+    },
   },
 };
 

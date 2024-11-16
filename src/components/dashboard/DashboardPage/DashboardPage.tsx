@@ -14,6 +14,24 @@ const DashboardPage = () => {
   const { firstName } = useAuth(),
     isLoaded = useDelay({ timeout: 400 });
 
+  const aggregates = [
+    {
+      title: app.dashboardPage.aggregates.totalFeedback.title,
+      value: "12,345",
+      icon: HiOutlineChatBubbleLeftRight,
+    },
+    {
+      title: app.dashboardPage.aggregates.activeUsers.title,
+      value: "42,069",
+      icon: HiOutlineUserGroup,
+    },
+    {
+      title: app.dashboardPage.aggregates.avgResponseTime.title,
+      value: "4.20h",
+      icon: GoClock,
+    },
+  ];
+
   return (
     <Flex
       direction="column"
@@ -51,26 +69,15 @@ const DashboardPage = () => {
       <Organizations />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
-        <Aggregate
-          title="Total Feedback"
-          value="12,345"
-          icon={HiOutlineChatBubbleLeftRight}
-          isLoaded={isLoaded}
-        />
-
-        <Aggregate
-          title="Active Users"
-          value="42,069"
-          icon={HiOutlineUserGroup}
-          isLoaded={isLoaded}
-        />
-
-        <Aggregate
-          title="Avg. Response Time"
-          value="4.20h"
-          icon={GoClock}
-          isLoaded={isLoaded}
-        />
+        {aggregates.map(({ title, value, icon }) => (
+          <Aggregate
+            key={title}
+            title={title}
+            value={value}
+            icon={icon}
+            isLoaded={isLoaded}
+          />
+        ))}
       </Grid>
 
       <Feedback />
