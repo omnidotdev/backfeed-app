@@ -1,10 +1,3 @@
-import {
-  IoBarChartOutline,
-  IoChatboxOutline,
-  IoPulseOutline,
-  IoRocketOutline,
-} from "react-icons/io5";
-
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
@@ -19,32 +12,28 @@ const app = {
       title: "Everything you need to manage feedback effectively",
       description:
         "Our comprehensive platform provides all the tools you need to collect, analyze, and act on user feedback.",
-      pinned: [
-        {
+      pinned: {
+        collection: {
           title: "Real-time Feedback Collection",
           description:
             "Gather user feedback instantly with customizable forms and widgets that seamlessly integrate into your product.",
-          Icon: IoChatboxOutline,
         },
-        {
+        analytics: {
           title: "Advanced Analytics",
           description:
             "Transform raw feedback into actionable insights with powerful analytics and visualization tools.",
-          Icon: IoBarChartOutline,
         },
-        {
+        implementation: {
           title: "Quick Implementation",
           description:
             "Get started in minutes with our simple SDK and comprehensive documentation.",
-          Icon: IoRocketOutline,
         },
-        {
+        workflows: {
           title: "Automated Workflows",
           description:
             "Streamline your feedback process with customizable automation and integration capabilities.",
-          Icon: IoPulseOutline,
         },
-      ],
+      },
     },
   },
 };
