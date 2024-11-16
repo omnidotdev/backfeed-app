@@ -1,10 +1,10 @@
 import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
 import { FiPlusCircle } from "react-icons/fi";
-import {
-  HiOutlineUserGroup,
-  HiOutlineChatBubbleLeftRight,
-} from "react-icons/hi2";
 import { GoClock } from "react-icons/go";
+import {
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineUserGroup,
+} from "react-icons/hi2";
 
 import { Aggregate, Organizations } from "components/dashboard";
 import { app } from "lib/config";
