@@ -19,8 +19,8 @@ const OrganizationCard = () => {
     >
       <Button
         position="absolute"
-        top={1}
-        right={1}
+        top={2}
+        right={2}
         zIndex="sticky"
         p={2}
         variant="icon"
