@@ -22,14 +22,13 @@ const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
       borderColor="border.subtle"
       borderRadius="lg"
       borderWidth="1px"
-      px={6}
-      py={7}
+      p={8}
       {...rest}
     >
       <Button
         position="absolute"
-        top={2}
-        right={2}
+        top={1}
+        right={1}
         zIndex="sticky"
         p={2}
         variant="icon"
@@ -40,11 +39,15 @@ const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
       </Button>
 
       <Flex direction="column">
-        <Text fontSize="lg" fontWeight="semibold" lineHeight={1.2}>
+        <Text
+          fontSize={{ base: "md", lg: "lg" }}
+          fontWeight="semibold"
+          lineHeight={1.2}
+        >
           {name}
         </Text>
 
-        <Text fontSize="sm" color="foreground.subtle">
+        <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
           {type}
         </Text>
       </Flex>

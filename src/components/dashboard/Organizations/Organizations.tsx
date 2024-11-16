@@ -53,7 +53,7 @@ const Organizations = () => {
         </Button>
       </Flex>
 
-      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
+      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
         {pinnedOrganizations.map(({ name, type }, index) => (
           <OrganizationCard
             // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
@@ -88,7 +88,7 @@ const Organizations = () => {
         flexDirection="column-reverse"
         gap={6}
       >
-        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
+        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
           {restOrganizations.map(({ name, type }, index) => (
             <OrganizationCard
               // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being

@@ -6,9 +6,11 @@ const OrganizationMembers = () => (
     <Flex align="center" gap={2}>
       <Icon src={HiOutlineUserGroup} w={5} h={5} color="foreground.subtle" />
 
-      <Text color="foreground.subtle" fontSize="sm">
-        420 Members
-      </Text>
+      <Flex color="foreground.subtle" fontSize="sm" gap={1}>
+        <Text>420</Text>
+
+        <Text display={{ base: "none", xl: "inline" }}>Members</Text>
+      </Flex>
     </Flex>
   </Flex>
 );

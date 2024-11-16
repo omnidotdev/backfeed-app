@@ -6,9 +6,11 @@ const OrganizationProjects = () => (
     <Flex align="center" gap={2}>
       <Icon src={HiOutlineFolder} w={5} h={5} color="foreground.subtle" />
 
-      <Text color="foreground.subtle" fontSize="sm">
-        69 Projects
-      </Text>
+      <Flex color="foreground.subtle" fontSize="sm" gap={1}>
+        <Text>69</Text>
+
+        <Text display={{ base: "none", xl: "inline" }}>Projects</Text>
+      </Flex>
     </Flex>
   </Flex>
 );
