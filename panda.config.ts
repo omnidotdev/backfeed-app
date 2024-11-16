@@ -17,6 +17,12 @@ const pandaConfig = defineConfig({
       },
     ],
   },
+  globalCss: {
+    html: {
+      margin: 0,
+      backgroundColor: "var(--colors-background-default)",
+    },
+  },
   conditions: {
     extend: {
       groupHover: "[role=group]:where(:hover, [data-hover]) &",
