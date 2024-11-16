@@ -17,6 +17,7 @@ const LandingPage = () => {
       bgColor="background.default"
     >
       <Hero />
+
       <Flex
         w="full"
         h="full"

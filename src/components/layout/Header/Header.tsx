@@ -39,6 +39,7 @@ const Header = () => {
           <Link href="/">
             <HStack gap={2} alignItems="center">
               <Icon src={LuMessageSquarePlus} w={6} h={6} />
+
               <Text
                 fontWeight="bold"
                 fontSize="lg"

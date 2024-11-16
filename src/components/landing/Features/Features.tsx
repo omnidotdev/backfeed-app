@@ -21,6 +21,7 @@ const Features = () => {
         <Text fontSize={{ base: "2xl", xl: "3xl" }} fontWeight="bold" mb={3}>
           {app.landingPage.features.title}
         </Text>
+
         <Text
           fontSize={{ base: "md", xl: "lg" }}
           mb={4}

@@ -25,9 +25,11 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => {
     >
       <Stack align="flex-start" h="full">
         <Icon src={featureIcon} w={10} h={10} color="brand.primary" mb={2} />
+
         <Text fontSize="lg" fontWeight="bold" my={2}>
           {title}
         </Text>
+
         <Text
           fontSize={{ base: "md", xlTo2xl: "sm" }}
           color="foreground.subtle"
