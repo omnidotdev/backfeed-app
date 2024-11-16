@@ -25,6 +25,9 @@
       "a11y": {
         "useSemanticElements": "off"
       },
+      "correctness": {
+        "noUnusedImports": "error"
+      },
       "style": {
         "noNonNullAssertion": "off",
         "useSingleVarDeclarator": "off"

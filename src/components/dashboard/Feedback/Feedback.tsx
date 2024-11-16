@@ -1,4 +1,4 @@
-import { Flex, Grid } from "@omnidev/sigil";
+import { Grid } from "@omnidev/sigil";
 
 import { FeedbackOverview, RecentFeedback } from "components/dashboard";
 
