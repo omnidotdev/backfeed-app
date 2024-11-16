@@ -4,7 +4,7 @@ import { Badge, Flex, Text } from "@omnidev/sigil";
 import { match } from "ts-pattern";
 
 // NB: tried to use an enum here but had difficulties with runtime errors
-export type ResponseType = "Neutral" | "Positive" | "Negative" | "Feature";
+export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 
 // NB: this prop drilling is under the assumption that the query from parent won't provide much overhead (i.e. parent is isolated query and has minimal nesting / a response is a direct child)
 interface Props {
@@ -18,7 +18,7 @@ const Response = ({ sender, message, date, type }: Props) => {
   const color = match(type)
     .with("Neutral", () => "foreground.subtle")
     .with("Positive", () => "green")
-    .with("Negative", () => "red")
+    .with("Bug", () => "red")
     .with("Feature", () => "blue")
     .exhaustive();
 
