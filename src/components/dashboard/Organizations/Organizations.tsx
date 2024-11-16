@@ -1,4 +1,4 @@
-import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
+import { Button, Collapsible, Flex, Grid, Icon, Text } from "@omnidev/sigil";
 import { FiMoreHorizontal, FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
@@ -54,22 +54,42 @@ const Organizations = () => {
         />
       </Grid>
 
-      <Button
-        variant="icon"
-        w="fit-content"
-        bgColor="transparent"
-        opacity={{ base: 1, _hover: 0.8 }}
-        placeSelf="center"
-        my={-4}
+      {/* @ts-ignore TODO figure out why this is throwing an error */}
+      <Collapsible
+        trigger={
+          <Button
+            variant="icon"
+            w="fit-content"
+            bgColor="transparent"
+            opacity={{ base: 1, _hover: 0.8 }}
+            placeSelf="center"
+            my={-4}
+          >
+            <Icon
+              src={FiMoreHorizontal}
+              w={8}
+              h={8}
+              color="foreground.subtle"
+              placeSelf="center"
+            />
+          </Button>
+        }
+        flexDirection="column-reverse"
+        gap={6}
       >
-        <Icon
-          src={FiMoreHorizontal}
-          w={8}
-          h={8}
-          color="foreground.subtle"
-          placeSelf="center"
-        />
-      </Button>
+        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
+          <OrganizationCard isLoaded={isLoaded} />
+
+          <OrganizationCard isLoaded={isLoaded} />
+
+          <OrganizationCard isLoaded={isLoaded} />
+
+          <OrganizationCard
+            isLoaded={isLoaded}
+            display={{ base: "none", md: "block", xl: "none" }}
+          />
+        </Grid>
+      </Collapsible>
     </Flex>
   );
 };
