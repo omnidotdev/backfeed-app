@@ -4,6 +4,7 @@ import { Button, Flex, Icon } from "@omnidev/sigil";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 import { FeedbackCard, Response } from "components/dashboard";
+import { useDelay } from "lib/hooks";
 
 import type { ResponseType } from "components/dashboard";
 
@@ -46,37 +47,42 @@ const FEEDBACK: Feedback[] = [
   },
 ];
 
-const RecentFeedback = () => (
-  <FeedbackCard title="Recent Feedback">
-    <Flex direction="column">
-      {FEEDBACK.map(({ id, sender, message, date, type }) => (
-        <Response
-          key={id}
-          sender={sender}
-          message={message}
-          date={date}
-          type={type}
-        />
-      ))}
-    </Flex>
+const RecentFeedback = () => {
+  const isLoaded = useDelay({ timeout: 500 });
 
-    <Button
-      variant="icon"
-      w="fit-content"
-      bgColor="transparent"
-      opacity={{ base: 1, _hover: 0.8 }}
-      placeSelf="center"
-      mb={-4}
-    >
-      <Icon
-        src={FiMoreHorizontal}
-        w={8}
-        h={8}
-        color="foreground.subtle"
+  return (
+    <FeedbackCard title="Recent Feedback">
+      <Flex direction="column" gap={2}>
+        {FEEDBACK.map(({ id, sender, message, date, type }) => (
+          <Response
+            key={id}
+            sender={sender}
+            message={message}
+            date={date}
+            type={type}
+            isLoaded={isLoaded}
+          />
+        ))}
+      </Flex>
+
+      <Button
+        variant="icon"
+        w="fit-content"
+        bgColor="transparent"
+        opacity={{ base: 1, _hover: 0.8 }}
         placeSelf="center"
-      />
-    </Button>
-  </FeedbackCard>
-);
+        mb={-4}
+      >
+        <Icon
+          src={FiMoreHorizontal}
+          w={8}
+          h={8}
+          color="foreground.subtle"
+          placeSelf="center"
+        />
+      </Button>
+    </FeedbackCard>
+  );
+};
 
 export default RecentFeedback;

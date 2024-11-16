@@ -8,10 +8,11 @@ import {
 
 import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useDelay } from "lib/hooks";
 
 const DashboardPage = () => {
-  const { firstName } = useAuth();
+  const { firstName } = useAuth(),
+    isLoaded = useDelay({ timeout: 400 });
 
   return (
     <Flex
@@ -54,15 +55,22 @@ const DashboardPage = () => {
           title="Total Feedback"
           value="12,345"
           icon={HiOutlineChatBubbleLeftRight}
+          isLoaded={isLoaded}
         />
 
         <Aggregate
           title="Active Users"
           value="42,069"
           icon={HiOutlineUserGroup}
+          isLoaded={isLoaded}
         />
 
-        <Aggregate title="Avg. Response Time" value="4.20h" icon={GoClock} />
+        <Aggregate
+          title="Avg. Response Time"
+          value="4.20h"
+          icon={GoClock}
+          isLoaded={isLoaded}
+        />
       </Grid>
 
       <Feedback />
