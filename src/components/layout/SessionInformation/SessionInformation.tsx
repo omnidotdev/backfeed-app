@@ -12,7 +12,7 @@ const SessionInformation = () => {
       borderRadius="full"
       variant="icon"
       size="lg"
-      bgColor="background.muted"
+      bgColor={{ base: "background.subtle", _hover: "background.muted" }}
       color="foreground.muted"
     >
       {initials}

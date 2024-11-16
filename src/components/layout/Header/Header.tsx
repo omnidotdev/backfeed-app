@@ -17,8 +17,10 @@ const Header = () => {
   const pathname = usePathname(),
     { isAuthenticated } = useAuth();
 
-  // TODO: make dynamic based on the current route and auth status
-  const { landingPage } = navigationRoutes;
+  // TODO: make dynamic based on the current route
+  const { landingPage, dashboardPage } = navigationRoutes;
+
+  const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
 
   return (
     <sigil.header
@@ -47,7 +49,7 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {landingPage.map(({ label, href }) => {
+          {headerRoutes.map(({ label, href }) => {
             const isActive = pathname === href;
 
             return (
