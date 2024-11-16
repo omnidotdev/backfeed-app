@@ -1,5 +1,5 @@
 import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiMoreHorizontal, FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
 import { OrganizationCard } from "components/dashboard";
@@ -41,6 +41,22 @@ const Organizations = () => {
         <OrganizationCard />
         <OrganizationCard />
       </Grid>
+      <Button
+        variant="icon"
+        w="fit-content"
+        bgColor="transparent"
+        opacity={{ base: 1, _hover: 0.8 }}
+        placeSelf="center"
+        my={-4}
+      >
+        <Icon
+          src={FiMoreHorizontal}
+          w={8}
+          h={8}
+          color="foreground.subtle"
+          placeSelf="center"
+        />
+      </Button>
     </Flex>
   );
 };
