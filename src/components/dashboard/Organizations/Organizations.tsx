@@ -31,9 +31,9 @@ const Organizations = () => (
         </Text>
       </Flex>
 
-      <Button>
+      <Button variant="outline" ml={4}>
         <Icon src={FiPlusCircle} w={4} h={4} />
-        New Organization
+        <Text display={{ base: "none", md: "inline" }}>New Organization</Text>
       </Button>
     </Flex>
 
@@ -43,6 +43,8 @@ const Organizations = () => (
       <OrganizationCard />
 
       <OrganizationCard />
+
+      <OrganizationCard display={{ base: "none", md: "block", xl: "none" }} />
     </Grid>
 
     <Button

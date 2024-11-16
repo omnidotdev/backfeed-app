@@ -42,19 +42,14 @@ const DashboardPage = () => {
 
           <Button>
             <Icon src={FiPlusCircle} w={4} h={4} />
-            New Project
+            <Text display={{ base: "none", md: "inline" }}>New Project</Text>
           </Button>
         </Flex>
       </Flex>
 
       <Organizations />
 
-      <Grid
-        gap={6}
-        alignItems="center"
-        columns={{ base: 1, md: 2, xl: 3 }}
-        w="100%"
-      >
+      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
         <Aggregate
           title="Total Feedback"
           value="12,345"

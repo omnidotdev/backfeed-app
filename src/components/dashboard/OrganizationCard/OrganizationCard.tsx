@@ -6,7 +6,9 @@ import {
   OrganizationProjects,
 } from "components/dashboard";
 
-const OrganizationCard = () => (
+import type { FlexProps } from "@omnidev/sigil";
+
+const OrganizationCard = ({ ...props }: FlexProps) => (
   <Flex
     position="relative"
     direction="column"
@@ -15,6 +17,7 @@ const OrganizationCard = () => (
     borderWidth="1px"
     px={6}
     py={7}
+    {...props}
   >
     <Button
       position="absolute"
