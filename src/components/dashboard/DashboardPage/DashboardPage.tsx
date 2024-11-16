@@ -6,7 +6,7 @@ import {
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { Aggregate, Organizations } from "components/dashboard";
+import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -60,6 +60,7 @@ const DashboardPage = () => {
         />
         <Aggregate title="Avg. Response Time" value="4.20h" icon={GoClock} />
       </Grid>
+      <Feedback />
     </Flex>
   );
 };
