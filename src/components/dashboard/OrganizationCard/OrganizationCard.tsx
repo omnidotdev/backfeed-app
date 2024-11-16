@@ -9,10 +9,12 @@ import {
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
+  name: string;
+  type: string;
   isLoaded?: boolean;
 }
 
-const OrganizationCard = ({ isLoaded = true, ...rest }: Props) => (
+const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
   <Skeleton isLoaded={isLoaded}>
     <Flex
       position="relative"
@@ -39,11 +41,11 @@ const OrganizationCard = ({ isLoaded = true, ...rest }: Props) => (
 
       <Flex direction="column">
         <Text fontSize="lg" fontWeight="semibold" lineHeight={1.2}>
-          Organization Name
+          {name}
         </Text>
 
         <Text fontSize="sm" color="foreground.subtle">
-          Company Type
+          {type}
         </Text>
       </Flex>
 

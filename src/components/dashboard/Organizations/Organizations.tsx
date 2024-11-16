@@ -6,8 +6,20 @@ import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
 import { useDelay } from "lib/hooks";
 
+const ORGANIZATION = {
+  name: "Organization Name",
+  type: "Company Type",
+};
+
+/**
+ * Organizations section.
+ */
 const Organizations = () => {
   const isLoaded = useDelay();
+
+  const allOrganizations = Array(9).fill(ORGANIZATION);
+  const pinnedOrganizations = allOrganizations.slice(0, 3);
+  const restOrganizations = allOrganizations.slice(3);
 
   return (
     <Flex
@@ -42,16 +54,15 @@ const Organizations = () => {
       </Flex>
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
-        <OrganizationCard isLoaded={isLoaded} />
-
-        <OrganizationCard isLoaded={isLoaded} />
-
-        <OrganizationCard isLoaded={isLoaded} />
-
-        <OrganizationCard
-          isLoaded={isLoaded}
-          display={{ base: "none", md: "block", xl: "none" }}
-        />
+        {pinnedOrganizations.map(({ name, type }, index) => (
+          <OrganizationCard
+            // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
+            key={`${name}-${index}`}
+            name={name}
+            type={type}
+            isLoaded={isLoaded}
+          />
+        ))}
       </Grid>
 
       {/* @ts-ignore TODO figure out why this is throwing an error */}
@@ -78,16 +89,15 @@ const Organizations = () => {
         gap={6}
       >
         <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
-          <OrganizationCard isLoaded={isLoaded} />
-
-          <OrganizationCard isLoaded={isLoaded} />
-
-          <OrganizationCard isLoaded={isLoaded} />
-
-          <OrganizationCard
-            isLoaded={isLoaded}
-            display={{ base: "none", md: "block", xl: "none" }}
-          />
+          {restOrganizations.map(({ name, type }, index) => (
+            <OrganizationCard
+              // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
+              key={`${name}-${index}`}
+              name={name}
+              type={type}
+              isLoaded={isLoaded}
+            />
+          ))}
         </Grid>
       </Collapsible>
     </Flex>
