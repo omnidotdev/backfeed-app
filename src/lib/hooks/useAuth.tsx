@@ -1,6 +1,7 @@
 const useAuth = () => ({
   isAuthenticated: true,
-  initials: "JH",
+  firstName: "Back",
+  lastName: "Feed",
 });
 
 export default useAuth;

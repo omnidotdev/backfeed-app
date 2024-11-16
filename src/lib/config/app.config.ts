@@ -47,6 +47,10 @@ const app = {
       ],
     },
   },
+  dashboardPage: {
+    welcomeMessage: "Welcome back",
+    description: "Here's what's happening with your feedback today.",
+  },
 };
 
 export default app;
