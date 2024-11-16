@@ -2,7 +2,9 @@
 
 import { LandingPage } from "components/landing";
 
-// TODO: make dynamic when auth flow is implemented
+/**
+ * Home page. This route is dynamically rendered based on the user's authentication status.
+ */
 const HomePage = () => {
   return <LandingPage />;
 };

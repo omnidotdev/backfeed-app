@@ -8,15 +8,12 @@ import { LuMessageSquarePlus } from "react-icons/lu";
 import { ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
-import { useIsTablet } from "lib/hooks";
 
 /**
  * Layout header.
  */
 const Header = () => {
   const pathname = usePathname();
-
-  const isTablet = useIsTablet();
 
   // TODO: make dynamic based on the current route and auth status
   const { landingPage } = navigationRoutes;

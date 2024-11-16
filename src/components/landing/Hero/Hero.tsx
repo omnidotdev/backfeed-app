@@ -14,6 +14,9 @@ interface ActionProps extends ButtonProps {
   icon?: IconType;
 }
 
+/**
+ * Landing page hero section.
+ */
 const Hero = () => {
   const isMounted = useIsClient(),
     isTablet = useIsTablet();
