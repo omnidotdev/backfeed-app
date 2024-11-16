@@ -44,6 +44,7 @@ const Hero = () => {
       >
         {app.landingPage.hero.title}
       </Text>
+
       <Text
         as="h2"
         color="foreground.subtle"
@@ -55,6 +56,7 @@ const Hero = () => {
       >
         {app.landingPage.hero.description}
       </Text>
+
       <Flex mt={6} gap={4}>
         {actions.map(({ label, icon: ActionIcon, ...rest }) => (
           <Button

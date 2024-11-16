@@ -11,6 +11,7 @@ const LandingPage = () => {
   return (
     <Flex direction="column" align="center" w="100%" h="100%">
       <Hero />
+
       <Flex
         w="full"
         h="full"

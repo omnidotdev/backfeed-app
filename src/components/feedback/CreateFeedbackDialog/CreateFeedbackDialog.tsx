@@ -107,6 +107,7 @@ const CreateFeedbackDialog = ({
             // isInvalid={!!errors.title}
           >
             <Label>Title</Label>
+
             <Input
               placeholder="Short, descriptive title"
               _placeholder={{ color: "gray.500" }}
@@ -128,6 +129,7 @@ const CreateFeedbackDialog = ({
             // isInvalid={!!errors.title}
           >
             <Label>Description</Label>
+
             <Textarea
               placeholder="Describe additional details..."
               _placeholder={{ color: "gray.500" }}

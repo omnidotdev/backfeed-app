@@ -44,7 +44,9 @@ const OrganizationPage = () => {
                     width={40}
                   />
                 )}
+
                 <Text>{project?.name}</Text>
+
                 <Text>{project?.description}</Text>
               </Card>
             </Link>
