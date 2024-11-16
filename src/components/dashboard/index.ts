@@ -1,6 +1,7 @@
 export { default as Aggregate } from "./Aggregate/Aggregate";
 export { default as DashboardPage } from "./DashboardPage/DashboardPage";
 export { default as Feedback } from "./Feedback/Feedback";
+export { default as FeedbackCard } from "./FeedbackCard/FeedbackCard";
 export { default as FeedbackOverview } from "./FeedbackOverview/FeedbackOverview";
 export { default as OrganizationCard } from "./OrganizationCard/OrganizationCard";
 export { default as OrganizationMembers } from "./OrganizationMembers/OrganizationMembers";

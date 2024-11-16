@@ -1,19 +1,7 @@
-import { Flex } from "@omnidev/sigil";
+import { FeedbackCard } from "components/dashboard";
 
 const RecentFeedback = () => {
-  return (
-    <Flex
-      flex={1}
-      h="100%"
-      align="center"
-      justify="center"
-      bgColor="background.default"
-      borderRadius="lg"
-      boxShadow="lg"
-    >
-      Recent Feedback
-    </Flex>
-  );
+  return <FeedbackCard title="Recent Feedback">Recent Thread</FeedbackCard>;
 };
 
 export default RecentFeedback;
