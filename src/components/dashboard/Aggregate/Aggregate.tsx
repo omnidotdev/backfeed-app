@@ -9,6 +9,9 @@ interface Props {
   isLoaded?: boolean;
 }
 
+/**
+ * Aggregate statistic card. Displays information about the total feedback, active users, or average response time.
+ */
 const Aggregate = ({ title, value, icon, isLoaded = true }: Props) => (
   <Flex
     direction="column"

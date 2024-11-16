@@ -10,6 +10,9 @@ import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth, useDelay } from "lib/hooks";
 
+/**
+ * Dashboard page. This provides the main layout for the home page when the user is authenticated.
+ */
 const DashboardPage = () => {
   const { firstName } = useAuth(),
     isLoaded = useDelay({ timeout: 400 });

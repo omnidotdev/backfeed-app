@@ -1,10 +1,8 @@
 import { Button, Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import { FiArrowUpRight } from "react-icons/fi";
+import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
-import {
-  OrganizationMembers,
-  OrganizationProjects,
-} from "components/dashboard";
+import { OrganizationStatistic } from "components/dashboard";
 
 import type { FlexProps } from "@omnidev/sigil";
 
@@ -14,6 +12,9 @@ interface Props extends FlexProps {
   isLoaded?: boolean;
 }
 
+/**
+ * Organization card.
+ */
 const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
   <Skeleton isLoaded={isLoaded}>
     <Flex
@@ -53,9 +54,17 @@ const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
       </Flex>
 
       <Grid columns={2} mt={6} alignItems="start">
-        <OrganizationMembers />
+        <OrganizationStatistic
+          type="Members"
+          value={420}
+          icon={HiOutlineUserGroup}
+        />
 
-        <OrganizationProjects />
+        <OrganizationStatistic
+          type="Projects"
+          value={69}
+          icon={HiOutlineFolder}
+        />
       </Grid>
     </Flex>
   </Skeleton>

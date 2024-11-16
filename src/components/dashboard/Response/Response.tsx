@@ -15,6 +15,9 @@ interface Props {
   isLoaded?: boolean;
 }
 
+/**
+ * Recent feedback response.
+ */
 const Response = ({ sender, message, date, type, isLoaded = true }: Props) => {
   const color = match(type)
     .with("Neutral", () => "foreground.subtle")

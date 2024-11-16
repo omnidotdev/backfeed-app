@@ -47,6 +47,9 @@ const FEEDBACK: Feedback[] = [
   },
 ];
 
+/**
+ * Recent feedback section.
+ */
 const RecentFeedback = () => {
   const isLoaded = useDelay({ timeout: 500 });
 
