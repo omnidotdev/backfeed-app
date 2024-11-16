@@ -1,7 +1,8 @@
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
 import { FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
+import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
 
 const Organizations = () => {
@@ -35,7 +36,11 @@ const Organizations = () => {
           New Organization
         </Button>
       </Flex>
-      <Flex>Org Cards</Flex>
+      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2, xl: 3 }}>
+        <OrganizationCard />
+        <OrganizationCard />
+        <OrganizationCard />
+      </Grid>
     </Flex>
   );
 };
