@@ -7,6 +7,27 @@ const pandaConfig = defineConfig({
   presets: ["@pandacss/preset-base", sigilPreset],
   include: ["src/**/*.{ts,tsx}"],
   outdir: "src/generated/panda",
+  staticCss: {
+    css: [
+      {
+        properties: {
+          color: ["*"],
+          backgroundColor: ["*"],
+        },
+      },
+    ],
+  },
+  globalCss: {
+    html: {
+      margin: 0,
+      backgroundColor: "var(--colors-background-default)",
+    },
+  },
+  conditions: {
+    extend: {
+      groupHover: "[role=group]:where(:hover, [data-hover]) &",
+    },
+  },
 });
 
 export default pandaConfig;

@@ -12,7 +12,8 @@ const Footer = () => (
     display="flex"
     pos="fixed"
     justifyContent="center"
-    mb={6}
+    alignItems="center"
+    p={4}
     bottom={0}
     w="100%"
   >

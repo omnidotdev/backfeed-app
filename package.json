@@ -2,7 +2,7 @@
   "name": "backfeed",
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"next dev\"",
+    "dev": "rm -rf .next && concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"next dev\"",
     "build": "next build",
     "start": "next start",
     "format": "biome format --write src",
@@ -18,7 +18,7 @@
     "@graphql-codegen/typescript": "^4.0.4",
     "@graphql-codegen/typescript-operations": "^4.1.2",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
-    "@pandacss/dev": "^0.40",
+    "@pandacss/dev": "^0.48.0",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.55",
@@ -34,11 +34,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@ark-ui/react": "^4.1.2",
+    "@ark-ui/react": "^4.4.3",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.4",
-    "@omnidev/sigil": "^0.11.1",
+    "@omnidev/sigil": "^0.12.1",
     "@rainbow-me/rainbowkit": "^2.2.0",
     "@tanstack/react-query": "^5.20.5",
     "@tanstack/react-query-devtools": "^5.20.5",
@@ -60,5 +60,13 @@
     "ws": "^8.16.0",
     "zod": "^3.22.4"
   },
-  "trustedDependencies": ["@biomejs/biome", "@parcel/watcher", "bufferutil", "esbuild", "keccak", "sharp", "utf-8-validate"]
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@parcel/watcher",
+    "bufferutil",
+    "esbuild",
+    "keccak",
+    "sharp",
+    "utf-8-validate"
+  ]
 }

@@ -60,7 +60,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
       {
         enabled: !!connectedAddress,
         select: (data) => data.userByWalletAddress,
-      },
+      }
     );
 
   const {
@@ -69,7 +69,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
     isError: isPostsError,
   } = usePostsQuery(
     { projectId: projectId! },
-    { select: (data) => data?.posts?.nodes },
+    { select: (data) => data?.posts?.nodes }
   );
 
   const { mutate: upvotePost } = useUpvotePostMutation({
@@ -119,12 +119,13 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
               // biome-ignore lint/suspicious/noArrayIndexKey: idx needed as key
               <Stack key={idx} gap={4} w="full" mb={4} _last={{ mb: 0 }}>
                 <Skeleton w="40%" h={6} />
+
                 <Skeleton h={12} />
               </Stack>
             ))
           : posts?.map((post) => {
               const upvoteId = post?.upvotes?.nodes?.find(
-                (upvote) => upvote?.rowId,
+                (upvote) => upvote?.rowId
               )?.rowId;
 
               const postId = post?.rowId;
@@ -163,6 +164,7 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                     }}
                   >
                     <Text>{post?.title}</Text>
+
                     <Text color="gray.500" lineClamp={3}>
                       {post?.description}
                     </Text>
@@ -190,8 +192,10 @@ const Feed = ({ projectId, enableDownvotes = false, ...rest }: Props) => {
                   ? "you"
                   : activePost?.user?.walletAddress}
               </Text>
+
               <Text fontSize="sm" opacity={0.8}>
                 <Icon src={CalendarIcon} mr={3} />
+
                 {dayjs().to(dayjs(activePost?.createdAt))}
               </Text>
             </Flex>

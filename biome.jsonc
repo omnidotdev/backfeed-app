@@ -22,6 +22,10 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        // NB: turned off to use `role` attribute to extend conditions such as `groupHover`
+        "useSemanticElements": "off"
+      },
       "style": {
         "noNonNullAssertion": "off",
         "useSingleVarDeclarator": "off"
