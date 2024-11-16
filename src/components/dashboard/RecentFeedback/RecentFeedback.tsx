@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, Flex, Icon } from "@omnidev/sigil";
-import { FiMoreHorizontal } from "react-icons/fi";
+import { Flex } from "@omnidev/sigil";
 
 import { FeedbackCard, Response } from "components/dashboard";
 import { useDelay } from "lib/hooks";
@@ -20,7 +19,7 @@ const FEEDBACK: Feedback[] = [
   {
     id: "1",
     sender: "Back Feed",
-    message: "I like turtles.",
+    message: "I still like turtles.",
     date: "30 seconds ago",
     type: "Neutral",
   },
@@ -45,6 +44,34 @@ const FEEDBACK: Feedback[] = [
     date: "2 days ago",
     type: "Feature",
   },
+  {
+    id: "5",
+    sender: "Back Feed",
+    message: "I am having troubles logging in.",
+    date: "3 days ago",
+    type: "Bug",
+  },
+  {
+    id: "6",
+    sender: "Back Fed",
+    message: "I love turtles!",
+    date: "4 days ago",
+    type: "Positive",
+  },
+  {
+    id: "7",
+    sender: "Front Fed",
+    message: "Would love to be able to export feedback.",
+    date: "10 days ago",
+    type: "Feature",
+  },
+  {
+    id: "8",
+    sender: "Back Feed",
+    message: "I like turtles.",
+    date: "69 days ago",
+    type: "Neutral",
+  },
 ];
 
 /**
@@ -54,7 +81,11 @@ const RecentFeedback = () => {
   const isLoaded = useDelay({ timeout: 500 });
 
   return (
-    <FeedbackCard title="Recent Feedback">
+    <FeedbackCard
+      title="Recent Feedback"
+      maxH="xl"
+      contentProps={{ overflow: "auto" }}
+    >
       <Flex direction="column" gap={2}>
         {FEEDBACK.map(({ id, sender, message, date, type }) => (
           <Response
@@ -67,23 +98,6 @@ const RecentFeedback = () => {
           />
         ))}
       </Flex>
-
-      <Button
-        variant="icon"
-        w="fit-content"
-        bgColor="transparent"
-        opacity={{ base: 1, _hover: 0.8 }}
-        placeSelf="center"
-        mb={-4}
-      >
-        <Icon
-          src={FiMoreHorizontal}
-          w={8}
-          h={8}
-          color="foreground.subtle"
-          placeSelf="center"
-        />
-      </Button>
     </FeedbackCard>
   );
 };

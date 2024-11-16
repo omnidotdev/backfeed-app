@@ -4,27 +4,39 @@ import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
   title: string;
+  contentProps?: FlexProps;
 }
 
 /**
  * Feedback card.
  */
-const FeedbackCard = ({ title, children, ...rest }: Props) => (
+const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
   <Flex
+    position="relative"
     direction="column"
     flex={1}
     h="100%"
-    p={6}
     bgColor="background.default"
     borderRadius="lg"
     boxShadow="lg"
+    overflow="auto"
     {...rest}
   >
-    <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2} mb={4}>
+    <Text
+      position="absolute"
+      top={0}
+      w="full"
+      backgroundColor="background.subtle"
+      fontSize="2xl"
+      fontWeight="semibold"
+      boxShadow="xs"
+      lineHeight={1.2}
+      p={6}
+    >
       {title}
     </Text>
 
-    <Flex direction="column" flex={1}>
+    <Flex direction="column" flex={1} p={6} mt={16} {...contentProps}>
       {children}
     </Flex>
   </Flex>
