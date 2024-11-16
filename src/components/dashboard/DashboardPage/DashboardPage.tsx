@@ -12,6 +12,7 @@ import { useAuth } from "lib/hooks";
 
 const DashboardPage = () => {
   const { firstName } = useAuth();
+
   return (
     <Flex
       direction="column"
@@ -33,17 +34,21 @@ const DashboardPage = () => {
               fontWeight="semibold"
               lineHeight={1.3}
             >{`${app.dashboardPage.welcomeMessage}, ${firstName}!`}</Text>
+
             <Text as="h2" fontWeight="medium" color="foreground.subtle">
               {app.dashboardPage.description}
             </Text>
           </Flex>
+
           <Button>
             <Icon src={FiPlusCircle} w={4} h={4} />
             New Project
           </Button>
         </Flex>
       </Flex>
+
       <Organizations />
+
       <Grid
         gap={6}
         alignItems="center"
@@ -55,13 +60,16 @@ const DashboardPage = () => {
           value="12,345"
           icon={HiOutlineChatBubbleLeftRight}
         />
+
         <Aggregate
           title="Active Users"
           value="42,069"
           icon={HiOutlineUserGroup}
         />
+
         <Aggregate title="Avg. Response Time" value="4.20h" icon={GoClock} />
       </Grid>
+
       <Feedback />
     </Flex>
   );

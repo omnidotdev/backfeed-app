@@ -35,14 +35,17 @@ const Response = ({ sender, message, date, type }: Props) => {
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
             {sender}
           </Text>
+
           <Badge color={color} borderColor={color}>
             {type}
           </Badge>
         </Flex>
+
         <Text fontSize="sm" color="foreground.subtle">
           {message}
         </Text>
       </Flex>
+
       <Text fontSize="xs" color="foreground.muted">
         {date}
       </Text>

@@ -46,39 +46,37 @@ const FEEDBACK: Feedback[] = [
   },
 ];
 
-const RecentFeedback = () => {
-  return (
-    <FeedbackCard title="Recent Feedback">
-      <Flex direction="column">
-        {FEEDBACK.map(({ id, sender, message, date, type }) => (
-          <Response
-            key={id}
-            sender={sender}
-            message={message}
-            date={date}
-            type={type}
-          />
-        ))}
-      </Flex>
-
-      <Button
-        variant="icon"
-        w="fit-content"
-        bgColor="transparent"
-        opacity={{ base: 1, _hover: 0.8 }}
-        placeSelf="center"
-        mb={-4}
-      >
-        <Icon
-          src={FiMoreHorizontal}
-          w={8}
-          h={8}
-          color="foreground.subtle"
-          placeSelf="center"
+const RecentFeedback = () => (
+  <FeedbackCard title="Recent Feedback">
+    <Flex direction="column">
+      {FEEDBACK.map(({ id, sender, message, date, type }) => (
+        <Response
+          key={id}
+          sender={sender}
+          message={message}
+          date={date}
+          type={type}
         />
-      </Button>
-    </FeedbackCard>
-  );
-};
+      ))}
+    </Flex>
+
+    <Button
+      variant="icon"
+      w="fit-content"
+      bgColor="transparent"
+      opacity={{ base: 1, _hover: 0.8 }}
+      placeSelf="center"
+      mb={-4}
+    >
+      <Icon
+        src={FiMoreHorizontal}
+        w={8}
+        h={8}
+        color="foreground.subtle"
+        placeSelf="center"
+      />
+    </Button>
+  </FeedbackCard>
+);
 
 export default RecentFeedback;
