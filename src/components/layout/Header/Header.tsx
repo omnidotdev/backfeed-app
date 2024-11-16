@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { GetStarted, SessionInformation, ThemeToggle } from "components/layout";
+import { GetStarted, AccountInformation, ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -76,7 +76,7 @@ const Header = () => {
         <Flex alignItems="center" gap={6}>
           <ThemeToggle />
 
-          {isAuthenticated ? <SessionInformation /> : <GetStarted />}
+          {isAuthenticated ? <AccountInformation /> : <GetStarted />}
         </Flex>
       </Flex>
     </sigil.header>
