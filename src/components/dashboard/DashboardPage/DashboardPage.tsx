@@ -18,6 +18,8 @@ const DashboardPage = () => {
       align="center"
       w="100%"
       h="100%"
+      maxW="8xl"
+      mx="auto"
       py={5}
       px={12}
       gap={6}

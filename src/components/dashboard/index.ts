@@ -8,3 +8,4 @@ export { default as OrganizationMembers } from "./OrganizationMembers/Organizati
 export { default as OrganizationProjects } from "./OrganizationProjects/OrganizationProjects";
 export { default as Organizations } from "./Organizations/Organizations";
 export { default as RecentFeedback } from "./RecentFeedback/RecentFeedback";
+export { default as Response, type ResponseType } from "./Response/Response";
