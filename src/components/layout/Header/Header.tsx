@@ -1,22 +1,21 @@
 "use client";
 
-import { Button, Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { ThemeToggle } from "components/layout";
+import { GetStarted, SessionInformation, ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
-import { useIsTablet } from "lib/hooks";
+import { useAuth } from "lib/hooks";
 
 /**
  * Layout header.
  */
 const Header = () => {
-  const pathname = usePathname();
-
-  const isTablet = useIsTablet();
+  const pathname = usePathname(),
+    { isAuthenticated } = useAuth();
 
   // TODO: make dynamic based on the current route and auth status
   const { landingPage } = navigationRoutes;
@@ -74,7 +73,7 @@ const Header = () => {
         <Flex alignItems="center" gap={6}>
           <ThemeToggle />
 
-          <Button>Get Started</Button>
+          {isAuthenticated ? <SessionInformation /> : <GetStarted />}
         </Flex>
       </Flex>
     </sigil.header>
