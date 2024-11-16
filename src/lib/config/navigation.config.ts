@@ -9,6 +9,9 @@ interface NavigationRoutes {
   [key: string]: NavigationLink[];
 }
 
+/**
+ * Navigation routes.
+ */
 const navigationRoutes: NavigationRoutes = {
   landingPage: [{ label: "Pricing", href: "/pricing" }],
 };
