@@ -1,6 +1,7 @@
 interface NavigationLink {
   /** Human-readable label. */
   label: string;
+  /** Location (URL). */
   href: string;
 }
 
