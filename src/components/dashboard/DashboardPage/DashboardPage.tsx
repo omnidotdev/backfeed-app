@@ -1,7 +1,12 @@
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
 import { FiPlusCircle } from "react-icons/fi";
+import {
+  HiOutlineUserGroup,
+  HiOutlineChatBubbleLeftRight,
+} from "react-icons/hi2";
+import { GoClock } from "react-icons/go";
 
-import { Organizations } from "components/dashboard";
+import { Aggregate, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -37,6 +42,24 @@ const DashboardPage = () => {
         </Flex>
       </Flex>
       <Organizations />
+      <Grid
+        gap={6}
+        alignItems="center"
+        columns={{ base: 1, md: 2, xl: 3 }}
+        w="100%"
+      >
+        <Aggregate
+          title="Total Feedback"
+          value="12,345"
+          icon={HiOutlineChatBubbleLeftRight}
+        />
+        <Aggregate
+          title="Active Users"
+          value="42,069"
+          icon={HiOutlineUserGroup}
+        />
+        <Aggregate title="Avg. Response Time" value="4.20h" icon={GoClock} />
+      </Grid>
     </Flex>
   );
 };
