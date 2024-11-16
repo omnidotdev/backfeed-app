@@ -4,7 +4,9 @@ import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import { useAuth } from "lib/hooks";
 
-// TODO: make dynamic when auth flow is implemented
+/**
+ * Home page. This route is dynamically rendered based on the user's authentication status.
+ */
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
 

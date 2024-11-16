@@ -3,6 +3,9 @@ import { Flex, Grid, Text } from "@omnidev/sigil";
 import { FeatureCard } from "components/landing";
 import { app } from "lib/config";
 
+/**
+ * Landing page features section.
+ */
 const Features = () => {
   return (
     <Flex

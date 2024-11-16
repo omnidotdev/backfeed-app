@@ -9,6 +9,10 @@ interface Props {
 }
 
 // TODO: use `Card` component once `CardHeader` is conditionally rendered
+
+/**
+ * Landing page feature card.
+ */
 const FeatureCard = ({ title, description, featureIcon }: Props) => {
   return (
     <Flex
