@@ -1,3 +1,5 @@
+"use client";
+
 import { useTimeout } from "@omnidev/sigil";
 import { useState } from "react";
 
@@ -28,7 +30,7 @@ const useDataState = ({ timeout = 300 }: Options = {}) => {
         isLoading: false,
         isError: Math.random() < 0.1,
       }),
-    timeout
+    timeout,
   );
 
   return dataState;
