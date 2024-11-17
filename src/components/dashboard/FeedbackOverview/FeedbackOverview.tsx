@@ -15,7 +15,7 @@ import { ErrorBoundary } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { useDataState } from "lib/hooks";
 
-const getRandonInteger = () => Math.floor(Math.random() * 100);
+const getRandomInteger = () => Math.floor(Math.random() * 100);
 
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
@@ -25,13 +25,13 @@ const FeedbackOverview = () => {
     { isLoading, isError } = useDataState({ timeout: 600 });
 
   const DATA = [
-    { name: "Mon", total: getRandonInteger() },
-    { name: "Tue", total: getRandonInteger() },
-    { name: "Wed", total: getRandonInteger() },
-    { name: "Thu", total: getRandonInteger() },
-    { name: "Fri", total: getRandonInteger() },
-    { name: "Sat", total: getRandonInteger() },
-    { name: "Sun", total: getRandonInteger() },
+    { name: "Mon", total: getRandomInteger() },
+    { name: "Tue", total: getRandomInteger() },
+    { name: "Wed", total: getRandomInteger() },
+    { name: "Thu", total: getRandomInteger() },
+    { name: "Fri", total: getRandomInteger() },
+    { name: "Sat", total: getRandomInteger() },
+    { name: "Sun", total: getRandomInteger() },
   ];
 
   return (
