@@ -3,18 +3,18 @@ import { Flex, Icon, Text } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface Props {
-  /** Statistic type. */
+  /** Metric type. */
   type: "Members" | "Projects";
-  /** Statistic value. */
+  /** Metric value. */
   value: number;
   /** Visual icon. */
   icon: IconType;
 }
 
 /**
- * Organization statistic.
+ * Organization metric.
  */
-const OrganizationStatistic = ({ type, value, icon }: Props) => (
+const OrganizationMetric = ({ type, value, icon }: Props) => (
   <Flex direction="column" gap={4}>
     <Flex align="center" gap={2}>
       <Icon src={icon} w={5} h={5} color="foreground.subtle" />
@@ -28,4 +28,4 @@ const OrganizationStatistic = ({ type, value, icon }: Props) => (
   </Flex>
 );
 
-export default OrganizationStatistic;
+export default OrganizationMetric;
