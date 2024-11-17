@@ -33,7 +33,11 @@ const FeedbackOverview = () => {
         <BarChart width={500} height={400} data={DATA}>
           <XAxis dataKey="name" axisLine={false} tickLine={false} />
           <YAxis axisLine={false} tickLine={false} />
-          <Bar dataKey="value" fill={token("colors.foreground.muted")} />
+          <Bar
+            dataKey="value"
+            fill={token("colors.foreground.muted")}
+            radius={10}
+          />
         </BarChart>
       )}
     </FeedbackCard>
