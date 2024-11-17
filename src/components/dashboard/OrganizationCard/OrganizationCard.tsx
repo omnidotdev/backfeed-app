@@ -7,9 +7,13 @@ import { OrganizationStatistic } from "components/dashboard";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
+  /** Name of the organization. */
   name: string;
+  /** Type of the organization. */
   type: string;
+   /** Whether the organization data is loaded. */
   isLoaded?: boolean;
+  /** Whether loading the organization data encountered an error. */
   isError?: boolean;
 }
 
