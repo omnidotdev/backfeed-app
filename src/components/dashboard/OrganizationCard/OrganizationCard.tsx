@@ -22,7 +22,7 @@ const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
       direction="column"
       borderColor="border.subtle"
       borderRadius="lg"
-      boxShadow="sm"
+      boxShadow="xs"
       p={8}
       {...rest}
     >

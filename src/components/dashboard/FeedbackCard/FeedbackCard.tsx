@@ -36,7 +36,13 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
       {title}
     </Text>
 
-    <Flex direction="column" flex={1} p={6} mt={16} {...contentProps}>
+    <Flex
+      direction="column"
+      flex={1}
+      p={{ base: 6, md: 10 }}
+      mt={16}
+      {...contentProps}
+    >
       {children}
     </Flex>
   </Flex>

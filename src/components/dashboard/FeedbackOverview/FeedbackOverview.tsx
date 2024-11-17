@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton, useIsClient } from "@omnidev/sigil";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 import { FeedbackCard } from "components/dashboard";
 import { token } from "generated/panda/tokens";
@@ -30,17 +30,20 @@ const FeedbackOverview = () => {
       contentProps={{ align: "center", justify: "center" }}
     >
       {isMounted ? (
-        <BarChart width={500} height={400} data={DATA}>
-          <XAxis dataKey="name" axisLine={false} tickLine={false} />
-          <YAxis axisLine={false} tickLine={false} />
-          <Bar
-            dataKey="value"
-            fill={token("colors.foreground.muted")}
-            radius={10}
-          />
-        </BarChart>
+        <ResponsiveContainer width="90%" height={400}>
+          <BarChart data={DATA}>
+            <XAxis dataKey="name" axisLine={false} tickLine={false} />
+            {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
+            <YAxis axisLine={false} tickLine={false} width={32} />
+            <Bar
+              dataKey="value"
+              fill={token("colors.foreground.muted")}
+              radius={10}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       ) : (
-        <Skeleton h={400} w={500} />
+        <Skeleton width="90%" height={400} />
       )}
     </FeedbackCard>
   );
