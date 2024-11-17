@@ -25,7 +25,13 @@ const Response = ({ sender, message, date, type }: Props) => {
     .exhaustive();
 
   return (
-    <Flex direction="column" gap={4} py={3} w="100%">
+    <Flex
+      direction="column"
+      gap={4}
+      py={3}
+      w="100%"
+      borderBottomWidth={{ base: "1px", _last: 0 }}
+    >
       <Flex direction="column">
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
