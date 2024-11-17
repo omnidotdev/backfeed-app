@@ -5,6 +5,7 @@ import { Flex } from "@omnidev/sigil";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
+  /** Readable error message. */
   message: string;
 }
 
