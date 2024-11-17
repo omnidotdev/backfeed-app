@@ -1,16 +1,16 @@
 "use client";
 
-import { Button, Flex, Icon, Text, useIsClient } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
-import { useIsTablet } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface ActionProps extends ButtonProps {
   label: string;
+  shortLabel: string;
   icon?: IconType;
 }
 
@@ -18,16 +18,15 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
-  const isMounted = useIsClient(),
-    isTablet = useIsTablet();
-
   const actions: ActionProps[] = [
     {
-      label: isTablet ? "Start Collecting Feedback" : "Start",
+      label: "Start Collecting Feedback",
+      shortLabel: "Start",
       icon: FiArrowRight,
     },
     {
-      label: isTablet ? "Watch Demo" : "Demo",
+      label: "Watch Demo",
+      shortLabel: "Demo",
       variant: "outline",
     },
   ];
@@ -58,14 +57,10 @@ const Hero = () => {
       </Text>
 
       <Flex mt={6} gap={4}>
-        {actions.map(({ label, icon: ActionIcon, ...rest }) => (
-          <Button
-            key={label}
-            size="lg"
-            visibility={isMounted ? "visible" : "hidden"}
-            {...rest}
-          >
-            {label}
+        {actions.map(({ label, shortLabel, icon: ActionIcon, ...rest }) => (
+          <Button key={label} size="lg" {...rest}>
+            <Text display={{ base: "inline", md: "none" }}>{shortLabel}</Text>
+            <Text display={{ base: "none", md: "inline" }}>{label}</Text>
             {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
           </Button>
         ))}
