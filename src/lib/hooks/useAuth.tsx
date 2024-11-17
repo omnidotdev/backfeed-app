@@ -1,5 +1,5 @@
 const useAuth = () => ({
-  isAuthenticated: true,
+  isAuthenticated: false,
   firstName: "Back",
   lastName: "Feed",
 });
