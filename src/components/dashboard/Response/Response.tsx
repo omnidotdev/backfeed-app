@@ -2,6 +2,7 @@
 
 import { Badge, Flex, Text } from "@omnidev/sigil";
 import { match } from "ts-pattern";
+
 // NB: tried to use an enum here but had difficulties with runtime errors
 export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 
