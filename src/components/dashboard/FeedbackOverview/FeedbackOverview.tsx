@@ -1,6 +1,6 @@
 "use client";
 
-import { useIsClient } from "@omnidev/sigil";
+import { Skeleton, useIsClient } from "@omnidev/sigil";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import { FeedbackCard } from "components/dashboard";
@@ -9,10 +9,10 @@ import { token } from "generated/panda/tokens";
 const getRandonInteger = () => Math.floor(Math.random() * 100);
 
 /**
- * Feedback overview section.
+ * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = () => {
-  const isClient = useIsClient();
+  const isMounted = useIsClient();
 
   const DATA = [
     { name: "Mon", value: getRandonInteger() },
@@ -29,7 +29,7 @@ const FeedbackOverview = () => {
       title="Feedback Overview"
       contentProps={{ align: "center", justify: "center" }}
     >
-      {isClient && (
+      {isMounted ? (
         <BarChart width={500} height={400} data={DATA}>
           <XAxis dataKey="name" axisLine={false} tickLine={false} />
           <YAxis axisLine={false} tickLine={false} />
@@ -39,6 +39,8 @@ const FeedbackOverview = () => {
             radius={10}
           />
         </BarChart>
+      ) : (
+        <Skeleton h={400} w={500} />
       )}
     </FeedbackCard>
   );
