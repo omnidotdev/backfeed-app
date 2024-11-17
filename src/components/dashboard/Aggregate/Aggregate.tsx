@@ -3,10 +3,15 @@ import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface Props {
+  /** Statistic title (human-readable label). */
   title: string;
+  /** Statistic value. */
   value: string | number;
+  /** Visual icon. */
   icon: IconType;
+  /** Whether the statistic data is loaded. */
   isLoaded?: boolean;
+  /** Whether loading the statistic data encountered an error. */
   isError?: boolean;
 }
 
