@@ -7,6 +7,20 @@ const app = {
       title: "Transform User Feedback into Actionable Insights",
       description:
         "Collect, analyze, and act on user feedback with our powerful platform. Make data-driven decisions and improve your product faster than ever.",
+      cta: {
+        collect: {
+          label: {
+            short: "Start",
+            long: "Start Collecting Feedback",
+          },
+        },
+        demo: {
+          label: {
+            short: "Demo",
+            long: "Watch Demo",
+          },
+        },
+      },
     },
     features: {
       title: "Everything you need to manage feedback effectively",
