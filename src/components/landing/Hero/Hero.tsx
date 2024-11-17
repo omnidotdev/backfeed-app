@@ -9,8 +9,10 @@ import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface ActionProps extends ButtonProps {
-  label: string;
-  shortLabel: string;
+  label: {
+    short: string;
+    long: string;
+  };
   icon?: IconType;
 }
 
@@ -20,13 +22,17 @@ interface ActionProps extends ButtonProps {
 const Hero = () => {
   const actions: ActionProps[] = [
     {
-      label: "Start Collecting Feedback",
-      shortLabel: "Start",
+      label: {
+        short: app.landingPage.hero.cta.collect.label.short,
+        long: app.landingPage.hero.cta.collect.label.long,
+      },
       icon: FiArrowRight,
     },
     {
-      label: "Watch Demo",
-      shortLabel: "Demo",
+      label: {
+        short: app.landingPage.hero.cta.demo.label.short,
+        long: app.landingPage.hero.cta.demo.label.long,
+      },
       variant: "outline",
     },
   ];
@@ -57,10 +63,10 @@ const Hero = () => {
       </Text>
 
       <Flex mt={6} gap={4}>
-        {actions.map(({ label, shortLabel, icon: ActionIcon, ...rest }) => (
-          <Button key={label} size="lg" {...rest}>
-            <Text display={{ base: "inline", md: "none" }}>{shortLabel}</Text>
-            <Text display={{ base: "none", md: "inline" }}>{label}</Text>
+        {actions.map(({ label, icon: ActionIcon, ...rest }) => (
+          <Button key={label.long} size="lg" {...rest}>
+            <Text display={{ base: "inline", md: "none" }}>{label.short}</Text>
+            <Text display={{ base: "none", md: "inline" }}>{label.long}</Text>
             {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
           </Button>
         ))}
