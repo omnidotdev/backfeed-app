@@ -59,7 +59,12 @@ const Organizations = () => {
           </Text>
         </Flex>
 
-        <Button variant={{ base: "ghost", md: "outline" }} ml={4}>
+        <Button
+          variant={{ base: "ghost", md: "outline" }}
+          ml={4}
+          color="brand.primary"
+          borderColor="brand.primary"
+        >
           <Icon
             src={FiPlusCircle}
             w={{ base: 6, md: 4 }}
