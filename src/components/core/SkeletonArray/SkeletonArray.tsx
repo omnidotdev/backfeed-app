@@ -5,6 +5,7 @@ import { Skeleton } from "@omnidev/sigil";
 import type { SkeletonProps } from "@omnidev/sigil";
 
 interface Props extends SkeletonProps {
+  /** Number of skeletons to render. */
   count: number;
 }
 
