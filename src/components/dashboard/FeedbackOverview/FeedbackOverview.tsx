@@ -1,9 +1,16 @@
 "use client";
 
 import { Skeleton, useIsClient } from "@omnidev/sigil";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-import { FeedbackCard } from "components/dashboard";
+import { FeedbackCard, FeedbackTooltip } from "components/dashboard";
 import { token } from "generated/panda/tokens";
 
 const getRandonInteger = () => Math.floor(Math.random() * 100);
@@ -15,13 +22,13 @@ const FeedbackOverview = () => {
   const isMounted = useIsClient();
 
   const DATA = [
-    { name: "Mon", value: getRandonInteger() },
-    { name: "Tue", value: getRandonInteger() },
-    { name: "Wed", value: getRandonInteger() },
-    { name: "Thu", value: getRandonInteger() },
-    { name: "Fri", value: getRandonInteger() },
-    { name: "Sat", value: getRandonInteger() },
-    { name: "Sun", value: getRandonInteger() },
+    { name: "Mon", total: getRandonInteger() },
+    { name: "Tue", total: getRandonInteger() },
+    { name: "Wed", total: getRandonInteger() },
+    { name: "Thu", total: getRandonInteger() },
+    { name: "Fri", total: getRandonInteger() },
+    { name: "Sat", total: getRandonInteger() },
+    { name: "Sun", total: getRandonInteger() },
   ];
 
   return (
@@ -35,8 +42,12 @@ const FeedbackOverview = () => {
             <XAxis dataKey="name" axisLine={false} tickLine={false} />
             {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
             <YAxis axisLine={false} tickLine={false} width={32} />
+            <Tooltip
+              cursor={{ fill: "transparent" }}
+              content={<FeedbackTooltip />}
+            />
             <Bar
-              dataKey="value"
+              dataKey="total"
               fill={token("colors.foreground.muted")}
               radius={10}
             />
