@@ -2,8 +2,9 @@
 
 import { Button } from "@omnidev/sigil";
 
-const GetStarted = () => {
-  return <Button>Get Started</Button>;
-};
+/**
+ * Get started CTA.
+ */
+const GetStarted = () => <Button>Get Started</Button>;
 
 export default GetStarted;
