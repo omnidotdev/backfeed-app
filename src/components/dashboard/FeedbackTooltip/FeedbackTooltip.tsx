@@ -6,6 +6,9 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
+/**
+ * Feedback tooltip.
+ */
 const FeedbackTooltip = ({
   active,
   payload,
