@@ -3,8 +3,11 @@ import { Flex, Icon, Text } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface Props {
+  /** Statistic type. */
   type: "Members" | "Projects";
+  /** Statistic value. */
   value: number;
+  /** Visual icon. */
   icon: IconType;
 }
 
