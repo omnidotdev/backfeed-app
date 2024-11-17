@@ -22,7 +22,9 @@ const OrganizationMetric = ({ type, value, icon }: Props) => (
       <Flex color="foreground.subtle" fontSize="sm" gap={1}>
         <Text>{value}</Text>
 
-        <Text display={{ base: "none", xl: "inline" }}>{type}</Text>
+        <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
+          {type}
+        </Text>
       </Flex>
     </Flex>
   </Flex>
