@@ -3,7 +3,8 @@
 import { Flex } from "@omnidev/sigil";
 
 import { FeedbackCard, Response } from "components/dashboard";
-import { useDelay } from "lib/hooks";
+import { ErrorBoundary } from "components/layout";
+import { useDataState } from "lib/hooks";
 
 import type { ResponseType } from "components/dashboard";
 
@@ -78,7 +79,7 @@ const FEEDBACK: Feedback[] = [
  * Recent feedback section.
  */
 const RecentFeedback = () => {
-  const isLoaded = useDelay({ timeout: 500 });
+  const { isLoading, isError } = useDataState({ timeout: 500 });
 
   return (
     <FeedbackCard
@@ -86,18 +87,22 @@ const RecentFeedback = () => {
       maxH="xl"
       contentProps={{ overflow: "auto" }}
     >
-      <Flex direction="column" gap={2}>
-        {FEEDBACK.map(({ id, sender, message, date, type }) => (
-          <Response
-            key={id}
-            sender={sender}
-            message={message}
-            date={date}
-            type={type}
-            isLoaded={isLoaded}
-          />
-        ))}
-      </Flex>
+      {isError ? (
+        <ErrorBoundary message="Error fetching recent feedback" h="full" />
+      ) : (
+        <Flex direction="column" gap={2}>
+          {FEEDBACK.map(({ id, sender, message, date, type }) => (
+            <Response
+              key={id}
+              sender={sender}
+              message={message}
+              date={date}
+              type={type}
+              isLoaded={!isLoading}
+            />
+          ))}
+        </Flex>
+      )}
     </FeedbackCard>
   );
 };

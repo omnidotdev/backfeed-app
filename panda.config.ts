@@ -13,6 +13,7 @@ const pandaConfig = defineConfig({
         properties: {
           color: ["*"],
           backgroundColor: ["*"],
+          borderColor: ["*"],
         },
       },
     ],

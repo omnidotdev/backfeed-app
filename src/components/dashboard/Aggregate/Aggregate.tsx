@@ -7,12 +7,13 @@ interface Props {
   value: string | number;
   icon: IconType;
   isLoaded?: boolean;
+  isError?: boolean;
 }
 
 /**
  * Aggregate statistic card. Displays information about the total feedback, active users, or average response time.
  */
-const Aggregate = ({ title, value, icon, isLoaded = true }: Props) => (
+const Aggregate = ({ title, value, icon, isLoaded = true, isError }: Props) => (
   <Flex
     direction="column"
     gap={3}
@@ -33,13 +34,13 @@ const Aggregate = ({ title, value, icon, isLoaded = true }: Props) => (
     <Flex direction="column" gap={1}>
       <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 32 : undefined}>
         <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-          {value}
+          {isError ? "Error" : value}
         </Text>
       </Skeleton>
 
       <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 40 : undefined}>
         <Text fontSize="xs" color="green" fontWeight="medium">
-          +4.2069% from last month
+          {isError ? "Error" : "+4.2069% from last month"}
         </Text>
       </Skeleton>
     </Flex>

@@ -12,7 +12,7 @@ import { LuBuilding2 } from "react-icons/lu";
 
 import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
-import { useDelay } from "lib/hooks";
+import { useDataState } from "lib/hooks";
 
 const ORGANIZATION = {
   name: "Organization Name",
@@ -27,7 +27,7 @@ const Organizations = () => {
       isOpen: isOrganizationCollapseOpen,
       onToggle: onToggleOrganizationCollapse,
     } = useDisclosure(),
-    isLoaded = useDelay();
+    { isLoading, isError } = useDataState();
 
   const allOrganizations = Array(9).fill(ORGANIZATION);
   const pinnedOrganizations = allOrganizations.slice(0, 3);
@@ -72,7 +72,8 @@ const Organizations = () => {
             key={`${name}-${index}`}
             name={name}
             type={type}
-            isLoaded={isLoaded}
+            isLoaded={!isLoading}
+            isError={isError}
           />
         ))}
       </Grid>
@@ -84,9 +85,13 @@ const Organizations = () => {
             variant="icon"
             w="fit-content"
             bgColor="transparent"
-            opacity={{ base: 1, _hover: 0.8 }}
+            opacity={{
+              base: { base: 1, _disabled: 0.8 },
+              _hover: 0.8,
+            }}
             placeSelf="center"
             my={-4}
+            disabled={isLoading || isError}
           >
             <Icon
               src={isOrganizationCollapseOpen ? FiChevronUp : FiChevronDown}
@@ -110,7 +115,7 @@ const Organizations = () => {
               key={`${name}-${index}`}
               name={name}
               type={type}
-              isLoaded={isLoaded}
+              isLoaded={!isLoading}
             />
           ))}
         </Grid>

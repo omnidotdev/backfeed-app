@@ -10,12 +10,19 @@ interface Props extends FlexProps {
   name: string;
   type: string;
   isLoaded?: boolean;
+  isError?: boolean;
 }
 
 /**
  * Organization card.
  */
-const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
+const OrganizationCard = ({
+  name,
+  type,
+  isLoaded = true,
+  isError,
+  ...rest
+}: Props) => (
   <Skeleton isLoaded={isLoaded}>
     <Flex
       position="relative"
@@ -45,24 +52,24 @@ const OrganizationCard = ({ name, type, isLoaded = true, ...rest }: Props) => (
           fontWeight="semibold"
           lineHeight={1.2}
         >
-          {name}
+          {isError ? "Error" : name}
         </Text>
 
         <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
-          {type}
+          {isError ? "Error" : type}
         </Text>
       </Flex>
 
       <Grid columns={2} mt={6} alignItems="start">
         <OrganizationStatistic
           type="Members"
-          value={420}
+          value={isError ? 0 : 420}
           icon={HiOutlineUserGroup}
         />
 
         <OrganizationStatistic
           type="Projects"
-          value={69}
+          value={isError ? 0 : 69}
           icon={HiOutlineFolder}
         />
       </Grid>

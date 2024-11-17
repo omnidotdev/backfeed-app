@@ -8,14 +8,14 @@ import {
 
 import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
-import { useAuth, useDelay } from "lib/hooks";
+import { useAuth, useDataState } from "lib/hooks";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
   const { firstName } = useAuth(),
-    isLoaded = useDelay({ timeout: 400 });
+    { isLoading, isError } = useDataState({ timeout: 400 });
 
   const aggregates = [
     {
@@ -78,7 +78,8 @@ const DashboardPage = () => {
             title={title}
             value={value}
             icon={icon}
-            isLoaded={isLoaded}
+            isLoaded={!isLoading}
+            isError={isError}
           />
         ))}
       </Grid>
