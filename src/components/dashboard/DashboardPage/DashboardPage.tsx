@@ -48,7 +48,12 @@ const DashboardPage = () => {
       gap={6}
     >
       <Flex direction="column" w="100%">
-        <Flex align="center" justify="space-between">
+        <Flex
+          direction={{ base: "column", sm: "row" }}
+          align={{ base: "flex-start", sm: "center" }}
+          justify="space-between"
+          gap={4}
+        >
           <Flex direction="column">
             <Text
               as="h1"
@@ -57,15 +62,20 @@ const DashboardPage = () => {
               lineHeight={1.3}
             >{`${app.dashboardPage.welcomeMessage}, ${firstName}!`}</Text>
 
-            <Text as="h2" fontWeight="medium" color="foreground.subtle">
+            <Text
+              as="h2"
+              fontSize={{ base: "sm", sm: "md" }}
+              fontWeight="medium"
+              color="foreground.subtle"
+            >
               {app.dashboardPage.description}
             </Text>
           </Flex>
 
-          <Button>
+          <Button width={{ base: "full", sm: "auto" }}>
             <Icon src={FiPlusCircle} w={4} h={4} />
 
-            <Text display={{ base: "none", md: "inline" }}>New Project</Text>
+            <Text>New Project</Text>
           </Button>
         </Flex>
       </Flex>
