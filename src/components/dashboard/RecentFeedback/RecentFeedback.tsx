@@ -2,6 +2,7 @@
 
 import { Flex } from "@omnidev/sigil";
 
+import { SkeletonArray } from "components/core";
 import { FeedbackCard, Response } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { useDataState } from "lib/hooks";
@@ -91,16 +92,19 @@ const RecentFeedback = () => {
         <ErrorBoundary message="Error fetching recent feedback" h="full" />
       ) : (
         <Flex direction="column" gap={2}>
-          {FEEDBACK.map(({ id, sender, message, date, type }) => (
-            <Response
-              key={id}
-              sender={sender}
-              message={message}
-              date={date}
-              type={type}
-              isLoaded={!isLoading}
-            />
-          ))}
+          {isLoading ? (
+            <SkeletonArray count={5} h={24} w="100%" />
+          ) : (
+            FEEDBACK.map(({ id, sender, message, date, type }) => (
+              <Response
+                key={id}
+                sender={sender}
+                message={message}
+                date={date}
+                type={type}
+              />
+            ))
+          )}
         </Flex>
       )}
     </FeedbackCard>

@@ -10,7 +10,7 @@ interface Options {
   timeout?: number;
 }
 
-const useDelay = ({ timeout = 300 }: Options = {}) => {
+const useDataState = ({ timeout = 300 }: Options = {}) => {
   const [dataState, setDataState] = useState<DataState>({
     isLoading: true,
     isError: undefined,
@@ -20,7 +20,7 @@ const useDelay = ({ timeout = 300 }: Options = {}) => {
     () =>
       setDataState({
         isLoading: false,
-        isError: Math.random() < 0.5,
+        isError: Math.random() < 0.1,
       }),
     timeout
   );
@@ -28,4 +28,4 @@ const useDelay = ({ timeout = 300 }: Options = {}) => {
   return dataState;
 };
 
-export default useDelay;
+export default useDataState;
