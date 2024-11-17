@@ -16,7 +16,7 @@ interface Props {
 }
 
 /**
- * Aggregate statistic card. Displays information about the total feedback, active users, or average response time.
+ * Aggregate statistic card. Displays KPI information such as total feedback, active users, or average response time.
  */
 const Aggregate = ({ title, value, icon, isLoaded = true, isError }: Props) => (
   <Flex
