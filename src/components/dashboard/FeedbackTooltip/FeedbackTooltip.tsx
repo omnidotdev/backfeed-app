@@ -34,6 +34,7 @@ const FeedbackTooltip = ({
         >
           {label}
         </Text>
+        
         <Flex px={4} py={2}>
           {payload.map((pld, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: pld doesn't have an appropriate type for the key. Using `index` as a workaround.
