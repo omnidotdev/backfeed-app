@@ -61,6 +61,7 @@ const Organizations = () => {
 
         <Button variant="outline" ml={4}>
           <Icon src={FiPlusCircle} w={4} h={4} />
+
           <Text display={{ base: "none", md: "inline" }}>New Organization</Text>
         </Button>
       </Flex>

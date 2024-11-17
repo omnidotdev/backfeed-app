@@ -64,6 +64,7 @@ const DashboardPage = () => {
 
           <Button>
             <Icon src={FiPlusCircle} w={4} h={4} />
+
             <Text display={{ base: "none", md: "inline" }}>New Project</Text>
           </Button>
         </Flex>

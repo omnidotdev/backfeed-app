@@ -34,12 +34,13 @@ const FeedbackTooltip = ({
         >
           {label}
         </Text>
-        
+
         <Flex px={4} py={2}>
           {payload.map((pld, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: pld doesn't have an appropriate type for the key. Using `index` as a workaround.
             <Flex key={index} textWrap="nowrap" gap={1}>
               <Text color="brand.primary">{pld.value}</Text>
+
               <Text color={pld.color}>{pld.dataKey}</Text>
             </Flex>
           ))}
