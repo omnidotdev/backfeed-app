@@ -102,7 +102,8 @@ const Organizations = () => {
         open={isOrganizationCollapseOpen}
         onOpenChange={onToggleOrganizationCollapse}
       >
-        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
+        {/* NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows. */}
+        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} p="1px">
           {restOrganizations.map(({ name, type }, index) => (
             <OrganizationCard
               // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
