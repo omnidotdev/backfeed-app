@@ -23,15 +23,15 @@ const OrganizationStats = ({
 }: Props) => {
   const STATISTICS = [
     {
-      title: app.organizationPage.stats.data.totalProjects.label,
+      title: app.organizationPage.stats.data.totalProjects.title,
       value: totalProjects,
     },
     {
-      title: app.organizationPage.stats.data.totalFeedback.label,
+      title: app.organizationPage.stats.data.totalFeedback.title,
       value: totalFeedback,
     },
     {
-      title: app.organizationPage.stats.data.activeUsers.label,
+      title: app.organizationPage.stats.data.activeUsers.title,
       value: activeUsers,
     },
   ];

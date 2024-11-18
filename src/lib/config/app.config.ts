@@ -90,13 +90,13 @@ const app = {
       description: "Overview of all projects and feedback",
       data: {
         totalProjects: {
-          label: "Total Projects",
+          title: "Total Projects",
         },
         totalFeedback: {
-          label: "Total Feedback",
+          title: "Total Feedback",
         },
         activeUsers: {
-          label: "Active Users",
+          title: "Active Users",
         },
       },
     },
