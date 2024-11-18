@@ -4,7 +4,7 @@ import { app } from "lib/config";
 /**
  * Organization actions.
  */
-const Actions = () => {
+const OrganizationActions = () => {
   return (
     <Stack
       bgColor="background.default"
@@ -32,4 +32,4 @@ const Actions = () => {
   );
 };
 
-export default Actions;
+export default OrganizationActions;

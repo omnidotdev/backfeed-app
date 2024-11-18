@@ -14,7 +14,7 @@ interface Props {
   projects: OrganizationProject[];
 }
 
-const Overview = ({ projects }: Props) => {
+const OrganizationOverview = ({ projects }: Props) => {
   const { isLoading, isError } = useDataState();
 
   return (
@@ -90,4 +90,4 @@ const Overview = ({ projects }: Props) => {
   );
 };
 
-export default Overview;
+export default OrganizationOverview;

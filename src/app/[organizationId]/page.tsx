@@ -1,7 +1,12 @@
 "use client";
 
 import { Grid, Stack } from "@omnidev/sigil";
-import { Actions, Header, Overview, Stats } from "components/organization";
+import {
+  OrganizationActions,
+  OrganizationName,
+  OrganizationOverview,
+  OrganizationStats,
+} from "components/organization";
 import { useDataState } from "lib/hooks";
 import { useParams } from "next/navigation";
 
@@ -63,22 +68,22 @@ const OrganizationPage = () => {
 
   return (
     <Stack p={6} gap={6}>
-      <Header
+      <OrganizationName
         // TODO: Dont use orgId here, use org name once query set up
         organizationName={params.organizationId}
       />
 
-      <Overview projects={projects} />
+      <OrganizationOverview projects={projects} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        <Stats
+        <OrganizationStats
           totalProjects={totalProjects}
           totalFeedback={totalFeedback}
           activeUsers={activeUsers}
           isLoaded={!isLoading}
           isError={isError}
         />
-        <Actions />
+        <OrganizationActions />
       </Grid>
     </Stack>
   );
