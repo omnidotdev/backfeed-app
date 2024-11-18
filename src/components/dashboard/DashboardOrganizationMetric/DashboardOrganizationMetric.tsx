@@ -14,7 +14,7 @@ interface Props {
 /**
  * Organization metric.
  */
-const OrganizationMetric = ({ type, value, icon }: Props) => (
+const DashboardOrganizationMetric = ({ type, value, icon }: Props) => (
   <Flex direction="column" gap={4}>
     <Flex align="center" gap={2}>
       <Icon src={icon} w={5} h={5} color="foreground.subtle" />
@@ -30,4 +30,4 @@ const OrganizationMetric = ({ type, value, icon }: Props) => (
   </Flex>
 );
 
-export default OrganizationMetric;
+export default DashboardOrganizationMetric;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
-import { OrganizationMetric } from "components/dashboard";
+import { DashboardOrganizationMetric } from "components/dashboard";
 
 import type { FlexProps } from "@omnidev/sigil";
 
@@ -70,13 +70,13 @@ const OrganizationCard = ({
       </Flex>
 
       <Grid columns={2} mt={6} alignItems="start">
-        <OrganizationMetric
+        <DashboardOrganizationMetric
           type="Members"
           value={isError ? 0 : 420}
           icon={HiOutlineUserGroup}
         />
 
-        <OrganizationMetric
+        <DashboardOrganizationMetric
           type="Projects"
           value={isError ? 0 : 69}
           icon={HiOutlineFolder}
