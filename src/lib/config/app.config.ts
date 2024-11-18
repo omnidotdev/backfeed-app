@@ -69,6 +69,23 @@ const app = {
       },
     },
   },
+  organizationPage: {
+    header: {
+      description: "Manage your organization's feedback and projects.",
+    },
+    projects: {
+      title: "Projects",
+      description: "Manage feedback collection across your applications",
+    },
+    stats: {
+      title: "Organization Stats",
+      description: "Overview of all projects and feedback",
+    },
+    actions: {
+      title: "Quick Actions",
+      description: "Common organization tasks",
+    },
+  },
 };
 
 export default app;

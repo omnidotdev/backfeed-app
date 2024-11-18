@@ -14,10 +14,58 @@ import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
-const ORGANIZATION = {
-  name: "Organization Name",
-  type: "Company Type",
-};
+// const ORGANIZATION = {
+//   name: "Organization Name",
+//   type: "Company Type",
+// };
+
+const allOrganizations = [
+  {
+    name: "Tech Innovators Inc.",
+    type: "Technology",
+    slug: "tech-innovators-inc",
+  },
+  {
+    name: "Green Future Solutions",
+    type: "Environmental Services",
+    slug: "green-future-solutions",
+  },
+  {
+    name: "EduSpark Academy",
+    type: "Education",
+    slug: "eduspark-academy",
+  },
+  {
+    name: "HealthPlus Clinics",
+    type: "Healthcare",
+    slug: "healthplus-clinics",
+  },
+  {
+    name: "Urban Architects Co.",
+    type: "Architecture",
+    slug: "urban-architects-co",
+  },
+  {
+    name: "Creative Minds Studio",
+    type: "Design",
+    slug: "creative-minds-studio",
+  },
+  {
+    name: "MarketTrail Consulting",
+    type: "Consulting",
+    slug: "markettrail-consulting",
+  },
+  {
+    name: "Global Reach Logistics",
+    type: "Logistics",
+    slug: "global-reach-logistics",
+  },
+  {
+    name: "Peak Performance Sports",
+    type: "Sports Management",
+    slug: "peak-performance-sports",
+  },
+];
 
 /**
  * Organizations section.
@@ -29,7 +77,8 @@ const Organizations = () => {
     } = useDisclosure(),
     { isLoading, isError } = useDataState();
 
-  const allOrganizations = Array(9).fill(ORGANIZATION);
+  // const allOrganizations = Array(9).fill(ORGANIZATION);
+  // const allOrganizations = Array(9).fill(ORGANIZATION);
   const pinnedOrganizations = allOrganizations.slice(0, 3);
   const restOrganizations = allOrganizations.slice(3);
 
@@ -76,11 +125,12 @@ const Organizations = () => {
       </Flex>
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
-        {pinnedOrganizations.map(({ name, type }, index) => (
+        {pinnedOrganizations.map(({ name, type, slug }, index) => (
           <OrganizationCard
             // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
             key={`${name}-${index}`}
             name={name}
+            slug={slug}
             type={type}
             isLoaded={!isLoading}
             isError={isError}
@@ -119,11 +169,12 @@ const Organizations = () => {
       >
         {/* NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows. */}
         <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} p="1px">
-          {restOrganizations.map(({ name, type }, index) => (
+          {restOrganizations.map(({ name, type, slug }, index) => (
             <OrganizationCard
               // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
               key={`${name}-${index}`}
               name={name}
+              slug={slug}
               type={type}
               isLoaded={!isLoading}
             />
