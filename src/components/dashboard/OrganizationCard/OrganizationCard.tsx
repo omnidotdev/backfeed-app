@@ -16,7 +16,7 @@ interface Props extends FlexProps {
   isLoaded?: boolean;
   /** Whether loading the organization data encountered an error. */
   isError?: boolean;
-  /** Organization id for page routing */
+  /** Organization ID for page routing. */
   id: string;
 }
 
