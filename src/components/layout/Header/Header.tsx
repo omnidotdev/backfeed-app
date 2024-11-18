@@ -1,22 +1,26 @@
 "use client";
 
-import { Button, Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { ThemeToggle } from "components/layout";
+import { AccountInformation, GetStarted, ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 /**
  * Layout header.
  */
 const Header = () => {
-  const pathname = usePathname();
+  const pathname = usePathname(),
+    { isAuthenticated } = useAuth();
 
-  // TODO: make dynamic based on the current route and auth status
-  const { landingPage } = navigationRoutes;
+  // TODO: make dynamic based on the current route
+  const { landingPage, dashboardPage } = navigationRoutes;
+
+  const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
 
   return (
     <sigil.header
@@ -46,7 +50,7 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {landingPage.map(({ label, href }) => {
+          {headerRoutes.map(({ label, href }) => {
             const isActive = pathname === href;
 
             return (
@@ -72,7 +76,7 @@ const Header = () => {
         <Flex alignItems="center" gap={6}>
           <ThemeToggle />
 
-          <Button>Get Started</Button>
+          {isAuthenticated ? <AccountInformation /> : <GetStarted />}
         </Flex>
       </Flex>
     </sigil.header>

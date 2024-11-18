@@ -50,6 +50,25 @@ const app = {
       },
     },
   },
+  dashboardPage: {
+    welcomeMessage: "Welcome back",
+    description: "Here's what's happening with your feedback today.",
+    organizations: {
+      title: "Organizations",
+      description: "Manage your organizations and their feedback projects",
+    },
+    aggregates: {
+      totalFeedback: {
+        title: "Total Feedback",
+      },
+      activeUsers: {
+        title: "Active Users",
+      },
+      avgResponseTime: {
+        title: "Avg. Response Time",
+      },
+    },
+  },
 };
 
 export default app;
