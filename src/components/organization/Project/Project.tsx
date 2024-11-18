@@ -48,38 +48,10 @@ const Project = ({
       borderColor="border.subtle"
       borderRadius="lg"
       boxShadow="xs"
+      h="100%"
       p={8}
       {...rest}
     >
-      <Button
-        position="absolute"
-        top={1}
-        right={1}
-        p={2}
-        variant="icon"
-        color={{
-          base: "foreground.muted",
-          _hover: "brand.primary",
-        }}
-        bgColor="transparent"
-      >
-        <Icon src={FiArrowUpRight} w={5} h={5} />
-      </Button>
-
-      <Stack>
-        <Text
-          fontSize={{ base: "md", lg: "lg" }}
-          fontWeight="semibold"
-          lineHeight={1.2}
-        >
-          {isError ? "Error" : name}
-        </Text>
-
-        <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
-          {isError ? "Error" : description}
-        </Text>
-      </Stack>
-
       <Link href="#">
         <Button
           position="absolute"
@@ -94,26 +66,48 @@ const Project = ({
         </Button>
       </Link>
 
-      <Flex justifyContent="space-between">
-        <OrganizationMetric
-          icon={HiOutlineChatBubbleLeftRight}
-          value={isError ? 0 : totalFeedback}
-          type="Responses"
-        />
+      <Stack justifyContent="space-between" h="100%" gap={6}>
+        <Stack>
+          <Text
+            fontSize={{ base: "md", lg: "lg" }}
+            fontWeight="semibold"
+            lineHeight={1.2}
+          >
+            {isError ? "Error" : name}
+          </Text>
 
-        <OrganizationMetric
-          icon={HiOutlineUserGroup}
-          value={isError ? 0 : activeUsers}
-          type="Users"
-        />
+          <Text
+            lineClamp={2}
+            fontSize={{ base: "xs", lg: "sm" }}
+            color="foreground.subtle"
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
+            {isError ? "Error" : description}
+          </Text>
+        </Stack>
 
-        <OrganizationMetric
-          icon={GoClock}
-          value={isError ? "Error" : dayjs(lastUpdated).fromNow()}
-          type="Updated"
-          containerProps={{ direction: "row" }}
-        />
-      </Flex>
+        <Flex justifyContent="space-between" alignItems="end">
+          <OrganizationMetric
+            icon={HiOutlineChatBubbleLeftRight}
+            value={isError ? 0 : totalFeedback}
+            type="Responses"
+          />
+
+          <OrganizationMetric
+            icon={HiOutlineUserGroup}
+            value={isError ? 0 : activeUsers}
+            type="Users"
+          />
+
+          <OrganizationMetric
+            icon={GoClock}
+            value={isError ? "Error" : dayjs(lastUpdated).fromNow()}
+            type="Updated"
+            containerProps={{ direction: "row" }}
+          />
+        </Flex>
+      </Stack>
     </Stack>
   </Skeleton>
 );

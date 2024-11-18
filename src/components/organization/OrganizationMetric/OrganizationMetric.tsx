@@ -10,7 +10,7 @@ interface Props {
   value: string | number;
   /** Metric type. */
   type: "Responses" | "Users" | "Updated";
-  /** Flex direction of value and type. */
+  /** Container props for `type` and `value`. Used to override default styles. */
   containerProps?: FlexProps;
 }
 

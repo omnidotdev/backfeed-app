@@ -28,7 +28,7 @@ export const projects: OrganizationProject[] = [
     id: "1",
     name: "Mobile App Feedback",
     description:
-      "Collecting user feedback for our iOS and Android applications",
+      "Collecting user feedback for our iOS and Android applications. Collecting user feedback for our iOS and Android applications.",
     totalFeedback: 234,
     activeUsers: 1200,
     lastUpdated: "2024-11-05T18:40:27.761Z",
@@ -103,6 +103,7 @@ const OrganizationOverview = () => {
         // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
         p="1px"
         gap={6}
+        columns={{ base: 1, md: 2 }}
       >
         {projects.map(
           ({
