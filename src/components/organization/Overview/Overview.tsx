@@ -58,7 +58,7 @@ const Overview = ({ projects }: Props) => {
       <Grid
         height="400px"
         overflowY="scroll"
-        // NB: The pr is padding is necessary to provide space for the scrollbar
+        // NB: The pr padding is necessary to provide space for the scrollbar
         pr={5}
         // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
         p="1px"
