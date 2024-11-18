@@ -41,7 +41,6 @@ const OrganizationCard = ({
         position="absolute"
         top={1}
         right={1}
-        zIndex="sticky"
         p={2}
         variant="icon"
         color={{ base: "foreground.muted", _hover: "brand.primary" }}
