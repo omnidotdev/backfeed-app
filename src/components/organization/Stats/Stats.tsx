@@ -1,4 +1,4 @@
-import { Flex, Stack, Text, Skeleton } from "@omnidev/sigil";
+import { Flex, Skeleton, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 interface Props {

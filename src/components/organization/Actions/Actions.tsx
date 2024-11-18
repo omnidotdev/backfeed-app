@@ -1,4 +1,4 @@
-import { Button, Stack, Grid, Text } from "@omnidev/sigil";
+import { Button, Grid, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 const Actions = () => {

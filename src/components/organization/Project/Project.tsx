@@ -1,14 +1,14 @@
-import { Button, Skeleton, Flex, Icon, Text, Stack } from "@omnidev/sigil";
-import { FiArrowUpRight } from "react-icons/fi";
+import { Button, Flex, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
+import { Metric } from "components/organization";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
+import { FiArrowUpRight } from "react-icons/fi";
 import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-import { Metric } from "components/organization";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
