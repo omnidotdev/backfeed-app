@@ -1,6 +1,9 @@
 import { Button, Grid, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
+/**
+ * Organization actions.
+ */
 const Actions = () => {
   return (
     <Stack
