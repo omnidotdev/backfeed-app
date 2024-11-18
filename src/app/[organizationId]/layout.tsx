@@ -1,7 +1,7 @@
 import { app } from "lib/config";
 
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 interface MetadataParams {
   params: Promise<{ organizationId: string }>;
@@ -24,6 +24,6 @@ export const generateMetadata = async ({
   };
 };
 
-const OrganizationLayout = ({ children }: { children: ReactNode }) => children;
+const OrganizationLayout = ({ children }: PropsWithChildren) => children;
 
 export default OrganizationLayout;
