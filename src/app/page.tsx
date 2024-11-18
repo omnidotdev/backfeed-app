@@ -10,6 +10,7 @@ import { useAuth } from "lib/hooks";
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
 
+  // TODO: remove ! when ready to push.
   return !isAuthenticated ? <DashboardPage /> : <LandingPage />;
 };
 
