@@ -33,6 +33,7 @@ const OrganizationStats = ({
       <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
         {app.organizationPage.stats.title}
       </Text>
+
       <Text color="foreground.subtle" fontSize="sm">
         {app.organizationPage.stats.description}
       </Text>
@@ -45,12 +46,14 @@ const OrganizationStats = ({
           <Text textAlign="right">{isError ? 0 : totalProjects}</Text>
         </Skeleton>
       </Flex>
+
       <Flex justifyContent="space-between">
         <Text color="foreground.muted">Total Feedback</Text>
         <Skeleton isLoaded={isLoaded} minW={8}>
           <Text textAlign="right">{isError ? 0 : totalFeedback}</Text>
         </Skeleton>
       </Flex>
+
       <Flex justifyContent="space-between">
         <Text color="foreground.muted">Active Users</Text>
         <Skeleton isLoaded={isLoaded} minW={8}>

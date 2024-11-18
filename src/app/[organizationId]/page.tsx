@@ -67,7 +67,7 @@ const OrganizationPage = () => {
     );
 
   return (
-    <Stack p={6} gap={6}>
+    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
       <OrganizationName
         // TODO: Dont use orgId here, use org name once query set up
         organizationName={params.organizationId}

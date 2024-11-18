@@ -3,6 +3,7 @@ import { app } from "lib/config";
 import { LuPlusCircle } from "react-icons/lu";
 
 interface Props {
+  /** Organization name. */
   organizationName: string;
 }
 
