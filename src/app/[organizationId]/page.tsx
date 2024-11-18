@@ -5,7 +5,7 @@ import { Actions, Header, Overview, Stats } from "components/organization";
 import { useDataState } from "lib/hooks";
 import { useParams } from "next/navigation";
 
-export interface OrgProject {
+export interface OrganizationProject {
   id: string;
   name: string;
   description: string;
@@ -14,7 +14,7 @@ export interface OrgProject {
   lastUpdated: string;
 }
 
-const projects: OrgProject[] = [
+const projects: OrganizationProject[] = [
   {
     id: "1",
     name: "Mobile App Feedback",

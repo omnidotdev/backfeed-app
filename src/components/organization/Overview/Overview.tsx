@@ -6,12 +6,12 @@ import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 import { HiOutlineFolder } from "react-icons/hi2";
 
-import type { OrgProject } from "app/[organizationId]/page";
+import type { OrganizationProject } from "app/[organizationId]/page";
 
 dayjs.extend(relativeTime);
 
 interface Props {
-  projects: OrgProject[];
+  projects: OrganizationProject[];
 }
 
 const Overview = ({ projects }: Props) => {
