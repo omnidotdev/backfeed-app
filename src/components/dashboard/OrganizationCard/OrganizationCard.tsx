@@ -8,6 +8,8 @@ import { OrganizationMetric } from "components/dashboard";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
+  /** Organization ID for page routing. */
+  id: string;
   /** Name of the organization. */
   name: string;
   /** Type of the organization. */
@@ -16,19 +18,17 @@ interface Props extends FlexProps {
   isLoaded?: boolean;
   /** Whether loading the organization data encountered an error. */
   isError?: boolean;
-  /** Organization ID for page routing. */
-  id: string;
 }
 
 /**
  * Organization card.
  */
 const OrganizationCard = ({
+  id,
   name,
   type,
   isLoaded = true,
-  isError,
-  id,
+  isError = false,
   ...rest
 }: Props) => (
   <Skeleton isLoaded={isLoaded}>

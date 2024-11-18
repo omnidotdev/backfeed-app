@@ -3,7 +3,7 @@
 import { Grid, Stack } from "@omnidev/sigil";
 import {
   OrganizationActions,
-  OrganizationName,
+  OrganizationHeader,
   OrganizationOverview,
   OrganizationStats,
 } from "components/organization";
@@ -68,7 +68,7 @@ const OrganizationPage = () => {
 
   return (
     <Stack maxW="8xl" mx="auto" p={6} gap={6}>
-      <OrganizationName
+      <OrganizationHeader
         // TODO: Dont use orgId here, use org name once query set up
         organizationName={params.organizationId}
       />

@@ -10,7 +10,7 @@ interface Props {
 /**
  * Organization header.
  */
-const OrganizationName = ({ organizationName }: Props) => (
+const OrganizationHeader = ({ organizationName }: Props) => (
   <Flex
     flexDirection={{ base: "column", md: "row" }}
     alignItems="center"
@@ -38,4 +38,4 @@ const OrganizationName = ({ organizationName }: Props) => (
   </Flex>
 );
 
-export default OrganizationName;
+export default OrganizationHeader;

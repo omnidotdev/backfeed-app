@@ -10,7 +10,7 @@ interface Props {
   /** Metric type. */
   type: "Responses" | "Users" | "Updated";
   /**
-   * Optional position of the type relative to the value.
+   * Position of the type relative to the value.
    * If "before", the label appears before the value.
    * If "after", the label appears after the value.
    * Defaults to "after" if not specified.
