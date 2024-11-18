@@ -11,7 +11,7 @@ import "@theme-toggles/react/css/Expand.css";
 
 type ColorMode = "light" | "dark";
 
-export const colorModeLocalStorageKey = `${app.name}-color-mode`;
+const colorModeLocalStorageKey = `${app.name}-color-mode`;
 
 const PandaExpand = sigil(Expand);
 

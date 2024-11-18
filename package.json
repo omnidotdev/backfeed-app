@@ -9,7 +9,7 @@
     "lint": "biome lint src",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
-    "knip": "knip",
+    "knip": "knip-bun --cache --tags=-knipignore",
     "prepare": "panda codegen && husky"
   },
   "devDependencies": {
@@ -23,22 +23,15 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.55",
-    "@walletconnect/jsonrpc-types": "^1.0.3",
-    "@walletconnect/jsonrpc-utils": "^1.0.8",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.4",
     "dotenv-cli": "^7.3.0",
     "husky": "^9.1.6",
     "knip": "^5.37.1",
-    "pino-pretty": "^10.3.1",
-    "postcss": "^8.4.47",
-    "tslib": "^2.6.2",
     "typescript": "^5.6.3"
   },
   "dependencies": {
     "@ark-ui/react": "^4.4.3",
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.4",
     "@omnidev/sigil": "^0.12.1",
     "@rainbow-me/rainbowkit": "^2.2.0",
@@ -47,7 +40,6 @@
     "@theme-toggles/react": "^4.1.0",
     "babel-plugin-react-compiler": "^19.0.0-beta-a7bf2bd-20241110",
     "dayjs": "^1.11.10",
-    "framer-motion": "^11.0.5",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "lodash.merge": "^4.6.2",
@@ -61,7 +53,6 @@
     "usehooks-ts": "^3.1.0",
     "viem": "^2.7.9",
     "wagmi": "^2.5.7",
-    "ws": "^8.16.0",
     "zod": "^3.22.4"
   },
   "trustedDependencies": [
