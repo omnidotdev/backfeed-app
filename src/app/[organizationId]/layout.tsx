@@ -14,7 +14,7 @@ interface MetadataParams {
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { organizationId: slug } = await params;
+  const { organizationId } = await params;
 
   // TODO: Hook up when fething data here.
   // const organization: OrganizationQuery = await request({
@@ -24,7 +24,7 @@ export const generateMetadata = async ({
   // });
 
   return {
-    title: `${slug} | ${app.name}`,
+    title: `${organizationId} | ${app.name}`,
   };
 };
 
