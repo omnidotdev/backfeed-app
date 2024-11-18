@@ -43,8 +43,8 @@ const DashboardPage = () => {
       h="100%"
       maxW="8xl"
       mx="auto"
+      px={4}
       py={5}
-      px={12}
       gap={6}
     >
       <Flex direction="column" w="100%">
