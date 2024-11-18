@@ -97,7 +97,7 @@ const OrganizationOverview = () => {
 
       <Grid
         height="400px"
-        overflowY="scroll"
+        overflow="auto"
         // NB: The pr padding is necessary to provide space for the scrollbar
         pr={5}
         // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
