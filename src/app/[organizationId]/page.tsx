@@ -11,11 +11,17 @@ import { useDataState } from "lib/hooks";
 import { useParams } from "next/navigation";
 
 export interface OrganizationProject {
+  /** Organization ID. */
   id: string;
+  /** Organization name. */
   name: string;
+  /** Organization description. */
   description: string;
+  /** Quantity of total feedback. */
   totalFeedback: number;
+  /** Quantity of active users. */
   activeUsers: number;
+  /** Timestamp when the organization was last updated. */
   lastUpdated: string;
 }
 
