@@ -8,13 +8,13 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 interface MetadataParams {
-  params: Promise<{ project: string; organization: string }>;
+  params: Promise<{ projectId: string; organization: string }>;
 }
 
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { project: projectSlug, organization: organizationId } = await params;
+  const { projectId: projectSlug, organization: organizationId } = await params;
 
   const project: ProjectQuery = await request({
     url: API_BASE_URL!,
