@@ -6,18 +6,55 @@ import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 import { HiOutlineFolder } from "react-icons/hi2";
 
-import type { OrganizationProject } from "app/[organizationId]/page";
-
 dayjs.extend(relativeTime);
 
-interface Props {
-  projects: OrganizationProject[];
+interface OrganizationProject {
+  /** Organization ID. */
+  id: string;
+  /** Organization name. */
+  name: string;
+  /** Organization description. */
+  description: string;
+  /** Quantity of total feedback. */
+  totalFeedback: number;
+  /** Quantity of active users. */
+  activeUsers: number;
+  /** Timestamp when the organization was last updated. */
+  lastUpdated: string;
 }
+
+export const projects: OrganizationProject[] = [
+  {
+    id: "1",
+    name: "Mobile App Feedback",
+    description:
+      "Collecting user feedback for our iOS and Android applications",
+    totalFeedback: 234,
+    activeUsers: 1200,
+    lastUpdated: "2024-11-05T18:40:27.761Z",
+  },
+  {
+    id: "2",
+    name: "Web Platform Beta",
+    description: "Beta testing feedback for the new web platform",
+    totalFeedback: 567,
+    activeUsers: 890,
+    lastUpdated: "2024-11-17T18:40:27.761Z",
+  },
+  {
+    id: "3",
+    name: "Desktop Client",
+    description: "User experience feedback for desktop applications",
+    totalFeedback: 123,
+    activeUsers: 450,
+    lastUpdated: "2024-11-12T18:40:27.761Z",
+  },
+];
 
 /**
  * Organization overview.
  */
-const OrganizationOverview = ({ projects }: Props) => {
+const OrganizationOverview = () => {
   const { isLoading, isError } = useDataState();
 
   return (
