@@ -1,5 +1,5 @@
 import { Button, Flex, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
-import { Metric } from "components/organization";
+import { OrganizationMetric } from "components/organization";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
@@ -93,17 +93,17 @@ const Project = ({
         </Link>
 
         <Flex justifyContent="space-between">
-          <Metric
+          <OrganizationMetric
             icon={HiOutlineChatBubbleLeftRight}
             value={isError ? 0 : totalFeedback}
             type="Responses"
           />
-          <Metric
+          <OrganizationMetric
             icon={HiOutlineUserGroup}
             value={isError ? 0 : activeUsers}
             type="Users"
           />
-          <Metric
+          <OrganizationMetric
             icon={GoClock}
             value={isError ? "Error" : dayjs(lastUpdated).fromNow()}
             type="Updated"

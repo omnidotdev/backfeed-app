@@ -1,10 +1,10 @@
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { Project } from "components/organization";
+import { Button, Flex, Grid, Text, Stack, Icon } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { Project } from "components/organization";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
-import { HiOutlineFolder } from "react-icons/hi2";
 
 import type { OrgProject } from "app/[organizationId]/page";
 
