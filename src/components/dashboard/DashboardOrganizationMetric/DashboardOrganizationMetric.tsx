@@ -12,7 +12,7 @@ interface Props {
 }
 
 /**
- * Organization metric.
+ * Organization metric for the dashboard page.
  */
 const DashboardOrganizationMetric = ({ type, value, icon }: Props) => (
   <Flex direction="column" gap={4}>
