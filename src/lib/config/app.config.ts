@@ -72,6 +72,14 @@ const app = {
   organizationPage: {
     header: {
       description: "Manage your organization's feedback and projects.",
+      cta: {
+        viewAllProjects: {
+          label: "View All Projects",
+        },
+        newProject: {
+          label: "New Project",
+        },
+      },
     },
     projects: {
       title: "Projects",
@@ -84,6 +92,17 @@ const app = {
     actions: {
       title: "Quick Actions",
       description: "Common organization tasks",
+      cta: {
+        createProject: {
+          label: "Create New Project",
+        },
+        manageTeam: {
+          label: "Manage Team",
+        },
+        settings: {
+          label: "Organization Settings",
+        },
+      },
     },
   },
 };

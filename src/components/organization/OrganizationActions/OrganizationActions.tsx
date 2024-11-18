@@ -24,9 +24,17 @@ const OrganizationActions = () => (
     </Stack>
 
     <Grid gap={4}>
-      <Button variant="outline">Create New Project</Button>
-      <Button variant="outline">Manage Team</Button>
-      <Button variant="outline">Organization Settings</Button>
+      <Button variant="outline">
+        {app.organizationPage.actions.cta.createProject.label}
+      </Button>
+
+      <Button variant="outline">
+        {app.organizationPage.actions.cta.manageTeam.label}
+      </Button>
+
+      <Button variant="outline">
+        {app.organizationPage.actions.cta.settings.label}
+      </Button>
     </Grid>
   </Stack>
 );

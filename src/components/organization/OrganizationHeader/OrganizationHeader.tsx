@@ -21,6 +21,7 @@ const OrganizationHeader = ({ organizationName }: Props) => (
       <Text as="h1" fontSize="3xl" fontWeight="bold">
         {organizationName}
       </Text>
+
       <Text color="foreground.muted">
         {app.organizationPage.header.description}
       </Text>
@@ -28,11 +29,12 @@ const OrganizationHeader = ({ organizationName }: Props) => (
 
     <Flex gap={4}>
       <Button variant="outline" size="sm">
-        View All Projects
+        {app.organizationPage.header.cta.viewAllProjects.label}
       </Button>
+
       <Button colorScheme="primary" size="sm">
         <Icon src={LuPlusCircle} w={4} h={4} />
-        New Project
+        {app.organizationPage.header.cta.newProject.label}
       </Button>
     </Flex>
   </Flex>
