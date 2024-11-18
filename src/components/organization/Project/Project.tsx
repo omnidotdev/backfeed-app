@@ -100,16 +100,18 @@ const Project = ({
           value={isError ? 0 : totalFeedback}
           type="Responses"
         />
+
         <OrganizationMetric
           icon={HiOutlineUserGroup}
           value={isError ? 0 : activeUsers}
           type="Users"
         />
+
         <OrganizationMetric
           icon={GoClock}
           value={isError ? "Error" : dayjs(lastUpdated).fromNow()}
           type="Updated"
-          position="before"
+          containerProps={{ direction: "row" }}
         />
       </Flex>
     </Stack>
