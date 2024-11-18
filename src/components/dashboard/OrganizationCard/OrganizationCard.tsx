@@ -1,7 +1,7 @@
 import { Button, Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
+import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
-import Link from "next/link";
 
 import { OrganizationMetric } from "components/dashboard";
 
@@ -16,8 +16,8 @@ interface Props extends FlexProps {
   isLoaded?: boolean;
   /** Whether loading the organization data encountered an error. */
   isError?: boolean;
-  /** Organization slug for page routing */
-  slug: string;
+  /** Organization id for page routing */
+  id: string;
 }
 
 /**
@@ -28,7 +28,7 @@ const OrganizationCard = ({
   type,
   isLoaded = true,
   isError,
-  slug,
+  id,
   ...rest
 }: Props) => (
   <Skeleton isLoaded={isLoaded}>
@@ -41,7 +41,7 @@ const OrganizationCard = ({
       p={8}
       {...rest}
     >
-      <Link href={`/organization/${slug}`}>
+      <Link href={`/${id}`}>
         <Button
           position="absolute"
           top={1}

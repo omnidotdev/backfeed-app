@@ -1,23 +1,28 @@
-import { Flex, Stack, Text, Button, Icon } from "@omnidev/sigil";
+import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 import { LuPlusCircle } from "react-icons/lu";
 
 interface Props {
-  orgId: string;
+  organizationName: string;
 }
 
-const OrganizationHeader = ({ orgId }: Props) => {
+const Header = ({ organizationName }: Props) => {
   return (
-    <Flex alignItems="center" justifyContent="space-between">
+    <Flex
+      flexDirection={{ base: "column", md: "row" }}
+      alignItems="center"
+      justifyContent="space-between"
+      gap={6}
+    >
       <Stack>
-        {/* TODO: Dont use slug here, use org name once query set up */}
-        <Text as="h1" fontSize="3xl" fontWeight="bold" mb={1}>
-          {orgId}
+        <Text as="h1" fontSize="3xl" fontWeight="bold">
+          {organizationName}
         </Text>
         <Text color="foreground.muted">
           {app.organizationPage.header.description}
         </Text>
       </Stack>
+
       <Flex gap={4}>
         <Button variant="outline" size="sm">
           View All Projects
@@ -31,4 +36,4 @@ const OrganizationHeader = ({ orgId }: Props) => {
   );
 };
 
-export default OrganizationHeader;
+export default Header;

@@ -13,6 +13,10 @@
 // import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+interface Props {
+  children: ReactNode;
+}
+
 // interface MetadataParams {
 //   params: Promise<{ organization: string }>;
 // }
@@ -34,6 +38,6 @@ import type { ReactNode } from "react";
 //   };
 // };
 
-const OrganizationLayout = ({ children }: { children: ReactNode }) => children;
+const OrganizationLayout = ({ children }: Props) => children;
 
 export default OrganizationLayout;

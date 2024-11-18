@@ -14,56 +14,51 @@ import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
-// const ORGANIZATION = {
-//   name: "Organization Name",
-//   type: "Company Type",
-// };
-
 const allOrganizations = [
   {
     name: "Tech Innovators Inc.",
     type: "Technology",
-    slug: "tech-innovators-inc",
+    id: "8af2410c-b73b-453f-a5c9-4637f5cbaffe",
   },
   {
     name: "Green Future Solutions",
     type: "Environmental Services",
-    slug: "green-future-solutions",
+    id: "c630fc16-1bb7-474f-9405-89401cce301a",
   },
   {
     name: "EduSpark Academy",
     type: "Education",
-    slug: "eduspark-academy",
+    id: "aff499bc-516f-436c-9d87-2edfe1043061",
   },
   {
     name: "HealthPlus Clinics",
     type: "Healthcare",
-    slug: "healthplus-clinics",
+    id: "f13625fe-c2f9-47b7-a2b0-4e2073289122",
   },
   {
     name: "Urban Architects Co.",
     type: "Architecture",
-    slug: "urban-architects-co",
+    id: "99411095-e652-444a-a37c-5579dd15f463",
   },
   {
     name: "Creative Minds Studio",
     type: "Design",
-    slug: "creative-minds-studio",
+    id: "4ee643e8-4290-4182-bd69-513f623a7415",
   },
   {
     name: "MarketTrail Consulting",
     type: "Consulting",
-    slug: "markettrail-consulting",
+    id: "076ccbba-de01-45db-b0fb-586553baaa8f",
   },
   {
     name: "Global Reach Logistics",
     type: "Logistics",
-    slug: "global-reach-logistics",
+    id: "1f7014fe-b766-4879-ae3e-f0e619397585",
   },
   {
     name: "Peak Performance Sports",
     type: "Sports Management",
-    slug: "peak-performance-sports",
+    id: "06157ff2-0959-4edc-87c5-5a6db8c551de",
   },
 ];
 
@@ -77,8 +72,6 @@ const Organizations = () => {
     } = useDisclosure(),
     { isLoading, isError } = useDataState();
 
-  // const allOrganizations = Array(9).fill(ORGANIZATION);
-  // const allOrganizations = Array(9).fill(ORGANIZATION);
   const pinnedOrganizations = allOrganizations.slice(0, 3);
   const restOrganizations = allOrganizations.slice(3);
 
@@ -125,12 +118,11 @@ const Organizations = () => {
       </Flex>
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
-        {pinnedOrganizations.map(({ name, type, slug }, index) => (
+        {pinnedOrganizations.map(({ name, type, id }) => (
           <OrganizationCard
-            // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
-            key={`${name}-${index}`}
+            key={id}
             name={name}
-            slug={slug}
+            id={id}
             type={type}
             isLoaded={!isLoading}
             isError={isError}
@@ -169,12 +161,11 @@ const Organizations = () => {
       >
         {/* NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows. */}
         <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} p="1px">
-          {restOrganizations.map(({ name, type, slug }, index) => (
+          {restOrganizations.map(({ name, type, id }) => (
             <OrganizationCard
-              // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
-              key={`${name}-${index}`}
+              key={id}
               name={name}
-              slug={slug}
+              id={id}
               type={type}
               isLoaded={!isLoading}
             />

@@ -21,12 +21,7 @@ interface Props {
 /**
  * Organization metric.
  */
-const OrganizationMetric = ({
-  type,
-  value,
-  icon,
-  position = "after",
-}: Props) => (
+const Metric = ({ type, value, icon, position = "after" }: Props) => (
   <Flex gap={2} alignItems="center">
     <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
@@ -48,4 +43,4 @@ const OrganizationMetric = ({
   </Flex>
 );
 
-export default OrganizationMetric;
+export default Metric;
