@@ -24,6 +24,9 @@ export const generateMetadata = async ({
   };
 };
 
+/**
+ * Organization layout.
+ */
 const OrganizationLayout = ({ children }: PropsWithChildren) => children;
 
 export default OrganizationLayout;

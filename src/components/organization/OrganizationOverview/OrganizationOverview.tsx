@@ -14,6 +14,9 @@ interface Props {
   projects: OrganizationProject[];
 }
 
+/**
+ * Organization overview.
+ */
 const OrganizationOverview = ({ projects }: Props) => {
   const { isLoading, isError } = useDataState();
 

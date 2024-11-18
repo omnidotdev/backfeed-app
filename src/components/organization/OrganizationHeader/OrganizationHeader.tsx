@@ -6,6 +6,9 @@ interface Props {
   organizationName: string;
 }
 
+/**
+ * Organization header.
+ */
 const OrganizationName = ({ organizationName }: Props) => (
   <Flex
     flexDirection={{ base: "column", md: "row" }}
