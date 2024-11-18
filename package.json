@@ -9,6 +9,7 @@
     "lint": "biome lint src",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
+    "knip": "knip",
     "prepare": "panda codegen && husky"
   },
   "devDependencies": {
@@ -28,10 +29,11 @@
     "dotenv": "^16.4.4",
     "dotenv-cli": "^7.3.0",
     "husky": "^9.1.6",
+    "knip": "^5.37.1",
     "pino-pretty": "^10.3.1",
     "postcss": "^8.4.47",
     "tslib": "^2.6.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@ark-ui/react": "^4.4.3",
