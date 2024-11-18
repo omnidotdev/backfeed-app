@@ -7,9 +7,9 @@ import {
   OrganizationOverview,
   OrganizationStats,
 } from "components/organization";
+import { projects } from "components/organization/OrganizationOverview/OrganizationOverview";
 import { useDataState } from "lib/hooks";
 import { useParams } from "next/navigation";
-import { projects } from "components/organization/OrganizationOverview/OrganizationOverview";
 
 /**
  * Organization overview page.
