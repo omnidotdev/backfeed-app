@@ -1,7 +1,7 @@
 import { Flex, Icon, Text } from "@omnidev/sigil";
 
-import type { IconType } from "react-icons";
 import type { FlexProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
 
 interface Props {
   /** Visual icon. */
