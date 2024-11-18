@@ -88,6 +88,17 @@ const app = {
     stats: {
       title: "Organization Stats",
       description: "Overview of all projects and feedback",
+      data: {
+        totalProjects: {
+          title: "Total Projects",
+        },
+        totalFeedback: {
+          title: "Total Feedback",
+        },
+        activeUsers: {
+          title: "Active Users",
+        },
+      },
     },
     actions: {
       title: "Quick Actions",

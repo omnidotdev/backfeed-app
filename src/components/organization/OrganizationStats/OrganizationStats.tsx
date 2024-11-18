@@ -20,48 +20,53 @@ const OrganizationStats = ({
   activeUsers,
   isLoaded,
   isError,
-}: Props) => (
-  <Stack
-    bgColor="background.default"
-    borderRadius="lg"
-    boxShadow="lg"
-    borderColor="border.subtle"
-    p={6}
-    gap={6}
-  >
-    <Stack>
-      <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-        {app.organizationPage.stats.title}
-      </Text>
+}: Props) => {
+  const STATISTICS = [
+    {
+      title: app.organizationPage.stats.data.totalProjects.label,
+      value: totalProjects,
+    },
+    {
+      title: app.organizationPage.stats.data.totalFeedback.label,
+      value: totalFeedback,
+    },
+    {
+      title: app.organizationPage.stats.data.activeUsers.label,
+      value: activeUsers,
+    },
+  ];
 
-      <Text color="foreground.subtle" fontSize="sm">
-        {app.organizationPage.stats.description}
-      </Text>
+  return (
+    <Stack
+      bgColor="background.default"
+      borderRadius="lg"
+      boxShadow="lg"
+      borderColor="border.subtle"
+      p={6}
+      gap={6}
+    >
+      <Stack>
+        <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
+          {app.organizationPage.stats.title}
+        </Text>
+
+        <Text color="foreground.subtle" fontSize="sm">
+          {app.organizationPage.stats.description}
+        </Text>
+      </Stack>
+
+      <Stack gap={4}>
+        {STATISTICS.map(({ title, value }) => (
+          <Flex key={title} justifyContent="space-between">
+            <Text color="foreground.muted">{title}</Text>
+            <Skeleton isLoaded={isLoaded} minW={8}>
+              <Text textAlign="right">{isError ? 0 : value}</Text>
+            </Skeleton>
+          </Flex>
+        ))}
+      </Stack>
     </Stack>
-
-    <Stack gap={4}>
-      <Flex justifyContent="space-between">
-        <Text color="foreground.muted">Total Projects</Text>
-        <Skeleton isLoaded={isLoaded} minW={8}>
-          <Text textAlign="right">{isError ? 0 : totalProjects}</Text>
-        </Skeleton>
-      </Flex>
-
-      <Flex justifyContent="space-between">
-        <Text color="foreground.muted">Total Feedback</Text>
-        <Skeleton isLoaded={isLoaded} minW={8}>
-          <Text textAlign="right">{isError ? 0 : totalFeedback}</Text>
-        </Skeleton>
-      </Flex>
-
-      <Flex justifyContent="space-between">
-        <Text color="foreground.muted">Active Users</Text>
-        <Skeleton isLoaded={isLoaded} minW={8}>
-          <Text textAlign="right">{isError ? 0 : activeUsers}</Text>
-        </Skeleton>
-      </Flex>
-    </Stack>
-  </Stack>
-);
+  );
+};
 
 export default OrganizationStats;
