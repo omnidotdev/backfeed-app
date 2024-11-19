@@ -83,7 +83,11 @@ const RecentFeedback = () => {
   const { isLoading, isError } = useDataState({ timeout: 500 });
 
   return (
-    <FeedbackCard title="Recent Feedback" maxH="xl">
+    <FeedbackCard
+      title="Recent Feedback"
+      maxH="xl"
+      contentProps={{ overflow: "auto" }}
+    >
       {isError ? (
         <ErrorBoundary
           message="Error fetching recent feedback"

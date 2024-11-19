@@ -25,7 +25,7 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
     {...rest}
   >
     <Text
-      position="sticky"
+      position="absolute"
       top={0}
       w="full"
       backgroundColor="background.subtle"
@@ -39,11 +39,12 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
     </Text>
 
     <Flex
-      alignItems="center"
-      justifyContent="center"
+      // alignItems="center"
+      // justifyContent="center"
       direction="column"
       flex={1}
       p={{ base: 6, md: 10 }}
+      mt={16}
       {...contentProps}
     >
       {children}
