@@ -1,4 +1,4 @@
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import { Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { Project } from "components/organization";
@@ -84,17 +84,6 @@ const OrganizationOverview = () => {
             {app.organizationPage.projects.description}
           </Text>
         </Stack>
-
-        <Button
-          variant={{ base: "ghost", md: "outline" }}
-          ml={4}
-          color="brand.primary"
-          borderColor="brand.primary"
-        >
-          <Text display={{ base: "none", md: "inline" }}>
-            {app.organizationPage.overview.cta.viewAllProjects.label}
-          </Text>
-        </Button>
       </Flex>
 
       {isError ? (
