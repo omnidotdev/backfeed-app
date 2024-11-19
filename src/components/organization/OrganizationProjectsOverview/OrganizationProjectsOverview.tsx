@@ -2,13 +2,9 @@ import { Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { Project } from "components/organization";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 import { HiOutlineFolder } from "react-icons/hi2";
-
-dayjs.extend(relativeTime);
 
 interface OrganizationProject {
   /** Organization ID. */
