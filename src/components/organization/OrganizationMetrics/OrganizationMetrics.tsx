@@ -71,6 +71,7 @@ const OrganizationMetrics = ({
         {METRICS.map(({ title, value, ...rest }) => (
           <Flex key={title} justifyContent="space-between" {...rest}>
             <Text color="foreground.muted">{title}</Text>
+
             <Skeleton isLoaded={isLoaded} minW={8}>
               <Text textAlign="right">{isError ? 0 : value}</Text>
             </Skeleton>

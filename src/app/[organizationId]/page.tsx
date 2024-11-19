@@ -4,8 +4,8 @@ import { Grid, Stack } from "@omnidev/sigil";
 import {
   OrganizationActions,
   OrganizationHeader,
-  OrganizationProjectsOverview,
   OrganizationMetrics,
+  OrganizationProjectsOverview,
   PROJECTS,
 } from "components/organization";
 import { useDataState } from "lib/hooks";
@@ -47,6 +47,7 @@ const OrganizationPage = () => {
           isLoaded={!isLoading}
           isError={isError}
         />
+
         <OrganizationActions />
       </Grid>
     </Stack>
