@@ -88,7 +88,7 @@ const OrganizationProjectsOverview = () => {
       icon={HiOutlineFolder}
     >
       {isError ? (
-        <ErrorBoundary message="Error fetching recent feedback" h={32} />
+        <ErrorBoundary message="Error fetching recent feedback" h={48} p={8} />
       ) : (
         <Grid
           maxH="md"
@@ -99,12 +99,7 @@ const OrganizationProjectsOverview = () => {
           columns={{ base: 1, md: 2 }}
         >
           {isLoading ? (
-            <SkeletonArray
-              count={5}
-              h={{ base: 42, md: 48 }}
-              borderRadius="lg"
-              w="100%"
-            />
+            <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
           ) : (
             PROJECTS.map(
               ({

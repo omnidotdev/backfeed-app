@@ -65,6 +65,7 @@ const ProjectCard = ({
       borderRadius="lg"
       boxShadow="xs"
       p={8}
+      h={48}
       {...rest}
     >
       <Link href="#">
@@ -81,7 +82,7 @@ const ProjectCard = ({
         </Button>
       </Link>
 
-      <Stack gap={6} h="100%">
+      <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
           <Text
             fontSize={{ base: "md", lg: "lg" }}
