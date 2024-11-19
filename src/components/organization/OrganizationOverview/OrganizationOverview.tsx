@@ -98,7 +98,7 @@ const OrganizationOverview = () => {
       </Flex>
 
       {isError ? (
-        <ErrorBoundary message="Error fetching recent feedback" h="full" />
+        <ErrorBoundary message="Error fetching recent feedback" h={32} />
       ) : (
         <Grid
           height="400px"
