@@ -36,6 +36,7 @@ const OrganizationCard = ({
       position="relative"
       direction="column"
       borderColor="border.subtle"
+      bgColor="background.subtle"
       borderRadius="lg"
       boxShadow="xs"
       p={8}

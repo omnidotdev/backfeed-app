@@ -1,14 +1,15 @@
-import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
-import { FiPlusCircle } from "react-icons/fi";
+import { Flex, Grid } from "@omnidev/sigil";
 import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+import { LuPlusCircle } from "react-icons/lu";
 
-import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
+import { Aggregate, Feedback, Organizations } from "components/dashboard";
+import { PageHeader } from "components/core";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
@@ -47,38 +48,18 @@ const DashboardPage = () => {
       py={5}
       gap={6}
     >
-      <Flex direction="column" w="100%">
-        <Flex
-          direction={{ base: "column", sm: "row" }}
-          align={{ base: "flex-start", sm: "center" }}
-          justify="space-between"
-          gap={4}
-        >
-          <Flex direction="column">
-            <Text
-              as="h1"
-              fontSize="3xl"
-              fontWeight="semibold"
-              lineHeight={1.3}
-            >{`${app.dashboardPage.welcomeMessage}, ${firstName}!`}</Text>
-
-            <Text
-              as="h2"
-              fontSize={{ base: "sm", sm: "md" }}
-              fontWeight="medium"
-              color="foreground.subtle"
-            >
-              {app.dashboardPage.description}
-            </Text>
-          </Flex>
-
-          <Button width={{ base: "full", sm: "auto" }}>
-            <Icon src={FiPlusCircle} w={4} h={4} />
-
-            <Text>New Project</Text>
-          </Button>
-        </Flex>
-      </Flex>
+      <PageHeader
+        title={firstName}
+        description={app.dashboardPage.description}
+        greeting={app.dashboardPage.welcomeMessage}
+        // TODO: add button actions
+        cta={[
+          {
+            label: app.dashboardPage.cta.newProject.label,
+            icon: LuPlusCircle,
+          },
+        ]}
+      />
 
       <Organizations />
 

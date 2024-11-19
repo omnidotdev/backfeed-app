@@ -68,6 +68,11 @@ const app = {
         title: "Avg. Response Time",
       },
     },
+    cta: {
+      newProject: {
+        label: "New Project",
+      },
+    },
   },
   organizationPage: {
     header: {
@@ -85,8 +90,8 @@ const app = {
       title: "Projects",
       description: "Manage feedback collection across your applications",
     },
-    stats: {
-      title: "Organization Stats",
+    metrics: {
+      title: "Organization Metrics",
       description: "Overview of all projects and feedback",
       data: {
         totalProjects: {

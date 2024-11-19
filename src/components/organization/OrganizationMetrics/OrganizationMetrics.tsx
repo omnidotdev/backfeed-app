@@ -1,7 +1,15 @@
-import { Flex, Skeleton, Stack, Text } from "@omnidev/sigil";
+import { Flex, Skeleton, Text, Icon, Grid } from "@omnidev/sigil";
+import {
+  HiOutlineFolder,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineUserGroup,
+} from "react-icons/hi2";
+
+import { SectionContainer } from "components/core";
 import { app } from "lib/config";
 
 import type { FlexProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
 
 interface Props {
   /** The total amount of organization projects */
@@ -16,11 +24,13 @@ interface Props {
   isError?: boolean;
 }
 
-interface Metric extends FlexProps {
+interface OrganizationMetric extends FlexProps {
   /** Human-readable title. */
   title: string;
   /** Actual metric value. */
   value: number;
+  /** Visual icon. */
+  icon: IconType;
 }
 
 /**
@@ -33,52 +43,57 @@ const OrganizationMetrics = ({
   isLoaded,
   isError,
 }: Props) => {
-  const METRICS: Metric[] = [
+  const ORGANIZATION_METRICS: OrganizationMetric[] = [
     {
-      title: app.organizationPage.stats.data.totalProjects.title,
+      title: app.organizationPage.metrics.data.totalProjects.title,
       value: totalProjects,
+      icon: HiOutlineFolder,
     },
     {
-      title: app.organizationPage.stats.data.totalFeedback.title,
+      title: app.organizationPage.metrics.data.totalFeedback.title,
       value: totalFeedback,
+      icon: HiOutlineChatBubbleLeftRight,
     },
     {
-      title: app.organizationPage.stats.data.activeUsers.title,
+      title: app.organizationPage.metrics.data.activeUsers.title,
       value: activeUsers,
+      icon: HiOutlineUserGroup,
     },
   ];
 
   return (
-    <Stack
-      bgColor="background.default"
-      borderRadius="lg"
-      boxShadow="lg"
-      borderColor="border.subtle"
-      p={6}
-      gap={6}
+    <SectionContainer
+      title={app.organizationPage.metrics.title}
+      description={app.organizationPage.metrics.description}
     >
-      <Stack>
-        <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-          {app.organizationPage.stats.title}
-        </Text>
+      <Grid gap={4} h="100%">
+        {ORGANIZATION_METRICS.map(({ title, value, icon, ...rest }) => (
+          <Flex
+            key={title}
+            alignItems="center"
+            justifyContent="space-between"
+            {...rest}
+          >
+            <Flex gap={2} alignItems="center">
+              <Icon src={icon} w={4} h={4} />
 
-        <Text color="foreground.subtle" fontSize="sm">
-          {app.organizationPage.stats.description}
-        </Text>
-      </Stack>
-
-      <Stack gap={4}>
-        {METRICS.map(({ title, value, ...rest }) => (
-          <Flex key={title} justifyContent="space-between" {...rest}>
-            <Text color="foreground.muted">{title}</Text>
+              <Text
+                fontSize={{ base: "sm", lg: "md" }}
+                color="foreground.muted"
+              >
+                {title}
+              </Text>
+            </Flex>
 
             <Skeleton isLoaded={isLoaded} minW={8}>
-              <Text textAlign="right">{isError ? 0 : value}</Text>
+              <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+                {isError ? 0 : value}
+              </Text>
             </Skeleton>
           </Flex>
         ))}
-      </Stack>
-    </Stack>
+      </Grid>
+    </SectionContainer>
   );
 };
 

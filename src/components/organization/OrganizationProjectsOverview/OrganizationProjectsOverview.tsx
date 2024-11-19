@@ -1,10 +1,11 @@
-import { Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { SkeletonArray } from "components/core";
-import { ErrorBoundary } from "components/layout";
-import { Project } from "components/organization";
+import { Grid } from "@omnidev/sigil";
+import { HiOutlineFolder } from "react-icons/hi2";
+
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
-import { HiOutlineFolder } from "react-icons/hi2";
+import { SkeletonArray, SectionContainer } from "components/core";
+import { ErrorBoundary } from "components/layout";
+import { ProjectCard } from "components/organization";
 
 interface OrganizationProject {
   /** Organization ID. */
@@ -26,7 +27,7 @@ export const PROJECTS: OrganizationProject[] = [
     id: "1",
     name: "Mobile App Feedback",
     description:
-      "Collecting user feedback for our iOS and Android applications.",
+      "We are actively gathering detailed user feedback for our iOS and Android applications to enhance user experience and functionality. This includes identifying key pain points, usability issues, and feature requests from our diverse user base. Our primary focus is on improving app performance, refining navigation flows, and introducing user-driven features that align with customer needs. Additionally, we are seeking feedback on visual design updates and accessibility improvements to ensure the app meets the highest standards for all users. This project is crucial for maintaining our competitive edge in the mobile app market and fostering customer loyalty.",
     totalFeedback: 234,
     activeUsers: 1200,
     lastUpdated: "2024-11-05T18:40:27.761Z",
@@ -47,6 +48,31 @@ export const PROJECTS: OrganizationProject[] = [
     activeUsers: 450,
     lastUpdated: "2024-11-12T18:40:27.761Z",
   },
+  {
+    id: "4",
+    name: "E-commerce Platform Upgrade",
+    description:
+      "Feedback for the upgraded e-commerce platform features and user flow.",
+    totalFeedback: 345,
+    activeUsers: 1000,
+    lastUpdated: "2024-11-14T12:00:00.000Z",
+  },
+  {
+    id: "5",
+    name: "AI Chatbot Testing",
+    description: "Testing and collecting responses for our AI chatbot.",
+    totalFeedback: 678,
+    activeUsers: 650,
+    lastUpdated: "2024-11-16T15:30:00.000Z",
+  },
+  {
+    id: "6",
+    name: "Enterprise CRM Feedback",
+    description: "Gathering feedback on our enterprise CRM system.",
+    totalFeedback: 89,
+    activeUsers: 300,
+    lastUpdated: "2024-11-10T09:45:00.000Z",
+  },
 ];
 
 /**
@@ -56,47 +82,24 @@ const OrganizationProjectsOverview = () => {
   const { isLoading, isError } = useDataState();
 
   return (
-    <Flex
-      direction="column"
-      bgColor="background.default"
-      w="100%"
-      borderRadius="lg"
-      boxShadow="lg"
-      borderColor="border.subtle"
-      p={6}
-      gap={6}
+    <SectionContainer
+      title={app.organizationPage.projects.title}
+      description={app.organizationPage.projects.description}
+      icon={HiOutlineFolder}
     >
-      <Flex justify="space-between">
-        <Stack>
-          <Flex align="center" gap={2}>
-            <Icon src={HiOutlineFolder} w={5} h={5} color="foreground.subtle" />
-
-            <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-              {app.organizationPage.projects.title}
-            </Text>
-          </Flex>
-
-          <Text color="foreground.subtle" fontSize="sm">
-            {app.organizationPage.projects.description}
-          </Text>
-        </Stack>
-      </Flex>
-
       {isError ? (
         <ErrorBoundary message="Error fetching recent feedback" h={32} />
       ) : (
         <Grid
-          height="400px"
+          h="420px"
           overflow="auto"
-          // NB: The pr padding is necessary to provide space for the scrollbar
-          pr={5}
           // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
           p="1px"
           gap={6}
           columns={{ base: 1, lg: 2 }}
         >
           {isLoading ? (
-            <SkeletonArray count={5} h="188px" borderRadius="lg" w="100%" />
+            <SkeletonArray count={5} h="204px" borderRadius="lg" w="100%" />
           ) : (
             PROJECTS.map(
               ({
@@ -107,7 +110,7 @@ const OrganizationProjectsOverview = () => {
                 activeUsers,
                 lastUpdated,
               }) => (
-                <Project
+                <ProjectCard
                   key={id}
                   name={name}
                   description={description}
@@ -120,7 +123,7 @@ const OrganizationProjectsOverview = () => {
           )}
         </Grid>
       )}
-    </Flex>
+    </SectionContainer>
   );
 };
 

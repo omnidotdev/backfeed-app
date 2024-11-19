@@ -1,15 +1,19 @@
 "use client";
 
 import { Grid, Stack } from "@omnidev/sigil";
+import { LuPlusCircle } from "react-icons/lu";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { useParams } from "next/navigation";
+
 import {
   OrganizationActions,
-  OrganizationHeader,
   OrganizationMetrics,
   OrganizationProjectsOverview,
   PROJECTS,
 } from "components/organization";
 import { useDataState } from "lib/hooks";
-import { useParams } from "next/navigation";
+import { app } from "lib/config";
+import { PageHeader } from "components/core";
 
 /**
  * Organization overview page.
@@ -32,9 +36,22 @@ const OrganizationPage = () => {
 
   return (
     <Stack maxW="8xl" mx="auto" p={6} gap={6}>
-      <OrganizationHeader
+      <PageHeader
         // TODO: Dont use orgId here, use org name once query set up
-        organizationName={params.organizationId}
+        title={params.organizationId}
+        description={app.organizationPage.header.description}
+        // TODO: add button actions
+        cta={[
+          {
+            label: app.organizationPage.header.cta.viewAllProjects.label,
+            icon: HiOutlineFolder,
+            variant: "outline",
+          },
+          {
+            label: app.organizationPage.header.cta.newProject.label,
+            icon: LuPlusCircle,
+          },
+        ]}
       />
 
       <OrganizationProjectsOverview />
