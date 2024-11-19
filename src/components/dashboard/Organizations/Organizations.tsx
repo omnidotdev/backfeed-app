@@ -11,11 +11,11 @@ import {
 import { FiChevronDown, FiChevronUp, FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
+import { SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
+import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
-import { SkeletonArray } from "components/core";
-import { ErrorBoundary } from "components/layout";
 
 interface Organization {
   /** Organization ID. */
