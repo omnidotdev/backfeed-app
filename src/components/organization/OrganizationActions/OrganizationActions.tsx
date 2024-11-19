@@ -7,7 +7,9 @@ import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface Action extends ButtonProps {
+  /** Action label. */
   label: string;
+  /** Visual icon. */
   icon: IconType;
 }
 

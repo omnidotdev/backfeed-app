@@ -97,7 +97,7 @@ const OrganizationProjectsOverview = () => {
           // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
           p="1px"
           gap={6}
-          columns={{ base: 1, md: 2 }}
+          columns={{ base: 1, lg: 2 }}
         >
           {isLoading ? (
             <SkeletonArray count={5} h="188px" borderRadius="lg" w="100%" />

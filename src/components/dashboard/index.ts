@@ -1,5 +1,5 @@
 export { default as Aggregate } from "./Aggregate/Aggregate";
-export { default as DashboardOrganizationMetric } from "./DashboardOrganizationMetric/DashboardOrganizationMetric";
+export { default as DashboardMetric } from "./DashboardMetric/DashboardMetric";
 export { default as DashboardPage } from "./DashboardPage/DashboardPage";
 export { default as Feedback } from "./Feedback/Feedback";
 export { default as FeedbackCard } from "./FeedbackCard/FeedbackCard";

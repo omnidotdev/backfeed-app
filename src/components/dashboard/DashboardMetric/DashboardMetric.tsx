@@ -12,9 +12,9 @@ interface Props {
 }
 
 /**
- * Organization metric for the dashboard page.
+ * Dashboard metric.
  */
-const DashboardOrganizationMetric = ({ type, value, icon }: Props) => (
+const DashboardMetric = ({ type, value, icon }: Props) => (
   <Flex direction="column" gap={4}>
     <Flex align="center" gap={2}>
       <Icon src={icon} w={5} h={5} color="foreground.subtle" />
@@ -30,4 +30,4 @@ const DashboardOrganizationMetric = ({ type, value, icon }: Props) => (
   </Flex>
 );
 
-export default DashboardOrganizationMetric;
+export default DashboardMetric;

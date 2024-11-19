@@ -28,7 +28,7 @@ const OrganizationMetric = ({ type, value, icon, containerProps }: Props) => (
       direction="row-reverse"
       {...containerProps}
     >
-      <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
+      <Text display={{ base: "inline", lg: "none", "2xl": "inline" }}>
         {type}
       </Text>
 

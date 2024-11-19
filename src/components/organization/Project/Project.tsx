@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { OrganizationMetric } from "components/organization";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -80,7 +80,7 @@ const Project = ({
         </Text>
       </Stack>
 
-      <Flex justifyContent="space-between" alignItems="end">
+      <Grid columns={{ base: 1, md: 3 }} alignItems="end">
         <OrganizationMetric
           icon={HiOutlineChatBubbleLeftRight}
           value={totalFeedback}
@@ -99,7 +99,7 @@ const Project = ({
           type="Updated"
           containerProps={{ direction: "row" }}
         />
-      </Flex>
+      </Grid>
     </Stack>
   </Stack>
 );
