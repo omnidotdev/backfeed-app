@@ -88,7 +88,7 @@ const OrganizationProjectsOverview = () => {
       icon={HiOutlineFolder}
     >
       {isError ? (
-        <ErrorBoundary message="Error fetching recent feedback" h={48} p={8} />
+        <ErrorBoundary message="Error fetching projects" h={48} p={8} />
       ) : (
         <Grid
           maxH="md"
