@@ -1,6 +1,8 @@
 import { Flex, Skeleton, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
+import type { FlexProps } from "@omnidev/sigil";
+
 interface Props {
   /** The total amount of organization projects */
   totalProjects: number;
@@ -14,7 +16,7 @@ interface Props {
   isError?: boolean;
 }
 
-interface Statistic {
+interface Statistic extends FlexProps {
   title: string;
   value: number;
 }
@@ -61,8 +63,8 @@ const OrganizationStats = ({
       </Stack>
 
       <Stack gap={4}>
-        {STATISTICS.map(({ title, value }) => (
-          <Flex key={title} justifyContent="space-between">
+        {STATISTICS.map(({ title, value, ...rest }) => (
+          <Flex key={title} justifyContent="space-between" {...rest}>
             <Text color="foreground.muted">{title}</Text>
             <Skeleton isLoaded={isLoaded} minW={8}>
               <Text textAlign="right">{isError ? 0 : value}</Text>

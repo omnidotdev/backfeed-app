@@ -4,8 +4,9 @@ import { LuPlusCircle, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
 
 import type { IconType } from "react-icons";
+import type { ButtonProps } from "@omnidev/sigil";
 
-interface Action {
+interface Action extends ButtonProps {
   label: string;
   icon: IconType;
 }
@@ -48,8 +49,8 @@ const OrganizationActions = () => (
     </Stack>
 
     <Grid gap={4}>
-      {ORGANIZATION_ACTIONS.map(({ label, icon }) => (
-        <Button key={label} variant="outline">
+      {ORGANIZATION_ACTIONS.map(({ label, icon, ...rest }) => (
+        <Button key={label} variant="outline" {...rest}>
           <Icon src={icon} w={4} h={4} />
           {label}
         </Button>
