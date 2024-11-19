@@ -4,4 +4,6 @@ export { default as Footer } from "./Footer/Footer";
 export { default as GetStarted } from "./GetStarted/GetStarted";
 export { default as Header } from "./Header/Header";
 export { default as Layout } from "./Layout/Layout";
+export { default as PageHeader } from "./PageHeader/PageHeader";
+export { default as SectionContainer } from "./SectionContainer/SectionContainer";
 export { default as ThemeToggle } from "./ThemeToggle/ThemeToggle";

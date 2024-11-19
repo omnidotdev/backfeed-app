@@ -1,12 +1,13 @@
-import { Button, Flex, Grid, Icon, Text } from "@omnidev/sigil";
-import { FiPlusCircle } from "react-icons/fi";
+import { Grid, Stack } from "@omnidev/sigil";
 import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, Organizations } from "components/dashboard";
+import { PageHeader } from "components/layout";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -36,49 +37,18 @@ const DashboardPage = () => {
   ];
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      w="100%"
-      h="100%"
-      maxW="8xl"
-      mx="auto"
-      px={4}
-      py={5}
-      gap={6}
-    >
-      <Flex direction="column" w="100%">
-        <Flex
-          direction={{ base: "column", sm: "row" }}
-          align={{ base: "flex-start", sm: "center" }}
-          justify="space-between"
-          gap={4}
-        >
-          <Flex direction="column">
-            <Text
-              as="h1"
-              fontSize="3xl"
-              fontWeight="semibold"
-              lineHeight={1.3}
-            >{`${app.dashboardPage.welcomeMessage}, ${firstName}!`}</Text>
-
-            <Text
-              as="h2"
-              fontSize={{ base: "sm", sm: "md" }}
-              fontWeight="medium"
-              color="foreground.subtle"
-            >
-              {app.dashboardPage.description}
-            </Text>
-          </Flex>
-
-          <Button width={{ base: "full", sm: "auto" }}>
-            <Icon src={FiPlusCircle} w={4} h={4} />
-
-            <Text>New Project</Text>
-          </Button>
-        </Flex>
-      </Flex>
+    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
+      <PageHeader
+        title={`${app.dashboardPage.welcomeMessage}, ${firstName}!`}
+        description={app.dashboardPage.description}
+        // TODO: add button actions
+        cta={[
+          {
+            label: app.dashboardPage.cta.newProject.label,
+            icon: LuPlusCircle,
+          },
+        ]}
+      />
 
       <Organizations />
 
@@ -96,7 +66,7 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
-    </Flex>
+    </Stack>
   );
 };
 
