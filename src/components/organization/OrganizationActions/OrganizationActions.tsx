@@ -3,8 +3,8 @@ import { app } from "lib/config";
 import { LuPlusCircle, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
 
-import type { IconType } from "react-icons";
 import type { ButtonProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
 
 interface Action extends ButtonProps {
   label: string;
