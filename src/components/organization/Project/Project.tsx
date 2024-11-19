@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import { OrganizationMetric } from "components/organization";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -23,10 +23,6 @@ interface Props {
   activeUsers: number;
   /** The last updated date of the project. */
   lastUpdated: string;
-  /** Whether the organization data is loaded. */
-  isLoaded?: boolean;
-  /** Whether loading the organization data encountered an error. */
-  isError?: boolean;
 }
 
 /**
@@ -35,81 +31,77 @@ interface Props {
 const Project = ({
   name,
   description,
-  isLoaded,
-  isError,
   totalFeedback,
   activeUsers,
   lastUpdated,
   ...rest
 }: Props) => (
-  <Skeleton isLoaded={isLoaded}>
-    <Stack
-      position="relative"
-      borderColor="border.subtle"
-      borderRadius="lg"
-      boxShadow="xs"
-      h="100%"
-      p={8}
-      {...rest}
-    >
-      <Link href="#">
-        <Button
-          position="absolute"
-          top={1}
-          right={1}
-          p={2}
-          variant="icon"
-          color={{ base: "foreground.muted", _hover: "brand.primary" }}
-          bgColor="transparent"
+  <Stack
+    position="relative"
+    borderColor="border.subtle"
+    borderRadius="lg"
+    boxShadow="xs"
+    h="100%"
+    p={8}
+    {...rest}
+  >
+    <Link href="#">
+      <Button
+        position="absolute"
+        top={1}
+        right={1}
+        p={2}
+        variant="icon"
+        color={{ base: "foreground.muted", _hover: "brand.primary" }}
+        bgColor="transparent"
+      >
+        <Icon src={FiArrowUpRight} w={5} h={5} />
+      </Button>
+    </Link>
+
+    <Stack justifyContent="space-between" h="100%" gap={6}>
+      <Stack>
+        <Text
+          fontSize={{ base: "md", lg: "lg" }}
+          fontWeight="semibold"
+          lineHeight={1.2}
         >
-          <Icon src={FiArrowUpRight} w={5} h={5} />
-        </Button>
-      </Link>
+          {name}
+        </Text>
 
-      <Stack justifyContent="space-between" h="100%" gap={6}>
-        <Stack>
-          <Text
-            fontSize={{ base: "md", lg: "lg" }}
-            fontWeight="semibold"
-            lineHeight={1.2}
-          >
-            {isError ? "Error" : name}
-          </Text>
-
-          <Text
-            lineClamp={2}
-            fontSize={{ base: "xs", lg: "sm" }}
-            color="foreground.subtle"
-            overflow="hidden"
-            textOverflow="ellipsis"
-          >
-            {isError ? "Error" : description}
-          </Text>
-        </Stack>
-
-        <Flex justifyContent="space-between" alignItems="end">
-          <OrganizationMetric
-            icon={HiOutlineChatBubbleLeftRight}
-            value={isError ? 0 : totalFeedback}
-            type="Responses"
-          />
-
-          <OrganizationMetric
-            icon={HiOutlineUserGroup}
-            value={isError ? 0 : activeUsers}
-            type="Users"
-          />
-
-          <OrganizationMetric
-            icon={GoClock}
-            value={isError ? "Error" : dayjs(lastUpdated).fromNow()}
-            type="Updated"
-            containerProps={{ direction: "row" }}
-          />
-        </Flex>
+        <Text
+          lineClamp={2}
+          fontSize={{ base: "xs", lg: "sm" }}
+          color="foreground.subtle"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {description}
+        </Text>
       </Stack>
+
+      <Flex justifyContent="space-between" alignItems="end">
+        <OrganizationMetric
+          icon={HiOutlineChatBubbleLeftRight}
+          value={totalFeedback}
+          type="Responses"
+        />
+
+        <OrganizationMetric
+          icon={HiOutlineUserGroup}
+          value={activeUsers}
+          type="Users"
+        />
+
+        <OrganizationMetric
+          icon={GoClock}
+          value={dayjs(lastUpdated).fromNow()}
+          type="Updated"
+          containerProps={{ direction: "row" }}
+        />
+      </Flex>
     </Stack>
-  </Skeleton>
+  </Stack>
 );
 
 export default Project;

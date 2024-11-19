@@ -5,6 +5,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { SkeletonArray } from "components/core";
+import { ErrorBoundary } from "components/layout";
 
 dayjs.extend(relativeTime);
 
@@ -95,38 +97,44 @@ const OrganizationOverview = () => {
         </Button>
       </Flex>
 
-      <Grid
-        height="400px"
-        overflow="auto"
-        // NB: The pr padding is necessary to provide space for the scrollbar
-        pr={5}
-        // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
-        p="1px"
-        gap={6}
-        columns={{ base: 1, md: 2 }}
-      >
-        {projects.map(
-          ({
-            id,
-            name,
-            description,
-            totalFeedback,
-            activeUsers,
-            lastUpdated,
-          }) => (
-            <Project
-              key={id}
-              name={name}
-              description={description}
-              totalFeedback={totalFeedback}
-              activeUsers={activeUsers}
-              lastUpdated={lastUpdated}
-              isLoaded={!isLoading}
-              isError={isError}
-            />
-          )
-        )}
-      </Grid>
+      {isError ? (
+        <ErrorBoundary message="Error fetching recent feedback" h="full" />
+      ) : (
+        <Grid
+          height="400px"
+          overflow="auto"
+          // NB: The pr padding is necessary to provide space for the scrollbar
+          pr={5}
+          // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
+          p="1px"
+          gap={6}
+          columns={{ base: 1, md: 2 }}
+        >
+          {isLoading ? (
+            <SkeletonArray count={5} h={24} w="100%" />
+          ) : (
+            projects.map(
+              ({
+                id,
+                name,
+                description,
+                totalFeedback,
+                activeUsers,
+                lastUpdated,
+              }) => (
+                <Project
+                  key={id}
+                  name={name}
+                  description={description}
+                  totalFeedback={totalFeedback}
+                  activeUsers={activeUsers}
+                  lastUpdated={lastUpdated}
+                />
+              )
+            )
+          )}
+        </Grid>
+      )}
     </Flex>
   );
 };
