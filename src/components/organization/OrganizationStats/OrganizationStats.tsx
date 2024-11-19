@@ -16,7 +16,7 @@ interface Props {
   isError?: boolean;
 }
 
-interface Statistic extends FlexProps {
+interface Metric extends FlexProps {
   title: string;
   value: number;
 }
@@ -28,7 +28,7 @@ const OrganizationStats = ({
   isLoaded,
   isError,
 }: Props) => {
-  const STATISTICS: Statistic[] = [
+  const METRICS: Metric[] = [
     {
       title: app.organizationPage.stats.data.totalProjects.title,
       value: totalProjects,
@@ -63,7 +63,7 @@ const OrganizationStats = ({
       </Stack>
 
       <Stack gap={4}>
-        {STATISTICS.map(({ title, value, ...rest }) => (
+        {METRICS.map(({ title, value, ...rest }) => (
           <Flex key={title} justifyContent="space-between" {...rest}>
             <Text color="foreground.muted">{title}</Text>
             <Skeleton isLoaded={isLoaded} minW={8}>
