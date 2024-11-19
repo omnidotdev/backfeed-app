@@ -1,7 +1,6 @@
 import { Stack } from "@omnidev/sigil";
 import { Card } from "@omnidev/sigil";
 
-
 const tiers = [
   {
     name: "Starter",
@@ -53,11 +52,7 @@ function PricingCards() {
   return (
     <Stack gap={8}>
       {tiers.map((tier) => (
-        <Card
-          key={tier.name}
-          title={tier.name}
-          description={tier.description}
-        >
+        <Card key={tier.name} title={tier.name} description={tier.description}>
           <Stack gap={4}>
             <Stack gap={1.5}>
               <p>Price</p>
@@ -70,7 +65,7 @@ function PricingCards() {
               <p>Features</p>
               <ul>
                 {tier.features.map((feature) => (
-                  <li key={feature}>{feature}</li> 
+                  <li key={feature}>{feature}</li>
                 ))}
               </ul>
             </Stack>

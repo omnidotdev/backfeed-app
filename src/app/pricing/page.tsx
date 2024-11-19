@@ -1,6 +1,6 @@
-'use client';
+"use client";
 import PricingCard from "../../components/pricing/PricingCard";
-import PricingFAQ from "../../components/pricing/PricingFAQ"
+import PricingFAQ from "../../components/pricing/PricingFAQ";
 import PricingHeader from "../../components/pricing/PricingHeader";
 
 export default function PricingPage() {
