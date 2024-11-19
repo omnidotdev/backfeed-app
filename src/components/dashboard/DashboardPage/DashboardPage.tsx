@@ -6,7 +6,7 @@ import {
 } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
-import { PageHeader } from "components/core";
+import { PageHeader } from "components/layout";
 import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
@@ -49,9 +49,8 @@ const DashboardPage = () => {
       gap={6}
     >
       <PageHeader
-        title={firstName}
+        title={`${app.dashboardPage.welcomeMessage}, ${firstName}!`}
         description={app.dashboardPage.description}
-        greeting={app.dashboardPage.welcomeMessage}
         // TODO: add button actions
         cta={[
           {

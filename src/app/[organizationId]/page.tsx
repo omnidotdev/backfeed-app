@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
-import { PageHeader } from "components/core";
+import { PageHeader } from "components/layout";
 import {
   OrganizationActions,
   OrganizationMetrics,

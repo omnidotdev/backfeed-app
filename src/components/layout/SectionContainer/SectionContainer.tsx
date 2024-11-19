@@ -1,16 +1,13 @@
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { FlexProps } from "@omnidev/sigil";
-import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
 interface Props extends FlexProps {
   /** Container title */
-  title?: string;
+  title: string;
   /** Container description */
-  description?: string;
-  /** Container children */
-  children: ReactNode;
+  description: string;
   /** Visual icon */
   icon?: IconType;
 }

@@ -5,7 +5,7 @@ import {
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { SectionContainer } from "components/core";
+import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
 import type { FlexProps } from "@omnidev/sigil";

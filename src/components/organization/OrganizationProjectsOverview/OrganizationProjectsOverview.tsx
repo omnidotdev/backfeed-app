@@ -1,8 +1,8 @@
 import { Grid } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 
-import { SectionContainer, SkeletonArray } from "components/core";
-import { ErrorBoundary } from "components/layout";
+import { SkeletonArray } from "components/core";
+import { ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
