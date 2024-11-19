@@ -15,6 +15,8 @@ interface Options {
   timeout?: number;
 }
 
+const RANDOM_ERROR_PROBABILITY = Math.random() < 0.1;
+
 /**
  * Access data lifecycle state.
  */
@@ -28,7 +30,7 @@ const useDataState = ({ timeout = 300 }: Options = {}) => {
     () =>
       setDataState({
         isLoading: false,
-        isError: Math.random() < 0.1,
+        isError: RANDOM_ERROR_PROBABILITY,
       }),
     timeout
   );
