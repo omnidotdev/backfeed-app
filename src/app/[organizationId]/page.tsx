@@ -5,7 +5,7 @@ import {
   OrganizationActions,
   OrganizationHeader,
   OrganizationProjectsOverview,
-  OrganizationStats,
+  OrganizationMetrics,
   PROJECTS,
 } from "components/organization";
 import { useDataState } from "lib/hooks";
@@ -40,7 +40,7 @@ const OrganizationPage = () => {
       <OrganizationProjectsOverview />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        <OrganizationStats
+        <OrganizationMetrics
           totalProjects={totalProjects}
           totalFeedback={totalFeedback}
           activeUsers={activeUsers}

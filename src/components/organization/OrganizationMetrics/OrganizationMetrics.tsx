@@ -23,7 +23,10 @@ interface Metric extends FlexProps {
   value: number;
 }
 
-const OrganizationStats = ({
+/**
+ * Organization metrics.
+ */
+const OrganizationMetrics = ({
   totalProjects,
   totalFeedback,
   activeUsers,
@@ -78,4 +81,4 @@ const OrganizationStats = ({
   );
 };
 
-export default OrganizationStats;
+export default OrganizationMetrics;

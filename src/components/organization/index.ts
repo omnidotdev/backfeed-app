@@ -5,5 +5,5 @@ export {
   default as OrganizationProjectsOverview,
   PROJECTS,
 } from "./OrganizationProjectsOverview/OrganizationProjectsOverview";
-export { default as OrganizationStats } from "./OrganizationStats/OrganizationStats";
+export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export { default as Project } from "./Project/Project";
