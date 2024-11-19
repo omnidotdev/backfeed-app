@@ -14,6 +14,8 @@ import { LuBuilding2 } from "react-icons/lu";
 import { OrganizationCard } from "components/dashboard";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
+import { SkeletonArray } from "components/core";
+import { ErrorBoundary } from "components/layout";
 
 interface Organization {
   /** Organization ID. */
@@ -129,18 +131,19 @@ const Organizations = () => {
         </Button>
       </Flex>
 
-      <Grid gap={6} columns={{ base: 1, md: 3 }}>
-        {pinnedOrganizations.map(({ id, name, type }) => (
-          <OrganizationCard
-            key={id}
-            name={name}
-            id={id}
-            type={type}
-            isLoaded={!isLoading}
-            isError={isError}
-          />
-        ))}
-      </Grid>
+      {isError ? (
+        <ErrorBoundary message="Error fetching organizations" h={52} />
+      ) : (
+        <Grid gap={6} columns={{ base: 1, md: 3 }}>
+          {isLoading ? (
+            <SkeletonArray count={3} h={52} />
+          ) : (
+            pinnedOrganizations.map(({ id, name, type }) => (
+              <OrganizationCard key={id} name={name} id={id} type={type} />
+            ))
+          )}
+        </Grid>
+      )}
 
       {/* @ts-ignore TODO figure out why this is throwing an error */}
       <Collapsible
@@ -155,6 +158,7 @@ const Organizations = () => {
             }}
             placeSelf="center"
             my={-4}
+            // !NB: this is important to keep this disabled when the data is being fetched or an error is encountered from the request.
             disabled={isLoading || isError}
           >
             <Icon
@@ -172,15 +176,9 @@ const Organizations = () => {
         onOpenChange={onToggleOrganizationCollapse}
       >
         {/* NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows. */}
-        <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} p="1px">
+        <Grid gap={6} columns={{ base: 1, md: 3 }} p="1px">
           {restOrganizations.map(({ name, type, id }) => (
-            <OrganizationCard
-              key={id}
-              name={name}
-              id={id}
-              type={type}
-              isLoaded={!isLoading}
-            />
+            <OrganizationCard key={id} name={name} id={id} type={type} />
           ))}
         </Grid>
       </Collapsible>
