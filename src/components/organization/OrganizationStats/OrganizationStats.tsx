@@ -17,7 +17,9 @@ interface Props {
 }
 
 interface Metric extends FlexProps {
+  /** Human-readable title. */
   title: string;
+  /** Actual metric value. */
   value: number;
 }
 
