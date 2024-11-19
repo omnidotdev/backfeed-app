@@ -54,9 +54,9 @@ export const PROJECTS: OrganizationProject[] = [
 ];
 
 /**
- * Organization overview.
+ * Organization projects overview.
  */
-const OrganizationOverview = () => {
+const OrganizationProjectsOverview = () => {
   const { isLoading, isError } = useDataState();
 
   return (
@@ -128,4 +128,4 @@ const OrganizationOverview = () => {
   );
 };
 
-export default OrganizationOverview;
+export default OrganizationProjectsOverview;

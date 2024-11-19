@@ -2,8 +2,8 @@ export { default as OrganizationActions } from "./OrganizationActions/Organizati
 export { default as OrganizationHeader } from "./OrganizationHeader/OrganizationHeader";
 export { default as OrganizationMetric } from "./OrganizationMetric/OrganizationMetric";
 export {
-  default as OrganizationOverview,
+  default as OrganizationProjectsOverview,
   PROJECTS,
-} from "./OrganizationOverview/OrganizationOverview";
+} from "./OrganizationProjectsOverview/OrganizationProjectsOverview";
 export { default as OrganizationStats } from "./OrganizationStats/OrganizationStats";
 export { default as Project } from "./Project/Project";

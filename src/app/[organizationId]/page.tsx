@@ -4,7 +4,7 @@ import { Grid, Stack } from "@omnidev/sigil";
 import {
   OrganizationActions,
   OrganizationHeader,
-  OrganizationOverview,
+  OrganizationProjectsOverview,
   OrganizationStats,
   PROJECTS,
 } from "components/organization";
@@ -37,7 +37,7 @@ const OrganizationPage = () => {
         organizationName={params.organizationId}
       />
 
-      <OrganizationOverview />
+      <OrganizationProjectsOverview />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
         <OrganizationStats
