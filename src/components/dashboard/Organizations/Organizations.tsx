@@ -4,9 +4,9 @@ import {
   Flex,
   Grid,
   Icon,
+  Stack,
   Text,
   useDisclosure,
-  Stack,
 } from "@omnidev/sigil";
 import { FiChevronDown, FiChevronUp, FiPlusCircle } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
