@@ -111,7 +111,7 @@ const OrganizationOverview = () => {
           columns={{ base: 1, md: 2 }}
         >
           {isLoading ? (
-            <SkeletonArray count={5} h={24} w="100%" />
+            <SkeletonArray count={5} h="188px" borderRadius="lg" w="100%" />
           ) : (
             PROJECTS.map(
               ({
