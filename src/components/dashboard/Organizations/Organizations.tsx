@@ -175,7 +175,7 @@ const Organizations = () => {
         open={isOrganizationCollapseOpen}
         onOpenChange={onToggleOrganizationCollapse}
       >
-        {/* NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows. */}
+        {/* NB: The 1px padding is necessary to prevent clipping of the card borders / box shadows. */}
         <Grid gap={6} columns={{ base: 1, md: 3 }} p="1px">
           {restOrganizations.map(({ name, type, id }) => (
             <OrganizationCard key={id} name={name} id={id} type={type} />
