@@ -14,6 +14,11 @@ interface Props {
   isError?: boolean;
 }
 
+interface Statistic {
+  title: string;
+  value: number;
+}
+
 const OrganizationStats = ({
   totalProjects,
   totalFeedback,
@@ -21,7 +26,7 @@ const OrganizationStats = ({
   isLoaded,
   isError,
 }: Props) => {
-  const STATISTICS = [
+  const STATISTICS: Statistic[] = [
     {
       title: app.organizationPage.stats.data.totalProjects.title,
       value: totalProjects,

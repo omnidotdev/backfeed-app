@@ -3,7 +3,14 @@ import { app } from "lib/config";
 import { LuPlusCircle, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
 
-const ORGANIZATION_ACTIONS = [
+import type { IconType } from "react-icons";
+
+interface Action {
+  label: string;
+  icon: IconType;
+}
+
+const ORGANIZATION_ACTIONS: Action[] = [
   {
     label: app.organizationPage.actions.cta.createProject.label,
     icon: LuPlusCircle,
