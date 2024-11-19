@@ -3,26 +3,32 @@
 import { Card, Flex, Text, VStack } from "@omnidev/sigil";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { useAccount } from "wagmi";
 
 import { useUserQuery } from "generated/graphql";
+import { useAuth } from "lib/hooks";
 
 /**
  * Organization overview page.
  */
 const OrganizationPage = () => {
-  const { address: connectedAddress } = useAccount();
+  const { isAuthenticated } = useAuth(),
+    { address: connectedAddress } = useAccount();
 
   const { data: user } = useUserQuery(
     {
       walletAddress: connectedAddress as string,
     },
     {
+      enabled: isAuthenticated,
       select: (data) => data.userByWalletAddress,
     }
   );
 
   const organizations = user?.userOrganizations?.nodes;
+
+  if (!isAuthenticated) notFound();
 
   return (
     <Flex direction="column" align="center" gap={4}>
