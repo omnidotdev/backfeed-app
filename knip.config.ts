@@ -21,9 +21,9 @@ const knipConfig: KnipConfig = {
   },
   ignore: ["panda.config.ts", "src/generated/**"],
   ignoreDependencies: [
-    /** @omnidev/sigil peer dependency */
+    // @omnidev/sigil peer dependency
     "@ark-ui/react",
-    /** used by GraphQL Code Generator scripts */
+    // used by GraphQL Code Generator scripts
     "dotenv",
   ],
 };
