@@ -6,7 +6,7 @@ import {
   OrganizationHeader,
   OrganizationOverview,
   OrganizationStats,
-  projects,
+  PROJECTS,
 } from "components/organization";
 import { useDataState } from "lib/hooks";
 import { useParams } from "next/navigation";
@@ -20,12 +20,12 @@ const OrganizationPage = () => {
   const { isLoading, isError } = useDataState();
 
   // TODO: Probably use an aggregate query to get this information
-  const totalProjects = projects.length,
-    totalFeedback = projects.reduce(
+  const totalProjects = PROJECTS.length,
+    totalFeedback = PROJECTS.reduce(
       (acc, project) => acc + project.totalFeedback,
       0
     ),
-    activeUsers = projects.reduce(
+    activeUsers = PROJECTS.reduce(
       (acc, project) => acc + project.activeUsers,
       0
     );
