@@ -132,14 +132,21 @@ const Organizations = () => {
       </Flex>
 
       {isError ? (
-        <ErrorBoundary message="Error fetching organizations" h={52} />
+        <ErrorBoundary message="Error fetching organizations" h={48} />
       ) : (
         <Grid gap={6} columns={{ base: 1, md: 3 }}>
           {isLoading ? (
-            <SkeletonArray count={3} h={52} />
+            <SkeletonArray count={3} h={48} />
           ) : (
             pinnedOrganizations.map(({ id, name, type }) => (
-              <OrganizationCard key={id} name={name} id={id} type={type} />
+              <OrganizationCard
+                key={id}
+                id={id}
+                name={name}
+                type={type}
+                // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                h={48}
+              />
             ))
           )}
         </Grid>

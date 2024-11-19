@@ -117,6 +117,8 @@ const OrganizationProjectsOverview = () => {
                   totalFeedback={totalFeedback}
                   activeUsers={activeUsers}
                   lastUpdated={lastUpdated}
+                  // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                  h={48}
                 />
               )
             )

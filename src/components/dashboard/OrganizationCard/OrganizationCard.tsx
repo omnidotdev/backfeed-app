@@ -27,7 +27,6 @@ const OrganizationCard = ({ id, name, type, ...rest }: Props) => (
     borderRadius="lg"
     boxShadow="xs"
     p={8}
-    h={52}
     {...rest}
   >
     <Link href={`/${id}`}>

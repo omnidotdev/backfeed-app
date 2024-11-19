@@ -20,7 +20,7 @@ interface ProjectMetric {
   containerProps?: FlexProps;
 }
 
-interface Props {
+interface Props extends FlexProps {
   /** Name of the organization. */
   name: string;
   /** Description of the organization. */
@@ -65,7 +65,6 @@ const ProjectCard = ({
       borderRadius="lg"
       boxShadow="xs"
       p={8}
-      h={48}
       {...rest}
     >
       <Link href="#">
