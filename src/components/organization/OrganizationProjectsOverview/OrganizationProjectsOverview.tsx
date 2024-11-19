@@ -91,7 +91,7 @@ const OrganizationProjectsOverview = () => {
         <ErrorBoundary message="Error fetching recent feedback" h={32} />
       ) : (
         <Grid
-          h="444px"
+          maxH="md"
           overflow="auto"
           // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
           p="1px"

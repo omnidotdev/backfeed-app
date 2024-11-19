@@ -39,8 +39,6 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
     </Text>
 
     <Flex
-      // alignItems="center"
-      // justifyContent="center"
       direction="column"
       flex={1}
       p={{ base: 6, md: 10 }}
