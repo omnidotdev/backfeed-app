@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { ButtonProps, FlexProps } from "@omnidev/sigil";

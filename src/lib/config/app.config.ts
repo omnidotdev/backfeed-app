@@ -72,6 +72,9 @@ const app = {
       newProject: {
         label: "New Project",
       },
+      newOrganization: {
+        label: "New Organization",
+      },
     },
   },
   organizationPage: {

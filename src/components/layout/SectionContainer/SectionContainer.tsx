@@ -1,3 +1,5 @@
+"use client";
+
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { FlexProps } from "@omnidev/sigil";
@@ -24,7 +26,6 @@ const SectionContainer = ({
 }: Props) => (
   <Stack
     bgColor="background.default"
-    borderColor="border.subtle"
     borderRadius="lg"
     boxShadow="lg"
     p={{ base: 4, sm: 6 }}

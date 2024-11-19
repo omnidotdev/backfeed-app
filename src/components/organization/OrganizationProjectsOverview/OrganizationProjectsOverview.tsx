@@ -91,7 +91,7 @@ const OrganizationProjectsOverview = () => {
         <ErrorBoundary message="Error fetching recent feedback" h={32} />
       ) : (
         <Grid
-          h="420px"
+          h="428px"
           overflow="auto"
           // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
           p="1px"
@@ -99,7 +99,7 @@ const OrganizationProjectsOverview = () => {
           columns={{ base: 1, lg: 2 }}
         >
           {isLoading ? (
-            <SkeletonArray count={5} h="204px" borderRadius="lg" w="100%" />
+            <SkeletonArray count={5} h="200px" borderRadius="lg" w="100%" />
           ) : (
             PROJECTS.map(
               ({

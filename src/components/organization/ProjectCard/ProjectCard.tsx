@@ -11,6 +11,17 @@ import {
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
+interface ProjectMetric {
+  /** Visual icon. */
+  icon: IconType;
+  /** Metric value. */
+  value: string | number;
+  /** Metric type. */
+  type: "Responses" | "Users" | "Updated";
+  /** Container props for `type` and `value`. Used to override default styles. */
+  containerProps?: FlexProps;
+}
+
 interface Props {
   /** Name of the organization. */
   name: string;
@@ -22,17 +33,6 @@ interface Props {
   activeUsers: number;
   /** The last updated date of the project. */
   lastUpdated: string;
-}
-
-interface ProjectMetric {
-  /** Visual icon. */
-  icon: IconType;
-  /** Metric value. */
-  value: string | number;
-  /** Metric type. */
-  type: "Responses" | "Users" | "Updated";
-  /** Container props for `type` and `value`. Used to override default styles. */
-  containerProps?: FlexProps;
 }
 
 /**
@@ -69,10 +69,10 @@ const ProjectCard = ({
     <Flex
       position="relative"
       direction="column"
-      borderColor="border.subtle"
       bgColor="background.subtle"
       borderRadius="lg"
       boxShadow="xs"
+      h="200px"
       p={8}
       {...rest}
     >
@@ -126,6 +126,8 @@ const ProjectCard = ({
                 <Text
                   display={{
                     base: "inline",
+                    sm: "none",
+                    md: "inline",
                     lg: "none",
                     xl: "inline",
                   }}

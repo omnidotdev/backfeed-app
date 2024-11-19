@@ -1,4 +1,12 @@
-import { Button, Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
+import {
+  Button,
+  Stack,
+  Flex,
+  Grid,
+  Icon,
+  Skeleton,
+  Text,
+} from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
@@ -35,10 +43,10 @@ const OrganizationCard = ({
     <Flex
       position="relative"
       direction="column"
-      borderColor="border.subtle"
       bgColor="background.subtle"
       borderRadius="lg"
       boxShadow="xs"
+      h="200px"
       p={8}
       {...rest}
     >
@@ -56,33 +64,35 @@ const OrganizationCard = ({
         </Button>
       </Link>
 
-      <Flex direction="column">
-        <Text
-          fontSize={{ base: "md", lg: "lg" }}
-          fontWeight="semibold"
-          lineHeight={1.2}
-        >
-          {isError ? "Error" : name}
-        </Text>
+      <Stack justifyContent="space-between" h="100%" gap={6}>
+        <Stack>
+          <Text
+            fontSize={{ base: "md", lg: "lg" }}
+            fontWeight="semibold"
+            lineHeight={1.2}
+          >
+            {isError ? "Error" : name}
+          </Text>
 
-        <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
-          {isError ? "Error" : type}
-        </Text>
-      </Flex>
+          <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
+            {isError ? "Error" : type}
+          </Text>
+        </Stack>
 
-      <Grid columns={2} mt={6} alignItems="start">
-        <DashboardMetric
-          type="Members"
-          value={isError ? 0 : 420}
-          icon={HiOutlineUserGroup}
-        />
+        <Grid columns={2} mt={6} alignItems="start">
+          <DashboardMetric
+            type="Members"
+            value={isError ? 0 : 420}
+            icon={HiOutlineUserGroup}
+          />
 
-        <DashboardMetric
-          type="Projects"
-          value={isError ? 0 : 69}
-          icon={HiOutlineFolder}
-        />
-      </Grid>
+          <DashboardMetric
+            type="Projects"
+            value={isError ? 0 : 69}
+            icon={HiOutlineFolder}
+          />
+        </Grid>
+      </Stack>
     </Flex>
   </Skeleton>
 );

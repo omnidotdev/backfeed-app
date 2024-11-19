@@ -1,4 +1,4 @@
-import { Flex, Grid } from "@omnidev/sigil";
+import { Stack, Grid } from "@omnidev/sigil";
 import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -37,17 +37,7 @@ const DashboardPage = () => {
   ];
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      w="100%"
-      h="100%"
-      maxW="8xl"
-      mx="auto"
-      px={4}
-      py={5}
-      gap={6}
-    >
+    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
       <PageHeader
         title={`${app.dashboardPage.welcomeMessage}, ${firstName}!`}
         description={app.dashboardPage.description}
@@ -76,7 +66,7 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
-    </Flex>
+    </Stack>
   );
 };
 
