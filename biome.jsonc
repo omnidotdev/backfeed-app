@@ -32,6 +32,9 @@
       "style": {
         "noNonNullAssertion": "off",
         "useSingleVarDeclarator": "off"
+      },
+      "suspicious": {
+        "noConsoleLog": "error"
       }
     }
   },
