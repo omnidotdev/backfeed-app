@@ -25,7 +25,7 @@ interface OrganizationProject {
 export const PROJECTS: OrganizationProject[] = [
   {
     id: "1",
-    name: "Mobile App Feedback",
+    name: "Mobile App Feedback Mobile App Feedback Mobile App Feedback",
     description:
       "We are actively gathering detailed user feedback for our iOS and Android applications to enhance user experience and functionality. This includes identifying key pain points, usability issues, and feature requests from our diverse user base. Our primary focus is on improving app performance, refining navigation flows, and introducing user-driven features that align with customer needs. Additionally, we are seeking feedback on visual design updates and accessibility improvements to ensure the app meets the highest standards for all users. This project is crucial for maintaining our competitive edge in the mobile app market and fostering customer loyalty.",
     totalFeedback: 234,
@@ -91,15 +91,20 @@ const OrganizationProjectsOverview = () => {
         <ErrorBoundary message="Error fetching recent feedback" h={32} />
       ) : (
         <Grid
-          h="428px"
+          h="444px"
           overflow="auto"
           // NB: The 1px padding is necessary to prevet clipping of the card borders / box shadows.
           p="1px"
           gap={6}
-          columns={{ base: 1, lg: 2 }}
+          columns={{ base: 1, md: 2 }}
         >
           {isLoading ? (
-            <SkeletonArray count={5} h="200px" borderRadius="lg" w="100%" />
+            <SkeletonArray
+              count={5}
+              h={{ base: 42, md: 48 }}
+              borderRadius="lg"
+              w="100%"
+            />
           ) : (
             PROJECTS.map(
               ({

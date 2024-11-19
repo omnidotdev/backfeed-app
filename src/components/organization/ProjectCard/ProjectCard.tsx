@@ -1,8 +1,6 @@
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import dayjs from "dayjs";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
-import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -57,12 +55,6 @@ const ProjectCard = ({
       value: activeUsers,
       type: "Users",
     },
-    {
-      icon: GoClock,
-      value: dayjs(lastUpdated).fromNow(),
-      type: "Updated",
-      containerProps: { direction: "row" },
-    },
   ];
 
   return (
@@ -72,7 +64,6 @@ const ProjectCard = ({
       bgColor="background.subtle"
       borderRadius="lg"
       boxShadow="xs"
-      h="200px"
       p={8}
       {...rest}
     >
@@ -90,20 +81,23 @@ const ProjectCard = ({
         </Button>
       </Link>
 
-      <Stack justifyContent="space-between" h="100%" gap={6}>
-        <Stack>
+      <Stack gap={6} h="100%">
+        <Stack minH={{ base: 16, md: 24 }}>
           <Text
             fontSize={{ base: "md", lg: "lg" }}
             fontWeight="semibold"
             lineHeight={1.2}
+            lineClamp={2}
+            overflow="hidden"
+            textOverflow="ellipsis"
           >
             {name}
           </Text>
 
           <Text
-            lineClamp={2}
             fontSize={{ base: "xs", lg: "sm" }}
             color="foreground.subtle"
+            lineClamp={2}
             overflow="hidden"
             textOverflow="ellipsis"
           >
@@ -111,7 +105,7 @@ const ProjectCard = ({
           </Text>
         </Stack>
 
-        <Grid columns={{ base: 1, sm: 3 }} mt={6} alignItems="start">
+        <Grid columns={2} w="full" alignItems="start">
           {PROJECT_METRICS.map(({ icon, value, type, containerProps }) => (
             <Flex key={type} gap={2} alignItems="center">
               <Icon src={icon} w={5} h={5} color="foreground.subtle" />
@@ -125,10 +119,7 @@ const ProjectCard = ({
               >
                 <Text
                   display={{
-                    base: "inline",
-                    sm: "none",
-                    md: "inline",
-                    lg: "none",
+                    base: "none",
                     xl: "inline",
                   }}
                 >

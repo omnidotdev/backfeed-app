@@ -32,8 +32,8 @@ const allOrganizations: Organization[] = [
   },
   {
     id: "c630fc16-1bb7-474f-9405-89401cce301a",
-    name: "Green Future Solutions",
-    type: "Environmental Services",
+    name: "Green Future Solutions Green Future Solutions Green Future Solutions ",
+    type: "Environmental Services Environmental Services Environmental Services",
   },
   {
     id: "aff499bc-516f-436c-9d87-2edfe1043061",
@@ -129,7 +129,7 @@ const Organizations = () => {
         </Button>
       </Flex>
 
-      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }}>
+      <Grid gap={6} columns={{ base: 1, md: 3 }}>
         {pinnedOrganizations.map(({ id, name, type }) => (
           <OrganizationCard
             key={id}

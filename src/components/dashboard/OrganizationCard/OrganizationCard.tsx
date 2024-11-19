@@ -46,15 +46,14 @@ const OrganizationCard = ({
       bgColor="background.subtle"
       borderRadius="lg"
       boxShadow="xs"
-      h="200px"
       p={8}
       {...rest}
     >
       <Link href={`/${id}`}>
         <Button
           position="absolute"
-          top={1}
-          right={1}
+          top={0}
+          right={0}
           p={2}
           variant="icon"
           color={{ base: "foreground.muted", _hover: "brand.primary" }}
@@ -64,22 +63,31 @@ const OrganizationCard = ({
         </Button>
       </Link>
 
-      <Stack justifyContent="space-between" h="100%" gap={6}>
-        <Stack>
+      <Stack gap={6} h="100%">
+        <Stack minH={{ base: 16, md: 24 }}>
           <Text
             fontSize={{ base: "md", lg: "lg" }}
             fontWeight="semibold"
             lineHeight={1.2}
+            lineClamp={2}
+            overflow="hidden"
+            textOverflow="ellipsis"
           >
             {isError ? "Error" : name}
           </Text>
 
-          <Text fontSize={{ base: "xs", lg: "sm" }} color="foreground.subtle">
+          <Text
+            fontSize={{ base: "xs", lg: "sm" }}
+            color="foreground.subtle"
+            lineClamp={2}
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
             {isError ? "Error" : type}
           </Text>
         </Stack>
 
-        <Grid columns={2} mt={6} alignItems="start">
+        <Grid columns={2} w="full" alignItems="start">
           <DashboardMetric
             type="Members"
             value={isError ? 0 : 420}
