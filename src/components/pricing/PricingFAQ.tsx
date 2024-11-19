@@ -2,23 +2,25 @@ import { Accordion } from "@omnidev/sigil";
 
 function PricingFAQ() {
   return (
-    <div 
-    style={{
-      width: "40%",
-      margin: "auto", 
-      flexWrap: "nowrap",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
+    <div
+      style={{
+        width: "40%",
+        margin: "auto",
+        flexWrap: "nowrap",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
-      <h2  style={{
-        fontSize: "2rem",
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: "2rem",
-        marginTop: "2rem",
-      }}>
+      <h2
+        style={{
+          fontSize: "2rem",
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: "2rem",
+          marginTop: "2rem",
+        }}
+      >
         Frequently Asked Questions
       </h2>
       <Accordion
