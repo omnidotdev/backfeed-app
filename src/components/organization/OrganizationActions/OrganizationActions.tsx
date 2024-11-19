@@ -1,5 +1,22 @@
-import { Button, Grid, Stack, Text } from "@omnidev/sigil";
+import { Button, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
+import { LuPlusCircle, LuSettings } from "react-icons/lu";
+import { MdManageAccounts } from "react-icons/md";
+
+const ORGANIZATION_ACTIONS = [
+  {
+    label: app.organizationPage.actions.cta.createProject.label,
+    icon: LuPlusCircle,
+  },
+  {
+    label: app.organizationPage.actions.cta.manageTeam.label,
+    icon: MdManageAccounts,
+  },
+  {
+    label: app.organizationPage.actions.cta.settings.label,
+    icon: LuSettings,
+  },
+];
 
 /**
  * Organization actions.
@@ -24,17 +41,12 @@ const OrganizationActions = () => (
     </Stack>
 
     <Grid gap={4}>
-      <Button variant="outline">
-        {app.organizationPage.actions.cta.createProject.label}
-      </Button>
-
-      <Button variant="outline">
-        {app.organizationPage.actions.cta.manageTeam.label}
-      </Button>
-
-      <Button variant="outline">
-        {app.organizationPage.actions.cta.settings.label}
-      </Button>
+      {ORGANIZATION_ACTIONS.map(({ label, icon }) => (
+        <Button key={label} variant="outline">
+          <Icon src={icon} w={4} h={4} />
+          {label}
+        </Button>
+      ))}
     </Grid>
   </Stack>
 );
