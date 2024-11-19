@@ -15,4 +15,5 @@ const useGraphqlClient =
   async (variables?: TVariables) =>
     graphqlFetch({ query, variables, options });
 
+/** @knipignore - this hook is used by GraphQL Code Generator as a custom fetch implementation. */
 export default useGraphqlClient;
