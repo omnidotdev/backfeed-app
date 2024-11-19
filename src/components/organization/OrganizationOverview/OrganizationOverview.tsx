@@ -30,7 +30,7 @@ export const PROJECTS: OrganizationProject[] = [
     id: "1",
     name: "Mobile App Feedback",
     description:
-      "Collecting user feedback for our iOS and Android applications. Collecting user feedback for our iOS and Android applications.",
+      "Collecting user feedback for our iOS and Android applications.",
     totalFeedback: 234,
     activeUsers: 1200,
     lastUpdated: "2024-11-05T18:40:27.761Z",
