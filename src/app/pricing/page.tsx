@@ -1,14 +1,14 @@
-"use client";
+'use client';
+import PricingCard from "../../components/pricing/PricingCard";
+import PricingFAQ from "../../components/pricing/PricingFAQ"
+import PricingHeader from "../../components/pricing/PricingHeader";
 
-import { Flex } from "@omnidev/sigil";
-
-/**
- * Pricing page.
- */
-const PricingPage = () => (
-  <Flex align="center" justify="center" w="100%" h="100%">
-    Pricing Page
-  </Flex>
-);
-
-export default PricingPage;
+export default function PricingPage() {
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <PricingHeader />
+      <PricingCard />
+      <PricingFAQ />
+    </div>
+  );
+}
