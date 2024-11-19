@@ -2,8 +2,23 @@ import { Accordion } from "@omnidev/sigil";
 
 function PricingFAQ() {
   return (
-    <div className="max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-8">
+    <div 
+    style={{
+      width: "40%",
+      margin: "auto", 
+      flexWrap: "nowrap",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+    >
+      <h2  style={{
+        fontSize: "2rem",
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: "2rem",
+        marginTop: "2rem",
+      }}>
         Frequently Asked Questions
       </h2>
       <Accordion
