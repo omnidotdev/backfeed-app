@@ -1,7 +1,6 @@
 import { Button, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { OrganizationMetric } from "components/organization";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { GoClock } from "react-icons/go";
@@ -9,8 +8,6 @@ import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-
-dayjs.extend(relativeTime);
 
 interface Props {
   /** Name of the organization. */
