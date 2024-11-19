@@ -92,7 +92,7 @@ const OrganizationOverview = () => {
           borderColor="brand.primary"
         >
           <Text display={{ base: "none", md: "inline" }}>
-            View All Projects
+            {app.organizationPage.overview.cta.viewAllProjects.label}
           </Text>
         </Button>
       </Flex>

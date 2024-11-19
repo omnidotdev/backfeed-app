@@ -115,6 +115,13 @@ const app = {
         },
       },
     },
+    overview: {
+      cta: {
+        viewAllProjects: {
+          label: "View All Projects",
+        },
+      },
+    },
   },
 };
 
