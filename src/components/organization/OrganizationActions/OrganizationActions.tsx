@@ -1,9 +1,9 @@
-import { Button, Icon, Grid } from "@omnidev/sigil";
+import { Button, Grid, Icon } from "@omnidev/sigil";
 import { LuPlusCircle, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
 
-import { app } from "lib/config";
 import { SectionContainer } from "components/core";
+import { app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";

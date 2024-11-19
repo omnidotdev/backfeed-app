@@ -1,4 +1,4 @@
-import { Button, Grid, Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";

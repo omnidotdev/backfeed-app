@@ -1,7 +1,7 @@
-import { Flex, Button, Icon, Text, Stack } from "@omnidev/sigil";
+import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
-import type { IconType } from "react-icons";
 import type { ButtonProps, FlexProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
 
 interface ActionButton extends ButtonProps {
   /** Button label. */

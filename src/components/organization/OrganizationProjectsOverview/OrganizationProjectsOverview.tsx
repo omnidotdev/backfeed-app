@@ -1,11 +1,11 @@
 import { Grid } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 
-import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
-import { SkeletonArray, SectionContainer } from "components/core";
+import { SectionContainer, SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { ProjectCard } from "components/organization";
+import { app } from "lib/config";
+import { useDataState } from "lib/hooks";
 
 interface OrganizationProject {
   /** Organization ID. */

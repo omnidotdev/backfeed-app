@@ -1,7 +1,7 @@
-import { Flex, Skeleton, Text, Icon, Grid } from "@omnidev/sigil";
+import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import {
-  HiOutlineFolder,
   HiOutlineChatBubbleLeftRight,
+  HiOutlineFolder,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 

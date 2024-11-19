@@ -6,10 +6,10 @@ import {
 } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
+import { PageHeader } from "components/core";
+import { Aggregate, Feedback, Organizations } from "components/dashboard";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
-import { Aggregate, Feedback, Organizations } from "components/dashboard";
-import { PageHeader } from "components/core";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
