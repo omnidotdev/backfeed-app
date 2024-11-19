@@ -1,7 +1,7 @@
 "use client";
 
 import { Grid, Stack } from "@omnidev/sigil";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
@@ -13,12 +13,14 @@ import {
   PROJECTS,
 } from "components/organization";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
+import { useAuth, useDataState } from "lib/hooks";
 
 /**
  * Organization overview page.
  */
 const OrganizationPage = () => {
+  const { isAuthenticated } = useAuth();
+
   const params = useParams<{ organizationId: string }>();
 
   const { isLoading, isError } = useDataState();
@@ -33,6 +35,8 @@ const OrganizationPage = () => {
       (acc, project) => acc + project.activeUsers,
       0
     );
+
+  if (!isAuthenticated) notFound();
 
   return (
     <Stack maxW="8xl" mx="auto" p={6} gap={6}>
