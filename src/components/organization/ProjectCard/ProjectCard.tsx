@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -31,6 +33,10 @@ interface Props {
   activeUsers: number;
   /** The last updated date of the project. */
   lastUpdated: string;
+  /** Organization ID. */
+  organizationId: string;
+  /** Project ID. */
+  projectId: string;
 }
 
 /**
@@ -42,6 +48,8 @@ const ProjectCard = ({
   totalFeedback,
   activeUsers,
   lastUpdated,
+  organizationId,
+  projectId,
   ...rest
 }: Props) => {
   const PROJECT_METRICS: ProjectMetric[] = [
@@ -67,7 +75,7 @@ const ProjectCard = ({
       p={8}
       {...rest}
     >
-      <Link href="#">
+      <Link href={`/${organizationId}/${projectId}`}>
         <Button
           position="absolute"
           top={1}

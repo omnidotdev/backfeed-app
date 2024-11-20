@@ -20,6 +20,8 @@ import {
   useUserQuery,
 } from "generated/graphql";
 
+import { app } from "lib/config";
+
 import type { UseDisclosureOptions } from "@omnidev/sigil";
 import type { CherrypickRequired } from "lib/types/util";
 import type { FieldValues } from "react-hook-form";
@@ -39,6 +41,8 @@ interface Props
   > {
   projectId?: string;
 }
+
+// TODO: This component should be completed in another PR. It is not hooked up and the UI is underdevoeloped.
 
 /**
  * Create new feedback post modal.
@@ -89,13 +93,16 @@ const CreateFeedbackDialog = ({
     [user, createPost, onClose, projectId, queryClient]
   );
 
+  // TODO: Perhaps another name would be better
+  const { form } = app.projectPage.createFeedbackDialog;
+
   return (
     // @ts-ignore: TODO not sure why this is throwing an error
     <Dialog
       open={isOpen}
       // @ts-ignore: TODO not sure why this is throwing an error
       onOpenChange={({ open }) => (open ? onOpen() : onClose())}
-      title="Create Feedback Post"
+      title={app.projectPage.createFeedbackDialog.title}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex direction="column" gap={4}>
@@ -106,10 +113,10 @@ const CreateFeedbackDialog = ({
             // NB: `isInvalid` determines whether `FormErrorMessage` components render
             // isInvalid={!!errors.title}
           >
-            <Label>Title</Label>
+            <Label>{form.fields.title.label}</Label>
 
             <Input
-              placeholder="Short, descriptive title"
+              placeholder={form.fields.title.placeholder}
               _placeholder={{ color: "gray.500" }}
               type="text"
               {...register("title")}
@@ -128,10 +135,10 @@ const CreateFeedbackDialog = ({
             // NB: `isInvalid` determines whether `FormErrorMessage` components render
             // isInvalid={!!errors.title}
           >
-            <Label>Description</Label>
+            <Label>{form.fields.description.label}</Label>
 
             <Textarea
-              placeholder="Describe additional details..."
+              placeholder={form.fields.description.placeholder}
               _placeholder={{ color: "gray.500" }}
               {...register("description")}
             />
@@ -144,7 +151,7 @@ const CreateFeedbackDialog = ({
 
         {/* TODO close and invalidate query */}
         <Button type="submit" disabled={isSubmitting}>
-          Create
+          {form.submit}
         </Button>
       </form>
     </Dialog>

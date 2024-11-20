@@ -1,126 +1,62 @@
 "use client";
 
+import { Stack, Grid, GridItem } from "@omnidev/sigil";
+import { LuSettings } from "react-icons/lu";
+
+import { app } from "lib/config";
+import { PageHeader } from "components/layout";
 import {
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Skeleton,
-  Text,
-  VStack,
-  useDisclosure,
-} from "@omnidev/sigil";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
-import { useAccount } from "wagmi";
+  FeedbackMetrics,
+  ProjectFeedback,
+  ProjectInformation,
+  StatusBreakdown,
+} from "components/project";
 
-import { CreateFeedbackDialog, Feed } from "components/feedback";
-import { useProjectQuery } from "generated/graphql";
-import { NODE_ENV } from "lib/config";
+import type { OrganizationProject } from "components/organization";
 
-// ? change all params to unique IDs instead of readable slugs?
+const projectData: OrganizationProject = {
+  id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
+  name: "Web Platform Beta",
+  description: "Beta testing feedback for the new web platform",
+  totalFeedback: 567,
+  activeUsers: 890,
+  lastUpdated: "2024-11-17T18:40:27.761Z",
+};
 
 /**
  * Project overview page.
  */
-const ProjectPage = () => {
-  const {
-    isOpen: isCreatePostDialogOpen,
-    onOpen: onCreatePostDialogOpen,
-    onClose: onCreatePostDialogClose,
-  } = useDisclosure();
+const ProjectPage = () => (
+  <Stack maxW="8xl" mx="auto" p={6} gap={6}>
+    <PageHeader
+      // TODO: Dont use orgId here, use org name once query set up
+      title={projectData.name}
+      description={projectData.description}
+      // TODO: add button actions
+      cta={[
+        {
+          label: app.projectPage.header.cta.settings.label,
+          icon: LuSettings,
+        },
+      ]}
+    />
 
-  const params = useParams();
+    <Grid h="100%" gap={6} columns={{ base: 1, md: 3 }}>
+      <GridItem colSpan={{ base: 3, md: 2 }} h="100%">
+        <ProjectFeedback />
+      </GridItem>
 
-  const { isConnected } = useAccount();
+      <GridItem h="100%">
+        <Stack gap={6}>
+          <ProjectInformation />
 
-  const { data: project, isPending: isProjectPending } = useProjectQuery(
-    {
-      organizationId: params.organization as string,
-      projectSlug: params.project as string,
-    },
-    { select: (data) => data.projectBySlugAndOrganizationId }
-  );
+          <FeedbackMetrics />
 
-  return (
-    <Flex flexDirection="column">
-      <Skeleton isLoaded={!isProjectPending} w="1/6" h={8} mb={4}>
-        <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-          {project?.name}
-        </Text>
-      </Skeleton>
-
-      <Flex w="full" gap={4} flexDirection={{ base: "column", md: "row" }}>
-        <VStack
-          shadow="1px 1px 5px rgba(0,0,0,0.3)"
-          p={4}
-          bg="background.muted"
-          gap={4}
-          w={{ base: "full", md: "30%" }}
-          rounded="md"
-        >
-          <HStack>
-            <Skeleton isLoaded={!isProjectPending} w={10} h={10} rounded="full">
-              {project?.image && (
-                <Image
-                  src={project?.image}
-                  alt={`${project?.image} image`}
-                  width={40}
-                  height={40}
-                  style={{
-                    borderRadius: "50%",
-                    flexShrink: 0,
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </Skeleton>
-
-            <Skeleton isLoaded={!isProjectPending} h={8} w={40}>
-              <Text ml={2} fontWeight="bold" fontSize="xl">
-                {project?.name}
-              </Text>
-            </Skeleton>
-          </HStack>
-
-          <Skeleton isLoaded={!isProjectPending} w="full" h="full">
-            <Text>{project?.description}</Text>
-          </Skeleton>
-        </VStack>
-
-        <VStack
-          shadow="1px 1px 5px rgba(0,0,0,0.3)"
-          p={4}
-          bg="background.muted"
-          gap={4}
-          w={{ base: "full", md: "70%" }}
-          rounded="md"
-        >
-          <Button
-            // TODO remove env check once ready
-            disabled={NODE_ENV !== "development" || !isConnected}
-            alignSelf="flex-end"
-            gap={2}
-            onClick={onCreatePostDialogOpen}
-          >
-            <Icon src={PlusIcon} />
-            Create Post
-          </Button>
-
-          {/* TODO: Fetch project posts total count here to use for the Skeleton array count. */}
-          <Feed projectId={project?.rowId || ""} overflow="auto" py={4} />
-        </VStack>
-      </Flex>
-
-      <CreateFeedbackDialog
-        isOpen={isCreatePostDialogOpen}
-        onClose={onCreatePostDialogClose}
-        onOpen={onCreatePostDialogOpen}
-        projectId={project?.rowId || ""}
-      />
-    </Flex>
-  );
-};
+          <StatusBreakdown />
+        </Stack>
+      </GridItem>
+    </Grid>
+  </Stack>
+);
 
 export default ProjectPage;

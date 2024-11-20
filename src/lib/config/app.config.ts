@@ -124,6 +124,43 @@ const app = {
       },
     },
   },
+  projectPage: {
+    header: {
+      cta: {
+        settings: {
+          label: "Project Settings",
+        },
+      },
+    },
+    projectFeedback: {
+      title: "Project Feeback",
+    },
+    projectInformation: {
+      title: "Project Information",
+    },
+    feedbackMetrics: {
+      title: "Feedback Metrics",
+    },
+    statusBreakdown: {
+      title: "Status Breakdown",
+    },
+    createFeedbackDialog: {
+      title: "Create Feedback Post",
+      form: {
+        fields: {
+          title: {
+            label: "Title",
+            placeholder: "Short, descriptive title",
+          },
+          description: {
+            label: "Description",
+            placeholder: "Describe additional details...",
+          },
+        },
+        submit: "Create",
+      },
+    },
+  },
 };
 
 export default app;

@@ -9,7 +9,7 @@ interface Props extends FlexProps {
   /** Container title */
   title: string;
   /** Container description */
-  description: string;
+  description?: string;
   /** Visual icon */
   icon?: IconType;
 }

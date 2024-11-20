@@ -54,7 +54,7 @@ const OrganizationPage = () => {
         ]}
       />
 
-      <OrganizationProjectsOverview />
+      <OrganizationProjectsOverview organizationId={params.organizationId} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
         <OrganizationMetrics
