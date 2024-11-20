@@ -131,6 +131,10 @@ const app = {
   },
   feedbackPage: {
     backToProject: "Back to Project",
+    details: {
+      title: "Feedback Details",
+      description: "View feedback details and upvote or downvote.",
+    },
   },
 };
 

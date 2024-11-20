@@ -1,12 +1,26 @@
 "use client";
 
-import { Button, Icon, Stack } from "@omnidev/sigil";
+import {
+  Badge,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  VStack,
+} from "@omnidev/sigil";
+import dayjs from "dayjs";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiArrowDown, FiArrowUp } from "react-icons/fi";
 
+import { VoteButton } from "components/feedback";
+import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+
+import type { VoteButtonProps } from "components/feedback";
 
 interface Feedback {
   /** Feedback ID. */
@@ -50,8 +64,9 @@ const FeedbackPage = () => {
 
   const FEEDBACK: Feedback = {
     id: feedbackId,
-    title: "I still like turtles.",
-    description: "Turtles are the best.",
+    title: "I Still Like Turtles",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
     createdAt: "2023-01-01T00:00:00.000Z",
     updatedAt: "2023-01-01T00:00:00.000Z",
     status: "Planned",
@@ -64,6 +79,34 @@ const FeedbackPage = () => {
     },
   };
 
+  const VOTE_BUTTONS: VoteButtonProps[] = [
+    {
+      id: "upvote",
+      votes: FEEDBACK.upvotes,
+      icon: FiArrowUp,
+      color: "omni.emerald",
+      borderColor: "omni.emerald",
+      backgroundColor: {
+        base: { base: "omni.emerald.50", _dark: "omni.emerald.950" },
+        _hover: { base: "omni.emerald.100", _dark: "omni.emerald.900" },
+      },
+    },
+    {
+      id: "downvote",
+      votes: FEEDBACK.downvotes,
+      icon: FiArrowDown,
+      color: "omni.ruby",
+      borderColor: "omni.ruby",
+      backgroundColor: {
+        base: { base: "omni.ruby.50", _dark: "omni.ruby.950" },
+        _hover: { base: "omni.ruby.100", _dark: "omni.ruby.900" },
+      },
+      contentProps: {
+        flexDirection: "column-reverse",
+      },
+    },
+  ];
+
   if (!isAuthenticated) notFound();
 
   return (
@@ -75,9 +118,52 @@ const FeedbackPage = () => {
           _hover={{ bgColor: "background.muted" }}
         >
           <Icon src={FiArrowLeft} w={4} h={4} />
+
           {app.feedbackPage.backToProject}
         </Button>
       </Link>
+
+      <SectionContainer
+        title={app.feedbackPage.details.title}
+        description={app.feedbackPage.details.description}
+      >
+        <HStack borderTopWidth="1px" px={4} pt={4} gap={8}>
+          <VStack fontSize="sm" placeSelf="flex-start" gap={2}>
+            {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
+              <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+            ))}
+          </VStack>
+
+          <Stack>
+            <Text fontWeight="semibold" fontSize="lg">
+              {FEEDBACK.title}
+            </Text>
+
+            <Text color="foreground.subtle">{FEEDBACK.description}</Text>
+
+            <HStack justify="space-between">
+              <HStack color="foreground.muted" fontSize="sm">
+                <Text>
+                  {FEEDBACK.user.firstName} {FEEDBACK.user.lastName}
+                </Text>
+
+                <Flex
+                  borderRadius="full"
+                  h={1}
+                  w={1}
+                  bgColor="foreground.muted"
+                />
+
+                <Text color="foreground.muted">
+                  {dayjs(FEEDBACK.createdAt).fromNow()}
+                </Text>
+              </HStack>
+
+              <Badge>{FEEDBACK.status}</Badge>
+            </HStack>
+          </Stack>
+        </HStack>
+      </SectionContainer>
     </Stack>
   );
 };
