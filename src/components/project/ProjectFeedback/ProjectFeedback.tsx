@@ -3,30 +3,16 @@ import { HiOutlineFolder } from "react-icons/hi2";
 
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary, SectionContainer } from "components/layout";
-import { CreateFeedbackDialog, Post } from "components/project";
+import { CreateFeedbackDialog, ProjectResponse } from "components/project";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
 import type { ResponseType } from "components/dashboard";
 
 /**
- * Represents a vote on a post.
- */
-interface ProjectVote {
-  /** Unique identifier for the vote. */
-  id: string;
-  /** The ID of the post the vote is associated with. */
-  postId: string;
-  /** The ID of the user who cast the vote. */
-  userId: string;
-  /** The value of the vote. Positive for upvotes, negative for downvotes. */
-  vote: number;
-}
-
-/**
  * Represents a post within a project.
  */
-export interface ProjectPost {
+export interface Response {
   /** Unique identifier for the post. */
   id: string;
   /** Title of the post. */
@@ -41,114 +27,68 @@ export interface ProjectPost {
   lastUpdated: string;
   /** Type of post (e.g., feature request, bug report, etc.). */
   type: ResponseType;
-
-  /** Array of votes associated with the post. */
-  upvote: ProjectVote[];
 }
 
-const POSTS: ProjectPost[] = [
+const RESPONSES: Response[] = [
   {
     id: "b25a9f2e-0b6f-42e4-b2d9-3f8e8e7ec1c1",
     title: "Enhance Mobile UX",
-    description: "Ideas and feedback on improving the mobile user experience.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project1",
     userId: "user1",
     lastUpdated: "2024-11-05T18:40:27.761Z",
     type: "Positive",
-    upvote: [
-      {
-        id: "fd4c8d34-f934-4116-8c96-25af3ec39321",
-        postId: "b25a9f2e-0b6f-42e4-b2d9-3f8e8e7ec1c1",
-        userId: "user1",
-        vote: 5,
-      },
-    ],
   },
   {
     id: "fb1de8c3-413e-452c-a4d8-98dc7a89f3f2",
     title: "Add Dark Mode",
-    description: "Suggestions for implementing a dark mode feature.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project2",
     userId: "user2",
     lastUpdated: "2024-11-17T18:40:27.761Z",
     type: "Bug",
-    upvote: [
-      {
-        id: "a45fef22-7c2e-44d6-bbe2-8c62796e4b9a",
-        postId: "fb1de8c3-413e-452c-a4d8-98dc7a89f3f2",
-        userId: "user2",
-        vote: -3,
-      },
-    ],
   },
   {
     id: "c761fb6d-62b3-47b5-b3c1-6572f7e523c2",
     title: "Improve Dashboard Analytics",
-    description: "Feedback on analytics display and actionable insights.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project3",
     userId: "user3",
     lastUpdated: "2024-11-12T18:40:27.761Z",
     type: "Feature",
-    upvote: [
-      {
-        id: "e1a58ec9-9d65-4487-b62e-8f3a58f44b16",
-        postId: "c761fb6d-62b3-47b5-b3c1-6572f7e523c2",
-        userId: "user3",
-        vote: 8,
-      },
-    ],
   },
   {
     id: "cbe8b752-dc2d-4ad9-b191-6c68a64d5d74",
     title: "Optimize Page Load Times",
-    description: "Ideas to make the platform faster and more responsive.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project4",
     userId: "user4",
     lastUpdated: "2024-11-14T12:00:00.000Z",
     type: "Bug",
-    upvote: [
-      {
-        id: "f4f6df59-47db-4d3c-85e6-1a3f4135781c",
-        postId: "cbe8b752-dc2d-4ad9-b191-6c68a64d5d74",
-        userId: "user4",
-        vote: -1,
-      },
-    ],
   },
   {
     id: "ab83f88e-59c5-4c9e-b997-09a22f8f81ec",
     title: "Integrate AI Chatbot",
     description:
-      "Feedback on how the AI chatbot could enhance customer support.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project5",
     userId: "user5",
     lastUpdated: "2024-11-16T15:30:00.000Z",
     type: "Positive",
-    upvote: [
-      {
-        id: "3a42c96a-71db-4c8e-a4b1-b83c417758aa",
-        postId: "ab83f88e-59c5-4c9e-b997-09a22f8f81ec",
-        userId: "user5",
-        vote: 0,
-      },
-    ],
   },
   {
     id: "d2baf2c5-497c-464b-9b91-327ea59202c5",
     title: "Streamline Signup Process",
-    description: "Suggestions to simplify the user registration flow.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
     projectId: "project6",
     userId: "user6",
     lastUpdated: "2024-11-10T09:45:00.000Z",
     type: "Feature",
-    upvote: [
-      {
-        id: "8c9e5b41-329f-4b97-9f5d-4bcd7d6e2a22",
-        postId: "d2baf2c5-497c-464b-9b91-327ea59202c5",
-        userId: "user6",
-        vote: 10,
-      },
-    ],
   },
 ];
 
@@ -190,7 +130,9 @@ const ProjectFeedback = () => {
               {isLoading ? (
                 <SkeletonArray count={5} h={32} borderRadius="lg" w="100%" />
               ) : (
-                POSTS.map((post) => <Post key={post.id} post={post} />)
+                RESPONSES.map((response) => (
+                  <ProjectResponse key={response.id} response={response} />
+                ))
               )}
             </Grid>
           )}

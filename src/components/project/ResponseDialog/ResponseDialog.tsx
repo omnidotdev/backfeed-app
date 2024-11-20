@@ -8,57 +8,52 @@ import {
 import type { UseDisclosureOptions } from "@omnidev/sigil";
 import type { CherrypickRequired } from "lib/types/util";
 
-import type { ProjectPost } from "components/project";
+import type { Response } from "components/project";
 
 interface Props
   extends CherrypickRequired<
     UseDisclosureOptions,
     "isOpen" | "onClose" | "onOpen"
   > {
-  /** Project post. */
-  post: ProjectPost;
+  /** Project response. */
+  response: Response;
 }
 
 /**
  * Post dialog details.
  */
-const PostDialog = ({ isOpen, onOpen, onClose, post }: Props) => (
+const ResponseDialog = ({ isOpen, onOpen, onClose, response }: Props) => (
   // @ts-ignore: TODO not sure why this is throwing an error
   <Dialog
     open={isOpen}
     // @ts-ignore not sure why this is throwing an error
     onOpenChange={({ isOpen }) => (isOpen ? onOpen() : onClose())}
-    title={post.title}
-    description={post.description}
+    title={response.title}
+    description={response.description}
   >
     <Flex direction="column" gap={6} maxW="lg">
       <Flex direction="column" gap={1}>
         <Text fontSize="sm" opacity={0.8}>
-          <Icon src={PersonIcon} mr={2} /> Created by {post.userId}
+          <Icon src={PersonIcon} mr={2} /> Created by {response.userId}
         </Text>
 
         <Flex align="center" gap={2}>
           <Icon src={CalendarIcon} mr={3} />
 
           <Text fontSize="sm" opacity={0.8}>
-            {dayjs(post.lastUpdated).fromNow()}
+            {dayjs(response.lastUpdated).fromNow()}
           </Text>
         </Flex>
       </Flex>
 
       <Divider />
 
-      <Button
-        disabled
-        colorScheme="red"
-        onClick={() => {
-          onClose();
-        }}
-      >
+      {/* TODO: Hook this up with query. Close dialog on mutation */}
+      <Button disabled colorScheme="red">
         Delete
       </Button>
     </Flex>
   </Dialog>
 );
 
-export default PostDialog;
+export default ResponseDialog;
