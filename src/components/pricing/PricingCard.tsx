@@ -1,20 +1,6 @@
 import { Button, Card } from "@omnidev/sigil";
-import { useState } from "react";
 
 const tiers = [
-  {
-    title: "Self-Host",
-    price: "$0",
-    description: "For personal projects and small teams",
-    features: [
-      "Up to 100 responses per month",
-      "Basic analytics dashboard",
-      "Email support",
-      "1 project",
-      "Basic integrations",
-    ],
-    highlighted: false,
-  },
   {
     title: "Basic",
     price: "$29",
@@ -45,7 +31,7 @@ const tiers = [
   },
   {
     title: "Enterprise",
-    price: "Custom",
+    price: "Contact Us",
     description: "Advanced features for large organizations",
     features: [
       "Unlimited responses",
@@ -61,9 +47,8 @@ const tiers = [
   },
 ];
 
-function PricingCards() {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
+function PricingCards() {
   return (
     <>
       <div
@@ -76,16 +61,15 @@ function PricingCards() {
       >
         {tiers.map((tier) => (
           <Card
+            borderColor={tier.title === "Professional" ? "brand.primary" : "none"}
+            borderWidth={tier.title === "Professional" ? "2px" : "none"}
             key={tier.title}
             style={{
               width: "15%",
-              border: hoveredCard === tier.title ? "2px solid #2563EB" : "none",
               opacity: tier.title === "Self-Host" ? "0.6" : "1",
               position: "relative",
               height: "auto",
             }}
-            onMouseEnter={() => setHoveredCard(tier.title)}
-            onMouseLeave={() => setHoveredCard(null)}
           >
             <div
               style={{
@@ -146,6 +130,7 @@ function PricingCards() {
                 ))}
               </ul>
               <Button
+                colorPalette={tier.title !== "Professional" ? "gray" : "primary"}
                 style={{
                   position: "absolute",
                   bottom: "16px",

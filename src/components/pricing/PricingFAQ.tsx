@@ -46,6 +46,10 @@ function PricingFAQ() {
             title: "What happens to my data if I cancel?",
             body: "You'll have 30 days to export your data after cancellation. After that period, your data will be permanently deleted from our servers.",
           },
+          {
+            title: "Can I self-host this software?",
+            body: "Yes! We offer open access to our API free of charge so you can build your own feedback provider around our infrastructure.",
+          }
         ]}
       />
     </div>
