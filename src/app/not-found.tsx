@@ -3,6 +3,8 @@
 import { Button, Text, VStack } from "@omnidev/sigil";
 import Link from "next/link";
 
+import { app } from "lib/config";
+
 /**
  * Global 404 (not found error) page.
  */
@@ -10,14 +12,14 @@ const GlobalNotFound = () => (
   <VStack justify="center" gap={4} h="full">
     <VStack>
       <Text fontSize={80} color="foreground.disabled">
-        404
+        {app.notFound.statusCode}
       </Text>
 
-      <Text>Page Not Found</Text>
+      <Text>{app.notFound.title}</Text>
     </VStack>
 
     <Link href="/">
-      <Button>Return home</Button>
+      <Button>{app.notFound.returnHome}</Button>
     </Link>
   </VStack>
 );

@@ -2,6 +2,11 @@ const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   organization: "Omni",
+  notFound: {
+    statusCode: 404,
+    title: "Page Not Found",
+    returnHome: "Return home",
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
