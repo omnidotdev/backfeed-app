@@ -1,9 +1,8 @@
 "use client";
 
-import { Stack, Grid, GridItem } from "@omnidev/sigil";
+import { Grid, GridItem, Stack } from "@omnidev/sigil";
 import { LuSettings } from "react-icons/lu";
 
-import { app } from "lib/config";
 import { PageHeader } from "components/layout";
 import {
   FeedbackMetrics,
@@ -11,6 +10,7 @@ import {
   ProjectInformation,
   StatusBreakdown,
 } from "components/project";
+import { app } from "lib/config";
 
 import type { OrganizationProject } from "components/organization";
 

@@ -1,12 +1,12 @@
-import { Button, Dialog, Flex, Text, Divider, Icon } from "@omnidev/sigil";
+import { Button, Dialog, Divider, Flex, Icon, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import {
   IoCalendarOutline as CalendarIcon,
   IoPersonOutline as PersonIcon,
 } from "react-icons/io5";
 
-import type { CherrypickRequired } from "lib/types/util";
 import type { UseDisclosureOptions } from "@omnidev/sigil";
+import type { CherrypickRequired } from "lib/types/util";
 
 import type { ProjectPost } from "components/project";
 

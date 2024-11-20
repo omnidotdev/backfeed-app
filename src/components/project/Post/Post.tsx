@@ -1,18 +1,18 @@
 import {
-  Stack,
+  Badge,
   Button,
-  Text,
   Flex,
   Icon,
-  Badge,
+  Stack,
+  Text,
   useDisclosure,
 } from "@omnidev/sigil";
+import dayjs from "dayjs";
 import {
-  HiOutlineArrowUpCircle,
   HiOutlineArrowDownCircle,
+  HiOutlineArrowUpCircle,
 } from "react-icons/hi2";
 import { match } from "ts-pattern";
-import dayjs from "dayjs";
 
 import { PostDialog } from "components/project";
 

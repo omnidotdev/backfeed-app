@@ -1,7 +1,7 @@
 import { Flex } from "@omnidev/sigil";
 
-import { app } from "lib/config";
 import { SectionContainer } from "components/layout";
+import { app } from "lib/config";
 
 const ProjectInformation = () => (
   <SectionContainer title={app.projectPage.projectInformation.title}>
