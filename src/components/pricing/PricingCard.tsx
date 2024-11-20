@@ -1,7 +1,20 @@
-// import { Stack } from "@omnidev/sigil";
+import { useState } from "react";
 import { Button, Card } from "@omnidev/sigil";
 
 const tiers = [
+  {
+    title: "Self-Host",
+    price: "$0",
+    description: "For personal projects and small teams",
+    features: [
+      "Up to 100 responses per month",
+      "Basic analytics dashboard",
+      "Email support",
+      "1 project",
+      "Basic integrations",
+    ],
+    highlighted: false,
+  },
   {
     title: "Basic",
     price: "$29",
@@ -48,21 +61,9 @@ const tiers = [
   },
 ];
 
-const freeTier = {
-  title: "Self-Host",
-  price: "$0",
-  description: "For personal projects and small teams",
-  features: [
-    "Up to 100 responses per month",
-    "Basic analytics dashboard",
-    "Email support",
-    "1 project",
-    "Basic integrations",
-  ],
-  highlighted: false,
-};
-
 function PricingCards() {
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+
   return (
     <>
       <div
@@ -75,11 +76,16 @@ function PricingCards() {
       >
         {tiers.map((tier) => (
           <Card
-            border={tier.highlighted ? "2px solid #2563EB" : "none"}
             key={tier.title}
             title={tier.title}
             description={tier.description}
-            style={{ width: "15%" }}
+            style={{
+              width: "15%",
+              border: hoveredCard === tier.title ? "2px solid #2563EB" : "none", // Apply border on hover
+              opacity: tier.title === "Self-Host" ? "0.6" : "1",
+            }}
+            onMouseEnter={() => setHoveredCard(tier.title)} // Set hover state
+            onMouseLeave={() => setHoveredCard(null)} // Clear hover state
           >
             <div
               style={{
@@ -88,7 +94,7 @@ function PricingCards() {
             >
               <h3
                 style={{
-                  fontSize: "2rem",
+                  fontSize: "2.2rem",
                   fontWeight: "bold",
                 }}
               >
@@ -96,7 +102,7 @@ function PricingCards() {
               </h3>
               <p
                 style={{
-                  marginTop: "0.75rem",
+                  marginTop: "1rem",
                   fontSize: "1.25rem",
                 }}
               >
@@ -106,7 +112,7 @@ function PricingCards() {
             <p
               style={{
                 fontWeight: "bold",
-                margin: "16px 0 8px 0",
+                margin: "8px 0 8px 0",
               }}
             >
               Features
@@ -124,66 +130,6 @@ function PricingCards() {
             <Button marginTop="1rem">Get Started with {tier.title}</Button>
           </Card>
         ))}
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "16px",
-        }}
-      >
-        <Card
-          border={freeTier.highlighted ? "2px solid #2563EB" : "none"}
-          key={freeTier.title}
-          title={freeTier.title}
-          description={freeTier.description}
-          style={{ width: "15%" }}
-          opacity="0.5"
-        >
-          <div
-            style={{
-              display: "inline-flex",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "2rem",
-                fontWeight: "bold",
-              }}
-            >
-              {freeTier.price}
-            </h3>
-            <p
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "1.25rem",
-              }}
-            >
-              /month
-            </p>
-          </div>
-          <p
-            style={{
-              fontWeight: "bold",
-              margin: "16px 0 8px 0",
-            }}
-          >
-            Features
-          </p>
-          <ul
-            style={{
-              listStyle: "unset",
-              marginLeft: "1rem",
-            }}
-          >
-            {freeTier.features.map((feature) => (
-              <li key={feature}>{feature}</li>
-            ))}
-          </ul>
-          <Button marginTop="1rem">Get Started with {freeTier.title}</Button>
-        </Card>
       </div>
     </>
   );
