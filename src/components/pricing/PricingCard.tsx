@@ -1,9 +1,9 @@
-import { Stack } from "@omnidev/sigil";
-import { Card } from "@omnidev/sigil";
+// import { Stack } from "@omnidev/sigil";
+import { Button, Card } from "@omnidev/sigil";
 
 const tiers = [
   {
-    name: "Starter",
+    title: "Basic",
     price: "$29",
     description: "Perfect for small teams just getting started",
     features: [
@@ -16,7 +16,7 @@ const tiers = [
     highlighted: false,
   },
   {
-    name: "Professional",
+    title: "Professional",
     price: "$79",
     description: "Everything you need for a growing business",
     features: [
@@ -31,7 +31,7 @@ const tiers = [
     highlighted: true,
   },
   {
-    name: "Enterprise",
+    title: "Enterprise",
     price: "Custom",
     description: "Advanced features for large organizations",
     features: [
@@ -48,31 +48,143 @@ const tiers = [
   },
 ];
 
+const freeTier = {
+  title: "Self-Host",
+  price: "$0",
+  description: "For personal projects and small teams",
+  features: [
+    "Up to 100 responses per month",
+    "Basic analytics dashboard",
+    "Email support",
+    "1 project",
+    "Basic integrations",
+  ],
+  highlighted: false,
+}
+
 function PricingCards() {
   return (
-    <Stack gap={8}>
-      {tiers.map((tier) => (
-        <Card key={tier.name} title={tier.name} description={tier.description}>
-          <Stack gap={4}>
-            <Stack gap={1.5}>
-              <p>Price</p>
-              <div className="inline">
-                <h3>{tier.price}</h3>
-                <p>/month</p>
-              </div>
-            </Stack>
-            <Stack gap={1.5}>
-              <p>Features</p>
-              <ul>
-                {tier.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-            </Stack>
-          </Stack>
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
+        {tiers.map((tier) => (
+          <Card
+            border={tier.highlighted ? "2px solid #2563EB" : "none"}
+            key={tier.title}
+            title={tier.title}
+            description={tier.description}
+            style={{ width: "15%" }}
+          >
+            <div
+              style={{
+                display: "inline-flex",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "bold",
+                }}
+              >
+                {tier.price}
+              </h3>
+              <p
+                style={{
+                  marginTop: "0.75rem",
+                  fontSize: "1.25rem",
+                }}
+              >
+                /month
+              </p>
+            </div>
+            <p
+            style={{
+              fontWeight: "bold",
+              margin: "16px 0 8px 0",
+            }}
+          >
+            Features
+          </p>
+            <ul
+              style={{
+                listStyle: "unset",
+                marginLeft: "1rem",
+              }}
+            >
+              {tier.features.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+            <Button marginTop="1rem">Get Started with {tier.title}</Button>
+          </Card>
+        ))}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "16px",
+        }}
+      >
+        <Card
+          border={freeTier.highlighted ? "2px solid #2563EB" : "none"}
+          key={freeTier.title}
+          title={freeTier.title}
+          description={freeTier.description}
+          style={{ width: "15%" }}
+          opacity="0.5"
+        >
+          <div
+            style={{
+              display: "inline-flex",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+              }}
+            >
+              {freeTier.price}
+            </h3>
+            <p
+              style={{
+                marginTop: "0.75rem",
+                fontSize: "1.25rem",
+              }}
+            >
+              /month
+            </p>
+          </div>
+          <p
+            style={{
+              fontWeight: "bold",
+              margin: "16px 0 8px 0",
+            }}
+          >Features
+          </p>
+          <ul
+              style={{
+                listStyle: "unset",
+                marginLeft: "1rem",
+              }}
+            >
+            {freeTier.features.map((feature) => (
+              <li key={feature}>{feature}</li>
+            ))}
+          </ul>
+          <Button marginTop="1rem">Get Started with {freeTier.title}</Button>
         </Card>
-      ))}
-    </Stack>
+      </div>
+    </>
   );
 }
 
