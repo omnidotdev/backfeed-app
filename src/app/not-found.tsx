@@ -12,6 +12,7 @@ const GlobalNotFound = () => (
       <Text fontSize={80} color="foreground.disabled">
         404
       </Text>
+
       <Text>Page Not Found</Text>
     </VStack>
 
