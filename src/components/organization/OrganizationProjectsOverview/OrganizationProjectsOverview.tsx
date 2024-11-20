@@ -69,7 +69,7 @@ const OrganizationProjectsOverview = () => {
         <Grid
           maxH="md"
           overflow="auto"
-          // NB: The 1px padding is necessary to prevent clipping of the card borders / box shadows.
+          // NB: The padding is necessary to prevent clipping of the card borders/box shadows
           p="1px"
           gap={6}
           columns={{ base: 1, md: 2 }}
