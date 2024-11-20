@@ -49,7 +49,7 @@ function PricingFAQ() {
           {
             title: "Can I self-host this software?",
             body: "Yes! We offer open access to our API free of charge so you can build your own feedback provider around our infrastructure.",
-          }
+          },
         ]}
       />
     </div>

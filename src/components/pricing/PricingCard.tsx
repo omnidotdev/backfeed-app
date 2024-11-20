@@ -47,7 +47,6 @@ const tiers = [
   },
 ];
 
-
 function PricingCards() {
   return (
     <>
@@ -61,7 +60,9 @@ function PricingCards() {
       >
         {tiers.map((tier) => (
           <Card
-            borderColor={tier.title === "Professional" ? "brand.primary" : "none"}
+            borderColor={
+              tier.title === "Professional" ? "brand.primary" : "none"
+            }
             borderWidth={tier.title === "Professional" ? "2px" : "none"}
             key={tier.title}
             style={{
@@ -130,7 +131,9 @@ function PricingCards() {
                 ))}
               </ul>
               <Button
-                colorPalette={tier.title !== "Professional" ? "gray" : "primary"}
+                colorPalette={
+                  tier.title !== "Professional" ? "gray" : "primary"
+                }
                 style={{
                   position: "absolute",
                   bottom: "16px",
