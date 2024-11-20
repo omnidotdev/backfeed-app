@@ -8,6 +8,7 @@ import {
   Text,
 } from "@omnidev/sigil";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -31,6 +32,8 @@ interface ProjectMetric {
 }
 
 interface Props extends FlexProps {
+  /** Project ID. */
+  id: string;
   /** Name of the organization. */
   name: string;
   /** Description of the organization. */
@@ -40,9 +43,11 @@ interface Props extends FlexProps {
 /**
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
-const ProjectCard = ({ name, description, ...rest }: Props) => {
+const ProjectCard = ({ id, name, description, ...rest }: Props) => {
   // !NB: this is to represent where we would want to fetch the aggregate data (total feedback and active users). This will keep the top level `projectsQuery` clean.
   const { isLoading, isError } = useDataState({ timeout: 800 });
+
+  const params = useParams<{ organizationId: string }>();
 
   const PROJECT_METRICS: ProjectMetric[] = [
     {
@@ -67,7 +72,7 @@ const ProjectCard = ({ name, description, ...rest }: Props) => {
       p={8}
       {...rest}
     >
-      <Link href="#">
+      <Link href={`/${params.organizationId}/projects/${id}`}>
         <Button
           position="absolute"
           top={1}
