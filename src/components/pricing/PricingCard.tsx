@@ -77,57 +77,86 @@ function PricingCards() {
         {tiers.map((tier) => (
           <Card
             key={tier.title}
-            title={tier.title}
-            description={tier.description}
             style={{
               width: "15%",
-              border: hoveredCard === tier.title ? "2px solid #2563EB" : "none", // Apply border on hover
+              border: hoveredCard === tier.title ? "2px solid #2563EB" : "none",
               opacity: tier.title === "Self-Host" ? "0.6" : "1",
+              position: "relative",
+              height: "auto",
             }}
-            onMouseEnter={() => setHoveredCard(tier.title)} // Set hover state
-            onMouseLeave={() => setHoveredCard(null)} // Clear hover state
+            onMouseEnter={() => setHoveredCard(tier.title)}
+            onMouseLeave={() => setHoveredCard(null)}
           >
             <div
               style={{
-                display: "inline-flex",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "450px",
               }}
             >
               <h3
                 style={{
-                  fontSize: "2.2rem",
-                  fontWeight: "bold",
+                  fontSize: "1.8rem",
+                  textAlign: "center",
                 }}
               >
-                {tier.price}
+                {tier.title}
               </h3>
+              <div
+                style={{
+                  display: "inline-flex",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "2.2rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {tier.price}
+                </h3>
+                {tier.title !== "Enterprise" && (
+                  <p
+                    style={{
+                      marginTop: "1rem",
+                      fontSize: "1.25rem",
+                    }}
+                  >
+                    /month
+                  </p>
+                )}
+              </div>
               <p
                 style={{
-                  marginTop: "1rem",
-                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  margin: "8px 0 8px 0",
                 }}
               >
-                /month
+                Features
               </p>
+              <ul
+                style={{
+                  listStyle: "unset",
+                  marginLeft: "1rem",
+                }}
+              >
+                {tier.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+              <Button
+                style={{
+                  position: "absolute",
+                  bottom: "16px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "90%",
+                }}
+              >
+                Get Started with {tier.title}
+              </Button>
             </div>
-            <p
-              style={{
-                fontWeight: "bold",
-                margin: "8px 0 8px 0",
-              }}
-            >
-              Features
-            </p>
-            <ul
-              style={{
-                listStyle: "unset",
-                marginLeft: "1rem",
-              }}
-            >
-              {tier.features.map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
-            <Button marginTop="1rem">Get Started with {tier.title}</Button>
           </Card>
         ))}
       </div>
