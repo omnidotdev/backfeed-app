@@ -2,7 +2,6 @@ export { default as OrganizationActions } from "./OrganizationActions/Organizati
 export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export {
   default as OrganizationProjectsOverview,
-  PROJECTS,
   type OrganizationProject,
 } from "./OrganizationProjectsOverview/OrganizationProjectsOverview";
 export { default as ProjectCard } from "./ProjectCard/ProjectCard";

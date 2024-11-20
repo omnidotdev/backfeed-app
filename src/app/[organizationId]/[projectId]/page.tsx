@@ -18,9 +18,6 @@ const projectData: OrganizationProject = {
   id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
   name: "Web Platform Beta",
   description: "Beta testing feedback for the new web platform",
-  totalFeedback: 567,
-  activeUsers: 890,
-  lastUpdated: "2024-11-17T18:40:27.761Z",
 };
 
 /**

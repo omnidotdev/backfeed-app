@@ -15,12 +15,19 @@ const knipConfig: KnipConfig = {
     "src/app/**/{icon,apple-icon}.{ts,tsx}",
     "src/app/**/{opengraph,twitter}-image.{ts,tsx}",
   ],
+  // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
+  project: ["src/**/*.{ts,tsx}"],
   // NB: Modified from the default GraphQL Codegen configuration, see: https://knip.dev/reference/plugins/graphql-codegen
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
   // TODO: remove feedback ignore when ready.
-  ignore: ["panda.config.ts", "src/generated/**", "src/components/feedback/**"],
+  ignore: [
+    "panda.config.ts",
+    "src/generated/**",
+    "src/components/feedback/**",
+    "src/lib/config/env.config.ts/**",
+  ],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency
     "@ark-ui/react",

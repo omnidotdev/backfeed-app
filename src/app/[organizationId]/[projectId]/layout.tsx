@@ -27,7 +27,6 @@ export const generateMetadata = async ({
 /**
  * Project layout.
  */
-const ProjectLayout = ({ children }: { children: PropsWithChildren }) =>
-  children;
+const ProjectLayout = ({ children }: PropsWithChildren) => children;
 
 export default ProjectLayout;
