@@ -20,8 +20,6 @@ import { useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
 import { useAuth } from "lib/hooks";
 
-// ? change all params to unique IDs instead of readable slugs?
-
 /**
  * Project overview page.
  */
@@ -48,6 +46,7 @@ const ProjectPage = () => {
     }
   );
 
+  // TODO: when data is streamed in, this condition should be updated to check for the existence of the project
   if (!isAuthenticated) notFound();
 
   return (

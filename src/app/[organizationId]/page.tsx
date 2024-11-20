@@ -24,6 +24,7 @@ const OrganizationPage = () => {
 
   const { isLoading, isError } = useDataState();
 
+  // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
   if (!isAuthenticated) notFound();
 
   return (
