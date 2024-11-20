@@ -6,8 +6,8 @@ import {
   Icon,
   Stack,
   Text,
-  useDisclosure,
   VStack,
+  useDisclosure,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import {
