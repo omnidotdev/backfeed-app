@@ -3,6 +3,8 @@
 import { useTimeout } from "@omnidev/sigil";
 import { useState } from "react";
 
+const RANDOM_ERROR_PROBABILITY = Math.random() < 0.1;
+
 interface DataState {
   /** Whether the data is loading. */
   isLoading: boolean;
@@ -14,8 +16,6 @@ interface Options {
   /** Timeout to simulate asynchronous data fetching. Defaults to 300 (ms). */
   timeout?: number;
 }
-
-const RANDOM_ERROR_PROBABILITY = Math.random() < 0.1;
 
 /**
  * Access data lifecycle state.

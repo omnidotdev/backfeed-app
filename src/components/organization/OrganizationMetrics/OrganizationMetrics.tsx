@@ -7,22 +7,10 @@ import {
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
-
-interface Props {
-  /** The total amount of organization projects */
-  totalProjects: number;
-  /** The total amount of feedback across all projects */
-  totalFeedback: number;
-  /** The total amount of active users across all projects */
-  activeUsers: number;
-  /** Whether the organization data is loaded. */
-  isLoaded?: boolean;
-  /** Whether loading the organization data encountered an error. */
-  isError?: boolean;
-}
 
 interface OrganizationMetric extends FlexProps {
   /** Human-readable title. */
@@ -36,27 +24,24 @@ interface OrganizationMetric extends FlexProps {
 /**
  * Organization metrics.
  */
-const OrganizationMetrics = ({
-  totalProjects,
-  totalFeedback,
-  activeUsers,
-  isLoaded,
-  isError,
-}: Props) => {
+const OrganizationMetrics = () => {
+  // !NB: this is to represent where we would want to fetch the aggregate data (total projects, total feedback, and active users). This will keep the top level `organizationQuery` clean.
+  const { isLoading, isError } = useDataState({ timeout: 800 });
+
   const ORGANIZATION_METRICS: OrganizationMetric[] = [
     {
       title: app.organizationPage.metrics.data.totalProjects.title,
-      value: totalProjects,
+      value: 6,
       icon: HiOutlineFolder,
     },
     {
       title: app.organizationPage.metrics.data.totalFeedback.title,
-      value: totalFeedback,
+      value: 420,
       icon: HiOutlineChatBubbleLeftRight,
     },
     {
       title: app.organizationPage.metrics.data.activeUsers.title,
-      value: activeUsers,
+      value: 1337,
       icon: HiOutlineUserGroup,
     },
   ];
@@ -85,7 +70,7 @@ const OrganizationMetrics = ({
               </Text>
             </Flex>
 
-            <Skeleton isLoaded={isLoaded} minW={8}>
+            <Skeleton isLoaded={!isLoading} minW={8}>
               <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
                 {isError ? 0 : value}
               </Text>

@@ -1,10 +1,20 @@
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import {
+  Button,
+  Flex,
+  Grid,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
+} from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+
+import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -25,34 +35,24 @@ interface Props extends FlexProps {
   name: string;
   /** Description of the organization. */
   description: string;
-  /** Total feedback for the project. */
-  totalFeedback: number;
-  /** Number of active users for the project. */
-  activeUsers: number;
-  /** The last updated date of the project. */
-  lastUpdated: string;
 }
 
 /**
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
-const ProjectCard = ({
-  name,
-  description,
-  totalFeedback,
-  activeUsers,
-  lastUpdated,
-  ...rest
-}: Props) => {
+const ProjectCard = ({ name, description, ...rest }: Props) => {
+  // !NB: this is to represent where we would want to fetch the aggregate data (total feedback and active users). This will keep the top level `projectsQuery` clean.
+  const { isLoading, isError } = useDataState({ timeout: 800 });
+
   const PROJECT_METRICS: ProjectMetric[] = [
     {
       icon: HiOutlineChatBubbleLeftRight,
-      value: totalFeedback,
+      value: 420,
       type: "Responses",
     },
     {
       icon: HiOutlineUserGroup,
-      value: activeUsers,
+      value: 69,
       type: "Users",
     },
   ];
@@ -110,24 +110,26 @@ const ProjectCard = ({
             <Flex key={type} gap={2} alignItems="center">
               <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-              <Flex
-                color="foreground.subtle"
-                fontSize="sm"
-                gap={1}
-                direction="row-reverse"
-                {...containerProps}
-              >
-                <Text
-                  display={{
-                    base: "none",
-                    xl: "inline",
-                  }}
+              <Skeleton isLoaded={!isLoading}>
+                <Flex
+                  color="foreground.subtle"
+                  fontSize="sm"
+                  gap={1}
+                  direction="row-reverse"
+                  {...containerProps}
                 >
-                  {type}
-                </Text>
+                  <Text
+                    display={{
+                      base: "none",
+                      xl: "inline",
+                    }}
+                  >
+                    {type}
+                  </Text>
 
-                <Text>{value}</Text>
-              </Flex>
+                  <Text>{isError ? 0 : value}</Text>
+                </Flex>
+              </Skeleton>
             </Flex>
           ))}
         </Grid>

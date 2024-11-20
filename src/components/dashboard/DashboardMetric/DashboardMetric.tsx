@@ -29,19 +29,13 @@ const DashboardMetric = ({
     <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
     <Skeleton isLoaded={!isLoading}>
-      {isError ? (
-        <Text color="foreground.subtle" fontSize="sm">
-          Error
-        </Text>
-      ) : (
-        <Flex color="foreground.subtle" fontSize="sm" gap={1}>
-          <Text>{value}</Text>
+      <Flex color="foreground.subtle" fontSize="sm" gap={1}>
+        <Text>{isError ? 0 : value}</Text>
 
-          <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
-            {type}
-          </Text>
-        </Flex>
-      )}
+        <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
+          {type}
+        </Text>
+      </Flex>
     </Skeleton>
   </Flex>
 );
