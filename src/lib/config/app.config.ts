@@ -129,6 +129,9 @@ const app = {
       },
     },
   },
+  feedbackPage: {
+    backToProject: "Back to Project",
+  },
 };
 
 export default app;
