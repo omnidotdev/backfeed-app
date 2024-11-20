@@ -11,15 +11,14 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
 import { useAccount } from "wagmi";
 
 import { CreateFeedbackDialog, Feed } from "components/feedback";
 import { useProjectQuery } from "generated/graphql";
 import { NODE_ENV } from "lib/config";
-
-// ? change all params to unique IDs instead of readable slugs?
+import { useAuth } from "lib/hooks";
 
 /**
  * Project overview page.
@@ -33,15 +32,22 @@ const ProjectPage = () => {
 
   const params = useParams();
 
-  const { isConnected } = useAccount();
+  const { isAuthenticated } = useAuth(),
+    { isConnected } = useAccount();
 
   const { data: project, isPending: isProjectPending } = useProjectQuery(
     {
       organizationId: params.organization as string,
       projectSlug: params.project as string,
     },
-    { select: (data) => data.projectBySlugAndOrganizationId }
+    {
+      enabled: isAuthenticated,
+      select: (data) => data.projectBySlugAndOrganizationId,
+    }
   );
+
+  // TODO: when data is streamed in, this condition should be updated to check for the existence of the project
+  if (!isAuthenticated) notFound();
 
   return (
     <Flex flexDirection="column">
