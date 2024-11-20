@@ -13,7 +13,7 @@ import {
 import dayjs from "dayjs";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { FiArrowLeft, FiArrowDown, FiArrowUp } from "react-icons/fi";
+import { FiArrowDown, FiArrowLeft, FiArrowUp } from "react-icons/fi";
 
 import { VoteButton } from "components/feedback";
 import { SectionContainer } from "components/layout";
