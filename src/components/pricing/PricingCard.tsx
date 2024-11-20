@@ -60,7 +60,7 @@ const freeTier = {
     "Basic integrations",
   ],
   highlighted: false,
-}
+};
 
 function PricingCards() {
   return (
@@ -104,13 +104,13 @@ function PricingCards() {
               </p>
             </div>
             <p
-            style={{
-              fontWeight: "bold",
-              margin: "16px 0 8px 0",
-            }}
-          >
-            Features
-          </p>
+              style={{
+                fontWeight: "bold",
+                margin: "16px 0 8px 0",
+              }}
+            >
+              Features
+            </p>
             <ul
               style={{
                 listStyle: "unset",
@@ -169,14 +169,15 @@ function PricingCards() {
               fontWeight: "bold",
               margin: "16px 0 8px 0",
             }}
-          >Features
+          >
+            Features
           </p>
           <ul
-              style={{
-                listStyle: "unset",
-                marginLeft: "1rem",
-              }}
-            >
+            style={{
+              listStyle: "unset",
+              marginLeft: "1rem",
+            }}
+          >
             {freeTier.features.map((feature) => (
               <li key={feature}>{feature}</li>
             ))}

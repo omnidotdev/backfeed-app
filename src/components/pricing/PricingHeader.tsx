@@ -2,10 +2,7 @@ import { Flex } from "@omnidev/sigil";
 
 function PricingHeader() {
   return (
-    <Flex 
-        align="center"
-        direction="column"
-    >
+    <Flex align="center" direction="column">
       <h1
         style={{
           fontSize: "3rem",
