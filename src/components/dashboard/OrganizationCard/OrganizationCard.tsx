@@ -1,17 +1,10 @@
-import {
-  Button,
-  Flex,
-  Grid,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
-} from "@omnidev/sigil";
+import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
 import { DashboardMetric } from "components/dashboard";
+import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
 
@@ -22,24 +15,16 @@ interface Props extends FlexProps {
   name: string;
   /** Type of the organization. */
   type: string;
-  /** Whether the organization data is loaded. */
-  isLoaded?: boolean;
-  /** Whether loading the organization data encountered an error. */
-  isError?: boolean;
 }
 
 /**
  * Organization card.
  */
-const OrganizationCard = ({
-  id,
-  name,
-  type,
-  isLoaded = true,
-  isError = false,
-  ...rest
-}: Props) => (
-  <Skeleton isLoaded={isLoaded}>
+const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
+  // !NB: this is to represent where we would want to fetch the aggregate data (total members and projects). This will keep the top level `organizationsQuery` clean.
+  const { isLoading, isError } = useDataState({ timeout: 800 });
+
+  return (
     <Flex
       position="relative"
       direction="column"
@@ -63,7 +48,7 @@ const OrganizationCard = ({
         </Button>
       </Link>
 
-      <Stack gap={6} h="100%">
+      <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
           <Text
             fontSize={{ base: "md", lg: "lg" }}
@@ -73,7 +58,7 @@ const OrganizationCard = ({
             overflow="hidden"
             textOverflow="ellipsis"
           >
-            {isError ? "Error" : name}
+            {name}
           </Text>
 
           <Text
@@ -83,26 +68,30 @@ const OrganizationCard = ({
             overflow="hidden"
             textOverflow="ellipsis"
           >
-            {isError ? "Error" : type}
+            {type}
           </Text>
         </Stack>
 
         <Grid columns={2} w="full" alignItems="start">
           <DashboardMetric
             type="Members"
-            value={isError ? 0 : 420}
+            value={420}
             icon={HiOutlineUserGroup}
+            isLoading={isLoading}
+            isError={isError}
           />
 
           <DashboardMetric
             type="Projects"
-            value={isError ? 0 : 69}
+            value={69}
             icon={HiOutlineFolder}
+            isLoading={isLoading}
+            isError={isError}
           />
         </Grid>
       </Stack>
     </Flex>
-  </Skeleton>
-);
+  );
+};
 
 export default OrganizationCard;
