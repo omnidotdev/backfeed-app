@@ -142,6 +142,13 @@ const app = {
       submit: "Add Comment",
       totalComments: "total comments",
     },
+    statusHistory: {
+      title: "Status History",
+      description: "View feedback status history.",
+      currentStatus: "Current Status",
+      created: "Created",
+      updated: "Updated",
+    },
   },
 };
 

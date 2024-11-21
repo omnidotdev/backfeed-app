@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Icon, Stack } from "@omnidev/sigil";
+import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
-import { Comments, FeedbackDetails } from "components/feedback";
+import { Comments, FeedbackDetails, StatusHistory } from "components/feedback";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -31,7 +31,7 @@ const FeedbackPage = () => {
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
     createdAt: "2023-01-01T00:00:00.000Z",
-    updatedAt: "2023-01-01T00:00:00.000Z",
+    updatedAt: "2023-08-24T00:00:00.000Z",
     status: "Planned",
     upvotes: 420,
     downvotes: 69,
@@ -58,13 +58,29 @@ const FeedbackPage = () => {
         </Button>
       </Link>
 
-      <FeedbackDetails
-        feedback={FEEDBACK}
-        isLoaded={!isLoading}
-        isError={isError}
-      />
+      <Grid gap={4} columns={{ base: 1, lg: 6 }}>
+        <GridItem colSpan={{ base: 1, lg: 4 }}>
+          <FeedbackDetails
+            feedback={FEEDBACK}
+            isLoaded={!isLoading}
+            isError={isError}
+          />
+        </GridItem>
 
-      <Comments />
+        <GridItem colSpan={{ base: 1, lg: 2 }}>
+          <StatusHistory
+            status={FEEDBACK.status}
+            createdAt={FEEDBACK.createdAt}
+            updatedAt={FEEDBACK.updatedAt}
+            isLoaded={!isLoading}
+            isError={isError}
+          />
+        </GridItem>
+
+        <GridItem colSpan={{ base: 1, lg: 4 }}>
+          <Comments />
+        </GridItem>
+      </Grid>
     </Stack>
   );
 };
