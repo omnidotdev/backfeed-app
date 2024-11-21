@@ -11,6 +11,9 @@ interface Props extends BoxProps {
   label?: string;
 }
 
+/**
+ * Spinner component. Used to indicate loading state.
+ */
 const Spinner = ({ label = "Loading...", ...rest }: Props) => (
   <Box
     borderWidth={2}
