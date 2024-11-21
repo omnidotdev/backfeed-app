@@ -26,7 +26,7 @@ const OrganizationPage = () => {
   const { isLoading, isError } = useDataState();
 
   const navigateToProjectsPage = () =>
-    router.push(`/${params.organizationId}/projects`);
+    router.push(`/organizations/${params.organizationId}/projects`);
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
   if (!isAuthenticated) notFound();

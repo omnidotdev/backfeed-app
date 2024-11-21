@@ -72,7 +72,7 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
       p={8}
       {...rest}
     >
-      <Link href={`/${params.organizationId}/projects/${id}`}>
+      <Link href={`/organizations/${params.organizationId}/projects/${id}`}>
         <Button
           position="absolute"
           top={1}

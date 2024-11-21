@@ -48,7 +48,7 @@ const ProjectPage = () => {
       {FEEDBACK.map((feedback) => (
         <Link
           key={feedback.id}
-          href={`/${params.organizationId}/projects/${params.projectId}/${feedback.id}`}
+          href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback.id}`}
         >
           {feedback.title}
         </Link>
