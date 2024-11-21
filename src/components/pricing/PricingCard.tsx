@@ -1,7 +1,6 @@
 import { Badge, Button, Card } from "@omnidev/sigil";
 import { FaArrowRight } from "react-icons/fa6";
 
-
 const tiers = [
   {
     title: "Basic",
