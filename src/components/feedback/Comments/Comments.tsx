@@ -92,7 +92,7 @@ const Comments = () => {
           placeholder={app.feedbackPage.comments.textAreaPlaceholder}
           borderColor="border.subtle"
           fontSize="sm"
-          minH={28}
+          minH={16}
         />
 
         <Stack justify="space-between" direction="row">
@@ -116,6 +116,7 @@ const Comments = () => {
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="sm" />
         ) : (
+          // NB: the padding is necessary to prevent clipping of the card borders/box shadows
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
