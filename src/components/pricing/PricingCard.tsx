@@ -1,4 +1,6 @@
-import { Button, Card } from "@omnidev/sigil";
+import { Badge, Button, Card } from "@omnidev/sigil";
+import { FaArrowRight } from "react-icons/fa6";
+
 
 const tiers = [
   {
@@ -72,6 +74,29 @@ function PricingCards() {
               height: "auto",
             }}
           >
+            {tier.highlighted === true && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "4px",
+                  left: "50%",
+                  transform: "translateX(-50%)", // Center horizontally
+                  backgroundColor: "var(--colors-background-secondary)",
+                  padding: "8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <Badge
+                  color="brand.primary"
+                  style={{
+                    height: "2rem",
+                    borderRadius: "15px 15px",
+                  }}
+                >
+                  Recommended
+                </Badge>
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
@@ -131,18 +156,20 @@ function PricingCards() {
                 ))}
               </ul>
               <Button
-                colorPalette={
-                  tier.title !== "Professional" ? "gray" : "primary"
+                bgColor={
+                  tier.title !== "Professional"
+                    ? "brand.secondary"
+                    : "brand.primary"
                 }
                 style={{
                   position: "absolute",
                   bottom: "16px",
                   left: "50%",
                   transform: "translateX(-50%)",
-                  width: "90%",
+                  width: "50%",
                 }}
               >
-                Get Started with {tier.title}
+                Get Started <FaArrowRight />
               </Button>
             </div>
           </Card>
