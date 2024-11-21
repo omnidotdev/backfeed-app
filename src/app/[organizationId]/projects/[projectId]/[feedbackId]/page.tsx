@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
-import { FeedbackDetails } from "components/feedback";
+import { Comments, FeedbackDetails } from "components/feedback";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -57,6 +57,8 @@ const FeedbackPage = () => {
       </Link>
 
       <FeedbackDetails feedback={FEEDBACK} />
+
+      <Comments />
     </Stack>
   );
 };

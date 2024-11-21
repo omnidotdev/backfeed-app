@@ -1,6 +1,6 @@
-import { Badge, Flex, HStack, Stack, Text, VStack } from "@omnidev/sigil";
+import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { FiArrowDown, FiArrowUp } from "react-icons/fi";
+import { GoThumbsdown, GoThumbsup } from "react-icons/go";
 
 import { VoteButton } from "components/feedback";
 import { SectionContainer } from "components/layout";
@@ -51,27 +51,16 @@ const FeedbackDetails = ({
     {
       id: "upvote",
       votes: upvotes,
-      icon: FiArrowUp,
+      icon: GoThumbsup,
       color: "omni.emerald",
       borderColor: "omni.emerald",
-      backgroundColor: {
-        base: { base: "omni.emerald.50", _dark: "omni.emerald.950" },
-        _hover: { base: "omni.emerald.100", _dark: "omni.emerald.900" },
-      },
     },
     {
       id: "downvote",
       votes: downvotes,
-      icon: FiArrowDown,
+      icon: GoThumbsdown,
       color: "omni.ruby",
       borderColor: "omni.ruby",
-      backgroundColor: {
-        base: { base: "omni.ruby.50", _dark: "omni.ruby.950" },
-        _hover: { base: "omni.ruby.100", _dark: "omni.ruby.900" },
-      },
-      contentProps: {
-        flexDirection: "column-reverse",
-      },
     },
   ];
 
@@ -80,13 +69,7 @@ const FeedbackDetails = ({
       title={app.feedbackPage.details.title}
       description={app.feedbackPage.details.description}
     >
-      <HStack borderTopWidth="1px" px={4} pt={4} gap={8}>
-        <VStack fontSize="sm" placeSelf="flex-start" gap={2}>
-          {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
-            <VoteButton key={id} votes={votes} icon={icon} {...rest} />
-          ))}
-        </VStack>
-
+      <HStack gap={8}>
         <Stack>
           <Text fontWeight="semibold" fontSize="lg">
             {title}
@@ -110,7 +93,15 @@ const FeedbackDetails = ({
               <Text color="foreground.muted">{dayjs(createdAt).fromNow()}</Text>
             </HStack>
 
-            <Badge>{status}</Badge>
+            <HStack gap={4}>
+              <Badge>{status}</Badge>
+
+              <HStack fontSize="sm" placeSelf="flex-start" gap={4}>
+                {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
+                  <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+                ))}
+              </HStack>
+            </HStack>
           </HStack>
         </Stack>
       </HStack>

@@ -135,6 +135,12 @@ const app = {
       title: "Feedback Details",
       description: "View feedback details and upvote or downvote.",
     },
+    comments: {
+      title: "Comments",
+      description: "View all feedback comments.",
+      textAreaPlaceholder: "Add a comment...",
+      submit: "Add Comment",
+    },
   },
 };
 
