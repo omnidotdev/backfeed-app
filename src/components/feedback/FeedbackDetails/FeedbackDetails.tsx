@@ -1,6 +1,12 @@
 import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { GoThumbsdown, GoThumbsup } from "react-icons/go";
+import { useState } from "react";
+import {
+  BsHandThumbsDown,
+  BsHandThumbsDownFill,
+  BsHandThumbsUp,
+  BsHandThumbsUpFill,
+} from "react-icons/bs";
 
 import { VoteButton } from "components/feedback";
 import { SectionContainer } from "components/layout";
@@ -47,20 +53,35 @@ interface Props {
 const FeedbackDetails = ({
   feedback: { title, description, createdAt, status, upvotes, downvotes, user },
 }: Props) => {
+  const [votingState, setVotingState] = useState<{
+    hasUpvoted: boolean;
+    hasDownvoted: boolean;
+  }>({ hasUpvoted: false, hasDownvoted: false });
+
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: upvotes,
-      icon: GoThumbsup,
+      votes: votingState.hasUpvoted ? upvotes + 1 : upvotes,
+      icon: votingState.hasUpvoted ? BsHandThumbsUpFill : BsHandThumbsUp,
       color: "omni.emerald",
       borderColor: "omni.emerald",
+      onClick: () =>
+        setVotingState((prev) => ({
+          hasUpvoted: !prev.hasUpvoted,
+          hasDownvoted: false,
+        })),
     },
     {
       id: "downvote",
-      votes: downvotes,
-      icon: GoThumbsdown,
+      votes: votingState.hasDownvoted ? downvotes + 1 : downvotes,
+      icon: votingState.hasDownvoted ? BsHandThumbsDownFill : BsHandThumbsDown,
       color: "omni.ruby",
       borderColor: "omni.ruby",
+      onClick: () =>
+        setVotingState((prev) => ({
+          hasUpvoted: false,
+          hasDownvoted: !prev.hasDownvoted,
+        })),
     },
   ];
 

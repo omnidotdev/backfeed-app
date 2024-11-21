@@ -24,7 +24,7 @@ const VoteButton = ({ votes, icon, contentProps, ...rest }: Props) => (
     _hover={{ opacity: 0.8 }}
     {...rest}
   >
-    <HStack gap={1} py={1} {...contentProps}>
+    <HStack gap={1} py={1} fontVariant="tabular-nums" {...contentProps}>
       <Icon src={icon} w={4} h={4} />
 
       {votes}
