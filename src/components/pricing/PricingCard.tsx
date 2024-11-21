@@ -165,7 +165,7 @@ function PricingCards() {
                   bottom: "16px",
                   left: "50%",
                   transform: "translateX(-50%)",
-                  width: "50%",
+                  width: "90%",
                 }}
               >
                 Get Started <FaArrowRight />
