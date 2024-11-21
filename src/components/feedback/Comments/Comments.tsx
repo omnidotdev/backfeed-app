@@ -1,5 +1,6 @@
 import {
   Button,
+  Grid,
   Skeleton,
   Stack,
   Text,
@@ -110,9 +111,9 @@ const Comments = () => {
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="sm" />
         ) : (
-          <Stack gap={4} mt={4} maxH="sm" overflow="auto" p="1px">
+          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
-              <SkeletonArray count={4} h={21} />
+              <SkeletonArray count={5} h={21} />
             ) : (
               <VStack>
                 {shownComments.map(
@@ -136,7 +137,7 @@ const Comments = () => {
                 )}
               </VStack>
             )}
-          </Stack>
+          </Grid>
         )}
       </Stack>
     </SectionContainer>

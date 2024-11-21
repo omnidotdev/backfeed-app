@@ -17,6 +17,7 @@ interface Props extends StackProps {
  */
 const Comment = ({ senderName, message, date, ...rest }: Props) => (
   <Stack
+    position="relative"
     direction="row"
     boxShadow="xs"
     borderRadius="sm"
@@ -31,6 +32,7 @@ const Comment = ({ senderName, message, date, ...rest }: Props) => (
       p={2}
       h={8}
       w={8}
+      display={{ base: "none", sm: "flex" }}
     >
       <Text color="foreground.muted">{senderName[0]}</Text>
     </VStack>
@@ -43,7 +45,13 @@ const Comment = ({ senderName, message, date, ...rest }: Props) => (
       </Text>
     </Stack>
 
-    <Text fontSize="sm" color="foreground.muted">
+    <Text
+      position="absolute"
+      top={4}
+      right={4}
+      fontSize="sm"
+      color="foreground.muted"
+    >
       {dayjs(date).fromNow()}
     </Text>
   </Stack>

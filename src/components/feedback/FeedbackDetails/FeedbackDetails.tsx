@@ -1,4 +1,4 @@
-import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useState } from "react";
 import {
@@ -51,7 +51,7 @@ interface Props {
  * Feedback details section.
  */
 const FeedbackDetails = ({
-  feedback: { title, description, createdAt, status, upvotes, downvotes, user },
+  feedback: { title, description, createdAt, upvotes, downvotes, user },
 }: Props) => {
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
@@ -98,7 +98,7 @@ const FeedbackDetails = ({
 
           <Text color="foreground.subtle">{description}</Text>
 
-          <HStack justify="space-between">
+          <Stack justify="space-between" gap={4}>
             <HStack color="foreground.muted" fontSize="sm">
               <Text>
                 {user.firstName} {user.lastName}
@@ -114,16 +114,12 @@ const FeedbackDetails = ({
               <Text color="foreground.muted">{dayjs(createdAt).fromNow()}</Text>
             </HStack>
 
-            <HStack gap={4}>
-              <Badge>{status}</Badge>
-
-              <HStack fontSize="sm" placeSelf="flex-start" gap={4}>
-                {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
-                  <VoteButton key={id} votes={votes} icon={icon} {...rest} />
-                ))}
-              </HStack>
+            <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
+              {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
+                <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+              ))}
             </HStack>
-          </HStack>
+          </Stack>
         </Stack>
       </HStack>
     </SectionContainer>
