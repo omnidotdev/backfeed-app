@@ -5,7 +5,7 @@ import type { IconType } from "react-icons";
 
 export interface Props extends ButtonProps {
   /** Number of votes (upvotes or downvotes). */
-  votes: number;
+  votes: number | undefined;
   /** Visual icon. */
   icon: IconType;
   /** Props to pass to the main content container. */
@@ -21,13 +21,13 @@ const VoteButton = ({ votes, icon, contentProps, ...rest }: Props) => (
     w="full"
     h="max-content"
     bgColor="transparent"
-    _hover={{ opacity: 0.8 }}
+    opacity={{ base: 1, _disabled: 0.3, _hover: { base: 0.8, _disabled: 0.3 } }}
     {...rest}
   >
     <HStack gap={1} py={1} fontVariant="tabular-nums" {...contentProps}>
       <Icon src={icon} w={4} h={4} />
 
-      {votes}
+      {votes ?? 0}
     </HStack>
   </Button>
 );

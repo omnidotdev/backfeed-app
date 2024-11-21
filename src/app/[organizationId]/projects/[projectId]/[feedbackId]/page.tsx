@@ -7,7 +7,7 @@ import { FiArrowLeft } from "react-icons/fi";
 
 import { Comments, FeedbackDetails } from "components/feedback";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useDataState } from "lib/hooks";
 
 import type { Feedback } from "components/feedback";
 
@@ -22,6 +22,8 @@ const FeedbackPage = () => {
     organizationId: string;
     projectId: string;
   }>();
+
+  const { isLoading, isError } = useDataState({ timeout: 400 });
 
   const FEEDBACK: Feedback = {
     id: feedbackId,
@@ -56,7 +58,11 @@ const FeedbackPage = () => {
         </Button>
       </Link>
 
-      <FeedbackDetails feedback={FEEDBACK} />
+      <FeedbackDetails
+        feedback={FEEDBACK}
+        isLoaded={!isLoading}
+        isError={isError}
+      />
 
       <Comments />
     </Stack>

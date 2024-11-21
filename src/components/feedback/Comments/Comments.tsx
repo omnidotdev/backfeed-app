@@ -100,10 +100,15 @@ const Comments = () => {
             <Text
               fontSize="sm"
               color="foreground.muted"
-            >{`${COMMENTS.totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
+            >{`${isError ? 0 : COMMENTS.totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
           </Skeleton>
 
-          <Button w="fit-content" placeSelf="flex-end">
+          <Button
+            w="fit-content"
+            placeSelf="flex-end"
+            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
+            disabled={isLoading || isError}
+          >
             {app.feedbackPage.comments.submit}
           </Button>
         </Stack>

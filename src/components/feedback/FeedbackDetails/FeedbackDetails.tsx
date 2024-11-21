@@ -1,4 +1,4 @@
-import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Skeleton, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useState } from "react";
 import {
@@ -9,7 +9,7 @@ import {
 } from "react-icons/bs";
 
 import { VoteButton } from "components/feedback";
-import { SectionContainer } from "components/layout";
+import { ErrorBoundary, SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
 import type { VoteButtonProps } from "components/feedback";
@@ -44,27 +44,34 @@ export interface Feedback {
 
 interface Props {
   /** Feedback details. */
-  feedback: Feedback;
+  feedback: Feedback | null | undefined;
+  /** Whether the feedback data is loaded. */
+  isLoaded?: boolean;
+  /** Whether loading the feedback data encountered an error. */
+  isError?: boolean;
 }
 
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({
-  feedback: { title, description, createdAt, upvotes, downvotes, user },
-}: Props) => {
+const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
     hasDownvoted: boolean;
   }>({ hasUpvoted: false, hasDownvoted: false });
 
+  const isVotingDisabled = !isLoaded || isError;
+
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: votingState.hasUpvoted ? upvotes + 1 : upvotes,
+      votes: votingState.hasUpvoted
+        ? (feedback?.upvotes ?? 0) + 1
+        : feedback?.upvotes,
       icon: votingState.hasUpvoted ? BsHandThumbsUpFill : BsHandThumbsUp,
       color: "omni.emerald",
       borderColor: "omni.emerald",
+      disabled: isVotingDisabled,
       onClick: () =>
         setVotingState((prev) => ({
           hasUpvoted: !prev.hasUpvoted,
@@ -73,10 +80,13 @@ const FeedbackDetails = ({
     },
     {
       id: "downvote",
-      votes: votingState.hasDownvoted ? downvotes + 1 : downvotes,
+      votes: votingState.hasDownvoted
+        ? (feedback?.downvotes ?? 0) + 1
+        : feedback?.downvotes,
       icon: votingState.hasDownvoted ? BsHandThumbsDownFill : BsHandThumbsDown,
       color: "omni.ruby",
       borderColor: "omni.ruby",
+      disabled: isVotingDisabled,
       onClick: () =>
         setVotingState((prev) => ({
           hasUpvoted: false,
@@ -90,38 +100,54 @@ const FeedbackDetails = ({
       title={app.feedbackPage.details.title}
       description={app.feedbackPage.details.description}
     >
-      <HStack gap={8}>
-        <Stack>
-          <Text fontWeight="semibold" fontSize="lg">
-            {title}
-          </Text>
-
-          <Text color="foreground.subtle">{description}</Text>
-
-          <Stack justify="space-between" gap={4}>
-            <HStack color="foreground.muted" fontSize="sm">
-              <Text>
-                {user.firstName} {user.lastName}
+      {isError ? (
+        <ErrorBoundary message="Error fetching feedback details" h={52} />
+      ) : (
+        <HStack gap={8}>
+          <Stack w="full">
+            <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 48 : undefined}>
+              <Text fontWeight="semibold" fontSize="lg">
+                {feedback?.title}
               </Text>
+            </Skeleton>
 
-              <Flex
-                borderRadius="full"
-                h={1}
-                w={1}
-                bgColor="foreground.muted"
-              />
+            <Skeleton isLoaded={isLoaded} minH={!isLoaded ? 24 : undefined}>
+              <Text color="foreground.subtle">{feedback?.description}</Text>
+            </Skeleton>
 
-              <Text color="foreground.muted">{dayjs(createdAt).fromNow()}</Text>
-            </HStack>
+            <Stack justify="space-between" gap={4}>
+              <HStack color="foreground.muted" fontSize="sm">
+                <Skeleton isLoaded={isLoaded}>
+                  <Text>
+                    {feedback?.user.firstName} {feedback?.user.lastName}
+                  </Text>
+                </Skeleton>
 
-            <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
-              {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
-                <VoteButton key={id} votes={votes} icon={icon} {...rest} />
-              ))}
-            </HStack>
+                <Flex
+                  borderRadius="full"
+                  h={1}
+                  w={1}
+                  bgColor="foreground.muted"
+                />
+
+                <Skeleton isLoaded={isLoaded}>
+                  <Text color="foreground.muted">
+                    {dayjs(feedback?.createdAt).fromNow()}
+                  </Text>
+                </Skeleton>
+              </HStack>
+
+              <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
+                {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
+                  <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                    <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+                  </Skeleton>
+                ))}
+              </HStack>
+            </Stack>
           </Stack>
-        </Stack>
-      </HStack>
+        </HStack>
+      )}
     </SectionContainer>
   );
 };

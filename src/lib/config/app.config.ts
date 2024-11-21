@@ -133,7 +133,7 @@ const app = {
     backToProject: "Back to Project",
     details: {
       title: "Feedback Details",
-      description: "View feedback details and upvote or downvote.",
+      description: "View feedback details. Feel free to upvote or downvote.",
     },
     comments: {
       title: "Comments",
