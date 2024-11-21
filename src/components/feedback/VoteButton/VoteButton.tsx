@@ -8,6 +8,7 @@ export interface Props extends ButtonProps {
   votes: number;
   /** Visual icon. */
   icon: IconType;
+  /** Props to pass to the main content container. */
   contentProps?: VstackProps;
 }
 
@@ -19,7 +20,6 @@ const VoteButton = ({ votes, icon, contentProps, ...rest }: Props) => (
     variant="ghost"
     w="full"
     h="max-content"
-    p={0}
     bgColor="transparent"
     _hover={{ opacity: 0.8 }}
     {...rest}

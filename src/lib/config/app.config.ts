@@ -140,6 +140,7 @@ const app = {
       description: "View all feedback comments.",
       textAreaPlaceholder: "Add a comment...",
       submit: "Add Comment",
+      totalComments: "total comments",
     },
   },
 };
