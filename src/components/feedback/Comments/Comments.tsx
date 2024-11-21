@@ -9,8 +9,9 @@ import {
 } from "@omnidev/sigil";
 import { useState } from "react";
 import { LuMessageSquare } from "react-icons/lu";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray } from "components/core";
+import { SkeletonArray, Spinner } from "components/core";
 import { CommentCard } from "components/feedback";
 import { ErrorBoundary, SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -81,8 +82,18 @@ const Comments = () => {
     setShownComments((prev) => prev.concat(COMMENTS.data));
   };
 
+  const [loaderRef, { rootRef }] = useInfiniteScroll({
+    loading: isLoading,
+    hasNextPage: pageState.hasNextPage,
+    onLoadMore: handleLoadMore,
+    disabled: isError,
+    // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
+    rootMargin: "0px 0px 400px 0px",
+  });
+
   return (
     <SectionContainer
+      ref={rootRef}
       title={app.feedbackPage.comments.title}
       description={app.feedbackPage.comments.description}
       icon={LuMessageSquare}
@@ -136,11 +147,7 @@ const Comments = () => {
                   )
                 )}
 
-                {pageState.hasNextPage && (
-                  <Button variant="muted" onClick={handleLoadMore}>
-                    Load More
-                  </Button>
-                )}
+                {pageState.hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>
             )}
           </Grid>

@@ -47,6 +47,7 @@
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
     "react-icons": "^5.0.1",
+    "react-infinite-scroll-hook": "^5.0.1",
     "recharts": "^2.13.3",
     "ts-pattern": "^5.5.0",
     "usehooks-ts": "^3.1.0",
