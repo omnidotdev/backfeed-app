@@ -3,7 +3,7 @@ import { app } from "lib/config";
 
 function PricingHeader() {
   const { title, description } = app.pricingPage.pricingHeader;
-  
+
   return (
     <Flex align="center" direction="column">
       <h1
