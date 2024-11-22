@@ -64,13 +64,17 @@ function PricingCards() {
             borderColor={
               tier.title === "Professional" ? "brand.primary" : "none"
             }
-            borderWidth={tier.title === "Professional" ? "2px" : "none"}
+            borderWidth={tier.title === "Professional" ? "3px" : "2px"}
             key={tier.title}
             style={{
-              width: "15%",
+              flex: "1 1 calc(25% - 16px)",
+              maxWidth: "300px",
+              minWidth: "250px",
               opacity: tier.title === "Self-Host" ? "0.6" : "1",
+              height: "600px",
+              display: "flex",
+              flexDirection: "column",
               position: "relative",
-              height: "auto",
             }}
           >
             {tier.highlighted === true && (
@@ -174,8 +178,24 @@ function PricingCards() {
           </Card>
         ))}
       </div>
+      <style>
+        {`
+          @media (max-width: 768px) {
+            .PricingCards div {
+              flex: 1 1 calc(50% - 16px);
+            }
+          }
+
+          @media (max-width: 480px) {
+            .PricingCards div {
+              flex: 1 1 100%;
+            }
+          }
+        `}
+      </style>
     </>
   );
 }
 
 export default PricingCards;
+
