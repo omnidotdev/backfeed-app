@@ -1,11 +1,11 @@
 "use client";
 
-import { Stack, VStack } from "@omnidev/sigil";
+import { Stack } from "@omnidev/sigil";
 import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { PageHeader } from "components/layout";
-import { ProjectFilters } from "components/project";
+import { ProjectFilters, ProjectList } from "components/project";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -32,7 +32,7 @@ const ProjectsPage = () => {
 
       <ProjectFilters />
 
-      <VStack>Projects Table</VStack>
+      <ProjectList />
     </Stack>
   );
 };
