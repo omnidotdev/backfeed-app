@@ -14,7 +14,8 @@ const items = [
     body: "We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. For Enterprise plans, we also support wire transfers and purchase orders.",
   },
   {
-    title: "Do you offer discounts for non-profits or educational institutions?",
+    title:
+      "Do you offer discounts for non-profits or educational institutions?",
     body: "Yes, we offer special pricing for non-profits, educational institutions, and open-source projects. Please contact our sales team for more information.",
   },
   {
@@ -50,9 +51,7 @@ function PricingFAQ() {
       >
         Frequently Asked Questions
       </h2>
-      <Accordion
-        items={items}
-      />
+      <Accordion items={items} />
     </div>
   );
 }
