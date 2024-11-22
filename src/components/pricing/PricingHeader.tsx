@@ -1,6 +1,9 @@
 import { Flex } from "@omnidev/sigil";
+import { app } from "lib/config";
 
 function PricingHeader() {
+  const { title, description } = app.pricingPage.pricingHeader;
+  
   return (
     <Flex align="center" direction="column">
       <h1
@@ -12,7 +15,7 @@ function PricingHeader() {
           marginTop: "2rem",
         }}
       >
-        Simple, transparent pricing
+        {title}
       </h1>
       <p
         style={{
@@ -21,8 +24,7 @@ function PricingHeader() {
           marginBottom: "2rem",
         }}
       >
-        Choose the perfect plan for your business. All plans include a 14-day
-        free trial with no credit card required.
+        {description}
       </p>
     </Flex>
   );

@@ -1,54 +1,10 @@
+import { app } from "lib/config";
 import { Badge, Button, Card } from "@omnidev/sigil";
 import { FaArrowRight } from "react-icons/fa6";
 
-const tiers = [
-  {
-    title: "Basic",
-    price: "$29",
-    description: "Perfect for small teams just getting started",
-    features: [
-      "Up to 1,000 responses per month",
-      "Basic analytics dashboard",
-      "Email support",
-      "1 project",
-      "Basic integrations",
-    ],
-    highlighted: false,
-  },
-  {
-    title: "Professional",
-    price: "$79",
-    description: "Everything you need for a growing business",
-    features: [
-      "Up to 10,000 responses per month",
-      "Advanced analytics & reporting",
-      "Priority email & chat support",
-      "Unlimited projects",
-      "Advanced integrations",
-      "Custom branding",
-      "Team collaboration",
-    ],
-    highlighted: true,
-  },
-  {
-    title: "Enterprise",
-    price: "Contact Us",
-    description: "Advanced features for large organizations",
-    features: [
-      "Unlimited responses",
-      "Custom analytics solutions",
-      "24/7 phone & email support",
-      "Dedicated account manager",
-      "Custom integrations",
-      "SLA guarantee",
-      "Advanced security features",
-      "On-premise deployment option",
-    ],
-    highlighted: false,
-  },
-];
-
 function PricingCards() {
+  const tiers = app.pricingPage.tiers;
+
   return (
     <>
       <div
@@ -77,7 +33,7 @@ function PricingCards() {
               position: "relative",
             }}
           >
-            {tier.highlighted === true && (
+            {tier.highlighted && (
               <div
                 style={{
                   position: "absolute",
