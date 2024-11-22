@@ -3,6 +3,8 @@
 import { useTimeout } from "@omnidev/sigil";
 import { useState } from "react";
 
+const RANDOM_ERROR_PROBABILITY = Math.random() < 0.1;
+
 interface DataState {
   /** Whether the data is loading. */
   isLoading: boolean;
@@ -28,9 +30,9 @@ const useDataState = ({ timeout = 300 }: Options = {}) => {
     () =>
       setDataState({
         isLoading: false,
-        isError: Math.random() < 0.1,
+        isError: RANDOM_ERROR_PROBABILITY,
       }),
-    timeout,
+    timeout
   );
 
   return dataState;

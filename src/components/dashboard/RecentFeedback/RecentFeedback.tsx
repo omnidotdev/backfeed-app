@@ -89,9 +89,13 @@ const RecentFeedback = () => {
       contentProps={{ overflow: "auto" }}
     >
       {isError ? (
-        <ErrorBoundary message="Error fetching recent feedback" h="full" />
+        <ErrorBoundary
+          message="Error fetching recent feedback"
+          h={400}
+          w="full"
+        />
       ) : (
-        <Flex direction="column" gap={2}>
+        <Flex w="full" direction="column" gap={2}>
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : (

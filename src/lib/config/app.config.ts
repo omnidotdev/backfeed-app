@@ -2,6 +2,11 @@ const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   organization: "Omni",
+  notFound: {
+    statusCode: 404,
+    title: "Page Not Found",
+    returnHome: "Return home",
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -66,6 +71,61 @@ const app = {
       },
       avgResponseTime: {
         title: "Avg. Response Time",
+      },
+    },
+    cta: {
+      newProject: {
+        label: "New Project",
+      },
+      newOrganization: {
+        label: "New Organization",
+      },
+    },
+  },
+  organizationPage: {
+    header: {
+      description: "Manage your organization's feedback and projects.",
+      cta: {
+        viewAllProjects: {
+          label: "View All Projects",
+        },
+        newProject: {
+          label: "New Project",
+        },
+      },
+    },
+    projects: {
+      title: "Projects",
+      description: "Manage feedback collection across your applications",
+    },
+    metrics: {
+      title: "Organization Metrics",
+      description: "Overview of all projects and feedback",
+      data: {
+        totalProjects: {
+          title: "Total Projects",
+        },
+        totalFeedback: {
+          title: "Total Feedback",
+        },
+        activeUsers: {
+          title: "Active Users",
+        },
+      },
+    },
+    actions: {
+      title: "Quick Actions",
+      description: "Common organization tasks",
+      cta: {
+        createProject: {
+          label: "Create New Project",
+        },
+        manageTeam: {
+          label: "Manage Team",
+        },
+        settings: {
+          label: "Organization Settings",
+        },
       },
     },
   },
