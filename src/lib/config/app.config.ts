@@ -140,6 +140,20 @@ const app = {
         },
       },
     },
+    filters: {
+      search: {
+        placeholder: "Search all projects",
+      },
+      select: {
+        status: {
+          label: {
+            id: "Status",
+            singular: "Status",
+            plural: "Statuses",
+          },
+        },
+      },
+    },
   },
 };
 
