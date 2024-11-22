@@ -129,6 +129,18 @@ const app = {
       },
     },
   },
+  projectsPage: {
+    header: {
+      title: "Projects",
+      description:
+        "Manage and monitor all your organization's projects in one place.",
+      cta: {
+        newProject: {
+          label: "New Project",
+        },
+      },
+    },
+  },
 };
 
 export default app;
