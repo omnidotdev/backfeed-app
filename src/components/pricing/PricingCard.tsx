@@ -198,4 +198,3 @@ function PricingCards() {
 }
 
 export default PricingCards;
-
