@@ -12,7 +12,7 @@ export const generateMetadata = async ({
 }: MetadataParams): Promise<Metadata> => {
   const { projectId, organizationId } = await params;
 
-  // TODO: Hook up when fething data here
+  // TODO: Hook up when fetching data here
   // const project: ProjectQuery = await request({
   //   url: API_BASE_URL!,
   //   document: ProjectDocument,
