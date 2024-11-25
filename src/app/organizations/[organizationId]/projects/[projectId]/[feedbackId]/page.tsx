@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
+import { Button, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
-import { Comments, FeedbackDetails, StatusHistory } from "components/feedback";
+import { Comments, FeedbackDetails } from "components/feedback";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -58,29 +58,13 @@ const FeedbackPage = () => {
         </Button>
       </Link>
 
-      <Grid gap={4} columns={{ base: 1, lg: 6 }}>
-        <GridItem colSpan={{ base: 1, lg: 4 }}>
-          <FeedbackDetails
-            feedback={FEEDBACK}
-            isLoaded={!isLoading}
-            isError={isError}
-          />
-        </GridItem>
+      <FeedbackDetails
+        feedback={FEEDBACK}
+        isLoaded={!isLoading}
+        isError={isError}
+      />
 
-        <GridItem colSpan={{ base: 1, lg: 2 }}>
-          <StatusHistory
-            status={FEEDBACK.status}
-            createdAt={FEEDBACK.createdAt}
-            updatedAt={FEEDBACK.updatedAt}
-            isLoaded={!isLoading}
-            isError={isError}
-          />
-        </GridItem>
-
-        <GridItem colSpan={{ base: 1, lg: 4 }}>
-          <Comments />
-        </GridItem>
-      </Grid>
+      <Comments />
     </Stack>
   );
 };

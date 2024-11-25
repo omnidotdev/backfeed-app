@@ -1,17 +1,28 @@
-import { Flex, HStack, Skeleton, Stack, Text } from "@omnidev/sigil";
+import {
+  Badge,
+  Flex,
+  HStack,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
+  Tooltip,
+} from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useState } from "react";
 import {
-  BsHandThumbsDown,
-  BsHandThumbsDownFill,
-  BsHandThumbsUp,
-  BsHandThumbsUpFill,
-} from "react-icons/bs";
+  PiArrowFatLineUp,
+  PiArrowFatLineUpFill,
+  PiArrowFatLineDown,
+  PiArrowFatLineDownFill,
+} from "react-icons/pi";
 
-import { VoteButton } from "components/feedback";
 import { ErrorBoundary } from "components/layout";
+import { app } from "lib/config";
 
-import type { VoteButtonProps } from "components/feedback";
+import type { ButtonProps, VstackProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
+import { match } from "ts-pattern";
 
 export interface Feedback {
   /** Feedback ID. */
@@ -41,6 +52,17 @@ export interface Feedback {
   };
 }
 
+interface VoteButtonProps extends ButtonProps {
+  /** Number of votes (upvotes or downvotes). */
+  votes: number | undefined;
+  /** Tooltip text. */
+  tooltip: string;
+  /** Visual icon. */
+  icon: IconType;
+  /** Props to pass to the main content container. */
+  contentProps?: VstackProps;
+}
+
 interface Props {
   /** Feedback details. */
   feedback: Feedback | null | undefined;
@@ -67,9 +89,9 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
       votes: votingState.hasUpvoted
         ? (feedback?.upvotes ?? 0) + 1
         : feedback?.upvotes,
-      icon: votingState.hasUpvoted ? BsHandThumbsUpFill : BsHandThumbsUp,
-      color: "omni.emerald",
-      borderColor: "omni.emerald",
+      tooltip: app.feedbackPage.details.upvote,
+      icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+      color: "brand.tertiary",
       disabled: isVotingDisabled,
       onClick: () =>
         setVotingState((prev) => ({
@@ -82,9 +104,11 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
       votes: votingState.hasDownvoted
         ? (feedback?.downvotes ?? 0) + 1
         : feedback?.downvotes,
-      icon: votingState.hasDownvoted ? BsHandThumbsDownFill : BsHandThumbsDown,
-      color: "omni.ruby",
-      borderColor: "omni.ruby",
+      tooltip: app.feedbackPage.details.downvote,
+      icon: votingState.hasDownvoted
+        ? PiArrowFatLineDownFill
+        : PiArrowFatLineDown,
+      color: "brand.quinary",
       disabled: isVotingDisabled,
       onClick: () =>
         setVotingState((prev) => ({
@@ -94,54 +118,146 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
     },
   ];
 
-  if (isError) return;
-  <ErrorBoundary message="Error fetching feedback details" h={52} />;
+  const netTotalVotes = (feedback?.upvotes ?? 0) - (feedback?.downvotes ?? 0);
+
+  const netVotesColor = match(netTotalVotes)
+    .with(0, () => "foreground.subtle")
+    .when(
+      (net) => net > 0,
+      () => "brand.tertiary"
+    )
+    .otherwise(() => "brand.quinary");
 
   return (
     <HStack
+      position="relative"
       gap={8}
       bgColor="background.default"
       borderRadius="lg"
       boxShadow="lg"
       p={{ base: 4, sm: 6 }}
     >
-      <Stack w="full">
-        <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 48 : undefined}>
-          <Text fontWeight="semibold" fontSize="lg">
-            {feedback?.title}
-          </Text>
-        </Skeleton>
-
-        <Skeleton isLoaded={isLoaded} minH={!isLoaded ? 24 : undefined}>
-          <Text color="foreground.subtle">{feedback?.description}</Text>
-        </Skeleton>
-
-        <Stack justify="space-between" gap={4}>
-          <HStack color="foreground.muted" fontSize="sm">
-            <Skeleton isLoaded={isLoaded}>
-              <Text>
-                {feedback?.user.firstName} {feedback?.user.lastName}
-              </Text>
-            </Skeleton>
-
-            <Flex borderRadius="full" h={1} w={1} bgColor="foreground.muted" />
-
-            <Skeleton isLoaded={isLoaded}>
-              <Text color="foreground.muted">
-                {dayjs(feedback?.createdAt).fromNow()}
-              </Text>
-            </Skeleton>
-          </HStack>
-
-          <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
-            {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
-              <Skeleton key={id} isLoaded={isLoaded} h={7}>
-                <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+      {isError ? (
+        <ErrorBoundary
+          message="Error fetching feedback details"
+          h={52}
+          w="full"
+        />
+      ) : (
+        <Stack w="full">
+          <HStack justify="space-between">
+            <Stack direction={{ base: "column", sm: "row" }} gap={4}>
+              <Skeleton
+                isLoaded={isLoaded}
+                maxW={!isLoaded ? 48 : undefined}
+                h={9}
+              >
+                <Text fontWeight="semibold" fontSize="2xl">
+                  {feedback?.title}
+                </Text>
               </Skeleton>
-            ))}
+
+              <HStack>
+                <Skeleton isLoaded={isLoaded}>
+                  <Badge
+                    variant="outline"
+                    color="brand.secondary"
+                    borderColor="brand.secondary"
+                  >
+                    {feedback?.status}
+                  </Badge>
+                </Skeleton>
+
+                <Skeleton isLoaded={isLoaded}>
+                  <Text
+                    fontSize="sm"
+                    color="foreground.subtle"
+                  >{`Updated: ${dayjs(feedback?.updatedAt).fromNow()}`}</Text>
+                </Skeleton>
+              </HStack>
+            </Stack>
+
+            <Skeleton
+              isLoaded={isLoaded}
+              fontWeight="semibold"
+              alignSelf={{ base: "flex-start", sm: "center" }}
+              px={2}
+              mt={{ base: 1.5, sm: 0 }}
+            >
+              <Text
+                color={netVotesColor}
+              >{`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}</Text>
+            </Skeleton>
           </HStack>
+
+          <Skeleton
+            isLoaded={isLoaded}
+            minH={!isLoaded ? 24 : undefined}
+            mt={2}
+          >
+            <Text color="foreground.muted">{feedback?.description}</Text>
+          </Skeleton>
+
+          <Stack justify="space-between" gap={4} mt={2}>
+            <Stack
+              direction={{ base: "column", sm: "row" }}
+              fontSize="sm"
+              gap={{ base: 1, sm: 2 }}
+            >
+              <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 32 : undefined}>
+                <Text color="foreground.subtle">
+                  {feedback?.user.firstName} {feedback?.user.lastName}
+                </Text>
+              </Skeleton>
+
+              <Flex
+                borderRadius="full"
+                h={1}
+                w={1}
+                bgColor="foreground.subtle"
+                display={{ base: "none", sm: "flex" }}
+                placeSelf="center"
+              />
+
+              <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 24 : undefined}>
+                <Text color="foreground.subtle">
+                  {dayjs(feedback?.createdAt).fromNow()}
+                </Text>
+              </Skeleton>
+            </Stack>
+
+            <HStack fontSize="sm" placeSelf="flex-end" gap={1} py={2}>
+              {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                  <Tooltip
+                    positioning={{ placement: "top" }}
+                    trigger={
+                      <HStack gap={2} py={1} fontVariant="tabular-nums">
+                        <Icon src={icon} w={5} h={5} />
+
+                        {votes ?? 0}
+                      </HStack>
+                    }
+                    triggerProps={{
+                      variant: "ghost",
+                      w: "full",
+                      bgColor: "transparent",
+                      opacity: {
+                        base: 1,
+                        _disabled: 0.3,
+                        _hover: { base: 0.8, _disabled: 0.3 },
+                      },
+                      ...rest,
+                    }}
+                  >
+                    {tooltip}
+                  </Tooltip>
+                </Skeleton>
+              ))}
+            </HStack>
+          </Stack>
         </Stack>
-      </Stack>
+      )}
     </HStack>
   );
 };

@@ -131,6 +131,10 @@ const app = {
   },
   feedbackPage: {
     backToProject: "Back to Project",
+    details: {
+      upvote: "Upvote",
+      downvote: "Downvote",
+    },
     comments: {
       title: "Comments",
       description: "View all feedback comments.",
