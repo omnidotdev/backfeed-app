@@ -11,10 +11,10 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import {
-  PiArrowFatLineUp,
-  PiArrowFatLineUpFill,
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
+  PiArrowFatLineUp,
+  PiArrowFatLineUpFill,
 } from "react-icons/pi";
 
 import { ErrorBoundary } from "components/layout";
