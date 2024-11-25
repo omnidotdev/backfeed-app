@@ -9,8 +9,7 @@ import {
 } from "react-icons/bs";
 
 import { VoteButton } from "components/feedback";
-import { ErrorBoundary, SectionContainer } from "components/layout";
-import { app } from "lib/config";
+import { ErrorBoundary } from "components/layout";
 
 import type { VoteButtonProps } from "components/feedback";
 
@@ -95,60 +94,55 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
     },
   ];
 
+  if (isError) return;
+  <ErrorBoundary message="Error fetching feedback details" h={52} />;
+
   return (
-    <SectionContainer
-      title={app.feedbackPage.details.title}
-      description={app.feedbackPage.details.description}
+    <HStack
+      gap={8}
+      bgColor="background.default"
+      borderRadius="lg"
+      boxShadow="lg"
+      p={{ base: 4, sm: 6 }}
     >
-      {isError ? (
-        <ErrorBoundary message="Error fetching feedback details" h={52} />
-      ) : (
-        <HStack gap={8}>
-          <Stack w="full">
-            <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 48 : undefined}>
-              <Text fontWeight="semibold" fontSize="lg">
-                {feedback?.title}
+      <Stack w="full">
+        <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 48 : undefined}>
+          <Text fontWeight="semibold" fontSize="lg">
+            {feedback?.title}
+          </Text>
+        </Skeleton>
+
+        <Skeleton isLoaded={isLoaded} minH={!isLoaded ? 24 : undefined}>
+          <Text color="foreground.subtle">{feedback?.description}</Text>
+        </Skeleton>
+
+        <Stack justify="space-between" gap={4}>
+          <HStack color="foreground.muted" fontSize="sm">
+            <Skeleton isLoaded={isLoaded}>
+              <Text>
+                {feedback?.user.firstName} {feedback?.user.lastName}
               </Text>
             </Skeleton>
 
-            <Skeleton isLoaded={isLoaded} minH={!isLoaded ? 24 : undefined}>
-              <Text color="foreground.subtle">{feedback?.description}</Text>
+            <Flex borderRadius="full" h={1} w={1} bgColor="foreground.muted" />
+
+            <Skeleton isLoaded={isLoaded}>
+              <Text color="foreground.muted">
+                {dayjs(feedback?.createdAt).fromNow()}
+              </Text>
             </Skeleton>
+          </HStack>
 
-            <Stack justify="space-between" gap={4}>
-              <HStack color="foreground.muted" fontSize="sm">
-                <Skeleton isLoaded={isLoaded}>
-                  <Text>
-                    {feedback?.user.firstName} {feedback?.user.lastName}
-                  </Text>
-                </Skeleton>
-
-                <Flex
-                  borderRadius="full"
-                  h={1}
-                  w={1}
-                  bgColor="foreground.muted"
-                />
-
-                <Skeleton isLoaded={isLoaded}>
-                  <Text color="foreground.muted">
-                    {dayjs(feedback?.createdAt).fromNow()}
-                  </Text>
-                </Skeleton>
-              </HStack>
-
-              <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
-                {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
-                  <Skeleton key={id} isLoaded={isLoaded} h={7}>
-                    <VoteButton key={id} votes={votes} icon={icon} {...rest} />
-                  </Skeleton>
-                ))}
-              </HStack>
-            </Stack>
-          </Stack>
-        </HStack>
-      )}
-    </SectionContainer>
+          <HStack fontSize="sm" placeSelf="flex-end" gap={4}>
+            {VOTE_BUTTONS.map(({ id, votes, icon, ...rest }) => (
+              <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                <VoteButton key={id} votes={votes} icon={icon} {...rest} />
+              </Skeleton>
+            ))}
+          </HStack>
+        </Stack>
+      </Stack>
+    </HStack>
   );
 };
 
