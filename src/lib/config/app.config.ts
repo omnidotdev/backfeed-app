@@ -130,6 +130,7 @@ const app = {
     },
   },
   projectPage: {
+    backToProject: "Back to Project",
     header: {
       cta: {
         settings: {
@@ -139,6 +140,10 @@ const app = {
     },
     projectFeedback: {
       title: "Project Feeback",
+      inputPlaceholder: "Short, descriptive title",
+      textareaPlaceholder: "Describe additional details...",
+      submit: "Create",
+      totalResponses: "Total Responses",
     },
     projectInformation: {
       title: "Project Information",
@@ -148,22 +153,6 @@ const app = {
     },
     statusBreakdown: {
       title: "Status Breakdown",
-    },
-    createFeedbackDialog: {
-      title: "Create Feedback Post",
-      form: {
-        fields: {
-          title: {
-            label: "Title",
-            placeholder: "Short, descriptive title",
-          },
-          description: {
-            label: "Description",
-            placeholder: "Describe additional details...",
-          },
-        },
-        submit: "Create",
-      },
     },
   },
 };

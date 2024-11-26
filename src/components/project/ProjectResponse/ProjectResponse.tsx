@@ -7,36 +7,34 @@ import {
   Stack,
   Text,
   VStack,
-  useDisclosure,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import {
   HiOutlineArrowDownCircle,
   HiOutlineArrowUpCircle,
 } from "react-icons/hi2";
-
-import { ResponseDialog } from "components/project";
-import { getResponseTypeColor } from "lib/util";
-
-import type { Response } from "components/project";
 import { useState } from "react";
 
+import { getResponseTypeColor } from "lib/util";
+
+import type { ResponseType } from "components/dashboard";
+
 interface Props {
-  /** Project response. */
-  response: Response;
+  /** Title of the post. */
+  title: string;
+  /** Description providing more details about the post. */
+  description: string;
+  /** Timestamp when the post was last updated. */
+  lastUpdated: string;
+  /** Type of post (e.g., feature request, bug report, etc.). */
+  type: ResponseType;
 }
 
 /**
  * Project response.
  */
-const ProjectResponse = ({ response }: Props) => {
-  const color = getResponseTypeColor(response.type);
-
-  const {
-    isOpen: isPostDialogOpen,
-    onOpen: onPostDialogOpen,
-    onClose: onPostDialogClose,
-  } = useDisclosure();
+const ProjectResponse = ({ title, description, type, lastUpdated }: Props) => {
+  const color = getResponseTypeColor(type);
 
   // NB: Simple configuration for the sake of the example. This will be handled in a separate PR.
   const [votes, setVotes] = useState(Math.floor(Math.random() * 11) - 5);
@@ -55,12 +53,7 @@ const ProjectResponse = ({ response }: Props) => {
         pos="relative"
       >
         {/* TODO: Handle all of this logic in a separate PR. I expect this to change and be refactored when this task is handled */}
-        <VStack
-          onClick={(e) => e.stopPropagation()}
-          cursor="default"
-          px={{ base: 2, md: 4 }}
-          // NOTE: Maybe justify this center
-        >
+        <VStack cursor="default" px={{ base: 2, md: 4 }}>
           <Button
             disabled={userVoted === "upvote"}
             size="xs"
@@ -116,40 +109,26 @@ const ProjectResponse = ({ response }: Props) => {
 
         <Divider orientation="vertical" />
 
-        <Stack
-          w="full"
-          justify="space-between"
-          // TODO: Maybe not open dialog here
-          onClick={onPostDialogOpen}
-          cursor="pointer"
-        >
+        <Stack w="full" justify="space-between">
           <Stack>
             <Flex align="center" justify="space-between">
-              <Text fontWeight="semibold">{response.title}</Text>
+              <Text fontWeight="semibold">{title}</Text>
 
               <Badge color={color} borderColor={color}>
-                {response.type}
+                {type}
               </Badge>
             </Flex>
 
             <Text fontSize="sm" color="foreground.subtle" py={2}>
-              {response.description}
+              {description}
             </Text>
           </Stack>
 
           <Text color="foreground.muted" fontSize="xs">
-            {dayjs(response.lastUpdated).fromNow()}
+            {dayjs(lastUpdated).fromNow()}
           </Text>
         </Stack>
       </Flex>
-
-      {/* TODO: Consider using another component to display this information. Dialog may not be the best option */}
-      <ResponseDialog
-        isOpen={isPostDialogOpen}
-        onClose={onPostDialogClose}
-        onOpen={onPostDialogOpen}
-        response={response}
-      />
     </>
   );
 };

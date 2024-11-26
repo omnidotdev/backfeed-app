@@ -77,7 +77,7 @@ const ProjectCard = ({
       p={8}
       {...rest}
     >
-      <Link href={`/${organizationId}/${projectId}`}>
+      <Link href={`/organizations/${organizationId}/projects/${projectId}`}>
         <Button
           position="absolute"
           top={1}
