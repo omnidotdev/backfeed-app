@@ -31,7 +31,6 @@ const SectionContainer = ({
     boxShadow="lg"
     p={{ base: 4, sm: 6 }}
     gap={6}
-    zIndex="base"
     {...rest}
   >
     <Stack>
