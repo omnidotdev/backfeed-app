@@ -9,11 +9,11 @@ import {
   VStack,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import { useState } from "react";
 import {
   HiOutlineArrowDownCircle,
   HiOutlineArrowUpCircle,
 } from "react-icons/hi2";
-import { useState } from "react";
 
 import { getResponseTypeColor } from "lib/util";
 

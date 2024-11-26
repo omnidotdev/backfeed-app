@@ -1,6 +1,6 @@
-import { Text, Stack, Icon, Flex } from "@omnidev/sigil";
-import { IoCalendarOutline } from "react-icons/io5";
+import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import { HiOutlineUserGroup } from "react-icons/hi2";
+import { IoCalendarOutline } from "react-icons/io5";
 
 import { SectionContainer } from "components/layout";
 

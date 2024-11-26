@@ -1,10 +1,10 @@
 "use client";
 
-import { Grid, GridItem, Stack, Button, Icon } from "@omnidev/sigil";
-import { LuSettings } from "react-icons/lu";
+import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
+import { LuSettings } from "react-icons/lu";
 
 import { PageHeader } from "components/layout";
 import {

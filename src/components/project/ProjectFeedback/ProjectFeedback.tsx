@@ -1,15 +1,15 @@
 import {
   Button,
   Grid,
-  Stack,
-  VStack,
-  Textarea,
-  Skeleton,
-  Text,
   Input,
+  Skeleton,
+  Stack,
+  Text,
+  Textarea,
+  VStack,
 } from "@omnidev/sigil";
-import { HiOutlineFolder } from "react-icons/hi2";
 import { useState } from "react";
+import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
@@ -20,7 +20,7 @@ import { useDataState } from "lib/hooks";
 
 import type { ResponseType } from "components/dashboard";
 
-export interface Response {
+interface Response {
   /** Unique identifier for the post. */
   id: string;
   /** Title of the post. */
