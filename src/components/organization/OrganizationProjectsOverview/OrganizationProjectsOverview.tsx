@@ -80,6 +80,7 @@ const OrganizationProjectsOverview = () => {
             PROJECTS.map(({ id, name, description }) => (
               <ProjectCard
                 key={id}
+                id={id}
                 name={name}
                 description={description}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.

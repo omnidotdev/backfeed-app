@@ -1,131 +1,59 @@
 "use client";
 
-import {
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Skeleton,
-  Text,
-  VStack,
-  useDisclosure,
-} from "@omnidev/sigil";
-import Image from "next/image";
+import { Text, VStack } from "@omnidev/sigil";
+import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { AiOutlinePlus as PlusIcon } from "react-icons/ai";
-import { useAccount } from "wagmi";
 
-import { CreateFeedbackDialog, Feed } from "components/feedback";
-import { useProjectQuery } from "generated/graphql";
-import { NODE_ENV } from "lib/config";
 import { useAuth } from "lib/hooks";
+
+interface ProjectFeedback {
+  /** Feedback ID. */
+  id: string;
+  /** Feedback title. */
+  title: string;
+}
+
+const FEEDBACK: ProjectFeedback[] = [
+  {
+    id: "1",
+    title: "I still like turtles.",
+  },
+  {
+    id: "2",
+    title: "The new dashboard layout is much more intuitive!",
+  },
+  {
+    id: "3",
+    title: "Having issues with the new export feature.",
+  },
+  {
+    id: "4",
+    title: "Would love to be able to export feedback.",
+  },
+];
 
 /**
  * Project overview page.
  */
 const ProjectPage = () => {
-  const {
-    isOpen: isCreatePostDialogOpen,
-    onOpen: onCreatePostDialogOpen,
-    onClose: onCreatePostDialogClose,
-  } = useDisclosure();
+  const { isAuthenticated } = useAuth();
 
-  const params = useParams();
+  const params = useParams<{ organizationId: string; projectId: string }>();
 
-  const { isAuthenticated } = useAuth(),
-    { isConnected } = useAccount();
-
-  const { data: project, isPending: isProjectPending } = useProjectQuery(
-    {
-      organizationId: params.organization as string,
-      projectSlug: params.project as string,
-    },
-    {
-      enabled: isAuthenticated,
-      select: (data) => data.projectBySlugAndOrganizationId,
-    }
-  );
-
-  // TODO: when data is streamed in, this condition should be updated to check for the existence of the project
   if (!isAuthenticated) notFound();
 
   return (
-    <Flex flexDirection="column">
-      <Skeleton isLoaded={!isProjectPending} w="1/6" h={8} mb={4}>
-        <Text fontSize="xl" fontWeight="bold" opacity={0.8} mb={4}>
-          {project?.name}
-        </Text>
-      </Skeleton>
-
-      <Flex w="full" gap={4} flexDirection={{ base: "column", md: "row" }}>
-        <VStack
-          shadow="1px 1px 5px rgba(0,0,0,0.3)"
-          p={4}
-          bg="background.muted"
-          gap={4}
-          w={{ base: "full", md: "30%" }}
-          rounded="md"
+    <VStack justify="center" h="full" gap={4}>
+      <Text>Project: {params.projectId}</Text>
+      {FEEDBACK.map((feedback) => (
+        <Link
+          key={feedback.id}
+          href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback.id}`}
         >
-          <HStack>
-            <Skeleton isLoaded={!isProjectPending} w={10} h={10} rounded="full">
-              {project?.image && (
-                <Image
-                  src={project?.image}
-                  alt={`${project?.image} image`}
-                  width={40}
-                  height={40}
-                  style={{
-                    borderRadius: "50%",
-                    flexShrink: 0,
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </Skeleton>
-
-            <Skeleton isLoaded={!isProjectPending} h={8} w={40}>
-              <Text ml={2} fontWeight="bold" fontSize="xl">
-                {project?.name}
-              </Text>
-            </Skeleton>
-          </HStack>
-
-          <Skeleton isLoaded={!isProjectPending} w="full" h="full">
-            <Text>{project?.description}</Text>
-          </Skeleton>
-        </VStack>
-
-        <VStack
-          shadow="1px 1px 5px rgba(0,0,0,0.3)"
-          p={4}
-          bg="background.muted"
-          gap={4}
-          w={{ base: "full", md: "70%" }}
-          rounded="md"
-        >
-          <Button
-            // TODO remove env check once ready
-            disabled={NODE_ENV !== "development" || !isConnected}
-            alignSelf="flex-end"
-            gap={2}
-            onClick={onCreatePostDialogOpen}
-          >
-            <Icon src={PlusIcon} />
-            Create Post
-          </Button>
-
-          {/* TODO: Fetch project posts total count here to use for the Skeleton array count. */}
-          <Feed projectId={project?.rowId || ""} overflow="auto" py={4} />
-        </VStack>
-      </Flex>
-
-      <CreateFeedbackDialog
-        isOpen={isCreatePostDialogOpen}
-        onClose={onCreatePostDialogClose}
-        onOpen={onCreatePostDialogOpen}
-        projectId={project?.rowId || ""}
-      />
-    </Flex>
+          {feedback.title}
+        </Link>
+      ))}
+    </VStack>
   );
 };
 

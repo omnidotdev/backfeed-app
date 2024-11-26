@@ -155,6 +155,27 @@ const app = {
       },
     },
   },
+  feedbackPage: {
+    backToProject: "Back to Project",
+    details: {
+      upvote: "Upvote",
+      downvote: "Downvote",
+    },
+    comments: {
+      title: "Comments",
+      description: "View all feedback comments.",
+      textAreaPlaceholder: "Add a comment...",
+      submit: "Add Comment",
+      totalComments: "total comments",
+    },
+    statusHistory: {
+      title: "Status History",
+      description: "View feedback status history.",
+      currentStatus: "Current Status",
+      created: "Created",
+      updated: "Updated",
+    },
+  },
 };
 
 export default app;
