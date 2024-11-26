@@ -63,7 +63,6 @@ const PROJECTS: Project[] = [
  * Project list.
  */
 const ProjectList = () => {
-  // NB: unused for now, but will be used shortly for routing
   const { organizationId } = useParams<{ organizationId: string }>();
 
   return (
@@ -71,9 +70,7 @@ const ProjectList = () => {
       {PROJECTS.map((project) => (
         <Link
           key={project.id}
-          // TODO: replace with below once feedback page PR or project page PR is merged
-          href="#"
-          // href={`/organizations/${organizationId}/projects/${project.id}`}
+          href={`/organizations/${organizationId}/projects/${project.id}`}
         >
           <ProjectListItem {...project} />
         </Link>
