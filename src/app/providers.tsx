@@ -1,6 +1,11 @@
 "use client";
 
-import { BlockchainProvider, QueryProvider, ThemeProvider } from "providers";
+import {
+  BlockchainProvider,
+  QueryProvider,
+  SearchParamsProvider,
+  ThemeProvider,
+} from "providers";
 
 import type { ReactNode } from "react";
 
@@ -9,9 +14,11 @@ import type { ReactNode } from "react";
  */
 const Providers = ({ children }: { children: ReactNode }) => (
   <ThemeProvider>
-    <QueryProvider>
-      <BlockchainProvider>{children}</BlockchainProvider>
-    </QueryProvider>
+    <SearchParamsProvider>
+      <QueryProvider>
+        <BlockchainProvider>{children}</BlockchainProvider>
+      </QueryProvider>
+    </SearchParamsProvider>
   </ThemeProvider>
 );
 

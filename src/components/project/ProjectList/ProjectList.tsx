@@ -2,6 +2,7 @@
 
 import { Stack } from "@omnidev/sigil";
 import Link from "next/link";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { ProjectListItem } from "components/project";
 import { useParams } from "next/navigation";
@@ -63,11 +64,15 @@ const PROJECTS: Project[] = [
  * Project list.
  */
 const ProjectList = () => {
+  const [status] = useQueryState("status", parseAsString);
+
   const { organizationId } = useParams<{ organizationId: string }>();
 
   return (
     <Stack>
-      {PROJECTS.map((project) => (
+      {PROJECTS.filter((project) =>
+        status ? project.status === status : true
+      ).map((project) => (
         <Link
           key={project.id}
           href={`/organizations/${organizationId}/projects/${project.id}`}
