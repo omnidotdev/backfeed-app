@@ -61,6 +61,7 @@ const Comments = () => {
   const { isLoading, isError } = useDataState({ timeout: 700 });
 
   // NB: temporarily used to mock an infinite query
+  // TODO replace with real data query
   const handleLoadMore = () => {
     if (!pageState.hasNextPage) return;
 
