@@ -8,4 +8,4 @@ export { default as FeedbackTooltip } from "./FeedbackTooltip/FeedbackTooltip";
 export { default as OrganizationCard } from "./OrganizationCard/OrganizationCard";
 export { default as Organizations } from "./Organizations/Organizations";
 export { default as RecentFeedback } from "./RecentFeedback/RecentFeedback";
-export { default as Response, type ResponseType } from "./Response/Response";
+export { default as Response } from "./Response/Response";

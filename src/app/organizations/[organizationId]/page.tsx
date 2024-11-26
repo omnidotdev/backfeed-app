@@ -1,7 +1,7 @@
 "use client";
 
 import { Grid, Stack } from "@omnidev/sigil";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
@@ -20,9 +20,13 @@ import { useAuth, useDataState } from "lib/hooks";
 const OrganizationPage = () => {
   const { isAuthenticated } = useAuth();
 
-  const params = useParams<{ organizationId: string }>();
+  const params = useParams<{ organizationId: string }>(),
+    router = useRouter();
 
   const { isLoading, isError } = useDataState();
+
+  const navigateToProjectsPage = () =>
+    router.push(`/organizations/${params.organizationId}/projects`);
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
   if (!isAuthenticated) notFound();
@@ -39,6 +43,7 @@ const OrganizationPage = () => {
             label: app.organizationPage.header.cta.viewAllProjects.label,
             icon: HiOutlineFolder,
             variant: "outline",
+            onClick: navigateToProjectsPage,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,

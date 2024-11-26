@@ -18,7 +18,7 @@ import { ProjectResponse } from "components/project";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
-import type { ResponseType } from "components/dashboard";
+import type { ResponseType } from "lib/util";
 
 interface Response {
   /** Unique identifier for the post. */

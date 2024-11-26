@@ -25,6 +25,7 @@ const SectionContainer = ({
   ...rest
 }: Props) => (
   <Stack
+    position="relative"
     bgColor="background.default"
     borderRadius="lg"
     boxShadow="lg"

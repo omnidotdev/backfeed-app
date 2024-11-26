@@ -17,7 +17,7 @@ import {
 
 import { getResponseTypeColor } from "lib/util";
 
-import type { ResponseType } from "components/dashboard";
+import type { ResponseType } from "lib/util";
 
 interface Props {
   /** Title of the post. */

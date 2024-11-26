@@ -22,7 +22,8 @@
     "@pandacss/dev": "^0.48.0",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20.11.19",
-    "@types/react": "^18.2.55",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.4",
     "dotenv-cli": "^7.3.0",
@@ -37,7 +38,6 @@
     "@tanstack/react-query": "^5.20.5",
     "@tanstack/react-query-devtools": "^5.20.5",
     "@theme-toggles/react": "^4.1.0",
-    "babel-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
     "dayjs": "^1.11.10",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
@@ -53,6 +53,10 @@
     "usehooks-ts": "^3.1.0",
     "viem": "^2.7.9",
     "wagmi": "^2.5.7"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
   },
   "trustedDependencies": [
     "@biomejs/biome",

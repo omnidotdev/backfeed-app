@@ -7,7 +7,7 @@ import { FeedbackCard, Response } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { useDataState } from "lib/hooks";
 
-import type { ResponseType } from "components/dashboard";
+import type { ResponseType } from "lib/util";
 
 interface Feedback {
   id: string;
