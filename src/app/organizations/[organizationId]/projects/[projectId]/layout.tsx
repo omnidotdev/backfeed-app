@@ -1,9 +1,5 @@
-import request from "graphql-request";
+import { app } from "lib/config";
 
-import { ProjectDocument } from "generated/graphql";
-import { API_BASE_URL, app } from "lib/config";
-
-import type { ProjectQuery, ProjectQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -16,14 +12,14 @@ export const generateMetadata = async ({
 }: MetadataParams): Promise<Metadata> => {
   const { projectId: projectSlug, organization: organizationId } = await params;
 
-  const project: ProjectQuery = await request({
-    url: API_BASE_URL!,
-    document: ProjectDocument,
-    variables: { projectSlug, organizationId } as ProjectQueryVariables,
-  });
+  // const project: ProjectQuery = await request({
+  //   url: API_BASE_URL!,
+  //   document: ProjectDocument,
+  //   variables: { projectSlug, organizationId } as ProjectQueryVariables,
+  // });
 
   return {
-    title: `${project?.projectBySlugAndOrganizationId?.name} | ${app.name}`,
+    title: `${projectSlug} | ${app.name}`,
   };
 };
 
