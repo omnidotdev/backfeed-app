@@ -18,6 +18,7 @@ interface Organization {
   type: string;
 }
 
+// NB: These extend the `PINNED_ORGANIZATIONS` used on the dashboard page. Copied and modified for simplicity. Will need to fetch data from this level.
 const ORGANIZATIONS: Organization[] = [
   {
     id: "8af2410c-b73b-453f-a5c9-4637f5cbaffe",
