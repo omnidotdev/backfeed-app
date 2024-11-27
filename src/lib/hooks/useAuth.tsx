@@ -3,7 +3,7 @@
  * NB: this is only used for mock and development purposes. To simulate logging in/out, manually switch `isAuthenticated` to `true` or `false`.
  */
 const useAuth = () => ({
-  isAuthenticated: false,
+  isAuthenticated: true,
   firstName: "Back",
   lastName: "Feed",
 });

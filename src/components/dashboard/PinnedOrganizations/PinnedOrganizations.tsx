@@ -1,14 +1,6 @@
-import {
-  Button,
-  Collapsible,
-  Flex,
-  Grid,
-  Icon,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@omnidev/sigil";
-import { FiChevronDown, FiChevronUp, FiPlusCircle } from "react-icons/fi";
+import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import { useRouter } from "next/navigation";
+import {} from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
@@ -75,17 +67,14 @@ const allOrganizations: Organization[] = [
 ];
 
 /**
- * Organizations section.
+ * Pinned organizations section.
  */
-const Organizations = () => {
-  const {
-      isOpen: isOrganizationCollapseOpen,
-      onToggle: onToggleOrganizationCollapse,
-    } = useDisclosure(),
-    { isLoading, isError } = useDataState();
+const PinnedOrganizations = () => {
+  const router = useRouter();
+
+  const { isLoading, isError } = useDataState();
 
   const pinnedOrganizations = allOrganizations.slice(0, 3);
-  const restOrganizations = allOrganizations.slice(3);
 
   return (
     <Flex
@@ -98,7 +87,11 @@ const Organizations = () => {
       p={6}
       gap={6}
     >
-      <Flex justify="space-between">
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        justify="space-between"
+        gap={4}
+      >
         <Stack>
           <Flex align="center" gap={2}>
             <Icon src={LuBuilding2} w={5} h={5} color="foreground.subtle" />
@@ -114,20 +107,13 @@ const Organizations = () => {
         </Stack>
 
         <Button
-          variant={{ base: "ghost", md: "outline" }}
-          ml={4}
+          variant="outline"
           color="brand.primary"
           borderColor="brand.primary"
+          // TODO: discuss wrapping this in a `Link` instead. Big thing is discussing best way to style the `a` tag.
+          onClick={() => router.push("/organizations")}
         >
-          <Icon
-            src={FiPlusCircle}
-            w={{ base: 6, md: 4 }}
-            h={{ base: 6, md: 4 }}
-          />
-
-          <Text display={{ base: "none", md: "inline" }}>
-            {app.dashboardPage.cta.newOrganization.label}
-          </Text>
+          {app.dashboardPage.cta.viewOrganizations.label}
         </Button>
       </Flex>
 
@@ -151,46 +137,8 @@ const Organizations = () => {
           )}
         </Grid>
       )}
-
-      {/* @ts-ignore TODO figure out why this is throwing an error */}
-      <Collapsible
-        trigger={
-          <Button
-            variant="icon"
-            w="fit-content"
-            bgColor="transparent"
-            opacity={{
-              base: { base: 1, _disabled: 0.8 },
-              _hover: 0.8,
-            }}
-            placeSelf="center"
-            my={-4}
-            // !NB: this is important to keep this disabled when the data is being fetched or an error is encountered from the request.
-            disabled={isLoading || isError}
-          >
-            <Icon
-              src={isOrganizationCollapseOpen ? FiChevronUp : FiChevronDown}
-              w={8}
-              h={8}
-              color="foreground.subtle"
-              placeSelf="center"
-            />
-          </Button>
-        }
-        flexDirection="column-reverse"
-        gap={6}
-        open={isOrganizationCollapseOpen}
-        onOpenChange={onToggleOrganizationCollapse}
-      >
-        {/* NB: The padding is necessary to prevent clipping of the card borders/box shadows */}
-        <Grid gap={6} columns={{ base: 1, md: 3 }} p="1px">
-          {restOrganizations.map(({ name, type, id }) => (
-            <OrganizationCard key={id} name={name} id={id} type={type} />
-          ))}
-        </Grid>
-      </Collapsible>
     </Flex>
   );
 };
 
-export default Organizations;
+export default PinnedOrganizations;

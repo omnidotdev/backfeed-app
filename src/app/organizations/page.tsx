@@ -15,7 +15,7 @@ const OrganizationsPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <Page justify="center" h="full">
+    <Page justify="center" align="center" h="full">
       <Text>Organizations</Text>
     </Page>
   );

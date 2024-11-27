@@ -6,6 +6,6 @@ export { default as FeedbackCard } from "./FeedbackCard/FeedbackCard";
 export { default as FeedbackOverview } from "./FeedbackOverview/FeedbackOverview";
 export { default as FeedbackTooltip } from "./FeedbackTooltip/FeedbackTooltip";
 export { default as OrganizationCard } from "./OrganizationCard/OrganizationCard";
-export { default as Organizations } from "./Organizations/Organizations";
+export { default as PinnedOrganizations } from "./PinnedOrganizations/PinnedOrganizations";
 export { default as RecentFeedback } from "./RecentFeedback/RecentFeedback";
 export { default as Response, type ResponseType } from "./Response/Response";
