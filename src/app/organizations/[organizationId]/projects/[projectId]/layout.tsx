@@ -4,14 +4,15 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 interface MetadataParams {
-  params: Promise<{ projectId: string; organization: string }>;
+  params: Promise<{ projectId: string; organizationId: string }>;
 }
 
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { projectId: projectSlug, organization: organizationId } = await params;
+  const { projectId } = await params;
 
+  // TODO: Hook up when fetching data here
   // const project: ProjectQuery = await request({
   //   url: API_BASE_URL!,
   //   document: ProjectDocument,
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
   // });
 
   return {
-    title: `${projectSlug} | ${app.name}`,
+    title: `${projectId} | ${app.name}`,
   };
 };
 
