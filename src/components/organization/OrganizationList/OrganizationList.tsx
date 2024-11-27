@@ -1,7 +1,6 @@
 "use client";
 
 import { Stack } from "@omnidev/sigil";
-import Link from "next/link";
 
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
@@ -52,12 +51,7 @@ const OrganizationList = ({
           organization.name.toLowerCase().includes(debouncedSearch)
         )
         .map((organization) => (
-          <Link
-            key={organization.id}
-            href={`/organizations/${organization.id}`}
-          >
-            <OrganizationListItem {...organization} />
-          </Link>
+          <OrganizationListItem key={organization.id} {...organization} />
         ))}
     </Stack>
   );

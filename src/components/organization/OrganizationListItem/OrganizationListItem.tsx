@@ -8,6 +8,7 @@ import {
   Text,
   useDisclosure,
 } from "@omnidev/sigil";
+import Link from "next/link";
 import {
   HiOutlineFolder,
   HiOutlineTrash,
@@ -19,7 +20,6 @@ import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
-import type { MouseEvent } from "react";
 
 interface DeleteOrganizationAction extends ButtonProps {
   /** Action label. */
@@ -52,34 +52,25 @@ const AGGREGATES = [
 /**
  * Organization list item.
  */
-const OrganizationListItem = ({ name, type }: Organization) => {
+const OrganizationListItem = ({ id, name, type }: Organization) => {
   const { isLoading, isError } = useDataState({ timeout: 500 });
 
   const {
     isOpen: isDeleteOrganizationOpen,
     onClose: onCloseDeleteOrganization,
-    onOpen: onOpenDeleteOrganization,
+    onToggle: onToggleDeleteOrganization,
   } = useDisclosure();
-
-  const handleDeleteOrganizationDialogState = (
-    e: MouseEvent<HTMLButtonElement>,
-    type: "close" | "open" = "close"
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    type === "open" ? onOpenDeleteOrganization() : onCloseDeleteOrganization();
-  };
 
   const DELETE_ORGANIZATION_DIALOG_ACTIONS: DeleteOrganizationAction[] = [
     {
       label: app.organizationsPage.dialogs.deleteOrganization.cta.delete.label,
       // TODO: handle delete organization
-      onClick: handleDeleteOrganizationDialogState,
+      onClick: onCloseDeleteOrganization,
       bgColor: "danger",
     },
     {
       label: app.organizationsPage.dialogs.deleteOrganization.cta.cancel.label,
-      onClick: handleDeleteOrganizationDialogState,
+      onClick: onCloseDeleteOrganization,
       variant: "outline",
     },
   ];
@@ -88,9 +79,8 @@ const OrganizationListItem = ({ name, type }: Organization) => {
     <Stack
       p={4}
       boxShadow="sm"
-      borderWidth="1px"
-      borderColor={{ base: "transparent", _hover: "border.subtle" }}
       borderRadius="sm"
+      w="full"
       maxW="100%"
       mx="auto"
       h={36}
@@ -98,9 +88,21 @@ const OrganizationListItem = ({ name, type }: Organization) => {
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
         <Stack maxW="65svw">
-          <OverflowText fontWeight="semibold" whiteSpace="nowrap">
-            {name}
-          </OverflowText>
+          <Link href={`/organizations/${id}`} role="group">
+            <OverflowText
+              fontWeight="semibold"
+              whiteSpace="nowrap"
+              color={{
+                base: "brand.primary.700",
+                _groupHover: {
+                  base: "brand.primary.800",
+                  _dark: "brand.primary.600",
+                },
+              }}
+            >
+              {name}
+            </OverflowText>
+          </Link>
 
           <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
             {type}
@@ -114,32 +116,23 @@ const OrganizationListItem = ({ name, type }: Organization) => {
             app.organizationsPage.dialogs.deleteOrganization.description
           }
           open={isDeleteOrganizationOpen}
-          onInteractOutside={handleDeleteOrganizationDialogState}
+          onOpenChange={onToggleDeleteOrganization}
           trigger={
             <Button
               variant="ghost"
               p={1}
-              role="group"
               bgColor="transparent"
-              onClick={(e) => handleDeleteOrganizationDialogState(e, "open")}
+              color={{
+                base: "omni.ruby",
+                _hover: {
+                  base: "omni.ruby.700",
+                  _dark: "omni.ruby.400",
+                },
+              }}
             >
-              <Icon
-                src={HiOutlineTrash}
-                w={5}
-                h={5}
-                color={{
-                  base: "omni.ruby",
-                  _groupHover: {
-                    base: "omni.ruby.300",
-                    _dark: "omni.ruby.800",
-                  },
-                }}
-              />
+              <Icon src={HiOutlineTrash} w={5} h={5} />
             </Button>
           }
-          closeTriggerProps={{
-            onClick: handleDeleteOrganizationDialogState,
-          }}
         >
           <HStack>
             {DELETE_ORGANIZATION_DIALOG_ACTIONS.map(({ label, ...rest }) => (
