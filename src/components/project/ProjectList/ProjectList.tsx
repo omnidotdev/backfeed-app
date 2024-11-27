@@ -2,10 +2,10 @@
 
 import { Stack, useDebounceValue } from "@omnidev/sigil";
 import Link from "next/link";
-import { parseAsString, useQueryState } from "nuqs";
+import { useParams } from "next/navigation";
 
 import { ProjectListItem } from "components/project";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "lib/hooks";
 
 export interface Project {
   /** Project ID. */
@@ -64,8 +64,7 @@ const PROJECTS: Project[] = [
  * Project list.
  */
 const ProjectList = () => {
-  const [status] = useQueryState("status", parseAsString);
-  const [search] = useQueryState("search", parseAsString.withDefault(""));
+  const [{ search, status }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue(search, 300);
 

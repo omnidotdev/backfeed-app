@@ -7,9 +7,10 @@ import {
   Select,
   createListCollection,
 } from "@omnidev/sigil";
-import { parseAsString, useQueryState } from "nuqs";
+import {} from "nuqs";
 
 import { app } from "lib/config";
+import { useSearchParams } from "lib/hooks";
 
 const STATUSES = ["Active", "Beta", "Inactive"];
 
@@ -17,8 +18,7 @@ const STATUSES = ["Active", "Beta", "Inactive"];
  * Project filters.
  */
 const ProjectFilters = () => {
-  const [, setStatus] = useQueryState("status", parseAsString);
-  const [, setSearch] = useQueryState("search", parseAsString.withDefault(""));
+  const [, setSearchParams] = useSearchParams();
 
   return (
     <Grid columns={{ base: 1, md: 5 }}>
@@ -26,7 +26,9 @@ const ProjectFilters = () => {
         <Input
           placeholder={app.projectsPage.filters.search.placeholder}
           onChange={(e) =>
-            setSearch(e.target.value.length ? e.target.value.toLowerCase() : "")
+            setSearchParams({
+              search: e.target.value.length ? e.target.value.toLowerCase() : "",
+            })
           }
         />
       </GridItem>
@@ -45,7 +47,7 @@ const ProjectFilters = () => {
           }}
           // @ts-ignore TODO figure out why this is throwing an error
           onValueChange={({ value }) =>
-            value?.length ? setStatus(value[0]) : setStatus(null)
+            setSearchParams({ status: value.length ? value[0] : null })
           }
         />
       </GridItem>
