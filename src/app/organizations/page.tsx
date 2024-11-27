@@ -1,10 +1,11 @@
 "use client";
 
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import { OrganizationFilters } from "components/organization";
+import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -17,7 +18,7 @@ interface Organization {
   type: string;
 }
 
-const ALL_ORGANIZATIONS: Organization[] = [
+const ORGANIZATIONS: Organization[] = [
   {
     id: "8af2410c-b73b-453f-a5c9-4637f5cbaffe",
     name: "Tech Innovators Inc.",
@@ -88,7 +89,16 @@ const OrganizationsPage = () => {
         ],
       }}
     >
-      <OrganizationFilters isLoading={isLoading} isError={isError} />
+      {/* // ! NB: wrapped in a suspense boundary to avoid opting entire page into CSR. See: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
+      <Suspense>
+        <OrganizationFilters isLoading={isLoading} isError={isError} />
+
+        <OrganizationList
+          organizations={ORGANIZATIONS}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </Suspense>
     </Page>
   );
 };
