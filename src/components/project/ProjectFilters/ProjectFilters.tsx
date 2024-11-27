@@ -7,7 +7,6 @@ import {
   Select,
   createListCollection,
 } from "@omnidev/sigil";
-import {} from "nuqs";
 
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
