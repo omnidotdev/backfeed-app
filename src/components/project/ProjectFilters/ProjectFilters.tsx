@@ -18,11 +18,17 @@ const STATUSES = ["Active", "Beta", "Inactive"];
  */
 const ProjectFilters = () => {
   const [, setStatus] = useQueryState("status", parseAsString);
+  const [, setSearch] = useQueryState("search", parseAsString.withDefault(""));
 
   return (
     <Grid columns={{ base: 1, md: 5 }}>
       <GridItem colSpan={{ base: 1, md: 4 }}>
-        <Input placeholder={app.projectsPage.filters.search.placeholder} />
+        <Input
+          placeholder={app.projectsPage.filters.search.placeholder}
+          onChange={(e) =>
+            setSearch(e.target.value.length ? e.target.value.toLowerCase() : "")
+          }
+        />
       </GridItem>
 
       <GridItem colSpan={1}>

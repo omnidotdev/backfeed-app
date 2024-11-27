@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack } from "@omnidev/sigil";
+import { Stack, useDebounceValue } from "@omnidev/sigil";
 import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
 
@@ -65,21 +65,27 @@ const PROJECTS: Project[] = [
  */
 const ProjectList = () => {
   const [status] = useQueryState("status", parseAsString);
+  const [search] = useQueryState("search", parseAsString.withDefault(""));
+
+  const [debouncedSearch] = useDebounceValue(search, 300);
 
   const { organizationId } = useParams<{ organizationId: string }>();
 
   return (
     <Stack>
-      {PROJECTS.filter((project) =>
-        status ? project.status === status : true
-      ).map((project) => (
-        <Link
-          key={project.id}
-          href={`/organizations/${organizationId}/projects/${project.id}`}
-        >
-          <ProjectListItem {...project} />
-        </Link>
-      ))}
+      {/* TODO: update logic handler / filters once data fetching is implemented */}
+      {PROJECTS.filter((project) => (status ? project.status === status : true))
+        .filter((project) =>
+          project.name.toLowerCase().includes(debouncedSearch)
+        )
+        .map((project) => (
+          <Link
+            key={project.id}
+            href={`/organizations/${organizationId}/projects/${project.id}`}
+          >
+            <ProjectListItem {...project} />
+          </Link>
+        ))}
     </Stack>
   );
 };
