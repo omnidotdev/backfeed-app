@@ -46,7 +46,7 @@ const FeedbackPage = () => {
 
   return (
     <Stack h="full" maxW="8xl" mx="auto" p={6} gap={6}>
-      <Link href={`/${organizationId}/projects/${projectId}`}>
+      <Link href={`/organizations/${organizationId}/projects/${projectId}`}>
         <Button
           variant="ghost"
           size="lg"

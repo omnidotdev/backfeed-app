@@ -144,15 +144,29 @@ const app = {
       textareaPlaceholder: "Describe additional details...",
       submit: "Create",
       totalResponses: "Total Responses",
+      details: {
+        upvote: "Upvote",
+        downvote: "Downvote",
+      },
     },
     projectInformation: {
       title: "Project Information",
+      activeUsers: "Active Users",
+      created: "Created",
     },
     feedbackMetrics: {
       title: "Feedback Metrics",
+      totalFeedback: "Total Feedback",
+      totalUpvotes: "Total Upvotes",
     },
     statusBreakdown: {
       title: "Status Breakdown",
+      status: {
+        new: "New",
+        planned: "Planned",
+        inProgress: "In Progress",
+        completed: "Completed",
+      },
     },
   },
   feedbackPage: {

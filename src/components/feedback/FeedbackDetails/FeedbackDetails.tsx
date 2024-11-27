@@ -16,13 +16,13 @@ import {
   PiArrowFatLineUp,
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
+import { match } from "ts-pattern";
 
 import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
 
 import type { ButtonProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
-import { match } from "ts-pattern";
 
 export interface Feedback {
   /** Feedback ID. */
@@ -93,11 +93,13 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
       icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
       disabled: isVotingDisabled,
-      onClick: () =>
+      onClick: (e) => {
+        e.stopPropagation();
         setVotingState((prev) => ({
           hasUpvoted: !prev.hasUpvoted,
           hasDownvoted: false,
-        })),
+        }));
+      },
     },
     {
       id: "downvote",
@@ -110,11 +112,13 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
         : PiArrowFatLineDown,
       color: "brand.quinary",
       disabled: isVotingDisabled,
-      onClick: () =>
+      onClick: (e) => {
+        e.stopPropagation();
         setVotingState((prev) => ({
           hasUpvoted: false,
           hasDownvoted: !prev.hasDownvoted,
-        })),
+        }));
+      },
     },
   ];
 

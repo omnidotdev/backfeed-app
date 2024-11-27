@@ -13,6 +13,9 @@ interface Props {
   projectDescription: string;
 }
 
+/**
+ * Project information.
+ */
 const ProjectInformation = ({ projectName, projectDescription }: Props) => (
   <SectionContainer title={app.projectPage.projectInformation.title}>
     <Stack>
@@ -21,19 +24,29 @@ const ProjectInformation = ({ projectName, projectDescription }: Props) => (
       <Text color="foreground.subtle">{projectDescription}</Text>
     </Stack>
 
-    <Stack>
+    <Flex justify="space-between" align="center">
       <Flex gap={2} align="center">
         <Icon src={HiOutlineUserGroup} />
 
-        <Text color="foreground.muted">1,234 active Users</Text>
+        <Text color="foreground.muted">
+          {app.projectPage.projectInformation.activeUsers}
+        </Text>
       </Flex>
 
+      <Text>1,234</Text>
+    </Flex>
+
+    <Flex justify="space-between" align="center">
       <Flex gap={2} align="center">
         <Icon src={IoCalendarOutline} />
 
-        <Text color="foreground.muted">Created on Apr 1, 2024</Text>
+        <Text color="foreground.muted">
+          {app.projectPage.projectInformation.created}
+        </Text>
       </Flex>
-    </Stack>
+
+      <Text>Apr 1, 2024</Text>
+    </Flex>
   </SectionContainer>
 );
 

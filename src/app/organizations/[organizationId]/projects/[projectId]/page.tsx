@@ -2,7 +2,7 @@
 
 import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import { LuSettings } from "react-icons/lu";
 
@@ -14,6 +14,7 @@ import {
   StatusBreakdown,
 } from "components/project";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 import type { OrganizationProject } from "components/organization";
 
@@ -27,13 +28,15 @@ const projectData: OrganizationProject = {
  * Project overview page.
  */
 const ProjectPage = () => {
-  const { organizationId } = useParams<{
-    organizationId: string;
-  }>();
+  const { isAuthenticated } = useAuth();
+
+  const params = useParams<{ organizationId: string; projectId: string }>();
+
+  if (!isAuthenticated) notFound();
 
   return (
     <Stack maxW="8xl" mx="auto" p={6} gap={6}>
-      <Link href={`/${organizationId}`}>
+      <Link href={`/${params.organizationId}`}>
         <Button
           variant="ghost"
           size="lg"
