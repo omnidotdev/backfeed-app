@@ -1,14 +1,13 @@
 "use client";
-
-import { Flex } from "@omnidev/sigil";
+import { Page } from "components/layout";
 
 /**
  * Pricing page.
  */
 const PricingPage = () => (
-  <Flex align="center" justify="center" w="100%" h="100%">
+  <Page align="center" justify="center" w="100%" h="100%">
     Pricing Page
-  </Flex>
+  </Page>
 );
 
 export default PricingPage;

@@ -129,6 +129,32 @@ const app = {
       },
     },
   },
+  projectsPage: {
+    header: {
+      title: "Projects",
+      description:
+        "Manage and monitor all your organization's projects in one place.",
+      cta: {
+        newProject: {
+          label: "New Project",
+        },
+      },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all projects...",
+      },
+      select: {
+        status: {
+          label: {
+            id: "Status",
+            singular: "Status",
+            plural: "Statuses",
+          },
+        },
+      },
+    },
+  },
   feedbackPage: {
     backToProject: "Back to Project",
     details: {
