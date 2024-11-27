@@ -66,6 +66,7 @@ const DestructiveAction = ({
           <Icon src={icon} w={5} h={5} />
         </Button>
       }
+      triggerProps={triggerProps}
       {...rest}
     >
       {children}
