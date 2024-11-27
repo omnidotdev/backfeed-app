@@ -5,7 +5,7 @@ import {
 } from "react-icons/hi2";
 import { match } from "ts-pattern";
 
-interface Project {
+export interface Project {
   /** Project ID. */
   id: string;
   /** Project name. */
@@ -15,6 +15,20 @@ interface Project {
   /** Project status. */
   status: "Active" | "Beta" | "Inactive";
 }
+
+/** Mock aggregates for the project. Will be replaced with real data, and fetched at this level in the future. */
+const AGGREGATES = [
+  {
+    type: "Users",
+    icon: HiOutlineUserGroup,
+    value: 69,
+  },
+  {
+    type: "Responses",
+    icon: HiOutlineChatBubbleLeftRight,
+    value: 420,
+  },
+];
 
 /**
  * Helper function to determine the colors used for the project status badge.
@@ -29,66 +43,51 @@ const statusColor = (status: Project["status"]) =>
 /**
  * Project list item.
  */
-const ProjectListItem = ({ name, description, status }: Project) => {
-  const aggregates = [
-    {
-      type: "Users",
-      icon: HiOutlineUserGroup,
-      value: 69,
-    },
-    {
-      type: "Responses",
-      icon: HiOutlineChatBubbleLeftRight,
-      value: 420,
-    },
-  ];
-
-  return (
-    <Stack
-      p={4}
-      boxShadow="sm"
-      borderWidth="1px"
-      borderColor={{ base: "transparent", _hover: "border.subtle" }}
-      borderRadius="sm"
-      maxW="100%"
-      mx="auto"
-      h={36}
-    >
-      <HStack>
-        <Text fontWeight="semibold">{name}</Text>
-        <Badge
-          size="sm"
-          variant="outline"
-          color={statusColor(status)}
-          borderColor={statusColor(status)}
-        >
-          {status}
-        </Badge>
-      </HStack>
-
-      <Text
-        color="foreground.subtle"
-        maxW="xl"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        textOverflow="ellipsis"
+const ProjectListItem = ({ name, description, status }: Project) => (
+  <Stack
+    p={4}
+    boxShadow="sm"
+    borderWidth="1px"
+    borderColor={{ base: "transparent", _hover: "border.subtle" }}
+    borderRadius="sm"
+    maxW="100%"
+    mx="auto"
+    h={36}
+  >
+    <HStack>
+      <Text fontWeight="semibold">{name}</Text>
+      <Badge
+        size="sm"
+        variant="outline"
+        color={statusColor(status)}
+        borderColor={statusColor(status)}
       >
-        {description}
-      </Text>
+        {status}
+      </Badge>
+    </HStack>
 
-      <HStack gap={4} mt={4} justifySelf="flex-end">
-        {aggregates.map(({ icon, value, type }) => (
-          <HStack key={type} gap={1}>
-            <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+    <Text
+      color="foreground.subtle"
+      maxW="xl"
+      overflow="hidden"
+      whiteSpace="nowrap"
+      textOverflow="ellipsis"
+    >
+      {description}
+    </Text>
 
-            <Text fontSize="sm" color="foreground.subtle">
-              {value}
-            </Text>
-          </HStack>
-        ))}
-      </HStack>
-    </Stack>
-  );
-};
+    <HStack gap={4} mt={4} justifySelf="flex-end">
+      {AGGREGATES.map(({ icon, value, type }) => (
+        <HStack key={type} gap={1}>
+          <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+
+          <Text fontSize="sm" color="foreground.subtle">
+            {value}
+          </Text>
+        </HStack>
+      ))}
+    </HStack>
+  </Stack>
+);
 
 export default ProjectListItem;
