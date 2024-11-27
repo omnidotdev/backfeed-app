@@ -1,12 +1,12 @@
 "use client";
 
-import { Text } from "@omnidev/sigil";
 import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
+import { OrganizationFilters } from "components/organization";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useDataState } from "lib/hooks";
 
 interface Organization {
   /** Organization ID. */
@@ -71,6 +71,8 @@ const ALL_ORGANIZATIONS: Organization[] = [
 const OrganizationsPage = () => {
   const { isAuthenticated } = useAuth();
 
+  const { isLoading, isError } = useDataState();
+
   if (!isAuthenticated) notFound();
 
   return (
@@ -86,7 +88,7 @@ const OrganizationsPage = () => {
         ],
       }}
     >
-      <Text>Organizations</Text>
+      <OrganizationFilters isLoading={isLoading} isError={isError} />
     </Page>
   );
 };

@@ -92,6 +92,11 @@ const app = {
         },
       },
     },
+    filters: {
+      search: {
+        placeholder: "Search all organizations...",
+      },
+    },
   },
   organizationPage: {
     header: {
