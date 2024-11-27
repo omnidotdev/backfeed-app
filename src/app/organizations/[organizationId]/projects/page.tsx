@@ -1,6 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
@@ -72,13 +73,16 @@ const ProjectsPage = () => {
         ],
       }}
     >
-      <ProjectFilters isLoading={isLoading} isError={isError} />
+      {/* // ! NB: wrapped in a suspense boundary to avoid opting entire page into CSR. See: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
+      <Suspense>
+        <ProjectFilters isLoading={isLoading} isError={isError} />
 
-      <ProjectList
-        projects={PROJECTS}
-        isLoading={isLoading}
-        isError={isError}
-      />
+        <ProjectList
+          projects={PROJECTS}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </Suspense>
     </Page>
   );
 };
