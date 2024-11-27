@@ -42,6 +42,7 @@ const ManageOrganization = ({
   const manageOrganizationActions: ManageOrganizationAction[] = [
     {
       ...action,
+      variant: "outline",
       onClick: (e) => {
         action.onClick?.(e);
         onCloseManageOrganization();
@@ -50,7 +51,6 @@ const ManageOrganization = ({
     {
       label: app.organizationsPage.dialogs.cancel.label,
       onClick: onCloseManageOrganization,
-      variant: "outline",
     },
   ];
 
@@ -62,7 +62,7 @@ const ManageOrganization = ({
       open={isManageOrganizationOpen}
       onOpenChange={onToggleManageOrganization}
       trigger={
-        <Button variant="ghost" p={1} bgColor="transparent" {...triggerProps}>
+        <Button variant="icon" p={1} bgColor="transparent" {...triggerProps}>
           <Icon src={icon} w={5} h={5} />
         </Button>
       }

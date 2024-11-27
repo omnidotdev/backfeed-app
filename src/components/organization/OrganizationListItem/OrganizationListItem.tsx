@@ -37,6 +37,9 @@ const AGGREGATES = [
   },
 ];
 
+const deleteOrganization = app.organizationsPage.dialogs.deleteOrganization;
+const leaveOrganization = app.organizationsPage.dialogs.leaveOrganization;
+
 interface Props {
   /** Organization details. */
   organization: Organization;
@@ -57,15 +60,15 @@ const OrganizationListItem = ({
 
   // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
   const DELETE_ORGANIZATION: ManageOrganizationProps = {
-    title: app.organizationsPage.dialogs.deleteOrganization.title,
-    description: app.organizationsPage.dialogs.deleteOrganization.description,
+    title: deleteOrganization.title,
+    description: deleteOrganization.description,
     icon: HiOutlineTrash,
     action: {
       // TODO: handle delete organization in onClick for primary action
-      label: app.organizationsPage.dialogs.deleteOrganization.action.label,
-      bgColor: "omni.ruby",
+      label: deleteOrganization.action.label,
     },
     triggerProps: {
+      "aria-label": `${deleteOrganization.action.label} organization`,
       color: {
         base: "omni.ruby",
         _hover: {
@@ -78,15 +81,15 @@ const OrganizationListItem = ({
 
   // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
   const LEAVE_ORGANIZATION: ManageOrganizationProps = {
-    title: app.organizationsPage.dialogs.leaveOrganization.title,
-    description: app.organizationsPage.dialogs.leaveOrganization.description,
+    title: leaveOrganization.title,
+    description: leaveOrganization.description,
     icon: RiUserSharedLine,
     action: {
       // TODO: handle leave organization in onClick for primary action
-      label: app.organizationsPage.dialogs.leaveOrganization.action.label,
-      bgColor: "blue",
+      label: leaveOrganization.action.label,
     },
     triggerProps: {
+      "aria-label": `${leaveOrganization.action.label} organization`,
       color: {
         base: "blue",
         _hover: {
