@@ -1,8 +1,30 @@
-import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
-import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
+import {
+  Button,
+  Dialog,
+  HStack,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@omnidev/sigil";
+import {
+  HiOutlineFolder,
+  HiOutlineTrash,
+  HiOutlineUserGroup,
+} from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
+import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
+
+import type { ButtonProps } from "@omnidev/sigil";
+import type { MouseEvent } from "react";
+
+interface DeleteOrganizationAction extends ButtonProps {
+  /** Action label. */
+  label: string;
+}
 
 export interface Organization {
   /** Organization ID. */
@@ -33,6 +55,35 @@ const AGGREGATES = [
 const OrganizationListItem = ({ name, type }: Organization) => {
   const { isLoading, isError } = useDataState({ timeout: 500 });
 
+  const {
+    isOpen: isDeleteOrganizationOpen,
+    onClose: onCloseDeleteOrganization,
+    onOpen: onOpenDeleteOrganization,
+  } = useDisclosure();
+
+  const handleDeleteOrganizationDialogState = (
+    e: MouseEvent<HTMLButtonElement>,
+    type: "close" | "open" = "close"
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    type === "open" ? onOpenDeleteOrganization() : onCloseDeleteOrganization();
+  };
+
+  const DELETE_ORGANIZATION_DIALOG_ACTIONS: DeleteOrganizationAction[] = [
+    {
+      label: app.organizationsPage.dialogs.deleteOrganization.cta.delete.label,
+      // TODO: handle delete organization
+      onClick: handleDeleteOrganizationDialogState,
+      bgColor: "danger",
+    },
+    {
+      label: app.organizationsPage.dialogs.deleteOrganization.cta.cancel.label,
+      onClick: handleDeleteOrganizationDialogState,
+      variant: "outline",
+    },
+  ];
+
   return (
     <Stack
       p={4}
@@ -44,13 +95,61 @@ const OrganizationListItem = ({ name, type }: Organization) => {
       mx="auto"
       h={36}
     >
-      <OverflowText fontWeight="semibold" whiteSpace="nowrap">
-        {name}
-      </OverflowText>
+      <HStack alignItems="flex-start" justify="space-between">
+        {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
+        <Stack maxW="65svw">
+          <OverflowText fontWeight="semibold" whiteSpace="nowrap">
+            {name}
+          </OverflowText>
 
-      <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
-        {type}
-      </OverflowText>
+          <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
+            {type}
+          </OverflowText>
+        </Stack>
+
+        {/* @ts-ignore TODO: figure out why this is throwing an error */}
+        <Dialog
+          title={app.organizationsPage.dialogs.deleteOrganization.title}
+          description={
+            app.organizationsPage.dialogs.deleteOrganization.description
+          }
+          open={isDeleteOrganizationOpen}
+          onInteractOutside={handleDeleteOrganizationDialogState}
+          trigger={
+            <Button
+              variant="ghost"
+              p={1}
+              role="group"
+              bgColor="transparent"
+              onClick={(e) => handleDeleteOrganizationDialogState(e, "open")}
+            >
+              <Icon
+                src={HiOutlineTrash}
+                w={5}
+                h={5}
+                color={{
+                  base: "omni.ruby",
+                  _groupHover: {
+                    base: "omni.ruby.300",
+                    _dark: "omni.ruby.800",
+                  },
+                }}
+              />
+            </Button>
+          }
+          closeTriggerProps={{
+            onClick: handleDeleteOrganizationDialogState,
+          }}
+        >
+          <HStack>
+            {DELETE_ORGANIZATION_DIALOG_ACTIONS.map(({ label, ...rest }) => (
+              <Button key={label} flex={1} {...rest}>
+                {label}
+              </Button>
+            ))}
+          </HStack>
+        </Dialog>
+      </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
         {AGGREGATES.map(({ icon, value, type }) => (

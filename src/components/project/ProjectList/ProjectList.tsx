@@ -23,6 +23,7 @@ interface Props extends StackProps {
 
 /**
  * Project list.
+ * TODO: apply either infinite scroll or pagination for the list once data fetching is implemented.
  */
 const ProjectList = ({
   projects,

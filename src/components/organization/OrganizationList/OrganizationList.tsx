@@ -22,6 +22,7 @@ interface Props extends StackProps {
 
 /**
  * Organization list.
+ * TODO: apply either infinite scroll or pagination for the list once data fetching is implemented.
  */
 const OrganizationList = ({
   organizations,

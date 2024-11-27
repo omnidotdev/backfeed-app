@@ -97,6 +97,20 @@ const app = {
         placeholder: "Search all organizations...",
       },
     },
+    dialogs: {
+      deleteOrganization: {
+        title: "Delete Organization",
+        description: "Are you sure you want to delete this organization?",
+        cta: {
+          delete: {
+            label: "Delete",
+          },
+          cancel: {
+            label: "Cancel",
+          },
+        },
+      },
+    },
   },
   organizationPage: {
     header: {
