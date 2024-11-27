@@ -50,8 +50,13 @@ const OrganizationList = ({
         .filter((organization) =>
           organization.name.toLowerCase().includes(debouncedSearch)
         )
-        .map((organization) => (
-          <OrganizationListItem key={organization.id} {...organization} />
+        .map((organization, index) => (
+          // TODO: remove index once data fetching is implemented
+          <OrganizationListItem
+            key={organization.id}
+            organization={organization}
+            index={index}
+          />
         ))}
     </Stack>
   );

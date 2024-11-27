@@ -49,11 +49,23 @@ const AGGREGATES = [
   },
 ];
 
+interface Props {
+  /** Organization details. */
+  organization: Organization;
+  /** ! NB: this will be removed. Just used to implement dynamic ownership check for now. */
+  index: number;
+}
+
 /**
  * Organization list item.
  */
-const OrganizationListItem = ({ id, name, type }: Organization) => {
+const OrganizationListItem = ({
+  organization: { id, name, type },
+  index,
+}: Props) => {
   const { isLoading, isError } = useDataState({ timeout: 500 });
+
+  const isOrganizationOwner = index % 2 === 0;
 
   const {
     isOpen: isDeleteOrganizationOpen,
@@ -87,7 +99,7 @@ const OrganizationListItem = ({ id, name, type }: Organization) => {
     >
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
-        <Stack maxW="65svw">
+        <Stack maxW={isOrganizationOwner ? "65svw" : "80svw"}>
           <Link href={`/organizations/${id}`} role="group">
             <OverflowText
               fontWeight="semibold"
@@ -120,6 +132,7 @@ const OrganizationListItem = ({ id, name, type }: Organization) => {
           onOpenChange={onToggleDeleteOrganization}
           trigger={
             <Button
+              display={isOrganizationOwner ? "flex" : "none"}
               variant="ghost"
               p={1}
               bgColor="transparent"
