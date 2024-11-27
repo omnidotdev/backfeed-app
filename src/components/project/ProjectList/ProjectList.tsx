@@ -7,67 +7,29 @@ import { useParams } from "next/navigation";
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useDataState, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
 
-export interface Project {
-  /** Project ID. */
-  id: string;
-  /** Project name. */
-  name: string;
-  /** Project description. */
-  description: string;
-  /** Project status. */
-  status: "Active" | "Beta" | "Inactive";
+import type { StackProps } from "@omnidev/sigil";
+import type { Project } from "components/project";
+
+interface Props extends StackProps {
+  /** Projects to display. */
+  projects: Project[];
+  /** Whether the data is loading. */
+  isLoading?: boolean;
+  /** Whether an error was encountered while loading the data. */
+  isError?: boolean;
 }
-
-// NB: These are similar to the organization projects. Copied and modified for simplicity.
-const PROJECTS: Project[] = [
-  {
-    id: "1",
-    name: "Mobile App Feedback",
-    description:
-      "We are actively gathering detailed user feedback for our iOS and Android applications to enhance user experience and functionality. This includes identifying key pain points, usability issues, and feature requests from our diverse user base. Our primary focus is on improving app performance, refining navigation flows, and introducing user-driven features that align with customer needs. Additionally, we are seeking feedback on visual design updates and accessibility improvements to ensure the app meets the highest standards for all users. This project is crucial for maintaining our competitive edge in the mobile app market and fostering customer loyalty.",
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Web Platform Beta",
-    description: "Beta testing feedback for the new web platform",
-    status: "Beta",
-  },
-  {
-    id: "3",
-    name: "Desktop Client",
-    description: "User experience feedback for desktop applications",
-    status: "Inactive",
-  },
-  {
-    id: "4",
-    name: "E-commerce Platform Upgrade",
-    description:
-      "Feedback for the upgraded e-commerce platform features and user flow.",
-    status: "Active",
-  },
-  {
-    id: "5",
-    name: "AI Chatbot Testing",
-    description: "Testing and collecting responses for our AI chatbot.",
-    status: "Beta",
-  },
-  {
-    id: "6",
-    name: "Enterprise CRM Feedback",
-    description: "Gathering feedback on our enterprise CRM system.",
-    status: "Inactive",
-  },
-];
 
 /**
  * Project list.
  */
-const ProjectList = () => {
-  const { isLoading, isError } = useDataState();
-
+const ProjectList = ({
+  projects,
+  isLoading = true,
+  isError = false,
+  ...rest
+}: Props) => {
   const [{ search, status }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue(search, 300);
@@ -85,9 +47,10 @@ const ProjectList = () => {
     );
 
   return (
-    <Stack>
+    <Stack {...rest}>
       {/* TODO: update logic handler / filters once data fetching is implemented */}
-      {PROJECTS.filter((project) => (status ? project.status === status : true))
+      {projects
+        .filter((project) => (status ? project.status === status : true))
         .filter((project) =>
           project.name.toLowerCase().includes(debouncedSearch)
         )

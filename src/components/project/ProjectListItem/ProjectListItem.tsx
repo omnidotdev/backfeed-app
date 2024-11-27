@@ -5,7 +5,16 @@ import {
 } from "react-icons/hi2";
 import { match } from "ts-pattern";
 
-import type { Project } from "components/project";
+interface Project {
+  /** Project ID. */
+  id: string;
+  /** Project name. */
+  name: string;
+  /** Project description. */
+  description: string;
+  /** Project status. */
+  status: "Active" | "Beta" | "Inactive";
+}
 
 /**
  * Helper function to determine the colors used for the project status badge.

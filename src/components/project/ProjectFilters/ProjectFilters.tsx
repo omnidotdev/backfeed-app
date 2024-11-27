@@ -14,11 +14,20 @@ import { useSearchParams } from "lib/hooks";
 
 const STATUSES = ["Active", "Beta", "Inactive"];
 
+interface Props {
+  /** Whether the data is loading. */
+  isLoading?: boolean;
+  /** Whether an error was encountered while loading the data. */
+  isError?: boolean;
+}
+
 /**
  * Project filters.
  */
-const ProjectFilters = () => {
+const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
   const [, setSearchParams] = useSearchParams();
+
+  const isFilterDisabled = isLoading || isError;
 
   return (
     <Grid columns={{ base: 1, lg: 5 }} w="full">
@@ -31,6 +40,7 @@ const ProjectFilters = () => {
               search: e.target.value.length ? e.target.value.toLowerCase() : "",
             })
           }
+          disabled={isFilterDisabled}
         />
       </GridItem>
 
@@ -53,6 +63,7 @@ const ProjectFilters = () => {
           onValueChange={({ value }) =>
             setSearchParams({ status: value.length ? value[0] : null })
           }
+          disabled={isFilterDisabled}
         />
       </GridItem>
     </Grid>
