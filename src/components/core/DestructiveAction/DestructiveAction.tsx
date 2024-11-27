@@ -1,56 +1,56 @@
 import { Button, Dialog, HStack, Icon, useDisclosure } from "@omnidev/sigil";
+import { HiOutlineTrash } from "react-icons/hi2";
 
 import { app } from "lib/config";
 
-import type { ButtonProps } from "@omnidev/sigil";
+import type { ButtonProps, DialogProps } from "@omnidev/sigil";
+import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-interface ManageOrganizationAction extends ButtonProps {
+interface Action extends ButtonProps {
   /** Action label. */
   label: string;
 }
 
-export interface Props {
+export interface Props extends DialogProps {
   /** Dialog title. */
   title: string;
   /** Dialog description. */
   description: string;
   /** Primary dialog action. */
-  action: ManageOrganizationAction;
-  /** Icon used for the dialog trigger. */
-  icon: IconType;
-  /** Props to pass to the dialog trigger. */
-  triggerProps?: ButtonProps;
+  action: Action;
+  /** Icon used for the default dialog trigger. */
+  icon?: IconType;
+  /** Children to render in the dialog content area. */
+  children?: ReactNode;
 }
 
 /**
- * Organization management dialog.
+ * Dialog for destructive actions.
  */
-const ManageOrganization = ({
+const DestructiveAction = ({
   title,
   description,
   action,
-  icon,
+  icon = HiOutlineTrash,
   triggerProps,
+  children,
+  ...rest
 }: Props) => {
-  const {
-    isOpen: isManageOrganizationOpen,
-    onClose: onCloseManageOrganization,
-    onToggle: onToggleManageOrganization,
-  } = useDisclosure();
+  const { isOpen, onClose, onToggle } = useDisclosure();
 
-  const manageOrganizationActions: ManageOrganizationAction[] = [
+  const actions: Action[] = [
     {
       ...action,
       variant: "outline",
       onClick: (e) => {
         action.onClick?.(e);
-        onCloseManageOrganization();
+        onClose();
       },
     },
     {
-      label: app.organizationsPage.dialogs.cancel.label,
-      onClick: onCloseManageOrganization,
+      label: app.actions.cancel.label,
+      onClick: onClose,
     },
   ];
 
@@ -59,16 +59,18 @@ const ManageOrganization = ({
     <Dialog
       title={title}
       description={description}
-      open={isManageOrganizationOpen}
-      onOpenChange={onToggleManageOrganization}
+      open={isOpen}
+      onOpenChange={onToggle}
       trigger={
         <Button variant="icon" p={1} bgColor="transparent" {...triggerProps}>
           <Icon src={icon} w={5} h={5} />
         </Button>
       }
+      {...rest}
     >
+      {children}
       <HStack>
-        {manageOrganizationActions.map(({ label, ...rest }) => (
+        {actions.map(({ label, ...rest }) => (
           <Button key={label} flex={1} {...rest}>
             {label}
           </Button>
@@ -78,4 +80,4 @@ const ManageOrganization = ({
   );
 };
 
-export default ManageOrganization;
+export default DestructiveAction;

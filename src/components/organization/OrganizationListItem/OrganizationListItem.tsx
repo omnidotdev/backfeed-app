@@ -1,18 +1,13 @@
 import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
-import {
-  HiOutlineFolder,
-  HiOutlineTrash,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
+import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiUserSharedLine } from "react-icons/ri";
 
-import { OverflowText } from "components/core";
-import { ManageOrganization } from "components/organization";
+import { DestructiveAction, OverflowText } from "components/core";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
-import type { ManageOrganizationProps } from "components/organization";
+import type { DestructiveActionProps } from "components/core";
 
 export interface Organization {
   /** Organization ID. */
@@ -59,10 +54,9 @@ const OrganizationListItem = ({
   const isOrganizationOwner = index % 2 === 0;
 
   // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
-  const DELETE_ORGANIZATION: ManageOrganizationProps = {
+  const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganization.title,
     description: deleteOrganization.description,
-    icon: HiOutlineTrash,
     action: {
       // TODO: handle delete organization in onClick for primary action
       label: deleteOrganization.action.label,
@@ -80,7 +74,7 @@ const OrganizationListItem = ({
   };
 
   // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
-  const LEAVE_ORGANIZATION: ManageOrganizationProps = {
+  const LEAVE_ORGANIZATION: DestructiveActionProps = {
     title: leaveOrganization.title,
     description: leaveOrganization.description,
     icon: RiUserSharedLine,
@@ -100,7 +94,7 @@ const OrganizationListItem = ({
     },
   };
 
-  const MANAGE_ORGANIZATION_ACTION = isOrganizationOwner
+  const DESTRUCTIVE_ACTION = isOrganizationOwner
     ? DELETE_ORGANIZATION
     : LEAVE_ORGANIZATION;
 
@@ -138,7 +132,7 @@ const OrganizationListItem = ({
           </OverflowText>
         </Stack>
 
-        <ManageOrganization {...MANAGE_ORGANIZATION_ACTION} />
+        <DestructiveAction {...DESTRUCTIVE_ACTION} />
       </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">

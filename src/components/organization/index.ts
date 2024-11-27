@@ -1,7 +1,3 @@
-export {
-  default as ManageOrganization,
-  type Props as ManageOrganizationProps,
-} from "./ManageOrganization/ManageOrganization";
 export { default as OrganizationActions } from "./OrganizationActions/OrganizationActions";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";

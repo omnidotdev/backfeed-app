@@ -7,6 +7,11 @@ const app = {
     title: "Page Not Found",
     returnHome: "Return home",
   },
+  actions: {
+    cancel: {
+      label: "Cancel",
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -98,9 +103,6 @@ const app = {
       },
     },
     dialogs: {
-      cancel: {
-        label: "Cancel",
-      },
       deleteOrganization: {
         title: "Delete Organization",
         description: "Are you sure you want to delete this organization?",
