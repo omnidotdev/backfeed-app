@@ -5,7 +5,6 @@ import { app } from "lib/config";
  * Frequently asked questions about pricing.
  */
 const PricingFAQ = () => {
-  
   return (
     <div
       style={{
@@ -31,6 +30,6 @@ const PricingFAQ = () => {
       <Accordion items={app.pricingPage.pricingFAQ.items} />
     </div>
   );
-}
+};
 
 export default PricingFAQ;

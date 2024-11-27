@@ -2,7 +2,6 @@ import { Flex } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 function PricingHeader() {
-
   return (
     <Flex align="center" direction="column">
       <h1
