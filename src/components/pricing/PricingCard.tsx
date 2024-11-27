@@ -15,13 +15,13 @@ function PricingCards() {
           gap: "16px",
         }}
       >
-        {tiers.map((tier) => (
+        {app.pricingPage.tiers.map((tier) => (
           <Card
-            borderColor={
-              tier.title === "Professional" ? "brand.primary" : "none"
-            }
-            borderWidth={tier.title === "Professional" ? "3px" : "2px"}
-            key={tier.title}
+          key={tier.title}
+          borderColor={
+            tier.title === "Professional" ? "brand.primary" : "none"
+          }
+          borderWidth={tier.title === "Professional" ? "3px" : "2px"}
             style={{
               flex: "1 1 calc(25% - 16px)",
               maxWidth: "300px",

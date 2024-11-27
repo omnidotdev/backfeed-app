@@ -1,9 +1,11 @@
 import { Accordion } from "@omnidev/sigil";
 import { app } from "lib/config";
 
-function PricingFAQ() {
-  const faqItems = app.pricingPage.pricingFAQ.items;
-
+/**
+ * Frequently asked questions about pricing.
+ */
+const PricingFAQ = () => {
+  
   return (
     <div
       style={{
@@ -26,7 +28,7 @@ function PricingFAQ() {
       >
         Frequently Asked Questions
       </h2>
-      <Accordion items={faqItems} />
+      <Accordion items={app.pricingPage.pricingFAQ.items} />
     </div>
   );
 }

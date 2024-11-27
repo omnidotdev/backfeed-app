@@ -2,7 +2,6 @@ import { Flex } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 function PricingHeader() {
-  const { title, description } = app.pricingPage.pricingHeader;
 
   return (
     <Flex align="center" direction="column">
@@ -15,7 +14,7 @@ function PricingHeader() {
           marginTop: "2rem",
         }}
       >
-        {title}
+        {app.pricingPage.pricingHeader.title}
       </h1>
       <p
         style={{
@@ -24,7 +23,7 @@ function PricingHeader() {
           marginBottom: "2rem",
         }}
       >
-        {description}
+        {app.pricingPage.pricingHeader.description}
       </p>
     </Flex>
   );
