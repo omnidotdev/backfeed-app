@@ -1,13 +1,13 @@
 "use client";
 
-import { Stack, useDebounceValue } from "@omnidev/sigil";
+import { Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useSearchParams } from "lib/hooks";
+import { useDebounceValue, useSearchParams } from "lib/hooks";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { Project } from "components/project";
@@ -32,7 +32,7 @@ const ProjectList = ({
 }: Props) => {
   const [{ search, status }] = useSearchParams();
 
-  const [debouncedSearch] = useDebounceValue(search, 300);
+  const [debouncedSearch] = useDebounceValue({ value: search });
 
   const { organizationId } = useParams<{ organizationId: string }>();
 
