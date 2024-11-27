@@ -1,6 +1,7 @@
 import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
+import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
 export interface Organization {
@@ -43,17 +44,13 @@ const OrganizationListItem = ({ name, type }: Organization) => {
       mx="auto"
       h={36}
     >
-      <Text fontWeight="semibold">{name}</Text>
+      <OverflowText fontWeight="semibold" whiteSpace="nowrap">
+        {name}
+      </OverflowText>
 
-      <Text
-        color="foreground.subtle"
-        maxW="xl"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        textOverflow="ellipsis"
-      >
+      <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
         {type}
-      </Text>
+      </OverflowText>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
         {AGGREGATES.map(({ icon, value, type }) => (
