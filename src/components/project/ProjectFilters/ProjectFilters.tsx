@@ -25,7 +25,7 @@ interface Props {
  * Project filters.
  */
 const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
-  const [, setSearchParams] = useSearchParams();
+  const [{ status, search }, setSearchParams] = useSearchParams();
 
   const isFilterDisabled = isLoading || isError;
 
@@ -35,6 +35,7 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
         <Input
           borderColor="border.subtle"
           placeholder={app.projectsPage.filters.search.placeholder}
+          defaultValue={search}
           onChange={(e) =>
             setSearchParams({
               search: e.target.value.length ? e.target.value.toLowerCase() : "",
@@ -59,6 +60,7 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
           triggerProps={{
             borderColor: "border.subtle",
           }}
+          defaultValue={status ? [status] : []}
           // @ts-ignore TODO figure out why this is throwing an error
           onValueChange={({ value }) =>
             setSearchParams({ status: value.length ? value[0] : null })
