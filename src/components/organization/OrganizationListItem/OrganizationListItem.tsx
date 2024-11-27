@@ -1,30 +1,18 @@
-import {
-  Button,
-  Dialog,
-  HStack,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@omnidev/sigil";
+import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import {
   HiOutlineFolder,
   HiOutlineTrash,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+import { RiUserSharedLine } from "react-icons/ri";
 
 import { OverflowText } from "components/core";
+import { ManageOrganization } from "components/organization";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
-import type { ButtonProps } from "@omnidev/sigil";
-
-interface DeleteOrganizationAction extends ButtonProps {
-  /** Action label. */
-  label: string;
-}
+import type { ManageOrganizationProps } from "components/organization";
 
 export interface Organization {
   /** Organization ID. */
@@ -67,25 +55,51 @@ const OrganizationListItem = ({
 
   const isOrganizationOwner = index % 2 === 0;
 
-  const {
-    isOpen: isDeleteOrganizationOpen,
-    onClose: onCloseDeleteOrganization,
-    onToggle: onToggleDeleteOrganization,
-  } = useDisclosure();
+  // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
+  const DELETE_ORGANIZATION: ManageOrganizationProps = {
+    title: app.organizationsPage.dialogs.deleteOrganization.title,
+    description: app.organizationsPage.dialogs.deleteOrganization.description,
+    icon: HiOutlineTrash,
+    action: {
+      // TODO: handle delete organization in onClick for primary action
+      label: app.organizationsPage.dialogs.deleteOrganization.action.label,
+      bgColor: "omni.ruby",
+    },
+    triggerProps: {
+      color: {
+        base: "omni.ruby",
+        _hover: {
+          base: "omni.ruby.700",
+          _dark: "omni.ruby.400",
+        },
+      },
+    },
+  };
 
-  const DELETE_ORGANIZATION_DIALOG_ACTIONS: DeleteOrganizationAction[] = [
-    {
-      label: app.organizationsPage.dialogs.deleteOrganization.cta.delete.label,
-      // TODO: handle delete organization
-      onClick: onCloseDeleteOrganization,
-      bgColor: "danger",
+  // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
+  const LEAVE_ORGANIZATION: ManageOrganizationProps = {
+    title: app.organizationsPage.dialogs.leaveOrganization.title,
+    description: app.organizationsPage.dialogs.leaveOrganization.description,
+    icon: RiUserSharedLine,
+    action: {
+      // TODO: handle leave organization in onClick for primary action
+      label: app.organizationsPage.dialogs.leaveOrganization.action.label,
+      bgColor: "blue",
     },
-    {
-      label: app.organizationsPage.dialogs.deleteOrganization.cta.cancel.label,
-      onClick: onCloseDeleteOrganization,
-      variant: "outline",
+    triggerProps: {
+      color: {
+        base: "blue",
+        _hover: {
+          base: "blue.700",
+          _dark: "blue.400",
+        },
+      },
     },
-  ];
+  };
+
+  const MANAGE_ORGANIZATION_ACTION = isOrganizationOwner
+    ? DELETE_ORGANIZATION
+    : LEAVE_ORGANIZATION;
 
   return (
     <Stack
@@ -99,7 +113,7 @@ const OrganizationListItem = ({
     >
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
-        <Stack maxW={isOrganizationOwner ? "65svw" : "80svw"}>
+        <Stack maxW="65svw">
           <Link href={`/organizations/${id}`} role="group">
             <OverflowText
               fontWeight="semibold"
@@ -121,41 +135,7 @@ const OrganizationListItem = ({
           </OverflowText>
         </Stack>
 
-        {/* TODO: discuss this with team. Is this helpful for organization managers? What about users that join the organization? */}
-        {/* @ts-ignore TODO: figure out why this is throwing an error */}
-        <Dialog
-          title={app.organizationsPage.dialogs.deleteOrganization.title}
-          description={
-            app.organizationsPage.dialogs.deleteOrganization.description
-          }
-          open={isDeleteOrganizationOpen}
-          onOpenChange={onToggleDeleteOrganization}
-          trigger={
-            <Button
-              display={isOrganizationOwner ? "flex" : "none"}
-              variant="ghost"
-              p={1}
-              bgColor="transparent"
-              color={{
-                base: "omni.ruby",
-                _hover: {
-                  base: "omni.ruby.700",
-                  _dark: "omni.ruby.400",
-                },
-              }}
-            >
-              <Icon src={HiOutlineTrash} w={5} h={5} />
-            </Button>
-          }
-        >
-          <HStack>
-            {DELETE_ORGANIZATION_DIALOG_ACTIONS.map(({ label, ...rest }) => (
-              <Button key={label} flex={1} {...rest}>
-                {label}
-              </Button>
-            ))}
-          </HStack>
-        </Dialog>
+        <ManageOrganization {...MANAGE_ORGANIZATION_ACTION} />
       </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">

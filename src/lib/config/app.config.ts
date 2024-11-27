@@ -98,16 +98,21 @@ const app = {
       },
     },
     dialogs: {
+      cancel: {
+        label: "Cancel",
+      },
       deleteOrganization: {
         title: "Delete Organization",
         description: "Are you sure you want to delete this organization?",
-        cta: {
-          delete: {
-            label: "Delete",
-          },
-          cancel: {
-            label: "Cancel",
-          },
+        action: {
+          label: "Delete",
+        },
+      },
+      leaveOrganization: {
+        title: "Leave Organization",
+        description: "Are you sure you want to leave this organization?",
+        action: {
+          label: "Leave",
         },
       },
     },
