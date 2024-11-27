@@ -41,6 +41,9 @@ const ProjectListItem = ({ name, description, status }: Project) => {
       borderWidth="1px"
       borderColor={{ base: "transparent", _hover: "border.subtle" }}
       borderRadius="sm"
+      maxW="100%"
+      mx="auto"
+      h={36}
     >
       <HStack>
         <Text fontWeight="semibold">{name}</Text>
@@ -58,13 +61,13 @@ const ProjectListItem = ({ name, description, status }: Project) => {
         color="foreground.subtle"
         maxW="xl"
         overflow="hidden"
-        textWrap="nowrap"
+        whiteSpace="nowrap"
         textOverflow="ellipsis"
       >
         {description}
       </Text>
 
-      <HStack gap={4} mt={4}>
+      <HStack gap={4} mt={4} justifySelf="flex-end">
         {aggregates.map(({ icon, value, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />

@@ -21,9 +21,10 @@ const ProjectFilters = () => {
   const [, setSearchParams] = useSearchParams();
 
   return (
-    <Grid columns={{ base: 1, md: 5 }}>
-      <GridItem colSpan={{ base: 1, md: 4 }}>
+    <Grid columns={{ base: 1, lg: 5 }} w="full">
+      <GridItem colSpan={{ base: 1, lg: 4 }}>
         <Input
+          borderColor="border.subtle"
           placeholder={app.projectsPage.filters.search.placeholder}
           onChange={(e) =>
             setSearchParams({
@@ -44,6 +45,9 @@ const ProjectFilters = () => {
           displayGroupLabel={false}
           valueTextProps={{
             placeholder: "Select a status",
+          }}
+          triggerProps={{
+            borderColor: "border.subtle",
           }}
           // @ts-ignore TODO figure out why this is throwing an error
           onValueChange={({ value }) =>

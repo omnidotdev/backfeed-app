@@ -1,11 +1,12 @@
 "use client";
 
-import { Button, Icon, Stack } from "@omnidev/sigil";
+import { Button, Icon } from "@omnidev/sigil";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
 import { Comments, FeedbackDetails } from "components/feedback";
+import { Page } from "components/layout";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -45,7 +46,7 @@ const FeedbackPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <Stack h="full" maxW="8xl" mx="auto" p={6} gap={6}>
+    <Page>
       <Link href={`/organizations/${organizationId}/projects/${projectId}`}>
         <Button
           variant="ghost"
@@ -65,7 +66,7 @@ const FeedbackPage = () => {
       />
 
       <Comments />
-    </Stack>
+    </Page>
   );
 };
 

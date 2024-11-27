@@ -142,7 +142,7 @@ const app = {
     },
     filters: {
       search: {
-        placeholder: "Search all projects",
+        placeholder: "Search all projects...",
       },
       select: {
         status: {

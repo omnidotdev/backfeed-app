@@ -1,9 +1,10 @@
 "use client";
 
-import { Text, VStack } from "@omnidev/sigil";
+import { Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 
+import { Page } from "components/layout";
 import { useAuth } from "lib/hooks";
 
 interface ProjectFeedback {
@@ -43,7 +44,7 @@ const ProjectPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <VStack justify="center" h="full" gap={4}>
+    <Page justify="center" h="full" gap={4}>
       <Text>Project: {params.projectId}</Text>
       {FEEDBACK.map((feedback) => (
         <Link
@@ -53,7 +54,7 @@ const ProjectPage = () => {
           {feedback.title}
         </Link>
       ))}
-    </VStack>
+    </Page>
   );
 };
 

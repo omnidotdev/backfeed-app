@@ -4,8 +4,10 @@ import { Stack, useDebounceValue } from "@omnidev/sigil";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { SkeletonArray } from "components/core";
+import { ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useSearchParams } from "lib/hooks";
+import { useDataState, useSearchParams } from "lib/hooks";
 
 export interface Project {
   /** Project ID. */
@@ -64,11 +66,23 @@ const PROJECTS: Project[] = [
  * Project list.
  */
 const ProjectList = () => {
+  const { isLoading, isError } = useDataState();
+
   const [{ search, status }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue(search, 300);
 
   const { organizationId } = useParams<{ organizationId: string }>();
+
+  if (isError)
+    return <ErrorBoundary message="Error fetching projects" minH={48} />;
+
+  if (isLoading)
+    return (
+      <Stack>
+        <SkeletonArray count={6} h={36} borderRadius="sm" />
+      </Stack>
+    );
 
   return (
     <Stack>

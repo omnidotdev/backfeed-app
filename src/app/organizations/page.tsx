@@ -1,8 +1,9 @@
 "use client";
 
-import { Text, VStack } from "@omnidev/sigil";
+import { Text } from "@omnidev/sigil";
 import { notFound } from "next/navigation";
 
+import { Page } from "components/layout";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -14,9 +15,9 @@ const OrganizationsPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <VStack justify="center" h="full">
+    <Page justify="center" h="full">
       <Text>Organizations</Text>
-    </VStack>
+    </Page>
   );
 };
 
