@@ -70,6 +70,7 @@ const DestructiveAction = ({
       {...rest}
     >
       {children}
+
       <HStack>
         {actions.map(({ label, ...rest }) => (
           <Button key={label} flex={1} {...rest}>
