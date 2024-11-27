@@ -109,6 +109,7 @@ const OrganizationListItem = ({ id, name, type }: Organization) => {
           </OverflowText>
         </Stack>
 
+        {/* TODO: discuss this with team. Is this helpful for organization managers? What about users that join the organization? */}
         {/* @ts-ignore TODO: figure out why this is throwing an error */}
         <Dialog
           title={app.organizationsPage.dialogs.deleteOrganization.title}
