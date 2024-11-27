@@ -2,8 +2,10 @@
 
 import { Text } from "@omnidev/sigil";
 import { notFound } from "next/navigation";
+import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
+import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 interface Organization {
@@ -72,7 +74,18 @@ const OrganizationsPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <Page justify="center" align="center" h="full">
+    <Page
+      header={{
+        title: app.organizationsPage.header.title,
+        description: app.organizationsPage.header.description,
+        cta: [
+          {
+            label: app.organizationsPage.header.cta.newOrganization.label,
+            icon: LuPlusCircle,
+          },
+        ],
+      }}
+    >
       <Text>Organizations</Text>
     </Page>
   );

@@ -82,6 +82,17 @@ const app = {
       },
     },
   },
+  organizationsPage: {
+    header: {
+      title: "Organizations",
+      description: "Manage and monitor all your organizations in one place.",
+      cta: {
+        newOrganization: {
+          label: "New Organization",
+        },
+      },
+    },
+  },
   organizationPage: {
     header: {
       description: "Manage your organization's feedback and projects.",
