@@ -5,6 +5,7 @@ import {
 } from "react-icons/hi2";
 import { match } from "ts-pattern";
 
+import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
 export interface Project {
@@ -60,7 +61,9 @@ const ProjectListItem = ({ name, description, status }: Project) => {
       h={36}
     >
       <HStack>
-        <Text fontWeight="semibold">{name}</Text>
+        <OverflowText whiteSpace="nowrap" fontWeight="semibold" maxW="xl">
+          {name}
+        </OverflowText>
         <Badge
           size="sm"
           variant="outline"
@@ -71,15 +74,9 @@ const ProjectListItem = ({ name, description, status }: Project) => {
         </Badge>
       </HStack>
 
-      <Text
-        color="foreground.subtle"
-        maxW="xl"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        textOverflow="ellipsis"
-      >
+      <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
         {description}
-      </Text>
+      </OverflowText>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
         {AGGREGATES.map(({ icon, value, type }) => (
