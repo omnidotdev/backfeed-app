@@ -44,7 +44,7 @@ const ProjectPage = () => {
   if (!isAuthenticated) notFound();
 
   return (
-    <Page justify="center" h="full" gap={4}>
+    <Page justify="center" align="center" h="full" gap={4}>
       <Text>Project: {params.projectId}</Text>
       {FEEDBACK.map((feedback) => (
         <Link

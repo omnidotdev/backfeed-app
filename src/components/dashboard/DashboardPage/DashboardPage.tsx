@@ -6,7 +6,7 @@ import {
 } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
-import { Aggregate, Feedback, Organizations } from "components/dashboard";
+import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
@@ -49,7 +49,7 @@ const DashboardPage = () => {
         ],
       }}
     >
-      <Organizations />
+      <PinnedOrganizations />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (

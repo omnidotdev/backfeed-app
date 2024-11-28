@@ -7,6 +7,11 @@ const app = {
     title: "Page Not Found",
     returnHome: "Return home",
   },
+  actions: {
+    cancel: {
+      label: "Cancel",
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -77,8 +82,40 @@ const app = {
       newProject: {
         label: "New Project",
       },
-      newOrganization: {
-        label: "New Organization",
+      viewOrganizations: {
+        label: "View All Organizations",
+      },
+    },
+  },
+  organizationsPage: {
+    header: {
+      title: "Organizations",
+      description: "Manage and monitor all your organizations in one place.",
+      cta: {
+        newOrganization: {
+          label: "New Organization",
+        },
+      },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all organizations...",
+      },
+    },
+    dialogs: {
+      deleteOrganization: {
+        title: "Delete Organization",
+        description: "Are you sure you want to delete this organization?",
+        action: {
+          label: "Delete",
+        },
+      },
+      leaveOrganization: {
+        title: "Leave Organization",
+        description: "Are you sure you want to leave this organization?",
+        action: {
+          label: "Leave",
+        },
       },
     },
   },
