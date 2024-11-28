@@ -38,7 +38,7 @@ const leaveOrganization = app.organizationsPage.dialogs.leaveOrganization;
 interface Props {
   /** Organization details. */
   organization: Organization;
-  /** ! NB: this will be removed. Just used to implement dynamic ownership check for now. */
+  /** ! TODO remove, just used to implement dynamic ownership check for now. */
   index: number;
 }
 
