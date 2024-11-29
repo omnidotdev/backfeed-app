@@ -15,11 +15,7 @@ function PricingHeader() {
       >
         {app.pricingPage.pricingHeader.title}
       </h1>
-      <Text
-        fontSize={"1.5rem"}
-        textAlign={"center"}
-        marginBottom={"2rem"}
-      >
+      <Text fontSize={"1.5rem"} textAlign={"center"} marginBottom={"2rem"}>
         {app.pricingPage.pricingHeader.description}
       </Text>
     </Flex>

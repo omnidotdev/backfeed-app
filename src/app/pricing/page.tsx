@@ -6,11 +6,11 @@ import PricingHeader from "../../components/pricing/PricingHeader";
 
 export default function PricingPage() {
   return (
-    <VStack >
+    <VStack>
       <PricingHeader />
-      
+
       <PricingCard />
-      
+
       <PricingFAQ />
     </VStack>
   );

@@ -15,19 +15,19 @@ function PricingCards() {
       >
         {app.pricingPage.tiers.map((tier) => (
           <Card
-          key={tier.title}
-          borderColor={
-            tier.title === "Professional" ? "brand.primary" : "none"
-          }
-          borderWidth={tier.title === "Professional" ? "3px" : "2px"}
-          flex={"1 1 calc(25% - 16px)"}
-          maxWidth={"300px"}
-          minWidth={"250px"}
-          opacity={tier.title === "Self-Host" ? "0.6" : "1"}
-          height={"600px"}
-          display={"flex"}
-          flexDirection={"column"}
-          position={"relative"}
+            key={tier.title}
+            borderColor={
+              tier.title === "Professional" ? "brand.primary" : "none"
+            }
+            borderWidth={tier.title === "Professional" ? "3px" : "2px"}
+            flex={"1 1 calc(25% - 16px)"}
+            maxWidth={"300px"}
+            minWidth={"250px"}
+            opacity={tier.title === "Self-Host" ? "0.6" : "1"}
+            height={"600px"}
+            display={"flex"}
+            flexDirection={"column"}
+            position={"relative"}
           >
             {tier.highlighted && (
               <div
@@ -64,31 +64,21 @@ function PricingCards() {
               >
                 {tier.title}
               </h3>
-              <HStack
-              display={"inline-flex"}
-              alignItems={"center"}
-            >
-              <h3
-                style={{
-                  fontSize: "2.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {tier.price}
-              </h3>
-              {tier.title !== "Enterprise" && (
-                <Text
-                  fontSize={"1.25rem"}
+              <HStack display={"inline-flex"} alignItems={"center"}>
+                <h3
+                  style={{
+                    fontSize: "2.2rem",
+                    fontWeight: "bold",
+                  }}
                 >
-                  /month
-                </Text>
-              )}
-            </HStack>
+                  {tier.price}
+                </h3>
+                {tier.title !== "Enterprise" && (
+                  <Text fontSize={"1.25rem"}>/month</Text>
+                )}
+              </HStack>
 
-              <Text
-                fontWeight={"bold"}
-                margin={"8px 0 8px 0"}
-              >
+              <Text fontWeight={"bold"} margin={"8px 0 8px 0"}>
                 Features
               </Text>
               <ul
