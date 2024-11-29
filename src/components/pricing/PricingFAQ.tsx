@@ -15,12 +15,12 @@ const PricingFAQ = () => {
       alignItems={"center"}
     >
       <Text
-      as="h2"
-      font={"2rem"}
-      fontWeight={"bold"}
-      textAlign={"center"}
-      marginBottom={"2rem"}
-      marginTop={"2rem"}
+        as="h2"
+        font={"2rem"}
+        fontWeight={"bold"}
+        textAlign={"center"}
+        marginBottom={"2rem"}
+        marginTop={"2rem"}
       >
         Frequently Asked Questions
       </Text>

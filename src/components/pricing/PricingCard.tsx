@@ -54,19 +54,11 @@ function PricingCards() {
               alignItems={"center"}
               height={"450px"}
             >
-              <Text
-              as="h2"
-              fontSize="2rem"
-              textAlign="center"
-              >
-              {tier.title}
+              <Text as="h2" fontSize="2rem" textAlign="center">
+                {tier.title}
               </Text>
               <HStack display={"inline-flex"} alignItems={"center"}>
-                <Text
-                as="h3"
-                fontSize={"2rem"}
-                fontWeight={"bold"}
-                >
+                <Text as="h3" fontSize={"2rem"} fontWeight={"bold"}>
                   {tier.price}
                 </Text>
                 {tier.title !== "Enterprise" && (
@@ -74,11 +66,11 @@ function PricingCards() {
                 )}
               </HStack>
 
-              <Text 
-              as="h4"
-              fontSize={"1.25rem"}
-              fontWeight={"bold"}
-              margin={"8px 0 8px 0"}
+              <Text
+                as="h4"
+                fontSize={"1.25rem"}
+                fontWeight={"bold"}
+                margin={"8px 0 8px 0"}
               >
                 Features
               </Text>
