@@ -1,4 +1,4 @@
-import { Accordion, Stack } from "@omnidev/sigil";
+import { Accordion, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 /**
@@ -14,17 +14,16 @@ const PricingFAQ = () => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <h2
-        style={{
-          fontSize: "2rem",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginBottom: "2rem",
-          marginTop: "2rem",
-        }}
+      <Text
+      as="h2"
+      font={"2rem"}
+      fontWeight={"bold"}
+      textAlign={"center"}
+      marginBottom={"2rem"}
+      marginTop={"2rem"}
       >
         Frequently Asked Questions
-      </h2>
+      </Text>
       <Accordion items={app.pricingPage.pricingFAQ.items} />
     </Stack>
   );

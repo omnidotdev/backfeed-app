@@ -30,16 +30,14 @@ function PricingCards() {
             position={"relative"}
           >
             {tier.highlighted && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "4px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  backgroundColor: "var(--colors-background-secondary)",
-                  padding: "8px",
-                  borderRadius: "4px",
-                }}
+              <Stack
+                position="absolute"
+                top="4px"
+                left="50%"
+                transform="translateX(-50%)"
+                backgroundColor="var(--colors-background-secondary)"
+                padding="8px"
+                borderRadius="4px"
               >
                 <Badge
                   color="brand.primary"
@@ -48,7 +46,7 @@ function PricingCards() {
                 >
                   Recommended
                 </Badge>
-              </div>
+              </Stack>
             )}
             <Stack
               display={"flex"}
@@ -56,29 +54,32 @@ function PricingCards() {
               alignItems={"center"}
               height={"450px"}
             >
-              <h3
-                style={{
-                  fontSize: "1.8rem",
-                  textAlign: "center",
-                }}
+              <Text
+              as="h2"
+              fontSize="2rem"
+              textAlign="center"
               >
-                {tier.title}
-              </h3>
+              {tier.title}
+              </Text>
               <HStack display={"inline-flex"} alignItems={"center"}>
-                <h3
-                  style={{
-                    fontSize: "2.2rem",
-                    fontWeight: "bold",
-                  }}
+                <Text
+                as="h3"
+                fontSize={"2rem"}
+                fontWeight={"bold"}
                 >
                   {tier.price}
-                </h3>
+                </Text>
                 {tier.title !== "Enterprise" && (
                   <Text fontSize={"1.25rem"}>/month</Text>
                 )}
               </HStack>
 
-              <Text fontWeight={"bold"} margin={"8px 0 8px 0"}>
+              <Text 
+              as="h4"
+              fontSize={"1.25rem"}
+              fontWeight={"bold"}
+              margin={"8px 0 8px 0"}
+              >
                 Features
               </Text>
               <ul
@@ -97,13 +98,11 @@ function PricingCards() {
                     ? "brand.secondary"
                     : "brand.primary"
                 }
-                style={{
-                  position: "absolute",
-                  bottom: "16px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: "90%",
-                }}
+                position={"absolute"}
+                bottom={"16px"}
+                left={"50%"}
+                transform={"translateX(-50%)"}
+                width={"90%"}
               >
                 Get Started <FaArrowRight />
               </Button>
