@@ -142,7 +142,6 @@ const app = {
           "1 project",
           "Basic integrations",
         ],
-        highlighted: false,
       },
       {
         title: "Professional",
@@ -157,7 +156,6 @@ const app = {
           "Custom branding",
           "Team collaboration",
         ],
-        highlighted: true,
       },
       {
         title: "Enterprise",
@@ -173,7 +171,6 @@ const app = {
           "Advanced security features",
           "On-premise deployment option",
         ],
-        highlighted: false,
       },
     ],
     pricingFAQ: {

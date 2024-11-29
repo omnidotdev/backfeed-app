@@ -29,7 +29,7 @@ function PricingCards() {
             flexDirection={"column"}
             position={"relative"}
           >
-            {tier.highlighted && (
+            {tier.title === "Professional" && (
               <Stack
                 position="absolute"
                 top="4px"
