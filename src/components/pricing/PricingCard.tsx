@@ -20,9 +20,10 @@ function PricingCards() {
               tier.title === "Professional" ? "brand.primary" : "none"
             }
             borderWidth={tier.title === "Professional" ? "3px" : "2px"}
-            flex={"1 1 calc(25% - 16px)"}
+            flex={"1 1 calc(25%)"}
+            gap={"16px"}
             maxWidth={"300px"}
-            minWidth={"250px"}
+            minWidth={"300px"}
             opacity={tier.title === "Self-Host" ? "0.6" : "1"}
             height={"600px"}
             display={"flex"}
@@ -102,21 +103,6 @@ function PricingCards() {
           </Card>
         ))}
       </HStack>
-      <style>
-        {`
-          @media (max-width: 768px) {
-            .PricingCards div {
-              flex: 1 1 calc(50% - 16px);
-            }
-          }
-
-          @media (max-width: 480px) {
-            .PricingCards div {
-              flex: 1 1 100%;
-            }
-          }
-        `}
-      </style>
     </>
   );
 }
