@@ -1,4 +1,4 @@
-import { Flex } from "@omnidev/sigil";
+import { Flex, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 function PricingHeader() {
@@ -15,15 +15,13 @@ function PricingHeader() {
       >
         {app.pricingPage.pricingHeader.title}
       </h1>
-      <p
-        style={{
-          fontSize: "1.5rem",
-          textAlign: "center",
-          marginBottom: "2rem",
-        }}
+      <Text
+        fontSize={"1.5rem"}
+        textAlign={"center"}
+        marginBottom={"2rem"}
       >
         {app.pricingPage.pricingHeader.description}
-      </p>
+      </Text>
     </Flex>
   );
 }

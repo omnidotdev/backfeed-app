@@ -1,4 +1,4 @@
-import { Accordion } from "@omnidev/sigil";
+import { Accordion, Stack } from "@omnidev/sigil";
 import { app } from "lib/config";
 
 /**
@@ -6,15 +6,13 @@ import { app } from "lib/config";
  */
 const PricingFAQ = () => {
   return (
-    <div
-      style={{
-        width: "45%",
-        margin: "auto",
-        flexWrap: "nowrap",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+    <Stack
+      width={"45%"}
+      margin={"auto"}
+      flexWrap={"nowrap"}
+      flexDirection={"column"}
+      justifyContent={"center"}
+      alignItems={"center"}
     >
       <h2
         style={{
@@ -28,7 +26,7 @@ const PricingFAQ = () => {
         Frequently Asked Questions
       </h2>
       <Accordion items={app.pricingPage.pricingFAQ.items} />
-    </div>
+    </Stack>
   );
 };
 

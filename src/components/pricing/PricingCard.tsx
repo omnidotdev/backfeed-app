@@ -1,4 +1,4 @@
-import { Badge, Button, Card } from "@omnidev/sigil";
+import { Badge, Button, Card, HStack, Stack, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
@@ -7,31 +7,27 @@ function PricingCards() {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "16px",
-        }}
+      <HStack
+        display={"flex"}
+        flexWrap={"wrap"}
+        justifyContent={"center"}
+        gap={"16px"}
       >
         {app.pricingPage.tiers.map((tier) => (
           <Card
-            key={tier.title}
-            borderColor={
-              tier.title === "Professional" ? "brand.primary" : "none"
-            }
-            borderWidth={tier.title === "Professional" ? "3px" : "2px"}
-            style={{
-              flex: "1 1 calc(25% - 16px)",
-              maxWidth: "300px",
-              minWidth: "250px",
-              opacity: tier.title === "Self-Host" ? "0.6" : "1",
-              height: "600px",
-              display: "flex",
-              flexDirection: "column",
-              position: "relative",
-            }}
+          key={tier.title}
+          borderColor={
+            tier.title === "Professional" ? "brand.primary" : "none"
+          }
+          borderWidth={tier.title === "Professional" ? "3px" : "2px"}
+          flex={"1 1 calc(25% - 16px)"}
+          maxWidth={"300px"}
+          minWidth={"250px"}
+          opacity={tier.title === "Self-Host" ? "0.6" : "1"}
+          height={"600px"}
+          display={"flex"}
+          flexDirection={"column"}
+          position={"relative"}
           >
             {tier.highlighted && (
               <div
@@ -47,22 +43,18 @@ function PricingCards() {
               >
                 <Badge
                   color="brand.primary"
-                  style={{
-                    height: "2rem",
-                    borderRadius: "15px 15px",
-                  }}
+                  height={"2rem"}
+                  borderRadius={"15px 15px"}
                 >
                   Recommended
                 </Badge>
               </div>
             )}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                height: "450px",
-              }}
+            <Stack
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+              height={"450px"}
             >
               <h3
                 style={{
@@ -72,38 +64,33 @@ function PricingCards() {
               >
                 {tier.title}
               </h3>
-              <div
+              <HStack
+              display={"inline-flex"}
+              alignItems={"center"}
+            >
+              <h3
                 style={{
-                  display: "inline-flex",
+                  fontSize: "2.2rem",
+                  fontWeight: "bold",
                 }}
               >
-                <h3
-                  style={{
-                    fontSize: "2.2rem",
-                    fontWeight: "bold",
-                  }}
+                {tier.price}
+              </h3>
+              {tier.title !== "Enterprise" && (
+                <Text
+                  fontSize={"1.25rem"}
                 >
-                  {tier.price}
-                </h3>
-                {tier.title !== "Enterprise" && (
-                  <p
-                    style={{
-                      marginTop: "1rem",
-                      fontSize: "1.25rem",
-                    }}
-                  >
-                    /month
-                  </p>
-                )}
-              </div>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  margin: "8px 0 8px 0",
-                }}
+                  /month
+                </Text>
+              )}
+            </HStack>
+
+              <Text
+                fontWeight={"bold"}
+                margin={"8px 0 8px 0"}
               >
                 Features
-              </p>
+              </Text>
               <ul
                 style={{
                   listStyle: "unset",
@@ -130,10 +117,10 @@ function PricingCards() {
               >
                 Get Started <FaArrowRight />
               </Button>
-            </div>
+            </Stack>
           </Card>
         ))}
-      </div>
+      </HStack>
       <style>
         {`
           @media (max-width: 768px) {
