@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Flex,
   HStack,
   Icon,
@@ -17,6 +18,8 @@ import {
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
 import { match } from "ts-pattern";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
@@ -70,12 +73,21 @@ interface Props {
   isLoaded?: boolean;
   /** Whether loading the feedback data encountered an error. */
   isError?: boolean;
+  /** Whether we are viewing the project page. */
+  projectPage?: boolean;
 }
 
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
+const FeedbackDetails = ({
+  feedback,
+  isLoaded = true,
+  isError,
+  projectPage = false,
+}: Props) => {
+  const params = useParams<{ organizationId: string; projectId: string }>();
+
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
     hasDownvoted: boolean;
@@ -230,34 +242,47 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
               </Skeleton>
             </Stack>
 
-            <HStack fontSize="sm" placeSelf="flex-end" gap={1} py={2}>
-              {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-                <Skeleton key={id} isLoaded={isLoaded} h={7}>
-                  <Tooltip
-                    positioning={{ placement: "top" }}
-                    trigger={
-                      <HStack gap={2} py={1} fontVariant="tabular-nums">
-                        <Icon src={icon} w={5} h={5} />
+            <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
+              {/* TODO: Decide how we would like to route, with card click, while also handling votes well. */}
+              {projectPage && (
+                <Link
+                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.id}`}
+                >
+                  <Button>
+                    {app.projectPage.projectFeedback.details.feedbackLink}
+                  </Button>
+                </Link>
+              )}
 
-                        {votes ?? 0}
-                      </HStack>
-                    }
-                    triggerProps={{
-                      variant: "ghost",
-                      w: "full",
-                      bgColor: "transparent",
-                      opacity: {
-                        base: 1,
-                        _disabled: 0.3,
-                        _hover: { base: 0.8, _disabled: 0.3 },
-                      },
-                      ...rest,
-                    }}
-                  >
-                    {tooltip}
-                  </Tooltip>
-                </Skeleton>
-              ))}
+              <Flex gap={1}>
+                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                  <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                    <Tooltip
+                      positioning={{ placement: "top" }}
+                      trigger={
+                        <HStack gap={2} py={1} fontVariant="tabular-nums">
+                          <Icon src={icon} w={5} h={5} />
+
+                          {votes ?? 0}
+                        </HStack>
+                      }
+                      triggerProps={{
+                        variant: "ghost",
+                        w: "full",
+                        bgColor: "transparent",
+                        opacity: {
+                          base: 1,
+                          _disabled: 0.3,
+                          _hover: { base: 0.8, _disabled: 0.3 },
+                        },
+                        ...rest,
+                      }}
+                    >
+                      {tooltip}
+                    </Tooltip>
+                  </Skeleton>
+                ))}
+              </Flex>
             </HStack>
           </Stack>
         </Stack>

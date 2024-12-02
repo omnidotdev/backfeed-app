@@ -11,8 +11,6 @@ import {
 import { useState } from "react";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import Link from "next/link";
-import { useParams } from "next/navigation";
 
 import { SkeletonArray, Spinner } from "components/core";
 import { ErrorBoundary, SectionContainer } from "components/layout";
@@ -139,8 +137,6 @@ const ProjectFeedback = () => {
     RESPONSES.data
   );
 
-  const params = useParams<{ organizationId: string; projectId: string }>();
-
   const [pageState, setPageState] = useState<{
     currentPage: number;
     hasNextPage: boolean;
@@ -229,20 +225,13 @@ const ProjectFeedback = () => {
               ) : (
                 <VStack>
                   {shownResponses.map((feedback, index) => (
-                    <Link
+                    <FeedbackDetails
                       key={`${feedback.id} - ${index}`}
-                      href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.id}`}
-                      onClick={(e) => {
-                        // Prevent navigation if an interactive element (like voting) is clicked
-                        if (e.defaultPrevented) return;
-                      }}
-                    >
-                      <FeedbackDetails
-                        feedback={feedback}
-                        isLoaded={!isLoading}
-                        isError={isError}
-                      />
-                    </Link>
+                      feedback={feedback}
+                      isLoaded={!isLoading}
+                      isError={isError}
+                      projectPage
+                    />
                   ))}
 
                   {pageState.hasNextPage && <Spinner ref={loaderRef} />}

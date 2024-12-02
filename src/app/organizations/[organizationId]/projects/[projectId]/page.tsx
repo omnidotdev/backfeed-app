@@ -2,11 +2,12 @@
 
 import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import { LuSettings } from "react-icons/lu";
+import { HiOutlineFolder } from "react-icons/hi2";
 
-import { PageHeader } from "components/layout";
+import { Page } from "components/layout";
 import {
   FeedbackMetrics,
   ProjectFeedback,
@@ -30,12 +31,35 @@ const projectData: OrganizationProject = {
 const ProjectPage = () => {
   const { isAuthenticated } = useAuth();
 
-  const params = useParams<{ organizationId: string; projectId: string }>();
+  const params = useParams<{ organizationId: string; projectId: string }>(),
+    router = useRouter();
+
+  const navigateToProjectsPage = () =>
+    router.push(`/organizations/${params.organizationId}/projects`);
 
   if (!isAuthenticated) notFound();
 
   return (
-    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
+    <Page
+      // TODO: Use actual project data here instead of placeholder
+      header={{
+        title: projectData.name,
+        description: projectData.description,
+        // TODO: add button actions
+        cta: [
+          {
+            label: app.projectPage.header.cta.settings.label,
+            icon: LuSettings,
+          },
+          {
+            label: app.projectPage.header.cta.viewAllProjects.label,
+            icon: HiOutlineFolder,
+            variant: "outline",
+            onClick: navigateToProjectsPage,
+          },
+        ],
+      }}
+    >
       <Link href={`/${params.organizationId}`}>
         <Button
           variant="ghost"
@@ -43,22 +67,9 @@ const ProjectPage = () => {
           _hover={{ bgColor: "background.muted" }}
         >
           <Icon src={FiArrowLeft} w={4} h={4} />
-          {app.projectPage.backToProject}
+          {app.projectPage.backToOrganziation}
         </Button>
       </Link>
-
-      <PageHeader
-        // TODO: Use actual project data here instead of placeholder
-        title={projectData.name}
-        description={projectData.description}
-        // TODO: add button actions
-        cta={[
-          {
-            label: app.projectPage.header.cta.settings.label,
-            icon: LuSettings,
-          },
-        ]}
-      />
 
       <Grid h="100%" gap={6} columns={{ base: 1, md: 3 }}>
         <GridItem colSpan={{ base: 3, md: 2 }} h="100%">
@@ -78,7 +89,7 @@ const ProjectPage = () => {
           </Stack>
         </GridItem>
       </Grid>
-    </Stack>
+    </Page>
   );
 };
 

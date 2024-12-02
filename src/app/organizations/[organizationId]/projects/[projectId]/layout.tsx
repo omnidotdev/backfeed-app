@@ -10,7 +10,7 @@ interface MetadataParams {
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { projectId, organizationId } = await params;
+  const { organizationId, projectId } = await params;
 
   // TODO: Hook up when fething data here.
   // const project: ProjectQuery = await request({

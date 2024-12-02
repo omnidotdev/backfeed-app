@@ -15,6 +15,7 @@ import {
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
+import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
@@ -92,26 +93,22 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
 
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
-          <Text
+          <OverflowText
             fontSize={{ base: "md", lg: "lg" }}
             fontWeight="semibold"
             lineHeight={1.2}
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {name}
-          </Text>
+          </OverflowText>
 
-          <Text
+          <OverflowText
             fontSize={{ base: "xs", lg: "sm" }}
             color="foreground.subtle"
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {description}
-          </Text>
+          </OverflowText>
         </Stack>
 
         <Grid columns={2} w="full" alignItems="start">

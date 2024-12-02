@@ -6,6 +6,7 @@ import { ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
+import { useParams } from "next/navigation";
 
 export interface OrganizationProject {
   /** Organization ID. */
@@ -51,16 +52,13 @@ const PROJECTS: OrganizationProject[] = [
   },
 ];
 
-interface Props {
-  /** Organization ID. */
-  organizationId: string;
-}
-
 /**
  * Organization projects overview.
  */
-const OrganizationProjectsOverview = ({ organizationId }: Props) => {
+const OrganizationProjectsOverview = () => {
   const { isLoading, isError } = useDataState();
+
+  const params = useParams<{ organizationId: string }>();
 
   return (
     <SectionContainer
@@ -90,7 +88,7 @@ const OrganizationProjectsOverview = ({ organizationId }: Props) => {
                 description={description}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
-                organizationId={organizationId}
+                organizationId={params.organizationId}
                 projectId={id}
               />
             ))
