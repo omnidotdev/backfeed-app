@@ -1,11 +1,11 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 /**
  * Search parameters provider.
  */
-const SearchParamsProvider = ({ children }: { children: ReactNode }) => (
+const SearchParamsProvider = ({ children }: PropsWithChildren) => (
   <NuqsAdapter>{children}</NuqsAdapter>
 );
 
