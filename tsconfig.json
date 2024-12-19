@@ -9,7 +9,6 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "preserve",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
