@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Button, Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
@@ -9,6 +9,7 @@ import { AccountInformation, GetStarted, ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { signIn } from "next-auth/react";
 
 /**
  * Layout header.
@@ -76,7 +77,13 @@ const Header = () => {
         <Flex alignItems="center" gap={6}>
           <ThemeToggle />
 
-          {isAuthenticated ? <AccountInformation /> : <GetStarted />}
+          {isAuthenticated ? (
+            <AccountInformation />
+          ) : (
+            <Button onClick={() => signIn("keycloak")}>
+              {app.auth.signIn.label}
+            </Button>
+          )}
         </Flex>
       </Flex>
     </sigil.header>

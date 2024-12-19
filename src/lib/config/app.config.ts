@@ -7,9 +7,25 @@ const app = {
     title: "Page Not Found",
     returnHome: "Return home",
   },
+  auth: {
+    signIn: {
+      label: "Sign In",
+    },
+    signOut: {
+      label: "Sign Out",
+    },
+    profile: {
+      label: "Profile",
+    },
+  },
   actions: {
     cancel: {
       label: "Cancel",
+    },
+  },
+  info: {
+    comingSoon: {
+      label: "Coming Soon",
     },
   },
   landingPage: {
