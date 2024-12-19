@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { AccountInformation, GetStarted, ThemeToggle } from "components/layout";
+import { AccountInformation, ThemeToggle } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
