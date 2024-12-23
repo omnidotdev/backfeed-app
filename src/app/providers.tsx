@@ -4,7 +4,7 @@ import {
   BlockchainProvider,
   QueryProvider,
   SearchParamsProvider,
-  SessionProvider,
+  AuthProvider,
   ThemeProvider,
 } from "providers";
 
@@ -14,7 +14,7 @@ import type { ReactNode } from "react";
  * Application context providers.
  */
 const Providers = ({ children }: { children: ReactNode }) => (
-  <SessionProvider>
+  <AuthProvider>
     <ThemeProvider>
       <SearchParamsProvider>
         <QueryProvider>
@@ -22,7 +22,7 @@ const Providers = ({ children }: { children: ReactNode }) => (
         </QueryProvider>
       </SearchParamsProvider>
     </ThemeProvider>
-  </SessionProvider>
+  </AuthProvider>
 );
 
 export default Providers;

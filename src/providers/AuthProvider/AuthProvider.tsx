@@ -5,8 +5,8 @@ import type { PropsWithChildren } from "react";
 /**
  * Auth session provider.
  */
-const SessionProvider = ({ children }: PropsWithChildren) => (
+const AuthProvider = ({ children }: PropsWithChildren) => (
   <AuthSessionProvider>{children}</AuthSessionProvider>
 );
 
-export default SessionProvider;
+export default AuthProvider;
