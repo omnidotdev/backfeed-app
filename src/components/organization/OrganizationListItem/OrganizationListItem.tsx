@@ -63,13 +63,7 @@ const OrganizationListItem = ({
     },
     triggerProps: {
       "aria-label": `${deleteOrganization.action.label} organization`,
-      color: {
-        base: "omni.ruby",
-        _hover: {
-          base: "omni.ruby.700",
-          _dark: "omni.ruby.400",
-        },
-      },
+      color: "omni.ruby",
     },
   };
 
@@ -84,13 +78,7 @@ const OrganizationListItem = ({
     },
     triggerProps: {
       "aria-label": `${leaveOrganization.action.label} organization`,
-      color: {
-        base: "blue",
-        _hover: {
-          base: "blue.700",
-          _dark: "blue.400",
-        },
-      },
+      color: "blue",
     },
   };
 
