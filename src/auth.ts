@@ -32,7 +32,7 @@ declare module "next-auth" {
 /**
  * Auth configuration.
  */
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, auth } = NextAuth({
   providers: [
     // Keycloak config is pulled from environment variables: https://authjs.dev/getting-started/providers/keycloak#configuration
     Keycloak,
