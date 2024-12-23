@@ -26,6 +26,8 @@ const AccountInformation = () => {
     // router.push(
     //   `${process.env.AUTH_KEYCLOAK_ISSUER}/account?referrer=backfeed-app&referrer_uri=${window.location.origin}`,
     // );
+    //
+    // TODO refresh updated profile claims (https://linear.app/omnidev/issue/OMNI-119/refresh-updated-profile-claims)
   };
 
   const handleLogout = () => {
