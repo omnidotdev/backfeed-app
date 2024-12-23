@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   env: {
     WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
+    AUTH_KEYCLOAK_ID: process.env.AUTH_KEYCLOAK_ID,
+    AUTH_KEYCLOAK_ISSUER: process.env.AUTH_KEYCLOAK_ISSUER,
   },
   // https://github.com/vercel/next.js/issues/44273#issuecomment-1375170722
   webpack: (config) => {

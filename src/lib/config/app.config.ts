@@ -11,6 +11,9 @@ const app = {
     signIn: {
       label: "Sign In",
     },
+    signUp: {
+      label: "Sign Up",
+    },
     signOut: {
       label: "Sign Out",
     },
