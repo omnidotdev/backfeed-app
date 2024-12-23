@@ -24,7 +24,7 @@ const PricingFAQ = () => {
       >
         Frequently Asked Questions
       </Text>
-      <Accordion items={app.pricingPage.pricingFAQ.items} />
+      <Accordion items={app.pricingFAQ.items} />
     </Stack>
   );
 };
