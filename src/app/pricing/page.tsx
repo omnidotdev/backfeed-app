@@ -14,6 +14,6 @@ const PricingPage = () => {
       <PricingFAQ />
     </VStack>
   );
-}
+};
 
 export default PricingPage;
