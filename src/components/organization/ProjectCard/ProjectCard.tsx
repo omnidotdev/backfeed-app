@@ -8,12 +8,14 @@ import {
   Text,
 } from "@omnidev/sigil";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
+import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
@@ -31,6 +33,8 @@ interface ProjectMetric {
 }
 
 interface Props extends FlexProps {
+  /** Project ID. */
+  id: string;
   /** Name of the organization. */
   name: string;
   /** Description of the organization. */
@@ -40,9 +44,11 @@ interface Props extends FlexProps {
 /**
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
-const ProjectCard = ({ name, description, ...rest }: Props) => {
+const ProjectCard = ({ id, name, description, ...rest }: Props) => {
   // !NB: this is to represent where we would want to fetch the aggregate data (total feedback and active users). This will keep the top level `projectsQuery` clean.
   const { isLoading, isError } = useDataState({ timeout: 800 });
+
+  const params = useParams<{ organizationId: string }>();
 
   const PROJECT_METRICS: ProjectMetric[] = [
     {
@@ -67,7 +73,7 @@ const ProjectCard = ({ name, description, ...rest }: Props) => {
       p={8}
       {...rest}
     >
-      <Link href="#">
+      <Link href={`/organizations/${params.organizationId}/projects/${id}`}>
         <Button
           position="absolute"
           top={1}
@@ -83,26 +89,22 @@ const ProjectCard = ({ name, description, ...rest }: Props) => {
 
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
-          <Text
+          <OverflowText
             fontSize={{ base: "md", lg: "lg" }}
             fontWeight="semibold"
             lineHeight={1.2}
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {name}
-          </Text>
+          </OverflowText>
 
-          <Text
+          <OverflowText
             fontSize={{ base: "xs", lg: "sm" }}
             color="foreground.subtle"
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {description}
-          </Text>
+          </OverflowText>
         </Stack>
 
         <Grid columns={2} w="full" alignItems="start">

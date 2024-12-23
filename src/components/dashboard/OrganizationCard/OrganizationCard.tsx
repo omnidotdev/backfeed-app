@@ -1,8 +1,9 @@
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
+import { OverflowText } from "components/core";
 import { DashboardMetric } from "components/dashboard";
 import { useDataState } from "lib/hooks";
 
@@ -34,7 +35,7 @@ const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
       p={8}
       {...rest}
     >
-      <Link href={`/${id}`}>
+      <Link href={`/organizations/${id}`}>
         <Button
           position="absolute"
           top={0}
@@ -50,26 +51,22 @@ const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
 
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
-          <Text
+          <OverflowText
             fontSize={{ base: "md", lg: "lg" }}
             fontWeight="semibold"
             lineHeight={1.2}
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {name}
-          </Text>
+          </OverflowText>
 
-          <Text
+          <OverflowText
             fontSize={{ base: "xs", lg: "sm" }}
             color="foreground.subtle"
             lineClamp={2}
-            overflow="hidden"
-            textOverflow="ellipsis"
           >
             {type}
-          </Text>
+          </OverflowText>
         </Stack>
 
         <Grid columns={2} w="full" alignItems="start">

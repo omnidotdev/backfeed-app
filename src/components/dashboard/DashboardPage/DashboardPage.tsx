@@ -1,4 +1,4 @@
-import { Grid, Stack } from "@omnidev/sigil";
+import { Grid } from "@omnidev/sigil";
 import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -6,8 +6,8 @@ import {
 } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
-import { Aggregate, Feedback, Organizations } from "components/dashboard";
-import { PageHeader } from "components/layout";
+import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
+import { Page } from "components/layout";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -37,20 +37,19 @@ const DashboardPage = () => {
   ];
 
   return (
-    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
-      <PageHeader
-        title={`${app.dashboardPage.welcomeMessage}, ${firstName}!`}
-        description={app.dashboardPage.description}
-        // TODO: add button actions
-        cta={[
+    <Page
+      header={{
+        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        description: app.dashboardPage.description,
+        cta: [
           {
             label: app.dashboardPage.cta.newProject.label,
             icon: LuPlusCircle,
           },
-        ]}
-      />
-
-      <Organizations />
+        ],
+      }}
+    >
+      <PinnedOrganizations />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -66,7 +65,7 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
-    </Stack>
+    </Page>
   );
 };
 

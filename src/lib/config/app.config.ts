@@ -7,6 +7,11 @@ const app = {
     title: "Page Not Found",
     returnHome: "Return home",
   },
+  actions: {
+    cancel: {
+      label: "Cancel",
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -77,8 +82,40 @@ const app = {
       newProject: {
         label: "New Project",
       },
-      newOrganization: {
-        label: "New Organization",
+      viewOrganizations: {
+        label: "View All Organizations",
+      },
+    },
+  },
+  organizationsPage: {
+    header: {
+      title: "Organizations",
+      description: "Manage and monitor all your organizations in one place.",
+      cta: {
+        newOrganization: {
+          label: "New Organization",
+        },
+      },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all organizations...",
+      },
+    },
+    dialogs: {
+      deleteOrganization: {
+        title: "Delete Organization",
+        description: "Are you sure you want to delete this organization?",
+        action: {
+          label: "Delete",
+        },
+      },
+      leaveOrganization: {
+        title: "Leave Organization",
+        description: "Are you sure you want to leave this organization?",
+        action: {
+          label: "Leave",
+        },
       },
     },
   },
@@ -171,8 +208,9 @@ const app = {
           "Advanced security features",
           "On-premise deployment option",
         ],
-      },
-    ],
+        },
+      ],
+    },
     pricingFAQ: {
       items: [
         {
@@ -206,8 +244,53 @@ const app = {
       title: "Simple, transparent pricing",
       description:
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+  projectsPage: {
+    header: {
+      title: "Projects",
+      description:
+        "Manage and monitor all your organization's projects in one place.",
+      cta: {
+        newProject: {
+          label: "New Project",
+        },
+      },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all projects...",
+      },
+      select: {
+        status: {
+          label: {
+            id: "Status",
+            singular: "Status",
+            plural: "Statuses",
+          },
+        },
+      },
     },
   },
-};
+  feedbackPage: {
+    backToProject: "Back to Project",
+    details: {
+      upvote: "Upvote",
+      downvote: "Downvote",
+    },
+    comments: {
+      title: "Comments",
+      description: "View all feedback comments.",
+      textAreaPlaceholder: "Add a comment...",
+      submit: "Add Comment",
+      totalComments: "total comments",
+    },
+    statusHistory: {
+      title: "Status History",
+      description: "View feedback status history.",
+      currentStatus: "Current Status",
+      created: "Created",
+      updated: "Updated",
+    },
+  },
+}};
 
 export default app;

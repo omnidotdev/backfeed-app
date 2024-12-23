@@ -1,11 +1,11 @@
 "use client";
 
-import { Grid, Stack } from "@omnidev/sigil";
-import { notFound, useParams } from "next/navigation";
+import { Grid } from "@omnidev/sigil";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
-import { PageHeader } from "components/layout";
+import { Page } from "components/layout";
 import {
   OrganizationActions,
   OrganizationMetrics,
@@ -20,33 +20,36 @@ import { useAuth, useDataState } from "lib/hooks";
 const OrganizationPage = () => {
   const { isAuthenticated } = useAuth();
 
-  const params = useParams<{ organizationId: string }>();
+  const params = useParams<{ organizationId: string }>(),
+    router = useRouter();
 
   const { isLoading, isError } = useDataState();
+
+  const navigateToProjectsPage = () =>
+    router.push(`/organizations/${params.organizationId}/projects`);
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
   if (!isAuthenticated) notFound();
 
   return (
-    <Stack maxW="8xl" mx="auto" p={6} gap={6}>
-      <PageHeader
-        // TODO: Dont use orgId here, use org name once query set up
-        title={params.organizationId}
-        description={app.organizationPage.header.description}
-        // TODO: add button actions
-        cta={[
+    <Page
+      header={{
+        title: params.organizationId,
+        description: app.organizationPage.header.description,
+        cta: [
           {
             label: app.organizationPage.header.cta.viewAllProjects.label,
             icon: HiOutlineFolder,
             variant: "outline",
+            onClick: navigateToProjectsPage,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
             icon: LuPlusCircle,
           },
-        ]}
-      />
-
+        ],
+      }}
+    >
       <OrganizationProjectsOverview />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
@@ -61,7 +64,7 @@ const OrganizationPage = () => {
 
         <OrganizationActions />
       </Grid>
-    </Stack>
+    </Page>
   );
 };
 
