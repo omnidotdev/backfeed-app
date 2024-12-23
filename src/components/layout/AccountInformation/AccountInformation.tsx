@@ -18,6 +18,9 @@ import { useAuth } from "lib/hooks";
 import { signOut } from "next-auth/react";
 import { FiUser, FiLogOut } from "react-icons/fi";
 
+/**
+ * User account information.
+ */
 const AccountInformation = () => {
   const { user } = useAuth();
 
