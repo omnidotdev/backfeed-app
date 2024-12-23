@@ -4,7 +4,7 @@ import PricingCard from "../../components/pricing/PricingCard";
 import PricingFAQ from "../../components/pricing/PricingFAQ";
 import PricingHeader from "../../components/pricing/PricingHeader";
 
-export default function PricingPage() {
+const PricingPage = () => {
   return (
     <VStack>
       <PricingHeader />
@@ -15,3 +15,5 @@ export default function PricingPage() {
     </VStack>
   );
 }
+
+export default PricingPage;
