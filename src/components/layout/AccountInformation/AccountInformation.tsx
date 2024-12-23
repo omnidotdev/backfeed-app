@@ -16,11 +16,9 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { FiUser, FiLogOut } from "react-icons/fi";
 
 const AccountInformation = () => {
-  const router = useRouter();
   const { user } = useAuth();
 
   const handleProfileClick = () => {
