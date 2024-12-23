@@ -124,7 +124,7 @@ const FeedbackDetails = ({ feedback, isLoaded = true, isError }: Props) => {
     .with(0, () => "foreground.subtle")
     .when(
       (net) => net > 0,
-      () => "brand.tertiary",
+      () => "brand.tertiary"
     )
     .otherwise(() => "brand.quinary");
 
