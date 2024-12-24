@@ -82,16 +82,12 @@ const OrganizationCard = ({
           type="Members"
           value={totalUsers}
           icon={HiOutlineUserGroup}
-          isLoading={isLoading}
-          isError={isError}
         />
 
         <DashboardMetric
           type="Projects"
           value={totalProjects}
           icon={HiOutlineFolder}
-          isLoading={isLoading}
-          isError={isError}
         />
       </Grid>
     </Stack>
