@@ -7,7 +7,7 @@ import { LuBuilding2 } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
-import { usePinnedOrganizationsQuery } from "generated/graphql";
+import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 /**
@@ -20,8 +20,11 @@ const PinnedOrganizations = () => {
     data: pinnedOrganizations,
     isLoading,
     isError,
-  } = usePinnedOrganizationsQuery(
-    {},
+  } = useOrganizationsQuery(
+    {
+      first: 3,
+      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    },
     {
       select: (data) => data?.organizations?.nodes,
     }

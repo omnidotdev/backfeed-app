@@ -1,5 +1,5 @@
-query PinnedOrganizations {
-  organizations(first: 3, orderBy: USER_ORGANIZATIONS_COUNT_DESC) {
+query Organizations($first: Int, $orderBy: [OrganizationOrderBy!]) {
+  organizations(first: $first, orderBy: $orderBy) {
     nodes {
       rowId
       name

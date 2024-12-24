@@ -1,45 +1,22 @@
 "use client";
 
-import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
+import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DestructiveAction, OverflowText } from "components/core";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
-
-export interface Organization {
-  /** Organization ID. */
-  id: string;
-  /** Organization name. */
-  name: string;
-  /** Organization type. */
-  type: string;
-}
-
-/** Mock aggregates for the organization. Will be replaced with real data, and fetched at this level in the future. */
-const AGGREGATES = [
-  {
-    type: "Users",
-    icon: HiOutlineUserGroup,
-    value: 69,
-  },
-  {
-    type: "Projects",
-    icon: HiOutlineFolder,
-    value: 420,
-  },
-];
+import type { Organization } from "generated/graphql";
 
 const deleteOrganization = app.organizationsPage.dialogs.deleteOrganization;
 const leaveOrganization = app.organizationsPage.dialogs.leaveOrganization;
 
 interface Props {
   /** Organization details. */
-  organization: Organization;
+  organization: Partial<Organization>;
   /** ! TODO remove, just used to implement dynamic ownership check for now. */
   index: number;
 }
@@ -47,13 +24,21 @@ interface Props {
 /**
  * Organization list item.
  */
-const OrganizationListItem = ({
-  organization: { id, name, type },
-  index,
-}: Props) => {
-  const { isLoading, isError } = useDataState({ timeout: 500 });
-
+const OrganizationListItem = ({ organization, index }: Props) => {
   const isOrganizationOwner = index % 2 === 0;
+
+  const AGGREGATES = [
+    {
+      type: "Users",
+      icon: HiOutlineUserGroup,
+      value: organization?.userOrganizations?.totalCount,
+    },
+    {
+      type: "Projects",
+      icon: HiOutlineFolder,
+      value: organization?.projects?.totalCount,
+    },
+  ];
 
   // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
   const DELETE_ORGANIZATION: DestructiveActionProps = {
@@ -101,7 +86,7 @@ const OrganizationListItem = ({
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
         <Stack maxW="65svw">
-          <Link href={`/organizations/${id}`} role="group">
+          <Link href={`/organizations/${organization?.rowId}`} role="group">
             <OverflowText
               fontWeight="semibold"
               whiteSpace="nowrap"
@@ -113,12 +98,12 @@ const OrganizationListItem = ({
                 },
               }}
             >
-              {name}
+              {organization?.name}
             </OverflowText>
           </Link>
 
           <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
-            {type}
+            {organization?.slug}
           </OverflowText>
         </Stack>
 
@@ -129,22 +114,13 @@ const OrganizationListItem = ({
         {AGGREGATES.map(({ icon, value, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
-
-            <Skeleton
-              isLoaded={!isLoading}
-              h={4}
-              display="flex"
-              alignItems="center"
-              minW={6}
+            <Text
+              fontSize="sm"
+              color="foreground.subtle"
+              fontVariant="tabular-nums"
             >
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-                fontVariant="tabular-nums"
-              >
-                {isError ? "Error" : value}
-              </Text>
-            </Skeleton>
+              {value ?? 0}
+            </Text>
           </HStack>
         ))}
       </HStack>

@@ -46,7 +46,7 @@ const DashboardPage = () => {
         cta: [
           {
             label: app.dashboardPage.cta.newProject.label,
-            icon: LuPlusCircle,
+            icon: <LuPlusCircle />,
           },
         ],
       }}

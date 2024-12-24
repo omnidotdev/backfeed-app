@@ -39,13 +39,13 @@ const OrganizationPage = () => {
         cta: [
           {
             label: app.organizationPage.header.cta.viewAllProjects.label,
-            icon: HiOutlineFolder,
+            icon: <HiOutlineFolder />,
             variant: "outline",
             onClick: navigateToProjectsPage,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
-            icon: LuPlusCircle,
+            icon: <LuPlusCircle />,
           },
         ],
       }}
