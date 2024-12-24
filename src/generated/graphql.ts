@@ -3301,7 +3301,7 @@ export type OrganizationsQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -3537,7 +3537,6 @@ export const OrganizationsDocument = `
     nodes {
       rowId
       name
-      slug
       projects {
         totalCount
       }
