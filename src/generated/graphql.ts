@@ -3525,7 +3525,7 @@ useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) =>
 
 export const PinnedOrganizationsDocument = `
     query PinnedOrganizations {
-  organizations(first: 3, orderBy: PROJECTS_COUNT_DESC) {
+  organizations(first: 3, orderBy: USER_ORGANIZATIONS_COUNT_DESC) {
     nodes {
       rowId
       name
