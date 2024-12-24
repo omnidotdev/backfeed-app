@@ -7,7 +7,6 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
 import { DashboardMetric } from "components/dashboard";
-import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
 
@@ -34,74 +33,69 @@ const OrganizationCard = ({
   totalProjects,
   totalUsers,
   ...rest
-}: Props) => {
-  // !NB: this is to represent where we would want to fetch the aggregate data (total members and projects). This will keep the top level `organizationsQuery` clean.
-  const { isLoading, isError } = useDataState({ timeout: 800 });
+}: Props) => (
+  <Flex
+    position="relative"
+    direction="column"
+    bgColor="background.subtle"
+    borderRadius="lg"
+    boxShadow="xs"
+    p={8}
+    {...rest}
+  >
+    <Link href={`/organizations/${id}`}>
+      <Button
+        position="absolute"
+        top={0}
+        right={0}
+        p={2}
+        variant="icon"
+        color={{ base: "foreground.muted", _hover: "brand.primary" }}
+        bgColor="transparent"
+      >
+        <Icon src={FiArrowUpRight} w={5} h={5} />
+      </Button>
+    </Link>
 
-  return (
-    <Flex
-      position="relative"
-      direction="column"
-      bgColor="background.subtle"
-      borderRadius="lg"
-      boxShadow="xs"
-      p={8}
-      {...rest}
-    >
-      <Link href={`/organizations/${id}`}>
-        <Button
-          position="absolute"
-          top={0}
-          right={0}
-          p={2}
-          variant="icon"
-          color={{ base: "foreground.muted", _hover: "brand.primary" }}
-          bgColor="transparent"
+    <Stack gap={6} h="100%" justify="space-between">
+      <Stack minH={{ base: 16, md: 24 }}>
+        <OverflowText
+          fontSize={{ base: "md", lg: "lg" }}
+          fontWeight="semibold"
+          lineHeight={1.2}
+          lineClamp={2}
         >
-          <Icon src={FiArrowUpRight} w={5} h={5} />
-        </Button>
-      </Link>
+          {name}
+        </OverflowText>
 
-      <Stack gap={6} h="100%" justify="space-between">
-        <Stack minH={{ base: 16, md: 24 }}>
-          <OverflowText
-            fontSize={{ base: "md", lg: "lg" }}
-            fontWeight="semibold"
-            lineHeight={1.2}
-            lineClamp={2}
-          >
-            {name}
-          </OverflowText>
-
-          <OverflowText
-            fontSize={{ base: "xs", lg: "sm" }}
-            color="foreground.subtle"
-            lineClamp={2}
-          >
-            {type}
-          </OverflowText>
-        </Stack>
-
-        <Grid columns={2} w="full" alignItems="start">
-          <DashboardMetric
-            type="Members"
-            value={totalUsers}
-            icon={HiOutlineUserGroup}
-            isLoading={isLoading}
-            isError={isError}
-          />
-
-          <DashboardMetric
-            type="Projects"
-            value={totalProjects}
-            icon={HiOutlineFolder}
-            isLoading={isLoading}
-            isError={isError}
-          />
-        </Grid>
+        <OverflowText
+          fontSize={{ base: "xs", lg: "sm" }}
+          color="foreground.subtle"
+          lineClamp={2}
+        >
+          {type}
+        </OverflowText>
       </Stack>
-    </Flex>
-  );
-};
+
+      <Grid columns={2} w="full" alignItems="start">
+        <DashboardMetric
+          type="Members"
+          value={totalUsers}
+          icon={HiOutlineUserGroup}
+          isLoading={isLoading}
+          isError={isError}
+        />
+
+        <DashboardMetric
+          type="Projects"
+          value={totalProjects}
+          icon={HiOutlineFolder}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </Grid>
+    </Stack>
+  </Flex>
+);
 
 export default OrganizationCard;
