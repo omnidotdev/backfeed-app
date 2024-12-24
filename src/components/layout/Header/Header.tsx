@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, HStack, Icon, Text, sigil, useIsClient } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
@@ -15,15 +15,12 @@ import { useAuth } from "lib/hooks";
  */
 const Header = () => {
   const pathname = usePathname(),
-    isClient = useIsClient(),
     { isAuthenticated, isLoading } = useAuth();
 
   // TODO: make dynamic based on the current route
   const { landingPage, dashboardPage } = navigationRoutes;
 
   const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
-
-  if (!isClient || isLoading) return null;
 
   return (
     <sigil.header
@@ -53,27 +50,28 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {headerRoutes.map(({ label, href }) => {
-            const isActive = pathname === href;
+          {!isLoading &&
+            headerRoutes.map(({ label, href }) => {
+              const isActive = pathname === href;
 
-            return (
-              <Link key={href} href={href} role="group">
-                <Flex
-                  h={10}
-                  px={4}
-                  align="center"
-                  color={{
-                    base: "foreground.muted",
-                    _groupHover: "foreground.default",
-                  }}
-                  bgColor={isActive ? "background.muted" : "transparent"}
-                  borderRadius="md"
-                >
-                  {label}
-                </Flex>
-              </Link>
-            );
-          })}
+              return (
+                <Link key={href} href={href} role="group">
+                  <Flex
+                    h={10}
+                    px={4}
+                    align="center"
+                    color={{
+                      base: "foreground.muted",
+                      _groupHover: "foreground.default",
+                    }}
+                    bgColor={isActive ? "background.muted" : "transparent"}
+                    borderRadius="md"
+                  >
+                    {label}
+                  </Flex>
+                </Link>
+              );
+            })}
         </Flex>
 
         <HeaderActions />

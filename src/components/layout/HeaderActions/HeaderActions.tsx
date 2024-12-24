@@ -13,7 +13,7 @@ import { useAuth } from "lib/hooks";
  */
 const HeaderActions = () => {
   const router = useRouter(),
-    { isAuthenticated } = useAuth();
+    { isAuthenticated, isLoading } = useAuth();
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -21,6 +21,8 @@ const HeaderActions = () => {
 
     router.push(signUpUrl);
   };
+
+  if (isLoading) return null;
 
   return (
     <Flex alignItems="center" gap={6}>
