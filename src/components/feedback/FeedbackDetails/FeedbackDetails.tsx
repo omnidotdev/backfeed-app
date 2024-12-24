@@ -20,7 +20,7 @@ import {
 import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
 
-import type { ButtonProps, VstackProps } from "@omnidev/sigil";
+import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 import { match } from "ts-pattern";
 
@@ -52,7 +52,7 @@ export interface Feedback {
   };
 }
 
-interface VoteButtonProps extends ButtonProps {
+interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
   votes: number | undefined;
   /** Tooltip text. */
