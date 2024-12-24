@@ -15,7 +15,7 @@ import { useAuth, useDataState } from "lib/hooks";
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
-  const { firstName } = useAuth(),
+  const { user } = useAuth(),
     { isLoading, isError } = useDataState({ timeout: 400 });
 
   const aggregates = [
@@ -39,7 +39,7 @@ const DashboardPage = () => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${user?.firstName}!`,
         description: app.dashboardPage.description,
         cta: [
           {
