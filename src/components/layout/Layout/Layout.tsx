@@ -18,8 +18,11 @@ interface Props {
 /**
  * Core application layout.
  */
-const Layout = ({ children }: Props) =>
-  window.location.href.includes(app.productionUrl) ? (
+const Layout = ({ children }: Props) => {
+  // TODO remove this and prod URL check below once ready for public launch
+  if (typeof window === "undefined") return null;
+
+  return window?.location.href.includes(app.productionUrl) ? (
     <Center mt={12} fontSize="2xl" fontWeight="semibold">
       Coming soon
     </Center>
@@ -50,5 +53,6 @@ const Layout = ({ children }: Props) =>
       <Footer />
     </Grid>
   );
+};
 
 export default Layout;
