@@ -2,6 +2,7 @@ export { default as AccountInformation } from "./AccountInformation/AccountInfor
 export { default as ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
 export { default as Footer } from "./Footer/Footer";
 export { default as Header } from "./Header/Header";
+export { default as HeaderActions } from "./HeaderActions/HeaderActions";
 export { default as Layout } from "./Layout/Layout";
 export { default as Page } from "./Page/Page";
 export { default as SectionContainer } from "./SectionContainer/SectionContainer";

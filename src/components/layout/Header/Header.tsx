@@ -1,23 +1,21 @@
 "use client";
 
-import { Button, Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Text, sigil, useIsClient } from "@omnidev/sigil";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { AccountInformation, ThemeToggle } from "components/layout";
+import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { signIn } from "next-auth/react";
-import { Spinner } from "components/core";
 
 /**
  * Layout header.
  */
 const Header = () => {
-  const router = useRouter(),
-    pathname = usePathname(),
+  const pathname = usePathname(),
+    isClient = useIsClient(),
     { isAuthenticated, isLoading } = useAuth();
 
   // TODO: make dynamic based on the current route
@@ -25,12 +23,7 @@ const Header = () => {
 
   const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
 
-  const handleSignUp = () => {
-    // use custom URL because Auth.js doesn't have built-in support for direct registration flows
-    const signUpUrl = `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/registrations?client_id=${process.env.AUTH_KEYCLOAK_ID}&redirect_uri=${window.location.origin}/auth/callback/keycloak&response_type=code`;
-
-    router.push(signUpUrl);
-  };
+  if (!isClient || isLoading) return null;
 
   return (
     <sigil.header
@@ -83,23 +76,7 @@ const Header = () => {
           })}
         </Flex>
 
-        <Flex alignItems="center" gap={6}>
-          <ThemeToggle />
-
-          {isLoading ? (
-            <Spinner />
-          ) : isAuthenticated ? (
-            <AccountInformation />
-          ) : (
-            <HStack>
-              <Button onClick={() => signIn("keycloak")} variant="outline">
-                {app.auth.signIn.label}
-              </Button>
-
-              <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-            </HStack>
-          )}
-        </Flex>
+        <HeaderActions />
       </Flex>
     </sigil.header>
   );
