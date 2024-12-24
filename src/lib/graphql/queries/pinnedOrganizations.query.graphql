@@ -1,0 +1,15 @@
+query PinnedOrganizations {
+  organizations(first: 3, orderBy: PROJECTS_COUNT_DESC) {
+    nodes {
+      rowId
+      name
+      slug
+      projects {
+        totalCount
+      }
+      userOrganizations {
+        totalCount
+      }
+    }
+  }
+}

@@ -3294,6 +3294,11 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null } | null };
 
+export type PinnedOrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PinnedOrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -3517,6 +3522,63 @@ export const useInfiniteOrganizationQuery = <
     )};
 
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
+
+export const PinnedOrganizationsDocument = `
+    query PinnedOrganizations {
+  organizations(first: 3, orderBy: PROJECTS_COUNT_DESC) {
+    nodes {
+      rowId
+      name
+      slug
+      projects {
+        totalCount
+      }
+      userOrganizations {
+        totalCount
+      }
+    }
+  }
+}
+    `;
+
+export const usePinnedOrganizationsQuery = <
+      TData = PinnedOrganizationsQuery,
+      TError = unknown
+    >(
+      variables?: PinnedOrganizationsQueryVariables,
+      options?: Omit<UseQueryOptions<PinnedOrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<PinnedOrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<PinnedOrganizationsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['PinnedOrganizations'] : ['PinnedOrganizations', variables],
+    queryFn: useGraphqlClient<PinnedOrganizationsQuery, PinnedOrganizationsQueryVariables>(PinnedOrganizationsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+usePinnedOrganizationsQuery.getKey = (variables?: PinnedOrganizationsQueryVariables) => variables === undefined ? ['PinnedOrganizations'] : ['PinnedOrganizations', variables];
+
+export const useInfinitePinnedOrganizationsQuery = <
+      TData = InfiniteData<PinnedOrganizationsQuery>,
+      TError = unknown
+    >(
+      variables: PinnedOrganizationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<PinnedOrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<PinnedOrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<PinnedOrganizationsQuery, PinnedOrganizationsQueryVariables>(PinnedOrganizationsDocument)
+    return useInfiniteQuery<PinnedOrganizationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['PinnedOrganizations.infinite'] : ['PinnedOrganizations.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfinitePinnedOrganizationsQuery.getKey = (variables?: PinnedOrganizationsQueryVariables) => variables === undefined ? ['PinnedOrganizations.infinite'] : ['PinnedOrganizations.infinite', variables];
 
 export const PostsDocument = `
     query Posts($projectId: UUID!) {

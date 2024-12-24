@@ -13,17 +13,28 @@ import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
   /** Organization ID for page routing. */
-  id: string;
+  id: string | undefined;
   /** Name of the organization. */
-  name: string;
+  name: string | null | undefined;
   /** Type of the organization. */
-  type: string;
+  type: string | null | undefined;
+  /** Total number of projects. */
+  totalProjects: number | undefined;
+  /** Total number of users. */
+  totalUsers: number | undefined;
 }
 
 /**
  * Organization card.
  */
-const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
+const OrganizationCard = ({
+  id,
+  name,
+  type,
+  totalProjects,
+  totalUsers,
+  ...rest
+}: Props) => {
   // !NB: this is to represent where we would want to fetch the aggregate data (total members and projects). This will keep the top level `organizationsQuery` clean.
   const { isLoading, isError } = useDataState({ timeout: 800 });
 
@@ -74,7 +85,7 @@ const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
         <Grid columns={2} w="full" alignItems="start">
           <DashboardMetric
             type="Members"
-            value={420}
+            value={totalUsers}
             icon={HiOutlineUserGroup}
             isLoading={isLoading}
             isError={isError}
@@ -82,7 +93,7 @@ const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
 
           <DashboardMetric
             type="Projects"
-            value={69}
+            value={totalProjects}
             icon={HiOutlineFolder}
             isLoading={isLoading}
             isError={isError}

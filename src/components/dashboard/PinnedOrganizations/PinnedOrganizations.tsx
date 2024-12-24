@@ -7,35 +7,8 @@ import { LuBuilding2 } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
+import { usePinnedOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
-
-interface Organization {
-  /** Organization ID. */
-  id: string;
-  /** Organization name. */
-  name: string;
-  /** Organization type. */
-  type: string;
-}
-
-const PINNED_ORGANIZATIONS: Organization[] = [
-  {
-    id: "8af2410c-b73b-453f-a5c9-4637f5cbaffe",
-    name: "Tech Innovators Inc.",
-    type: "Technology",
-  },
-  {
-    id: "c630fc16-1bb7-474f-9405-89401cce301a",
-    name: "Green Future Solutions Green Future Solutions Green Future Solutions ",
-    type: "Environmental Services Environmental Services Environmental Services",
-  },
-  {
-    id: "aff499bc-516f-436c-9d87-2edfe1043061",
-    name: "EduSpark Academy",
-    type: "Education",
-  },
-];
 
 /**
  * Pinned organizations section.
@@ -43,7 +16,16 @@ const PINNED_ORGANIZATIONS: Organization[] = [
 const PinnedOrganizations = () => {
   const router = useRouter();
 
-  const { isLoading, isError } = useDataState();
+  const {
+    data: pinnedOrganizations,
+    isLoading,
+    isError,
+  } = usePinnedOrganizationsQuery(
+    {},
+    {
+      select: (data) => data?.organizations?.nodes,
+    }
+  );
 
   return (
     <Flex
@@ -93,12 +75,15 @@ const PinnedOrganizations = () => {
           {isLoading ? (
             <SkeletonArray count={3} h={48} />
           ) : (
-            PINNED_ORGANIZATIONS.map(({ id, name, type }) => (
+            pinnedOrganizations?.map((organization) => (
               <OrganizationCard
-                key={id}
-                id={id}
-                name={name}
-                type={type}
+                key={organization?.rowId}
+                id={organization?.rowId}
+                name={organization?.name}
+                // TODO: switch to organization type when API is updated / discuss
+                type={organization?.slug}
+                totalProjects={organization?.projects?.totalCount}
+                totalUsers={organization?.userOrganizations?.totalCount}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
               />
