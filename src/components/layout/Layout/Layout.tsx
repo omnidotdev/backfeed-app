@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Grid, sigil } from "@omnidev/sigil";
+import { Center, Flex, Grid, Text, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -18,32 +18,37 @@ interface Props {
 /**
  * Core application layout.
  */
-const Layout = ({ children }: Props) => (
-  <Grid
-    position="relative"
-    gridTemplateRows="auto 1fr auto"
-    w="100%"
-    h="100dvh"
-    gap={0}
-  >
-    <Flex direction="column" position="sticky" top={0} zIndex="sticky">
-      <Flex
-        p={4}
-        justify="center"
-        bgColor="brand.primary.500"
-        color="white"
-        fontWeight="semibold"
-      >
-        ⚠️ {app.name} is early alpha software.
+const Layout = ({ children }: Props) =>
+  window.location.href.includes("backfeed.omni.dev") ? (
+    <Center mt={12} fontSize="2xl" fontWeight="semibold">
+      Coming soon
+    </Center>
+  ) : (
+    <Grid
+      position="relative"
+      gridTemplateRows="auto 1fr auto"
+      w="100%"
+      h="100dvh"
+      gap={0}
+    >
+      <Flex direction="column" position="sticky" top={0} zIndex="sticky">
+        <Flex
+          p={4}
+          justify="center"
+          bgColor="brand.primary.500"
+          color="white"
+          fontWeight="semibold"
+        >
+          ⚠️ {app.name} is early alpha software.
+        </Flex>
+
+        <Header />
       </Flex>
 
-      <Header />
-    </Flex>
+      <sigil.main>{children}</sigil.main>
 
-    <sigil.main>{children}</sigil.main>
-
-    <Footer />
-  </Grid>
-);
+      <Footer />
+    </Grid>
+  );
 
 export default Layout;
