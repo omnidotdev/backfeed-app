@@ -21,7 +21,7 @@ const getRandomInteger = () => Math.floor(Math.random() * 100);
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = () => {
-  const isMounted = useIsClient(),
+  const isClient = useIsClient(),
     { isLoading, isError } = useDataState({ timeout: 600 });
 
   const DATA = [
@@ -39,7 +39,7 @@ const FeedbackOverview = () => {
       title="Feedback Overview"
       contentProps={{ align: "center", justify: "center" }}
     >
-      {isMounted && !isLoading ? (
+      {isClient && !isLoading ? (
         isError ? (
           <ErrorBoundary
             message="Error fetching feedback overview"
