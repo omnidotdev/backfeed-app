@@ -1,3 +1,5 @@
+"use client";
+
 import { Text } from "@omnidev/sigil";
 
 import type { TextProps } from "@omnidev/sigil";

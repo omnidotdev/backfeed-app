@@ -1,3 +1,5 @@
+"use client";
+
 import { Grid } from "@omnidev/sigil";
 import { GoClock } from "react-icons/go";
 import {

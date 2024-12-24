@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { LuBuilding2 } from "react-icons/lu";

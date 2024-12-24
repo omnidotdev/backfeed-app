@@ -1,3 +1,5 @@
+"use client";
+
 import { Flex, Grid, Text } from "@omnidev/sigil";
 import {
   IoBarChartOutline,

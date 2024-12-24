@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";

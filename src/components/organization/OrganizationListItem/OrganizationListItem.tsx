@@ -1,3 +1,5 @@
+"use client";
+
 import { HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
 import Link from "next/link";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
