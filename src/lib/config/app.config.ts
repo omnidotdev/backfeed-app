@@ -2,6 +2,7 @@ const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   organization: "Omni",
+  productionUrl: "https://backfeed.omni.dev",
   notFound: {
     statusCode: 404,
     title: "Page Not Found",

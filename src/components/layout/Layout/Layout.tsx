@@ -1,6 +1,6 @@
 "use client";
 
-import { Center, Flex, Grid, Text, sigil } from "@omnidev/sigil";
+import { Center, Flex, Grid, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -19,7 +19,7 @@ interface Props {
  * Core application layout.
  */
 const Layout = ({ children }: Props) =>
-  window.location.href.includes("backfeed.omni.dev") ? (
+  window.location.href.includes(app.productionUrl) ? (
     <Center mt={12} fontSize="2xl" fontWeight="semibold">
       Coming soon
     </Center>
