@@ -10,6 +10,8 @@ import { ErrorBoundary } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 
+import type { Organization } from "generated/graphql";
+
 /**
  * Pinned organizations section.
  */
@@ -81,13 +83,8 @@ const PinnedOrganizations = () => {
             pinnedOrganizations?.map((organization) => (
               <OrganizationCard
                 key={organization?.rowId}
-                id={organization?.rowId}
-                name={organization?.name}
-                // TODO: switch to organization type when API is updated / discuss
-                type={organization?.slug}
-                totalProjects={organization?.projects?.totalCount}
-                totalUsers={organization?.userOrganizations?.totalCount}
-                // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                organization={organization as Partial<Organization>}
+                // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
               />
             ))

@@ -3297,6 +3297,7 @@ export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { _
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -3527,8 +3528,12 @@ export const useInfiniteOrganizationQuery = <
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
 
 export const OrganizationsDocument = `
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!]) {
-  organizations(first: $first, orderBy: $orderBy) {
+    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $search: String) {
+  organizations(
+    first: $first
+    orderBy: $orderBy
+    filter: {name: {includesInsensitive: $search}}
+  ) {
     nodes {
       rowId
       name

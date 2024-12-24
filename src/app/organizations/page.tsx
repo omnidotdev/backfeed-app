@@ -30,7 +30,7 @@ const OrganizationsPage = async () => {
     >
       {/* // ! NB: wrapped in a suspense boundary to avoid opting entire page into CSR. See: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
       <Suspense>
-        <OrganizationFilters isLoading={true} isError={false} />
+        <OrganizationFilters />
 
         <OrganizationList />
       </Suspense>

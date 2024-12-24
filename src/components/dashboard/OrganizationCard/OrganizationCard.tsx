@@ -9,31 +9,17 @@ import { OverflowText } from "components/core";
 import { DashboardMetric } from "components/dashboard";
 
 import type { FlexProps } from "@omnidev/sigil";
+import type { Organization } from "generated/graphql";
 
 interface Props extends FlexProps {
-  /** Organization ID for page routing. */
-  id: string | undefined;
-  /** Name of the organization. */
-  name: string | null | undefined;
-  /** Type of the organization. */
-  type: string | null | undefined;
-  /** Total number of projects. */
-  totalProjects: number | undefined;
-  /** Total number of users. */
-  totalUsers: number | undefined;
+  /** Organization details. */
+  organization: Partial<Organization>;
 }
 
 /**
  * Organization card.
  */
-const OrganizationCard = ({
-  id,
-  name,
-  type,
-  totalProjects,
-  totalUsers,
-  ...rest
-}: Props) => (
+const OrganizationCard = ({ organization, ...rest }: Props) => (
   <Flex
     position="relative"
     direction="column"
@@ -43,7 +29,7 @@ const OrganizationCard = ({
     p={8}
     {...rest}
   >
-    <Link href={`/organizations/${id}`}>
+    <Link href={`/organizations/${organization?.rowId}`}>
       <Button
         position="absolute"
         top={0}
@@ -65,28 +51,20 @@ const OrganizationCard = ({
           lineHeight={1.2}
           lineClamp={2}
         >
-          {name}
-        </OverflowText>
-
-        <OverflowText
-          fontSize={{ base: "xs", lg: "sm" }}
-          color="foreground.subtle"
-          lineClamp={2}
-        >
-          {type}
+          {organization?.name}
         </OverflowText>
       </Stack>
 
       <Grid columns={2} w="full" alignItems="start">
         <DashboardMetric
           type="Members"
-          value={totalUsers}
+          value={organization?.userOrganizations?.totalCount}
           icon={HiOutlineUserGroup}
         />
 
         <DashboardMetric
           type="Projects"
-          value={totalProjects}
+          value={organization?.projects?.totalCount}
           icon={HiOutlineFolder}
         />
       </Grid>

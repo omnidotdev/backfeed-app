@@ -1,5 +1,13 @@
-query Organizations($first: Int, $orderBy: [OrganizationOrderBy!]) {
-  organizations(first: $first, orderBy: $orderBy) {
+query Organizations(
+  $first: Int
+  $orderBy: [OrganizationOrderBy!]
+  $search: String
+) {
+  organizations(
+    first: $first
+    orderBy: $orderBy
+    filter: { name: { includesInsensitive: $search } }
+  ) {
     nodes {
       rowId
       name

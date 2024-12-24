@@ -82,6 +82,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
       maxW="100%"
       mx="auto"
       h={36}
+      justify="space-between"
     >
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
@@ -101,10 +102,6 @@ const OrganizationListItem = ({ organization, index }: Props) => {
               {organization?.name}
             </OverflowText>
           </Link>
-
-          <OverflowText color="foreground.subtle" maxW="xl" whiteSpace="nowrap">
-            {organization?.slug}
-          </OverflowText>
         </Stack>
 
         <DestructiveAction {...DESTRUCTIVE_ACTION} />

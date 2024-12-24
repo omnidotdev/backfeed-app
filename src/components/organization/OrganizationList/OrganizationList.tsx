@@ -1,6 +1,7 @@
 "use client";
 
 import { Stack } from "@omnidev/sigil";
+import { keepPreviousData } from "@tanstack/react-query";
 
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
@@ -27,8 +28,10 @@ const OrganizationList = ({ ...props }: StackProps) => {
   } = useOrganizationsQuery(
     {
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      search: debouncedSearch,
     },
     {
+      placeholderData: keepPreviousData,
       select: (data) => data?.organizations?.nodes,
     }
   );
@@ -45,19 +48,14 @@ const OrganizationList = ({ ...props }: StackProps) => {
 
   return (
     <Stack {...props}>
-      {/* TODO: update logic handler / filters once data fetching is implemented */}
-      {organizations
-        ?.filter((organization) =>
-          organization?.name?.toLowerCase().includes(debouncedSearch)
-        )
-        .map((organization, index) => (
-          // TODO: remove index once data fetching is implemented
-          <OrganizationListItem
-            key={organization?.rowId}
-            organization={organization as Partial<Organization>}
-            index={index}
-          />
-        ))}
+      {organizations?.map((organization, index) => (
+        // TODO: remove index once ownership check is implemented
+        <OrganizationListItem
+          key={organization?.rowId}
+          organization={organization as Partial<Organization>}
+          index={index}
+        />
+      ))}
     </Stack>
   );
 };
