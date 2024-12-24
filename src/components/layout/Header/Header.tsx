@@ -25,7 +25,7 @@ const Header = () => {
   return (
     <sigil.header
       display="flex"
-      h={16}
+      h={20}
       p={4}
       // TODO: discuss why this style prop is necessary
       style={{
