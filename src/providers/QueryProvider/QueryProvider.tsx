@@ -4,14 +4,14 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 const reactQueryClient = new ReactQueryClient();
 
 /**
  * Client-side remote data fetching provider.
  */
-const QueryProvider = ({ children }: { children: ReactNode }) => (
+const QueryProvider = ({ children }: PropsWithChildren) => (
   <ReactQueryClientProvider client={reactQueryClient}>
     {children}
 

@@ -55,7 +55,6 @@ const DestructiveAction = ({
   ];
 
   return (
-    // @ts-ignore TODO: figure out why this is throwing an error
     <Dialog
       title={title}
       description={description}
