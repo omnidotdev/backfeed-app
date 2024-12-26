@@ -21,10 +21,7 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
-  ignore: [
-    "panda.config.ts",
-    "src/generated/**",
-  ],
+  ignore: ["panda.config.ts", "src/generated/**"],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency
     "@ark-ui/react",
