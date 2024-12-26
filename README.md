@@ -18,7 +18,7 @@ bun install
 bun run dev
 ```
 
-#### Container
+#### Container (for Production)
 
 ```sh
 docker build -t backfeed-app .
