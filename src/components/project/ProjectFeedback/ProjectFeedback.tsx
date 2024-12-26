@@ -14,9 +14,9 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
 import { ErrorBoundary, SectionContainer } from "components/layout";
+import { FeedbackDetails } from "components/feedback";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
-import { FeedbackDetails } from "components/feedback";
 
 import type { Feedback } from "components/feedback";
 
