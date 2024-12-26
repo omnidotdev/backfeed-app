@@ -11,6 +11,7 @@ WORKDIR /app
 
 # install dependencies
 COPY package.json bun.lockb panda.config.ts ./
+RUN apt update && apt install python3 python3-pip make g++ -y
 RUN bun install --frozen-lockfile
 
 # rebuild the source code only when needed
