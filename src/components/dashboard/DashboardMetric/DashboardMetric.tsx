@@ -16,12 +16,12 @@ interface Props {
 /**
  * Dashboard metric.
  */
-const DashboardMetric = ({ type, value, icon }: Props) => (
+const DashboardMetric = ({ type, value = 0, icon }: Props) => (
   <Flex align="center" gap={2}>
     <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
     <Flex color="foreground.subtle" fontSize="sm" gap={1}>
-      <Text>{value ?? 0}</Text>
+      <Text>{value}</Text>
 
       <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
         {type}

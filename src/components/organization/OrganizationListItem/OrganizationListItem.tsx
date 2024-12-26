@@ -108,7 +108,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
       </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
-        {AGGREGATES.map(({ icon, value, type }) => (
+        {AGGREGATES.map(({ icon, value = 0, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
             <Text
@@ -116,7 +116,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {value ?? 0}
+              {value}
             </Text>
           </HStack>
         ))}

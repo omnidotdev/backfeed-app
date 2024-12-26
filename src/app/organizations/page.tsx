@@ -5,13 +5,13 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
-import { getSession } from "lib/util";
+import { getAuthSession } from "lib/util";
 
 /**
  * Organizations overview page.
  */
 const OrganizationsPage = async () => {
-  const session = await getSession();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 
@@ -23,6 +23,7 @@ const OrganizationsPage = async () => {
         cta: [
           {
             label: app.organizationsPage.header.cta.newOrganization.label,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
           },
         ],
