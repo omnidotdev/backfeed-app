@@ -1,15 +1,15 @@
 "use client";
 
-import { Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, Stack, Text } from "@omnidev/sigil";
 
 import type { ButtonProps, FlexProps, StackProps } from "@omnidev/sigil";
-import type { IconType } from "react-icons";
+import type { ReactNode } from "react";
 
 interface ActionButton extends ButtonProps {
   /** Button label. */
   label: string;
   /** Button icon. */
-  icon: IconType;
+  icon: ReactNode;
 }
 
 interface Props extends StackProps {
@@ -73,7 +73,7 @@ const Page = ({ header, children, ...rest }: Props) => (
                 width={{ base: "full", md: "auto" }}
                 {...rest}
               >
-                <Icon src={icon} w={4} h={4} />
+                {icon}
 
                 <Text>{label}</Text>
               </Button>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -5,90 +7,69 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
 import { DashboardMetric } from "components/dashboard";
-import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
+import type { Organization } from "generated/graphql";
 
 interface Props extends FlexProps {
-  /** Organization ID for page routing. */
-  id: string;
-  /** Name of the organization. */
-  name: string;
-  /** Type of the organization. */
-  type: string;
+  /** Organization details. */
+  organization: Partial<Organization>;
 }
 
 /**
  * Organization card.
  */
-const OrganizationCard = ({ id, name, type, ...rest }: Props) => {
-  // !NB: this is to represent where we would want to fetch the aggregate data (total members and projects). This will keep the top level `organizationsQuery` clean.
-  const { isLoading, isError } = useDataState({ timeout: 800 });
+const OrganizationCard = ({ organization, ...rest }: Props) => (
+  <Flex
+    position="relative"
+    direction="column"
+    bgColor="background.subtle"
+    borderRadius="lg"
+    boxShadow="xs"
+    p={8}
+    {...rest}
+  >
+    <Link href={`/organizations/${organization?.rowId}`}>
+      <Button
+        position="absolute"
+        top={0}
+        right={0}
+        p={2}
+        variant="icon"
+        color={{ base: "foreground.muted", _hover: "brand.primary" }}
+        bgColor="transparent"
+      >
+        <Icon src={FiArrowUpRight} w={5} h={5} />
+      </Button>
+    </Link>
 
-  return (
-    <Flex
-      position="relative"
-      direction="column"
-      bgColor="background.subtle"
-      borderRadius="lg"
-      boxShadow="xs"
-      p={8}
-      {...rest}
-    >
-      <Link href={`/organizations/${id}`}>
-        <Button
-          position="absolute"
-          top={0}
-          right={0}
-          p={2}
-          variant="icon"
-          color={{ base: "foreground.muted", _hover: "brand.primary" }}
-          bgColor="transparent"
+    <Stack gap={6} h="100%" justify="space-between">
+      <Stack minH={{ base: 16, md: 24 }}>
+        <OverflowText
+          fontSize={{ base: "md", lg: "lg" }}
+          fontWeight="semibold"
+          lineHeight={1.2}
+          lineClamp={2}
         >
-          <Icon src={FiArrowUpRight} w={5} h={5} />
-        </Button>
-      </Link>
-
-      <Stack gap={6} h="100%" justify="space-between">
-        <Stack minH={{ base: 16, md: 24 }}>
-          <OverflowText
-            fontSize={{ base: "md", lg: "lg" }}
-            fontWeight="semibold"
-            lineHeight={1.2}
-            lineClamp={2}
-          >
-            {name}
-          </OverflowText>
-
-          <OverflowText
-            fontSize={{ base: "xs", lg: "sm" }}
-            color="foreground.subtle"
-            lineClamp={2}
-          >
-            {type}
-          </OverflowText>
-        </Stack>
-
-        <Grid columns={2} w="full" alignItems="start">
-          <DashboardMetric
-            type="Members"
-            value={420}
-            icon={HiOutlineUserGroup}
-            isLoading={isLoading}
-            isError={isError}
-          />
-
-          <DashboardMetric
-            type="Projects"
-            value={69}
-            icon={HiOutlineFolder}
-            isLoading={isLoading}
-            isError={isError}
-          />
-        </Grid>
+          {organization?.name}
+        </OverflowText>
       </Stack>
-    </Flex>
-  );
-};
+
+      <Grid columns={2} w="full" alignItems="start">
+        <DashboardMetric
+          type="Members"
+          value={organization?.userOrganizations?.totalCount}
+          icon={HiOutlineUserGroup}
+        />
+
+        <DashboardMetric
+          type="Projects"
+          value={organization?.projects?.totalCount}
+          icon={HiOutlineFolder}
+        />
+      </Grid>
+    </Stack>
+  </Flex>
+);
 
 export default OrganizationCard;

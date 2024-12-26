@@ -3294,6 +3294,15 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null } | null };
 
+export type OrganizationsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -3517,6 +3526,66 @@ export const useInfiniteOrganizationQuery = <
     )};
 
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
+
+export const OrganizationsDocument = `
+    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $search: String) {
+  organizations(
+    first: $first
+    orderBy: $orderBy
+    filter: {name: {includesInsensitive: $search}}
+  ) {
+    nodes {
+      rowId
+      name
+      projects {
+        totalCount
+      }
+      userOrganizations {
+        totalCount
+      }
+    }
+  }
+}
+    `;
+
+export const useOrganizationsQuery = <
+      TData = OrganizationsQuery,
+      TError = unknown
+    >(
+      variables?: OrganizationsQueryVariables,
+      options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<OrganizationsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Organizations'] : ['Organizations', variables],
+    queryFn: useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations'] : ['Organizations', variables];
+
+export const useInfiniteOrganizationsQuery = <
+      TData = InfiniteData<OrganizationsQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument)
+    return useInfiniteQuery<OrganizationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables];
 
 export const PostsDocument = `
     query Posts($projectId: UUID!) {

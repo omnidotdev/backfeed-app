@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Dialog, HStack, Icon, useDisclosure } from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
 
