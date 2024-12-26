@@ -90,8 +90,6 @@ const OrganizationProjectsOverview = () => {
                 description={description}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
-                organizationId={params.organizationId}
-                projectId={id}
               />
             ))
           )}
