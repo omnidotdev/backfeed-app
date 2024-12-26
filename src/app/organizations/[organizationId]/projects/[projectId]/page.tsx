@@ -37,7 +37,7 @@ const ProjectPage = () => {
   const navigateToProjectsPage = () =>
     router.push(`/organizations/${params.organizationId}/projects`);
 
-  if (isAuthenticated) notFound();
+  if (!isAuthenticated) notFound();
 
   return (
     <Page

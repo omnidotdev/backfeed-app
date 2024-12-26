@@ -29,7 +29,7 @@ const OrganizationPage = () => {
     router.push(`/organizations/${params.organizationId}/projects`);
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
-  if (isAuthenticated) notFound();
+  if (!isAuthenticated) notFound();
 
   return (
     <Page

@@ -24,7 +24,6 @@ const knipConfig: KnipConfig = {
   ignore: [
     "panda.config.ts",
     "src/generated/**",
-    "src/lib/config/env.config.ts/**",
   ],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency

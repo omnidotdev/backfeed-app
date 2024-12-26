@@ -13,7 +13,7 @@ const HomePage = () => {
 
   if (isLoading) return <Spinner justifySelf="center" mt={12} />;
 
-  if (isAuthenticated) return <LandingPage />;
+  if (!isAuthenticated) return <LandingPage />;
 
   return <DashboardPage />;
 };
