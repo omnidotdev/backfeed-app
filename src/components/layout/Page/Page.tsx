@@ -1,18 +1,24 @@
 "use client";
 
 import { Button, Flex, Stack, Text } from "@omnidev/sigil";
+import { useRouter } from "next/navigation";
+import { Breadcrumb } from "components/core";
 
 import type { ButtonProps, FlexProps, StackProps } from "@omnidev/sigil";
 import type { ReactNode } from "react";
+import type { BreadcrumbRecord } from "components/core";
 
 interface ActionButton extends ButtonProps {
   /** Button label. */
   label: string;
   /** Button icon. */
   icon: ReactNode;
+  href?: string;
 }
 
 interface Props extends StackProps {
+  /** Page breadcrumbs for navigation. */
+  breadcrumbs?: BreadcrumbRecord[];
   /** Page header props. */
   header?: {
     /** Header section title. */
@@ -29,62 +35,75 @@ interface Props extends StackProps {
 /**
  * Page layout.
  */
-const Page = ({ header, children, ...rest }: Props) => (
-  <Stack
-    maxW={{ base: "90svw", lg: "8xl" }}
-    mx="auto"
-    px={{ lg: 6 }}
-    py={6}
-    gap={6}
-    {...rest}
-  >
-    {header && (
-      <Flex direction="column" w="100%" {...header.headerProps}>
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          align={{ base: "flex-start", md: "center" }}
-          justify="space-between"
-          gap={4}
-        >
-          <Stack>
-            <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
-              {header.title}
-            </Text>
+const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
+  const router = useRouter();
 
-            <Text
-              as="h2"
-              fontSize={{ base: "sm", sm: "md" }}
-              fontWeight="medium"
-              color="foreground.subtle"
-            >
-              {header.description}
-            </Text>
-          </Stack>
+  return (
+    <Stack
+      maxW={{ base: "90svw", lg: "8xl" }}
+      mx="auto"
+      px={{ lg: 6 }}
+      py={6}
+      gap={6}
+      {...rest}
+    >
+      {breadcrumbs && <Breadcrumb breadcrumbs={breadcrumbs} />}
 
+      {header && (
+        <Flex direction="column" w="100%" {...header.headerProps}>
           <Flex
+            direction={{ base: "column", md: "row" }}
+            align={{ base: "flex-start", md: "center" }}
+            justify="space-between"
             gap={4}
-            width={{ base: "full", md: "auto" }}
-            direction={{ base: "column", sm: "row" }}
           >
-            {header.cta.map(({ label, icon, ...rest }) => (
-              <Button
-                key={label}
-                size="sm"
-                width={{ base: "full", md: "auto" }}
-                {...rest}
+            <Stack>
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="semibold"
+                lineHeight={1.3}
               >
-                {icon}
+                {header.title}
+              </Text>
 
-                <Text>{label}</Text>
-              </Button>
-            ))}
+              <Text
+                as="h2"
+                fontSize={{ base: "sm", sm: "md" }}
+                fontWeight="medium"
+                color="foreground.subtle"
+              >
+                {header.description}
+              </Text>
+            </Stack>
+
+            <Flex
+              gap={4}
+              width={{ base: "full", md: "auto" }}
+              direction={{ base: "column", sm: "row" }}
+            >
+              {header.cta.map(({ label, icon, href, ...rest }) => (
+                <Button
+                  key={label}
+                  size="sm"
+                  width={{ base: "full", md: "auto" }}
+                  disabled={!href}
+                  onClick={href ? () => router.push(href) : undefined}
+                  {...rest}
+                >
+                  {icon}
+
+                  <Text>{label}</Text>
+                </Button>
+              ))}
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
-    )}
+      )}
 
-    {children}
-  </Stack>
-);
+      {children}
+    </Stack>
+  );
+};
 
 export default Page;

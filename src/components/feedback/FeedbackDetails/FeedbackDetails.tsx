@@ -257,33 +257,35 @@ const FeedbackDetails = ({
               )}
 
               <Flex gap={1}>
-                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-                  <Skeleton key={id} isLoaded={isLoaded} h={7}>
-                    <Tooltip
-                      positioning={{ placement: "top" }}
-                      trigger={
-                        <HStack gap={2} py={1} fontVariant="tabular-nums">
-                          <Icon src={icon} w={5} h={5} />
+                {VOTE_BUTTONS.map(
+                  ({ id, votes = 0, tooltip, icon, ...rest }) => (
+                    <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                      <Tooltip
+                        positioning={{ placement: "top" }}
+                        trigger={
+                          <HStack gap={2} py={1} fontVariant="tabular-nums">
+                            <Icon src={icon} w={5} h={5} />
 
-                          {votes ?? 0}
-                        </HStack>
-                      }
-                      triggerProps={{
-                        variant: "ghost",
-                        w: "full",
-                        bgColor: "transparent",
-                        opacity: {
-                          base: 1,
-                          _disabled: 0.3,
-                          _hover: { base: 0.8, _disabled: 0.3 },
-                        },
-                        ...rest,
-                      }}
-                    >
-                      {tooltip}
-                    </Tooltip>
-                  </Skeleton>
-                ))}
+                            {votes}
+                          </HStack>
+                        }
+                        triggerProps={{
+                          variant: "ghost",
+                          w: "full",
+                          bgColor: "transparent",
+                          opacity: {
+                            base: 1,
+                            _disabled: 0.3,
+                            _hover: { base: 0.8, _disabled: 0.3 },
+                          },
+                          ...rest,
+                        }}
+                      >
+                        {tooltip}
+                      </Tooltip>
+                    </Skeleton>
+                  )
+                )}
               </Flex>
             </HStack>
           </Stack>

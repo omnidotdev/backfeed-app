@@ -3,6 +3,7 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
+  breadcrumb: "Home",
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
@@ -108,6 +109,7 @@ const app = {
     },
   },
   organizationsPage: {
+    breadcrumb: "Organizations",
     header: {
       title: "Organizations",
       description: "Manage and monitor all your organizations in one place.",
@@ -186,6 +188,33 @@ const app = {
       },
     },
   },
+  projectsPage: {
+    breadcrumb: "Projects",
+    header: {
+      title: "Projects",
+      description:
+        "Manage and monitor all your organization's projects in one place.",
+      cta: {
+        newProject: {
+          label: "New Project",
+        },
+      },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all projects...",
+      },
+      select: {
+        status: {
+          label: {
+            id: "Status",
+            singular: "Status",
+            plural: "Statuses",
+          },
+        },
+      },
+    },
+  },
   projectPage: {
     backToOrganziation: "Back to Organization",
     header: {
@@ -227,32 +256,6 @@ const app = {
         planned: "Planned",
         inProgress: "In Progress",
         completed: "Completed",
-      },
-    },
-  },
-  projectsPage: {
-    header: {
-      title: "Projects",
-      description:
-        "Manage and monitor all your organization's projects in one place.",
-      cta: {
-        newProject: {
-          label: "New Project",
-        },
-      },
-    },
-    filters: {
-      search: {
-        placeholder: "Search all projects...",
-      },
-      select: {
-        status: {
-          label: {
-            id: "Status",
-            singular: "Status",
-            plural: "Statuses",
-          },
-        },
       },
     },
   },

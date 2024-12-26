@@ -1,3 +1,5 @@
+"use client";
+
 import { Flex, Text, Icon } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { PiArrowFatLineUpFill } from "react-icons/pi";

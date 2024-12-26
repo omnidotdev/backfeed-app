@@ -1,21 +1,13 @@
-"use client";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
-import { Button, Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
-import Link from "next/link";
-import { notFound, useParams, useRouter } from "next/navigation";
-import { FiArrowLeft } from "react-icons/fi";
+import { ProjectOverview } from "components/project";
 import { LuSettings } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
 
 import { Page } from "components/layout";
-import {
-  FeedbackMetrics,
-  ProjectFeedback,
-  ProjectInformation,
-  StatusBreakdown,
-} from "components/project";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { getAuthSession } from "lib/util";
 
 import type { OrganizationProject } from "components/organization";
 
@@ -25,22 +17,43 @@ const projectData: OrganizationProject = {
   description: "Beta testing feedback for the new web platform",
 };
 
+interface Props {
+  /** Project page params. */
+  params: Promise<{ organizationId: string; projectId: string }>;
+}
+
 /**
  * Project overview page.
  */
-const ProjectPage = () => {
-  const { isAuthenticated } = useAuth();
+const ProjectPage = async ({ params }: Props) => {
+  const { organizationId, projectId } = await params;
+  const session = await getAuthSession();
 
-  const params = useParams<{ organizationId: string; projectId: string }>(),
-    router = useRouter();
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      // TODO: Use actual organization name here instead of ID
+      label: organizationId,
+      href: `/organizations/${organizationId}`,
+    },
+    {
+      label: app.projectsPage.breadcrumb,
+      href: `/organizations/${organizationId}/projects`,
+    },
+    {
+      // TODO: Use actual project name here instead of ID
+      label: projectId,
+    },
+  ];
 
-  const navigateToProjectsPage = () =>
-    router.push(`/organizations/${params.organizationId}/projects`);
-
-  if (!isAuthenticated) notFound();
+  if (!session) notFound();
 
   return (
     <Page
+      breadcrumbs={breadcrumbs}
       // TODO: Use actual project data here instead of placeholder
       header={{
         title: projectData.name,
@@ -57,40 +70,14 @@ const ProjectPage = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            onClick: navigateToProjectsPage,
+            href: `/organizations/${organizationId}/projects`,
           },
         ],
       }}
     >
-      <Link href={`/${params.organizationId}`}>
-        <Button
-          variant="ghost"
-          size="lg"
-          _hover={{ bgColor: "background.muted" }}
-        >
-          <Icon src={FiArrowLeft} w={4} h={4} />
-          {app.projectPage.backToOrganziation}
-        </Button>
-      </Link>
-
-      <Grid h="100%" gap={6} columns={{ base: 1, md: 3 }}>
-        <GridItem colSpan={{ base: 3, md: 2 }} h="100%">
-          <ProjectFeedback />
-        </GridItem>
-
-        <GridItem h="100%">
-          <Stack gap={6}>
-            <ProjectInformation
-              projectName={projectData.name}
-              projectDescription={projectData.description}
-            />
-
-            <FeedbackMetrics />
-
-            <StatusBreakdown />
-          </Stack>
-        </GridItem>
-      </Grid>
+      <Suspense>
+        <ProjectOverview projectData={projectData} />
+      </Suspense>
     </Page>
   );
 };

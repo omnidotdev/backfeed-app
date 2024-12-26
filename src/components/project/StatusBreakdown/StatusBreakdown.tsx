@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge, Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
