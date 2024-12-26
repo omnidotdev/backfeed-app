@@ -1,4 +1,5 @@
 # multi-stage build (designed for production)
+# NB: standard Next.js environment variables are not injected here, they are intended to be injected by the platform (Kubernetes, cloud provider, or similar)
 # ! NB: Next.js `standalone` mode must be enabled (https://github.com/vercel/next.js/tree/canary/examples/with-docker#in-existing-projects)
 
 FROM oven/bun AS base
