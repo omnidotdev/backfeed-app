@@ -10,32 +10,37 @@ import { app } from "lib/config";
 /**
  * Status breakdown for a project.
  */
-const StatusBreakdown = () => (
-  <SectionContainer title={app.projectPage.statusBreakdown.title}>
-    <Flex justifyContent="space-between" align="center">
-      <Badge>{app.projectPage.statusBreakdown.status.new}</Badge>
+const StatusBreakdown = () => {
+  const breakdown = [
+    {
+      status: app.projectPage.statusBreakdown.status.new,
+      count: 69,
+    },
+    {
+      status: app.projectPage.statusBreakdown.status.planned,
+      count: 69,
+    },
+    {
+      status: app.projectPage.statusBreakdown.status.inProgress,
+      count: 69,
+    },
+    {
+      status: app.projectPage.statusBreakdown.status.completed,
+      count: 69,
+    },
+  ];
 
-      <Text>69</Text>
-    </Flex>
+  return (
+    <SectionContainer title={app.projectPage.statusBreakdown.title}>
+      {breakdown.map(({ status, count }) => (
+        <Flex key={status} justifyContent="space-between" align="center">
+          <Badge>{status}</Badge>
 
-    <Flex justifyContent="space-between" align="center">
-      <Badge>{app.projectPage.statusBreakdown.status.planned}</Badge>
-
-      <Text>69</Text>
-    </Flex>
-
-    <Flex justifyContent="space-between" align="center">
-      <Badge>{app.projectPage.statusBreakdown.status.inProgress}</Badge>
-
-      <Text>69</Text>
-    </Flex>
-
-    <Flex justifyContent="space-between" align="center">
-      <Badge>{app.projectPage.statusBreakdown.status.completed}</Badge>
-
-      <Text>69</Text>
-    </Flex>
-  </SectionContainer>
-);
+          <Text>{count}</Text>
+        </Flex>
+      ))}
+    </SectionContainer>
+  );
+};
 
 export default StatusBreakdown;

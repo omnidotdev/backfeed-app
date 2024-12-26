@@ -18,38 +18,41 @@ interface Props {
 /**
  * Project information.
  */
-const ProjectInformation = ({ projectName, projectDescription }: Props) => (
-  <SectionContainer title={app.projectPage.projectInformation.title}>
-    <Stack>
-      <Text>{projectName}</Text>
+const ProjectInformation = ({ projectName, projectDescription }: Props) => {
+  const information = [
+    {
+      title: app.projectPage.projectInformation.activeUsers,
+      icon: HiOutlineUserGroup,
+      value: "1,234",
+    },
+    {
+      title: app.projectPage.projectInformation.created,
+      icon: IoCalendarOutline,
+      value: "Apr 1, 2024",
+    },
+  ];
 
-      <Text color="foreground.subtle">{projectDescription}</Text>
-    </Stack>
+  return (
+    <SectionContainer title={app.projectPage.projectInformation.title}>
+      <Stack>
+        <Text>{projectName}</Text>
 
-    <Flex justify="space-between" align="center">
-      <Flex gap={2} align="center">
-        <Icon src={HiOutlineUserGroup} />
+        <Text color="foreground.subtle">{projectDescription}</Text>
+      </Stack>
 
-        <Text color="foreground.muted">
-          {app.projectPage.projectInformation.activeUsers}
-        </Text>
-      </Flex>
+      {information.map(({ title, icon, value }) => (
+        <Flex key={title} justify="space-between" align="center">
+          <Flex gap={2} align="center">
+            <Icon src={icon} />
 
-      <Text>1,234</Text>
-    </Flex>
+            <Text color="foreground.muted">{title}</Text>
+          </Flex>
 
-    <Flex justify="space-between" align="center">
-      <Flex gap={2} align="center">
-        <Icon src={IoCalendarOutline} />
-
-        <Text color="foreground.muted">
-          {app.projectPage.projectInformation.created}
-        </Text>
-      </Flex>
-
-      <Text>Apr 1, 2024</Text>
-    </Flex>
-  </SectionContainer>
-);
+          <Text>{value}</Text>
+        </Flex>
+      ))}
+    </SectionContainer>
+  );
+};
 
 export default ProjectInformation;

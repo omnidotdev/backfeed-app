@@ -10,32 +10,34 @@ import { app } from "lib/config";
 /**
  * Feedback metrics for a project.
  */
-const FeedbackMetrics = () => (
-  <SectionContainer title={app.projectPage.feedbackMetrics.title}>
-    <Flex justify="space-between" align="center">
-      <Flex gap={2} align="center">
-        <Icon src={HiOutlineFolder} />
+const FeedbackMetrics = () => {
+  const metrics = [
+    {
+      title: app.projectPage.feedbackMetrics.totalFeedback,
+      icon: HiOutlineFolder,
+      value: "69",
+    },
+    {
+      title: app.projectPage.feedbackMetrics.totalUpvotes,
+      icon: PiArrowFatLineUpFill,
+      value: "69",
+    },
+  ];
+  return (
+    <SectionContainer title={app.projectPage.feedbackMetrics.title}>
+      {metrics.map(({ title, icon, value }) => (
+        <Flex key={title} justify="space-between" align="center">
+          <Flex gap={2} align="center">
+            <Icon src={icon} />
 
-        <Text color="foreground.muted">
-          {app.projectPage.feedbackMetrics.totalFeedback}
-        </Text>
-      </Flex>
+            <Text color="foreground.muted">{title}</Text>
+          </Flex>
 
-      <Text>69</Text>
-    </Flex>
-
-    <Flex justify="space-between" align="center">
-      <Flex gap={2} align="center">
-        <Icon src={PiArrowFatLineUpFill} />
-
-        <Text color="foreground.muted">
-          {app.projectPage.feedbackMetrics.totalUpvotes}
-        </Text>
-      </Flex>
-
-      <Text>69</Text>
-    </Flex>
-  </SectionContainer>
-);
+          <Text>{value}</Text>
+        </Flex>
+      ))}
+    </SectionContainer>
+  );
+};
 
 export default FeedbackMetrics;
