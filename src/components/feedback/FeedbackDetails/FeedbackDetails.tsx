@@ -107,8 +107,7 @@ const FeedbackDetails = ({
       icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
       disabled: isVotingDisabled,
-      onClick: (e) => {
-        e.stopPropagation();
+      onClick: () => {
         setVotingState((prev) => ({
           hasUpvoted: !prev.hasUpvoted,
           hasDownvoted: false,
@@ -126,8 +125,7 @@ const FeedbackDetails = ({
         : PiArrowFatLineDown,
       color: "brand.quinary",
       disabled: isVotingDisabled,
-      onClick: (e) => {
-        e.stopPropagation();
+      onClick: () => {
         setVotingState((prev) => ({
           hasUpvoted: false,
           hasDownvoted: !prev.hasDownvoted,
