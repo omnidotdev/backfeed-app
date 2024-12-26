@@ -11,6 +11,7 @@ WORKDIR /app
 
 # install dependencies
 COPY package.json bun.lockb panda.config.ts ./
+# `apt` commands below are a workaround for blocked builds on some systems: https://github.com/oven-sh/bun/issues/9807#issuecomment-2218837172
 RUN apt update && apt install python3 python3-pip make g++ -y
 RUN bun install --frozen-lockfile
 
