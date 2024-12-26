@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Badge,
   Flex,
@@ -16,13 +18,13 @@ import {
   PiArrowFatLineUp,
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
+import { match } from "ts-pattern";
 
 import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
 
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
-import { match } from "ts-pattern";
 
 export interface Feedback {
   /** Feedback ID. */

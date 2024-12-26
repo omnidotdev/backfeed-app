@@ -39,13 +39,15 @@ const OrganizationPage = () => {
         cta: [
           {
             label: app.organizationPage.header.cta.viewAllProjects.label,
-            icon: HiOutlineFolder,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <HiOutlineFolder />,
             variant: "outline",
             onClick: navigateToProjectsPage,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
-            icon: LuPlusCircle,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <LuPlusCircle />,
           },
         ],
       }}

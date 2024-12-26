@@ -1,3 +1,5 @@
+"use client";
+
 import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,

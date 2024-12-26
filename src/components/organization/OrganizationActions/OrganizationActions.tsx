@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { LuPlusCircle, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
