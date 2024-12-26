@@ -41,10 +41,6 @@ interface Props extends FlexProps {
   name: string;
   /** Description of the organization. */
   description: string;
-  /** Organization ID. */
-  organizationId: string;
-  /** Project ID. */
-  projectId: string;
 }
 
 /**
