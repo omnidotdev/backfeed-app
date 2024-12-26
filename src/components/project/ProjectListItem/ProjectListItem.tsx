@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge, HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
