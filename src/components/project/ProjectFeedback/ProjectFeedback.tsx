@@ -198,6 +198,7 @@ const ProjectFeedback = () => {
             borderColor="border.subtle"
             fontSize="sm"
             rows={5}
+            minH={32}
           />
 
           <Stack justify="space-between" direction="row">
