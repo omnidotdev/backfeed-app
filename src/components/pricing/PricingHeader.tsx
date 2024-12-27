@@ -11,13 +11,6 @@ function PricingHeader() {
         textAlign={"center"}
         marginBottom={"0.5rem"}
         marginTop={"2rem"}
-        // style={{
-        //   fontSize: "3rem",
-        //   fontWeight: "bold",
-        //   textAlign: "center",
-        //   marginBottom: "0.5rem",
-        //   marginTop: "2rem",
-        // }}
       >
         {app.pricingHeader.title}
       </Text>
