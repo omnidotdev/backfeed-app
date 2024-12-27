@@ -1,6 +1,10 @@
 "use client";
 import { VStack } from "@omnidev/sigil";
-import { PricingCard, PricingFAQ, PricingHeader } from "components/pricing/index";
+import {
+  PricingCard,
+  PricingFAQ,
+  PricingHeader,
+} from "components/pricing/index";
 
 const PricingPage = () => {
   return (
