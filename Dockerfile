@@ -22,17 +22,17 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # disable telemetry during build (https://nextjs.org/telemetry)
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # disable telemetry during runtime (https://nextjs.org/telemetry)
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN adduser --system --uid 1001 nextjs
 
@@ -44,6 +44,6 @@ COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
 USER nextjs
 
 EXPOSE 3000
-ENV PORT 3000
+ENV PORT=3000
 
 ENTRYPOINT ["bun", "server.js"]
