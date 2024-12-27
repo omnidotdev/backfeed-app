@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
-import { Suspense } from "react";
 
 import { Page } from "components/layout";
 import { OrganizationOverview } from "components/organization";
@@ -55,9 +54,7 @@ const OrganizationPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <Suspense>
-        <OrganizationOverview />
-      </Suspense>
+      <OrganizationOverview />
     </Page>
   );
 };

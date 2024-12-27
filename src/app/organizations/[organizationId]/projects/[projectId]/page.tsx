@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-
-import { ProjectOverview } from "components/project";
 import { LuSettings } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
 
+import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
 import { getAuthSession } from "lib/util";
@@ -75,9 +73,7 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <Suspense>
-        <ProjectOverview projectData={projectData} />
-      </Suspense>
+      <ProjectOverview projectData={projectData} />
     </Page>
   );
 };
