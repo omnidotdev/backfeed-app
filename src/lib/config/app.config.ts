@@ -216,7 +216,6 @@ const app = {
     },
   },
   projectPage: {
-    backToOrganziation: "Back to Organization",
     header: {
       cta: {
         settings: {
@@ -260,7 +259,7 @@ const app = {
     },
   },
   feedbackPage: {
-    backToProject: "Back to Project",
+    breadcrumb: "Feedback",
     details: {
       upvote: "Upvote",
       downvote: "Downvote",

@@ -1,30 +1,27 @@
-"use client";
-
-import { Button, Icon } from "@omnidev/sigil";
-import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
-import { FiArrowLeft } from "react-icons/fi";
+import { notFound } from "next/navigation";
 
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import { app } from "lib/config";
-import { useAuth, useDataState } from "lib/hooks";
+import { getAuthSession } from "lib/util";
 
 import type { Feedback } from "components/feedback";
+
+interface Props {
+  /** Feedback page params. */
+  params: Promise<{
+    organizationId: string;
+    projectId: string;
+    feedbackId: string;
+  }>;
+}
 
 /**
  * Feedback overview page.
  */
-const FeedbackPage = () => {
-  const { isAuthenticated } = useAuth();
-
-  const { feedbackId, organizationId, projectId } = useParams<{
-    feedbackId: string;
-    organizationId: string;
-    projectId: string;
-  }>();
-
-  const { isLoading, isError } = useDataState({ timeout: 400 });
+const FeedbackPage = async ({ params }: Props) => {
+  const { organizationId, projectId, feedbackId } = await params;
+  const session = await getAuthSession();
 
   const FEEDBACK: Feedback = {
     id: feedbackId,
@@ -43,27 +40,35 @@ const FeedbackPage = () => {
     },
   };
 
-  if (!isAuthenticated) notFound();
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      // TODO: Use actual organization name here instead of ID
+      label: organizationId,
+      href: `/organizations/${organizationId}`,
+    },
+    {
+      label: app.projectsPage.breadcrumb,
+      href: `/organizations/${organizationId}/projects`,
+    },
+    {
+      // TODO: Use actual project name here instead of ID
+      label: projectId,
+      href: `/organizations/${organizationId}/projects/${projectId}`,
+    },
+    {
+      label: app.feedbackPage.breadcrumb,
+    },
+  ];
+
+  if (!session) notFound();
 
   return (
-    <Page>
-      <Link href={`/organizations/${organizationId}/projects/${projectId}`}>
-        <Button
-          variant="ghost"
-          size="lg"
-          _hover={{ bgColor: "background.muted" }}
-        >
-          <Icon src={FiArrowLeft} w={4} h={4} />
-
-          {app.feedbackPage.backToProject}
-        </Button>
-      </Link>
-
-      <FeedbackDetails
-        feedback={FEEDBACK}
-        isLoaded={!isLoading}
-        isError={isError}
-      />
+    <Page breadcrumbs={breadcrumbs}>
+      <FeedbackDetails feedback={FEEDBACK} />
 
       <Comments />
     </Page>

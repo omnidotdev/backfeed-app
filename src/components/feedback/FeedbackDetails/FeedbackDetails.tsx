@@ -25,6 +25,7 @@ import Link from "next/link";
 
 import { ErrorBoundary } from "components/layout";
 import { app } from "lib/config";
+import { useDataState } from "lib/hooks";
 
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -71,10 +72,6 @@ interface VoteButtonProps extends TooltipTriggerProps {
 interface Props {
   /** Feedback details. */
   feedback: Feedback | null | undefined;
-  /** Whether the feedback data is loaded. */
-  isLoaded?: boolean;
-  /** Whether loading the feedback data encountered an error. */
-  isError?: boolean;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -82,20 +79,17 @@ interface Props {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({
-  feedback,
-  isLoaded = true,
-  isError,
-  projectPage = false,
-}: Props) => {
+const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
+
+  const { isLoading, isError } = useDataState({ timeout: 400 });
 
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
     hasDownvoted: boolean;
   }>({ hasUpvoted: false, hasDownvoted: false });
 
-  const isVotingDisabled = !isLoaded || isError;
+  const isVotingDisabled = isLoading || isError;
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
@@ -164,8 +158,8 @@ const FeedbackDetails = ({
           <HStack justify="space-between">
             <Stack direction={{ base: "column", sm: "row" }} gap={4}>
               <Skeleton
-                isLoaded={isLoaded}
-                maxW={!isLoaded ? 48 : undefined}
+                isLoaded={!isLoading}
+                maxW={isLoading ? 48 : undefined}
                 h={9}
               >
                 <Text fontWeight="semibold" fontSize="2xl">
@@ -174,7 +168,7 @@ const FeedbackDetails = ({
               </Skeleton>
 
               <HStack>
-                <Skeleton isLoaded={isLoaded}>
+                <Skeleton isLoaded={!isLoading}>
                   <Badge
                     variant="outline"
                     color="brand.secondary"
@@ -184,7 +178,7 @@ const FeedbackDetails = ({
                   </Badge>
                 </Skeleton>
 
-                <Skeleton isLoaded={isLoaded}>
+                <Skeleton isLoaded={!isLoading}>
                   <Text
                     fontSize="sm"
                     color="foreground.subtle"
@@ -194,7 +188,7 @@ const FeedbackDetails = ({
             </Stack>
 
             <Skeleton
-              isLoaded={isLoaded}
+              isLoaded={!isLoading}
               fontWeight="semibold"
               alignSelf={{ base: "flex-start", sm: "center" }}
               px={2}
@@ -207,8 +201,8 @@ const FeedbackDetails = ({
           </HStack>
 
           <Skeleton
-            isLoaded={isLoaded}
-            minH={!isLoaded ? 24 : undefined}
+            isLoaded={!isLoading}
+            minH={isLoading ? 24 : undefined}
             mt={2}
           >
             <Text color="foreground.muted">{feedback?.description}</Text>
@@ -220,7 +214,7 @@ const FeedbackDetails = ({
               fontSize="sm"
               gap={{ base: 1, sm: 2 }}
             >
-              <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 32 : undefined}>
+              <Skeleton isLoaded={!isLoading} maxW={isLoading ? 32 : undefined}>
                 <Text color="foreground.subtle">
                   {feedback?.user.firstName} {feedback?.user.lastName}
                 </Text>
@@ -235,7 +229,7 @@ const FeedbackDetails = ({
                 placeSelf="center"
               />
 
-              <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 24 : undefined}>
+              <Skeleton isLoaded={!isLoading} maxW={isLoading ? 24 : undefined}>
                 <Text color="foreground.subtle">
                   {dayjs(feedback?.createdAt).fromNow()}
                 </Text>
@@ -257,7 +251,7 @@ const FeedbackDetails = ({
               <Flex gap={1}>
                 {VOTE_BUTTONS.map(
                   ({ id, votes = 0, tooltip, icon, ...rest }) => (
-                    <Skeleton key={id} isLoaded={isLoaded} h={7}>
+                    <Skeleton key={id} isLoaded={!isLoading} h={7}>
                       <Tooltip
                         positioning={{ placement: "top" }}
                         trigger={

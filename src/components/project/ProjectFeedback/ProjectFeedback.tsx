@@ -231,8 +231,6 @@ const ProjectFeedback = () => {
                     <FeedbackDetails
                       key={`${feedback.id} - ${index}`}
                       feedback={feedback}
-                      isLoaded={!isLoading}
-                      isError={isError}
                       projectPage
                     />
                   ))}
