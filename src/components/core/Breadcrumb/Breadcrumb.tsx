@@ -6,11 +6,14 @@ import { LuChevronRight } from "react-icons/lu";
 import { app } from "lib/config";
 
 export interface BreadcrumbRecord {
+  /** Label for the breadcrumb. */
   label: string;
+  /** URL path the breadcrumb navigates to. */
   href?: string;
 }
 
 interface Props {
+  /** Array of navigation breadcrumbs. */
   breadcrumbs: BreadcrumbRecord[];
 }
 
