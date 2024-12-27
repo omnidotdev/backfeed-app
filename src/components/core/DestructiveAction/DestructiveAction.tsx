@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Dialog, HStack, Icon, useDisclosure } from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
 
@@ -55,7 +57,6 @@ const DestructiveAction = ({
   ];
 
   return (
-    // @ts-ignore TODO: figure out why this is throwing an error
     <Dialog
       title={title}
       description={description}

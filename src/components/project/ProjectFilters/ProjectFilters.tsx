@@ -47,7 +47,6 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
       <GridItem colSpan={1}>
         <Select
           label={app.projectsPage.filters.select.status.label}
-          // @ts-ignore TODO figure out why this is throwing an error
           collection={createListCollection({
             items: STATUSES.map((status) => ({ label: status, value: status })),
           })}
@@ -60,7 +59,6 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
             borderColor: "border.subtle",
           }}
           defaultValue={status ? [status] : []}
-          // @ts-ignore TODO figure out why this is throwing an error
           onValueChange={({ value }) =>
             setSearchParams({ status: value.length ? value[0] : null })
           }

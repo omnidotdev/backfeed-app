@@ -1,18 +1,14 @@
-"use client";
-
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
-import { useAuth } from "lib/hooks";
+import { getAuthSession } from "lib/util";
 
 /**
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
-const HomePage = () => {
-  const { isAuthenticated } = useAuth();
+const HomePage = async () => {
+  const session = await getAuthSession();
 
-  if (!isAuthenticated) {
-    return <LandingPage />;
-  }
+  if (!session) return <LandingPage />;
 
   return <DashboardPage />;
 };

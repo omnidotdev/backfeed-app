@@ -2,14 +2,34 @@ const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   organization: "Omni",
+  productionUrl: "https://backfeed.omni.dev",
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
     returnHome: "Return home",
   },
+  auth: {
+    signIn: {
+      label: "Sign In",
+    },
+    signUp: {
+      label: "Sign Up",
+    },
+    signOut: {
+      label: "Sign Out",
+    },
+    profile: {
+      label: "Profile",
+    },
+  },
   actions: {
     cancel: {
       label: "Cancel",
+    },
+  },
+  info: {
+    comingSoon: {
+      label: "Coming Soon",
     },
   },
   landingPage: {

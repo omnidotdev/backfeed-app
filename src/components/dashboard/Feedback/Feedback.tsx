@@ -1,3 +1,5 @@
+"use client";
+
 import { Grid } from "@omnidev/sigil";
 
 import { FeedbackOverview, RecentFeedback } from "components/dashboard";

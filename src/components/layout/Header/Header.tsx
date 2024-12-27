@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { AccountInformation, GetStarted, ThemeToggle } from "components/layout";
+import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -15,7 +15,7 @@ import { useAuth } from "lib/hooks";
  */
 const Header = () => {
   const pathname = usePathname(),
-    { isAuthenticated } = useAuth();
+    { isAuthenticated, isLoading } = useAuth();
 
   // TODO: make dynamic based on the current route
   const { landingPage, dashboardPage } = navigationRoutes;
@@ -25,7 +25,7 @@ const Header = () => {
   return (
     <sigil.header
       display="flex"
-      h={16}
+      h={20}
       p={4}
       // TODO: discuss why this style prop is necessary
       style={{
@@ -50,34 +50,31 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {headerRoutes.map(({ label, href }) => {
-            const isActive = pathname === href;
+          {!isLoading &&
+            headerRoutes.map(({ label, href }) => {
+              const isActive = pathname === href;
 
-            return (
-              <Link key={href} href={href} role="group">
-                <Flex
-                  h={10}
-                  px={4}
-                  align="center"
-                  color={{
-                    base: "foreground.muted",
-                    _groupHover: "foreground.default",
-                  }}
-                  bgColor={isActive ? "background.muted" : "transparent"}
-                  borderRadius="md"
-                >
-                  {label}
-                </Flex>
-              </Link>
-            );
-          })}
+              return (
+                <Link key={href} href={href} role="group">
+                  <Flex
+                    h={10}
+                    px={4}
+                    align="center"
+                    color={{
+                      base: "foreground.muted",
+                      _groupHover: "foreground.default",
+                    }}
+                    bgColor={isActive ? "background.muted" : "transparent"}
+                    borderRadius="md"
+                  >
+                    {label}
+                  </Flex>
+                </Link>
+              );
+            })}
         </Flex>
 
-        <Flex alignItems="center" gap={6}>
-          <ThemeToggle />
-
-          {isAuthenticated ? <AccountInformation /> : <GetStarted />}
-        </Flex>
+        <HeaderActions />
       </Flex>
     </sigil.header>
   );

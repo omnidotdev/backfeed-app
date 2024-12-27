@@ -1,3 +1,5 @@
+"use client";
+
 import { useDebounceValue as useSigilDebounceValue } from "@omnidev/sigil";
 
 const DEFAULT_DELAY = 300;

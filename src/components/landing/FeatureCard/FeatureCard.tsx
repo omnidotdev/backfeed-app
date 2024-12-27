@@ -1,3 +1,5 @@
+"use client";
+
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { IconType } from "react-icons";
