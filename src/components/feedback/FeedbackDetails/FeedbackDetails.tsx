@@ -237,7 +237,6 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
             </Stack>
 
             <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
-              {/* TODO: Decide how we would like to route, with card click, while also handling votes well. */}
               {projectPage && (
                 <Link
                   href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.id}`}
