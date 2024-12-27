@@ -24,6 +24,8 @@ COPY . .
 # disable telemetry during build (https://nextjs.org/telemetry)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG WALLETCONNECT_PROJECT_ID
+
 RUN bun prepare
 RUN bun run build
 
