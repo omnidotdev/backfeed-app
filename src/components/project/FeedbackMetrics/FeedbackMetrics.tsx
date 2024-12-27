@@ -23,6 +23,7 @@ const FeedbackMetrics = () => {
       value: "69",
     },
   ];
+  
   return (
     <SectionContainer title={app.projectPage.feedbackMetrics.title}>
       {metrics.map(({ title, icon, value }) => (
