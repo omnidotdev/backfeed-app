@@ -17,6 +17,11 @@ import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { useAuth } from "lib/hooks";
 
+const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
+
+ const getFormattedDate = (diff: number) =>
+   dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+ 
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
@@ -24,11 +29,6 @@ const FeedbackOverview = () => {
   const isClient = useIsClient();
 
   const { user } = useAuth();
-
-  const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
-
-  const getFormattedDate = (diff: number) =>
-    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
   const {
     data: weeklyFeedback,
