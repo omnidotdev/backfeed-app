@@ -19,9 +19,9 @@ import { useAuth } from "lib/hooks";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 
- const getFormattedDate = (diff: number) =>
-   dayjs(oneWeekAgo).add(diff, "day").format("ddd");
- 
+const getFormattedDate = (diff: number) =>
+  dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
