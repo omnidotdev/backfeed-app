@@ -10,6 +10,7 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
+import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -20,10 +21,20 @@ const DashboardPage = () => {
   const { user } = useAuth(),
     { isLoading, isError } = useDataState({ timeout: 400 });
 
+  const { data: feedbackCount } = useDashboardAggregatesQuery(
+    {
+      userId: user?.id!,
+    },
+    {
+      enabled: !!user,
+      select: (data) => data?.posts?.totalCount,
+    }
+  );
+
   const aggregates = [
     {
       title: app.dashboardPage.aggregates.totalFeedback.title,
-      value: "12,345",
+      value: feedbackCount ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
     },
     {

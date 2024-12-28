@@ -3287,6 +3287,13 @@ export type UpvotePostMutationVariables = Exact<{
 
 export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
+export type DashboardAggregatesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null };
+
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
@@ -3477,6 +3484,55 @@ export const useUpvotePostMutation = <
     ...options
   }
     )};
+
+export const DashboardAggregatesDocument = `
+    query DashboardAggregates($userId: UUID!) {
+  posts(
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    totalCount
+  }
+}
+    `;
+
+export const useDashboardAggregatesQuery = <
+      TData = DashboardAggregatesQuery,
+      TError = unknown
+    >(
+      variables: DashboardAggregatesQueryVariables,
+      options?: Omit<UseQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<DashboardAggregatesQuery, TError, TData>(
+      {
+    queryKey: ['DashboardAggregates', variables],
+    queryFn: useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates', variables];
+
+export const useInfiniteDashboardAggregatesQuery = <
+      TData = InfiniteData<DashboardAggregatesQuery>,
+      TError = unknown
+    >(
+      variables: DashboardAggregatesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument)
+    return useInfiniteQuery<DashboardAggregatesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['DashboardAggregates.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
 
 export const OrganizationDocument = `
     query Organization($slug: String!) {
