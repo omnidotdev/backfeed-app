@@ -3292,7 +3292,7 @@ export type DashboardAggregatesQueryVariables = Exact<{
 }>;
 
 
-export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null };
+export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -3489,6 +3489,11 @@ export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
   posts(
     filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    totalCount
+  }
+  users(
+    filter: {userOrganizations: {some: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}}
   ) {
     totalCount
   }

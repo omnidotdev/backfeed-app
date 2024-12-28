@@ -10,4 +10,18 @@ query DashboardAggregates($userId: UUID!) {
   ) {
     totalCount
   }
+  # TODO: discuss a better approach. Aggregate data with the plugin is difficult across M2M relationships. This is a temporary solution.
+  users(
+    filter: {
+      userOrganizations: {
+        some: {
+          organization: {
+            userOrganizations: { some: { userId: { equalTo: $userId } } }
+          }
+        }
+      }
+    }
+  ) {
+    totalCount
+  }
 }

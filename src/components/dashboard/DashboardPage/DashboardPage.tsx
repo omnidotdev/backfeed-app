@@ -21,25 +21,28 @@ const DashboardPage = () => {
   const { user } = useAuth(),
     { isLoading, isError } = useDataState({ timeout: 400 });
 
-  const { data: feedbackCount } = useDashboardAggregatesQuery(
+  const { data: dashboardAggregates } = useDashboardAggregatesQuery(
     {
       userId: user?.id!,
     },
     {
       enabled: !!user,
-      select: (data) => data?.posts?.totalCount,
+      select: (data) => ({
+        totalFeedback: data?.posts?.totalCount,
+        totalUsers: data?.users?.totalCount,
+      }),
     }
   );
 
   const aggregates = [
     {
       title: app.dashboardPage.aggregates.totalFeedback.title,
-      value: feedbackCount ?? 0,
+      value: dashboardAggregates?.totalFeedback ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
     },
     {
       title: app.dashboardPage.aggregates.activeUsers.title,
-      value: "42,069",
+      value: dashboardAggregates?.totalUsers ?? 0,
       icon: HiOutlineUserGroup,
     },
     {
