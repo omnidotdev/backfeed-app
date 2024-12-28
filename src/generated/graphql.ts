@@ -3347,6 +3347,14 @@ export type UserQueryVariables = Exact<{
 
 export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', createdAt?: Date | null, id: string, rowId: string, updatedAt?: Date | null, walletAddress?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', createdAt?: Date | null, organizationId: string, userId: string, organization?: { __typename?: 'Organization', id: string, createdAt?: Date | null, name?: string | null, rowId: string, slug?: string | null, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', slug?: string | null, rowId: string, organizationId: string, name?: string | null, image?: string | null, id: string, description?: string | null, createdAt?: Date | null } | null> } } | null } | null> } } | null };
 
+export type WeeklyFeedbackQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  startDate: Scalars['Datetime']['input'];
+}>;
+
+
+export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: any | null } | null }> | null } | null };
+
 
 export const ProjectFragmentDoc = `
     fragment Project on Project {
@@ -3927,3 +3935,57 @@ export const useInfiniteUserQuery = <
     )};
 
 useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
+
+export const WeeklyFeedbackDocument = `
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+  posts(
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
+  ) {
+    groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
+      keys
+      distinctCount {
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useWeeklyFeedbackQuery = <
+      TData = WeeklyFeedbackQuery,
+      TError = unknown
+    >(
+      variables: WeeklyFeedbackQueryVariables,
+      options?: Omit<UseQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<WeeklyFeedbackQuery, TError, TData>(
+      {
+    queryKey: ['WeeklyFeedback', variables],
+    queryFn: useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback', variables];
+
+export const useInfiniteWeeklyFeedbackQuery = <
+      TData = InfiniteData<WeeklyFeedbackQuery>,
+      TError = unknown
+    >(
+      variables: WeeklyFeedbackQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument)
+    return useInfiniteQuery<WeeklyFeedbackQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WeeklyFeedback.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback.infinite', variables];
