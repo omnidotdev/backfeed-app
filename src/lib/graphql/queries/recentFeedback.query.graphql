@@ -16,6 +16,7 @@ query RecentFeedback($userId: UUID!) {
       description
       user {
         rowId
+        # TODO: add `firstName` and `lastName` once the user is synced with the database
       }
     }
   }
