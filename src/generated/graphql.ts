@@ -3304,6 +3304,7 @@ export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { _
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
+  userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -3589,11 +3590,11 @@ export const useInfiniteOrganizationQuery = <
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
 
 export const OrganizationsDocument = `
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $search: String) {
+    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
     first: $first
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}}
+    filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
     nodes {
       rowId
@@ -3613,19 +3614,19 @@ export const useOrganizationsQuery = <
       TData = OrganizationsQuery,
       TError = unknown
     >(
-      variables?: OrganizationsQueryVariables,
+      variables: OrganizationsQueryVariables,
       options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<OrganizationsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Organizations'] : ['Organizations', variables],
+    queryKey: ['Organizations', variables],
     queryFn: useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument).bind(null, variables),
     ...options
   }
     )};
 
-useOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations'] : ['Organizations', variables];
+useOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations', variables];
 
 export const useInfiniteOrganizationsQuery = <
       TData = InfiniteData<OrganizationsQuery>,
@@ -3639,14 +3640,14 @@ export const useInfiniteOrganizationsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables];
+useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
 
 export const PostsDocument = `
     query Posts($projectId: UUID!) {

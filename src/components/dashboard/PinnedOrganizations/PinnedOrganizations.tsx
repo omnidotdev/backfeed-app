@@ -9,6 +9,7 @@ import { OrganizationCard } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 import type { Organization } from "generated/graphql";
 
@@ -17,6 +18,7 @@ import type { Organization } from "generated/graphql";
  */
 const PinnedOrganizations = () => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const {
     data: pinnedOrganizations,
@@ -26,8 +28,10 @@ const PinnedOrganizations = () => {
     {
       first: 3,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      userId: user?.id!,
     },
     {
+      enabled: !!user,
       select: (data) => data?.organizations?.nodes,
     }
   );
@@ -76,7 +80,16 @@ const PinnedOrganizations = () => {
       {isError ? (
         <ErrorBoundary message="Error fetching organizations" h={48} />
       ) : (
-        <Grid gap={6} columns={{ base: 1, md: 3 }}>
+        <Grid
+          gap={6}
+          columns={{
+            base: 1,
+            md: pinnedOrganizations?.length
+              ? Math.min(pinnedOrganizations.length, 3)
+              : // TODO: discuss case where a user is not part of any organizations.
+                1,
+          }}
+        >
           {isLoading ? (
             <SkeletonArray count={3} h={48} />
           ) : (

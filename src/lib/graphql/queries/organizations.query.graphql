@@ -1,12 +1,16 @@
 query Organizations(
   $first: Int
   $orderBy: [OrganizationOrderBy!]
+  $userId: UUID!
   $search: String
 ) {
   organizations(
     first: $first
     orderBy: $orderBy
-    filter: { name: { includesInsensitive: $search } }
+    filter: {
+      name: { includesInsensitive: $search }
+      userOrganizations: { some: { userId: { equalTo: $userId } } }
+    }
   ) {
     nodes {
       rowId
