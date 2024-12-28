@@ -1,7 +1,6 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -45,11 +44,6 @@ const DashboardPage = () => {
       value: dashboardAggregates?.totalUsers ?? 0,
       icon: HiOutlineUserGroup,
     },
-    {
-      title: app.dashboardPage.aggregates.avgResponseTime.title,
-      value: "4.20h",
-      icon: GoClock,
-    },
   ];
 
   return (
@@ -68,7 +62,7 @@ const DashboardPage = () => {
     >
       <PinnedOrganizations />
 
-      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
+      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
           <Aggregate
             key={title}
