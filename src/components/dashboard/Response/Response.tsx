@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge, Flex, Text } from "@omnidev/sigil";
+import dayjs from "dayjs";
 import { match } from "ts-pattern";
 
 // NB: tried to use an enum here but had difficulties with runtime errors
@@ -9,13 +10,13 @@ export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 // NB: this prop drilling is under the assumption that the query from parent won't provide much overhead (i.e. parent is isolated query and has minimal nesting / a response is a direct child)
 interface Props {
   /** Feedback sender. */
-  sender: string;
+  sender: string | undefined;
   /** Feedback message. */
-  message: string;
+  message: string | null | undefined;
   /** Date feedback was published. */
-  date: string;
+  date: Date | null | undefined;
   /** Feedback type (i.e. category). */
-  type: ResponseType;
+  type: ResponseType | undefined;
 }
 
 /**
@@ -27,7 +28,7 @@ const Response = ({ sender, message, date, type }: Props) => {
     .with("Positive", () => "green")
     .with("Bug", () => "red")
     .with("Feature", () => "blue")
-    .exhaustive();
+    .otherwise(() => "foreground.subtle");
 
   return (
     <Flex
@@ -54,7 +55,7 @@ const Response = ({ sender, message, date, type }: Props) => {
       </Flex>
 
       <Text fontSize="xs" color="foreground.muted">
-        {date}
+        {dayjs(date).fromNow()}
       </Text>
     </Flex>
   );

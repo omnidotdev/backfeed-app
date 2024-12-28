@@ -1,0 +1,22 @@
+query RecentFeedback($userId: UUID!) {
+  posts(
+    first: 5
+    filter: {
+      project: {
+        organization: {
+          userOrganizations: { some: { userId: { equalTo: $userId } } }
+        }
+      }
+    }
+  ) {
+    nodes {
+      rowId
+      createdAt
+      title
+      description
+      user {
+        rowId
+      }
+    }
+  }
+}

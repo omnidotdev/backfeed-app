@@ -5,9 +5,10 @@ import { Flex } from "@omnidev/sigil";
 import { SkeletonArray } from "components/core";
 import { FeedbackCard, Response } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
-import { useDataState } from "lib/hooks";
+import { useAuth } from "lib/hooks";
 
 import type { ResponseType } from "components/dashboard";
+import { useRecentFeedbackQuery } from "generated/graphql";
 
 interface Feedback {
   id: string;
@@ -80,7 +81,21 @@ const FEEDBACK: Feedback[] = [
  * Recent feedback section.
  */
 const RecentFeedback = () => {
-  const { isLoading, isError } = useDataState({ timeout: 500 });
+  const { user } = useAuth();
+
+  const {
+    data: recentFeedback,
+    isLoading,
+    isError,
+  } = useRecentFeedbackQuery(
+    {
+      userId: user?.id!,
+    },
+    {
+      enabled: !!user,
+      select: (data) => data?.posts?.nodes,
+    }
+  );
 
   return (
     <FeedbackCard
@@ -99,13 +114,14 @@ const RecentFeedback = () => {
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : (
-            FEEDBACK.map(({ id, sender, message, date, type }) => (
+            recentFeedback?.map((feedback) => (
               <Response
-                key={id}
-                sender={sender}
-                message={message}
-                date={date}
-                type={type}
+                key={feedback?.rowId}
+                sender={feedback?.user?.rowId}
+                message={feedback?.description}
+                date={feedback?.createdAt}
+                // TODO: make this dynamic once the data is streamed in
+                type="Neutral"
               />
             ))
           )}

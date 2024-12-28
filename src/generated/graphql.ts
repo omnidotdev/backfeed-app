@@ -3333,6 +3333,13 @@ export type ProjectsQueryVariables = Exact<{
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
 
+export type RecentFeedbackQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string } | null } | null> } | null };
+
 export type UserQueryVariables = Exact<{
   walletAddress: Scalars['String']['input'];
 }>;
@@ -3815,6 +3822,64 @@ export const useInfiniteProjectsQuery = <
     )};
 
 useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
+
+export const RecentFeedbackDocument = `
+    query RecentFeedback($userId: UUID!) {
+  posts(
+    first: 5
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    nodes {
+      rowId
+      createdAt
+      title
+      description
+      user {
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useRecentFeedbackQuery = <
+      TData = RecentFeedbackQuery,
+      TError = unknown
+    >(
+      variables: RecentFeedbackQueryVariables,
+      options?: Omit<UseQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RecentFeedbackQuery, TError, TData>(
+      {
+    queryKey: ['RecentFeedback', variables],
+    queryFn: useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback', variables];
+
+export const useInfiniteRecentFeedbackQuery = <
+      TData = InfiniteData<RecentFeedbackQuery>,
+      TError = unknown
+    >(
+      variables: RecentFeedbackQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument)
+    return useInfiniteQuery<RecentFeedbackQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['RecentFeedback.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback.infinite', variables];
 
 export const UserDocument = `
     query User($walletAddress: String!) {
