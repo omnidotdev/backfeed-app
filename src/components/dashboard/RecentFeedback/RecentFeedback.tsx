@@ -51,7 +51,6 @@ const RecentFeedback = () => {
               <Response
                 key={feedback?.rowId}
                 feedback={feedback as Partial<Post>}
-                // TODO: make this dynamic once the data is streamed in
                 type="Neutral"
               />
             ))
