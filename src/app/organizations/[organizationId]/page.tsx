@@ -1,11 +1,15 @@
+import request from "graphql-request";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { OrganizationOverview } from "components/organization";
-import { app } from "lib/config";
+import { OrganizationDocument } from "generated/graphql";
+import { API_BASE_URL, app } from "lib/config";
 import { getAuthSession } from "lib/util";
+
+import type { OrganizationQuery, OrganizationQueryVariables } from "generated/graphql";
 
 interface Props {
   /** Organization page params. */
@@ -20,13 +24,18 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const session = await getAuthSession();
 
-  // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
-  if (!session) notFound();
+  const { organization }: OrganizationQuery = await request({
+    url: API_BASE_URL!,
+    document: OrganizationDocument,
+    variables: { rowId: organizationId } as OrganizationQueryVariables,
+  })
+
+  if (!session || !organization) notFound();
 
   return (
     <Page
       header={{
-        title: organizationId,
+        title: organization.name!,
         description: app.organizationPage.header.description,
         cta: [
           {
@@ -44,7 +53,7 @@ const OrganizationPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <OrganizationOverview />
+      <OrganizationOverview organizationId={organizationId} />
     </Page>
   );
 };

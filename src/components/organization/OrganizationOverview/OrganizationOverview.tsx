@@ -8,12 +8,17 @@ import {
 } from "components/organization";
 import { useDataState } from "lib/hooks";
 
-const OrganizationOverview = () => {
+interface Props {
+  /** Organization ID. */
+  organizationId: string;
+}
+
+const OrganizationOverview = ({ organizationId }: Props) => {
   const { isLoading, isError } = useDataState();
 
   return (
     <>
-      <OrganizationProjectsOverview />
+      <OrganizationProjectsOverview organizationId={organizationId} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
         {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}

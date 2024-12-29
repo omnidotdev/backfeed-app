@@ -2,11 +2,9 @@ query Organization($rowId: UUID!) {
   organization(rowId: $rowId) {
     rowId
     name
-    userOrganizations {
-      totalCount
-    }
     projects {
       nodes {
+        rowId
         name
         description
         posts {

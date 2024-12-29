@@ -3299,7 +3299,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number } } | null> } } | null };
 
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3560,11 +3560,9 @@ export const OrganizationDocument = `
   organization(rowId: $rowId) {
     rowId
     name
-    userOrganizations {
-      totalCount
-    }
     projects {
       nodes {
+        rowId
         name
         description
         posts {

@@ -21,13 +21,14 @@ import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
 import type { FlexProps } from "@omnidev/sigil";
+import type { Project } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface ProjectMetric {
   /** Visual icon. */
   icon: IconType;
   /** Metric value. */
-  value: string | number;
+  value: number | undefined;
   /** Metric type. */
   type: "Responses" | "Users" | "Updated";
   /** Container props for `type` and `value`. Used to override default styles. */
@@ -35,18 +36,14 @@ interface ProjectMetric {
 }
 
 interface Props extends FlexProps {
-  /** Project ID. */
-  id: string;
-  /** Name of the organization. */
-  name: string;
-  /** Description of the organization. */
-  description: string;
+  /** Project details. */
+  project: Partial<Project>;
 }
 
 /**
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
-const ProjectCard = ({ id, name, description, ...rest }: Props) => {
+const ProjectCard = ({ project, ...rest }: Props) => {
   // !NB: this is to represent where we would want to fetch the aggregate data (total feedback and active users). This will keep the top level `projectsQuery` clean.
   const { isLoading, isError } = useDataState({ timeout: 800 });
 
@@ -55,11 +52,12 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
   const PROJECT_METRICS: ProjectMetric[] = [
     {
       icon: HiOutlineChatBubbleLeftRight,
-      value: 420,
+      value: project?.posts?.totalCount,
       type: "Responses",
     },
     {
       icon: HiOutlineUserGroup,
+      // TODO: determine the best way to get the totally number of users for a project
       value: 69,
       type: "Users",
     },
@@ -75,7 +73,9 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
       p={8}
       {...rest}
     >
-      <Link href={`/organizations/${params.organizationId}/projects/${id}`}>
+      <Link
+        href={`/organizations/${params.organizationId}/projects/${project?.rowId}`}
+      >
         <Button
           position="absolute"
           top={1}
@@ -97,7 +97,7 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
             lineHeight={1.2}
             lineClamp={2}
           >
-            {name}
+            {project?.name}
           </OverflowText>
 
           <OverflowText
@@ -105,7 +105,7 @@ const ProjectCard = ({ id, name, description, ...rest }: Props) => {
             color="foreground.subtle"
             lineClamp={2}
           >
-            {description}
+            {project?.description}
           </OverflowText>
         </Stack>
 
