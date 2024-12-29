@@ -52,10 +52,14 @@ const FeedbackOverview = () => {
   const getDailyTotal = (date: string) =>
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;
 
-  const DATA = Array.from({ length: 7 }).map((_, index) => ({
-    name: getFormattedDate(index),
-    total: getDailyTotal(getFormattedDate(index)),
-  }));
+  const DATA = Array.from({ length: 7 }).map((_, index) => {
+    const date = getFormattedDate(index);
+    
+    return {
+      name: date,
+      total: getDailyTotal(date),
+    };
+  });
 
   return (
     <FeedbackCard
