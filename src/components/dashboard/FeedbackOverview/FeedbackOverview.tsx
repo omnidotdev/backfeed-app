@@ -54,7 +54,7 @@ const FeedbackOverview = () => {
 
   const DATA = Array.from({ length: 7 }).map((_, index) => {
     const date = getFormattedDate(index);
-    
+
     return {
       name: date,
       total: getDailyTotal(date),
