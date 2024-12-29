@@ -79,7 +79,12 @@ const FeedbackOverview = () => {
               <XAxis dataKey="name" axisLine={false} tickLine={false} />
 
               {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
-              <YAxis axisLine={false} tickLine={false} width={32} />
+              <YAxis
+                allowDecimals={false}
+                axisLine={false}
+                tickLine={false}
+                width={32}
+              />
 
               <Tooltip
                 cursor={{ fill: "transparent" }}
