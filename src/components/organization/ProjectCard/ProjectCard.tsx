@@ -95,7 +95,7 @@ const ProjectCard = ({ project, ...rest }: Props) => {
         </Stack>
 
         <Grid columns={2} w="full" alignItems="start">
-          {PROJECT_METRICS.map(({ icon, value, type, containerProps }) => (
+          {PROJECT_METRICS.map(({ icon, value, type }) => (
             <Flex key={type} gap={2} alignItems="center">
               <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
