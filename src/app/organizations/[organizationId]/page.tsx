@@ -24,14 +24,15 @@ interface Props {
  */
 const OrganizationPage = async ({ params }: Props) => {
   const { organizationId } = await params;
-
-  const session = await getAuthSession();
-
-  const { organization }: OrganizationQuery = await request({
-    url: API_BASE_URL!,
-    document: OrganizationDocument,
-    variables: { rowId: organizationId } as OrganizationQueryVariables,
-  });
+  
+  const [session, { organization }] = await Promise.all([
+    getAuthSession(),
+    request({
+      url: API_BASE_URL!,
+      document: OrganizationDocument,
+      variables: { rowId: organizationId } as OrganizationQueryVariables,
+    }) as Promise<OrganizationQuery>,
+  ]);
 
   if (!session || !organization) notFound();
 
