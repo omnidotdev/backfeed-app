@@ -1,40 +1,32 @@
-"use client";
-
-import { Grid } from "@omnidev/sigil";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import {
-  OrganizationActions,
-  OrganizationMetrics,
-  OrganizationProjectsOverview,
-} from "components/organization";
+import { OrganizationOverview } from "components/organization";
 import { app } from "lib/config";
-import { useAuth, useDataState } from "lib/hooks";
+import { getAuthSession } from "lib/util";
+
+interface Props {
+  /** Organization page params. */
+  params: Promise<{ organizationId: string }>;
+}
 
 /**
  * Organization overview page.
  */
-const OrganizationPage = () => {
-  const { isAuthenticated } = useAuth();
-
-  const params = useParams<{ organizationId: string }>(),
-    router = useRouter();
-
-  const { isLoading, isError } = useDataState();
-
-  const navigateToProjectsPage = () =>
-    router.push(`/organizations/${params.organizationId}/projects`);
+const OrganizationPage = async ({ params }: Props) => {
+  const { organizationId } = await params;
+  
+  const session = await getAuthSession();
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
-  if (!isAuthenticated) notFound();
+  if (!session) notFound();
 
   return (
     <Page
       header={{
-        title: params.organizationId,
+        title: organizationId,
         description: app.organizationPage.header.description,
         cta: [
           {
@@ -42,7 +34,7 @@ const OrganizationPage = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            onClick: navigateToProjectsPage,
+            // TODO: add href upon merge of https://github.com/omnidotdev/backfeed-app/pull/39
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
@@ -52,20 +44,7 @@ const OrganizationPage = () => {
         ],
       }}
     >
-      <OrganizationProjectsOverview />
-
-      <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}
-        <OrganizationMetrics
-          totalProjects={6}
-          totalFeedback={420}
-          activeUsers={1337}
-          isLoaded={!isLoading}
-          isError={isError}
-        />
-
-        <OrganizationActions />
-      </Grid>
+      <OrganizationOverview />
     </Page>
   );
 };
