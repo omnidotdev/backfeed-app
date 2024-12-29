@@ -22,8 +22,6 @@ interface ProjectMetric {
   value: number | undefined;
   /** Metric type. */
   type: "Responses" | "Users" | "Updated";
-  /** Container props for `type` and `value`. Used to override default styles. */
-  containerProps?: FlexProps;
 }
 
 interface Props extends FlexProps {
@@ -106,7 +104,6 @@ const ProjectCard = ({ project, ...rest }: Props) => {
                 fontSize="sm"
                 gap={1}
                 direction="row-reverse"
-                {...containerProps}
               >
                 <Text
                   display={{
