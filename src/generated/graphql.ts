@@ -3295,11 +3295,11 @@ export type DashboardAggregatesQueryVariables = Exact<{
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
 export type OrganizationQueryVariables = Exact<{
-  slug: Scalars['String']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null } | null };
+export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number } } | null> } } | null };
 
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3556,11 +3556,22 @@ export const useInfiniteDashboardAggregatesQuery = <
 useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
 
 export const OrganizationDocument = `
-    query Organization($slug: String!) {
-  organizationBySlug(slug: $slug) {
+    query Organization($rowId: UUID!) {
+  organization(rowId: $rowId) {
     rowId
     name
-    slug
+    userOrganizations {
+      totalCount
+    }
+    projects {
+      nodes {
+        name
+        description
+        posts {
+          totalCount
+        }
+      }
+    }
   }
 }
     `;
