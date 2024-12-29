@@ -24,7 +24,7 @@ interface Props {
  */
 const OrganizationPage = async ({ params }: Props) => {
   const { organizationId } = await params;
-  
+
   const [session, { organization }] = await Promise.all([
     getAuthSession(),
     request({
