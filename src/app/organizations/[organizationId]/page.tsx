@@ -9,7 +9,10 @@ import { OrganizationDocument } from "generated/graphql";
 import { API_BASE_URL, app } from "lib/config";
 import { getAuthSession } from "lib/util";
 
-import type { OrganizationQuery, OrganizationQueryVariables } from "generated/graphql";
+import type {
+  OrganizationQuery,
+  OrganizationQueryVariables,
+} from "generated/graphql";
 
 interface Props {
   /** Organization page params. */
@@ -28,7 +31,7 @@ const OrganizationPage = async ({ params }: Props) => {
     url: API_BASE_URL!,
     document: OrganizationDocument,
     variables: { rowId: organizationId } as OrganizationQueryVariables,
-  })
+  });
 
   if (!session || !organization) notFound();
 

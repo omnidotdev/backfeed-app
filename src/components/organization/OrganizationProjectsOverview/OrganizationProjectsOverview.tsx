@@ -20,21 +20,28 @@ interface OrganizationProject {
   description: string;
 }
 
-interface Props { 
+interface Props {
   /** Organization ID. */
-  organizationId: string
+  organizationId: string;
 }
 
 /**
  * Organization projects overview.
  */
 const OrganizationProjectsOverview = ({ organizationId }: Props) => {
-  const { data: projects, isLoading, isError } = useOrganizationQuery({
-    rowId: organizationId,
-  }, {
-    select: (data) => data?.organization?.projects?.nodes
-  })
-  
+  const {
+    data: projects,
+    isLoading,
+    isError,
+  } = useOrganizationQuery(
+    {
+      rowId: organizationId,
+    },
+    {
+      select: (data) => data?.organization?.projects?.nodes,
+    }
+  );
+
   return (
     <SectionContainer
       title={app.organizationPage.projects.title}
