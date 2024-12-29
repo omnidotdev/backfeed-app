@@ -13,7 +13,7 @@ export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 interface Props {
   /** Feedback details. */
   feedback: Partial<Post>;
-  /** Feedback type */
+  /** Feedback type. */
   // TODO: remove and capture from `feedback` prop once discussed / db schema is updated
   type: ResponseType;
 }
