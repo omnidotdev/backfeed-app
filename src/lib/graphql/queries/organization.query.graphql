@@ -9,6 +9,11 @@ query Organization($rowId: UUID!) {
         description
         posts {
           totalCount
+          aggregates {
+            distinctCount {
+              userId
+            }
+          }
         }
       }
     }
