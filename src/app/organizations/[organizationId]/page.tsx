@@ -17,7 +17,7 @@ interface Props {
  */
 const OrganizationPage = async ({ params }: Props) => {
   const { organizationId } = await params;
-  
+
   const session = await getAuthSession();
 
   // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
