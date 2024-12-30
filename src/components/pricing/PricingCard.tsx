@@ -3,7 +3,7 @@ import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
 function PricingCards() {
-  const tiers = app.pricingPage.tiers;
+  const tiers = app.pricingPage.pricingTiers.tiers;
 
   return (
     <>
@@ -13,7 +13,7 @@ function PricingCards() {
         justifyContent={"center"}
         gap={"16px"}
       >
-        {app.pricingPage.tiers.map((tier) => (
+        {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
             key={tier.title}
             borderColor={

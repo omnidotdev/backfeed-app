@@ -12,10 +12,10 @@ function PricingHeader() {
         marginBottom={"0.5rem"}
         marginTop={"2rem"}
       >
-        {app.pricingHeader.title}
+        {app.pricingPage.pricingHeader.title}
       </Text>
       <Text fontSize={"1.5rem"} textAlign={"center"} marginBottom={"2rem"}>
-        {app.pricingHeader.description}
+        {app.pricingPage.pricingHeader.description}
       </Text>
     </Flex>
   );
