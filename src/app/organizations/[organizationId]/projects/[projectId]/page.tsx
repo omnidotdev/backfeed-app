@@ -6,10 +6,9 @@ import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
 import { getAuthSession } from "lib/util";
+import type { Project } from "generated/graphql";
 
-import type { OrganizationProject } from "components/organization";
-
-const projectData: OrganizationProject = {
+const project: Pick<Project, "id" | "name" | "description"> = {
   id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
   name: "Web Platform Beta",
   description: "Beta testing feedback for the new web platform",
@@ -47,6 +46,9 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
+  const name = project.name!;
+  const description = project.description!;
+
   if (!session) notFound();
 
   return (
@@ -54,8 +56,8 @@ const ProjectPage = async ({ params }: Props) => {
       breadcrumbs={breadcrumbs}
       // TODO: Use actual project data here instead of placeholder
       header={{
-        title: projectData.name,
-        description: projectData.description,
+        title: name,
+        description,
         // TODO: add button actions
         cta: [
           {
@@ -73,7 +75,7 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview projectData={projectData} />
+      <ProjectOverview name={name} description={description} />
     </Page>
   );
 };
