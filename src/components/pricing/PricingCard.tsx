@@ -13,7 +13,7 @@ import { FaArrowRight } from "react-icons/fa6";
 function PricingCards() {
   return (
     <>
-      <HStack display="flex" flexWrap="wrap" justifyContent="center" gap={4}>
+      <HStack display="flex" flexWrap="wrap" justifyContent="center" gap="4">
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
             key={tier.title}
@@ -25,7 +25,7 @@ function PricingCards() {
             gap="4"
             maxWidth="xs"
             minWidth="xs"
-            opacity={tier.title === "Self-Host" ? "0.6" : "1"}
+            opacity="1"
             h="xl"
             display="flex"
             flexDirection="column"
