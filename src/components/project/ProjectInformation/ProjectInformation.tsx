@@ -8,17 +8,19 @@ import { SectionContainer } from "components/layout";
 
 import { app } from "lib/config";
 
+import type { Project } from "generated/graphql";
+
 interface Props {
-  /** The name of the project. */
-  projectName: string;
-  /** The description of the project. */
-  projectDescription: string;
+  /** Name of the project. */
+  name: Project["name"];
+  /** Description of the project. */
+  description: Project["description"];
 }
 
 /**
  * Project information.
  */
-const ProjectInformation = ({ projectName, projectDescription }: Props) => {
+const ProjectInformation = ({ name, description }: Props) => {
   const information = [
     {
       title: app.projectPage.projectInformation.activeUsers,
@@ -35,9 +37,9 @@ const ProjectInformation = ({ projectName, projectDescription }: Props) => {
   return (
     <SectionContainer title={app.projectPage.projectInformation.title}>
       <Stack>
-        <Text>{projectName}</Text>
+        <Text>{name}</Text>
 
-        <Text color="foreground.subtle">{projectDescription}</Text>
+        <Text color="foreground.subtle">{description}</Text>
       </Stack>
 
       {information.map(({ title, icon, value }) => (
