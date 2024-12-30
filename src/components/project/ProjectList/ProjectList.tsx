@@ -2,7 +2,6 @@
 
 import { Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { SkeletonArray } from "components/core";
@@ -45,19 +44,18 @@ const ProjectList = () => {
   if (isLoading)
     return (
       <Stack>
-        <SkeletonArray count={6} h={36} borderRadius="sm" />
+        <SkeletonArray count={6} h={40} borderRadius="sm" />
       </Stack>
     );
 
   return (
     <Stack>
-      {projects?.map((project) => (
-        <Link
+      {projects?.map((project, index) => (
+        <ProjectListItem
           key={project?.rowId}
-          href={`/organizations/${organizationId}/projects/${project?.rowId}`}
-        >
-          <ProjectListItem {...(project as Project)} />
-        </Link>
+          project={project as Project}
+          index={index}
+        />
       ))}
     </Stack>
   );

@@ -225,6 +225,15 @@ const app = {
         },
       },
     },
+    dialogs: {
+      deleteProject: {
+        title: "Delete Project",
+        description: "Are you sure you want to delete this project?",
+        action: {
+          label: "Delete",
+        },
+      },
+    },
   },
   projectPage: {
     header: {

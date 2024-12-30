@@ -1,19 +1,34 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import Link from "next/link";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { OverflowText } from "components/core";
+import { DestructiveAction, OverflowText } from "components/core";
+import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
+
+const deleteProject = app.projectsPage.dialogs.deleteProject;
+
+interface Props {
+  project: Partial<Project>;
+  /** ! TODO remove, just used to implement dynamic ownership check for now. */
+  index: number;
+}
 
 /**
  * Project list item.
  */
-const ProjectListItem = ({ name, description, posts }: Partial<Project>) => {
+const ProjectListItem = ({
+  project: { rowId, organizationId, name, description, posts },
+  index,
+}: Props) => {
+  const isOrganizationOwner = index % 2 === 0;
+
   const AGGREGATES = [
     {
       type: "Users",
@@ -31,21 +46,56 @@ const ProjectListItem = ({ name, description, posts }: Partial<Project>) => {
     <Stack
       p={4}
       boxShadow="sm"
-      borderWidth="1px"
-      borderColor={{ base: "transparent", _hover: "border.subtle" }}
       borderRadius="sm"
+      w="full"
       maxW="100%"
       mx="auto"
-      h={36}
+      h={40}
+      justify="space-between"
     >
-      {/* TODO: discuss project statuses. Removed status badge for now as it is not a part of the current db schema. */}
-      <OverflowText whiteSpace="nowrap" fontWeight="semibold" maxW="xl">
-        {name}
-      </OverflowText>
+      <Stack gap={0}>
+        <HStack alignItems="center" justify="space-between" minH={10}>
+          <Stack maxW="65svw">
+            <Link
+              href={`/organizations/${organizationId}/projects/${rowId}`}
+              role="group"
+            >
+              <OverflowText
+                fontWeight="semibold"
+                whiteSpace="nowrap"
+                color={{
+                  base: "brand.primary.700",
+                  _groupHover: {
+                    base: "brand.primary.800",
+                    _dark: "brand.primary.600",
+                  },
+                }}
+              >
+                {name}
+              </OverflowText>
+            </Link>
+          </Stack>
 
-      <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
-        {description}
-      </OverflowText>
+          {isOrganizationOwner && (
+            <DestructiveAction
+              title={deleteProject.title}
+              description={deleteProject.description}
+              action={{
+                label: deleteProject.action.label,
+                // TODO: handle delete project in onClick for primary action
+              }}
+              triggerProps={{
+                "aria-label": `${deleteProject.action.label} organization`,
+                color: "omni.ruby",
+              }}
+            />
+          )}
+        </HStack>
+
+        <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
+          {description}
+        </OverflowText>
+      </Stack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
         {AGGREGATES.map(({ icon, value, type }) => (

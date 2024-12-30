@@ -5,6 +5,7 @@ query Projects($organizationId: UUID!, $search: String) {
   ) {
     nodes {
       rowId
+      organizationId
       name
       description
       posts {
