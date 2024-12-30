@@ -13,12 +13,7 @@ import { FaArrowRight } from "react-icons/fa6";
 function PricingCards() {
   return (
     <>
-      <HStack
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="center"
-        gap={4}
-      >
+      <HStack display="flex" flexWrap="wrap" justifyContent="center" gap={4}>
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
             key={tier.title}
