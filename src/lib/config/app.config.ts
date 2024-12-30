@@ -184,7 +184,7 @@ const app = {
           label: "Organization Settings",
         },
       },
-    }
+    },
   },
   pricingPage: {
     pricingTiers: {
@@ -267,53 +267,53 @@ const app = {
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
     },
   },
-    projectsPage: {
-      header: {
-        title: "Projects",
-        description:
-          "Manage and monitor all your organization's projects in one place.",
-        cta: {
-          newProject: {
-            label: "New Project",
-          },
+  projectsPage: {
+    header: {
+      title: "Projects",
+      description:
+        "Manage and monitor all your organization's projects in one place.",
+      cta: {
+        newProject: {
+          label: "New Project",
         },
       },
-      filters: {
-        search: {
-          placeholder: "Search all projects...",
-        },
-        select: {
-          status: {
-            label: {
-              id: "Status",
-              singular: "Status",
-              plural: "Statuses",
-            },
+    },
+    filters: {
+      search: {
+        placeholder: "Search all projects...",
+      },
+      select: {
+        status: {
+          label: {
+            id: "Status",
+            singular: "Status",
+            plural: "Statuses",
           },
         },
       },
     },
-    feedbackPage: {
-      backToProject: "Back to Project",
-      details: {
-        upvote: "Upvote",
-        downvote: "Downvote",
-      },
-      comments: {
-        title: "Comments",
-        description: "View all feedback comments.",
-        textAreaPlaceholder: "Add a comment...",
-        submit: "Add Comment",
-        totalComments: "total comments",
-      },
-      statusHistory: {
-        title: "Status History",
-        description: "View feedback status history.",
-        currentStatus: "Current Status",
-        created: "Created",
-        updated: "Updated",
-      },
+  },
+  feedbackPage: {
+    backToProject: "Back to Project",
+    details: {
+      upvote: "Upvote",
+      downvote: "Downvote",
     },
-  }
+    comments: {
+      title: "Comments",
+      description: "View all feedback comments.",
+      textAreaPlaceholder: "Add a comment...",
+      submit: "Add Comment",
+      totalComments: "total comments",
+    },
+    statusHistory: {
+      title: "Status History",
+      description: "View feedback status history.",
+      currentStatus: "Current Status",
+      created: "Created",
+      updated: "Updated",
+    },
+  },
+};
 
 export default app;
