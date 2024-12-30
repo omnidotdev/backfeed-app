@@ -35,7 +35,7 @@ const Response = ({ feedback, type }: Props) => {
       <Flex direction="column">
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
-            {feedback?.rowId}
+            {feedback?.user?.username}
           </Text>
 
           <Badge color={color} borderColor={color}>
