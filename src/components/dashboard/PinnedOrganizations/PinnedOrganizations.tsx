@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
@@ -17,7 +17,6 @@ import type { Organization } from "generated/graphql";
  * Pinned organizations section.
  */
 const PinnedOrganizations = () => {
-  const router = useRouter();
   const { user } = useAuth();
 
   const {
@@ -66,15 +65,15 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Button
-          variant="outline"
-          color="brand.primary"
-          borderColor="brand.primary"
-          // TODO: discuss wrapping this in a `Link` instead. Big thing is discussing best way to style the `a` tag.
-          onClick={() => router.push("/organizations")}
-        >
-          {app.dashboardPage.cta.viewOrganizations.label}
-        </Button>
+        <Link href="/organizations">
+          <Button
+            variant="outline"
+            color="brand.primary"
+            borderColor="brand.primary"
+          >
+            {app.dashboardPage.cta.viewOrganizations.label}
+          </Button>
+        </Link>
       </Flex>
 
       {isError ? (
