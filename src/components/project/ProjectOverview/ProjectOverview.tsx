@@ -9,14 +9,16 @@ import {
   StatusBreakdown,
 } from "components/project";
 
-import type { OrganizationProject } from "components/organization";
+import type { Project } from "generated/graphql";
 
 interface Props {
-  /** Organization project data. */
-  projectData: OrganizationProject;
+  /** Name of the project. */
+  name: Project["name"];
+  /** Description of the project. */
+  description: Project["description"];
 }
 
-const ProjectOverview = ({ projectData }: Props) => (
+const ProjectOverview = ({ name, description }: Props) => (
   <Grid h="100%" columns={{ lg: 3 }} gap={6}>
     <GridItem h="100%" colSpan={{ lg: 2 }}>
       <ProjectFeedback />
@@ -24,10 +26,7 @@ const ProjectOverview = ({ projectData }: Props) => (
 
     <GridItem h="100%">
       <Stack gap={6}>
-        <ProjectInformation
-          projectName={projectData.name}
-          projectDescription={projectData.description}
-        />
+        <ProjectInformation name={name!} description={description!} />
 
         <FeedbackMetrics />
 
