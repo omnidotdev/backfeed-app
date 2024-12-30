@@ -16,7 +16,7 @@ export const generateMetadata = async ({
   const { organization } = await getOrganization(organizationId);
 
   return {
-    title: `${organization?.name} Projects | ${app.name}`,
+    title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
   };
 };
 

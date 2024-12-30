@@ -7,6 +7,14 @@ query Projects($organizationId: UUID!, $search: String) {
       rowId
       name
       description
+      posts {
+        totalCount
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
     }
   }
 }

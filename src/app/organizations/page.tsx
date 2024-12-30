@@ -7,6 +7,10 @@ import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
 import { getAuthSession } from "lib/util";
 
+export const metadata = {
+  title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
+}
+
 /**
  * Organizations overview page.
  */

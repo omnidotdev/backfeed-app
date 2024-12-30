@@ -1,47 +1,31 @@
 "use client";
 
-import {
-  HStack,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
-  useIsClient,
-} from "@omnidev/sigil";
+import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
-import { useDataState } from "lib/hooks";
 
 import type { Project } from "generated/graphql";
-
-/** Mock aggregates for the project. Will be replaced with real data, and fetched at this level in the future. */
-const AGGREGATES = [
-  {
-    type: "Users",
-    icon: HiOutlineUserGroup,
-    value: 69,
-  },
-  {
-    type: "Responses",
-    icon: HiOutlineChatBubbleLeftRight,
-    value: 420,
-  },
-];
 
 /**
  * Project list item.
  */
-const ProjectListItem = ({ name, description }: Partial<Project>) => {
-  const isClient = useIsClient();
-
-  const { isLoading, isError } = useDataState({ timeout: 500 });
-
-  // NB: used to prevent status hydration issues on the client. Can be removed when status is fetched from the database.
-  if (!isClient) return null;
+const ProjectListItem = ({ name, description, posts }: Partial<Project>) => {
+  const AGGREGATES = [
+    {
+      type: "Users",
+      icon: HiOutlineUserGroup,
+      value: posts?.aggregates?.distinctCount?.userId ?? 0,
+    },
+    {
+      type: "Responses",
+      icon: HiOutlineChatBubbleLeftRight,
+      value: posts?.totalCount ?? 0,
+    },
+  ];
 
   return (
     <Stack
@@ -67,22 +51,13 @@ const ProjectListItem = ({ name, description }: Partial<Project>) => {
         {AGGREGATES.map(({ icon, value, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
-
-            <Skeleton
-              isLoaded={!isLoading}
-              h={4}
-              display="flex"
-              alignItems="center"
-              minW={6}
+            <Text
+              fontSize="sm"
+              color="foreground.subtle"
+              fontVariant="tabular-nums"
             >
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-                fontVariant="tabular-nums"
-              >
-                {isError ? "Error" : value}
-              </Text>
-            </Skeleton>
+              {value}
+            </Text>
           </HStack>
         ))}
       </HStack>
