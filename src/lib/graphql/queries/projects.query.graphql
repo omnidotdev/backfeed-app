@@ -1,10 +1,12 @@
-query Projects($organizationId: UUID) {
-  projects(filter: { organizationId: { equalTo: $organizationId } }) {
+query Projects($organizationId: UUID!, $search: String) {
+  projects(
+    condition: { organizationId: $organizationId }
+    filter: { name: { includesInsensitive: $search } }
+  ) {
     nodes {
       rowId
       name
       description
-      slug
     }
   }
 }

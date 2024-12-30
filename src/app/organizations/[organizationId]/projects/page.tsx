@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import { ProjectsOverview } from "components/project";
+import { ProjectFilters, ProjectList } from "components/project";
 import { app } from "lib/config";
 import { getAuthSession, getOrganization } from "lib/util";
 
@@ -67,7 +67,9 @@ const ProjectsPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectsOverview />
+      <ProjectFilters />
+
+      <ProjectList />
     </Page>
   );
 };

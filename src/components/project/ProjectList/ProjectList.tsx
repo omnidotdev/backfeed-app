@@ -1,41 +1,43 @@
 "use client";
 
 import { Stack } from "@omnidev/sigil";
+import { keepPreviousData } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { SkeletonArray } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
+import { useProjectsQuery } from "generated/graphql";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
 
-import type { StackProps } from "@omnidev/sigil";
-import type { Project } from "components/project";
-
-interface Props extends StackProps {
-  /** Projects to display. */
-  projects: Project[];
-  /** Whether the data is loading. */
-  isLoading?: boolean;
-  /** Whether an error was encountered while loading the data. */
-  isError?: boolean;
-}
+import type { Project } from "generated/graphql";
 
 /**
  * Project list.
  * TODO: apply either infinite scroll or pagination for the list once data fetching is implemented.
  */
-const ProjectList = ({
-  projects,
-  isLoading = true,
-  isError = false,
-  ...rest
-}: Props) => {
-  const [{ search, status }] = useSearchParams();
+const ProjectList = () => {
+  const { organizationId } = useParams<{ organizationId: string }>();
+
+  const [{ search }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const {
+    data: projects,
+    isLoading,
+    isError,
+  } = useProjectsQuery(
+    {
+      organizationId,
+      search: debouncedSearch,
+    },
+    {
+      placeholderData: keepPreviousData,
+      select: (data) => data?.projects?.nodes,
+    }
+  );
 
   if (isError)
     return <ErrorBoundary message="Error fetching projects" minH={48} />;
@@ -48,21 +50,15 @@ const ProjectList = ({
     );
 
   return (
-    <Stack {...rest}>
-      {/* TODO: update logic handler / filters once data fetching is implemented */}
-      {projects
-        .filter((project) => (status ? project.status === status : true))
-        .filter((project) =>
-          project.name.toLowerCase().includes(debouncedSearch)
-        )
-        .map((project) => (
-          <Link
-            key={project.id}
-            href={`/organizations/${organizationId}/projects/${project.id}`}
-          >
-            <ProjectListItem {...project} />
-          </Link>
-        ))}
+    <Stack>
+      {projects?.map((project) => (
+        <Link
+          key={project?.rowId}
+          href={`/organizations/${organizationId}/projects/${project?.rowId}`}
+        >
+          <ProjectListItem {...(project as Project)} />
+        </Link>
+      ))}
     </Stack>
   );
 };

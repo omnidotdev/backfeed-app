@@ -3413,11 +3413,12 @@ export type ProjectQueryVariables = Exact<{
 export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -3890,13 +3891,15 @@ export const useInfiniteProjectQuery = <
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
 
 export const ProjectsDocument = `
-    query Projects($organizationId: UUID) {
-  projects(filter: {organizationId: {equalTo: $organizationId}}) {
+    query Projects($organizationId: UUID!, $search: String) {
+  projects(
+    condition: {organizationId: $organizationId}
+    filter: {name: {includesInsensitive: $search}}
+  ) {
     nodes {
       rowId
       name
       description
-      slug
     }
   }
 }
@@ -3906,19 +3909,19 @@ export const useProjectsQuery = <
       TData = ProjectsQuery,
       TError = unknown
     >(
-      variables?: ProjectsQueryVariables,
+      variables: ProjectsQueryVariables,
       options?: Omit<UseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<ProjectsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Projects'] : ['Projects', variables],
+    queryKey: ['Projects', variables],
     queryFn: useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
     ...options
   }
     )};
 
-useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
+useProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
 
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
@@ -3932,14 +3935,14 @@ export const useInfiniteProjectsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
+useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
 
 export const RecentFeedbackDocument = `
     query RecentFeedback($userId: UUID!) {

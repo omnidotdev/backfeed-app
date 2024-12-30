@@ -13,20 +13,11 @@ import { useSearchParams } from "lib/hooks";
 
 const STATUSES = ["Active", "Beta", "Inactive"];
 
-interface Props {
-  /** Whether the data is loading. */
-  isLoading?: boolean;
-  /** Whether an error was encountered while loading the data. */
-  isError?: boolean;
-}
-
 /**
  * Project filters.
  */
-const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
+const ProjectFilters = () => {
   const [{ status, search }, setSearchParams] = useSearchParams();
-
-  const isFilterDisabled = isLoading || isError;
 
   return (
     <Grid columns={{ base: 1, lg: 5 }} w="full">
@@ -40,10 +31,10 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
               search: e.target.value.length ? e.target.value.toLowerCase() : "",
             })
           }
-          disabled={isFilterDisabled}
         />
       </GridItem>
 
+      {/* TODO: discuss if this should be removed for now, or if we should update the db schSchema to include project statuses. */}
       <GridItem colSpan={1}>
         <Select
           label={app.projectsPage.filters.select.status.label}
@@ -62,7 +53,7 @@ const ProjectFilters = ({ isLoading = true, isError = false }: Props) => {
           onValueChange={({ value }) =>
             setSearchParams({ status: value.length ? value[0] : null })
           }
-          disabled={isFilterDisabled}
+          disabled
         />
       </GridItem>
     </Grid>

@@ -1,25 +1,22 @@
 "use client";
 
-import { Badge, HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
+import {
+  HStack,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
+  useIsClient,
+} from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-import { match } from "ts-pattern";
 
 import { OverflowText } from "components/core";
 import { useDataState } from "lib/hooks";
 
-export interface Project {
-  /** Project ID. */
-  id: string;
-  /** Project name. */
-  name: string;
-  /** Project description. */
-  description: string;
-  /** Project status. */
-  status: "Active" | "Beta" | "Inactive";
-}
+import type { Project } from "generated/graphql";
 
 /** Mock aggregates for the project. Will be replaced with real data, and fetched at this level in the future. */
 const AGGREGATES = [
@@ -36,20 +33,15 @@ const AGGREGATES = [
 ];
 
 /**
- * Helper function to determine the colors used for the project status badge.
- */
-const statusColor = (status: Project["status"]) =>
-  match(status)
-    .with("Active", () => "green")
-    .with("Beta", () => "blue")
-    .with("Inactive", () => "red")
-    .exhaustive();
-
-/**
  * Project list item.
  */
-const ProjectListItem = ({ name, description, status }: Project) => {
+const ProjectListItem = ({ name, description }: Partial<Project>) => {
+  const isClient = useIsClient();
+
   const { isLoading, isError } = useDataState({ timeout: 500 });
+
+  // NB: used to prevent status hydration issues on the client. Can be removed when status is fetched from the database.
+  if (!isClient) return null;
 
   return (
     <Stack
@@ -62,19 +54,10 @@ const ProjectListItem = ({ name, description, status }: Project) => {
       mx="auto"
       h={36}
     >
-      <HStack>
-        <OverflowText whiteSpace="nowrap" fontWeight="semibold" maxW="xl">
-          {name}
-        </OverflowText>
-        <Badge
-          size="sm"
-          variant="outline"
-          color={statusColor(status)}
-          borderColor={statusColor(status)}
-        >
-          {status}
-        </Badge>
-      </HStack>
+      {/* TODO: discuss project statuses. Removed status badge for now as it is not a part of the current db schema. */}
+      <OverflowText whiteSpace="nowrap" fontWeight="semibold" maxW="xl">
+        {name}
+      </OverflowText>
 
       <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
         {description}
