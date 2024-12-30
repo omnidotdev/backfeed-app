@@ -42,7 +42,7 @@ function PricingCards() {
                 left="50%"
                 transform="translateX(-50%)"
                 backgroundColor="var(--colors-background-secondary)"
-                padding="8px"
+                p="2"
                 borderRadius="1"
               >
                 <Badge color="brand.primary" height="8" borderRadius="4 4">
@@ -74,7 +74,7 @@ function PricingCards() {
                 as="h4"
                 fontSize={{ base: "2xl", lg: "4xl" }}
                 fontWeight="bold"
-                margin="8px 0 8px 0"
+                m="2 0"
               >
                 Features
               </Text>
