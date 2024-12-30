@@ -1,3 +1,5 @@
+"use client";
+
 import { Stack, Text, VStack } from "@omnidev/sigil";
 import dayjs from "dayjs";
 
