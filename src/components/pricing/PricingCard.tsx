@@ -1,4 +1,12 @@
-import { Badge, Button, Card, HStack, Stack, Text, sigil } from "@omnidev/sigil";
+import {
+  Badge,
+  Button,
+  Card,
+  HStack,
+  Stack,
+  Text,
+  sigil,
+} from "@omnidev/sigil";
 import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
@@ -40,11 +48,7 @@ function PricingCards() {
                 padding="8px"
                 borderRadius="1"
               >
-                <Badge
-                  color="brand.primary"
-                  height={"8"}
-                  borderRadius={"4 4"}
-                >
+                <Badge color="brand.primary" height={"8"} borderRadius={"4 4"}>
                   Recommended
                 </Badge>
               </Stack>
@@ -63,7 +67,9 @@ function PricingCards() {
                   {tier.price}
                 </Text>
                 {tier.title !== "Enterprise" && (
-                  <Text fontSize="xl" marginTop="1" marginLeft="-2.5">/month</Text>
+                  <Text fontSize="xl" marginTop="1" marginLeft="-2.5">
+                    /month
+                  </Text>
                 )}
               </HStack>
 
