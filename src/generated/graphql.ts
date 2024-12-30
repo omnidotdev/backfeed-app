@@ -3835,6 +3835,7 @@ export const RecentFeedbackDocument = `
     query RecentFeedback($userId: UUID!) {
   posts(
     first: 5
+    orderBy: CREATED_AT_DESC
     filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
   ) {
     nodes {
