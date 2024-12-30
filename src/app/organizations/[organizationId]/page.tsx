@@ -52,10 +52,21 @@ const OrganizationPage = async ({ params }: Props) => {
     fetchOrganization(organizationId),
   ]);
 
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      label: organization?.name ?? organizationId,
+    },
+  ];
+
   if (!session || !organization) notFound();
 
   return (
     <Page
+      breadcrumbs={breadcrumbs}
       header={{
         title: organization.name!,
         description: app.organizationPage.header.description,
@@ -65,7 +76,7 @@ const OrganizationPage = async ({ params }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            // TODO: add href upon merge of https://github.com/omnidotdev/backfeed-app/pull/39
+            href: `/organizations/${organizationId}/projects`,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,

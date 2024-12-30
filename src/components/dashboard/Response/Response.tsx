@@ -2,12 +2,11 @@
 
 import { Badge, Flex, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { match } from "ts-pattern";
+
+import { getResponseTypeColor } from "lib/util";
 
 import type { Post } from "generated/graphql";
-
-// NB: tried to use an enum here but had difficulties with runtime errors
-export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
+import type { ResponseType } from "lib/util";
 
 // NB: this prop drilling is under the assumption that the query from parent won't provide much overhead (i.e. parent is isolated query and has minimal nesting / a response is a direct child)
 interface Props {
@@ -22,12 +21,7 @@ interface Props {
  * Recent feedback response.
  */
 const Response = ({ feedback, type }: Props) => {
-  const color = match(type)
-    .with("Neutral", () => "foreground.subtle")
-    .with("Positive", () => "green")
-    .with("Bug", () => "red")
-    .with("Feature", () => "blue")
-    .otherwise(() => "foreground.subtle");
+  const color = getResponseTypeColor(type);
 
   return (
     <Flex

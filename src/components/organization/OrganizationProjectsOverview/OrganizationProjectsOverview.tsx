@@ -11,15 +11,6 @@ import { useOrganizationQuery } from "generated/graphql";
 
 import type { Project } from "generated/graphql";
 
-interface OrganizationProject {
-  /** Organization ID. */
-  id: string;
-  /** Organization name. */
-  name: string;
-  /** Organization description. */
-  description: string;
-}
-
 interface Props {
   /** Organization ID. */
   organizationId: string;

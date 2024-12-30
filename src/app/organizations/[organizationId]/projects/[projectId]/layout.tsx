@@ -1,7 +1,7 @@
 import { app } from "lib/config";
 
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 interface MetadataParams {
   params: Promise<{ projectId: string; organizationId: string }>;
@@ -10,9 +10,9 @@ interface MetadataParams {
 export const generateMetadata = async ({
   params,
 }: MetadataParams): Promise<Metadata> => {
-  const { projectId } = await params;
+  const { organizationId, projectId } = await params;
 
-  // TODO: Hook up when fetching data here
+  // TODO: Hook up when fetching data here.
   // const project: ProjectQuery = await request({
   //   url: API_BASE_URL!,
   //   document: ProjectDocument,
@@ -20,13 +20,13 @@ export const generateMetadata = async ({
   // });
 
   return {
-    title: `${projectId} | ${app.name}`,
+    title: `${projectId} ${organizationId} | ${app.name}`,
   };
 };
 
 /**
  * Project layout.
  */
-const ProjectLayout = ({ children }: { children: ReactNode }) => children;
+const ProjectLayout = ({ children }: PropsWithChildren) => children;
 
 export default ProjectLayout;
