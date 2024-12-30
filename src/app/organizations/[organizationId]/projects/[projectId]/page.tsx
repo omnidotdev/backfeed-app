@@ -1,59 +1,79 @@
-"use client";
+import { notFound } from "next/navigation";
+import { LuSettings } from "react-icons/lu";
+import { HiOutlineFolder } from "react-icons/hi2";
 
-import { Text } from "@omnidev/sigil";
-import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
-
+import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
-import { useAuth } from "lib/hooks";
+import { app } from "lib/config";
+import { getAuthSession } from "lib/util";
 
-interface ProjectFeedback {
-  /** Feedback ID. */
-  id: string;
-  /** Feedback title. */
-  title: string;
+import type { OrganizationProject } from "components/organization";
+
+const projectData: OrganizationProject = {
+  id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
+  name: "Web Platform Beta",
+  description: "Beta testing feedback for the new web platform",
+};
+
+interface Props {
+  /** Project page params. */
+  params: Promise<{ organizationId: string; projectId: string }>;
 }
-
-const FEEDBACK: ProjectFeedback[] = [
-  {
-    id: "1",
-    title: "I still like turtles.",
-  },
-  {
-    id: "2",
-    title: "The new dashboard layout is much more intuitive!",
-  },
-  {
-    id: "3",
-    title: "Having issues with the new export feature.",
-  },
-  {
-    id: "4",
-    title: "Would love to be able to export feedback.",
-  },
-];
 
 /**
  * Project overview page.
  */
-const ProjectPage = () => {
-  const { isAuthenticated } = useAuth();
+const ProjectPage = async ({ params }: Props) => {
+  const { organizationId, projectId } = await params;
+  const session = await getAuthSession();
 
-  const params = useParams<{ organizationId: string; projectId: string }>();
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      // TODO: Use actual organization name here instead of ID
+      label: organizationId,
+      href: `/organizations/${organizationId}`,
+    },
+    {
+      label: app.projectsPage.breadcrumb,
+      href: `/organizations/${organizationId}/projects`,
+    },
+    {
+      // TODO: Use actual project name here instead of ID
+      label: projectId,
+    },
+  ];
 
-  if (!isAuthenticated) notFound();
+  if (!session) notFound();
 
   return (
-    <Page justify="center" align="center" h="full" gap={4}>
-      <Text>Project: {params.projectId}</Text>
-      {FEEDBACK.map((feedback) => (
-        <Link
-          key={feedback.id}
-          href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback.id}`}
-        >
-          {feedback.title}
-        </Link>
-      ))}
+    <Page
+      breadcrumbs={breadcrumbs}
+      // TODO: Use actual project data here instead of placeholder
+      header={{
+        title: projectData.name,
+        description: projectData.description,
+        // TODO: add button actions
+        cta: [
+          {
+            label: app.projectPage.header.cta.settings.label,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <LuSettings />,
+          },
+          {
+            label: app.projectPage.header.cta.viewAllProjects.label,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <HiOutlineFolder />,
+            variant: "outline",
+            href: `/organizations/${organizationId}/projects`,
+          },
+        ],
+      }}
+    >
+      <ProjectOverview projectData={projectData} />
     </Page>
   );
 };

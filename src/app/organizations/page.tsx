@@ -13,10 +13,17 @@ import { getAuthSession } from "lib/util";
 const OrganizationsPage = async () => {
   const session = await getAuthSession();
 
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+    },
+  ];
+
   if (!session) notFound();
 
   return (
     <Page
+      breadcrumbs={breadcrumbs}
       header={{
         title: app.organizationsPage.header.title,
         description: app.organizationsPage.header.description,
