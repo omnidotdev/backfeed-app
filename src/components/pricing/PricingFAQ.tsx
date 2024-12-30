@@ -7,18 +7,18 @@ import { app } from "lib/config";
 const PricingFAQ = () => {
   return (
     <Stack
-      width={"45%"}
-      margin={"auto"}
-      flexWrap={"nowrap"}
-      flexDirection={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
+      width="45%"
+      margin="auto"
+      flexWrap="nowrap"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
     >
       <Text
         as="h2"
         fontSize="2xl"
-        fontWeight={"bold"}
-        textAlign={"center"}
+        fontWeight="bold"
+        textAlign="center"
         marginBottom="4"
         marginTop="8"
       >

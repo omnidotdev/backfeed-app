@@ -7,8 +7,8 @@ function PricingHeader() {
       <Text
         as="h1"
         fontSize="5xl"
-        fontWeight={"bold"}
-        textAlign={"center"}
+        fontWeight="bold"
+        textAlign="center"
         marginTop="4"
       >
         {app.pricingPage.pricingHeader.title}
