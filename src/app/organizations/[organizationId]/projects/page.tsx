@@ -4,7 +4,21 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Page } from "components/layout";
 import { ProjectsOverview } from "components/project";
 import { app } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getOrganization } from "lib/util";
+
+import type { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { organizationId } = await params;
+
+  const { organization } = await getOrganization(organizationId);
+
+  return {
+    title: `${organization?.name} Projects | ${app.name}`,
+  };
+};
 
 interface Props {
   /** Projects page params. */
@@ -16,7 +30,11 @@ interface Props {
  */
 const ProjectsPage = async ({ params }: Props) => {
   const { organizationId } = await params;
-  const session = await getAuthSession();
+
+  const [session, { organization }] = await Promise.all([
+    getAuthSession(),
+    getOrganization(organizationId),
+  ]);
 
   const breadcrumbs = [
     {
@@ -24,8 +42,7 @@ const ProjectsPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
-      label: organizationId,
+      label: organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
     {
@@ -33,7 +50,7 @@ const ProjectsPage = async ({ params }: Props) => {
     },
   ];
 
-  if (!session) notFound();
+  if (!session || !organization) notFound();
 
   return (
     <Page

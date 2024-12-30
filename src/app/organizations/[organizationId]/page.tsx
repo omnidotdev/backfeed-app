@@ -1,35 +1,20 @@
-import request from "graphql-request";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { OrganizationOverview } from "components/organization";
-import { OrganizationDocument } from "generated/graphql";
-import { API_BASE_URL, app } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { app } from "lib/config";
+import { getAuthSession, getOrganization } from "lib/util";
 
-import type {
-  OrganizationQuery,
-  OrganizationQueryVariables,
-} from "generated/graphql";
 import type { Metadata } from "next";
-
-const fetchOrganization = async (
-  organizationId: string
-): Promise<OrganizationQuery> =>
-  request({
-    url: API_BASE_URL!,
-    document: OrganizationDocument,
-    variables: { rowId: organizationId } as OrganizationQueryVariables,
-  });
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { organizationId } = await params;
 
-  const { organization } = await fetchOrganization(organizationId);
+  const { organization } = await getOrganization(organizationId);
 
   return {
     title: `${organization?.name} | ${app.name}`,
@@ -49,7 +34,7 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const [session, { organization }] = await Promise.all([
     getAuthSession(),
-    fetchOrganization(organizationId),
+    getOrganization(organizationId),
   ]);
 
   const breadcrumbs = [
