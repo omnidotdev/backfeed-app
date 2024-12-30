@@ -3,7 +3,10 @@ import { request } from "graphql-request";
 import { API_BASE_URL } from "lib/config";
 import { OrganizationDocument } from "generated/graphql";
 
-import type { OrganizationQuery, OrganizationQueryVariables } from "generated/graphql";
+import type {
+  OrganizationQuery,
+  OrganizationQueryVariables,
+} from "generated/graphql";
 
 const getOrganization = async (
   organizationId: string
