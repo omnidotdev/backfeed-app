@@ -6,7 +6,7 @@ import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
 import { getAuthSession } from "lib/util";
-import { Project } from "generated/graphql";
+import type { Project } from "generated/graphql";
 
 const project: Pick<Project, "id" | "name" | "description"> = {
   id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
