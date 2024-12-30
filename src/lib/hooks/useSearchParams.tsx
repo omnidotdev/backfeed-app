@@ -6,7 +6,6 @@ import { parseAsString, useQueryStates } from "nuqs";
 const useSearchParams = () =>
   useQueryStates({
     search: parseAsString.withDefault(""),
-    status: parseAsString,
   });
 
 export default useSearchParams;
