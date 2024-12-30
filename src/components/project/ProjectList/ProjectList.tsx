@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack } from "@omnidev/sigil";
+import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -19,22 +19,23 @@ import type { Project } from "generated/graphql";
 const ProjectList = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
 
-  const [{ search }] = useSearchParams();
+  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
-  const {
-    data: projects,
-    isLoading,
-    isError,
-  } = useProjectsQuery(
+  const { data, isLoading, isError } = useProjectsQuery(
     {
+      pageSize,
+      offset: (page - 1) * pageSize,
       organizationId,
       search: debouncedSearch,
     },
     {
       placeholderData: keepPreviousData,
-      select: (data) => data?.projects?.nodes,
+      select: (data) => ({
+        totalCount: data?.projects?.totalCount,
+        projects: data?.projects?.nodes,
+      }),
     }
   );
 
@@ -49,14 +50,23 @@ const ProjectList = () => {
     );
 
   return (
-    <Stack>
-      {projects?.map((project, index) => (
-        <ProjectListItem
-          key={project?.rowId}
-          project={project as Project}
-          index={index}
-        />
-      ))}
+    <Stack align="center" justify="space-between" h="100%">
+      <Stack w="100%">
+        {data?.projects?.map((project, index) => (
+          <ProjectListItem
+            key={project?.rowId}
+            project={project as Project}
+            index={index}
+          />
+        ))}
+      </Stack>
+      <Pagination
+        count={data?.totalCount ?? 0}
+        pageSize={pageSize}
+        defaultPage={page}
+        onPageChange={({ page }) => setSearchParams({ page })}
+        mt={4}
+      />
     </Stack>
   );
 };

@@ -1,8 +1,16 @@
-query Projects($organizationId: UUID!, $search: String) {
+query Projects(
+  $pageSize: Int!
+  $offset: Int!
+  $organizationId: UUID!
+  $search: String
+) {
   projects(
+    first: $pageSize
+    offset: $offset
     condition: { organizationId: $organizationId }
     filter: { name: { includesInsensitive: $search } }
   ) {
+    totalCount
     nodes {
       rowId
       organizationId
