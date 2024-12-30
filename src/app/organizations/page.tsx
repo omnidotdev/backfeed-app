@@ -9,7 +9,7 @@ import { getAuthSession } from "lib/util";
 
 export const metadata = {
   title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
-}
+};
 
 /**
  * Organizations overview page.
