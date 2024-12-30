@@ -13,7 +13,7 @@ import { FaArrowRight } from "react-icons/fa6";
 function PricingCards() {
   return (
     <>
-      <HStack display="flex" flexWrap="wrap" justifyContent="center" gap="4">
+      <HStack display="flex" flexWrap="wrap" flexDirection={{base: "column", lg: "row"}} justifyContent="center" gap="4">
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
             key={tier.title}
@@ -23,12 +23,10 @@ function PricingCards() {
             borderWidth={tier.title === "Professional" ? "4" : "1"}
             flex="1 1 calc(25%)"
             gap="4"
-            maxWidth="xs"
-            minWidth="xs"
+            w={{base: "100%", lg: "xs"}}
             opacity="1"
             h="xl"
             display="flex"
-            flexDirection="column"
             position="relative"
           >
             {tier.title === "Professional" && (
