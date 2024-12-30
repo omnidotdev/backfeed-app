@@ -21,7 +21,7 @@ interface Props {
  * Breadcrumb.
  */
 const Breadcrumb = ({ breadcrumbs }: Props) => {
-  const isTablet = useBreakpointValue({ base: false, md: true });
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
 
   return (
     <Flex fontSize="sm">
@@ -47,8 +47,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
                   color="foreground.subtle"
                   _hover={{ color: "foreground.default" }}
                 >
-                  {/* TODO: discuss this approach for responsive design. Still could have its pitfalls if the last item has a long enough label. */}
-                  {!isTablet && !isLastItem ? "..." : label}
+                  {!isDesktop && !isLastItem ? "..." : label}
                 </Text>
               </Link>
             ) : (
