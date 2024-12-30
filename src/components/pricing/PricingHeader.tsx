@@ -3,18 +3,17 @@ import { app } from "lib/config";
 
 function PricingHeader() {
   return (
-    <Flex align="center" direction="column">
+    <Flex align="center" direction="column" w="90%">
       <Text
         as="h1"
-        fontSize={"3rem"}
+        fontSize="5xl"
         fontWeight={"bold"}
         textAlign={"center"}
-        marginBottom={"0.5rem"}
-        marginTop={"2rem"}
+        marginTop="4"
       >
         {app.pricingPage.pricingHeader.title}
       </Text>
-      <Text fontSize={"1.5rem"} textAlign={"center"} marginBottom={"2rem"}>
+      <Text fontSize="2xl" textAlign={"center"} marginBottom={"8"}>
         {app.pricingPage.pricingHeader.description}
       </Text>
     </Flex>

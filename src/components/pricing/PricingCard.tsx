@@ -1,4 +1,4 @@
-import { Badge, Button, Card, HStack, Stack, Text } from "@omnidev/sigil";
+import { Badge, Button, Card, HStack, Stack, Text, sigil } from "@omnidev/sigil";
 import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
@@ -11,7 +11,7 @@ function PricingCards() {
         display={"flex"}
         flexWrap={"wrap"}
         justifyContent={"center"}
-        gap={"16px"}
+        gap={4}
       >
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
@@ -19,13 +19,13 @@ function PricingCards() {
             borderColor={
               tier.title === "Professional" ? "brand.primary" : "none"
             }
-            borderWidth={tier.title === "Professional" ? "3px" : "2px"}
+            borderWidth={tier.title === "Professional" ? "4" : "1"}
             flex={"1 1 calc(25%)"}
-            gap={"16px"}
-            maxWidth={"300px"}
-            minWidth={"300px"}
+            gap={4}
+            maxWidth="xs"
+            minWidth="xs"
             opacity={tier.title === "Self-Host" ? "0.6" : "1"}
-            height={"600px"}
+            h="xl"
             display={"flex"}
             flexDirection={"column"}
             position={"relative"}
@@ -33,17 +33,17 @@ function PricingCards() {
             {tier.title === "Professional" && (
               <Stack
                 position="absolute"
-                top="4px"
+                top="1"
                 left="50%"
                 transform="translateX(-50%)"
                 backgroundColor="var(--colors-background-secondary)"
                 padding="8px"
-                borderRadius="4px"
+                borderRadius="1"
               >
                 <Badge
                   color="brand.primary"
-                  height={"2rem"}
-                  borderRadius={"15px 15px"}
+                  height={"8"}
+                  borderRadius={"4 4"}
                 >
                   Recommended
                 </Badge>
@@ -53,38 +53,38 @@ function PricingCards() {
               display={"flex"}
               flexDirection={"column"}
               alignItems={"center"}
-              height={"450px"}
+              height="md"
             >
-              <Text as="h2" fontSize="2rem" textAlign="center">
+              <Text as="h2" fontSize="3xl" textAlign="center">
                 {tier.title}
               </Text>
               <HStack display={"inline-flex"} alignItems={"center"}>
-                <Text as="h3" fontSize={"2rem"} fontWeight={"bold"}>
+                <Text as="h3" fontSize={"3xl"} fontWeight={"bold"}>
                   {tier.price}
                 </Text>
                 {tier.title !== "Enterprise" && (
-                  <Text fontSize={"1.25rem"}>/month</Text>
+                  <Text fontSize="xl" marginTop="1" marginLeft="-2.5">/month</Text>
                 )}
               </HStack>
 
               <Text
                 as="h4"
-                fontSize={"1.25rem"}
-                fontWeight={"bold"}
-                margin={"8px 0 8px 0"}
+                fontSize={{ base: "2xl", lg: "4xl" }}
+                fontWeight="bold"
+                margin="8px 0 8px 0"
               >
                 Features
               </Text>
-              <ul
+              <sigil.ul
                 style={{
                   listStyle: "unset",
-                  marginLeft: "1rem",
+                  marginLeft: 2,
                 }}
               >
                 {tier.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
+                  <sigil.li key={feature}>{feature}</sigil.li>
                 ))}
-              </ul>
+              </sigil.ul>
               <Button
                 bgColor={
                   tier.title !== "Professional"
@@ -96,6 +96,7 @@ function PricingCards() {
                 left={"50%"}
                 transform={"translateX(-50%)"}
                 width={"90%"}
+                fontSize="xl"
               >
                 Get Started <FaArrowRight />
               </Button>
