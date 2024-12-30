@@ -6,21 +6,41 @@ import {
   OrganizationMetrics,
   OrganizationProjectsOverview,
 } from "components/organization";
-import { useDataState } from "lib/hooks";
+import { useOrganizationMetricsQuery } from "generated/graphql";
 
-const OrganizationOverview = () => {
-  const { isLoading, isError } = useDataState();
+interface Props {
+  /** Organization ID. */
+  organizationId: string;
+}
+
+const OrganizationOverview = ({ organizationId }: Props) => {
+  const {
+    data: organizationMetrics,
+    isLoading,
+    isError,
+  } = useOrganizationMetricsQuery(
+    {
+      organizationId,
+    },
+    {
+      select: (data) => ({
+        totalProjects: data?.projects?.totalCount,
+        totalFeedback: data?.posts?.totalCount,
+        activeUsers: data?.userOrganizations?.totalCount,
+      }),
+    }
+  );
 
   return (
     <>
-      <OrganizationProjectsOverview />
+      <OrganizationProjectsOverview organizationId={organizationId} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
         {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}
         <OrganizationMetrics
-          totalProjects={6}
-          totalFeedback={420}
-          activeUsers={1337}
+          totalProjects={organizationMetrics?.totalProjects ?? 0}
+          totalFeedback={organizationMetrics?.totalFeedback ?? 0}
+          activeUsers={organizationMetrics?.activeUsers ?? 0}
           isLoaded={!isLoading}
           isError={isError}
         />
