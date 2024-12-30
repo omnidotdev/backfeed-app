@@ -1,14 +1,15 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
-import { LuBuilding2 } from "react-icons/lu";
+import Link from "next/link";
+import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
-import { ErrorBoundary } from "components/layout";
+import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 import type { Organization } from "generated/graphql";
 
@@ -16,7 +17,7 @@ import type { Organization } from "generated/graphql";
  * Pinned organizations section.
  */
 const PinnedOrganizations = () => {
-  const router = useRouter();
+  const { user } = useAuth();
 
   const {
     data: pinnedOrganizations,
@@ -26,8 +27,10 @@ const PinnedOrganizations = () => {
     {
       first: 3,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      userId: user?.id!,
     },
     {
+      enabled: !!user,
       select: (data) => data?.organizations?.nodes,
     }
   );
@@ -62,24 +65,32 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Button
-          variant="outline"
-          color="brand.primary"
-          borderColor="brand.primary"
-          // TODO: discuss wrapping this in a `Link` instead. Big thing is discussing best way to style the `a` tag.
-          onClick={() => router.push("/organizations")}
-        >
-          {app.dashboardPage.cta.viewOrganizations.label}
-        </Button>
+        <Link href="/organizations">
+          <Button
+            variant="outline"
+            color="brand.primary"
+            borderColor="brand.primary"
+          >
+            {app.dashboardPage.cta.viewOrganizations.label}
+          </Button>
+        </Link>
       </Flex>
 
       {isError ? (
         <ErrorBoundary message="Error fetching organizations" h={48} />
       ) : (
-        <Grid gap={6} columns={{ base: 1, md: 3 }}>
+        <Grid
+          gap={6}
+          columns={{
+            base: 1,
+            md: pinnedOrganizations?.length
+              ? Math.min(pinnedOrganizations.length, 3)
+              : 1,
+          }}
+        >
           {isLoading ? (
             <SkeletonArray count={3} h={48} />
-          ) : (
+          ) : pinnedOrganizations?.length ? (
             pinnedOrganizations?.map((organization) => (
               <OrganizationCard
                 key={organization?.rowId}
@@ -88,6 +99,20 @@ const PinnedOrganizations = () => {
                 h={48}
               />
             ))
+          ) : (
+            <EmptyState
+              message={app.dashboardPage.organizations.emptyState.message}
+              action={{
+                label: app.dashboardPage.organizations.emptyState.cta.label,
+                icon: LuPlusCircle,
+                actionProps: {
+                  variant: "outline",
+                  color: "brand.primary",
+                  borderColor: "brand.primary",
+                },
+              }}
+              h={48}
+            />
           )}
         </Grid>
       )}

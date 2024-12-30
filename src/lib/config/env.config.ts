@@ -5,3 +5,6 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // web3
 export const WALLETCONNECT_PROJECT_ID = process.env.WALLETCONNECT_PROJECT_ID;
+
+// TODO: remove once keycloak / hidra are synced with database
+export const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID;
