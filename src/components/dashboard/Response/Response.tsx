@@ -8,7 +8,6 @@ import { getResponseTypeColor } from "lib/util";
 import type { Post } from "generated/graphql";
 import type { ResponseType } from "lib/util";
 
-// NB: this prop drilling is under the assumption that the query from parent won't provide much overhead (i.e. parent is isolated query and has minimal nesting / a response is a direct child)
 interface Props {
   /** Feedback details. */
   feedback: Partial<Post>;
@@ -22,6 +21,8 @@ interface Props {
  */
 const Response = ({ feedback, type }: Props) => {
   const color = getResponseTypeColor(type);
+
+  const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
     <Flex
@@ -48,7 +49,7 @@ const Response = ({ feedback, type }: Props) => {
       </Flex>
 
       <Text fontSize="xs" color="foreground.muted">
-        {dayjs(feedback?.createdAt).fromNow()}
+        {date}
       </Text>
     </Flex>
   );

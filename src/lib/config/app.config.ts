@@ -87,6 +87,17 @@ const app = {
     organizations: {
       title: "Organizations",
       description: "Manage your organizations and their feedback projects",
+      emptyState: {
+        message: "No organizations found. Would you like to create one?",
+        cta: {
+          label: "Create Organization",
+        },
+      },
+    },
+    recentFeedback: {
+      emptyState: {
+        message: "No recent feedback found.",
+      },
     },
     aggregates: {
       totalFeedback: {
