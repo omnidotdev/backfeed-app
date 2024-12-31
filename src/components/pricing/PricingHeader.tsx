@@ -1,6 +1,9 @@
 import { Flex, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
+/**
+ * Pricing header.
+ */
 const PricingHeader = () => (
   <Flex align="center" direction="column" w="90%">
     <Text as="h1" fontSize="5xl" fontWeight="bold" textAlign="center" mt={4}>
