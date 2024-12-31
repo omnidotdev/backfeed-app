@@ -17,6 +17,9 @@ query FeedbackById($rowId: UUID!) {
     upvotes {
       totalCount
     }
+    downvotes {
+      totalCount
+    }
     createdAt
     updatedAt
   }

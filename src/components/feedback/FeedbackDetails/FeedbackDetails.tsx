@@ -30,6 +30,7 @@ import { app } from "lib/config";
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
+// TODO: remove once this is no longer depended on by the ProjectFeedback component
 export interface Feedback {
   /** Feedback ID. */
   id: string;
@@ -121,8 +122,9 @@ const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
     },
     {
       id: "downvote",
-      // TODO: implement downvote functionality
-      votes: votingState.hasDownvoted ? 1 : 0,
+      votes: votingState.hasDownvoted
+        ? (feedback?.downvotes?.totalCount ?? 0) + 1
+        : (feedback?.downvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.downvote,
       icon: votingState.hasDownvoted
         ? PiArrowFatLineDownFill
@@ -138,8 +140,9 @@ const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
     },
   ];
 
-  // TODO: implement downvote functionality
-  const netTotalVotes = (feedback?.upvotes?.totalCount ?? 0) - 0;
+  const netTotalVotes =
+    (feedback?.upvotes?.totalCount ?? 0) -
+    (feedback?.downvotes?.totalCount ?? 0);
 
   const netVotesColor = match(netTotalVotes)
     .with(0, () => "gray.400")
