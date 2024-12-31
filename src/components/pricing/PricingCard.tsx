@@ -27,7 +27,6 @@ function PricingCards() {
               tier.title === "Professional" ? "brand.primary" : "none"
             }
             borderWidth={tier.title === "Professional" ? "4" : "1"}
-            flex="1 1 calc(25%)"
             gap="4"
             w={{ base: "100%", lg: "xs" }}
             opacity="1"
@@ -72,7 +71,7 @@ function PricingCards() {
 
               <Text
                 as="h4"
-                fontSize={{ base: "2xl", lg: "4xl" }}
+                fontSize="4xl"
                 fontWeight="bold"
                 m="2 0"
               >
