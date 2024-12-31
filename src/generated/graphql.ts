@@ -47,6 +47,282 @@ export type BigIntFilter = {
   notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
+export type Comment = Node & {
+  __typename?: 'Comment';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `Post` that is related to this `Comment`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads a single `User` that is related to this `Comment`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type CommentAggregates = {
+  __typename?: 'CommentAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<CommentDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Comment` object types. */
+export type CommentAggregatesFilter = {
+  /** Distinct count aggregate over matching `Comment` objects. */
+  distinctCount?: InputMaybe<CommentDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Comment` object to be included within the aggregate. */
+  filter?: InputMaybe<CommentFilter>;
+};
+
+/** A condition to be used against `Comment` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type CommentCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `message` field. */
+  message?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Comment` values. */
+export type CommentConnection = {
+  __typename?: 'CommentConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<CommentAggregates>;
+  /** A list of edges which contains the `Comment` and cursor to aid in pagination. */
+  edges: Array<Maybe<CommentEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<CommentAggregates>>;
+  /** A list of `Comment` objects. */
+  nodes: Array<Maybe<Comment>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Comment` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Comment` values. */
+export type CommentConnectionGroupedAggregatesArgs = {
+  groupBy: Array<CommentGroupBy>;
+  having?: InputMaybe<CommentHavingInput>;
+};
+
+export type CommentDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  message?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type CommentDistinctCountAggregates = {
+  __typename?: 'CommentDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of message across the matching connection */
+  message?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Comment` edge in the connection. */
+export type CommentEdge = {
+  __typename?: 'CommentEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Comment` at the end of the edge. */
+  node?: Maybe<Comment>;
+};
+
+/** A filter to be used against `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type CommentFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `message` field. */
+  message?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<CommentFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Comment` for usage during aggregation. */
+export enum CommentGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Message = 'MESSAGE',
+  PostId = 'POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type CommentHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Comment` aggregates. */
+export type CommentHavingInput = {
+  AND?: InputMaybe<Array<CommentHavingInput>>;
+  OR?: InputMaybe<Array<CommentHavingInput>>;
+  average?: InputMaybe<CommentHavingAverageInput>;
+  distinctCount?: InputMaybe<CommentHavingDistinctCountInput>;
+  max?: InputMaybe<CommentHavingMaxInput>;
+  min?: InputMaybe<CommentHavingMinInput>;
+  stddevPopulation?: InputMaybe<CommentHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<CommentHavingStddevSampleInput>;
+  sum?: InputMaybe<CommentHavingSumInput>;
+  variancePopulation?: InputMaybe<CommentHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<CommentHavingVarianceSampleInput>;
+};
+
+export type CommentHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Comment` */
+export type CommentInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  message?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Comment`. */
+export enum CommentOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  MessageAsc = 'MESSAGE_ASC',
+  MessageDesc = 'MESSAGE_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `Comment`. Fields that are set will be updated. */
+export type CommentPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  message?: InputMaybe<Scalars['String']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** All input for the create `Comment` mutation. */
+export type CreateCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Comment` to be created by this mutation. */
+  comment: CommentInput;
+};
+
+/** The output of our create `Comment` mutation. */
+export type CreateCommentPayload = {
+  __typename?: 'CreateCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was created by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Comment` mutation. */
+export type CreateCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
+};
+
 /** All input for the create `Organization` mutation. */
 export type CreateOrganizationInput = {
   /**
@@ -261,6 +537,50 @@ export type DatetimeFilter = {
   notEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+};
+
+/** All input for the `deleteCommentById` mutation. */
+export type DeleteCommentByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Comment` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteComment` mutation. */
+export type DeleteCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Comment` mutation. */
+export type DeleteCommentPayload = {
+  __typename?: 'DeleteCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was deleted by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  deletedCommentId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Comment` mutation. */
+export type DeleteCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
 };
 
 /** All input for the `deleteOrganizationById` mutation. */
@@ -592,6 +912,8 @@ export type HavingDatetimeFilter = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a single `Comment`. */
+  createComment?: Maybe<CreateCommentPayload>;
   /** Creates a single `Organization`. */
   createOrganization?: Maybe<CreateOrganizationPayload>;
   /** Creates a single `Post`. */
@@ -604,6 +926,10 @@ export type Mutation = {
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `UserOrganization`. */
   createUserOrganization?: Maybe<CreateUserOrganizationPayload>;
+  /** Deletes a single `Comment` using a unique key. */
+  deleteComment?: Maybe<DeleteCommentPayload>;
+  /** Deletes a single `Comment` using its globally unique id. */
+  deleteCommentById?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Organization` using a unique key. */
   deleteOrganization?: Maybe<DeleteOrganizationPayload>;
   /** Deletes a single `Organization` using its globally unique id. */
@@ -640,6 +966,10 @@ export type Mutation = {
   deleteUserByUsername?: Maybe<DeleteUserPayload>;
   /** Deletes a single `UserOrganization` using a unique key. */
   deleteUserOrganizationByUserIdAndOrganizationId?: Maybe<DeleteUserOrganizationPayload>;
+  /** Updates a single `Comment` using a unique key and a patch. */
+  updateComment?: Maybe<UpdateCommentPayload>;
+  /** Updates a single `Comment` using its globally unique id and a patch. */
+  updateCommentById?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
   updateOrganization?: Maybe<UpdateOrganizationPayload>;
   /** Updates a single `Organization` using its globally unique id and a patch. */
@@ -680,6 +1010,12 @@ export type Mutation = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateCommentArgs = {
+  input: CreateCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateOrganizationArgs = {
   input: CreateOrganizationInput;
 };
@@ -712,6 +1048,18 @@ export type MutationCreateUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserOrganizationArgs = {
   input: CreateUserOrganizationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCommentArgs = {
+  input: DeleteCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCommentByIdArgs = {
+  input: DeleteCommentByIdInput;
 };
 
 
@@ -820,6 +1168,18 @@ export type MutationDeleteUserByUsernameArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserOrganizationByUserIdAndOrganizationIdArgs = {
   input: DeleteUserOrganizationByUserIdAndOrganizationIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCommentArgs = {
+  input: UpdateCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCommentByIdArgs = {
+  input: UpdateCommentByIdInput;
 };
 
 
@@ -1244,6 +1604,8 @@ export type PageInfo = {
 
 export type Post = Node & {
   __typename?: 'Post';
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -1259,6 +1621,18 @@ export type Post = Node & {
   /** Reads a single `User` that is related to this `Post`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
+};
+
+
+export type PostCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
 };
 
 
@@ -1371,6 +1745,10 @@ export type PostEdge = {
 export type PostFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `comments` relation. */
+  comments?: InputMaybe<PostToManyCommentFilter>;
+  /** Some related `comments` exist. */
+  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
@@ -1486,6 +1864,20 @@ export type PostInput = {
 
 /** Methods to use when ordering `Post`. */
 export enum PostOrderBy {
+  CommentsCountAsc = 'COMMENTS_COUNT_ASC',
+  CommentsCountDesc = 'COMMENTS_COUNT_DESC',
+  CommentsDistinctCountCreatedAtAsc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  CommentsDistinctCountRowIdDesc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  CommentsDistinctCountUpdatedAtAsc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  CommentsDistinctCountUpdatedAtDesc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  CommentsDistinctCountUserIdAsc = 'COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  CommentsDistinctCountUserIdDesc = 'COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -1526,6 +1918,18 @@ export type PostPatch = {
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
 };
 
 /** A filter to be used against many `Upvote` object types. All fields are combined with a logical ‘and.’ */
@@ -1853,6 +2257,12 @@ export type ProjectToManyPostFilter = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  /** Get a single `Comment`. */
+  comment?: Maybe<Comment>;
+  /** Reads a single `Comment` using its globally unique `ID`. */
+  commentById?: Maybe<Comment>;
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments?: Maybe<CommentConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Fetches an object given its globally unique `ID`. */
@@ -1910,6 +2320,31 @@ export type Query = Node & {
   userOrganizations?: Maybe<UserOrganizationConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
 };
 
 
@@ -2209,6 +2644,53 @@ export type UuidFilter = {
   notEqualTo?: InputMaybe<Scalars['UUID']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
+/** All input for the `updateCommentById` mutation. */
+export type UpdateCommentByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Comment` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Comment` being updated. */
+  patch: CommentPatch;
+};
+
+/** All input for the `updateComment` mutation. */
+export type UpdateCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Comment` being updated. */
+  patch: CommentPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Comment` mutation. */
+export type UpdateCommentPayload = {
+  __typename?: 'UpdateCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was updated by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Comment` mutation. */
+export type UpdateCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
 };
 
 /** All input for the `updateOrganizationById` mutation. */
@@ -2791,6 +3273,8 @@ export type UpvotePatch = {
 
 export type User = Node & {
   __typename?: 'User';
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   firstName?: Maybe<Scalars['String']['output']>;
   hidraId: Scalars['UUID']['output'];
@@ -2806,6 +3290,18 @@ export type User = Node & {
   /** Reads and enables pagination through a set of `UserOrganization`. */
   userOrganizations: UserOrganizationConnection;
   username?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type UserCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
 };
 
 
@@ -2924,6 +3420,10 @@ export type UserEdge = {
 export type UserFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `comments` relation. */
+  comments?: InputMaybe<UserToManyCommentFilter>;
+  /** Some related `comments` exist. */
+  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `firstName` field. */
@@ -3041,6 +3541,20 @@ export type UserInput = {
 
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
+  CommentsCountAsc = 'COMMENTS_COUNT_ASC',
+  CommentsCountDesc = 'COMMENTS_COUNT_DESC',
+  CommentsDistinctCountCreatedAtAsc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  CommentsDistinctCountRowIdDesc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  CommentsDistinctCountUpdatedAtAsc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  CommentsDistinctCountUpdatedAtDesc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  CommentsDistinctCountUserIdAsc = 'COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  CommentsDistinctCountUserIdDesc = 'COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   FirstNameAsc = 'FIRST_NAME_ASC',
@@ -3298,6 +3812,18 @@ export type UserPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
