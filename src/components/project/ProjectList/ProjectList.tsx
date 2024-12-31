@@ -19,7 +19,6 @@ const IS_ORGANIZATION_OWNER = Math.random() < 0.5;
 
 /**
  * Project list.
- * TODO: apply either infinite scroll or pagination for the list once data fetching is implemented.
  */
 const ProjectList = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
