@@ -22,7 +22,7 @@ const PricingFAQ = () => (
         mb={4}
         mt={8}
       >
-        Frequently Asked Questions
+        {app.pricingPage.pricingFAQ.FAQ}
       </Text>
       
       <Accordion items={app.pricingPage.pricingFAQ.items} />

@@ -46,7 +46,7 @@ function PricingCards() {
                 borderRadius="1"
               >
                 <Badge color="brand.primary" height="8" borderRadius="4 4">
-                  Recommended
+                  {app.pricingPage.pricingTiers.recommended}
                 </Badge>
               </Stack>
             )}
@@ -68,13 +68,13 @@ function PricingCards() {
 
                 {tier.title !== "Enterprise" && (
                   <Text fontSize="xl" mt={1} ml={-2.5}>
-                    /month
+                    {app.pricingPage.pricingCard.perMonth}
                   </Text>
                 )}
               </HStack>
 
               <Text as="h4" fontSize="4xl" fontWeight="bold" m="2 0">
-                Features
+                {app.pricingPage.pricingCard.features}
               </Text>
 
               <sigil.ul

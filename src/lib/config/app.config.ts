@@ -200,7 +200,12 @@ const app = {
     },
   },
   pricingPage: {
+    pricingCard: {
+      perMonth: "/month",
+      features: "Features",
+    },
     pricingTiers: {
+      recommended: "Recommended",
       tiers: [
         {
           title: "Basic",
@@ -246,6 +251,7 @@ const app = {
       ],
     },
     pricingFAQ: {
+      FAQ: "Frequently Asked Questions",
       items: [
         {
           title: "How does the 14-day trial work?",
