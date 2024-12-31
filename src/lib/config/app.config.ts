@@ -212,7 +212,8 @@ const app = {
       },
     },
     emptyState: {
-      organizationOwnerMessage: "No projects found. Would you like to create one?",
+      organizationOwnerMessage:
+        "No projects found. Would you like to create one?",
       organizationUserMessage: "No projects found.",
       cta: {
         label: "Create Project",
