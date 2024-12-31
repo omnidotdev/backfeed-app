@@ -114,6 +114,13 @@ const app = {
       newProject: {
         label: "New Project",
         description: "Create a new project by submitting the form below.",
+        selectOrganization: {
+          label: {
+            id: "organizations",
+            singular: "Organization",
+            plural: "Organizations",
+          },
+        },
       },
       viewOrganizations: {
         label: "View All Organizations",

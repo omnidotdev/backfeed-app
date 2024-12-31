@@ -18,17 +18,21 @@ interface Props {
  */
 const NewProject = ({ isOpen, setIsOpen }: Props) => {
   const { user } = useAuth();
-  
-  const { data: organizations } = useOrganizationsQuery({
-    userId: user?.id!,
-  }, {
-    enabled: !!user,
-    select: (data) => data?.organizations?.nodes?.map((organization) => ({
-      label: organization?.name,
-      value: organization?.rowId,
-    })),
-  })
-  
+
+  const { data: organizations } = useOrganizationsQuery(
+    {
+      userId: user?.id!,
+    },
+    {
+      enabled: !!user,
+      select: (data) =>
+        data?.organizations?.nodes?.map((organization) => ({
+          label: organization?.name,
+          value: organization?.rowId,
+        })),
+    }
+  );
+
   return (
     <Dialog
       title={app.dashboardPage.cta.newProject.label}
@@ -37,12 +41,8 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
       onOpenChange={({ open }) => setIsOpen(open)}
     >
       <Select
-        label={{
-          id: "organizations",
-          singular: "Organization",
-          plural: "Organizations",
-        }}
-        collection={createListCollection({ items: organizations ?? []})}
+        label={app.dashboardPage.cta.newProject.selectOrganization.label}
+        collection={createListCollection({ items: organizations ?? [] })}
         displayGroupLabel={false}
         valueTextProps={{
           placeholder: "Select an organization",
@@ -52,7 +52,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
         }}
       />
     </Dialog>
-  )
+  );
 };
 
 export default NewProject;
