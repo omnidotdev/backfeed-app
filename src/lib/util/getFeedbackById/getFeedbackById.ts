@@ -11,7 +11,9 @@ import type {
 /**
  * Get a feedback record by its ID. This is used to fetch the feedback details server-side.
  */
-const getFeedbackById = async (feedbackId: string): Promise<FeedbackByIdQuery> =>
+const getFeedbackById = async (
+  feedbackId: string
+): Promise<FeedbackByIdQuery> =>
   request({
     url: API_BASE_URL!,
     document: FeedbackByIdDocument,
