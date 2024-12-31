@@ -1,7 +1,21 @@
-query Organization($slug: String!) {
-  organizationBySlug(slug: $slug) {
+query Organization($rowId: UUID!) {
+  organization(rowId: $rowId) {
     rowId
     name
-    slug
+    projects {
+      nodes {
+        rowId
+        name
+        description
+        posts {
+          totalCount
+          aggregates {
+            distinctCount {
+              userId
+            }
+          }
+        }
+      }
+    }
   }
 }

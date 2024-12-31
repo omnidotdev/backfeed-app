@@ -5,15 +5,13 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getProject } from "lib/util";
 
-import type { OrganizationProject } from "components/organization";
-
-const projectData: OrganizationProject = {
-  id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
-  name: "Web Platform Beta",
-  description: "Beta testing feedback for the new web platform",
-};
+// const projectData: OrganizationProject = {
+//   id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
+//   name: "Web Platform Beta",
+//   description: "Beta testing feedback for the new web platform",
+// };
 
 interface Props {
   /** Project page params. */
@@ -25,7 +23,12 @@ interface Props {
  */
 const ProjectPage = async ({ params }: Props) => {
   const { organizationId, projectId } = await params;
-  const session = await getAuthSession();
+
+  // @ts-ignore
+  const [session, { project }] = await Promise.all([
+    getAuthSession(),
+    getProject(organizationId, projectId),
+  ]);
 
   const breadcrumbs = [
     {
@@ -54,8 +57,8 @@ const ProjectPage = async ({ params }: Props) => {
       breadcrumbs={breadcrumbs}
       // TODO: Use actual project data here instead of placeholder
       header={{
-        title: projectData.name,
-        description: projectData.description,
+        title: project.name,
+        description: project.description,
         // TODO: add button actions
         cta: [
           {
@@ -73,7 +76,7 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview projectData={projectData} />
+      <ProjectOverview projectData={project} />
     </Page>
   );
 };
