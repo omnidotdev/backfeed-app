@@ -59,7 +59,7 @@ const FeedbackPage = async ({ params }: Props) => {
     <Page breadcrumbs={breadcrumbs}>
       <FeedbackDetails feedbackId={feedbackId} />
 
-      <Comments />
+      <Comments feedbackId={feedbackId} />
     </Page>
   );
 };

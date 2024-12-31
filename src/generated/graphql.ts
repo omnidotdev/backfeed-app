@@ -3862,8 +3862,6 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number } };
-
 export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
 
 export type CreatePostMutationVariables = Exact<{
@@ -3893,6 +3891,15 @@ export type UpvotePostMutationVariables = Exact<{
 
 
 export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
+
+export type CommentsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -3974,29 +3981,6 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
-export const FeedbackFragmentDoc = `
-    fragment Feedback on Post {
-  rowId
-  project {
-    rowId
-    name
-    organization {
-      rowId
-      name
-    }
-  }
-  title
-  description
-  user {
-    username
-  }
-  upvotes {
-    totalCount
-  }
-  createdAt
-  updatedAt
-}
-    `;
 export const ProjectFragmentDoc = `
     fragment Project on Project {
   createdAt
@@ -4106,6 +4090,71 @@ export const useUpvotePostMutation = <
   }
     )};
 
+export const CommentsDocument = `
+    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {postId: $feedbackId}
+  ) {
+    totalCount
+    pageInfo {
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        message
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+export const useCommentsQuery = <
+      TData = CommentsQuery,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options?: Omit<UseQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CommentsQuery, TError, TData>(
+      {
+    queryKey: ['Comments', variables],
+    queryFn: useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments', variables];
+
+export const useInfiniteCommentsQuery = <
+      TData = InfiniteData<CommentsQuery>,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument)
+    return useInfiniteQuery<CommentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Comments.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments.infinite', variables];
+
 export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
   posts(
@@ -4163,10 +4212,28 @@ useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQuer
 export const FeedbackByIdDocument = `
     query FeedbackById($rowId: UUID!) {
   post(rowId: $rowId) {
-    ...Feedback
+    rowId
+    project {
+      rowId
+      name
+      organization {
+        rowId
+        name
+      }
+    }
+    title
+    description
+    user {
+      username
+    }
+    upvotes {
+      totalCount
+    }
+    createdAt
+    updatedAt
   }
 }
-    ${FeedbackFragmentDoc}`;
+    `;
 
 export const useFeedbackByIdQuery = <
       TData = FeedbackByIdQuery,

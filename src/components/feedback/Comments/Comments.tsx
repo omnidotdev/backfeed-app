@@ -9,86 +9,71 @@ import {
   Textarea,
   VStack,
 } from "@omnidev/sigil";
-import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import request from "graphql-request";
+import { useCallback, useMemo } from "react";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
 import { CommentCard } from "components/feedback";
 import { ErrorBoundary, SectionContainer } from "components/layout";
-import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
+import { CommentsDocument } from "generated/graphql";
+import { API_BASE_URL, app } from "lib/config";
 
-const COMMENTS = {
-  totalCount: 24,
-  data: [
-    {
-      id: "1",
-      senderName: "Back Feed",
-      message: "I still like turtles.",
-      date: "2024-11-01T00:00:00.000Z",
-    },
-    {
-      id: "2",
-      senderName: "Feed Back",
-      message: "The new dashboard layout is much more intuitive!",
-      date: "2024-04-02T00:00:00.000Z",
-    },
-    {
-      id: "3",
-      senderName: "Fed Front",
-      message: "Having issues with the new export feature.",
-      date: "2024-01-03T00:00:00.000Z",
-    },
-    {
-      id: "4",
-      senderName: "Back Fed",
-      message: "Would love to be able to export feedback.",
-      date: "2023-01-04T00:00:00.000Z",
-    },
-  ],
-};
+import type { CommentsQuery, CommentsQueryVariables } from "generated/graphql";
+
+interface Props {
+  /** Feedback ID. */
+  feedbackId: string;
+}
 
 /**
  * Feedback comments section.
  */
-const Comments = () => {
-  const [shownComments, setShownComments] = useState(COMMENTS.data);
-
-  const [pageState, setPageState] = useState<{
-    currentPage: number;
-    hasNextPage: boolean;
-  }>({ currentPage: 1, hasNextPage: true });
-
-  const { isLoading, isError } = useDataState({ timeout: 700 });
-
-  // NB: temporarily used to mock an infinite query
-  // TODO replace with real data query
-  const handleLoadMore = () => {
-    if (!pageState.hasNextPage) return;
-
-    setPageState((prev) => ({
-      ...prev,
-      currentPage: prev.currentPage + 1,
-    }));
-
-    if (
-      pageState.currentPage >=
-      Math.floor(COMMENTS.totalCount / COMMENTS.data.length) - 1
-    ) {
-      setPageState((prev) => ({
-        ...prev,
-        hasNextPage: false,
-      }));
-    }
-
-    setShownComments((prev) => prev.concat(COMMENTS.data));
+const Comments = ({ feedbackId }: Props) => {
+  const variables: CommentsQueryVariables = {
+    pageSize: 5,
+    feedbackId,
   };
+
+  const { data, isLoading, isError, fetchNextPage } =
+    useInfiniteQuery<CommentsQuery>({
+      queryKey: ["comments", variables],
+      queryFn: ({ pageParam }) =>
+        request({
+          url: API_BASE_URL!,
+          document: CommentsDocument,
+          variables: {
+            ...variables,
+            after: pageParam,
+          },
+        }),
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) => lastPage?.comments?.pageInfo?.endCursor,
+    });
+
+  const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
+  const comments = data?.pages?.flatMap((page) =>
+    page?.comments?.edges?.map((edge) => edge?.node)
+  );
+
+  const hasNextPage = useMemo(() => {
+    if (!comments || !totalCount) return false;
+
+    return totalCount > comments?.length;
+  }, [comments, totalCount]);
+
+  const loadMoreComments = useCallback(() => {
+    if (!hasNextPage) return;
+
+    fetchNextPage();
+  }, [hasNextPage, fetchNextPage]);
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
-    hasNextPage: pageState.hasNextPage,
-    onLoadMore: handleLoadMore,
+    hasNextPage: hasNextPage,
+    onLoadMore: loadMoreComments,
     disabled: isError,
     // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
     rootMargin: "0px 0px 400px 0px",
@@ -114,7 +99,7 @@ const Comments = () => {
             <Text
               fontSize="sm"
               color="foreground.muted"
-            >{`${isError ? 0 : COMMENTS.totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
+            >{`${isError ? 0 : totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
           </Skeleton>
 
           <Button
@@ -136,21 +121,18 @@ const Comments = () => {
               <SkeletonArray count={5} h={21} />
             ) : (
               <VStack>
-                {shownComments.map(
-                  ({ id, senderName, message, date }, index) => (
-                    <CommentCard
-                      // biome-ignore lint/suspicious/noArrayIndexKey: index needed as key for the time being
-                      key={`${id}-${index}`}
-                      senderName={senderName}
-                      message={message}
-                      date={date}
-                      w="full"
-                      minH={21}
-                    />
-                  )
-                )}
+                {comments?.map((comment) => (
+                  <CommentCard
+                    key={comment?.rowId}
+                    senderName={comment?.user?.username}
+                    message={comment?.message}
+                    date={comment?.createdAt}
+                    w="full"
+                    minH={21}
+                  />
+                ))}
 
-                {pageState.hasNextPage && <Spinner ref={loaderRef} />}
+                {hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>
             )}
           </Grid>
