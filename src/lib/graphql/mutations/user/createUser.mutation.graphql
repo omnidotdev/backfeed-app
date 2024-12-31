@@ -1,0 +1,21 @@
+mutation CreateUser(
+  $hidraId: UUID!
+  $username: String
+  $firstName: String
+  $lastName: String
+) {
+  createUser(
+    input: {
+      user: {
+        hidraId: $hidraId
+        username: $username
+        firstName: $firstName
+        lastName: $lastName
+      }
+    }
+  ) {
+    user {
+      id
+    }
+  }
+}
