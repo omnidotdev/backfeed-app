@@ -7,6 +7,7 @@ query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
   ) {
     totalCount
     pageInfo {
+      hasNextPage
       endCursor
     }
     edges {

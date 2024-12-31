@@ -11,7 +11,7 @@ import {
 } from "@omnidev/sigil";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import request from "graphql-request";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -37,7 +37,8 @@ const Comments = ({ feedbackId }: Props) => {
     feedbackId,
   };
 
-  const { data, isLoading, isError, fetchNextPage } =
+  // TODO: Discuss using `useInfiniteCommentsQuery`. Any insight on how to appropriately apply the dynamic `after` parameter to that provided hook would be much appreciated.
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteQuery<CommentsQuery>({
       queryKey: ["comments", variables],
       queryFn: ({ pageParam }) =>
@@ -50,19 +51,16 @@ const Comments = ({ feedbackId }: Props) => {
           },
         }),
       initialPageParam: undefined,
-      getNextPageParam: (lastPage) => lastPage?.comments?.pageInfo?.endCursor,
+      getNextPageParam: (lastPage) =>
+        lastPage?.comments?.pageInfo?.hasNextPage
+          ? lastPage?.comments?.pageInfo?.endCursor
+          : undefined,
     });
 
   const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
   const comments = data?.pages?.flatMap((page) =>
     page?.comments?.edges?.map((edge) => edge?.node)
   );
-
-  const hasNextPage = useMemo(() => {
-    if (!comments || !totalCount) return false;
-
-    return totalCount > comments?.length;
-  }, [comments, totalCount]);
 
   const loadMoreComments = useCallback(() => {
     if (!hasNextPage) return;
