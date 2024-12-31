@@ -130,6 +130,12 @@ const app = {
         },
       },
     },
+    emptyState: {
+      message: "No organizations found. Would you like to create one?",
+      cta: {
+        label: "Create Organization",
+      },
+    },
     filters: {
       search: {
         placeholder: "Search all organizations...",
