@@ -87,7 +87,7 @@ export const { handlers, auth } = NextAuth({
           ["username", "firstName", "lastName"].some(
             (field) =>
               user.userByHidraId?.[field as keyof typeof user.userByHidraId] !==
-              token[field],
+              token[field]
           )
         ) {
           await sdk.UpdateUser({
