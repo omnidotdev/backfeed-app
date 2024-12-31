@@ -30,33 +30,33 @@ import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 import type { Post } from "generated/graphql";
 
-// export interface Feedback {
-//   /** Feedback ID. */
-//   id: string;
-//   /** Feedback title. */
-//   title: string;
-//   /** Feedback description. */
-//   description: string;
-//   /** Feedback created date. */
-//   createdAt: string;
-//   /** Feedback updated date. */
-//   updatedAt: string;
-//   /** Feedback status. */
-//   status: "New" | "Planned" | "In Progress" | "Complete";
-//   /** Total upvotes for the feedback. */
-//   upvotes: number;
-//   /** Total downvotes for the feedback. */
-//   downvotes: number;
-//   /** User who created the feedback. */
-//   user: {
-//     /** User ID. */
-//     id: string;
-//     /** User first name. */
-//     firstName: string;
-//     /** User last name. */
-//     lastName: string;
-//   };
-// }
+export interface Feedback {
+  /** Feedback ID. */
+  id: string;
+  /** Feedback title. */
+  title: string;
+  /** Feedback description. */
+  description: string;
+  /** Feedback created date. */
+  createdAt: string;
+  /** Feedback updated date. */
+  updatedAt: string;
+  /** Feedback status. */
+  status: "New" | "Planned" | "In Progress" | "Complete";
+  /** Total upvotes for the feedback. */
+  upvotes: number;
+  /** Total downvotes for the feedback. */
+  downvotes: number;
+  /** User who created the feedback. */
+  user: {
+    /** User ID. */
+    id: string;
+    /** User first name. */
+    firstName: string;
+    /** User last name. */
+    lastName: string;
+  };
+}
 
 interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
@@ -110,11 +110,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
     },
     {
       id: "downvote",
-      votes: votingState.hasDownvoted
-        ? // @ts-ignore
-          (feedback?.downvotes ?? 0) + 1
-        : // @ts-ignore
-          feedback?.downvotes,
+      votes: votingState.hasDownvoted ? 0 + 1 : 0,
       tooltip: app.feedbackPage.details.downvote,
       icon: votingState.hasDownvoted
         ? PiArrowFatLineDownFill
@@ -130,8 +126,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
     },
   ];
 
-  // @ts-ignore
-  const netTotalVotes = Number(upvotes) - (feedback?.downvotes ?? 0);
+  const netTotalVotes = Number(upvotes) - 0;
 
   const netVotesColor = match(netTotalVotes)
     .with(0, () => "foreground.subtle")
