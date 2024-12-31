@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   HStack,
+  Icon,
   Stack,
   Text,
   sigil,
@@ -10,11 +11,11 @@ import {
 import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
-function PricingCards() {
-  return (
-    <>
+/**
+ * Card information regarding pricing tiers.
+ */
+const PricingCards = () => (
       <HStack
-        display="flex"
         flexWrap="wrap"
         flexDirection={{ base: "column", lg: "row" }}
         justifyContent="center"
@@ -27,7 +28,7 @@ function PricingCards() {
             borderColor={
               tier.title === "Professional" ? "brand.primary" : "none"
             }
-            borderWidth={tier.title === "Professional" ? "4" : "1"}
+            borderWidth={tier.title === "Professional" ? 4 : 1}
             gap={4}
             w={{ base: "100%", lg: "xs" }}
             h="xl"
@@ -40,11 +41,11 @@ function PricingCards() {
                 top={1}
                 left="50%"
                 transform="translateX(-50%)"
-                backgroundColor="var(--colors-background-secondary)"
+                backgroundColor="background.secondary"
                 p={2}
                 borderRadius={1}
               >
-                <Badge color="brand.primary" height="8" borderRadius="4 4">
+                <Badge color="brand.primary" height={8} borderRadius={4}>
                   {app.pricingPage.pricingTiers.recommended}
                 </Badge>
               </Stack>
@@ -72,14 +73,14 @@ function PricingCards() {
                 )}
               </HStack>
 
-              <Text as="h4" fontSize="4xl" fontWeight="bold" m="2 0">
+              <Text as="h4" fontSize="4xl" fontWeight="bold" my={2}>
                 {app.pricingPage.pricingCard.features}
               </Text>
 
               <sigil.ul
-                style={{
+                css={{
                   listStyle: "unset",
-                  marginLeft: 2,
+                  ml: 2,
                 }}
               >
                 {tier.features.map((feature) => (
@@ -100,14 +101,12 @@ function PricingCards() {
                 w="90%"
                 fontSize="xl"
               >
-                {app.pricingPage.pricingCard.getStarted} <FaArrowRight />
+                {app.pricingPage.pricingCard.getStarted} <Icon src={FaArrowRight} />
               </Button>
             </Stack>
           </Card>
         ))}
       </HStack>
-    </>
   );
-}
 
 export default PricingCards;
