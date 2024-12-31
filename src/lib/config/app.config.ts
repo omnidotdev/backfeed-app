@@ -121,14 +121,17 @@ const app = {
             singular: "Organization",
             plural: "Organizations",
           },
+          error: "Please select an organization.",
         },
         projectName: {
           id: "Project Name",
           placeholder: "Insert project name...",
+          error: "Must be at least 3 characters.",
         },
         projectDescription: {
           id: "Project Description",
           placeholder: "Insert project description...",
+          error: "Must be at least 10 characters.",
         },
         projectSlug: {
           id: "Project Slug",

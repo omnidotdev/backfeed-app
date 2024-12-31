@@ -11,11 +11,26 @@ import {
   Text,
   Textarea,
   createListCollection,
+  sigil,
 } from "@omnidev/sigil";
-import { useOrganizationsQuery } from "generated/graphql";
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
 
+import { FormFieldError } from "components/core";
+import { useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+
+const newProjectSchema = z.object({
+  organizationId: z
+    .string()
+    .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
+  name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
+  description: z
+    .string()
+    .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
+  slug: z.string().optional(),
+});
 
 interface Props {
   /** State to determine if the dialog is open. */
@@ -44,70 +59,183 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
     }
   );
 
+  const { handleSubmit, Field, Subscribe, reset } = useForm({
+    defaultValues: {
+      organizationId: "",
+      name: "",
+      description: "",
+      slug: undefined,
+    },
+    validators: {
+      onChange: newProjectSchema,
+    },
+  });
+
   return (
     <Dialog
       title={app.dashboardPage.cta.newProject.label}
       description={app.dashboardPage.cta.newProject.description}
       open={isOpen}
-      onOpenChange={({ open }) => setIsOpen(open)}
+      onOpenChange={({ open }) => {
+        reset();
+        setIsOpen(open);
+      }}
     >
-      <Select
-        label={app.dashboardPage.cta.newProject.selectOrganization.label}
-        collection={createListCollection({ items: organizations ?? [] })}
-        displayGroupLabel={false}
-        valueTextProps={{
-          placeholder: "Select an organization",
-        }}
-        triggerProps={{
-          borderColor: "border.subtle",
-        }}
-      />
+      <sigil.form display="flex" flexDirection="column" gap={4}>
+        <Field
+          name="organizationId"
+          validators={{
+            onChange: newProjectSchema.shape.organizationId,
+          }}
+        >
+          {({ handleChange, state }) => (
+            <Stack position="relative">
+              <Select
+                label={
+                  app.dashboardPage.cta.newProject.selectOrganization.label
+                }
+                collection={createListCollection({
+                  items: organizations ?? [],
+                })}
+                displayGroupLabel={false}
+                valueTextProps={{
+                  placeholder: "Select an organization",
+                }}
+                triggerProps={{
+                  borderColor: "border.subtle",
+                }}
+                value={state.value?.length ? [state.value] : []}
+                onValueChange={({ value }) =>
+                  handleChange(value.length ? value[0] : "")
+                }
+              />
 
-      <Stack>
-        <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
-          {app.dashboardPage.cta.newProject.projectName.id}
-        </Label>
+              <FormFieldError
+                errors={state.meta.errors}
+                isDirty={state.meta.isDirty}
+              />
+            </Stack>
+          )}
+        </Field>
 
-        <Input
-          id={app.dashboardPage.cta.newProject.projectName.id}
-          placeholder={app.dashboardPage.cta.newProject.projectName.placeholder}
-        />
-      </Stack>
+        <Field
+          name="name"
+          asyncDebounceMs={300}
+          validators={{
+            onChangeAsync: newProjectSchema.shape.name,
+          }}
+        >
+          {({ handleChange, state }) => (
+            <Stack position="relative">
+              <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
+                {app.dashboardPage.cta.newProject.projectName.id}
+              </Label>
 
-      <Stack>
-        <Label htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}>
-          {app.dashboardPage.cta.newProject.projectDescription.id}
-        </Label>
+              <Input
+                id={app.dashboardPage.cta.newProject.projectName.id}
+                placeholder={
+                  app.dashboardPage.cta.newProject.projectName.placeholder
+                }
+                value={state.value}
+                onChange={(e) => handleChange(e.target.value)}
+              />
 
-        <Textarea
-          id={app.dashboardPage.cta.newProject.projectDescription.id}
-          placeholder={
-            app.dashboardPage.cta.newProject.projectDescription.placeholder
-          }
-        />
-      </Stack>
+              <FormFieldError
+                errors={state.meta.errors}
+                isDirty={state.meta.isDirty}
+              />
+            </Stack>
+          )}
+        </Field>
 
-      <Stack>
-        <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
-          {app.dashboardPage.cta.newProject.projectSlug.id}
-        </Label>
+        <Field
+          name="description"
+          asyncDebounceMs={300}
+          validators={{
+            onChangeAsync: newProjectSchema.shape.description,
+          }}
+        >
+          {({ handleChange, state }) => (
+            <Stack position="relative">
+              <Label
+                htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
+              >
+                {app.dashboardPage.cta.newProject.projectDescription.id}
+              </Label>
 
-        <HStack>
-          <Text
-            whiteSpace="nowrap"
-            fontSize="lg"
-          >{`.../${app.projectsPage.breadcrumb.toLowerCase()}/`}</Text>
+              <Textarea
+                id={app.dashboardPage.cta.newProject.projectDescription.id}
+                placeholder={
+                  app.dashboardPage.cta.newProject.projectDescription
+                    .placeholder
+                }
+                value={state.value}
+                onChange={(e) => handleChange(e.target.value)}
+              />
 
-          <Input
-            id={app.dashboardPage.cta.newProject.projectSlug.id}
-            placeholder={
-              app.dashboardPage.cta.newProject.projectSlug.placeholder
-            }
-          />
-        </HStack>
-      </Stack>
+              <FormFieldError
+                errors={state.meta.errors}
+                isDirty={state.meta.isDirty}
+              />
+            </Stack>
+          )}
+        </Field>
 
-      <Button>{app.dashboardPage.cta.newProject.action}</Button>
+        <Field
+          name="slug"
+          asyncDebounceMs={300}
+          validators={{
+            onChangeAsync: newProjectSchema.shape.slug,
+          }}
+        >
+          {({ handleChange, state }) => (
+            <Stack position="relative">
+              <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
+                {app.dashboardPage.cta.newProject.projectSlug.id}
+              </Label>
+
+              <HStack>
+                <Text
+                  whiteSpace="nowrap"
+                  fontSize="lg"
+                >{`.../${app.projectsPage.breadcrumb.toLowerCase()}/`}</Text>
+
+                <Input
+                  id={app.dashboardPage.cta.newProject.projectSlug.id}
+                  placeholder={
+                    app.dashboardPage.cta.newProject.projectSlug.placeholder
+                  }
+                  value={state.value}
+                  onChange={(e) => handleChange(e.target.value)}
+                />
+
+                <FormFieldError
+                  errors={state.meta.errors}
+                  isDirty={state.meta.isDirty}
+                />
+              </HStack>
+            </Stack>
+          )}
+        </Field>
+
+        <Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
+        >
+          {([canSubmit, isSubmitting, isDirty]) => (
+            <Button
+              disabled={!canSubmit || isSubmitting || !isDirty}
+              mt={4}
+              onClick={handleSubmit}
+            >
+              {app.dashboardPage.cta.newProject.action}
+            </Button>
+          )}
+        </Subscribe>
+      </sigil.form>
     </Dialog>
   );
 };
