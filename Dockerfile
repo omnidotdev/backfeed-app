@@ -24,6 +24,8 @@ COPY . .
 # disable telemetry during build (https://nextjs.org/telemetry)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG WALLETCONNECT_PROJECT_ID
+
 RUN bun prepare
 RUN bun run build
 
@@ -46,5 +48,6 @@ USER nextjs
 
 EXPOSE 3000
 ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 ENTRYPOINT ["bun", "server.js"]

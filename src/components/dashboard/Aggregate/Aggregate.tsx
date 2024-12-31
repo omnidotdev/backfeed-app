@@ -44,12 +44,6 @@ const Aggregate = ({ title, value, icon, isLoaded = true, isError }: Props) => (
           {isError ? "Error" : value}
         </Text>
       </Skeleton>
-
-      <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 40 : undefined}>
-        <Text fontSize="xs" color="green" fontWeight="medium">
-          {isError ? "Error" : "+4.2069% from last month"}
-        </Text>
-      </Skeleton>
     </Flex>
   </Flex>
 );

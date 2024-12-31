@@ -3,6 +3,7 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
+  breadcrumb: "Home",
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
@@ -86,6 +87,17 @@ const app = {
     organizations: {
       title: "Organizations",
       description: "Manage your organizations and their feedback projects",
+      emptyState: {
+        message: "No organizations found. Would you like to create one?",
+        cta: {
+          label: "Create Organization",
+        },
+      },
+    },
+    recentFeedback: {
+      emptyState: {
+        message: "No recent feedback found.",
+      },
     },
     aggregates: {
       totalFeedback: {
@@ -108,6 +120,7 @@ const app = {
     },
   },
   organizationsPage: {
+    breadcrumb: "Organizations",
     header: {
       title: "Organizations",
       description: "Manage and monitor all your organizations in one place.",
@@ -268,6 +281,7 @@ const app = {
     },
   },
   projectsPage: {
+    breadcrumb: "Projects",
     header: {
       title: "Projects",
       description:
@@ -293,8 +307,51 @@ const app = {
       },
     },
   },
+  projectPage: {
+    header: {
+      cta: {
+        settings: {
+          label: "Project Settings",
+        },
+        viewAllProjects: {
+          label: "View All Projects",
+        },
+      },
+    },
+    projectFeedback: {
+      title: "Project Feeback",
+      inputPlaceholder: "Short, descriptive title",
+      textareaPlaceholder: "Describe additional details...",
+      submit: "Create",
+      totalResponses: "Total Responses",
+      details: {
+        upvote: "Upvote",
+        downvote: "Downvote",
+        feedbackLink: "View Feedback",
+      },
+    },
+    projectInformation: {
+      title: "Project Information",
+      activeUsers: "Active Users",
+      created: "Created",
+    },
+    feedbackMetrics: {
+      title: "Feedback Metrics",
+      totalFeedback: "Total Feedback",
+      totalUpvotes: "Total Upvotes",
+    },
+    statusBreakdown: {
+      title: "Status Breakdown",
+      status: {
+        new: "New",
+        planned: "Planned",
+        inProgress: "In Progress",
+        completed: "Completed",
+      },
+    },
+  },
   feedbackPage: {
-    backToProject: "Back to Project",
+    breadcrumb: "Feedback",
     details: {
       upvote: "Upvote",
       downvote: "Downvote",

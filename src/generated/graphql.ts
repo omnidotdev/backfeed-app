@@ -15,7 +15,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  BigInt: { input: any; output: any; }
+  BigInt: { input: string; output: string; }
   Cursor: { input: string; output: string; }
   Datetime: { input: Date; output: Date; }
   UUID: { input: string; output: string; }
@@ -491,6 +491,16 @@ export type DeleteUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
+/** All input for the `deleteUserByHidraId` mutation. */
+export type DeleteUserByHidraIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  hidraId: Scalars['UUID']['input'];
+};
+
 /** All input for the `deleteUserById` mutation. */
 export type DeleteUserByIdInput = {
   /**
@@ -502,14 +512,14 @@ export type DeleteUserByIdInput = {
   id: Scalars['ID']['input'];
 };
 
-/** All input for the `deleteUserByWalletAddress` mutation. */
-export type DeleteUserByWalletAddressInput = {
+/** All input for the `deleteUserByUsername` mutation. */
+export type DeleteUserByUsernameInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  walletAddress: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 /** All input for the `deleteUser` mutation. */
@@ -622,10 +632,12 @@ export type Mutation = {
   deleteUpvoteByPostIdAndUserId?: Maybe<DeleteUpvotePayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `User` using a unique key. */
+  deleteUserByHidraId?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using its globally unique id. */
   deleteUserById?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using a unique key. */
-  deleteUserByWalletAddress?: Maybe<DeleteUserPayload>;
+  deleteUserByUsername?: Maybe<DeleteUserPayload>;
   /** Deletes a single `UserOrganization` using a unique key. */
   deleteUserOrganizationByUserIdAndOrganizationId?: Maybe<DeleteUserOrganizationPayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
@@ -656,10 +668,12 @@ export type Mutation = {
   updateUpvoteByPostIdAndUserId?: Maybe<UpdateUpvotePayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
+  /** Updates a single `User` using a unique key and a patch. */
+  updateUserByHidraId?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using its globally unique id and a patch. */
   updateUserById?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
-  updateUserByWalletAddress?: Maybe<UpdateUserPayload>;
+  updateUserByUsername?: Maybe<UpdateUserPayload>;
   /** Updates a single `UserOrganization` using a unique key and a patch. */
   updateUserOrganizationByUserIdAndOrganizationId?: Maybe<UpdateUserOrganizationPayload>;
 };
@@ -786,14 +800,20 @@ export type MutationDeleteUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserByHidraIdArgs = {
+  input: DeleteUserByHidraIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByIdArgs = {
   input: DeleteUserByIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByWalletAddressArgs = {
-  input: DeleteUserByWalletAddressInput;
+export type MutationDeleteUserByUsernameArgs = {
+  input: DeleteUserByUsernameInput;
 };
 
 
@@ -888,14 +908,20 @@ export type MutationUpdateUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserByHidraIdArgs = {
+  input: UpdateUserByHidraIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserByIdArgs = {
   input: UpdateUserByIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByWalletAddressArgs = {
-  input: UpdateUserByWalletAddressInput;
+export type MutationUpdateUserByUsernameArgs = {
+  input: UpdateUserByUsernameInput;
 };
 
 
@@ -1872,10 +1898,12 @@ export type Query = Node & {
   upvotes?: Maybe<UpvoteConnection>;
   /** Get a single `User`. */
   user?: Maybe<User>;
+  /** Get a single `User`. */
+  userByHidraId?: Maybe<User>;
   /** Reads a single `User` using its globally unique `ID`. */
   userById?: Maybe<User>;
   /** Get a single `User`. */
-  userByWalletAddress?: Maybe<User>;
+  userByUsername?: Maybe<User>;
   /** Get a single `UserOrganization`. */
   userOrganizationByUserIdAndOrganizationId?: Maybe<UserOrganization>;
   /** Reads and enables pagination through a set of `UserOrganization`. */
@@ -2030,14 +2058,20 @@ export type QueryUserArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryUserByHidraIdArgs = {
+  hidraId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryUserByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryUserByWalletAddressArgs = {
-  walletAddress: Scalars['String']['input'];
+export type QueryUserByUsernameArgs = {
+  username: Scalars['String']['input'];
 };
 
 
@@ -2427,6 +2461,18 @@ export type UpdateUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
+/** All input for the `updateUserByHidraId` mutation. */
+export type UpdateUserByHidraIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  hidraId: Scalars['UUID']['input'];
+  /** An object where the defined keys will be set on the `User` being updated. */
+  patch: UserPatch;
+};
+
 /** All input for the `updateUserById` mutation. */
 export type UpdateUserByIdInput = {
   /**
@@ -2440,8 +2486,8 @@ export type UpdateUserByIdInput = {
   patch: UserPatch;
 };
 
-/** All input for the `updateUserByWalletAddress` mutation. */
-export type UpdateUserByWalletAddressInput = {
+/** All input for the `updateUserByUsername` mutation. */
+export type UpdateUserByUsernameInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
@@ -2449,7 +2495,7 @@ export type UpdateUserByWalletAddressInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `User` being updated. */
   patch: UserPatch;
-  walletAddress: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 /** All input for the `updateUser` mutation. */
@@ -2746,8 +2792,11 @@ export type UpvotePatch = {
 export type User = Node & {
   __typename?: 'User';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  hidraId: Scalars['UUID']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   rowId: Scalars['UUID']['output'];
@@ -2756,7 +2805,7 @@ export type User = Node & {
   upvotes: UpvoteConnection;
   /** Reads and enables pagination through a set of `UserOrganization`. */
   userOrganizations: UserOrganizationConnection;
-  walletAddress?: Maybe<Scalars['String']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -2806,12 +2855,18 @@ export type UserAggregates = {
 export type UserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `firstName` field. */
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `hidraId` field. */
+  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `lastName` field. */
+  lastName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `walletAddress` field. */
-  walletAddress?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `username` field. */
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A connection to a list of `User` values. */
@@ -2842,12 +2897,18 @@ export type UserDistinctCountAggregates = {
   __typename?: 'UserDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of firstName across the matching connection */
+  firstName?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of hidraId across the matching connection */
+  hidraId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of lastName across the matching connection */
+  lastName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of walletAddress across the matching connection */
-  walletAddress?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of username across the matching connection */
+  username?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `User` edge in the connection. */
@@ -2865,6 +2926,12 @@ export type UserFilter = {
   and?: InputMaybe<Array<UserFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `firstName` field. */
+  firstName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hidraId` field. */
+  hidraId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `lastName` field. */
+  lastName?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<UserFilter>;
   /** Checks for any expressions in this list. */
@@ -2885,8 +2952,8 @@ export type UserFilter = {
   userOrganizations?: InputMaybe<UserToManyUserOrganizationFilter>;
   /** Some related `userOrganizations` exist. */
   userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `walletAddress` field. */
-  walletAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `username` field. */
+  username?: InputMaybe<StringFilter>;
 };
 
 /** Grouping methods for `User` for usage during aggregation. */
@@ -2894,6 +2961,8 @@ export enum UserGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  FirstName = 'FIRST_NAME',
+  LastName = 'LAST_NAME',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -2962,15 +3031,24 @@ export type UserHavingVarianceSampleInput = {
 /** An input for mutations affecting `User` */
 export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  hidraId: Scalars['UUID']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  walletAddress?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  FirstNameAsc = 'FIRST_NAME_ASC',
+  FirstNameDesc = 'FIRST_NAME_DESC',
+  HidraIdAsc = 'HIDRA_ID_ASC',
+  HidraIdDesc = 'HIDRA_ID_DESC',
+  LastNameAsc = 'LAST_NAME_ASC',
+  LastNameDesc = 'LAST_NAME_DESC',
   Natural = 'NATURAL',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
@@ -3006,6 +3084,8 @@ export enum UserOrderBy {
   UpvotesDistinctCountUpdatedAtDesc = 'UPVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
   UpvotesDistinctCountUserIdAsc = 'UPVOTES_DISTINCT_COUNT_USER_ID_ASC',
   UpvotesDistinctCountUserIdDesc = 'UPVOTES_DISTINCT_COUNT_USER_ID_DESC',
+  UsernameAsc = 'USERNAME_ASC',
+  UsernameDesc = 'USERNAME_DESC',
   UserOrganizationsCountAsc = 'USER_ORGANIZATIONS_COUNT_ASC',
   UserOrganizationsCountDesc = 'USER_ORGANIZATIONS_COUNT_DESC',
   UserOrganizationsDistinctCountCreatedAtAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -3013,9 +3093,7 @@ export enum UserOrderBy {
   UserOrganizationsDistinctCountOrganizationIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
   UserOrganizationsDistinctCountOrganizationIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
   UserOrganizationsDistinctCountUserIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_ASC',
-  UserOrganizationsDistinctCountUserIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_DESC',
-  WalletAddressAsc = 'WALLET_ADDRESS_ASC',
-  WalletAddressDesc = 'WALLET_ADDRESS_DESC'
+  UserOrganizationsDistinctCountUserIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_DESC'
 }
 
 export type UserOrganization = {
@@ -3214,9 +3292,12 @@ export type UserOrganizationPatch = {
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  walletAddress?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
@@ -3257,8 +3338,6 @@ export type UserToManyUserOrganizationFilter = {
 
 export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
 
-export type UserFragment = { __typename?: 'User', createdAt?: Date | null, id: string, rowId: string, updatedAt?: Date | null, walletAddress?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', createdAt?: Date | null, organizationId: string, userId: string, organization?: { __typename?: 'Organization', id: string, createdAt?: Date | null, name?: string | null, rowId: string, slug?: string | null, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', slug?: string | null, rowId: string, organizationId: string, name?: string | null, image?: string | null, id: string, description?: string | null, createdAt?: Date | null } | null> } } | null } | null> } };
-
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -3287,16 +3366,31 @@ export type UpvotePostMutationVariables = Exact<{
 
 export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
-export type OrganizationQueryVariables = Exact<{
-  slug: Scalars['String']['input'];
+export type DashboardAggregatesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug?: string | null } | null };
+export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
+
+export type OrganizationQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+
+export type OrganizationMetricsQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
+  userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -3308,7 +3402,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', walletAddress?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: any | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: string | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -3325,12 +3419,20 @@ export type ProjectsQueryVariables = Exact<{
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
 
-export type UserQueryVariables = Exact<{
-  walletAddress: Scalars['String']['input'];
+export type RecentFeedbackQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByWalletAddress?: { __typename?: 'User', createdAt?: Date | null, id: string, rowId: string, updatedAt?: Date | null, walletAddress?: string | null, userOrganizations: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', createdAt?: Date | null, organizationId: string, userId: string, organization?: { __typename?: 'Organization', id: string, createdAt?: Date | null, name?: string | null, rowId: string, slug?: string | null, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', slug?: string | null, rowId: string, organizationId: string, name?: string | null, image?: string | null, id: string, description?: string | null, createdAt?: Date | null } | null> } } | null } | null> } } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+
+export type WeeklyFeedbackQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  startDate: Scalars['Datetime']['input'];
+}>;
+
+
+export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
 export const ProjectFragmentDoc = `
@@ -3354,42 +3456,6 @@ export const ProjectFragmentDoc = `
       title
       updatedAt
       userId
-    }
-  }
-}
-    `;
-export const UserFragmentDoc = `
-    fragment User on User {
-  createdAt
-  id
-  rowId
-  updatedAt
-  walletAddress
-  userOrganizations {
-    nodes {
-      createdAt
-      organizationId
-      userId
-      organization {
-        id
-        createdAt
-        name
-        rowId
-        slug
-        updatedAt
-        projects {
-          nodes {
-            slug
-            rowId
-            organizationId
-            name
-            image
-            id
-            description
-            createdAt
-          }
-        }
-      }
     }
   }
 }
@@ -3478,12 +3544,80 @@ export const useUpvotePostMutation = <
   }
     )};
 
+export const DashboardAggregatesDocument = `
+    query DashboardAggregates($userId: UUID!) {
+  posts(
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    totalCount
+  }
+  users(
+    filter: {userOrganizations: {some: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}}
+  ) {
+    totalCount
+  }
+}
+    `;
+
+export const useDashboardAggregatesQuery = <
+      TData = DashboardAggregatesQuery,
+      TError = unknown
+    >(
+      variables: DashboardAggregatesQueryVariables,
+      options?: Omit<UseQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<DashboardAggregatesQuery, TError, TData>(
+      {
+    queryKey: ['DashboardAggregates', variables],
+    queryFn: useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates', variables];
+
+export const useInfiniteDashboardAggregatesQuery = <
+      TData = InfiniteData<DashboardAggregatesQuery>,
+      TError = unknown
+    >(
+      variables: DashboardAggregatesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument)
+    return useInfiniteQuery<DashboardAggregatesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['DashboardAggregates.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
+
 export const OrganizationDocument = `
-    query Organization($slug: String!) {
-  organizationBySlug(slug: $slug) {
+    query Organization($rowId: UUID!) {
+  organization(rowId: $rowId) {
     rowId
     name
-    slug
+    projects {
+      nodes {
+        rowId
+        name
+        description
+        posts {
+          totalCount
+          aggregates {
+            distinctCount {
+              userId
+            }
+          }
+        }
+      }
+    }
   }
 }
     `;
@@ -3527,12 +3661,65 @@ export const useInfiniteOrganizationQuery = <
 
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
 
+export const OrganizationMetricsDocument = `
+    query OrganizationMetrics($organizationId: UUID!) {
+  projects(condition: {organizationId: $organizationId}) {
+    totalCount
+  }
+  posts(filter: {project: {organizationId: {equalTo: $organizationId}}}) {
+    totalCount
+  }
+  userOrganizations(condition: {organizationId: $organizationId}) {
+    totalCount
+  }
+}
+    `;
+
+export const useOrganizationMetricsQuery = <
+      TData = OrganizationMetricsQuery,
+      TError = unknown
+    >(
+      variables: OrganizationMetricsQueryVariables,
+      options?: Omit<UseQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<OrganizationMetricsQuery, TError, TData>(
+      {
+    queryKey: ['OrganizationMetrics', variables],
+    queryFn: useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics', variables];
+
+export const useInfiniteOrganizationMetricsQuery = <
+      TData = InfiniteData<OrganizationMetricsQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationMetricsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument)
+    return useInfiniteQuery<OrganizationMetricsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['OrganizationMetrics.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
+
 export const OrganizationsDocument = `
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $search: String) {
+    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
     first: $first
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}}
+    filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
     nodes {
       rowId
@@ -3552,19 +3739,19 @@ export const useOrganizationsQuery = <
       TData = OrganizationsQuery,
       TError = unknown
     >(
-      variables?: OrganizationsQueryVariables,
+      variables: OrganizationsQueryVariables,
       options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<OrganizationsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Organizations'] : ['Organizations', variables],
+    queryKey: ['Organizations', variables],
     queryFn: useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument).bind(null, variables),
     ...options
   }
     )};
 
-useOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations'] : ['Organizations', variables];
+useOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations', variables];
 
 export const useInfiniteOrganizationsQuery = <
       TData = InfiniteData<OrganizationsQuery>,
@@ -3578,14 +3765,14 @@ export const useInfiniteOrganizationsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables];
+useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
 
 export const PostsDocument = `
     query Posts($projectId: UUID!) {
@@ -3596,7 +3783,7 @@ export const PostsDocument = `
       title
       description
       user {
-        walletAddress
+        username
       }
       upvotes {
         aggregates {
@@ -3754,49 +3941,116 @@ export const useInfiniteProjectsQuery = <
 
 useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
 
-export const UserDocument = `
-    query User($walletAddress: String!) {
-  userByWalletAddress(walletAddress: $walletAddress) {
-    ...User
+export const RecentFeedbackDocument = `
+    query RecentFeedback($userId: UUID!) {
+  posts(
+    first: 5
+    orderBy: CREATED_AT_DESC
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    nodes {
+      rowId
+      createdAt
+      title
+      description
+      user {
+        rowId
+        username
+      }
+    }
   }
 }
-    ${UserFragmentDoc}`;
+    `;
 
-export const useUserQuery = <
-      TData = UserQuery,
+export const useRecentFeedbackQuery = <
+      TData = RecentFeedbackQuery,
       TError = unknown
     >(
-      variables: UserQueryVariables,
-      options?: Omit<UseQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserQuery, TError, TData>['queryKey'] }
+      variables: RecentFeedbackQueryVariables,
+      options?: Omit<UseQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<UserQuery, TError, TData>(
+    return useQuery<RecentFeedbackQuery, TError, TData>(
       {
-    queryKey: ['User', variables],
-    queryFn: useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument).bind(null, variables),
+    queryKey: ['RecentFeedback', variables],
+    queryFn: useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument).bind(null, variables),
     ...options
   }
     )};
 
-useUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
+useRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback', variables];
 
-export const useInfiniteUserQuery = <
-      TData = InfiniteData<UserQuery>,
+export const useInfiniteRecentFeedbackQuery = <
+      TData = InfiniteData<RecentFeedbackQuery>,
       TError = unknown
     >(
-      variables: UserQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
+      variables: RecentFeedbackQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument)
-    return useInfiniteQuery<UserQuery, TError, TData>(
+    const query = useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument)
+    return useInfiniteQuery<RecentFeedbackQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['User.infinite', variables],
+      queryKey: optionsQueryKey ?? ['RecentFeedback.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
+useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback.infinite', variables];
+
+export const WeeklyFeedbackDocument = `
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+  posts(
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
+  ) {
+    groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
+      keys
+      distinctCount {
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useWeeklyFeedbackQuery = <
+      TData = WeeklyFeedbackQuery,
+      TError = unknown
+    >(
+      variables: WeeklyFeedbackQueryVariables,
+      options?: Omit<UseQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<WeeklyFeedbackQuery, TError, TData>(
+      {
+    queryKey: ['WeeklyFeedback', variables],
+    queryFn: useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback', variables];
+
+export const useInfiniteWeeklyFeedbackQuery = <
+      TData = InfiniteData<WeeklyFeedbackQuery>,
+      TError = unknown
+    >(
+      variables: WeeklyFeedbackQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument)
+    return useInfiniteQuery<WeeklyFeedbackQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WeeklyFeedback.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback.infinite', variables];

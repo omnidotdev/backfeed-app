@@ -39,6 +39,7 @@ const graphqlCodegenConfig: CodegenConfig = {
           Datetime: "Date",
           UUID: "string",
           Cursor: "string",
+          BigInt: "string",
         },
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
         // fetcher: "graphql-request",

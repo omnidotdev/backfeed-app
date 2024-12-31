@@ -1,33 +1,28 @@
 "use client";
 
 import { Badge, Flex, Text } from "@omnidev/sigil";
-import { match } from "ts-pattern";
+import dayjs from "dayjs";
 
-// NB: tried to use an enum here but had difficulties with runtime errors
-export type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
+import { getResponseTypeColor } from "lib/util";
 
-// NB: this prop drilling is under the assumption that the query from parent won't provide much overhead (i.e. parent is isolated query and has minimal nesting / a response is a direct child)
+import type { Post } from "generated/graphql";
+import type { ResponseType } from "lib/util";
+
 interface Props {
-  /** Feedback sender. */
-  sender: string;
-  /** Feedback message. */
-  message: string;
-  /** Date feedback was published. */
-  date: string;
-  /** Feedback type (i.e. category). */
+  /** Feedback details. */
+  feedback: Partial<Post>;
+  /** Feedback type. */
+  // TODO: remove and capture from `feedback` prop once discussed / db schema is updated
   type: ResponseType;
 }
 
 /**
  * Recent feedback response.
  */
-const Response = ({ sender, message, date, type }: Props) => {
-  const color = match(type)
-    .with("Neutral", () => "foreground.subtle")
-    .with("Positive", () => "green")
-    .with("Bug", () => "red")
-    .with("Feature", () => "blue")
-    .exhaustive();
+const Response = ({ feedback, type }: Props) => {
+  const color = getResponseTypeColor(type);
+
+  const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
     <Flex
@@ -40,7 +35,7 @@ const Response = ({ sender, message, date, type }: Props) => {
       <Flex direction="column">
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
-            {sender}
+            {feedback?.user?.username}
           </Text>
 
           <Badge color={color} borderColor={color}>
@@ -49,7 +44,7 @@ const Response = ({ sender, message, date, type }: Props) => {
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {message}
+          {feedback?.description}
         </Text>
       </Flex>
 

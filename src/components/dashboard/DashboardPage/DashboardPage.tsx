@@ -1,7 +1,6 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { GoClock } from "react-icons/go";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -10,6 +9,7 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
+import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useDataState } from "lib/hooks";
 
@@ -20,21 +20,29 @@ const DashboardPage = () => {
   const { user } = useAuth(),
     { isLoading, isError } = useDataState({ timeout: 400 });
 
+  const { data: dashboardAggregates } = useDashboardAggregatesQuery(
+    {
+      userId: user?.id!,
+    },
+    {
+      enabled: !!user,
+      select: (data) => ({
+        totalFeedback: data?.posts?.totalCount,
+        totalUsers: data?.users?.totalCount,
+      }),
+    }
+  );
+
   const aggregates = [
     {
       title: app.dashboardPage.aggregates.totalFeedback.title,
-      value: "12,345",
+      value: dashboardAggregates?.totalFeedback ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
     },
     {
       title: app.dashboardPage.aggregates.activeUsers.title,
-      value: "42,069",
+      value: dashboardAggregates?.totalUsers ?? 0,
       icon: HiOutlineUserGroup,
-    },
-    {
-      title: app.dashboardPage.aggregates.avgResponseTime.title,
-      value: "4.20h",
-      icon: GoClock,
     },
   ];
 
@@ -48,13 +56,14 @@ const DashboardPage = () => {
             label: app.dashboardPage.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
+            disabled: true,
           },
         ],
       }}
     >
       <PinnedOrganizations />
 
-      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 3 }} w="100%">
+      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
           <Aggregate
             key={title}

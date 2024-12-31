@@ -1,4 +1,8 @@
 export {
+  default as Breadcrumb,
+  type BreadcrumbRecord,
+} from "./Breadcrumb/Breadcrumb";
+export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
 } from "./DestructiveAction/DestructiveAction";

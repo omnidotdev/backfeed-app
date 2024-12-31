@@ -7,57 +7,31 @@ import { SkeletonArray } from "components/core";
 import { ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
+import { useOrganizationQuery } from "generated/graphql";
 
-interface OrganizationProject {
+import type { Project } from "generated/graphql";
+
+interface Props {
   /** Organization ID. */
-  id: string;
-  /** Organization name. */
-  name: string;
-  /** Organization description. */
-  description: string;
+  organizationId: string;
 }
-
-const PROJECTS: OrganizationProject[] = [
-  {
-    id: "1",
-    name: "Mobile App Feedback",
-    description:
-      "We are actively gathering detailed user feedback for our iOS and Android applications to enhance user experience and functionality. This includes identifying key pain points, usability issues, and feature requests from our diverse user base. Our primary focus is on improving app performance, refining navigation flows, and introducing user-driven features that align with customer needs. Additionally, we are seeking feedback on visual design updates and accessibility improvements to ensure the app meets the highest standards for all users. This project is crucial for maintaining our competitive edge in the mobile app market and fostering customer loyalty.",
-  },
-  {
-    id: "2",
-    name: "Web Platform Beta",
-    description: "Beta testing feedback for the new web platform",
-  },
-  {
-    id: "3",
-    name: "Desktop Client",
-    description: "User experience feedback for desktop applications",
-  },
-  {
-    id: "4",
-    name: "E-commerce Platform Upgrade",
-    description:
-      "Feedback for the upgraded e-commerce platform features and user flow.",
-  },
-  {
-    id: "5",
-    name: "AI Chatbot Testing",
-    description: "Testing and collecting responses for our AI chatbot.",
-  },
-  {
-    id: "6",
-    name: "Enterprise CRM Feedback",
-    description: "Gathering feedback on our enterprise CRM system.",
-  },
-];
 
 /**
  * Organization projects overview.
  */
-const OrganizationProjectsOverview = () => {
-  const { isLoading, isError } = useDataState();
+const OrganizationProjectsOverview = ({ organizationId }: Props) => {
+  const {
+    data: projects,
+    isLoading,
+    isError,
+  } = useOrganizationQuery(
+    {
+      rowId: organizationId,
+    },
+    {
+      select: (data) => data?.organization?.projects?.nodes,
+    }
+  );
 
   return (
     <SectionContainer
@@ -79,12 +53,10 @@ const OrganizationProjectsOverview = () => {
           {isLoading ? (
             <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
           ) : (
-            PROJECTS.map(({ id, name, description }) => (
+            projects?.map((project) => (
               <ProjectCard
-                key={id}
-                id={id}
-                name={name}
-                description={description}
+                key={project?.rowId}
+                project={project as Partial<Project>}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
               />

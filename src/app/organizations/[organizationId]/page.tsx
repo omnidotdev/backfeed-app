@@ -1,40 +1,74 @@
-"use client";
-
-import { Grid } from "@omnidev/sigil";
-import { notFound, useParams, useRouter } from "next/navigation";
+import request from "graphql-request";
+import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import {
-  OrganizationActions,
-  OrganizationMetrics,
-  OrganizationProjectsOverview,
-} from "components/organization";
-import { app } from "lib/config";
-import { useAuth, useDataState } from "lib/hooks";
+import { OrganizationOverview } from "components/organization";
+import { OrganizationDocument } from "generated/graphql";
+import { API_BASE_URL, app } from "lib/config";
+import { getAuthSession } from "lib/util";
+
+import type {
+  OrganizationQuery,
+  OrganizationQueryVariables,
+} from "generated/graphql";
+import type { Metadata } from "next";
+
+const fetchOrganization = async (
+  organizationId: string
+): Promise<OrganizationQuery> =>
+  request({
+    url: API_BASE_URL!,
+    document: OrganizationDocument,
+    variables: { rowId: organizationId } as OrganizationQueryVariables,
+  });
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { organizationId } = await params;
+
+  const { organization } = await fetchOrganization(organizationId);
+
+  return {
+    title: `${organization?.name} | ${app.name}`,
+  };
+};
+
+interface Props {
+  /** Organization page params. */
+  params: Promise<{ organizationId: string }>;
+}
 
 /**
  * Organization overview page.
  */
-const OrganizationPage = () => {
-  const { isAuthenticated } = useAuth();
+const OrganizationPage = async ({ params }: Props) => {
+  const { organizationId } = await params;
 
-  const params = useParams<{ organizationId: string }>(),
-    router = useRouter();
+  const [session, { organization }] = await Promise.all([
+    getAuthSession(),
+    fetchOrganization(organizationId),
+  ]);
 
-  const { isLoading, isError } = useDataState();
+  const breadcrumbs = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      label: organization?.name ?? organizationId,
+    },
+  ];
 
-  const navigateToProjectsPage = () =>
-    router.push(`/organizations/${params.organizationId}/projects`);
-
-  // TODO: when data is streamed in, this condition should be updated to check for the existence of the organization
-  if (!isAuthenticated) notFound();
+  if (!session || !organization) notFound();
 
   return (
     <Page
+      breadcrumbs={breadcrumbs}
       header={{
-        title: params.organizationId,
+        title: organization.name!,
         description: app.organizationPage.header.description,
         cta: [
           {
@@ -42,7 +76,7 @@ const OrganizationPage = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            onClick: navigateToProjectsPage,
+            href: `/organizations/${organizationId}/projects`,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
@@ -52,20 +86,7 @@ const OrganizationPage = () => {
         ],
       }}
     >
-      <OrganizationProjectsOverview />
-
-      <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}
-        <OrganizationMetrics
-          totalProjects={6}
-          totalFeedback={420}
-          activeUsers={1337}
-          isLoaded={!isLoading}
-          isError={isError}
-        />
-
-        <OrganizationActions />
-      </Grid>
+      <OrganizationOverview organizationId={organizationId} />
     </Page>
   );
 };

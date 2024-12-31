@@ -6,7 +6,7 @@ query Posts($projectId: UUID!) {
       title
       description
       user {
-        walletAddress
+        username
       }
       upvotes {
         aggregates {
