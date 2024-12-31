@@ -1,8 +1,7 @@
 import { Flex, Text } from "@omnidev/sigil";
 import { app } from "lib/config";
 
-function PricingHeader() {
-  return (
+const PricingHeader = () => (
     <Flex align="center" direction="column" w="90%">
       <Text
         as="h1"
@@ -18,6 +17,5 @@ function PricingHeader() {
       </Text>
     </Flex>
   );
-}
 
 export default PricingHeader;
