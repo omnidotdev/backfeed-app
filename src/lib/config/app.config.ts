@@ -112,6 +112,7 @@ const app = {
     },
     cta: {
       newProject: {
+        action: "Create Project",
         label: "New Project",
         description: "Create a new project by submitting the form below.",
         selectOrganization: {
@@ -120,6 +121,18 @@ const app = {
             singular: "Organization",
             plural: "Organizations",
           },
+        },
+        projectName: {
+          id: "Project Name",
+          placeholder: "Insert project name...",
+        },
+        projectDescription: {
+          id: "Project Description",
+          placeholder: "Insert project description...",
+        },
+        projectSlug: {
+          id: "Project Slug",
+          placeholder: "Insert project slug...",
         },
       },
       viewOrganizations: {

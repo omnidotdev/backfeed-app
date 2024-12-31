@@ -1,6 +1,17 @@
 "use client";
 
-import { Dialog, Select, createListCollection } from "@omnidev/sigil";
+import {
+  Button,
+  Dialog,
+  HStack,
+  Input,
+  Label,
+  Select,
+  Stack,
+  Text,
+  Textarea,
+  createListCollection,
+} from "@omnidev/sigil";
 import { useOrganizationsQuery } from "generated/graphql";
 
 import { app } from "lib/config";
@@ -51,6 +62,52 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           borderColor: "border.subtle",
         }}
       />
+
+      <Stack>
+        <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
+          {app.dashboardPage.cta.newProject.projectName.id}
+        </Label>
+
+        <Input
+          id={app.dashboardPage.cta.newProject.projectName.id}
+          placeholder={app.dashboardPage.cta.newProject.projectName.placeholder}
+        />
+      </Stack>
+
+      <Stack>
+        <Label htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}>
+          {app.dashboardPage.cta.newProject.projectDescription.id}
+        </Label>
+
+        <Textarea
+          id={app.dashboardPage.cta.newProject.projectDescription.id}
+          placeholder={
+            app.dashboardPage.cta.newProject.projectDescription.placeholder
+          }
+        />
+      </Stack>
+
+      <Stack>
+        <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
+          {app.dashboardPage.cta.newProject.projectSlug.id}
+        </Label>
+
+        <HStack>
+          <Text
+            whiteSpace="nowrap"
+            fontSize="lg"
+          >{`.../${app.projectsPage.breadcrumb.toLowerCase()}/`}</Text>
+
+          <Input
+            id={app.dashboardPage.cta.newProject.projectSlug.id}
+            placeholder={
+              app.dashboardPage.cta.newProject.projectSlug.placeholder
+            }
+          />
+        </HStack>
+      </Stack>
+
+      <Button>{app.dashboardPage.cta.newProject.action}</Button>
     </Dialog>
   );
 };
