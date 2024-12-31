@@ -3,14 +3,19 @@
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { LuPlusCircle } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
-import { ErrorBoundary } from "components/layout";
+import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
+import { app } from "lib/config";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
 
 import type { Project } from "generated/graphql";
+
+// TODO: remove once ownership check is implemented
+const IS_ORGANIZATION_OWNER = Math.random() < 0.5;
 
 /**
  * Project list.
@@ -39,6 +44,8 @@ const ProjectList = () => {
     }
   );
 
+  const projects = data?.projects;
+
   if (isError)
     return <ErrorBoundary message="Error fetching projects" minH={48} />;
 
@@ -49,10 +56,35 @@ const ProjectList = () => {
       </Stack>
     );
 
+  if (!projects?.length)
+    return (
+      <EmptyState
+        message={
+          IS_ORGANIZATION_OWNER
+            ? app.projectsPage.emptyState.organizationOwnerMessage
+            : app.projectsPage.emptyState.organizationUserMessage
+        }
+        action={
+          IS_ORGANIZATION_OWNER
+            ? {
+                label: "Create Project",
+                icon: LuPlusCircle,
+                actionProps: {
+                  variant: "outline",
+                  color: "brand.primary",
+                  borderColor: "brand.primary",
+                },
+              }
+            : undefined
+        }
+        minH={64}
+      />
+    );
+
   return (
     <Stack align="center" justify="space-between" h="100%">
       <Stack w="100%">
-        {data?.projects?.map((project, index) => (
+        {projects.map((project, index) => (
           <ProjectListItem
             key={project?.rowId}
             project={project as Project}
