@@ -18,7 +18,7 @@ function PricingCards() {
         flexWrap="wrap"
         flexDirection={{ base: "column", lg: "row" }}
         justifyContent="center"
-        gap="4"
+        gap={4}
         w="100%"
       >
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
@@ -67,7 +67,7 @@ function PricingCards() {
                 </Text>
                 
                 {tier.title !== "Enterprise" && (
-                  <Text fontSize="xl" marginTop="1" marginLeft="-2.5">
+                  <Text fontSize="xl" mt={1} ml={-2.5}>
                     /month
                   </Text>
                 )}
@@ -95,7 +95,7 @@ function PricingCards() {
                     : "brand.primary"
                 }
                 position="absolute"
-                bottom="4"
+                bottom={4}
                 left="50%"
                 transform="translateX(-50%)"
                 width="90%"

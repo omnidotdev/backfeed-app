@@ -8,11 +8,11 @@ const PricingHeader = () => (
       fontSize="5xl"
       fontWeight="bold"
       textAlign="center"
-      marginTop="4"
+      mt={4}
     >
       {app.pricingPage.pricingHeader.title}
     </Text>
-    <Text fontSize="2xl" textAlign={"center"} marginBottom={"8"}>
+    <Text fontSize="2xl" textAlign="center" mb={8}>
       {app.pricingPage.pricingHeader.description}
     </Text>
   </Flex>
