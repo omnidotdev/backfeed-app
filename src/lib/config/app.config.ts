@@ -136,6 +136,10 @@ const app = {
         projectSlug: {
           id: "Project Slug",
           placeholder: "Insert project slug...",
+          error: {
+            invalid: "Must be at least 3 characters.",
+            duplicate: "Project slug already exists.",
+          },
         },
       },
       viewOrganizations: {

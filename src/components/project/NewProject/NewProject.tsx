@@ -21,6 +21,7 @@ import { useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
+/** Schema for validating new project forms.*/
 const newProjectSchema = z.object({
   organizationId: z
     .string()
@@ -29,7 +30,9 @@ const newProjectSchema = z.object({
   description: z
     .string()
     .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
-  slug: z.string().optional(),
+  slug: z
+    .string()
+    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
 });
 
 interface Props {
@@ -64,7 +67,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
       organizationId: "",
       name: "",
       description: "",
-      slug: undefined,
+      slug: "",
     },
     validators: {
       onChange: newProjectSchema,
@@ -126,7 +129,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           }}
         >
           {({ handleChange, state }) => (
-            <Stack position="relative">
+            <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
                 {app.dashboardPage.cta.newProject.projectName.id}
               </Label>
@@ -156,7 +159,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           }}
         >
           {({ handleChange, state }) => (
-            <Stack position="relative">
+            <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
               >
@@ -189,7 +192,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           }}
         >
           {({ handleChange, state }) => (
-            <Stack position="relative">
+            <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
                 {app.dashboardPage.cta.newProject.projectSlug.id}
               </Label>
@@ -208,12 +211,12 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
                 />
-
-                <FormFieldError
-                  errors={state.meta.errors}
-                  isDirty={state.meta.isDirty}
-                />
               </HStack>
+
+              <FormFieldError
+                errors={state.meta.errors}
+                isDirty={state.meta.isDirty}
+              />
             </Stack>
           )}
         </Field>
