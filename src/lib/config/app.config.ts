@@ -113,6 +113,7 @@ const app = {
     cta: {
       newProject: {
         label: "New Project",
+        description: "Create a new project by submitting the form below.",
       },
       viewOrganizations: {
         label: "View All Organizations",
