@@ -35,8 +35,10 @@
     "@ark-ui/react": "^4.4.3",
     "@omnidev/sigil": "^0.12.2",
     "@rainbow-me/rainbowkit": "^2.2.0",
+    "@tanstack/react-form": "^0.41.0",
     "@tanstack/react-query": "^5.20.5",
     "@tanstack/react-query-devtools": "^5.20.5",
+    "@tanstack/zod-form-adapter": "^0.41.0",
     "@theme-toggles/react": "^4.1.0",
     "dayjs": "^1.11.10",
     "graphql": "^16.8.1",
@@ -54,7 +56,8 @@
     "ts-pattern": "^5.5.0",
     "usehooks-ts": "^3.1.0",
     "viem": "^2.7.9",
-    "wagmi": "^2.5.7"
+    "wagmi": "^2.5.7",
+    "zod": "^3.24.1"
   },
   "trustedDependencies": [
     "@biomejs/biome",
