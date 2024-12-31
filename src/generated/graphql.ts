@@ -3366,6 +3366,24 @@ export type UpvotePostMutationVariables = Exact<{
 
 export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
+export type CreateUserMutationVariables = Exact<{
+  hidraId: Scalars['UUID']['input'];
+  username?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string } | null } | null };
+
+export type UpdateUserMutationVariables = Exact<{
+  hidraId: Scalars['UUID']['input'];
+  patch: UserPatch;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -3425,6 +3443,13 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+
+export type UserQueryVariables = Exact<{
+  hidraId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', id: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -3540,6 +3565,52 @@ export const useUpvotePostMutation = <
       {
     mutationKey: ['UpvotePost'],
     mutationFn: useGraphqlClient<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument),
+    ...options
+  }
+    )};
+
+export const CreateUserDocument = `
+    mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String) {
+  createUser(
+    input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
+  ) {
+    user {
+      id
+    }
+  }
+}
+    `;
+
+export const useCreateUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateUserMutation, TError, CreateUserMutationVariables, TContext>) => {
+    
+    return useMutation<CreateUserMutation, TError, CreateUserMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateUser'],
+    mutationFn: useGraphqlClient<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument),
+    ...options
+  }
+    )};
+
+export const UpdateUserDocument = `
+    mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
+  updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateUser'],
+    mutationFn: useGraphqlClient<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument),
     ...options
   }
     )};
@@ -4000,6 +4071,57 @@ export const useInfiniteRecentFeedbackQuery = <
     )};
 
 useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback.infinite', variables];
+
+export const UserDocument = `
+    query User($hidraId: UUID!) {
+  userByHidraId(hidraId: $hidraId) {
+    id
+    hidraId
+    username
+    firstName
+    lastName
+  }
+}
+    `;
+
+export const useUserQuery = <
+      TData = UserQuery,
+      TError = unknown
+    >(
+      variables: UserQueryVariables,
+      options?: Omit<UseQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UserQuery, TError, TData>(
+      {
+    queryKey: ['User', variables],
+    queryFn: useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
+
+export const useInfiniteUserQuery = <
+      TData = InfiniteData<UserQuery>,
+      TError = unknown
+    >(
+      variables: UserQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument)
+    return useInfiniteQuery<UserQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['User.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
 
 export const WeeklyFeedbackDocument = `
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {

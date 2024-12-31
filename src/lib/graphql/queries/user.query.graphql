@@ -1,0 +1,9 @@
+query User($hidraId: UUID!) {
+  userByHidraId(hidraId: $hidraId) {
+    id
+    hidraId
+    username
+    firstName
+    lastName
+  }
+}
