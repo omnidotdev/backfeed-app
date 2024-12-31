@@ -4,30 +4,29 @@ import { app } from "lib/config";
 /**
  * Frequently asked questions about pricing.
  */
-const PricingFAQ = () => {
-  return (
+const PricingFAQ = () => (
     <Stack
-      width="45%"
-      margin="auto"
+      w="45%"
+      m="auto"
       flexWrap="nowrap"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      mt="2"
+      mt={2}
     >
       <Text
         as="h2"
         fontSize="2xl"
         fontWeight="bold"
         textAlign="center"
-        marginBottom="4"
-        marginTop="8"
+        mb={4}
+        mt={8}
       >
         Frequently Asked Questions
       </Text>
+      
       <Accordion items={app.pricingPage.pricingFAQ.items} />
     </Stack>
-  );
-};
+);
 
 export default PricingFAQ;
