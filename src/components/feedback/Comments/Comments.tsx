@@ -70,6 +70,7 @@ const Comments = ({ feedbackId }: Props) => {
           borderColor="border.subtle"
           fontSize="sm"
           minH={16}
+          disabled
         />
 
         <Stack justify="space-between" direction="row">
@@ -80,12 +81,7 @@ const Comments = ({ feedbackId }: Props) => {
             >{`${isError ? 0 : totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
           </Skeleton>
 
-          <Button
-            w="fit-content"
-            placeSelf="flex-end"
-            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-            disabled={isLoading || isError}
-          >
+          <Button w="fit-content" placeSelf="flex-end" disabled>
             {app.feedbackPage.comments.submit}
           </Button>
         </Stack>
