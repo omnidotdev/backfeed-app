@@ -28,9 +28,8 @@ function PricingCards() {
               tier.title === "Professional" ? "brand.primary" : "none"
             }
             borderWidth={tier.title === "Professional" ? "4" : "1"}
-            gap="4"
+            gap={4}
             w={{ base: "100%", lg: "xs" }}
-            opacity="1"
             h="xl"
             display="flex"
             position="relative"
@@ -38,12 +37,12 @@ function PricingCards() {
             {tier.title === "Professional" && (
               <Stack
                 position="absolute"
-                top="1"
+                top={1}
                 left="50%"
                 transform="translateX(-50%)"
                 backgroundColor="var(--colors-background-secondary)"
-                p="2"
-                borderRadius="1"
+                p={2}
+                borderRadius={1}
               >
                 <Badge color="brand.primary" height="8" borderRadius="4 4">
                   {app.pricingPage.pricingTiers.recommended}
@@ -55,7 +54,7 @@ function PricingCards() {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              height="md"
+              h="md"
             >
               <Text as="h2" fontSize="3xl" textAlign="center">
                 {tier.title}
@@ -98,10 +97,10 @@ function PricingCards() {
                 bottom={4}
                 left="50%"
                 transform="translateX(-50%)"
-                width="90%"
+                w="90%"
                 fontSize="xl"
               >
-                Get Started <FaArrowRight />
+                {app.pricingPage.pricingCard.getStarted} <FaArrowRight />
               </Button>
             </Stack>
           </Card>
