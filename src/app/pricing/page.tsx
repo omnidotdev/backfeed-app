@@ -6,16 +6,17 @@ import {
   PricingHeader,
 } from "components/pricing/index";
 
-const PricingPage = () => {
-  return (
-    <VStack>
+/**
+ * Pricing page.
+ */
+const PricingPage = () => (
+    <Stack>
       <PricingHeader />
 
       <PricingCard />
 
       <PricingFAQ />
-    </VStack>
-  );
-};
+    </Stack>
+);
 
 export default PricingPage;
