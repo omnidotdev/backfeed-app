@@ -3895,6 +3895,7 @@ useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project
 export const ProjectsDocument = `
     query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
   projects(
+    orderBy: POSTS_COUNT_DESC
     first: $pageSize
     offset: $offset
     condition: {organizationId: $organizationId}

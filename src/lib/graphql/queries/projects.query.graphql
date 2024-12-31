@@ -5,6 +5,7 @@ query Projects(
   $search: String
 ) {
   projects(
+    orderBy: POSTS_COUNT_DESC
     first: $pageSize
     offset: $offset
     condition: { organizationId: $organizationId }
