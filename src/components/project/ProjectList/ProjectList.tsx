@@ -67,7 +67,7 @@ const ProjectList = () => {
         action={
           IS_ORGANIZATION_OWNER
             ? {
-                label: "Create Project",
+                label: app.projectsPage.emptyState.cta.label,
                 icon: LuPlusCircle,
                 actionProps: {
                   variant: "outline",
