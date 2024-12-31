@@ -17,7 +17,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
 import { CommentCard } from "components/feedback";
-import { ErrorBoundary, SectionContainer } from "components/layout";
+import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { CommentsDocument } from "generated/graphql";
 import { API_BASE_URL, app } from "lib/config";
 
@@ -113,13 +113,13 @@ const Comments = ({ feedbackId }: Props) => {
         </Stack>
 
         {isError ? (
-          <ErrorBoundary message="Error fetching comments" h="sm" />
+          <ErrorBoundary message="Error fetching comments" h="xs" />
         ) : (
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : (
+            ) : comments?.length ? (
               <VStack>
                 {comments?.map((comment) => (
                   <CommentCard
@@ -134,6 +134,12 @@ const Comments = ({ feedbackId }: Props) => {
 
                 {hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>
+            ) : (
+              <EmptyState
+                message={app.feedbackPage.comments.emptyState.message}
+                h="xs"
+                w="full"
+              />
             )}
           </Grid>
         )}
