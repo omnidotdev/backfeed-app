@@ -3380,6 +3380,13 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
+export type OrganizationMetricsQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
+
 export type OrganizationsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
@@ -3653,6 +3660,59 @@ export const useInfiniteOrganizationQuery = <
     )};
 
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
+
+export const OrganizationMetricsDocument = `
+    query OrganizationMetrics($organizationId: UUID!) {
+  projects(condition: {organizationId: $organizationId}) {
+    totalCount
+  }
+  posts(filter: {project: {organizationId: {equalTo: $organizationId}}}) {
+    totalCount
+  }
+  userOrganizations(condition: {organizationId: $organizationId}) {
+    totalCount
+  }
+}
+    `;
+
+export const useOrganizationMetricsQuery = <
+      TData = OrganizationMetricsQuery,
+      TError = unknown
+    >(
+      variables: OrganizationMetricsQueryVariables,
+      options?: Omit<UseQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<OrganizationMetricsQuery, TError, TData>(
+      {
+    queryKey: ['OrganizationMetrics', variables],
+    queryFn: useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics', variables];
+
+export const useInfiniteOrganizationMetricsQuery = <
+      TData = InfiniteData<OrganizationMetricsQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationMetricsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument)
+    return useInfiniteQuery<OrganizationMetricsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['OrganizationMetrics.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
 
 export const OrganizationsDocument = `
     query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {

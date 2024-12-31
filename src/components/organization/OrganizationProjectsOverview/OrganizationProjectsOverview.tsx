@@ -7,60 +7,31 @@ import { SkeletonArray } from "components/core";
 import { ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
-import { useParams } from "next/navigation";
+import { useOrganizationQuery } from "generated/graphql";
 
-export interface OrganizationProject {
+import type { Project } from "generated/graphql";
+
+interface Props {
   /** Organization ID. */
-  id: string;
-  /** Organization name. */
-  name: string;
-  /** Organization description. */
-  description: string;
+  organizationId: string;
 }
-
-const PROJECTS: OrganizationProject[] = [
-  {
-    id: "2f4b6c12-45c8-4d89-9189-7a2d2a5a93e0",
-    name: "Mobile App Feedback Mobile App Feedback Mobile App Feedback",
-    description:
-      "We are actively gathering detailed user feedback for our iOS and Android applications to enhance user experience and functionality. This includes identifying key pain points, usability issues, and feature requests from our diverse user base. Our primary focus is on improving app performance, refining navigation flows, and introducing user-driven features that align with customer needs. Additionally, we are seeking feedback on visual design updates and accessibility improvements to ensure the app meets the highest standards for all users. This project is crucial for maintaining our competitive edge in the mobile app market and fostering customer loyalty.",
-  },
-  {
-    id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
-    name: "Web Platform Beta",
-    description: "Beta testing feedback for the new web platform",
-  },
-  {
-    id: "b9f8e6d8-3733-4d80-83f6-2a9e93c8ff88",
-    name: "Desktop Client",
-    description: "User experience feedback for desktop applications",
-  },
-  {
-    id: "f4e1d5a2-9a3e-4c1e-b842-71b14b2d45f1",
-    name: "E-commerce Platform Upgrade",
-    description:
-      "Feedback for the upgraded e-commerce platform features and user flow.",
-  },
-  {
-    id: "e7498a69-8c8d-4dc9-b294-0f5a2e59c3ef",
-    name: "AI Chatbot Testing",
-    description: "Testing and collecting responses for our AI chatbot.",
-  },
-  {
-    id: "f69d3145-59c6-47d5-82a5-07b9ef3aeb42",
-    name: "Enterprise CRM Feedback",
-    description: "Gathering feedback on our enterprise CRM system.",
-  },
-];
 
 /**
  * Organization projects overview.
  */
-const OrganizationProjectsOverview = () => {
-  const { isLoading, isError } = useDataState();
-
-  const params = useParams<{ organizationId: string }>();
+const OrganizationProjectsOverview = ({ organizationId }: Props) => {
+  const {
+    data: projects,
+    isLoading,
+    isError,
+  } = useOrganizationQuery(
+    {
+      rowId: organizationId,
+    },
+    {
+      select: (data) => data?.organization?.projects?.nodes,
+    }
+  );
 
   return (
     <SectionContainer
@@ -82,12 +53,10 @@ const OrganizationProjectsOverview = () => {
           {isLoading ? (
             <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
           ) : (
-            PROJECTS.map(({ id, name, description }) => (
+            projects?.map((project) => (
               <ProjectCard
-                key={id}
-                id={id}
-                name={name}
-                description={description}
+                key={project?.rowId}
+                project={project as Partial<Project>}
                 // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                 h={48}
               />

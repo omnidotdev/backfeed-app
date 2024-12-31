@@ -50,6 +50,9 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
+  const name = project.name!;
+  const description = project.description!;
+
   if (!session) notFound();
 
   return (
