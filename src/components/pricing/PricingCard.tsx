@@ -60,6 +60,7 @@ function PricingCards() {
               <Text as="h2" fontSize="3xl" textAlign="center">
                 {tier.title}
               </Text>
+              
               <HStack display="inline-flex" alignItems="center">
                 <Text as="h3" fontSize="3xl" fontWeight="bold">
                   {tier.price}
