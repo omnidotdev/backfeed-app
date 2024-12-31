@@ -35,7 +35,6 @@ const FeedbackPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
       label: feedback?.project?.organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
