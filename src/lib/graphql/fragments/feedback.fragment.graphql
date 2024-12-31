@@ -1,0 +1,21 @@
+fragment Feedback on Post {
+  rowId
+  project {
+    rowId
+    name
+    organization {
+      rowId
+      name
+    }
+  }
+  title
+  description
+  user {
+    username
+  }
+  upvotes {
+    totalCount
+  }
+  createdAt
+  updatedAt
+}

@@ -1,0 +1,5 @@
+query FeedbackById($rowId: UUID!) {
+  post(rowId: $rowId) {
+    ...Feedback
+  }
+}
