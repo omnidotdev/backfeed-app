@@ -12,7 +12,7 @@ import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
 /**
- * Card information regarding pricing tiers.
+ * Pricing tier information.
  */
 const PricingCards = () => (
   <HStack
