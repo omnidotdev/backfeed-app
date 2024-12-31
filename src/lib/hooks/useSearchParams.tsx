@@ -1,5 +1,6 @@
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 
+const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
 /**
@@ -8,7 +9,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const useSearchParams = () =>
   useQueryStates({
     search: parseAsString.withDefault(""),
-    page: parseAsInteger.withDefault(1),
+    page: parseAsInteger.withDefault(DEFAULT_PAGE_NUMBER),
     pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
   });
 

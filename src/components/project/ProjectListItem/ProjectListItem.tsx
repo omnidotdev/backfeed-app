@@ -101,6 +101,7 @@ const ProjectListItem = ({
         {AGGREGATES.map(({ icon, value, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+
             <Text
               fontSize="sm"
               color="foreground.subtle"

@@ -60,6 +60,7 @@ const ProjectList = () => {
           />
         ))}
       </Stack>
+
       <Pagination
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
