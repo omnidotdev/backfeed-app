@@ -19,6 +19,7 @@ function PricingCards() {
         flexDirection={{ base: "column", lg: "row" }}
         justifyContent="center"
         gap="4"
+        w="100%"
       >
         {app.pricingPage.pricingTiers.tiers.map((tier) => (
           <Card
