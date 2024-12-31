@@ -50,6 +50,7 @@ function PricingCards() {
                 </Badge>
               </Stack>
             )}
+            
             <Stack
               display="flex"
               flexDirection="column"
