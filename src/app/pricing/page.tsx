@@ -1,5 +1,5 @@
 "use client";
-import { VStack } from "@omnidev/sigil";
+import { Stack } from "@omnidev/sigil";
 import {
   PricingCard,
   PricingFAQ,
