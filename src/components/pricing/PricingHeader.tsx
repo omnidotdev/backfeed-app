@@ -6,6 +6,7 @@ const PricingHeader = () => (
     <Text as="h1" fontSize="5xl" fontWeight="bold" textAlign="center" mt={4}>
       {app.pricingPage.pricingHeader.title}
     </Text>
+    
     <Text fontSize="2xl" textAlign="center" mb={8}>
       {app.pricingPage.pricingHeader.description}
     </Text>
