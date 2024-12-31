@@ -65,6 +65,7 @@ function PricingCards() {
                 <Text as="h3" fontSize="3xl" fontWeight="bold">
                   {tier.price}
                 </Text>
+                
                 {tier.title !== "Enterprise" && (
                   <Text fontSize="xl" marginTop="1" marginLeft="-2.5">
                     /month
