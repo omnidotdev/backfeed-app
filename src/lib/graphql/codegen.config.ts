@@ -1,6 +1,30 @@
 import { API_BASE_URL } from "lib/config";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
+import type { Types } from "@graphql-codegen/plugin-helpers";
+
+type GraphQLCodegenConfig = Types.ConfiguredOutput;
+
+const sharedPlugins: GraphQLCodegenConfig["plugins"] = [
+  "typescript",
+  "typescript-operations",
+  {
+    add: {
+      // prepend artifact with TS no-check directive
+      content: "// @ts-nocheck",
+    },
+  },
+];
+
+const sharedConfig: GraphQLCodegenConfig["config"] = {
+  scalars: {
+    Date: "Date",
+    Datetime: "Date",
+    UUID: "string",
+    Cursor: "string",
+    BigInt: "string",
+  },
+};
 
 /**
  * GraphQL Code Generator configuration.
@@ -21,26 +45,14 @@ const graphqlCodegenConfig: CodegenConfig = {
     // preset: "client",
     // plugins: [],
     // },
+    "src/generated/graphql.sdk.ts": {
+      plugins: [...sharedPlugins, "typescript-graphql-request"],
+      config: sharedConfig,
+    },
     "src/generated/graphql.ts": {
-      plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-react-query",
-        {
-          add: {
-            // prepend artifact with TS no-check directive
-            content: "// @ts-nocheck",
-          },
-        },
-      ],
+      plugins: [...sharedPlugins, "typescript-react-query"],
       config: {
-        scalars: {
-          Date: "Date",
-          Datetime: "Date",
-          UUID: "string",
-          Cursor: "string",
-          BigInt: "string",
-        },
+        ...sharedConfig,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
         // fetcher: "graphql-request",
         // NB: the custom fetcher hook has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation
