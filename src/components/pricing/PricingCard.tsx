@@ -50,7 +50,7 @@ function PricingCards() {
                 </Badge>
               </Stack>
             )}
-            
+
             <Stack
               display="flex"
               flexDirection="column"
@@ -60,12 +60,12 @@ function PricingCards() {
               <Text as="h2" fontSize="3xl" textAlign="center">
                 {tier.title}
               </Text>
-              
+
               <HStack display="inline-flex" alignItems="center">
                 <Text as="h3" fontSize="3xl" fontWeight="bold">
                   {tier.price}
                 </Text>
-                
+
                 {tier.title !== "Enterprise" && (
                   <Text fontSize="xl" mt={1} ml={-2.5}>
                     /month
@@ -76,7 +76,7 @@ function PricingCards() {
               <Text as="h4" fontSize="4xl" fontWeight="bold" m="2 0">
                 Features
               </Text>
-              
+
               <sigil.ul
                 style={{
                   listStyle: "unset",
@@ -87,7 +87,7 @@ function PricingCards() {
                   <sigil.li key={feature}>{feature}</sigil.li>
                 ))}
               </sigil.ul>
-              
+
               <Button
                 bgColor={
                   tier.title !== "Professional"
