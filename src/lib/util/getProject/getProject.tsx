@@ -5,14 +5,11 @@ import { ProjectDocument } from "generated/graphql";
 
 import type { ProjectQuery, ProjectQueryVariables } from "generated/graphql";
 
-const getProject = async (
-  organizationId: string,
-  projectSlug: string
-): Promise<ProjectQuery> =>
+const getProject = async (projectId: string): Promise<ProjectQuery> =>
   request({
     url: API_BASE_URL!,
     document: ProjectDocument,
-    variables: { organizationId, projectSlug } as ProjectQueryVariables,
+    variables: { rowId: projectId } as ProjectQueryVariables,
   });
 
 export default getProject;

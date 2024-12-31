@@ -24,10 +24,9 @@ interface Props {
 const ProjectPage = async ({ params }: Props) => {
   const { organizationId, projectId } = await params;
 
-  // @ts-ignore
   const [session, { project }] = await Promise.all([
     getAuthSession(),
-    getProject(organizationId, projectId),
+    getProject(projectId),
   ]);
 
   const breadcrumbs = [
@@ -36,8 +35,7 @@ const ProjectPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
-      label: organizationId,
+      label: project?.organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
     {
@@ -45,23 +43,22 @@ const ProjectPage = async ({ params }: Props) => {
       href: `/organizations/${organizationId}/projects`,
     },
     {
-      // TODO: Use actual project name here instead of ID
-      label: projectId,
+      label: project?.name ?? projectId,
     },
   ];
 
-  const name = project.name!;
-  const description = project.description!;
+  const name = project?.name!;
+  const description = project?.description!;
 
-  if (!session) notFound();
+  if (!session || !project) notFound();
 
   return (
     <Page
       breadcrumbs={breadcrumbs}
       // TODO: Use actual project data here instead of placeholder
       header={{
-        title: project.name,
-        description: project.description,
+        title: name,
+        description: description,
         // TODO: add button actions
         cta: [
           {
@@ -79,7 +76,12 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview projectData={project} />
+      <ProjectOverview
+        name={name}
+        description={description}
+        createdAt={project.createdAt}
+        projectId={projectId}
+      />
     </Page>
   );
 };

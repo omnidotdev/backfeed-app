@@ -1,0 +1,16 @@
+query ProjectMetrics($projectId: UUID!) {
+  project(rowId: $projectId) {
+    posts {
+      totalCount
+      aggregates {
+        distinctCount {
+          userId
+        }
+      }
+    }
+  }
+
+  upvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
+    totalCount
+  }
+}

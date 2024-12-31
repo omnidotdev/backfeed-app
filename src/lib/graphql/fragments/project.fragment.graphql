@@ -8,6 +8,9 @@ fragment Project on Project {
   rowId
   slug
   updatedAt
+  organization {
+    name
+  }
   posts {
     nodes {
       createdAt

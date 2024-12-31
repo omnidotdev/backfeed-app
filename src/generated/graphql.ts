@@ -3336,7 +3336,7 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
-export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
 
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
@@ -3399,18 +3399,26 @@ export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typ
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: string | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: string | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
-  projectSlug: Scalars['String']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
+
+export type ProjectMetricsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3446,6 +3454,9 @@ export const ProjectFragmentDoc = `
   rowId
   slug
   updatedAt
+  organization {
+    name
+  }
   posts {
     nodes {
       createdAt
@@ -3775,8 +3786,19 @@ export const useInfiniteOrganizationsQuery = <
 useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
 
 export const PostsDocument = `
-    query Posts($projectId: UUID!) {
-  posts(filter: {projectId: {equalTo: $projectId}}) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+  posts(
+    after: $after
+    first: $pageSize
+    filter: {projectId: {equalTo: $projectId}}
+  ) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
     nodes {
       rowId
       createdAt
@@ -3840,11 +3862,8 @@ export const useInfinitePostsQuery = <
 useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
 
 export const ProjectDocument = `
-    query Project($organizationId: UUID!, $projectSlug: String!) {
-  projectBySlugAndOrganizationId(
-    slug: $projectSlug
-    organizationId: $organizationId
-  ) {
+    query Project($rowId: UUID!) {
+  project(rowId: $rowId) {
     ...Project
   }
 }
@@ -3888,6 +3907,63 @@ export const useInfiniteProjectQuery = <
     )};
 
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+
+export const ProjectMetricsDocument = `
+    query ProjectMetrics($projectId: UUID!) {
+  project(rowId: $projectId) {
+    posts {
+      totalCount
+      aggregates {
+        distinctCount {
+          userId
+        }
+      }
+    }
+  }
+  upvotes(filter: {post: {projectId: {equalTo: $projectId}}}) {
+    totalCount
+  }
+}
+    `;
+
+export const useProjectMetricsQuery = <
+      TData = ProjectMetricsQuery,
+      TError = unknown
+    >(
+      variables: ProjectMetricsQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectMetricsQuery, TError, TData>(
+      {
+    queryKey: ['ProjectMetrics', variables],
+    queryFn: useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics', variables];
+
+export const useInfiniteProjectMetricsQuery = <
+      TData = InfiniteData<ProjectMetricsQuery>,
+      TError = unknown
+    >(
+      variables: ProjectMetricsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument)
+    return useInfiniteQuery<ProjectMetricsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectMetrics.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics.infinite', variables];
 
 export const ProjectsDocument = `
     query Projects($organizationId: UUID) {

@@ -1,5 +1,16 @@
-query Posts($projectId: UUID!) {
-  posts(filter: { projectId: { equalTo: $projectId } }) {
+query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+  posts(
+    after: $after
+    first: $pageSize
+    filter: { projectId: { equalTo: $projectId } }
+  ) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
     nodes {
       rowId
       createdAt

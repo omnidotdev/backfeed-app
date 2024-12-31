@@ -28,7 +28,6 @@ const ProjectsPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
       label: organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },

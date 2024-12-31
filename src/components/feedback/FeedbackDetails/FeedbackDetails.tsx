@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Badge,
   Button,
   Flex,
   HStack,
@@ -29,34 +28,35 @@ import { useDataState } from "lib/hooks";
 
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
+import type { Post } from "generated/graphql";
 
-export interface Feedback {
-  /** Feedback ID. */
-  id: string;
-  /** Feedback title. */
-  title: string;
-  /** Feedback description. */
-  description: string;
-  /** Feedback created date. */
-  createdAt: string;
-  /** Feedback updated date. */
-  updatedAt: string;
-  /** Feedback status. */
-  status: "New" | "Planned" | "In Progress" | "Complete";
-  /** Total upvotes for the feedback. */
-  upvotes: number;
-  /** Total downvotes for the feedback. */
-  downvotes: number;
-  /** User who created the feedback. */
-  user: {
-    /** User ID. */
-    id: string;
-    /** User first name. */
-    firstName: string;
-    /** User last name. */
-    lastName: string;
-  };
-}
+// export interface Feedback {
+//   /** Feedback ID. */
+//   id: string;
+//   /** Feedback title. */
+//   title: string;
+//   /** Feedback description. */
+//   description: string;
+//   /** Feedback created date. */
+//   createdAt: string;
+//   /** Feedback updated date. */
+//   updatedAt: string;
+//   /** Feedback status. */
+//   status: "New" | "Planned" | "In Progress" | "Complete";
+//   /** Total upvotes for the feedback. */
+//   upvotes: number;
+//   /** Total downvotes for the feedback. */
+//   downvotes: number;
+//   /** User who created the feedback. */
+//   user: {
+//     /** User ID. */
+//     id: string;
+//     /** User first name. */
+//     firstName: string;
+//     /** User last name. */
+//     lastName: string;
+//   };
+// }
 
 interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
@@ -71,7 +71,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
 
 interface Props {
   /** Feedback details. */
-  feedback: Feedback | null | undefined;
+  feedback: Post;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -79,7 +79,7 @@ interface Props {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
+const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
   const { isLoading, isError } = useDataState({ timeout: 400 });
@@ -91,12 +91,12 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
 
   const isVotingDisabled = isLoading || isError;
 
+  const upvotes = feedback?.upvotes.aggregates?.distinctCount?.rowId ?? 0;
+
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: votingState.hasUpvoted
-        ? (feedback?.upvotes ?? 0) + 1
-        : feedback?.upvotes,
+      votes: votingState.hasUpvoted ? Number(upvotes) + 1 : Number(upvotes),
       tooltip: app.feedbackPage.details.upvote,
       icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
@@ -111,8 +111,10 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
     {
       id: "downvote",
       votes: votingState.hasDownvoted
-        ? (feedback?.downvotes ?? 0) + 1
-        : feedback?.downvotes,
+        ? // @ts-ignore
+          (feedback?.downvotes ?? 0) + 1
+        : // @ts-ignore
+          feedback?.downvotes,
       tooltip: app.feedbackPage.details.downvote,
       icon: votingState.hasDownvoted
         ? PiArrowFatLineDownFill
@@ -128,7 +130,8 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
     },
   ];
 
-  const netTotalVotes = (feedback?.upvotes ?? 0) - (feedback?.downvotes ?? 0);
+  // @ts-ignore
+  const netTotalVotes = Number(upvotes) - (feedback?.downvotes ?? 0);
 
   const netVotesColor = match(netTotalVotes)
     .with(0, () => "foreground.subtle")
@@ -146,6 +149,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
       borderRadius="lg"
       boxShadow="lg"
       p={{ base: 4, sm: 6 }}
+      {...rest}
     >
       {isError ? (
         <ErrorBoundary
@@ -168,7 +172,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
               </Skeleton>
 
               <HStack>
-                <Skeleton isLoaded={!isLoading}>
+                {/* <Skeleton isLoaded={!isLoading}>
                   <Badge
                     variant="outline"
                     color="brand.secondary"
@@ -176,7 +180,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
                   >
                     {feedback?.status}
                   </Badge>
-                </Skeleton>
+                </Skeleton> */}
 
                 <Skeleton isLoaded={!isLoading}>
                   <Text
@@ -216,7 +220,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
             >
               <Skeleton isLoaded={!isLoading} maxW={isLoading ? 32 : undefined}>
                 <Text color="foreground.subtle">
-                  {feedback?.user.firstName} {feedback?.user.lastName}
+                  {feedback?.user?.username}
                 </Text>
               </Skeleton>
 
