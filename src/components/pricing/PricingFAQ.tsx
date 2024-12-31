@@ -13,6 +13,7 @@ const PricingFAQ = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      mt="2"
     >
       <Text
         as="h2"
