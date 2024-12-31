@@ -76,6 +76,7 @@ function PricingCards() {
               <Text as="h4" fontSize="4xl" fontWeight="bold" m="2 0">
                 Features
               </Text>
+              
               <sigil.ul
                 style={{
                   listStyle: "unset",
