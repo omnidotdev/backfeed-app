@@ -1,5 +1,6 @@
 query ProjectMetrics($projectId: UUID!) {
   project(rowId: $projectId) {
+    createdAt
     posts {
       totalCount
       aggregates {

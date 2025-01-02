@@ -56,9 +56,6 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
-  const name = project?.name!;
-  const description = project?.description!;
-
   if (!session || !project) notFound();
 
   return (
@@ -66,8 +63,8 @@ const ProjectPage = async ({ params }: Props) => {
       breadcrumbs={breadcrumbs}
       // TODO: Use actual project data here instead of placeholder
       header={{
-        title: name,
-        description: description,
+        title: project.name!,
+        description: project.description!,
         // TODO: add button actions
         cta: [
           {
@@ -85,12 +82,7 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview
-        name={name}
-        description={description}
-        createdAt={project.createdAt}
-        projectId={projectId}
-      />
+      <ProjectOverview projectId={projectId} />
     </Page>
   );
 };

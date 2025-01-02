@@ -4541,7 +4541,7 @@ export type ProjectMetricsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null, downvotes?: { __typename?: 'DownvoteConnection', totalCount: number } | null };
+export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null, downvotes?: { __typename?: 'DownvoteConnection', totalCount: number } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -4805,6 +4805,7 @@ export const ProjectDocument = gql`
 export const ProjectMetricsDocument = gql`
     query ProjectMetrics($projectId: UUID!) {
   project(rowId: $projectId) {
+    createdAt
     posts {
       totalCount
       aggregates {

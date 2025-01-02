@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
+import dayjs from "dayjs";
 
 import {
   FeedbackMetrics,
@@ -12,32 +13,18 @@ import {
 import { useProjectMetricsQuery, type Project } from "generated/graphql";
 
 interface Props {
-  /** Name of the project. */
-  name: Project["name"];
-  /** Description of the project. */
-  description: Project["description"];
-  /** Date the project was created. */
-  createdAt: Project["createdAt"];
   /** Project ID. */
   projectId: Project["id"];
 }
 
-const ProjectOverview = ({
-  name,
-  description,
-  createdAt,
-  projectId,
-}: Props) => {
-  const {
-    data: projectMetrics,
-    isLoading,
-    isError,
-  } = useProjectMetricsQuery(
+const ProjectOverview = ({ projectId }: Props) => {
+  const { data, isLoading, isError } = useProjectMetricsQuery(
     {
       projectId,
     },
     {
       select: (data) => ({
+        createdAt: data?.project?.createdAt,
         activeUsers: data?.project?.posts.aggregates?.distinctCount?.userId,
         totalFeedback: data?.project?.posts.totalCount,
         totalEngagement:
@@ -55,15 +42,15 @@ const ProjectOverview = ({
       <GridItem h="100%">
         <Stack gap={6}>
           <ProjectInformation
-            createdAt={createdAt}
-            activeUsers={Number(projectMetrics?.activeUsers || 0)}
+            createdAt={dayjs(data?.createdAt).format("M/D/YYYY")}
+            activeUsers={Number(data?.activeUsers ?? 0)}
             isLoaded={!isLoading}
             isError={isError}
           />
 
           <FeedbackMetrics
-            totalFeedback={projectMetrics?.totalFeedback ?? 0}
-            totalEngagement={projectMetrics?.totalEngagement ?? 0}
+            totalFeedback={data?.totalFeedback ?? 0}
+            totalEngagement={data?.totalEngagement ?? 0}
             isLoaded={!isLoading}
             isError={isError}
           />

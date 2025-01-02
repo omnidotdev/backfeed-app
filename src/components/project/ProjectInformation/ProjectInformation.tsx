@@ -3,16 +3,13 @@
 import { Flex, Icon, Text, Skeleton } from "@omnidev/sigil";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { IoCalendarOutline } from "react-icons/io5";
-import dayjs from "dayjs";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
-import type { Project } from "generated/graphql";
-
 interface Props {
   /** Date the project was created. */
-  createdAt: Project["createdAt"];
+  createdAt: string;
   /** Number of active users. */
   activeUsers: number;
   /** Whether the project data is loaded. */
@@ -34,7 +31,7 @@ const ProjectInformation = ({
     {
       title: app.projectPage.projectInformation.created,
       icon: IoCalendarOutline,
-      value: dayjs(createdAt).format("M/D/YYYY"),
+      value: createdAt,
     },
     {
       title: app.projectPage.projectInformation.activeUsers,
