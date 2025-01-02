@@ -5,7 +5,8 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Page } from "components/layout";
 import { OrganizationOverview } from "components/organization";
 import { app } from "lib/config";
-import { getAuthSession, getOrganization } from "lib/util";
+import { sdk } from "lib/graphql";
+import { getAuthSession } from "lib/util";
 
 import type { Metadata } from "next";
 
@@ -14,7 +15,7 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationId } = await params;
 
-  const { organization } = await getOrganization(organizationId);
+  const { organization } = await sdk.Organization({ rowId: organizationId });
 
   return {
     title: `${organization?.name} | ${app.name}`,
@@ -34,7 +35,7 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const [session, { organization }] = await Promise.all([
     getAuthSession(),
-    getOrganization(organizationId),
+    sdk.Organization({ rowId: organizationId }),
   ]);
 
   const breadcrumbs = [
