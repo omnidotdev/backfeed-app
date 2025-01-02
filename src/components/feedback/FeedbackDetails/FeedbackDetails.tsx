@@ -27,37 +27,12 @@ import { ErrorBoundary } from "components/layout";
 import { useFeedbackByIdQuery } from "generated/graphql";
 import { app } from "lib/config";
 
-import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
+import type {
+  HstackProps,
+  TooltipTriggerProps,
+  VstackProps,
+} from "@omnidev/sigil";
 import type { IconType } from "react-icons";
-
-// TODO: remove once this is no longer depended on by the ProjectFeedback component
-export interface Feedback {
-  /** Feedback ID. */
-  id: string;
-  /** Feedback title. */
-  title: string;
-  /** Feedback description. */
-  description: string;
-  /** Feedback created date. */
-  createdAt: string;
-  /** Feedback updated date. */
-  updatedAt: string;
-  /** Feedback status. */
-  status: "New" | "Planned" | "In Progress" | "Complete";
-  /** Total upvotes for the feedback. */
-  upvotes: number;
-  /** Total downvotes for the feedback. */
-  downvotes: number;
-  /** User who created the feedback. */
-  user: {
-    /** User ID. */
-    id: string;
-    /** User first name. */
-    firstName: string;
-    /** User last name. */
-    lastName: string;
-  };
-}
 
 interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
@@ -70,7 +45,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
   contentProps?: VstackProps;
 }
 
-interface Props {
+interface Props extends HstackProps {
   /** Feedback details. */
   feedbackId: string;
   /** Whether we are viewing the project page. */
@@ -80,7 +55,11 @@ interface Props {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
+const FeedbackDetails = ({
+  feedbackId,
+  projectPage = false,
+  ...rest
+}: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
   const {
@@ -168,6 +147,7 @@ const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
       borderRadius="lg"
       boxShadow="lg"
       p={{ base: 4, sm: 6 }}
+      {...rest}
     >
       {isError ? (
         <ErrorBoundary
@@ -280,7 +260,6 @@ const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
                         trigger={
                           <HStack gap={2} py={1} fontVariant="tabular-nums">
                             <Icon src={icon} w={5} h={5} />
-
                             {votes}
                           </HStack>
                         }
@@ -309,5 +288,4 @@ const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
     </HStack>
   );
 };
-
 export default FeedbackDetails;

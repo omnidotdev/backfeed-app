@@ -302,6 +302,9 @@ const app = {
         downvote: "Downvote",
         feedbackLink: "View Feedback",
       },
+      emptyState: {
+        message: "No posts found. Add a post to start the conversation.",
+      },
     },
     projectInformation: {
       title: "Project Information",
@@ -311,7 +314,7 @@ const app = {
     feedbackMetrics: {
       title: "Feedback Metrics",
       totalFeedback: "Total Feedback",
-      totalUpvotes: "Total Upvotes",
+      totalEngagement: "Total Engagement",
     },
     statusBreakdown: {
       title: "Status Breakdown",
