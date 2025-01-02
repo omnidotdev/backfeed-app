@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
+import dayjs from "dayjs";
 
 import {
   FeedbackMetrics,
@@ -9,31 +10,58 @@ import {
   StatusBreakdown,
 } from "components/project";
 
-import type { Project } from "generated/graphql";
+import { useProjectMetricsQuery, type Project } from "generated/graphql";
 
 interface Props {
-  /** Name of the project. */
-  name: Project["name"];
-  /** Description of the project. */
-  description: Project["description"];
+  /** Project ID. */
+  projectId: Project["id"];
 }
 
-const ProjectOverview = ({ name, description }: Props) => (
-  <Grid h="100%" columns={{ lg: 3 }} gap={6}>
-    <GridItem h="100%" colSpan={{ lg: 2 }}>
-      <ProjectFeedback />
-    </GridItem>
+const ProjectOverview = ({ projectId }: Props) => {
+  const { data, isLoading, isError } = useProjectMetricsQuery(
+    {
+      projectId,
+    },
+    {
+      select: (data) => ({
+        createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
+        activeUsers: Number(
+          data?.project?.posts.aggregates?.distinctCount?.userId
+        ),
+        totalFeedback: data?.project?.posts.totalCount,
+        totalEngagement:
+          (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
+      }),
+    }
+  );
 
-    <GridItem h="100%">
-      <Stack gap={6}>
-        <ProjectInformation name={name!} description={description!} />
+  return (
+    <Grid h="100%" columns={{ lg: 3 }} gap={6}>
+      <GridItem h="100%" colSpan={{ lg: 2 }}>
+        <ProjectFeedback projectId={projectId} />
+      </GridItem>
 
-        <FeedbackMetrics />
+      <GridItem h="100%">
+        <Stack gap={6}>
+          <ProjectInformation
+            createdAt={data?.createdAt}
+            activeUsers={data?.activeUsers}
+            isLoaded={!isLoading}
+            isError={isError}
+          />
 
-        <StatusBreakdown />
-      </Stack>
-    </GridItem>
-  </Grid>
-);
+          <FeedbackMetrics
+            totalFeedback={data?.totalFeedback ?? 0}
+            totalEngagement={data?.totalEngagement ?? 0}
+            isLoaded={!isLoading}
+            isError={isError}
+          />
+
+          <StatusBreakdown />
+        </Stack>
+      </GridItem>
+    </Grid>
+  );
+};
 
 export default ProjectOverview;
