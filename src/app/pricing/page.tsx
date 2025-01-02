@@ -6,7 +6,7 @@ import {
   PricingCard,
   PricingFAQ,
   PricingHeader,
-} from "components/pricing/index";
+} from "components/pricing";
 
 /**
  * Pricing page.
