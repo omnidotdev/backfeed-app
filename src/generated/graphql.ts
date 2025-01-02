@@ -47,6 +47,315 @@ export type BigIntFilter = {
   notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
+export type Comment = Node & {
+  __typename?: 'Comment';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `Post` that is related to this `Comment`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads a single `User` that is related to this `Comment`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type CommentAggregates = {
+  __typename?: 'CommentAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<CommentDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Comment` object types. */
+export type CommentAggregatesFilter = {
+  /** Distinct count aggregate over matching `Comment` objects. */
+  distinctCount?: InputMaybe<CommentDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Comment` object to be included within the aggregate. */
+  filter?: InputMaybe<CommentFilter>;
+};
+
+/** A condition to be used against `Comment` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type CommentCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `message` field. */
+  message?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Comment` values. */
+export type CommentConnection = {
+  __typename?: 'CommentConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<CommentAggregates>;
+  /** A list of edges which contains the `Comment` and cursor to aid in pagination. */
+  edges: Array<Maybe<CommentEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<CommentAggregates>>;
+  /** A list of `Comment` objects. */
+  nodes: Array<Maybe<Comment>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Comment` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Comment` values. */
+export type CommentConnectionGroupedAggregatesArgs = {
+  groupBy: Array<CommentGroupBy>;
+  having?: InputMaybe<CommentHavingInput>;
+};
+
+export type CommentDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  message?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type CommentDistinctCountAggregates = {
+  __typename?: 'CommentDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of message across the matching connection */
+  message?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Comment` edge in the connection. */
+export type CommentEdge = {
+  __typename?: 'CommentEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Comment` at the end of the edge. */
+  node?: Maybe<Comment>;
+};
+
+/** A filter to be used against `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type CommentFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `message` field. */
+  message?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<CommentFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Comment` for usage during aggregation. */
+export enum CommentGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Message = 'MESSAGE',
+  PostId = 'POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type CommentHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Comment` aggregates. */
+export type CommentHavingInput = {
+  AND?: InputMaybe<Array<CommentHavingInput>>;
+  OR?: InputMaybe<Array<CommentHavingInput>>;
+  average?: InputMaybe<CommentHavingAverageInput>;
+  distinctCount?: InputMaybe<CommentHavingDistinctCountInput>;
+  max?: InputMaybe<CommentHavingMaxInput>;
+  min?: InputMaybe<CommentHavingMinInput>;
+  stddevPopulation?: InputMaybe<CommentHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<CommentHavingStddevSampleInput>;
+  sum?: InputMaybe<CommentHavingSumInput>;
+  variancePopulation?: InputMaybe<CommentHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<CommentHavingVarianceSampleInput>;
+};
+
+export type CommentHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type CommentHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Comment` */
+export type CommentInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  message?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Comment`. */
+export enum CommentOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  MessageAsc = 'MESSAGE_ASC',
+  MessageDesc = 'MESSAGE_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `Comment`. Fields that are set will be updated. */
+export type CommentPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  message?: InputMaybe<Scalars['String']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** All input for the create `Comment` mutation. */
+export type CreateCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Comment` to be created by this mutation. */
+  comment: CommentInput;
+};
+
+/** The output of our create `Comment` mutation. */
+export type CreateCommentPayload = {
+  __typename?: 'CreateCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was created by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Comment` mutation. */
+export type CreateCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
+};
+
+/** All input for the create `Downvote` mutation. */
+export type CreateDownvoteInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Downvote` to be created by this mutation. */
+  downvote: DownvoteInput;
+};
+
+/** The output of our create `Downvote` mutation. */
+export type CreateDownvotePayload = {
+  __typename?: 'CreateDownvotePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Downvote` that was created by this mutation. */
+  downvote?: Maybe<Downvote>;
+  /** An edge for our `Downvote`. May be used by Relay 1. */
+  downvoteEdge?: Maybe<DownvoteEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Downvote` mutation. */
+export type CreateDownvotePayloadDownvoteEdgeArgs = {
+  orderBy?: Array<DownvoteOrderBy>;
+};
+
 /** All input for the create `Organization` mutation. */
 export type CreateOrganizationInput = {
   /**
@@ -261,6 +570,105 @@ export type DatetimeFilter = {
   notEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+};
+
+/** All input for the `deleteCommentById` mutation. */
+export type DeleteCommentByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Comment` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteComment` mutation. */
+export type DeleteCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Comment` mutation. */
+export type DeleteCommentPayload = {
+  __typename?: 'DeleteCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was deleted by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  deletedCommentId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Comment` mutation. */
+export type DeleteCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
+};
+
+/** All input for the `deleteDownvoteById` mutation. */
+export type DeleteDownvoteByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Downvote` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteDownvoteByPostIdAndUserId` mutation. */
+export type DeleteDownvoteByPostIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+/** All input for the `deleteDownvote` mutation. */
+export type DeleteDownvoteInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Downvote` mutation. */
+export type DeleteDownvotePayload = {
+  __typename?: 'DeleteDownvotePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedDownvoteId?: Maybe<Scalars['ID']['output']>;
+  /** The `Downvote` that was deleted by this mutation. */
+  downvote?: Maybe<Downvote>;
+  /** An edge for our `Downvote`. May be used by Relay 1. */
+  downvoteEdge?: Maybe<DownvoteEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Downvote` mutation. */
+export type DeleteDownvotePayloadDownvoteEdgeArgs = {
+  orderBy?: Array<DownvoteOrderBy>;
 };
 
 /** All input for the `deleteOrganizationById` mutation. */
@@ -580,6 +988,239 @@ export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
+export type Downvote = Node & {
+  __typename?: 'Downvote';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads a single `Post` that is related to this `Downvote`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads a single `User` that is related to this `Downvote`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type DownvoteAggregates = {
+  __typename?: 'DownvoteAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<DownvoteDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Downvote` object types. */
+export type DownvoteAggregatesFilter = {
+  /** Distinct count aggregate over matching `Downvote` objects. */
+  distinctCount?: InputMaybe<DownvoteDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Downvote` object to be included within the aggregate. */
+  filter?: InputMaybe<DownvoteFilter>;
+};
+
+/**
+ * A condition to be used against `Downvote` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type DownvoteCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Downvote` values. */
+export type DownvoteConnection = {
+  __typename?: 'DownvoteConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<DownvoteAggregates>;
+  /** A list of edges which contains the `Downvote` and cursor to aid in pagination. */
+  edges: Array<Maybe<DownvoteEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<DownvoteAggregates>>;
+  /** A list of `Downvote` objects. */
+  nodes: Array<Maybe<Downvote>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Downvote` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Downvote` values. */
+export type DownvoteConnectionGroupedAggregatesArgs = {
+  groupBy: Array<DownvoteGroupBy>;
+  having?: InputMaybe<DownvoteHavingInput>;
+};
+
+export type DownvoteDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type DownvoteDistinctCountAggregates = {
+  __typename?: 'DownvoteDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Downvote` edge in the connection. */
+export type DownvoteEdge = {
+  __typename?: 'DownvoteEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Downvote` at the end of the edge. */
+  node?: Maybe<Downvote>;
+};
+
+/** A filter to be used against `Downvote` object types. All fields are combined with a logical ‘and.’ */
+export type DownvoteFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<DownvoteFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<DownvoteFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<DownvoteFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Downvote` for usage during aggregation. */
+export enum DownvoteGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  PostId = 'POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type DownvoteHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Downvote` aggregates. */
+export type DownvoteHavingInput = {
+  AND?: InputMaybe<Array<DownvoteHavingInput>>;
+  OR?: InputMaybe<Array<DownvoteHavingInput>>;
+  average?: InputMaybe<DownvoteHavingAverageInput>;
+  distinctCount?: InputMaybe<DownvoteHavingDistinctCountInput>;
+  max?: InputMaybe<DownvoteHavingMaxInput>;
+  min?: InputMaybe<DownvoteHavingMinInput>;
+  stddevPopulation?: InputMaybe<DownvoteHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<DownvoteHavingStddevSampleInput>;
+  sum?: InputMaybe<DownvoteHavingSumInput>;
+  variancePopulation?: InputMaybe<DownvoteHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<DownvoteHavingVarianceSampleInput>;
+};
+
+export type DownvoteHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type DownvoteHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Downvote` */
+export type DownvoteInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Downvote`. */
+export enum DownvoteOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `Downvote`. Fields that are set will be updated. */
+export type DownvotePatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 export type HavingDatetimeFilter = {
   equalTo?: InputMaybe<Scalars['Datetime']['input']>;
   greaterThan?: InputMaybe<Scalars['Datetime']['input']>;
@@ -592,6 +1233,10 @@ export type HavingDatetimeFilter = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a single `Comment`. */
+  createComment?: Maybe<CreateCommentPayload>;
+  /** Creates a single `Downvote`. */
+  createDownvote?: Maybe<CreateDownvotePayload>;
   /** Creates a single `Organization`. */
   createOrganization?: Maybe<CreateOrganizationPayload>;
   /** Creates a single `Post`. */
@@ -604,6 +1249,16 @@ export type Mutation = {
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `UserOrganization`. */
   createUserOrganization?: Maybe<CreateUserOrganizationPayload>;
+  /** Deletes a single `Comment` using a unique key. */
+  deleteComment?: Maybe<DeleteCommentPayload>;
+  /** Deletes a single `Comment` using its globally unique id. */
+  deleteCommentById?: Maybe<DeleteCommentPayload>;
+  /** Deletes a single `Downvote` using a unique key. */
+  deleteDownvote?: Maybe<DeleteDownvotePayload>;
+  /** Deletes a single `Downvote` using its globally unique id. */
+  deleteDownvoteById?: Maybe<DeleteDownvotePayload>;
+  /** Deletes a single `Downvote` using a unique key. */
+  deleteDownvoteByPostIdAndUserId?: Maybe<DeleteDownvotePayload>;
   /** Deletes a single `Organization` using a unique key. */
   deleteOrganization?: Maybe<DeleteOrganizationPayload>;
   /** Deletes a single `Organization` using its globally unique id. */
@@ -640,6 +1295,16 @@ export type Mutation = {
   deleteUserByUsername?: Maybe<DeleteUserPayload>;
   /** Deletes a single `UserOrganization` using a unique key. */
   deleteUserOrganizationByUserIdAndOrganizationId?: Maybe<DeleteUserOrganizationPayload>;
+  /** Updates a single `Comment` using a unique key and a patch. */
+  updateComment?: Maybe<UpdateCommentPayload>;
+  /** Updates a single `Comment` using its globally unique id and a patch. */
+  updateCommentById?: Maybe<UpdateCommentPayload>;
+  /** Updates a single `Downvote` using a unique key and a patch. */
+  updateDownvote?: Maybe<UpdateDownvotePayload>;
+  /** Updates a single `Downvote` using its globally unique id and a patch. */
+  updateDownvoteById?: Maybe<UpdateDownvotePayload>;
+  /** Updates a single `Downvote` using a unique key and a patch. */
+  updateDownvoteByPostIdAndUserId?: Maybe<UpdateDownvotePayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
   updateOrganization?: Maybe<UpdateOrganizationPayload>;
   /** Updates a single `Organization` using its globally unique id and a patch. */
@@ -680,6 +1345,18 @@ export type Mutation = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateCommentArgs = {
+  input: CreateCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateDownvoteArgs = {
+  input: CreateDownvoteInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateOrganizationArgs = {
   input: CreateOrganizationInput;
 };
@@ -712,6 +1389,36 @@ export type MutationCreateUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserOrganizationArgs = {
   input: CreateUserOrganizationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCommentArgs = {
+  input: DeleteCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCommentByIdArgs = {
+  input: DeleteCommentByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteDownvoteArgs = {
+  input: DeleteDownvoteInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteDownvoteByIdArgs = {
+  input: DeleteDownvoteByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteDownvoteByPostIdAndUserIdArgs = {
+  input: DeleteDownvoteByPostIdAndUserIdInput;
 };
 
 
@@ -820,6 +1527,36 @@ export type MutationDeleteUserByUsernameArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserOrganizationByUserIdAndOrganizationIdArgs = {
   input: DeleteUserOrganizationByUserIdAndOrganizationIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCommentArgs = {
+  input: UpdateCommentInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCommentByIdArgs = {
+  input: UpdateCommentByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateDownvoteArgs = {
+  input: UpdateDownvoteInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateDownvoteByIdArgs = {
+  input: UpdateDownvoteByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateDownvoteByPostIdAndUserIdArgs = {
+  input: UpdateDownvoteByPostIdAndUserIdInput;
 };
 
 
@@ -1244,8 +1981,12 @@ export type PageInfo = {
 
 export type Post = Node & {
   __typename?: 'Post';
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  /** Reads and enables pagination through a set of `Downvote`. */
+  downvotes: DownvoteConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   /** Reads a single `Project` that is related to this `Post`. */
@@ -1259,6 +2000,30 @@ export type Post = Node & {
   /** Reads a single `User` that is related to this `Post`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
+};
+
+
+export type PostCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+export type PostDownvotesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<DownvoteCondition>;
+  filter?: InputMaybe<DownvoteFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<DownvoteOrderBy>>;
 };
 
 
@@ -1371,10 +2136,18 @@ export type PostEdge = {
 export type PostFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `comments` relation. */
+  comments?: InputMaybe<PostToManyCommentFilter>;
+  /** Some related `comments` exist. */
+  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `downvotes` relation. */
+  downvotes?: InputMaybe<PostToManyDownvoteFilter>;
+  /** Some related `downvotes` exist. */
+  downvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Negates the expression. */
   not?: InputMaybe<PostFilter>;
   /** Checks for any expressions in this list. */
@@ -1486,10 +2259,36 @@ export type PostInput = {
 
 /** Methods to use when ordering `Post`. */
 export enum PostOrderBy {
+  CommentsCountAsc = 'COMMENTS_COUNT_ASC',
+  CommentsCountDesc = 'COMMENTS_COUNT_DESC',
+  CommentsDistinctCountCreatedAtAsc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  CommentsDistinctCountRowIdDesc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  CommentsDistinctCountUpdatedAtAsc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  CommentsDistinctCountUpdatedAtDesc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  CommentsDistinctCountUserIdAsc = 'COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  CommentsDistinctCountUserIdDesc = 'COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  DownvotesCountAsc = 'DOWNVOTES_COUNT_ASC',
+  DownvotesCountDesc = 'DOWNVOTES_COUNT_DESC',
+  DownvotesDistinctCountCreatedAtAsc = 'DOWNVOTES_DISTINCT_COUNT_CREATED_AT_ASC',
+  DownvotesDistinctCountCreatedAtDesc = 'DOWNVOTES_DISTINCT_COUNT_CREATED_AT_DESC',
+  DownvotesDistinctCountPostIdAsc = 'DOWNVOTES_DISTINCT_COUNT_POST_ID_ASC',
+  DownvotesDistinctCountPostIdDesc = 'DOWNVOTES_DISTINCT_COUNT_POST_ID_DESC',
+  DownvotesDistinctCountRowIdAsc = 'DOWNVOTES_DISTINCT_COUNT_ROW_ID_ASC',
+  DownvotesDistinctCountRowIdDesc = 'DOWNVOTES_DISTINCT_COUNT_ROW_ID_DESC',
+  DownvotesDistinctCountUpdatedAtAsc = 'DOWNVOTES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  DownvotesDistinctCountUpdatedAtDesc = 'DOWNVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  DownvotesDistinctCountUserIdAsc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_ASC',
+  DownvotesDistinctCountUserIdDesc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
@@ -1526,6 +2325,30 @@ export type PostPatch = {
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
+};
+
+/** A filter to be used against many `Downvote` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyDownvoteFilter = {
+  /** Aggregates across related `Downvote` match the filter criteria. */
+  aggregates?: InputMaybe<DownvoteAggregatesFilter>;
+  /** Every related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<DownvoteFilter>;
+  /** No related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<DownvoteFilter>;
+  /** Some related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<DownvoteFilter>;
 };
 
 /** A filter to be used against many `Upvote` object types. All fields are combined with a logical ‘and.’ */
@@ -1853,6 +2676,20 @@ export type ProjectToManyPostFilter = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  /** Get a single `Comment`. */
+  comment?: Maybe<Comment>;
+  /** Reads a single `Comment` using its globally unique `ID`. */
+  commentById?: Maybe<Comment>;
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments?: Maybe<CommentConnection>;
+  /** Get a single `Downvote`. */
+  downvote?: Maybe<Downvote>;
+  /** Reads a single `Downvote` using its globally unique `ID`. */
+  downvoteById?: Maybe<Downvote>;
+  /** Get a single `Downvote`. */
+  downvoteByPostIdAndUserId?: Maybe<Downvote>;
+  /** Reads and enables pagination through a set of `Downvote`. */
+  downvotes?: Maybe<DownvoteConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Fetches an object given its globally unique `ID`. */
@@ -1910,6 +2747,63 @@ export type Query = Node & {
   userOrganizations?: Maybe<UserOrganizationConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryDownvoteArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryDownvoteByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryDownvoteByPostIdAndUserIdArgs = {
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryDownvotesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<DownvoteCondition>;
+  filter?: InputMaybe<DownvoteFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<DownvoteOrderBy>>;
 };
 
 
@@ -2209,6 +3103,113 @@ export type UuidFilter = {
   notEqualTo?: InputMaybe<Scalars['UUID']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
+/** All input for the `updateCommentById` mutation. */
+export type UpdateCommentByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Comment` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Comment` being updated. */
+  patch: CommentPatch;
+};
+
+/** All input for the `updateComment` mutation. */
+export type UpdateCommentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Comment` being updated. */
+  patch: CommentPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Comment` mutation. */
+export type UpdateCommentPayload = {
+  __typename?: 'UpdateCommentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Comment` that was updated by this mutation. */
+  comment?: Maybe<Comment>;
+  /** An edge for our `Comment`. May be used by Relay 1. */
+  commentEdge?: Maybe<CommentEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Comment` mutation. */
+export type UpdateCommentPayloadCommentEdgeArgs = {
+  orderBy?: Array<CommentOrderBy>;
+};
+
+/** All input for the `updateDownvoteById` mutation. */
+export type UpdateDownvoteByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Downvote` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Downvote` being updated. */
+  patch: DownvotePatch;
+};
+
+/** All input for the `updateDownvoteByPostIdAndUserId` mutation. */
+export type UpdateDownvoteByPostIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Downvote` being updated. */
+  patch: DownvotePatch;
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+/** All input for the `updateDownvote` mutation. */
+export type UpdateDownvoteInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Downvote` being updated. */
+  patch: DownvotePatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Downvote` mutation. */
+export type UpdateDownvotePayload = {
+  __typename?: 'UpdateDownvotePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Downvote` that was updated by this mutation. */
+  downvote?: Maybe<Downvote>;
+  /** An edge for our `Downvote`. May be used by Relay 1. */
+  downvoteEdge?: Maybe<DownvoteEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Downvote` mutation. */
+export type UpdateDownvotePayloadDownvoteEdgeArgs = {
+  orderBy?: Array<DownvoteOrderBy>;
 };
 
 /** All input for the `updateOrganizationById` mutation. */
@@ -2791,7 +3792,11 @@ export type UpvotePatch = {
 
 export type User = Node & {
   __typename?: 'User';
+  /** Reads and enables pagination through a set of `Comment`. */
+  comments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads and enables pagination through a set of `Downvote`. */
+  downvotes: DownvoteConnection;
   firstName?: Maybe<Scalars['String']['output']>;
   hidraId: Scalars['UUID']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -2806,6 +3811,30 @@ export type User = Node & {
   /** Reads and enables pagination through a set of `UserOrganization`. */
   userOrganizations: UserOrganizationConnection;
   username?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type UserCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+export type UserDownvotesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<DownvoteCondition>;
+  filter?: InputMaybe<DownvoteFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<DownvoteOrderBy>>;
 };
 
 
@@ -2924,8 +3953,16 @@ export type UserEdge = {
 export type UserFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `comments` relation. */
+  comments?: InputMaybe<UserToManyCommentFilter>;
+  /** Some related `comments` exist. */
+  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `downvotes` relation. */
+  downvotes?: InputMaybe<UserToManyDownvoteFilter>;
+  /** Some related `downvotes` exist. */
+  downvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `firstName` field. */
   firstName?: InputMaybe<StringFilter>;
   /** Filter by the object’s `hidraId` field. */
@@ -3041,8 +4078,34 @@ export type UserInput = {
 
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
+  CommentsCountAsc = 'COMMENTS_COUNT_ASC',
+  CommentsCountDesc = 'COMMENTS_COUNT_DESC',
+  CommentsDistinctCountCreatedAtAsc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  CommentsDistinctCountRowIdDesc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  CommentsDistinctCountUpdatedAtAsc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  CommentsDistinctCountUpdatedAtDesc = 'COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  CommentsDistinctCountUserIdAsc = 'COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  CommentsDistinctCountUserIdDesc = 'COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  DownvotesCountAsc = 'DOWNVOTES_COUNT_ASC',
+  DownvotesCountDesc = 'DOWNVOTES_COUNT_DESC',
+  DownvotesDistinctCountCreatedAtAsc = 'DOWNVOTES_DISTINCT_COUNT_CREATED_AT_ASC',
+  DownvotesDistinctCountCreatedAtDesc = 'DOWNVOTES_DISTINCT_COUNT_CREATED_AT_DESC',
+  DownvotesDistinctCountPostIdAsc = 'DOWNVOTES_DISTINCT_COUNT_POST_ID_ASC',
+  DownvotesDistinctCountPostIdDesc = 'DOWNVOTES_DISTINCT_COUNT_POST_ID_DESC',
+  DownvotesDistinctCountRowIdAsc = 'DOWNVOTES_DISTINCT_COUNT_ROW_ID_ASC',
+  DownvotesDistinctCountRowIdDesc = 'DOWNVOTES_DISTINCT_COUNT_ROW_ID_DESC',
+  DownvotesDistinctCountUpdatedAtAsc = 'DOWNVOTES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  DownvotesDistinctCountUpdatedAtDesc = 'DOWNVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  DownvotesDistinctCountUserIdAsc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_ASC',
+  DownvotesDistinctCountUserIdDesc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_DESC',
   FirstNameAsc = 'FIRST_NAME_ASC',
   FirstNameDesc = 'FIRST_NAME_DESC',
   HidraIdAsc = 'HIDRA_ID_ASC',
@@ -3300,6 +4363,30 @@ export type UserPatch = {
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
+};
+
+/** A filter to be used against many `Downvote` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyDownvoteFilter = {
+  /** Aggregates across related `Downvote` match the filter criteria. */
+  aggregates?: InputMaybe<DownvoteAggregatesFilter>;
+  /** Every related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<DownvoteFilter>;
+  /** No related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<DownvoteFilter>;
+  /** Some related `Downvote` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<DownvoteFilter>;
+};
+
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -3384,12 +4471,28 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
 
+export type CommentsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
+
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
 
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
+
+export type FeedbackByIdQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type OrganizationQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -3406,14 +4509,15 @@ export type OrganizationMetricsQueryVariables = Exact<{
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
 export type OrganizationsQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -3431,11 +4535,14 @@ export type ProjectQueryVariables = Exact<{
 export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, organizationId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -3615,6 +4722,72 @@ export const useUpdateUserMutation = <
   }
     )};
 
+export const CommentsDocument = `
+    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {postId: $feedbackId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        message
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+export const useCommentsQuery = <
+      TData = CommentsQuery,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options?: Omit<UseQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CommentsQuery, TError, TData>(
+      {
+    queryKey: ['Comments', variables],
+    queryFn: useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments', variables];
+
+export const useInfiniteCommentsQuery = <
+      TData = InfiniteData<CommentsQuery>,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument)
+    return useInfiniteQuery<CommentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Comments.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments.infinite', variables];
+
 export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
   posts(
@@ -3669,12 +4842,80 @@ export const useInfiniteDashboardAggregatesQuery = <
 
 useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
 
+export const FeedbackByIdDocument = `
+    query FeedbackById($rowId: UUID!) {
+  post(rowId: $rowId) {
+    rowId
+    project {
+      rowId
+      name
+      organization {
+        rowId
+        name
+      }
+    }
+    title
+    description
+    user {
+      username
+    }
+    upvotes {
+      totalCount
+    }
+    downvotes {
+      totalCount
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export const useFeedbackByIdQuery = <
+      TData = FeedbackByIdQuery,
+      TError = unknown
+    >(
+      variables: FeedbackByIdQueryVariables,
+      options?: Omit<UseQueryOptions<FeedbackByIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FeedbackByIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FeedbackByIdQuery, TError, TData>(
+      {
+    queryKey: ['FeedbackById', variables],
+    queryFn: useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) => ['FeedbackById', variables];
+
+export const useInfiniteFeedbackByIdQuery = <
+      TData = InfiniteData<FeedbackByIdQuery>,
+      TError = unknown
+    >(
+      variables: FeedbackByIdQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument)
+    return useInfiniteQuery<FeedbackByIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['FeedbackById.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) => ['FeedbackById.infinite', variables];
+
 export const OrganizationDocument = `
     query Organization($rowId: UUID!) {
   organization(rowId: $rowId) {
     rowId
     name
-    projects {
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
         name
@@ -3786,12 +5027,14 @@ export const useInfiniteOrganizationMetricsQuery = <
 useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
 
 export const OrganizationsDocument = `
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int!, $offset: Int!, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
-    first: $first
+    first: $pageSize
+    offset: $offset
     orderBy: $orderBy
     filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
+    totalCount
     nodes {
       rowId
       name
@@ -3961,13 +5204,28 @@ export const useInfiniteProjectQuery = <
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
 
 export const ProjectsDocument = `
-    query Projects($organizationId: UUID) {
-  projects(filter: {organizationId: {equalTo: $organizationId}}) {
+    query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
+  projects(
+    orderBy: POSTS_COUNT_DESC
+    first: $pageSize
+    offset: $offset
+    condition: {organizationId: $organizationId}
+    filter: {name: {includesInsensitive: $search}}
+  ) {
+    totalCount
     nodes {
       rowId
+      organizationId
       name
       description
-      slug
+      posts {
+        totalCount
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
     }
   }
 }
@@ -3977,19 +5235,19 @@ export const useProjectsQuery = <
       TData = ProjectsQuery,
       TError = unknown
     >(
-      variables?: ProjectsQueryVariables,
+      variables: ProjectsQueryVariables,
       options?: Omit<UseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<ProjectsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Projects'] : ['Projects', variables],
+    queryKey: ['Projects', variables],
     queryFn: useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
     ...options
   }
     )};
 
-useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
+useProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
 
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
@@ -4003,14 +5261,14 @@ export const useInfiniteProjectsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
+useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
 
 export const RecentFeedbackDocument = `
     query RecentFeedback($userId: UUID!) {

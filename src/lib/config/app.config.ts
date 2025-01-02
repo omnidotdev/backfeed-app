@@ -130,6 +130,12 @@ const app = {
         },
       },
     },
+    emptyState: {
+      message: "No organizations found. Would you like to create one?",
+      cta: {
+        label: "Create Organization",
+      },
+    },
     filters: {
       search: {
         placeholder: "Search all organizations...",
@@ -300,6 +306,14 @@ const app = {
         },
       },
     },
+    emptyState: {
+      organizationOwnerMessage:
+        "No projects found. Would you like to create one?",
+      organizationUserMessage: "No projects found.",
+      cta: {
+        label: "Create Project",
+      },
+    },
     filters: {
       search: {
         placeholder: "Search all projects...",
@@ -311,6 +325,15 @@ const app = {
             singular: "Status",
             plural: "Statuses",
           },
+        },
+      },
+    },
+    dialogs: {
+      deleteProject: {
+        title: "Delete Project",
+        description: "Are you sure you want to delete this project?",
+        action: {
+          label: "Delete",
         },
       },
     },
@@ -370,6 +393,9 @@ const app = {
       textAreaPlaceholder: "Add a comment...",
       submit: "Add Comment",
       totalComments: "total comments",
+      emptyState: {
+        message: "No comments found. Add a comment to start the conversation.",
+      },
     },
     statusHistory: {
       title: "Status History",

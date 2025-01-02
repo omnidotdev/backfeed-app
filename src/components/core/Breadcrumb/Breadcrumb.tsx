@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Flex, Icon, Text } from "@omnidev/sigil";
-import { LuChevronRight } from "react-icons/lu";
 import { app } from "lib/config";
+import Link from "next/link";
+import { LuChevronRight } from "react-icons/lu";
 
 export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */
@@ -20,27 +20,38 @@ interface Props {
 /**
  * Breadcrumb.
  */
-const Breadcrumb = ({ breadcrumbs }: Props) => {
-  return (
-    <Flex fontSize="sm">
-      <Link href="/">
-        <Text
-          color="foreground.subtle"
-          _hover={{ color: "foreground.default" }}
-        >
-          {app.breadcrumb}
-        </Text>
-      </Link>
+const Breadcrumb = ({ breadcrumbs }: Props) => (
+  <Flex fontSize="sm">
+    <Link href="/">
+      <Text color="foreground.subtle" _hover={{ color: "foreground.default" }}>
+        {app.breadcrumb}
+      </Text>
+    </Link>
 
-      {breadcrumbs.map(({ label, href }) => (
+    {breadcrumbs.map(({ label, href }, index) => {
+      const isLastItem = breadcrumbs.length - 1 === index;
+
+      return (
         <Flex key={label} align="center">
           <Icon src={LuChevronRight} color="foreground.subtle" mx={2} />
 
           {href ? (
             <Link href={href}>
               <Text
-                color="foreground.subtle"
-                _hover={{ color: "foreground.default" }}
+                display={isLastItem ? "none" : { base: "inline", lg: "none" }}
+                color={{
+                  base: "foreground.subtle",
+                  _hover: "foreground.default",
+                }}
+              >
+                ...
+              </Text>
+              <Text
+                display={isLastItem ? "inline" : { base: "none", lg: "inline" }}
+                color={{
+                  base: "foreground.subtle",
+                  _hover: "foreground.default",
+                }}
               >
                 {label}
               </Text>
@@ -49,9 +60,9 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
             <Text>{label}</Text>
           )}
         </Flex>
-      ))}
-    </Flex>
-  );
-};
+      );
+    })}
+  </Flex>
+);
 
 export default Breadcrumb;

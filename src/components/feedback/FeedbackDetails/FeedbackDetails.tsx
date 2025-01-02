@@ -12,6 +12,8 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
   PiArrowFatLineDown,
@@ -20,16 +22,15 @@ import {
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
 import { match } from "ts-pattern";
-import { useParams } from "next/navigation";
-import Link from "next/link";
 
 import { ErrorBoundary } from "components/layout";
+import { useFeedbackByIdQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
 
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
+// TODO: remove once this is no longer depended on by the ProjectFeedback component
 export interface Feedback {
   /** Feedback ID. */
   id: string;
@@ -71,7 +72,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
 
 interface Props {
   /** Feedback details. */
-  feedback: Feedback | null | undefined;
+  feedbackId: string;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -79,10 +80,21 @@ interface Props {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
+const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
-  const { isLoading, isError } = useDataState({ timeout: 400 });
+  const {
+    data: feedback,
+    isLoading,
+    isError,
+  } = useFeedbackByIdQuery(
+    {
+      rowId: feedbackId,
+    },
+    {
+      select: (data) => data?.post,
+    }
+  );
 
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
@@ -95,8 +107,8 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
     {
       id: "upvote",
       votes: votingState.hasUpvoted
-        ? (feedback?.upvotes ?? 0) + 1
-        : feedback?.upvotes,
+        ? (feedback?.upvotes?.totalCount ?? 0) + 1
+        : (feedback?.upvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.upvote,
       icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
@@ -111,8 +123,8 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
     {
       id: "downvote",
       votes: votingState.hasDownvoted
-        ? (feedback?.downvotes ?? 0) + 1
-        : feedback?.downvotes,
+        ? (feedback?.downvotes?.totalCount ?? 0) + 1
+        : (feedback?.downvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.downvote,
       icon: votingState.hasDownvoted
         ? PiArrowFatLineDownFill
@@ -128,15 +140,25 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
     },
   ];
 
-  const netTotalVotes = (feedback?.upvotes ?? 0) - (feedback?.downvotes ?? 0);
+  const netTotalVotes =
+    (feedback?.upvotes?.totalCount ?? 0) -
+    (feedback?.downvotes?.totalCount ?? 0);
 
   const netVotesColor = match(netTotalVotes)
-    .with(0, () => "foreground.subtle")
+    .with(0, () => "gray.400")
     .when(
       (net) => net > 0,
       () => "brand.tertiary"
     )
     .otherwise(() => "brand.quinary");
+
+  const netVotesSign = match(netTotalVotes)
+    .with(0, () => "+/- ")
+    .when(
+      (net) => net > 0,
+      () => "+"
+    )
+    .otherwise(() => "");
 
   return (
     <HStack
@@ -160,7 +182,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
               <Skeleton
                 isLoaded={!isLoading}
                 maxW={isLoading ? 48 : undefined}
-                h={9}
+                h={isLoading ? 9 : undefined}
               >
                 <Text fontWeight="semibold" fontSize="2xl">
                   {feedback?.title}
@@ -174,7 +196,8 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
                     color="brand.secondary"
                     borderColor="brand.secondary"
                   >
-                    {feedback?.status}
+                    {/* TODO: implement status logic */}
+                    Planned
                   </Badge>
                 </Skeleton>
 
@@ -196,7 +219,8 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
             >
               <Text
                 color={netVotesColor}
-              >{`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}</Text>
+                whiteSpace="nowrap"
+              >{`${netVotesSign}${netTotalVotes}`}</Text>
             </Skeleton>
           </HStack>
 
@@ -216,7 +240,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
             >
               <Skeleton isLoaded={!isLoading} maxW={isLoading ? 32 : undefined}>
                 <Text color="foreground.subtle">
-                  {feedback?.user.firstName} {feedback?.user.lastName}
+                  {feedback?.user?.username}
                 </Text>
               </Skeleton>
 
@@ -239,7 +263,7 @@ const FeedbackDetails = ({ feedback, projectPage = false }: Props) => {
             <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
               {projectPage && (
                 <Link
-                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.id}`}
+                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.rowId}`}
                 >
                   <Button>
                     {app.projectPage.projectFeedback.details.feedbackLink}
