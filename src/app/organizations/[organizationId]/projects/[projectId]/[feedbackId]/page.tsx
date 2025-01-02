@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import { app } from "lib/config";
-import { getAuthSession, getFeedbackById } from "lib/util";
+import { sdk } from "lib/graphql";
+import { getAuthSession } from "lib/util";
 
 export const metadata = {
   title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
@@ -26,7 +27,7 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const [session, { post: feedback }] = await Promise.all([
     getAuthSession(),
-    getFeedbackById(feedbackId),
+    sdk.FeedbackById({ rowId: feedbackId }),
   ]);
 
   const breadcrumbs = [
