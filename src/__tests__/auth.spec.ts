@@ -1,8 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD) {
+if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD)
   throw new Error("TEST_USERNAME and TEST_PASSWORD must be set");
-}
 
 test("authenticates user (sign in)", async ({ page }) => {
   await page.goto("/");
