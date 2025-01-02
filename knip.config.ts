@@ -27,6 +27,8 @@ const knipConfig: KnipConfig = {
     "@ark-ui/react",
     // used by Bun test runner (for DOM-based tests)
     "@happy-dom/global-registrator",
+    // included by Next.js metapackage, used in Playwright config
+    "@next/env",
     // used by GraphQL Code Generator scripts
     "dotenv",
   ],
