@@ -49,6 +49,9 @@ jobs:
         run: bunx playwright install --with-deps
       - name: Run E2E tests
         run: bun test:e2e --shard ${{ matrix.shard }}
+        env:
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: always()
         uses: actions/upload-artifact@v4
