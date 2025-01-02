@@ -36,6 +36,7 @@ jobs:
       # shard tests across 4 nodes (https://playwright.dev/docs/test-sharding)
       matrix:
         # NB: simple numeric shard names are used here instead of the more common practice of e.g. 1/N, 2/N, ... to resolve a GitHub Actions error if unsupported characters across filesystems are found and used in artifact file paths (e.g. NTFS doesn't support `/`). GitHub implemented this validation check to enable better cross-platform support. Since the matrix shard ID is used in artifact uploads below, using `/` would throw an error.
+        # NB: number of shards here needs to match artifact merge job iteration below
         shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
@@ -68,11 +69,15 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: all-blob-reports
-          path: all-blob-reports
+      - name: Download all blob reports from GitHub Actions Artifacts
+        # NB: need to update loop here to match number of shards used in E2E test job above
+        run: |
+          for i in {1..4}; do
+            echo "Downloading shard-${i} artifact..."
+            actions/download-artifact@v4:
+              name: blob-report-shard-${i}
+              path: all-blob-reports/shard-${i}
+          done
       - name: Merge into HTML report
         run: bunx playwright merge-reports --reporter html ./all-blob-reports
       - name: Upload HTML report
