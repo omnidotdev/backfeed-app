@@ -39,7 +39,7 @@ const ProjectInformation = ({
     {
       title: app.projectPage.projectInformation.activeUsers,
       icon: HiOutlineUserGroup,
-      value: Number.isNaN(activeUsers) ? 0 : activeUsers,
+      value: activeUsers,
     },
   ];
 

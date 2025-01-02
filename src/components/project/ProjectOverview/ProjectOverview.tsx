@@ -40,7 +40,8 @@ const ProjectOverview = ({
       select: (data) => ({
         activeUsers: data?.project?.posts.aggregates?.distinctCount?.userId,
         totalFeedback: data?.project?.posts.totalCount,
-        totalUpvotes: data?.upvotes?.totalCount,
+        totalEngagement:
+          (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
       }),
     }
   );
@@ -62,7 +63,7 @@ const ProjectOverview = ({
 
           <FeedbackMetrics
             totalFeedback={projectMetrics?.totalFeedback ?? 0}
-            totalUpvotes={projectMetrics?.totalUpvotes ?? 0}
+            totalEngagement={projectMetrics?.totalEngagement ?? 0}
             isLoaded={!isLoading}
             isError={isError}
           />

@@ -283,7 +283,7 @@ const app = {
     feedbackMetrics: {
       title: "Feedback Metrics",
       totalFeedback: "Total Feedback",
-      totalUpvotes: "Total Upvotes",
+      totalEngagement: "Total Engagement",
     },
     statusBreakdown: {
       title: "Status Breakdown",

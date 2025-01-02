@@ -13,4 +13,9 @@ query ProjectMetrics($projectId: UUID!) {
   upvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
     totalCount
   }
+
+  downvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
+    totalCount
+  }
+  
 }

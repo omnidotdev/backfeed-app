@@ -11,7 +11,7 @@ interface Props {
   /** Total feedback for the project. */
   totalFeedback: number;
   /** Total upvotes for the project posts. */
-  totalUpvotes: number;
+  totalEngagement: number;
   /** Whether the project data is loaded. */
   isLoaded?: boolean;
   /** Whether loading the project data encountered an error. */
@@ -23,7 +23,7 @@ interface Props {
  */
 const FeedbackMetrics = ({
   totalFeedback,
-  totalUpvotes,
+  totalEngagement,
   isLoaded,
   isError,
 }: Props) => {
@@ -34,9 +34,9 @@ const FeedbackMetrics = ({
       value: totalFeedback,
     },
     {
-      title: app.projectPage.feedbackMetrics.totalUpvotes,
+      title: app.projectPage.feedbackMetrics.totalEngagement,
       icon: PiArrowFatLineUpFill,
-      value: totalUpvotes,
+      value: totalEngagement,
     },
   ];
 
