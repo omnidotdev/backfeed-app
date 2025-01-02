@@ -33,9 +33,7 @@ jobs:
       fail-fast: false
       # shard tests across 4 nodes (https://playwright.dev/docs/test-sharding)
       matrix:
-        # NB: simple numeric shard names are used here instead of the more common practice of e.g. 1/N, 2/N, ... to resolve a GitHub Actions error if unsupported characters across filesystems are found and used in artifact file paths (e.g. NTFS doesn't support `/`). GitHub implemented this validation check to enable better cross-platform support. Since the matrix shard ID is used in artifact uploads below, using `/` would throw an error.
-        # NB: number of shards here needs to match artifact merge job iteration below
-        shard: [1, 2, 3, 4]
+        shard: [1/4, 2/4, 3/4, 4/4]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -53,7 +51,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: blob-report-shard-${{ matrix.shard }}
+          name: all-blob-reports
           path: blob-report
           retention-days: 1
 
