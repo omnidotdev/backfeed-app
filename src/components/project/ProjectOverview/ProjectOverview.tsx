@@ -24,8 +24,10 @@ const ProjectOverview = ({ projectId }: Props) => {
     },
     {
       select: (data) => ({
-        createdAt: data?.project?.createdAt,
-        activeUsers: data?.project?.posts.aggregates?.distinctCount?.userId,
+        createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
+        activeUsers: Number(
+          data?.project?.posts.aggregates?.distinctCount?.userId
+        ),
         totalFeedback: data?.project?.posts.totalCount,
         totalEngagement:
           (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
@@ -42,8 +44,8 @@ const ProjectOverview = ({ projectId }: Props) => {
       <GridItem h="100%">
         <Stack gap={6}>
           <ProjectInformation
-            createdAt={dayjs(data?.createdAt).format("M/D/YYYY")}
-            activeUsers={Number(data?.activeUsers ?? 0)}
+            createdAt={data?.createdAt}
+            activeUsers={data?.activeUsers}
             isLoaded={!isLoading}
             isError={isError}
           />

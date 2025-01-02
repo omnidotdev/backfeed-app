@@ -9,9 +9,9 @@ import { app } from "lib/config";
 
 interface Props {
   /** Date the project was created. */
-  createdAt: string;
+  createdAt: string | undefined;
   /** Number of active users. */
-  activeUsers: number;
+  activeUsers: number | undefined;
   /** Whether the project data is loaded. */
   isLoaded?: boolean;
   /** Whether loading the project data encountered an error. */
