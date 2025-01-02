@@ -6,7 +6,7 @@ import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession, getProject } from "lib/util";
+import { getAuthSession } from "lib/util";
 
 import type { Metadata } from "next";
 
@@ -35,7 +35,7 @@ const ProjectPage = async ({ params }: Props) => {
 
   const [session, { project }] = await Promise.all([
     getAuthSession(),
-    getProject(projectId),
+    sdk.Project({ rowId: projectId }),
   ]);
 
   const breadcrumbs = [
