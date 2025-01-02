@@ -15,10 +15,13 @@ import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
 interface Props {
-  /** Pricing tier information */
+  /** Pricing tier information. */
   tier: {
+    /** Tier title. */
     title: string;
+    /** Tier price. */
     price: string;
+    /** Tier features. */
     features: string[];
   };
 }

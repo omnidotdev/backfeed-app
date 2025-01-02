@@ -201,6 +201,7 @@ const app = {
   },
   // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
+    title: "Pricing",
     pricingCard: {
       perMonth: "/month",
       getStarted: "Get Started",
