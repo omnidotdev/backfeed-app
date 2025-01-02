@@ -25,7 +25,8 @@ const PinnedOrganizations = () => {
     isError,
   } = useOrganizationsQuery(
     {
-      first: 3,
+      pageSize: 3,
+      offset: 0,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
       userId: user?.id!,
     },

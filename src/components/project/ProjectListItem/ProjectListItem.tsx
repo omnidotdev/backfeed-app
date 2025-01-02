@@ -1,105 +1,114 @@
 "use client";
 
-import { Badge, HStack, Icon, Skeleton, Stack, Text } from "@omnidev/sigil";
+import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import Link from "next/link";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-import { match } from "ts-pattern";
 
-import { OverflowText } from "components/core";
-import { useDataState } from "lib/hooks";
+import { DestructiveAction, OverflowText } from "components/core";
+import { app } from "lib/config";
 
-export interface Project {
-  /** Project ID. */
-  id: string;
-  /** Project name. */
-  name: string;
-  /** Project description. */
-  description: string;
-  /** Project status. */
-  status: "Active" | "Beta" | "Inactive";
+import type { Project } from "generated/graphql";
+
+const deleteProject = app.projectsPage.dialogs.deleteProject;
+
+interface Props {
+  project: Partial<Project>;
+  /** ! TODO remove, just used to implement dynamic ownership check for now. */
+  index: number;
 }
-
-/** Mock aggregates for the project. Will be replaced with real data, and fetched at this level in the future. */
-const AGGREGATES = [
-  {
-    type: "Users",
-    icon: HiOutlineUserGroup,
-    value: 69,
-  },
-  {
-    type: "Responses",
-    icon: HiOutlineChatBubbleLeftRight,
-    value: 420,
-  },
-];
-
-/**
- * Helper function to determine the colors used for the project status badge.
- */
-const statusColor = (status: Project["status"]) =>
-  match(status)
-    .with("Active", () => "green")
-    .with("Beta", () => "blue")
-    .with("Inactive", () => "red")
-    .exhaustive();
 
 /**
  * Project list item.
  */
-const ProjectListItem = ({ name, description, status }: Project) => {
-  const { isLoading, isError } = useDataState({ timeout: 500 });
+const ProjectListItem = ({
+  project: { rowId, organizationId, name, description, posts },
+  index,
+}: Props) => {
+  const isOrganizationOwner = index % 2 === 0;
+
+  const AGGREGATES = [
+    {
+      type: "Users",
+      icon: HiOutlineUserGroup,
+      value: posts?.aggregates?.distinctCount?.userId ?? 0,
+    },
+    {
+      type: "Responses",
+      icon: HiOutlineChatBubbleLeftRight,
+      value: posts?.totalCount ?? 0,
+    },
+  ];
 
   return (
     <Stack
       p={4}
       boxShadow="sm"
-      borderWidth="1px"
-      borderColor={{ base: "transparent", _hover: "border.subtle" }}
       borderRadius="sm"
+      w="full"
       maxW="100%"
       mx="auto"
-      h={36}
+      h={40}
+      justify="space-between"
     >
-      <HStack>
-        <OverflowText whiteSpace="nowrap" fontWeight="semibold" maxW="xl">
-          {name}
-        </OverflowText>
-        <Badge
-          size="sm"
-          variant="outline"
-          color={statusColor(status)}
-          borderColor={statusColor(status)}
-        >
-          {status}
-        </Badge>
-      </HStack>
+      <Stack gap={0}>
+        <HStack alignItems="center" justify="space-between" minH={10}>
+          <Stack maxW="65svw">
+            <Link
+              href={`/organizations/${organizationId}/projects/${rowId}`}
+              role="group"
+            >
+              <OverflowText
+                fontWeight="semibold"
+                whiteSpace="nowrap"
+                color={{
+                  base: "brand.primary.700",
+                  _groupHover: {
+                    base: "brand.primary.800",
+                    _dark: "brand.primary.600",
+                  },
+                }}
+              >
+                {name}
+              </OverflowText>
+            </Link>
+          </Stack>
 
-      <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
-        {description}
-      </OverflowText>
+          {isOrganizationOwner && (
+            <DestructiveAction
+              title={deleteProject.title}
+              description={deleteProject.description}
+              action={{
+                label: deleteProject.action.label,
+                // TODO: handle delete project in onClick for primary action
+              }}
+              triggerProps={{
+                "aria-label": `${deleteProject.action.label} organization`,
+                color: "omni.ruby",
+              }}
+            />
+          )}
+        </HStack>
+
+        <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
+          {description}
+        </OverflowText>
+      </Stack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">
         {AGGREGATES.map(({ icon, value, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-            <Skeleton
-              isLoaded={!isLoading}
-              h={4}
-              display="flex"
-              alignItems="center"
-              minW={6}
+            <Text
+              fontSize="sm"
+              color="foreground.subtle"
+              fontVariant="tabular-nums"
             >
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-                fontVariant="tabular-nums"
-              >
-                {isError ? "Error" : value}
-              </Text>
-            </Skeleton>
+              {value}
+            </Text>
           </HStack>
         ))}
       </HStack>

@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { Flex, Icon, Text } from "@omnidev/sigil";
-import { LuChevronRight } from "react-icons/lu";
+import { Flex, Icon, Text, useBreakpointValue } from "@omnidev/sigil";
 import { app } from "lib/config";
+import Link from "next/link";
+import { LuChevronRight } from "react-icons/lu";
 
 export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */
@@ -21,6 +21,8 @@ interface Props {
  * Breadcrumb.
  */
 const Breadcrumb = ({ breadcrumbs }: Props) => {
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
+
   return (
     <Flex fontSize="sm">
       <Link href="/">
@@ -32,24 +34,28 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
         </Text>
       </Link>
 
-      {breadcrumbs.map(({ label, href }) => (
-        <Flex key={label} align="center">
-          <Icon src={LuChevronRight} color="foreground.subtle" mx={2} />
+      {breadcrumbs.map(({ label, href }, index) => {
+        const isLastItem = breadcrumbs.length - 1 === index;
 
-          {href ? (
-            <Link href={href}>
-              <Text
-                color="foreground.subtle"
-                _hover={{ color: "foreground.default" }}
-              >
-                {label}
-              </Text>
-            </Link>
-          ) : (
-            <Text>{label}</Text>
-          )}
-        </Flex>
-      ))}
+        return (
+          <Flex key={label} align="center">
+            <Icon src={LuChevronRight} color="foreground.subtle" mx={2} />
+
+            {href ? (
+              <Link href={href}>
+                <Text
+                  color="foreground.subtle"
+                  _hover={{ color: "foreground.default" }}
+                >
+                  {!isDesktop && !isLastItem ? "..." : label}
+                </Text>
+              </Link>
+            ) : (
+              <Text>{label}</Text>
+            )}
+          </Flex>
+        );
+      })}
     </Flex>
   );
 };
