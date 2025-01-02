@@ -47,6 +47,9 @@ jobs:
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          AUTH_KEYCLOAK_SECRET: ${{ secrests.AUTH_KEYCLOAK_SECRET }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: always()
         uses: actions/upload-artifact@v4
