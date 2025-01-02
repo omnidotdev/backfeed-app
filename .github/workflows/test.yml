@@ -74,10 +74,10 @@ jobs:
         run: |
           for i in {1..4}; do
             echo "Downloading shard-${i} artifact..."
-            - uses: actions/download-artifact@v4
-              with:
-                name: blob-report-shard-${i}
-                path: all-blob-reports/shard-${i}
+            uses: actions/download-artifact@v4
+            with:
+              name: blob-report-shard-${i}
+              path: all-blob-reports/shard-${i}
           done
       - name: Merge into HTML report
         run: bunx playwright merge-reports --reporter html ./all-blob-reports
