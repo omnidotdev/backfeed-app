@@ -48,7 +48,8 @@ jobs:
       - name: Install Playwright
         run: bunx playwright install --with-deps
       - name: Run E2E tests
-        run: bun test:e2e --shard ${{ matrix.shard }}
+        # TODO remove debug flag, just for testing the action
+        run: DEBUG=playwright* bun test:e2e --shard ${{ matrix.shard }}
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
