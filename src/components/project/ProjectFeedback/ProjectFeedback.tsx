@@ -111,6 +111,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                     <FeedbackDetails
                       key={feedback?.rowId}
                       feedbackId={feedback?.rowId!}
+                      projectPage
                       w="full"
                       minH={21}
                     />

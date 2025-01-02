@@ -168,6 +168,7 @@ const FeedbackDetails = ({
                   {feedback?.title}
                 </Text>
               </Skeleton>
+
               <HStack>
                 <Skeleton isLoaded={!isLoading}>
                   <Badge
@@ -188,6 +189,7 @@ const FeedbackDetails = ({
                 </Skeleton>
               </HStack>
             </Stack>
+
             <Skeleton
               isLoaded={!isLoading}
               fontWeight="semibold"
@@ -209,6 +211,7 @@ const FeedbackDetails = ({
           >
             <Text color="foreground.muted">{feedback?.description}</Text>
           </Skeleton>
+
           <Stack justify="space-between" gap={4} mt={2}>
             <Stack
               direction={{ base: "column", sm: "row" }}
@@ -229,12 +232,14 @@ const FeedbackDetails = ({
                 display={{ base: "none", sm: "flex" }}
                 placeSelf="center"
               />
+
               <Skeleton isLoaded={!isLoading} maxW={isLoading ? 24 : undefined}>
                 <Text color="foreground.subtle">
                   {dayjs(feedback?.createdAt).fromNow()}
                 </Text>
               </Skeleton>
             </Stack>
+
             <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
               {projectPage && (
                 <Link
@@ -245,6 +250,7 @@ const FeedbackDetails = ({
                   </Button>
                 </Link>
               )}
+
               <Flex gap={1}>
                 {VOTE_BUTTONS.map(
                   ({ id, votes = 0, tooltip, icon, ...rest }) => (
