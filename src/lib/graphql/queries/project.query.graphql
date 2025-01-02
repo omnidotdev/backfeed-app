@@ -1,28 +1,10 @@
 query Project($rowId: UUID!) {
   project(rowId: $rowId) {
-    createdAt
-    description
-    id
-    image
-    name
-    organizationId
     rowId
-    slug
-    updatedAt
+    name
+    description
     organization {
       name
-    }
-    posts {
-      nodes {
-        createdAt
-        description
-        id
-        projectId
-        rowId
-        title
-        updatedAt
-        userId
-      }
     }
   }
 }

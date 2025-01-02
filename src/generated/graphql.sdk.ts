@@ -4424,8 +4424,6 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
-export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
-
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4534,7 +4532,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null };
 
 export type ProjectMetricsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4575,34 +4573,7 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
-export const ProjectFragmentDoc = gql`
-    fragment Project on Project {
-  createdAt
-  description
-  id
-  image
-  name
-  organizationId
-  rowId
-  slug
-  updatedAt
-  organization {
-    name
-  }
-  posts {
-    nodes {
-      createdAt
-      description
-      id
-      projectId
-      rowId
-      title
-      updatedAt
-      userId
-    }
-  }
-}
-    `;
+
 export const CreatePostDocument = gql`
     mutation CreatePost($postInput: PostInput!) {
   createPost(input: {post: $postInput}) {
@@ -4798,29 +4769,11 @@ export const PostsDocument = gql`
 export const ProjectDocument = gql`
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
-    createdAt
-    description
-    id
-    image
-    name
-    organizationId
     rowId
-    slug
-    updatedAt
+    name
+    description
     organization {
       name
-    }
-    posts {
-      nodes {
-        createdAt
-        description
-        id
-        projectId
-        rowId
-        title
-        updatedAt
-        userId
-      }
     }
   }
 }
