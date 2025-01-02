@@ -2,7 +2,7 @@
 
 import { Flex, Text, Icon, Skeleton } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { PiArrowFatLineUpFill } from "react-icons/pi";
+import { TbHeartbeat } from "react-icons/tb";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -35,7 +35,7 @@ const FeedbackMetrics = ({
     },
     {
       title: app.projectPage.feedbackMetrics.totalEngagement,
-      icon: PiArrowFatLineUpFill,
+      icon: TbHeartbeat,
       value: totalEngagement,
     },
   ];
