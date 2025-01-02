@@ -43,9 +43,9 @@ const createProjectSchema = z
   .superRefine(async ({ organizationId, slug }, ctx) => {
     if (!organizationId.length || !slug.length) return z.NEVER;
 
-    const { projectBySlugAndOrganizationId } = await sdk.Project({
+    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
       organizationId,
-      projectSlug: slug,
+      slug,
     });
 
     if (projectBySlugAndOrganizationId) {

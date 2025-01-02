@@ -4541,6 +4541,14 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null };
 
+export type ProjectBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string } | null };
+
 export type ProjectMetricsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -4794,6 +4802,13 @@ export const ProjectDocument = gql`
   }
 }
     `;
+export const ProjectBySlugDocument = gql`
+    query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+  projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
+    rowId
+  }
+}
+    `;
 export const ProjectMetricsDocument = gql`
     query ProjectMetrics($projectId: UUID!) {
   project(rowId: $projectId) {
@@ -4939,6 +4954,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>(ProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Project', 'query', variables);
+    },
+    ProjectBySlug(variables: ProjectBySlugQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectBySlugQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectBySlugQuery>(ProjectBySlugDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ProjectBySlug', 'query', variables);
     },
     ProjectMetrics(variables: ProjectMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectMetricsQuery>(ProjectMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ProjectMetrics', 'query', variables);

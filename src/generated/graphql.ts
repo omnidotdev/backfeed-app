@@ -4540,6 +4540,14 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null };
 
+export type ProjectBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string } | null };
+
 export type ProjectMetricsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -5211,6 +5219,53 @@ export const useInfiniteProjectQuery = <
     )};
 
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+
+export const ProjectBySlugDocument = `
+    query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+  projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
+    rowId
+  }
+}
+    `;
+
+export const useProjectBySlugQuery = <
+      TData = ProjectBySlugQuery,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectBySlugQuery, TError, TData>(
+      {
+    queryKey: ['ProjectBySlug', variables],
+    queryFn: useGraphqlClient<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug', variables];
+
+export const useInfiniteProjectBySlugQuery = <
+      TData = InfiniteData<ProjectBySlugQuery>,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument)
+    return useInfiniteQuery<ProjectBySlugQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectBySlug.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infinite', variables];
 
 export const ProjectMetricsDocument = `
     query ProjectMetrics($projectId: UUID!) {
