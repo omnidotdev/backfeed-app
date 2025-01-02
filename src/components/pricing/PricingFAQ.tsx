@@ -6,7 +6,7 @@ import { app } from "lib/config";
  */
 const PricingFAQ = () => (
   <Stack
-    w="45%"
+    w="90%"
     m="auto"
     flexWrap="nowrap"
     flexDirection="column"

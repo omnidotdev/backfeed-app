@@ -2,6 +2,7 @@ import {
   Badge,
   Button,
   Card,
+  Divider,
   HStack,
   Icon,
   Stack,
@@ -66,9 +67,10 @@ const PricingCards = () => (
             )}
           </HStack>
 
-          <Text as="h4" fontSize="4xl" fontWeight="bold" my={2}>
+          {/* <Text as="h4" fontSize="4xl" fontWeight="bold" my={2}>
             {app.pricingPage.pricingCard.features}
-          </Text>
+          </Text> */}
+          <Divider />
 
           <sigil.ul
             css={{

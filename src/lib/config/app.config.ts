@@ -203,7 +203,6 @@ const app = {
   pricingPage: {
     pricingCard: {
       perMonth: "/month",
-      features: "Features",
       getStarted: "Get Started",
     },
     pricingTiers: {
