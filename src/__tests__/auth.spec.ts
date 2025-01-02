@@ -16,3 +16,9 @@ test("authenticates user (sign in)", async ({ page }) => {
 
   expect(page.url()).toBe("http://localhost:3000/");
 });
+
+// TODO remove all below, just used to test CI
+test("fail normal test demo", async ({ page }) => {});
+test.fail("fail test demo", async ({ page }) => {});
+test.skip("skip test demo", async ({ page }) => {});
+test.fixme("fix test demo", async ({ page }) => {});
