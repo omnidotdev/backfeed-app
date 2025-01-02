@@ -15,8 +15,8 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { ErrorBoundary, SectionContainer } from "components/layout";
 import { FeedbackDetails } from "components/feedback";
+import { ErrorBoundary, SectionContainer } from "components/layout";
 import { app } from "lib/config";
 import { useDataState } from "lib/hooks";
 
@@ -230,7 +230,7 @@ const ProjectFeedback = () => {
                   {shownResponses.map((feedback, index) => (
                     <FeedbackDetails
                       key={`${feedback.id} - ${index}`}
-                      feedback={feedback}
+                      feedbackId={feedback.id}
                       projectPage
                     />
                   ))}

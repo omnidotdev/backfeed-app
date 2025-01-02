@@ -32,7 +32,7 @@ const HeaderActions = () => {
         <AccountInformation />
       ) : (
         <HStack>
-          <Button onClick={() => signIn("keycloak")} variant="outline">
+          <Button onClick={() => signIn("omni")} variant="outline">
             {app.auth.signIn.label}
           </Button>
 

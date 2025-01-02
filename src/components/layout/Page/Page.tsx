@@ -41,6 +41,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
 
   return (
     <Stack
+      h="100%"
       maxW={{ base: "90svw", lg: "8xl" }}
       mx="auto"
       px={{ lg: 6 }}

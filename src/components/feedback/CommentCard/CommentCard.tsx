@@ -7,11 +7,11 @@ import type { StackProps } from "@omnidev/sigil";
 
 interface Props extends StackProps {
   /** Comment sender. */
-  senderName: string;
+  senderName: string | null | undefined;
   /** Comment message. */
-  message: string;
+  message: string | null | undefined;
   /** Comment date. */
-  date: string;
+  date: Date | null | undefined;
 }
 
 /**
@@ -36,7 +36,7 @@ const Comment = ({ senderName, message, date, ...rest }: Props) => (
       w={8}
       display={{ base: "none", sm: "flex" }}
     >
-      <Text color="foreground.muted">{senderName[0]}</Text>
+      <Text color="foreground.muted">{senderName?.[0]}</Text>
     </VStack>
 
     <Stack gap={1} flex={1}>

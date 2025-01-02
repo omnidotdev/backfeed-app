@@ -1,41 +1,49 @@
 "use client";
 
-import { Stack } from "@omnidev/sigil";
-import Link from "next/link";
+import { Pagination, Stack } from "@omnidev/sigil";
+import { keepPreviousData } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { LuPlusCircle } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
-import { ErrorBoundary } from "components/layout";
+import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
+import { useProjectsQuery } from "generated/graphql";
+import { app } from "lib/config";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
 
-import type { StackProps } from "@omnidev/sigil";
-import type { Project } from "components/project";
+import type { Project } from "generated/graphql";
 
-interface Props extends StackProps {
-  /** Projects to display. */
-  projects: Project[];
-  /** Whether the data is loading. */
-  isLoading?: boolean;
-  /** Whether an error was encountered while loading the data. */
-  isError?: boolean;
-}
+// TODO: remove once ownership check is implemented
+const IS_ORGANIZATION_OWNER = Math.random() < 0.5;
 
 /**
  * Project list.
- * TODO: apply either infinite scroll or pagination for the list once data fetching is implemented.
  */
-const ProjectList = ({
-  projects,
-  isLoading = true,
-  isError = false,
-  ...rest
-}: Props) => {
-  const [{ search, status }] = useSearchParams();
+const ProjectList = () => {
+  const { organizationId } = useParams<{ organizationId: string }>();
+
+  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { data, isLoading, isError } = useProjectsQuery(
+    {
+      pageSize,
+      offset: (page - 1) * pageSize,
+      organizationId,
+      search: debouncedSearch,
+    },
+    {
+      placeholderData: keepPreviousData,
+      select: (data) => ({
+        totalCount: data?.projects?.totalCount,
+        projects: data?.projects?.nodes,
+      }),
+    }
+  );
+
+  const projects = data?.projects;
 
   if (isError)
     return <ErrorBoundary message="Error fetching projects" minH={48} />;
@@ -43,26 +51,54 @@ const ProjectList = ({
   if (isLoading)
     return (
       <Stack>
-        <SkeletonArray count={6} h={36} borderRadius="sm" />
+        <SkeletonArray count={6} h={40} borderRadius="sm" />
       </Stack>
     );
 
+  if (!projects?.length)
+    return (
+      <EmptyState
+        message={
+          IS_ORGANIZATION_OWNER
+            ? app.projectsPage.emptyState.organizationOwnerMessage
+            : app.projectsPage.emptyState.organizationUserMessage
+        }
+        action={
+          IS_ORGANIZATION_OWNER
+            ? {
+                label: app.projectsPage.emptyState.cta.label,
+                icon: LuPlusCircle,
+                actionProps: {
+                  variant: "outline",
+                  color: "brand.primary",
+                  borderColor: "brand.primary",
+                },
+              }
+            : undefined
+        }
+        minH={64}
+      />
+    );
+
   return (
-    <Stack {...rest}>
-      {/* TODO: update logic handler / filters once data fetching is implemented */}
-      {projects
-        .filter((project) => (status ? project.status === status : true))
-        .filter((project) =>
-          project.name.toLowerCase().includes(debouncedSearch)
-        )
-        .map((project) => (
-          <Link
-            key={project.id}
-            href={`/organizations/${organizationId}/projects/${project.id}`}
-          >
-            <ProjectListItem {...project} />
-          </Link>
+    <Stack align="center" justify="space-between" h="100%">
+      <Stack w="100%">
+        {projects.map((project, index) => (
+          <ProjectListItem
+            key={project?.rowId}
+            project={project as Project}
+            index={index}
+          />
         ))}
+      </Stack>
+
+      <Pagination
+        count={data?.totalCount ?? 0}
+        pageSize={pageSize}
+        defaultPage={page}
+        onPageChange={({ page }) => setSearchParams({ page })}
+        mt={4}
+      />
     </Stack>
   );
 };
