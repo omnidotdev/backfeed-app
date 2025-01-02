@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Badge,
   Button,
@@ -78,7 +79,9 @@ const FeedbackDetails = ({
     hasUpvoted: boolean;
     hasDownvoted: boolean;
   }>({ hasUpvoted: false, hasDownvoted: false });
+
   const isVotingDisabled = isLoading || isError;
+
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
