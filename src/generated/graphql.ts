@@ -5162,10 +5162,33 @@ useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infin
 export const ProjectDocument = `
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
-    ...Project
+    createdAt
+    description
+    id
+    image
+    name
+    organizationId
+    rowId
+    slug
+    updatedAt
+    organization {
+      name
+    }
+    posts {
+      nodes {
+        createdAt
+        description
+        id
+        projectId
+        rowId
+        title
+        updatedAt
+        userId
+      }
+    }
   }
 }
-    ${ProjectFragmentDoc}`;
+    `;
 
 export const useProjectQuery = <
       TData = ProjectQuery,

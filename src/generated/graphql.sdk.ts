@@ -4798,10 +4798,33 @@ export const PostsDocument = gql`
 export const ProjectDocument = gql`
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
-    ...Project
+    createdAt
+    description
+    id
+    image
+    name
+    organizationId
+    rowId
+    slug
+    updatedAt
+    organization {
+      name
+    }
+    posts {
+      nodes {
+        createdAt
+        description
+        id
+        projectId
+        rowId
+        title
+        updatedAt
+        userId
+      }
+    }
   }
 }
-    ${ProjectFragmentDoc}`;
+    `;
 export const ProjectMetricsDocument = gql`
     query ProjectMetrics($projectId: UUID!) {
   project(rowId: $projectId) {
