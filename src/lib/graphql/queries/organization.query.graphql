@@ -2,7 +2,7 @@ query Organization($rowId: UUID!) {
   organization(rowId: $rowId) {
     rowId
     name
-    projects {
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
         name

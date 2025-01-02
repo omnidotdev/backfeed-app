@@ -3,9 +3,12 @@ import { notFound } from "next/navigation";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import { app } from "lib/config";
+import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
 
-import type { Feedback } from "components/feedback";
+export const metadata = {
+  title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
+};
 
 interface Props {
   /** Feedback page params. */
@@ -21,24 +24,11 @@ interface Props {
  */
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationId, projectId, feedbackId } = await params;
-  const session = await getAuthSession();
 
-  const FEEDBACK: Feedback = {
-    id: feedbackId,
-    title: "I Still Like Turtles",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    createdAt: "2023-01-01T00:00:00.000Z",
-    updatedAt: "2023-08-24T00:00:00.000Z",
-    status: "Planned",
-    upvotes: 420,
-    downvotes: 69,
-    user: {
-      id: "1",
-      firstName: "Back",
-      lastName: "Feed",
-    },
-  };
+  const [session, { post: feedback }] = await Promise.all([
+    getAuthSession(),
+    sdk.FeedbackById({ rowId: feedbackId }),
+  ]);
 
   const breadcrumbs = [
     {
@@ -46,8 +36,7 @@ const FeedbackPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
-      label: organizationId,
+      label: feedback?.project?.organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
     {
@@ -55,8 +44,7 @@ const FeedbackPage = async ({ params }: Props) => {
       href: `/organizations/${organizationId}/projects`,
     },
     {
-      // TODO: Use actual project name here instead of ID
-      label: projectId,
+      label: feedback?.project?.name ?? projectId,
       href: `/organizations/${organizationId}/projects/${projectId}`,
     },
     {
@@ -64,13 +52,13 @@ const FeedbackPage = async ({ params }: Props) => {
     },
   ];
 
-  if (!session) notFound();
+  if (!session || !feedback) notFound();
 
   return (
     <Page breadcrumbs={breadcrumbs}>
-      <FeedbackDetails feedback={FEEDBACK} />
+      <FeedbackDetails feedbackId={feedbackId} />
 
-      <Comments />
+      <Comments feedbackId={feedbackId} />
     </Page>
   );
 };

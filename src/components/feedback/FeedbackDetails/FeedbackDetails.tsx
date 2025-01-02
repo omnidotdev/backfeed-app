@@ -33,34 +33,6 @@ import type {
 } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
-// TODO: remove once this is no longer depended on by the ProjectFeedback component
-export interface Feedback {
-  /** Feedback ID. */
-  id: string;
-  /** Feedback title. */
-  title: string;
-  /** Feedback description. */
-  description: string;
-  /** Feedback created date. */
-  createdAt: string;
-  /** Feedback updated date. */
-  updatedAt: string;
-  /** Feedback status. */
-  status: "New" | "Planned" | "In Progress" | "Complete";
-  /** Total upvotes for the feedback. */
-  upvotes: number;
-  /** Total downvotes for the feedback. */
-  downvotes: number;
-  /** User who created the feedback. */
-  user: {
-    /** User ID. */
-    id: string;
-    /** User first name. */
-    firstName: string;
-    /** User last name. */
-    lastName: string;
-  };
-}
 interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
   votes: number | undefined;
@@ -82,11 +54,7 @@ interface Props extends HstackProps {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({
-  feedbackId,
-  projectPage = false,
-  ...rest
-}: Props) => {
+const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
   const {

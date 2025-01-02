@@ -2,9 +2,24 @@ import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import { ProjectsOverview } from "components/project";
+import { ProjectFilters, ProjectList } from "components/project";
 import { app } from "lib/config";
-import { getAuthSession, getOrganization } from "lib/util";
+import { sdk } from "lib/graphql";
+import { getAuthSession } from "lib/util";
+
+import type { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { organizationId } = await params;
+
+  const { organization } = await sdk.Organization({ rowId: organizationId });
+
+  return {
+    title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
+  };
+};
 
 interface Props {
   /** Projects page params. */
@@ -19,7 +34,7 @@ const ProjectsPage = async ({ params }: Props) => {
 
   const [session, { organization }] = await Promise.all([
     getAuthSession(),
-    getOrganization(organizationId),
+    sdk.Organization({ rowId: organizationId }),
   ]);
 
   const breadcrumbs = [
@@ -53,7 +68,9 @@ const ProjectsPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectsOverview />
+      <ProjectFilters />
+
+      <ProjectList />
     </Page>
   );
 };

@@ -4471,6 +4471,15 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
 
+export type CommentsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
+
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -4500,14 +4509,15 @@ export type OrganizationMetricsQueryVariables = Exact<{
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
 export type OrganizationsQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4533,11 +4543,14 @@ export type ProjectMetricsQueryVariables = Exact<{
 export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, organizationId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4720,6 +4733,72 @@ export const useUpdateUserMutation = <
   }
     )};
 
+export const CommentsDocument = `
+    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {postId: $feedbackId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        message
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+export const useCommentsQuery = <
+      TData = CommentsQuery,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options?: Omit<UseQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CommentsQuery, TError, TData>(
+      {
+    queryKey: ['Comments', variables],
+    queryFn: useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments', variables];
+
+export const useInfiniteCommentsQuery = <
+      TData = InfiniteData<CommentsQuery>,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument)
+    return useInfiniteQuery<CommentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Comments.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments.infinite', variables];
+
 export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
   posts(
@@ -4847,7 +4926,7 @@ export const OrganizationDocument = `
   organization(rowId: $rowId) {
     rowId
     name
-    projects {
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
         name
@@ -4959,12 +5038,14 @@ export const useInfiniteOrganizationMetricsQuery = <
 useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
 
 export const OrganizationsDocument = `
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int!, $offset: Int!, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
-    first: $first
+    first: $pageSize
+    offset: $offset
     orderBy: $orderBy
     filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
+    totalCount
     nodes {
       rowId
       name
@@ -5189,13 +5270,28 @@ export const useInfiniteProjectMetricsQuery = <
 useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics.infinite', variables];
 
 export const ProjectsDocument = `
-    query Projects($organizationId: UUID) {
-  projects(filter: {organizationId: {equalTo: $organizationId}}) {
+    query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
+  projects(
+    orderBy: POSTS_COUNT_DESC
+    first: $pageSize
+    offset: $offset
+    condition: {organizationId: $organizationId}
+    filter: {name: {includesInsensitive: $search}}
+  ) {
+    totalCount
     nodes {
       rowId
+      organizationId
       name
       description
-      slug
+      posts {
+        totalCount
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
     }
   }
 }
@@ -5205,19 +5301,19 @@ export const useProjectsQuery = <
       TData = ProjectsQuery,
       TError = unknown
     >(
-      variables?: ProjectsQueryVariables,
+      variables: ProjectsQueryVariables,
       options?: Omit<UseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<ProjectsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Projects'] : ['Projects', variables],
+    queryKey: ['Projects', variables],
     queryFn: useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
     ...options
   }
     )};
 
-useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
+useProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
 
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
@@ -5231,14 +5327,14 @@ export const useInfiniteProjectsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
       queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
+useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
 
 export const RecentFeedbackDocument = `
     query RecentFeedback($userId: UUID!) {

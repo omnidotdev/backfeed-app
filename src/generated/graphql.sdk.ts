@@ -4472,6 +4472,15 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
 
+export type CommentsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
+
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -4501,14 +4510,15 @@ export type OrganizationMetricsQueryVariables = Exact<{
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
 export type OrganizationsQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4534,11 +4544,14 @@ export type ProjectMetricsQueryVariables = Exact<{
 export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  pageSize: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  organizationId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug?: string | null } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, organizationId: string, name?: string | null, description?: string | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4636,6 +4649,32 @@ export const UpdateUserDocument = gql`
   }
 }
     `;
+export const CommentsDocument = gql`
+    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {postId: $feedbackId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        message
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
 export const DashboardAggregatesDocument = gql`
     query DashboardAggregates($userId: UUID!) {
   posts(
@@ -4683,7 +4722,7 @@ export const OrganizationDocument = gql`
   organization(rowId: $rowId) {
     rowId
     name
-    projects {
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
         name
@@ -4715,12 +4754,14 @@ export const OrganizationMetricsDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int!, $offset: Int!, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
-    first: $first
+    first: $pageSize
+    offset: $offset
     orderBy: $orderBy
     filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
+    totalCount
     nodes {
       rowId
       name
@@ -4785,13 +4826,28 @@ export const ProjectMetricsDocument = gql`
 }
     `;
 export const ProjectsDocument = gql`
-    query Projects($organizationId: UUID) {
-  projects(filter: {organizationId: {equalTo: $organizationId}}) {
+    query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
+  projects(
+    orderBy: POSTS_COUNT_DESC
+    first: $pageSize
+    offset: $offset
+    condition: {organizationId: $organizationId}
+    filter: {name: {includesInsensitive: $search}}
+  ) {
+    totalCount
     nodes {
       rowId
+      organizationId
       name
       description
-      slug
+      posts {
+        totalCount
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
     }
   }
 }
@@ -4867,6 +4923,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateUser(variables: UpdateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateUser', 'mutation', variables);
     },
+    Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CommentsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>(CommentsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Comments', 'query', variables);
+    },
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
     },
@@ -4891,7 +4950,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     ProjectMetrics(variables: ProjectMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectMetricsQuery>(ProjectMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ProjectMetrics', 'query', variables);
     },
-    Projects(variables?: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectsQuery> {
+    Projects(variables: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>(ProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Projects', 'query', variables);
     },
     RecentFeedback(variables: RecentFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecentFeedbackQuery> {

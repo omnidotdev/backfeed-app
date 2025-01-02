@@ -1,10 +1,30 @@
-query Projects($organizationId: UUID) {
-  projects(filter: { organizationId: { equalTo: $organizationId } }) {
+query Projects(
+  $pageSize: Int!
+  $offset: Int!
+  $organizationId: UUID!
+  $search: String
+) {
+  projects(
+    orderBy: POSTS_COUNT_DESC
+    first: $pageSize
+    offset: $offset
+    condition: { organizationId: $organizationId }
+    filter: { name: { includesInsensitive: $search } }
+  ) {
+    totalCount
     nodes {
       rowId
+      organizationId
       name
       description
-      slug
+      posts {
+        totalCount
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
     }
   }
 }
