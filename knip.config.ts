@@ -21,10 +21,12 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
-  ignore: ["panda.config.ts", "src/generated/**"],
+  ignore: ["panda.config.ts", "src/generated/**", "src/test/test.setup.ts"],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency
     "@ark-ui/react",
+    // used by Bun test runner (for DOM-based tests)
+    "@happy-dom/global-registrator",
     // used by GraphQL Code Generator scripts
     "dotenv",
   ],
