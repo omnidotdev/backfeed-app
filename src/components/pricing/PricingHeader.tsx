@@ -5,12 +5,12 @@ import { app } from "lib/config";
  * Pricing header.
  */
 const PricingHeader = () => (
-  <Flex align="center" direction="column" w="90%">
+  <Flex align="center" direction="column">
     <Text as="h1" fontSize="5xl" fontWeight="bold" textAlign="center" mt={4}>
       {app.pricingPage.pricingHeader.title}
     </Text>
 
-    <Text fontSize="2xl" textAlign="center" mb={8}>
+    <Text fontSize="2xl" textAlign="center" m={{ base: 4, lg: 0 }}>
       {app.pricingPage.pricingHeader.description}
     </Text>
   </Flex>
