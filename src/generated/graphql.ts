@@ -4439,6 +4439,13 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type CreateProjectMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
 export type DeleteUpvoteMutationVariables = Exact<{
   upvoteId: Scalars['UUID']['input'];
 }>;
@@ -4630,6 +4637,29 @@ export const useDeletePostMutation = <
       {
     mutationKey: ['DeletePost'],
     mutationFn: useGraphqlClient<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument),
+    ...options
+  }
+    )};
+
+export const CreateProjectDocument = `
+    mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    project {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreateProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateProjectMutation, TError, CreateProjectMutationVariables, TContext>) => {
+    
+    return useMutation<CreateProjectMutation, TError, CreateProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateProject'],
+    mutationFn: useGraphqlClient<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument),
     ...options
   }
     )};
