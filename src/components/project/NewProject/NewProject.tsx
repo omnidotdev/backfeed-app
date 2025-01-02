@@ -23,21 +23,39 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 
-/** Schema for validating new project forms.*/
-const newProjectSchema = z.object({
-  organizationId: z
-    .string()
-    .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
-  name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
-  description: z
-    .string()
-    .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
-  slug: z
-    .string()
-    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
-});
+/** Schema for validating the create project form. */
+const createProjectSchema = z
+  .object({
+    organizationId: z
+      .string()
+      .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
+    name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
+    description: z
+      .string()
+      .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
+    slug: z
+      .string()
+      .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
+  })
+  .superRefine(async ({ organizationId, slug }, ctx) => {
+    if (!organizationId.length || !slug.length) return z.NEVER;
+
+    const { projectBySlugAndOrganizationId } = await sdk.Project({
+      organizationId,
+      projectSlug: slug,
+    });
+
+    if (projectBySlugAndOrganizationId) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Project slug already exists.",
+        path: ["slug"],
+      });
+    }
+  });
 
 interface Props {
   /** State to determine if the dialog is open. */
@@ -86,7 +104,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
       slug: "",
     },
     validators: {
-      onChange: newProjectSchema,
+      onChangeAsync: createProjectSchema,
     },
     onSubmit: ({ value }) =>
       createProject({
@@ -115,7 +133,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
         <Field
           name="organizationId"
           validators={{
-            onChange: newProjectSchema.shape.organizationId,
+            onChange: createProjectSchema._def.schema.shape.organizationId,
           }}
         >
           {({ handleChange, state }) => (
@@ -152,7 +170,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="name"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: newProjectSchema.shape.name,
+            onChangeAsync: createProjectSchema._def.schema.shape.name,
           }}
         >
           {({ handleChange, state }) => (
@@ -182,7 +200,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="description"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: newProjectSchema.shape.description,
+            onChangeAsync: createProjectSchema._def.schema.shape.description,
           }}
         >
           {({ handleChange, state }) => (
@@ -215,7 +233,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="slug"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: newProjectSchema.shape.slug,
+            onChangeAsync: createProjectSchema._def.schema.shape.slug,
           }}
         >
           {({ handleChange, state }) => (
