@@ -17,5 +17,4 @@ query ProjectMetrics($projectId: UUID!) {
   downvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
     totalCount
   }
-  
 }

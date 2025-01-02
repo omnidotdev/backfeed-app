@@ -56,7 +56,7 @@ const ProjectOverview = ({
         <Stack gap={6}>
           <ProjectInformation
             createdAt={createdAt}
-            activeUsers={Number(projectMetrics?.activeUsers) ?? 0}
+            activeUsers={Number(projectMetrics?.activeUsers || 0)}
             isLoaded={!isLoading}
             isError={isError}
           />
