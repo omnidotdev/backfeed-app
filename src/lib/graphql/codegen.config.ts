@@ -50,7 +50,7 @@ const graphqlCodegenConfig: CodegenConfig = {
       config: sharedConfig,
     },
     "src/generated/graphql.ts": {
-      plugins: [...sharedPlugins, "typescript-react-query"],
+      plugins: [...sharedPlugins, "typescript-react-query", "typescript-msw"],
       config: {
         ...sharedConfig,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
