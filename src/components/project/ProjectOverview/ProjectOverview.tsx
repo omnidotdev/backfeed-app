@@ -38,7 +38,6 @@ const ProjectOverview = ({
     },
     {
       select: (data) => ({
-        // totalProjects: data?.projects?.totalCount,
         activeUsers: data?.project?.posts.aggregates?.distinctCount?.userId,
         totalFeedback: data?.project?.posts.totalCount,
         totalUpvotes: data?.upvotes?.totalCount,

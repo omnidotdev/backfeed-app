@@ -19,16 +19,6 @@ query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
       user {
         username
       }
-      upvotes {
-        aggregates {
-          distinctCount {
-            rowId
-          }
-        }
-        nodes {
-          rowId
-        }
-      }
     }
   }
 }

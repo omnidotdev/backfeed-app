@@ -1,6 +1,6 @@
 "use client";
-
 import {
+  Badge,
   Button,
   Flex,
   HStack,
@@ -11,6 +11,8 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
   PiArrowFatLineDown,
@@ -19,17 +21,19 @@ import {
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
 import { match } from "ts-pattern";
-import { useParams } from "next/navigation";
-import Link from "next/link";
 
 import { ErrorBoundary } from "components/layout";
+import { useFeedbackByIdQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
 
-import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
+import type {
+  HstackProps,
+  TooltipTriggerProps,
+  VstackProps,
+} from "@omnidev/sigil";
 import type { IconType } from "react-icons";
-import type { Post } from "generated/graphql";
 
+// TODO: remove once this is no longer depended on by the ProjectFeedback component
 export interface Feedback {
   /** Feedback ID. */
   id: string;
@@ -57,7 +61,6 @@ export interface Feedback {
     lastName: string;
   };
 }
-
 interface VoteButtonProps extends TooltipTriggerProps {
   /** Number of votes (upvotes or downvotes). */
   votes: number | undefined;
@@ -69,9 +72,9 @@ interface VoteButtonProps extends TooltipTriggerProps {
   contentProps?: VstackProps;
 }
 
-interface Props {
+interface Props extends HstackProps {
   /** Feedback details. */
-  feedback: Post;
+  feedbackId: string;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -79,24 +82,37 @@ interface Props {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
+const FeedbackDetails = ({
+  feedbackId,
+  projectPage = false,
+  ...rest
+}: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
-  const { isLoading, isError } = useDataState({ timeout: 400 });
+  const {
+    data: feedback,
+    isLoading,
+    isError,
+  } = useFeedbackByIdQuery(
+    {
+      rowId: feedbackId,
+    },
+    {
+      select: (data) => data?.post,
+    }
+  );
 
   const [votingState, setVotingState] = useState<{
     hasUpvoted: boolean;
     hasDownvoted: boolean;
   }>({ hasUpvoted: false, hasDownvoted: false });
-
   const isVotingDisabled = isLoading || isError;
-
-  const upvotes = feedback?.upvotes.aggregates?.distinctCount?.rowId ?? 0;
-
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: votingState.hasUpvoted ? Number(upvotes) + 1 : Number(upvotes),
+      votes: votingState.hasUpvoted
+        ? (feedback?.upvotes?.totalCount ?? 0) + 1
+        : (feedback?.upvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.upvote,
       icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
@@ -110,7 +126,9 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
     },
     {
       id: "downvote",
-      votes: votingState.hasDownvoted ? 0 + 1 : 0,
+      votes: votingState.hasDownvoted
+        ? (feedback?.downvotes?.totalCount ?? 0) + 1
+        : (feedback?.downvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.downvote,
       icon: votingState.hasDownvoted
         ? PiArrowFatLineDownFill
@@ -126,15 +144,25 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
     },
   ];
 
-  const netTotalVotes = Number(upvotes) - 0;
+  const netTotalVotes =
+    (feedback?.upvotes?.totalCount ?? 0) -
+    (feedback?.downvotes?.totalCount ?? 0);
 
   const netVotesColor = match(netTotalVotes)
-    .with(0, () => "foreground.subtle")
+    .with(0, () => "gray.400")
     .when(
       (net) => net > 0,
       () => "brand.tertiary"
     )
     .otherwise(() => "brand.quinary");
+
+  const netVotesSign = match(netTotalVotes)
+    .with(0, () => "+/- ")
+    .when(
+      (net) => net > 0,
+      () => "+"
+    )
+    .otherwise(() => "");
 
   return (
     <HStack
@@ -159,23 +187,23 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
               <Skeleton
                 isLoaded={!isLoading}
                 maxW={isLoading ? 48 : undefined}
-                h={9}
+                h={isLoading ? 9 : undefined}
               >
                 <Text fontWeight="semibold" fontSize="2xl">
                   {feedback?.title}
                 </Text>
               </Skeleton>
-
               <HStack>
-                {/* <Skeleton isLoaded={!isLoading}>
+                <Skeleton isLoaded={!isLoading}>
                   <Badge
                     variant="outline"
                     color="brand.secondary"
                     borderColor="brand.secondary"
                   >
-                    {feedback?.status}
+                    {/* TODO: implement status logic */}
+                    Planned
                   </Badge>
-                </Skeleton> */}
+                </Skeleton>
 
                 <Skeleton isLoaded={!isLoading}>
                   <Text
@@ -185,7 +213,6 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
                 </Skeleton>
               </HStack>
             </Stack>
-
             <Skeleton
               isLoaded={!isLoading}
               fontWeight="semibold"
@@ -195,7 +222,8 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
             >
               <Text
                 color={netVotesColor}
-              >{`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}</Text>
+                whiteSpace="nowrap"
+              >{`${netVotesSign}${netTotalVotes}`}</Text>
             </Skeleton>
           </HStack>
 
@@ -206,7 +234,6 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
           >
             <Text color="foreground.muted">{feedback?.description}</Text>
           </Skeleton>
-
           <Stack justify="space-between" gap={4} mt={2}>
             <Stack
               direction={{ base: "column", sm: "row" }}
@@ -227,25 +254,22 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
                 display={{ base: "none", sm: "flex" }}
                 placeSelf="center"
               />
-
               <Skeleton isLoaded={!isLoading} maxW={isLoading ? 24 : undefined}>
                 <Text color="foreground.subtle">
                   {dayjs(feedback?.createdAt).fromNow()}
                 </Text>
               </Skeleton>
             </Stack>
-
             <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
               {projectPage && (
                 <Link
-                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.id}`}
+                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.rowId}`}
                 >
                   <Button>
                     {app.projectPage.projectFeedback.details.feedbackLink}
                   </Button>
                 </Link>
               )}
-
               <Flex gap={1}>
                 {VOTE_BUTTONS.map(
                   ({ id, votes = 0, tooltip, icon, ...rest }) => (
@@ -255,7 +279,6 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
                         trigger={
                           <HStack gap={2} py={1} fontVariant="tabular-nums">
                             <Icon src={icon} w={5} h={5} />
-
                             {votes}
                           </HStack>
                         }
@@ -284,5 +307,4 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
     </HStack>
   );
 };
-
 export default FeedbackDetails;

@@ -32,7 +32,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
     useInfinitePostsQuery(
       {
         pageSize: 5,
-        projectId: "4620b329-b585-431f-1741-d6e083173080",
+        projectId,
       },
       {
         initialPageParam: undefined,
@@ -47,8 +47,6 @@ const ProjectFeedback = ({ projectId }: Props) => {
   const posts = data?.pages?.flatMap((page) =>
     page?.posts?.nodes?.map((post) => post)
   );
-
-  // console.log("posts", posts);
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -109,11 +107,10 @@ const ProjectFeedback = ({ projectId }: Props) => {
                 <SkeletonArray count={5} h={21} />
               ) : posts?.length ? (
                 <VStack>
-                  {posts?.map((post) => (
+                  {posts?.map((feedback) => (
                     <FeedbackDetails
-                      key={post?.rowId}
-                      // @ts-ignore
-                      feedback={post}
+                      key={feedback?.rowId}
+                      feedbackId={feedback?.rowId!}
                       w="full"
                       minH={21}
                     />
