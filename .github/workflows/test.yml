@@ -57,7 +57,7 @@ jobs:
           path: blob-report
           retention-days: 1
 
-  # TODO enable if reports are desirable (after discussion in test suite PR). Note that this job does not work uncommented below, but fixing it is only beneficial if we decide we want this in the first place and its not a premature implementation.
+  # TODO enable if reports are desirable (after discussion in test suite PR). Note that this job does not work uncommented below, but fixing it is only beneficial if we decide we want this in the first place and its not a premature implementation. See https://github.com/omnidotdev/backfeed-app/pull/51 PR description
   # merge_e2e_reports:
   #   # merge reports after E2E test execution, even if some shards have failed
   #   if: always()
