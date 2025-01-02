@@ -304,6 +304,9 @@ const app = {
       textAreaPlaceholder: "Add a comment...",
       submit: "Add Comment",
       totalComments: "total comments",
+      emptyState: {
+        message: "No comments found. Add a comment to start the conversation.",
+      },
     },
     statusHistory: {
       title: "Status History",

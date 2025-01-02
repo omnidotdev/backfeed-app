@@ -4471,12 +4471,28 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
 
+export type CommentsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
+
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
 
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
+
+export type FeedbackByIdQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type OrganizationQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4706,6 +4722,72 @@ export const useUpdateUserMutation = <
   }
     )};
 
+export const CommentsDocument = `
+    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {postId: $feedbackId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        message
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+export const useCommentsQuery = <
+      TData = CommentsQuery,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options?: Omit<UseQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<CommentsQuery, TError, TData>(
+      {
+    queryKey: ['Comments', variables],
+    queryFn: useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments', variables];
+
+export const useInfiniteCommentsQuery = <
+      TData = InfiniteData<CommentsQuery>,
+      TError = unknown
+    >(
+      variables: CommentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument)
+    return useInfiniteQuery<CommentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Comments.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments.infinite', variables];
+
 export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
   posts(
@@ -4760,12 +4842,80 @@ export const useInfiniteDashboardAggregatesQuery = <
 
 useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
 
+export const FeedbackByIdDocument = `
+    query FeedbackById($rowId: UUID!) {
+  post(rowId: $rowId) {
+    rowId
+    project {
+      rowId
+      name
+      organization {
+        rowId
+        name
+      }
+    }
+    title
+    description
+    user {
+      username
+    }
+    upvotes {
+      totalCount
+    }
+    downvotes {
+      totalCount
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export const useFeedbackByIdQuery = <
+      TData = FeedbackByIdQuery,
+      TError = unknown
+    >(
+      variables: FeedbackByIdQueryVariables,
+      options?: Omit<UseQueryOptions<FeedbackByIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FeedbackByIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FeedbackByIdQuery, TError, TData>(
+      {
+    queryKey: ['FeedbackById', variables],
+    queryFn: useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument).bind(null, variables),
+    ...options
+  }
+    )};
+
+useFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) => ['FeedbackById', variables];
+
+export const useInfiniteFeedbackByIdQuery = <
+      TData = InfiniteData<FeedbackByIdQuery>,
+      TError = unknown
+    >(
+      variables: FeedbackByIdQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    const query = useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument)
+    return useInfiniteQuery<FeedbackByIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['FeedbackById.infinite', variables],
+      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) => ['FeedbackById.infinite', variables];
+
 export const OrganizationDocument = `
     query Organization($rowId: UUID!) {
   organization(rowId: $rowId) {
     rowId
     name
-    projects {
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
         name
