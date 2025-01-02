@@ -1,30 +1,21 @@
-import request from "graphql-request";
 import { notFound } from "next/navigation";
 import { LuSettings } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
 
 import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
-import { ProjectDocument } from "generated/graphql";
-import { API_BASE_URL, app } from "lib/config";
+import { app } from "lib/config";
+import { sdk } from "lib/graphql";
 import { getAuthSession, getProject } from "lib/util";
 
-import type { ProjectQuery, ProjectQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
-
-const fetchProject = async (projectId: string): Promise<ProjectQuery> =>
-  request({
-    url: API_BASE_URL!,
-    document: ProjectDocument,
-    variables: { rowId: projectId } as ProjectQueryVariables,
-  });
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { projectId } = await params;
 
-  const { project } = await fetchProject(projectId);
+  const { project } = await sdk.Project({ rowId: projectId });
 
   return {
     title: `${project?.name} | ${app.name}`,

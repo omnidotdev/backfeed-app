@@ -54,7 +54,11 @@ interface Props extends HstackProps {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedbackId, projectPage = false }: Props) => {
+const FeedbackDetails = ({
+  feedbackId,
+  projectPage = false,
+  ...rest
+}: Props) => {
   const params = useParams<{ organizationId: string; projectId: string }>();
 
   const {
