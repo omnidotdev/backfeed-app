@@ -22,6 +22,7 @@ const PricingCards = () => (
     justifyContent="center"
     gap={4}
     w="100%"
+    mx="auto"
   >
     {app.pricingPage.pricingTiers.tiers.map((tier) => (
       <Card
@@ -29,7 +30,7 @@ const PricingCards = () => (
         borderColor={tier.title === "Professional" ? "brand.primary" : "none"}
         borderWidth={tier.title === "Professional" ? 4 : 1}
         gap={4}
-        w={{ base: "100%", lg: "xs" }}
+        w={{ base: "100%", sm: "sm", lg: "xs" }}
         h="xl"
         display="flex"
         position="relative"
@@ -70,12 +71,12 @@ const PricingCards = () => (
           {/* <Text as="h4" fontSize="4xl" fontWeight="bold" my={2}>
             {app.pricingPage.pricingCard.features}
           </Text> */}
-          <Divider />
+          <Divider my={4} />
 
           <sigil.ul
-            css={{
-              listStyle: "unset",
-              ml: 2,
+            style={{
+              listStyle: "disc",
+              marginLeft: 2,
             }}
           >
             {tier.features.map((feature) => (

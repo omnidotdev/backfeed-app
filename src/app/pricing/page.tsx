@@ -1,24 +1,8 @@
-"use client";
-
-import { Stack } from "@omnidev/sigil";
-
-import {
-  PricingCard,
-  PricingFAQ,
-  PricingHeader,
-} from "components/pricing";
+import { PricingOverview } from "components/pricing";
 
 /**
  * Pricing page.
  */
-const PricingPage = () => (
-    <Stack>
-      <PricingHeader />
-
-      <PricingCard />
-
-      <PricingFAQ />
-    </Stack>
-);
+const PricingPage = () => <PricingOverview />;
 
 export default PricingPage;

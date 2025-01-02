@@ -6,11 +6,23 @@ import { app } from "lib/config";
  */
 const PricingHeader = () => (
   <Flex align="center" direction="column">
-    <Text as="h1" fontSize="5xl" fontWeight="bold" textAlign="center" mt={4}>
+    <Text
+      as="h1"
+      fontSize={{ base: "4xl", lg: "5xl" }}
+      fontWeight="bold"
+      textAlign="center"
+      mt={4}
+    >
       {app.pricingPage.pricingHeader.title}
     </Text>
 
-    <Text fontSize="2xl" textAlign="center" m={{ base: 4, lg: 0 }}>
+    <Text
+      fontSize={{ base: "xl", lg: "2xl" }}
+      maxW={{ md: "70%" }}
+      textAlign="center"
+      textWrap="pretty"
+      m={4}
+    >
       {app.pricingPage.pricingHeader.description}
     </Text>
   </Flex>
