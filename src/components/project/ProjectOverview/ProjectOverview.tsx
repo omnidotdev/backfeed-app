@@ -54,8 +54,6 @@ const ProjectOverview = ({
       <GridItem h="100%">
         <Stack gap={6}>
           <ProjectInformation
-            name={name!}
-            description={description!}
             createdAt={createdAt}
             activeUsers={Number(projectMetrics?.activeUsers) ?? 0}
             isLoaded={!isLoading}
