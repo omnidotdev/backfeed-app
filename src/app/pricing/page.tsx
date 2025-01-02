@@ -1,5 +1,7 @@
 "use client";
+
 import { Stack } from "@omnidev/sigil";
+
 import {
   PricingCard,
   PricingFAQ,
