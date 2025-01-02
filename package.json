@@ -2,7 +2,8 @@
   "name": "backfeed",
   "private": true,
   "scripts": {
-    "dev": "rm -rf .next && concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"next dev\"",
+    "dev": "rm -rf .next && concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"bun dev:next\"",
+    "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
     "format": "biome format --write src",
@@ -50,6 +51,7 @@
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
     "lodash.merge": "^4.6.2",
+    "ms": "^2.1.3",
     "next": "^15.0.3",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.3",
