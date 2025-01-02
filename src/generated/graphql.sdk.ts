@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
-import { useGraphqlClient } from 'lib/hooks';
+import { GraphQLClient, RequestOptions } from 'graphql-request';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -8,6 +8,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -3336,7 +3337,7 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
-export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } };
 
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
@@ -3417,26 +3418,18 @@ export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typ
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: string | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', aggregates?: { __typename?: 'UpvoteAggregates', distinctCount?: { __typename?: 'UpvoteDistinctCountAggregates', rowId?: string | null } | null } | null, nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+  projectSlug: Scalars['String']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
-
-export type ProjectMetricsQueryVariables = Exact<{
-  projectId: Scalars['UUID']['input'];
-}>;
-
-
-export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null };
+export type ProjectQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', createdAt?: Date | null, description?: string | null, id: string, image?: string | null, name?: string | null, organizationId: string, rowId: string, slug?: string | null, updatedAt?: Date | null, posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', createdAt?: Date | null, description?: string | null, id: string, projectId: string, rowId: string, title?: string | null, updatedAt?: Date | null, userId: string } | null> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3467,8 +3460,7 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
-
-export const ProjectFragmentDoc = `
+export const ProjectFragmentDoc = gql`
     fragment Project on Project {
   createdAt
   description
@@ -3479,9 +3471,6 @@ export const ProjectFragmentDoc = `
   rowId
   slug
   updatedAt
-  organization {
-    name
-  }
   posts {
     nodes {
       createdAt
@@ -3496,91 +3485,35 @@ export const ProjectFragmentDoc = `
   }
 }
     `;
-export const CreatePostDocument = `
+export const CreatePostDocument = gql`
     mutation CreatePost($postInput: PostInput!) {
   createPost(input: {post: $postInput}) {
     clientMutationId
   }
 }
     `;
-
-export const useCreatePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>) => {
-    
-    return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
-      {
-    mutationKey: ['CreatePost'],
-    mutationFn: useGraphqlClient<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument),
-    ...options
-  }
-    )};
-
-export const DeletePostDocument = `
+export const DeletePostDocument = gql`
     mutation DeletePost($postId: UUID!) {
   deletePost(input: {rowId: $postId}) {
     clientMutationId
   }
 }
     `;
-
-export const useDeletePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeletePostMutation, TError, DeletePostMutationVariables, TContext>) => {
-    
-    return useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
-      {
-    mutationKey: ['DeletePost'],
-    mutationFn: useGraphqlClient<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument),
-    ...options
-  }
-    )};
-
-export const DeleteUpvoteDocument = `
+export const DeleteUpvoteDocument = gql`
     mutation DeleteUpvote($upvoteId: UUID!) {
   deleteUpvote(input: {rowId: $upvoteId}) {
     clientMutationId
   }
 }
     `;
-
-export const useDeleteUpvoteMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteUpvote'],
-    mutationFn: useGraphqlClient<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument),
-    ...options
-  }
-    )};
-
-export const UpvotePostDocument = `
+export const UpvotePostDocument = gql`
     mutation UpvotePost($upvote: UpvoteInput!) {
   createUpvote(input: {upvote: $upvote}) {
     clientMutationId
   }
 }
     `;
-
-export const useUpvotePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>) => {
-    
-    return useMutation<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>(
-      {
-    mutationKey: ['UpvotePost'],
-    mutationFn: useGraphqlClient<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument),
-    ...options
-  }
-    )};
-
-export const CreateUserDocument = `
+export const CreateUserDocument = gql`
     mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String) {
   createUser(
     input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
@@ -3591,42 +3524,14 @@ export const CreateUserDocument = `
   }
 }
     `;
-
-export const useCreateUserMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateUserMutation, TError, CreateUserMutationVariables, TContext>) => {
-    
-    return useMutation<CreateUserMutation, TError, CreateUserMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateUser'],
-    mutationFn: useGraphqlClient<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument),
-    ...options
-  }
-    )};
-
-export const UpdateUserDocument = `
+export const UpdateUserDocument = gql`
     mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
   updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
     clientMutationId
   }
 }
     `;
-
-export const useUpdateUserMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateUser'],
-    mutationFn: useGraphqlClient<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument),
-    ...options
-  }
-    )};
-
-export const DashboardAggregatesDocument = `
+export const DashboardAggregatesDocument = gql`
     query DashboardAggregates($userId: UUID!) {
   posts(
     filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}
@@ -3640,47 +3545,7 @@ export const DashboardAggregatesDocument = `
   }
 }
     `;
-
-export const useDashboardAggregatesQuery = <
-      TData = DashboardAggregatesQuery,
-      TError = unknown
-    >(
-      variables: DashboardAggregatesQueryVariables,
-      options?: Omit<UseQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<DashboardAggregatesQuery, TError, TData>(
-      {
-    queryKey: ['DashboardAggregates', variables],
-    queryFn: useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates', variables];
-
-export const useInfiniteDashboardAggregatesQuery = <
-      TData = InfiniteData<DashboardAggregatesQuery>,
-      TError = unknown
-    >(
-      variables: DashboardAggregatesQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument)
-    return useInfiniteQuery<DashboardAggregatesQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['DashboardAggregates.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
-
-export const OrganizationDocument = `
+export const OrganizationDocument = gql`
     query Organization($rowId: UUID!) {
   organization(rowId: $rowId) {
     rowId
@@ -3703,47 +3568,7 @@ export const OrganizationDocument = `
   }
 }
     `;
-
-export const useOrganizationQuery = <
-      TData = OrganizationQuery,
-      TError = unknown
-    >(
-      variables: OrganizationQueryVariables,
-      options?: Omit<UseQueryOptions<OrganizationQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<OrganizationQuery, TError, TData>(
-      {
-    queryKey: ['Organization', variables],
-    queryFn: useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization', variables];
-
-export const useInfiniteOrganizationQuery = <
-      TData = InfiniteData<OrganizationQuery>,
-      TError = unknown
-    >(
-      variables: OrganizationQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<OrganizationQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument)
-    return useInfiniteQuery<OrganizationQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Organization.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
-
-export const OrganizationMetricsDocument = `
+export const OrganizationMetricsDocument = gql`
     query OrganizationMetrics($organizationId: UUID!) {
   projects(condition: {organizationId: $organizationId}) {
     totalCount
@@ -3756,47 +3581,7 @@ export const OrganizationMetricsDocument = `
   }
 }
     `;
-
-export const useOrganizationMetricsQuery = <
-      TData = OrganizationMetricsQuery,
-      TError = unknown
-    >(
-      variables: OrganizationMetricsQueryVariables,
-      options?: Omit<UseQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<OrganizationMetricsQuery, TError, TData>(
-      {
-    queryKey: ['OrganizationMetrics', variables],
-    queryFn: useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics', variables];
-
-export const useInfiniteOrganizationMetricsQuery = <
-      TData = InfiniteData<OrganizationMetricsQuery>,
-      TError = unknown
-    >(
-      variables: OrganizationMetricsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument)
-    return useInfiniteQuery<OrganizationMetricsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['OrganizationMetrics.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
-
-export const OrganizationsDocument = `
+export const OrganizationsDocument = gql`
     query Organizations($first: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
     first: $first
@@ -3816,60 +3601,9 @@ export const OrganizationsDocument = `
   }
 }
     `;
-
-export const useOrganizationsQuery = <
-      TData = OrganizationsQuery,
-      TError = unknown
-    >(
-      variables: OrganizationsQueryVariables,
-      options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<OrganizationsQuery, TError, TData>(
-      {
-    queryKey: ['Organizations', variables],
-    queryFn: useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations', variables];
-
-export const useInfiniteOrganizationsQuery = <
-      TData = InfiniteData<OrganizationsQuery>,
-      TError = unknown
-    >(
-      variables: OrganizationsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument)
-    return useInfiniteQuery<OrganizationsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
-
-export const PostsDocument = `
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
-  posts(
-    after: $after
-    first: $pageSize
-    filter: {projectId: {equalTo: $projectId}}
-  ) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    totalCount
+export const PostsDocument = gql`
+    query Posts($projectId: UUID!) {
+  posts(filter: {projectId: {equalTo: $projectId}}) {
     nodes {
       rowId
       createdAt
@@ -3892,151 +3626,17 @@ export const PostsDocument = `
   }
 }
     `;
-
-export const usePostsQuery = <
-      TData = PostsQuery,
-      TError = unknown
-    >(
-      variables: PostsQueryVariables,
-      options?: Omit<UseQueryOptions<PostsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<PostsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<PostsQuery, TError, TData>(
-      {
-    queryKey: ['Posts', variables],
-    queryFn: useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-usePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts', variables];
-
-export const useInfinitePostsQuery = <
-      TData = InfiniteData<PostsQuery>,
-      TError = unknown
-    >(
-      variables: PostsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<PostsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<PostsQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument)
-    return useInfiniteQuery<PostsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Posts.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
-
-export const ProjectDocument = `
-    query Project($rowId: UUID!) {
-  project(rowId: $rowId) {
+export const ProjectDocument = gql`
+    query Project($organizationId: UUID!, $projectSlug: String!) {
+  projectBySlugAndOrganizationId(
+    slug: $projectSlug
+    organizationId: $organizationId
+  ) {
     ...Project
   }
 }
     ${ProjectFragmentDoc}`;
-
-export const useProjectQuery = <
-      TData = ProjectQuery,
-      TError = unknown
-    >(
-      variables: ProjectQueryVariables,
-      options?: Omit<UseQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ProjectQuery, TError, TData>(
-      {
-    queryKey: ['Project', variables],
-    queryFn: useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
-
-export const useInfiniteProjectQuery = <
-      TData = InfiniteData<ProjectQuery>,
-      TError = unknown
-    >(
-      variables: ProjectQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument)
-    return useInfiniteQuery<ProjectQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Project.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
-
-export const ProjectMetricsDocument = `
-    query ProjectMetrics($projectId: UUID!) {
-  project(rowId: $projectId) {
-    posts {
-      totalCount
-      aggregates {
-        distinctCount {
-          userId
-        }
-      }
-    }
-  }
-  upvotes(filter: {post: {projectId: {equalTo: $projectId}}}) {
-    totalCount
-  }
-}
-    `;
-
-export const useProjectMetricsQuery = <
-      TData = ProjectMetricsQuery,
-      TError = unknown
-    >(
-      variables: ProjectMetricsQueryVariables,
-      options?: Omit<UseQueryOptions<ProjectMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ProjectMetricsQuery, TError, TData>(
-      {
-    queryKey: ['ProjectMetrics', variables],
-    queryFn: useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics', variables];
-
-export const useInfiniteProjectMetricsQuery = <
-      TData = InfiniteData<ProjectMetricsQuery>,
-      TError = unknown
-    >(
-      variables: ProjectMetricsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument)
-    return useInfiniteQuery<ProjectMetricsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['ProjectMetrics.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics.infinite', variables];
-
-export const ProjectsDocument = `
+export const ProjectsDocument = gql`
     query Projects($organizationId: UUID) {
   projects(filter: {organizationId: {equalTo: $organizationId}}) {
     nodes {
@@ -4048,47 +3648,7 @@ export const ProjectsDocument = `
   }
 }
     `;
-
-export const useProjectsQuery = <
-      TData = ProjectsQuery,
-      TError = unknown
-    >(
-      variables?: ProjectsQueryVariables,
-      options?: Omit<UseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ProjectsQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['Projects'] : ['Projects', variables],
-    queryFn: useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
-
-export const useInfiniteProjectsQuery = <
-      TData = InfiniteData<ProjectsQuery>,
-      TError = unknown
-    >(
-      variables: ProjectsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument)
-    return useInfiniteQuery<ProjectsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
-
-export const RecentFeedbackDocument = `
+export const RecentFeedbackDocument = gql`
     query RecentFeedback($userId: UUID!) {
   posts(
     first: 5
@@ -4108,47 +3668,7 @@ export const RecentFeedbackDocument = `
   }
 }
     `;
-
-export const useRecentFeedbackQuery = <
-      TData = RecentFeedbackQuery,
-      TError = unknown
-    >(
-      variables: RecentFeedbackQueryVariables,
-      options?: Omit<UseQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<RecentFeedbackQuery, TError, TData>(
-      {
-    queryKey: ['RecentFeedback', variables],
-    queryFn: useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback', variables];
-
-export const useInfiniteRecentFeedbackQuery = <
-      TData = InfiniteData<RecentFeedbackQuery>,
-      TError = unknown
-    >(
-      variables: RecentFeedbackQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument)
-    return useInfiniteQuery<RecentFeedbackQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['RecentFeedback.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback.infinite', variables];
-
-export const UserDocument = `
+export const UserDocument = gql`
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
     id
@@ -4159,47 +3679,7 @@ export const UserDocument = `
   }
 }
     `;
-
-export const useUserQuery = <
-      TData = UserQuery,
-      TError = unknown
-    >(
-      variables: UserQueryVariables,
-      options?: Omit<UseQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<UserQuery, TError, TData>(
-      {
-    queryKey: ['User', variables],
-    queryFn: useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument).bind(null, variables),
-    ...options
-  }
-    )};
-
-useUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
-
-export const useInfiniteUserQuery = <
-      TData = InfiniteData<UserQuery>,
-      TError = unknown
-    >(
-      variables: UserQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument)
-    return useInfiniteQuery<UserQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['User.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
-
-export const WeeklyFeedbackDocument = `
+export const WeeklyFeedbackDocument = gql`
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
   posts(
     filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
@@ -4214,41 +3694,61 @@ export const WeeklyFeedbackDocument = `
 }
     `;
 
-export const useWeeklyFeedbackQuery = <
-      TData = WeeklyFeedbackQuery,
-      TError = unknown
-    >(
-      variables: WeeklyFeedbackQueryVariables,
-      options?: Omit<UseQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<WeeklyFeedbackQuery, TError, TData>(
-      {
-    queryKey: ['WeeklyFeedback', variables],
-    queryFn: useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument).bind(null, variables),
-    ...options
-  }
-    )};
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
-useWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback', variables];
 
-export const useInfiniteWeeklyFeedbackQuery = <
-      TData = InfiniteData<WeeklyFeedbackQuery>,
-      TError = unknown
-    >(
-      variables: WeeklyFeedbackQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    const query = useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument)
-    return useInfiniteQuery<WeeklyFeedbackQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['WeeklyFeedback.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      ...restOptions
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
+
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation', variables);
+    },
+    DeletePost(variables: DeletePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeletePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeletePost', 'mutation', variables);
+    },
+    DeleteUpvote(variables: DeleteUpvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteUpvoteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteUpvoteMutation>(DeleteUpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteUpvote', 'mutation', variables);
+    },
+    UpvotePost(variables: UpvotePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpvotePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpvotePostMutation>(UpvotePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpvotePost', 'mutation', variables);
+    },
+    CreateUser(variables: CreateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUserMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateUserMutation>(CreateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUser', 'mutation', variables);
+    },
+    UpdateUser(variables: UpdateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateUserMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateUser', 'mutation', variables);
+    },
+    DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
+    },
+    Organization(variables: OrganizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OrganizationQuery>(OrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organization', 'query', variables);
+    },
+    OrganizationMetrics(variables: OrganizationMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationMetricsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OrganizationMetricsQuery>(OrganizationMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationMetrics', 'query', variables);
+    },
+    Organizations(variables: OrganizationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OrganizationsQuery>(OrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organizations', 'query', variables);
+    },
+    Posts(variables: PostsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PostsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PostsQuery>(PostsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Posts', 'query', variables);
+    },
+    Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>(ProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Project', 'query', variables);
+    },
+    Projects(variables?: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>(ProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Projects', 'query', variables);
+    },
+    RecentFeedback(variables: RecentFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecentFeedbackQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RecentFeedbackQuery>(RecentFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RecentFeedback', 'query', variables);
+    },
+    User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);
+    },
+    WeeklyFeedback(variables: WeeklyFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<WeeklyFeedbackQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<WeeklyFeedbackQuery>(WeeklyFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'WeeklyFeedback', 'query', variables);
     }
-  })()
-    )};
-
-useInfiniteWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback.infinite', variables];
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;
