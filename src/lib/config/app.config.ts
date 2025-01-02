@@ -112,7 +112,10 @@ const app = {
     },
     cta: {
       newProject: {
-        action: "Create Project",
+        action: {
+          submit: "Create Project",
+          pending: "Creating Project...",
+        },
         label: "New Project",
         description: "Create a new project by submitting the form below.",
         selectOrganization: {

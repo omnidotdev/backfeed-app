@@ -14,10 +14,14 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
-import { useOrganizationsQuery } from "generated/graphql";
+import {
+  useCreateProjectMutation,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -46,6 +50,8 @@ interface Props {
  * Dialog for creating a new project.
  */
 const NewProject = ({ isOpen, setIsOpen }: Props) => {
+  const router = useRouter();
+
   const { user } = useAuth();
 
   const { data: organizations } = useOrganizationsQuery(
@@ -62,6 +68,16 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
     }
   );
 
+  const { mutate: createProject, isPending } = useCreateProjectMutation({
+    onSuccess: (data, variables) => {
+      router.push(
+        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${variables.input.project.organizationId}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.rowId}`
+      );
+
+      setIsOpen(false);
+    },
+  });
+
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
       organizationId: "",
@@ -72,6 +88,17 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
     validators: {
       onChange: newProjectSchema,
     },
+    onSubmit: ({ value }) =>
+      createProject({
+        input: {
+          project: {
+            name: value.name,
+            description: value.description,
+            slug: value.slug,
+            organizationId: value.organizationId,
+          },
+        },
+      }),
   });
 
   return (
@@ -228,15 +255,21 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
             state.isDirty,
           ]}
         >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              disabled={!canSubmit || isSubmitting || !isDirty}
-              mt={4}
-              onClick={handleSubmit}
-            >
-              {app.dashboardPage.cta.newProject.action}
-            </Button>
-          )}
+          {([canSubmit, isSubmitting, isDirty]) => {
+            const isCreatingProject = isSubmitting || isPending;
+
+            return (
+              <Button
+                disabled={!canSubmit || !isDirty || isCreatingProject}
+                mt={4}
+                onClick={handleSubmit}
+              >
+                {isCreatingProject
+                  ? app.dashboardPage.cta.newProject.action.pending
+                  : app.dashboardPage.cta.newProject.action.submit}
+              </Button>
+            );
+          }}
         </Subscribe>
       </sigil.form>
     </Dialog>
