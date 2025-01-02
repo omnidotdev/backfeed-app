@@ -4517,8 +4517,8 @@ export type OrganizationMetricsQueryVariables = Exact<{
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
 export type OrganizationsQueryVariables = Exact<{
-  pageSize: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
@@ -4759,7 +4759,7 @@ export const OrganizationMetricsDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int!, $offset: Int!, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
   organizations(
     first: $pageSize
     offset: $offset
