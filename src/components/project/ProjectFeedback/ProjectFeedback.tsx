@@ -62,73 +62,70 @@ const ProjectFeedback = ({ projectId }: Props) => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
-      h="100%"
     >
-      <Stack h="100%" gap={6}>
-        <Stack>
-          {/* TODO: Extract this form into its own component when hooking up. */}
-          <Input
-            placeholder={app.projectPage.projectFeedback.inputPlaceholder}
-            borderColor="border.subtle"
-            fontSize="sm"
-          />
+      <Stack>
+        {/* TODO: Extract this form into its own component when hooking up. */}
+        <Input
+          placeholder={app.projectPage.projectFeedback.inputPlaceholder}
+          borderColor="border.subtle"
+          fontSize="sm"
+        />
 
-          <Textarea
-            placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
-            borderColor="border.subtle"
-            fontSize="sm"
-            rows={5}
-            minH={32}
-          />
+        <Textarea
+          placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
+          borderColor="border.subtle"
+          fontSize="sm"
+          rows={5}
+          minH={32}
+        />
 
-          <Stack justify="space-between" direction="row">
-            <Skeleton isLoaded={!isLoading} h="fit-content">
-              <Text
-                fontSize="sm"
-                color="foreground.muted"
-              >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
-            </Skeleton>
+        <Stack justify="space-between" direction="row">
+          <Skeleton isLoaded={!isLoading} h="fit-content">
+            <Text
+              fontSize="sm"
+              color="foreground.muted"
+            >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
+          </Skeleton>
 
-            <Button
-              w="fit-content"
-              placeSelf="flex-end"
-              // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-              disabled={isLoading || isError}
-            >
-              {app.projectPage.projectFeedback.submit}
-            </Button>
-          </Stack>
-
-          {isError ? (
-            <ErrorBoundary message="Error fetching feedback" h="sm" />
-          ) : (
-            <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
-              {isLoading ? (
-                <SkeletonArray count={5} h={21} />
-              ) : posts?.length ? (
-                <VStack>
-                  {posts?.map((feedback) => (
-                    <FeedbackDetails
-                      key={feedback?.rowId}
-                      feedbackId={feedback?.rowId!}
-                      projectPage
-                      w="full"
-                      minH={21}
-                    />
-                  ))}
-
-                  {hasNextPage && <Spinner ref={loaderRef} />}
-                </VStack>
-              ) : (
-                <EmptyState
-                  message={app.projectPage.projectFeedback.emptyState.message}
-                  h="xs"
-                  w="full"
-                />
-              )}
-            </Grid>
-          )}
+          <Button
+            w="fit-content"
+            placeSelf="flex-end"
+            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
+            disabled={isLoading || isError}
+          >
+            {app.projectPage.projectFeedback.submit}
+          </Button>
         </Stack>
+
+        {isError ? (
+          <ErrorBoundary message="Error fetching feedback" h="sm" />
+        ) : (
+          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
+            {isLoading ? (
+              <SkeletonArray count={5} h={21} />
+            ) : posts?.length ? (
+              <VStack>
+                {posts?.map((feedback) => (
+                  <FeedbackDetails
+                    key={feedback?.rowId}
+                    feedbackId={feedback?.rowId!}
+                    projectPage
+                    w="full"
+                    minH={21}
+                  />
+                ))}
+
+                {hasNextPage && <Spinner ref={loaderRef} />}
+              </VStack>
+            ) : (
+              <EmptyState
+                message={app.projectPage.projectFeedback.emptyState.message}
+                h="xs"
+                w="full"
+              />
+            )}
+          </Grid>
+        )}
       </Stack>
     </SectionContainer>
   );
