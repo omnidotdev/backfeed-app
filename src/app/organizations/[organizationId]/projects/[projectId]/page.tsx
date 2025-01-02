@@ -61,7 +61,6 @@ const ProjectPage = async ({ params }: Props) => {
   return (
     <Page
       breadcrumbs={breadcrumbs}
-      // TODO: Use actual project data here instead of placeholder
       header={{
         title: project.name!,
         description: project.description!,
