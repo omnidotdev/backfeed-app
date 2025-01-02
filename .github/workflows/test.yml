@@ -57,33 +57,34 @@ jobs:
           path: blob-report
           retention-days: 1
 
-  merge_e2e_reports:
-    # merge reports after E2E test execution, even if some shards have failed
-    if: always()
-    needs: [test_e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-      - name: Install dependencies
-        run: bun install
-      - name: Download all blob reports from GitHub Actions Artifacts
-        # NB: need to update loop here to match number of shards used in E2E test job above
-        run: |
-          for i in {1..4}; do
-            echo "Downloading shard-${i} artifact..."
-            uses: actions/download-artifact@v4
-            with:
-              name: blob-report-shard-${i}
-              path: all-blob-reports/shard-${i}
-          done
-      - name: Merge into HTML report
-        run: bunx playwright merge-reports --reporter html ./all-blob-reports
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report-attempt-${{ github.run_attempt }}
-          path: playwright-report
-          retention-days: 14
+  # TODO enable if reports are desirable (after discussion in test suite PR). Note that this job does not work uncommented below, but fixing it is only beneficial if we decide we want this in the first place and its not a premature implementation.
+  # merge_e2e_reports:
+  #   # merge reports after E2E test execution, even if some shards have failed
+  #   if: always()
+  #   needs: [test_e2e]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: oven-sh/setup-bun@v1
+  #       with:
+  #         bun-version: latest
+  #     - name: Install dependencies
+  #       run: bun install
+  #     - name: Download all blob reports from GitHub Actions Artifacts
+  #       # NB: need to update loop here to match number of shards used in E2E test job above
+  #       run: |
+  #         for i in {1..4}; do
+  #           echo "Downloading shard-${i} artifact..."
+  #           uses: actions/download-artifact@v4
+  #           with:
+  #             name: blob-report-shard-${i}
+  #             path: all-blob-reports/shard-${i}
+  #         done
+  #     - name: Merge into HTML report
+  #       run: bunx playwright merge-reports --reporter html ./all-blob-reports
+  #     - name: Upload HTML report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: html-report-attempt-${{ github.run_attempt }}
+  #         path: playwright-report
+  #         retention-days: 14
