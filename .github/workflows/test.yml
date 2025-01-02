@@ -51,7 +51,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: all-blob-reports
+          name: blob-report-shard-${{ matrix.shard }}
           path: blob-report
           retention-days: 1
 
@@ -77,6 +77,6 @@ jobs:
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: html-report-attempt-${{ github.run_attempt }}-shard-${{ matrix.shard }}
-          path: shard-${{ matrix.shard }}/playwright-report
+          name: html-report-attempt-${{ github.run_attempt }}
+          path: playwright-report
           retention-days: 14
