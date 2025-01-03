@@ -26,9 +26,9 @@ interface Props extends CardProps {
     /** Tier features. */
     features: string[];
   };
-  /** Show recommended badge. */
+  /** Is the provided tier the recommended pricing tier. */
   isRecommendedTier?: boolean;
-  /** Show /month instead of Contact us. */
+  /** Uses a monthly pricing model. */
   perMonthPricing?: boolean;
   /** CTA button properties. */
   ctaProps?: ButtonProps;
