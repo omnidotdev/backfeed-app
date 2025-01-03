@@ -78,7 +78,7 @@ const PricingCard = ({
           {tier.price}
         </Text>
 
-        {perMonthPricing && (
+        {isPerMonthPricing && (
           <Text fontSize="xl" mt={1} ml={-2.5}>
             {app.pricingPage.pricingCard.perMonth}
           </Text>
