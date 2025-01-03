@@ -1,11 +1,10 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import { useState } from "react";
 import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 
-import { SkeletonArray } from "components/core";
+import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { CreateOrganization } from "components/organization";
@@ -71,11 +70,13 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Link href="/organizations">
+        <Link href="/organizations" disabled={!pinnedOrganizations?.length}>
           <Button
             variant="outline"
             color="brand.primary"
             borderColor="brand.primary"
+            opacity={{ base: 1, _disabled: 0.5 }}
+            disabled={!pinnedOrganizations?.length}
           >
             {app.dashboardPage.cta.viewOrganizations.label}
           </Button>

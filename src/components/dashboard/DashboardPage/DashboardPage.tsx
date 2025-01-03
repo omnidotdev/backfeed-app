@@ -11,7 +11,7 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
 import { CreateProject } from "components/project";
-import { useDashboardAggregatesQuery } from "generated/graphql";
+import { useDashboardAggregatesQuery, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -39,6 +39,16 @@ const DashboardPage = () => {
       }),
     }
   );
+  
+  const { data: numberOfOrganizations } = useOrganizationsQuery(
+    {
+      userId: user?.hidraId!,
+    },
+    {
+      enabled: !!user,
+      select: (data) => data?.organizations?.totalCount,
+    }
+  );
 
   const aggregates = [
     {
@@ -64,6 +74,7 @@ const DashboardPage = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
             onClick: () => setIsNewProjectDialogOpen(true),
+            disabled: !numberOfOrganizations,
           },
         ],
       }}

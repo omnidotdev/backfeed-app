@@ -77,7 +77,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
 
   const { data: organizations } = useOrganizationsQuery(
     {
-      userId: user?.id!,
+      userId: user?.hidraId!,
     },
     {
       enabled: !!user,
