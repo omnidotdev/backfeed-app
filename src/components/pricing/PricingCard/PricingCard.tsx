@@ -26,7 +26,7 @@ interface Props extends CardProps {
     /** Tier features. */
     features: string[];
   };
-  /** Is the provided tier the recommended pricing tier. */
+  /** Whether the tier is recommended. */
   isRecommendedTier?: boolean;
   /** Uses a monthly pricing model. */
   perMonthPricing?: boolean;
