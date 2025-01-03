@@ -40,7 +40,7 @@ interface Props extends CardProps {
 const PricingCard = ({
   tier,
   isRecommendedTier = false,
-  perMonthPricing = true,
+  isPerMonthPricing = true,
   ctaProps,
   ...rest
 }: Props) => (
