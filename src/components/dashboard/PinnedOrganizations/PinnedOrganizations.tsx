@@ -89,9 +89,11 @@ const PinnedOrganizations = () => {
           gap={6}
           columns={{
             base: 1,
-            md: pinnedOrganizations?.length
-              ? Math.min(pinnedOrganizations.length, 3)
-              : 1,
+            md: isLoading
+              ? 3
+              : pinnedOrganizations?.length
+                ? Math.min(3, pinnedOrganizations.length)
+                : 1,
           }}
         >
           {isLoading ? (
