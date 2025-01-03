@@ -4442,7 +4442,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
 
 export type DeleteUpvoteMutationVariables = Exact<{
   upvoteId: Scalars['UUID']['input'];
@@ -4636,7 +4636,10 @@ export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
     project {
-      rowId
+      slug
+      organization {
+        slug
+      }
     }
   }
 }

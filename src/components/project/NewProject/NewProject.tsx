@@ -87,9 +87,9 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
   );
 
   const { mutate: createProject, isPending } = useCreateProjectMutation({
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       router.push(
-        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${variables.input.project.organizationId}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.rowId}`
+        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
       );
 
       setIsOpen(false);
