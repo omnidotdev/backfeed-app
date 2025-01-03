@@ -20,9 +20,24 @@ const PricingOverview = () => (
       w="100%"
       mx="auto"
     >
-      {app.pricingPage.pricingTiers.tiers.map((tier) => (
-        <PricingCard key={tier.title} tier={tier} />
-      ))}
+      {app.pricingPage.pricingTiers.tiers.map((tier) => {
+        const isProfessionalTier = tier.title === "Professional";
+        const isEnterpriseTier = tier.title === "Enterprise";
+
+        return (
+          <PricingCard
+            key={tier.title}
+            tier={tier}
+            borderWidth={isProfessionalTier ? 4 : 1}
+            borderColor={isProfessionalTier ? "brand.primary" : "none"}
+            isRecommendedTier={isProfessionalTier}
+            perMonthPricing={!isEnterpriseTier}
+            ctaProps={{
+              bgColor: isProfessionalTier ? "brand.primary" : "brand.secondary",
+            }}
+          />
+        );
+      })}
     </HStack>
 
     <PricingFAQ />

@@ -14,7 +14,9 @@ import {
 import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
-interface Props {
+import type { ButtonProps, CardProps } from "@omnidev/sigil";
+
+interface Props extends CardProps {
   /** Pricing tier information. */
   tier: {
     /** Tier title. */
@@ -24,23 +26,33 @@ interface Props {
     /** Tier features. */
     features: string[];
   };
+  /** Show recommended badge. */
+  isRecommendedTier?: boolean;
+  /** Show /month instead of Contact us. */
+  perMonthPricing?: boolean;
+  /** CTA button properties. */
+  ctaProps?: ButtonProps;
 }
 
 /**
  * Pricing tier information.
  */
-const PricingCard = ({ tier }: Props) => (
+const PricingCard = ({
+  tier,
+  isRecommendedTier = false,
+  perMonthPricing = true,
+  ctaProps,
+  ...rest
+}: Props) => (
   <Card
-    key={tier.title}
-    borderColor={tier.title === "Professional" ? "brand.primary" : "none"}
-    borderWidth={tier.title === "Professional" ? 4 : 1}
     gap={4}
     w={{ base: "100%", sm: "sm", lg: "xs" }}
     h="xl"
     display="flex"
     position="relative"
+    {...rest}
   >
-    {tier.title === "Professional" && (
+    {isRecommendedTier && (
       <Stack
         position="absolute"
         top={1}
@@ -66,7 +78,7 @@ const PricingCard = ({ tier }: Props) => (
           {tier.price}
         </Text>
 
-        {tier.title !== "Enterprise" && (
+        {perMonthPricing && (
           <Text fontSize="xl" mt={1} ml={-2.5}>
             {app.pricingPage.pricingCard.perMonth}
           </Text>
@@ -87,15 +99,13 @@ const PricingCard = ({ tier }: Props) => (
       </sigil.ul>
 
       <Button
-        bgColor={
-          tier.title !== "Professional" ? "brand.secondary" : "brand.primary"
-        }
         position="absolute"
         bottom={4}
         left="50%"
         transform="translateX(-50%)"
         w="90%"
         fontSize="xl"
+        {...ctaProps}
       >
         {app.pricingPage.pricingCard.getStarted} <Icon src={FaArrowRight} />
       </Button>
