@@ -28,7 +28,7 @@ const PricingOverview = () => (
           <PricingCard
             key={tier.title}
             tier={tier}
-            borderWidth={isProfessionalTier ? 4 : 1}
+            borderWidth={isProfessionalTier ? 2 : 1}
             borderColor={isProfessionalTier ? "brand.primary" : "none"}
             isRecommendedTier={isProfessionalTier}
             isPerMonthPricing={!isEnterpriseTier}
