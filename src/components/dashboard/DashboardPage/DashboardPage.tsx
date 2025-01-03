@@ -24,7 +24,8 @@ import { useAuth } from "lib/hooks";
 const DashboardPage = () => {
   const { user } = useAuth();
 
-  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] = useState(false);
+  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] =
+    useState(false);
 
   const {
     data: dashboardAggregates,
