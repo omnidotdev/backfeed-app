@@ -28,8 +28,8 @@ interface Props extends CardProps {
   };
   /** Whether the tier is recommended. */
   isRecommendedTier?: boolean;
-  /** Uses a monthly pricing model. */
-  perMonthPricing?: boolean;
+  /** Whether the tier uses a monthly pricing model. */
+  isPerMonthPricing?: boolean;
   /** CTA button properties. */
   ctaProps?: ButtonProps;
 }
