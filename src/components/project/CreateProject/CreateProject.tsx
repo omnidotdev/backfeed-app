@@ -134,7 +134,16 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
         setIsOpen(open);
       }}
     >
-      <sigil.form display="flex" flexDirection="column" gap={4}>
+      <sigil.form
+        display="flex"
+        flexDirection="column"
+        gap={4}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleSubmit();
+        }}
+      >
         <Field
           name="organizationId"
           validators={{
@@ -240,6 +249,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
         <Field
           name="slug"
           asyncDebounceMs={300}
+          // onChange validation is used here to keep in sync with the async form level validation of the slug field
           validators={{
             onChangeAsync: baseSchema.shape.slug,
           }}
@@ -275,21 +285,13 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
         </Field>
 
         <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => {
-            const isCreatingProject = isSubmitting || isPending;
-
-            return (
-              <Button
-                disabled={!canSubmit || isCreatingProject}
-                mt={4}
-                onClick={handleSubmit}
-              >
-                {isCreatingProject
-                  ? app.dashboardPage.cta.newProject.action.pending
-                  : app.dashboardPage.cta.newProject.action.submit}
-              </Button>
-            );
-          }}
+          {([canSubmit, isSubmitting]) => (
+            <Button type="submit" disabled={!canSubmit} mt={4}>
+              {isSubmitting
+                ? app.dashboardPage.cta.newProject.action.pending
+                : app.dashboardPage.cta.newProject.action.submit}
+            </Button>
+          )}
         </Subscribe>
       </sigil.form>
     </Dialog>

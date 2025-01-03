@@ -24,7 +24,7 @@ import { useAuth } from "lib/hooks";
 const DashboardPage = () => {
   const { user } = useAuth();
 
-  const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
+  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] = useState(false);
 
   const {
     data: dashboardAggregates,
@@ -76,7 +76,7 @@ const DashboardPage = () => {
             label: app.dashboardPage.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
-            onClick: () => setIsNewProjectDialogOpen(true),
+            onClick: () => setIsCreateProjectDialogOpen(true),
             disabled: !numberOfOrganizations,
           },
         ],
@@ -100,8 +100,8 @@ const DashboardPage = () => {
       <Feedback />
 
       <CreateProject
-        isOpen={isNewProjectDialogOpen}
-        setIsOpen={setIsNewProjectDialogOpen}
+        isOpen={isCreateProjectDialogOpen}
+        setIsOpen={setIsCreateProjectDialogOpen}
       />
     </Page>
   );
