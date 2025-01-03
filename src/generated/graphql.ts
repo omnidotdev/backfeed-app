@@ -4423,6 +4423,13 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type CreateOrganizationMutationVariables = Exact<{
+  input: CreateOrganizationInput;
+}>;
+
+
+export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization?: { __typename?: 'CreateOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string, slug: string } | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4475,6 +4482,13 @@ export type UpdateUserMutationVariables = Exact<{
 
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+
+export type CreateUserOrganizationMutationVariables = Exact<{
+  input: CreateUserOrganizationInput;
+}>;
+
+
+export type CreateUserOrganizationMutation = { __typename?: 'Mutation', createUserOrganization?: { __typename?: 'CreateUserOrganizationPayload', clientMutationId?: string | null } | null };
 
 export type CommentsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -4589,6 +4603,30 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
+
+export const CreateOrganizationDocument = `
+    mutation CreateOrganization($input: CreateOrganizationInput!) {
+  createOrganization(input: $input) {
+    organization {
+      rowId
+      slug
+    }
+  }
+}
+    `;
+
+export const useCreateOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateOrganizationMutation, TError, CreateOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateOrganizationMutation, TError, CreateOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateOrganization'],
+    mutationFn: useGraphqlClient<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument),
+    ...options
+  }
+    )};
 
 export const CreatePostDocument = `
     mutation CreatePost($postInput: PostInput!) {
@@ -4742,6 +4780,27 @@ export const useUpdateUserMutation = <
       {
     mutationKey: ['UpdateUser'],
     mutationFn: useGraphqlClient<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument),
+    ...options
+  }
+    )};
+
+export const CreateUserOrganizationDocument = `
+    mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
+  createUserOrganization(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreateUserOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateUserOrganizationMutation, TError, CreateUserOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateUserOrganizationMutation, TError, CreateUserOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateUserOrganization'],
+    mutationFn: useGraphqlClient<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument),
     ...options
   }
     )};

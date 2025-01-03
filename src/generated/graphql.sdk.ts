@@ -4424,6 +4424,13 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type CreateOrganizationMutationVariables = Exact<{
+  input: CreateOrganizationInput;
+}>;
+
+
+export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization?: { __typename?: 'CreateOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string, slug: string } | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4476,6 +4483,13 @@ export type UpdateUserMutationVariables = Exact<{
 
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+
+export type CreateUserOrganizationMutationVariables = Exact<{
+  input: CreateUserOrganizationInput;
+}>;
+
+
+export type CreateUserOrganizationMutation = { __typename?: 'Mutation', createUserOrganization?: { __typename?: 'CreateUserOrganizationPayload', clientMutationId?: string | null } | null };
 
 export type CommentsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -4590,6 +4604,16 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
+export const CreateOrganizationDocument = gql`
+    mutation CreateOrganization($input: CreateOrganizationInput!) {
+  createOrganization(input: $input) {
+    organization {
+      rowId
+      slug
+    }
+  }
+}
+    `;
 export const CreatePostDocument = gql`
     mutation CreatePost($postInput: PostInput!) {
   createPost(input: {post: $postInput}) {
@@ -4644,6 +4668,13 @@ export const CreateUserDocument = gql`
 export const UpdateUserDocument = gql`
     mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
   updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+export const CreateUserOrganizationDocument = gql`
+    mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
+  createUserOrganization(input: $input) {
     clientMutationId
   }
 }
@@ -4924,6 +4955,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CreateOrganization(variables: CreateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationMutation>(CreateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganization', 'mutation', variables);
+    },
     CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation', variables);
     },
@@ -4944,6 +4978,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateUser(variables: UpdateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateUser', 'mutation', variables);
+    },
+    CreateUserOrganization(variables: CreateUserOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUserOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateUserOrganizationMutation>(CreateUserOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUserOrganization', 'mutation', variables);
     },
     Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CommentsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>(CommentsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Comments', 'query', variables);

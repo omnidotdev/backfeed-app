@@ -1,0 +1,240 @@
+"use client";
+
+import {
+  Button,
+  Dialog,
+  HStack,
+  Input,
+  Label,
+  Stack,
+  Text,
+  sigil,
+} from "@omnidev/sigil";
+import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+
+import { FormFieldError } from "components/core";
+import {
+  useCreateOrganizationMutation,
+  useCreateUserOrganizationMutation,
+} from "generated/graphql";
+import { app } from "lib/config";
+import { sdk } from "lib/graphql";
+import { useAuth } from "lib/hooks";
+
+/** Schema for defining the shape of the create organization form fields. */
+const baseSchema = z.object({
+  name: z
+    .string()
+    .min(3, app.dashboardPage.cta.newOrganization.organizationName.error),
+  slug: z
+    .string()
+    .min(
+      3,
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalid
+    ),
+});
+
+/** Schema for validation of the create organization form. */
+const createOrganizationSchema = baseSchema.superRefine(
+  async ({ slug }, ctx) => {
+    if (!slug.length) return z.NEVER;
+
+    const { organizationBySlug } = await sdk.Organization({
+      slug,
+    });
+
+    if (organizationBySlug) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          app.dashboardPage.cta.newOrganization.organizationSlug.error
+            .duplicate,
+        path: ["slug"],
+      });
+    }
+  }
+);
+
+interface Props {
+  /** State to determine if the dialog is open. */
+  isOpen: boolean;
+  /** Callback to manage the open state of the dialog. */
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+/**
+ * Dialog for creating a new organization.
+ */
+const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
+  const router = useRouter();
+
+  const { user } = useAuth();
+
+  const {
+    data,
+    mutateAsync: createOrganization,
+    isPending: isPendingCreateOrganization,
+  } = useCreateOrganizationMutation();
+
+  const { mutateAsync: addUserToOrganization, isPending: isPendingAddUser } =
+    useCreateUserOrganizationMutation({
+      onSuccess: () => {
+        router.push(
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
+        );
+
+        setIsOpen(false);
+      },
+    });
+
+  const { handleSubmit, Field, Subscribe, reset } = useForm({
+    defaultValues: {
+      name: "",
+      slug: "",
+    },
+    asyncDebounceMs: 300,
+    validators: {
+      onMount: baseSchema,
+      onChangeAsync: createOrganizationSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const { createOrganization: createOrganizationResponse } =
+          await createOrganization({
+            input: {
+              organization: {
+                name: value.name,
+                slug: value.slug,
+              },
+            },
+          });
+
+        await addUserToOrganization({
+          input: {
+            userOrganization: {
+              userId: user?.id!,
+              organizationId: createOrganizationResponse?.organization?.rowId!,
+            },
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+
+  return (
+    <Dialog
+      title={app.dashboardPage.cta.newOrganization.label}
+      description={app.dashboardPage.cta.newOrganization.description}
+      open={isOpen}
+      onOpenChange={({ open }) => {
+        reset();
+        setIsOpen(open);
+      }}
+    >
+      <sigil.form display="flex" flexDirection="column" gap={4}>
+        <Field
+          name="name"
+          asyncDebounceMs={300}
+          validators={{
+            onChangeAsync: baseSchema.shape.name,
+          }}
+        >
+          {({ handleChange, handleBlur, state }) => (
+            <Stack position="relative" gap={1.5}>
+              <Label
+                htmlFor={
+                  app.dashboardPage.cta.newOrganization.organizationName.id
+                }
+              >
+                {app.dashboardPage.cta.newOrganization.organizationName.id}
+              </Label>
+
+              <Input
+                id={app.dashboardPage.cta.newOrganization.organizationName.id}
+                placeholder={
+                  app.dashboardPage.cta.newOrganization.organizationName
+                    .placeholder
+                }
+                value={state.value}
+                onChange={(e) => handleChange(e.target.value)}
+                onBlur={handleBlur}
+              />
+
+              <FormFieldError
+                error={state.meta.errorMap.onBlur}
+                isDirty={state.meta.isDirty}
+              />
+            </Stack>
+          )}
+        </Field>
+
+        <Field
+          name="slug"
+          asyncDebounceMs={300}
+          validators={{
+            onChangeAsync: baseSchema.shape.slug,
+          }}
+        >
+          {({ handleChange, state }) => (
+            <Stack position="relative" gap={1.5}>
+              <Label
+                htmlFor={
+                  app.dashboardPage.cta.newOrganization.organizationSlug.id
+                }
+              >
+                {app.dashboardPage.cta.newOrganization.organizationSlug.id}
+              </Label>
+
+              <HStack>
+                <Text
+                  whiteSpace="nowrap"
+                  fontSize="lg"
+                >{`.../${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
+
+                <Input
+                  id={app.dashboardPage.cta.newOrganization.organizationSlug.id}
+                  placeholder={
+                    app.dashboardPage.cta.newOrganization.organizationSlug
+                      .placeholder
+                  }
+                  value={state.value}
+                  onChange={(e) => handleChange(e.target.value)}
+                />
+              </HStack>
+
+              <FormFieldError
+                error={state.meta.errorMap.onChange}
+                isDirty={state.meta.isDirty}
+              />
+            </Stack>
+          )}
+        </Field>
+
+        <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+          {([canSubmit, isSubmitting]) => {
+            const isCreatingProject =
+              isSubmitting || isPendingCreateOrganization || isPendingAddUser;
+
+            return (
+              <Button
+                disabled={!canSubmit || isCreatingProject}
+                mt={4}
+                onClick={handleSubmit}
+              >
+                {isCreatingProject
+                  ? app.dashboardPage.cta.newOrganization.action.pending
+                  : app.dashboardPage.cta.newOrganization.action.submit}
+              </Button>
+            );
+          }}
+        </Subscribe>
+      </sigil.form>
+    </Dialog>
+  );
+};
+
+export default CreateOrganization;

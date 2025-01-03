@@ -111,6 +111,27 @@ const app = {
       },
     },
     cta: {
+      newOrganization: {
+        action: {
+          submit: "Create Organization",
+          pending: "Creating Organization...",
+        },
+        label: "New Organization",
+        description: "Create a new organization by submitting the form below.",
+        organizationName: {
+          id: "Organization Name",
+          placeholder: "Insert organization name...",
+          error: "Must be at least 3 characters.",
+        },
+        organizationSlug: {
+          id: "Organization Slug",
+          placeholder: "Insert organization slug...",
+          error: {
+            invalid: "Must be at least 3 characters.",
+            duplicate: "Organization slug already exists.",
+          },
+        },
+      },
       newProject: {
         action: {
           submit: "Create Project",

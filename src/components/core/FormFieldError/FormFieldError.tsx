@@ -5,8 +5,8 @@ import { Text } from "@omnidev/sigil";
 import type { ValidationError } from "@tanstack/react-form";
 
 interface Props {
-  /** Error messages. */
-  errors: ValidationError[];
+  /** Error message. */
+  error: ValidationError | undefined;
   /** Dirty state of the form field. */
   isDirty: boolean;
 }
@@ -14,7 +14,7 @@ interface Props {
 /**
  * Text to be displayed when a form field has errors.
  */
-const FormFieldError = ({ errors, isDirty }: Props) => (
+const FormFieldError = ({ error, isDirty }: Props) => (
   <Text
     position="absolute"
     top={-0.5}
@@ -22,9 +22,9 @@ const FormFieldError = ({ errors, isDirty }: Props) => (
     h={5}
     fontSize="sm"
     color="red"
-    visibility={errors.length && isDirty ? "visible" : "hidden"}
+    visibility={error && isDirty ? "visible" : "hidden"}
   >
-    {errors.join(", ")}
+    {error}
   </Text>
 );
 

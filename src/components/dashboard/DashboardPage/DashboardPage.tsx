@@ -10,7 +10,7 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
-import { NewProject } from "components/project";
+import { CreateProject } from "components/project";
 import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -85,7 +85,7 @@ const DashboardPage = () => {
 
       <Feedback />
 
-      <NewProject
+      <CreateProject
         isOpen={isNewProjectDialogOpen}
         setIsOpen={setIsNewProjectDialogOpen}
       />

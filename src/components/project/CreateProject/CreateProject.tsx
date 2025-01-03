@@ -26,21 +26,23 @@ import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 
-/** Schema for validating the create project form. */
-const createProjectSchema = z
-  .object({
-    organizationId: z
-      .string()
-      .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
-    name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
-    description: z
-      .string()
-      .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
-    slug: z
-      .string()
-      .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
-  })
-  .superRefine(async ({ organizationId, slug }, ctx) => {
+/** Schema for defining the shape of the create project form fields. */
+const baseSchema = z.object({
+  organizationId: z
+    .string()
+    .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
+  name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
+  description: z
+    .string()
+    .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
+  slug: z
+    .string()
+    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
+});
+
+/** Schema for validation of the create project form. */
+const createProjectSchema = baseSchema.superRefine(
+  async ({ organizationId, slug }, ctx) => {
     if (!organizationId.length || !slug.length) return z.NEVER;
 
     const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
@@ -51,11 +53,12 @@ const createProjectSchema = z
     if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
         code: "custom",
-        message: "Project slug already exists.",
+        message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
         path: ["slug"],
       });
     }
-  });
+  }
+);
 
 interface Props {
   /** State to determine if the dialog is open. */
@@ -67,7 +70,7 @@ interface Props {
 /**
  * Dialog for creating a new project.
  */
-const NewProject = ({ isOpen, setIsOpen }: Props) => {
+const CreateProject = ({ isOpen, setIsOpen }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
@@ -103,7 +106,9 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
       description: "",
       slug: "",
     },
+    asyncDebounceMs: 300,
     validators: {
+      onMount: baseSchema,
       onChangeAsync: createProjectSchema,
     },
     onSubmit: ({ value }) =>
@@ -133,10 +138,10 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
         <Field
           name="organizationId"
           validators={{
-            onChange: createProjectSchema._def.schema.shape.organizationId,
+            onBlur: baseSchema.shape.organizationId,
           }}
         >
-          {({ handleChange, state }) => (
+          {({ handleChange, handleBlur, state }) => (
             <Stack position="relative">
               <Select
                 label={
@@ -156,10 +161,11 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
                 onValueChange={({ value }) =>
                   handleChange(value.length ? value[0] : "")
                 }
+                onBlur={handleBlur}
               />
 
               <FormFieldError
-                errors={state.meta.errors}
+                error={state.meta.errorMap.onBlur}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -170,10 +176,10 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="name"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: createProjectSchema._def.schema.shape.name,
+            onBlurAsync: baseSchema.shape.name,
           }}
         >
-          {({ handleChange, state }) => (
+          {({ handleChange, handleBlur, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
                 {app.dashboardPage.cta.newProject.projectName.id}
@@ -186,10 +192,11 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
+                onBlur={handleBlur}
               />
 
               <FormFieldError
-                errors={state.meta.errors}
+                error={state.meta.errorMap.onBlur}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -200,10 +207,10 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="description"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: createProjectSchema._def.schema.shape.description,
+            onBlurAsync: baseSchema.shape.description,
           }}
         >
-          {({ handleChange, state }) => (
+          {({ handleChange, handleBlur, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
@@ -219,10 +226,11 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
+                onBlur={handleBlur}
               />
 
               <FormFieldError
-                errors={state.meta.errors}
+                error={state.meta.errorMap.onBlur}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -233,7 +241,7 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
           name="slug"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: createProjectSchema._def.schema.shape.slug,
+            onChangeAsync: baseSchema.shape.slug,
           }}
         >
           {({ handleChange, state }) => (
@@ -259,26 +267,20 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
               </HStack>
 
               <FormFieldError
-                errors={state.meta.errors}
+                error={state.meta.errorMap.onChange}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => {
+        <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+          {([canSubmit, isSubmitting]) => {
             const isCreatingProject = isSubmitting || isPending;
 
             return (
               <Button
-                disabled={!canSubmit || !isDirty || isCreatingProject}
+                disabled={!canSubmit || isCreatingProject}
                 mt={4}
                 onClick={handleSubmit}
               >
@@ -294,4 +296,4 @@ const NewProject = ({ isOpen, setIsOpen }: Props) => {
   );
 };
 
-export default NewProject;
+export default CreateProject;
