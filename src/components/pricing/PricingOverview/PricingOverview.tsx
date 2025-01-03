@@ -31,7 +31,7 @@ const PricingOverview = () => (
             borderWidth={isProfessionalTier ? 4 : 1}
             borderColor={isProfessionalTier ? "brand.primary" : "none"}
             isRecommendedTier={isProfessionalTier}
-            perMonthPricing={!isEnterpriseTier}
+            isPerMonthPricing={!isEnterpriseTier}
             ctaProps={{
               bgColor: isProfessionalTier ? "brand.primary" : "brand.secondary",
             }}
