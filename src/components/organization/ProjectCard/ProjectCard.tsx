@@ -33,7 +33,7 @@ interface Props extends FlexProps {
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
 const ProjectCard = ({ project, ...rest }: Props) => {
-  const params = useParams<{ organizationId: string }>();
+  const params = useParams<{ organizationSlug: string }>();
 
   const PROJECT_METRICS: ProjectMetric[] = [
     {
@@ -59,7 +59,7 @@ const ProjectCard = ({ project, ...rest }: Props) => {
       {...rest}
     >
       <Link
-        href={`/organizations/${params.organizationId}/projects/${project?.rowId}`}
+        href={`/organizations/${params.organizationSlug}/projects/${project?.slug}`}
       >
         <Button
           position="absolute"

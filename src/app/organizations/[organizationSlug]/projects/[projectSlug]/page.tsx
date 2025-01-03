@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { LuSettings } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuSettings } from "react-icons/lu";
 
-import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
+import { ProjectOverview } from "components/project";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
@@ -13,9 +13,11 @@ import type { Metadata } from "next";
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const { projectId } = await params;
+  const { organizationSlug, projectSlug } = await params;
 
-  const { project } = await sdk.Project({ rowId: projectId });
+  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
+
+  const project = projects?.nodes?.[0];
 
   return {
     title: `${project?.name} | ${app.name}`,
@@ -24,19 +26,21 @@ export const generateMetadata = async ({
 
 interface Props {
   /** Project page params. */
-  params: Promise<{ organizationId: string; projectId: string }>;
+  params: Promise<{ organizationSlug: string; projectSlug: string }>;
 }
 
 /**
  * Project overview page.
  */
 const ProjectPage = async ({ params }: Props) => {
-  const { organizationId, projectId } = await params;
+  const { organizationSlug, projectSlug } = await params;
 
-  const [session, { project }] = await Promise.all([
+  const [session, { projects }] = await Promise.all([
     getAuthSession(),
-    sdk.Project({ rowId: projectId }),
+    sdk.Project({ projectSlug, organizationSlug }),
   ]);
+
+  const project = projects?.nodes?.[0];
 
   const breadcrumbs = [
     {
@@ -44,15 +48,15 @@ const ProjectPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      label: project?.organization?.name ?? organizationId,
-      href: `/organizations/${organizationId}`,
+      label: project?.organization?.name ?? organizationSlug,
+      href: `/organizations/${organizationSlug}`,
     },
     {
       label: app.projectsPage.breadcrumb,
-      href: `/organizations/${organizationId}/projects`,
+      href: `/organizations/${organizationSlug}/projects`,
     },
     {
-      label: project?.name ?? projectId,
+      label: project?.name ?? projectSlug,
     },
   ];
 
@@ -76,12 +80,12 @@ const ProjectPage = async ({ params }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            href: `/organizations/${organizationId}/projects`,
+            href: `/organizations/${organizationSlug}/projects`,
           },
         ],
       }}
     >
-      <ProjectOverview projectId={projectId} />
+      <ProjectOverview projectId={project?.rowId} />
     </Page>
   );
 };

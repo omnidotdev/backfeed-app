@@ -1,22 +1,27 @@
 query Projects(
   $pageSize: Int!
   $offset: Int!
-  $organizationId: UUID!
+  $organizationSlug: String!
   $search: String
 ) {
   projects(
     orderBy: POSTS_COUNT_DESC
     first: $pageSize
     offset: $offset
-    condition: { organizationId: $organizationId }
-    filter: { name: { includesInsensitive: $search } }
+    filter: {
+      name: { includesInsensitive: $search }
+      organization: { slug: { equalTo: $organizationSlug } }
+    }
   ) {
     totalCount
     nodes {
       rowId
-      organizationId
       name
       description
+      slug
+      organization {
+        slug
+      }
       posts {
         totalCount
         aggregates {

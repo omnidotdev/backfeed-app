@@ -87,7 +87,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
         <Stack maxW="65svw">
-          <Link href={`/organizations/${organization?.rowId}`} role="group">
+          <Link href={`/organizations/${organization?.slug}`} role="group">
             <OverflowText
               fontWeight="semibold"
               whiteSpace="nowrap"

@@ -24,7 +24,7 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { rowId, organizationId, name, description, posts },
+  project: { slug, organization, name, description, posts },
   index,
 }: Props) => {
   const isOrganizationOwner = index % 2 === 0;
@@ -57,7 +57,7 @@ const ProjectListItem = ({
         <HStack alignItems="center" justify="space-between" minH={10}>
           <Stack maxW="65svw">
             <Link
-              href={`/organizations/${organizationId}/projects/${rowId}`}
+              href={`/organizations/${organization?.slug}/projects/${slug}`}
               role="group"
             >
               <OverflowText

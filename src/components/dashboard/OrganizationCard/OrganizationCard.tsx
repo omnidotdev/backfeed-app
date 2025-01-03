@@ -29,7 +29,7 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
     p={8}
     {...rest}
   >
-    <Link href={`/organizations/${organization?.rowId}`}>
+    <Link href={`/organizations/${organization?.slug}`}>
       <Button
         position="absolute"
         top={0}

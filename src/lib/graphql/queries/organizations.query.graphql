@@ -18,6 +18,7 @@ query Organizations(
     nodes {
       rowId
       name
+      slug
       projects {
         totalCount
       }

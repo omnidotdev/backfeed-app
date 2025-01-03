@@ -13,23 +13,23 @@ import type { Project } from "generated/graphql";
 
 interface Props {
   /** Organization ID. */
-  organizationId: string;
+  organizationSlug: string;
 }
 
 /**
  * Organization projects overview.
  */
-const OrganizationProjectsOverview = ({ organizationId }: Props) => {
+const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
   const {
     data: projects,
     isLoading,
     isError,
   } = useOrganizationQuery(
     {
-      rowId: organizationId,
+      slug: organizationSlug,
     },
     {
-      select: (data) => data?.organization?.projects?.nodes,
+      select: (data) => data?.organizationBySlug?.projects?.nodes,
     }
   );
 
