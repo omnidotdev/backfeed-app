@@ -2,12 +2,13 @@
 
 import { Grid } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuPlusCircle } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
-import { ErrorBoundary, SectionContainer } from "components/layout";
+import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
-import { app } from "lib/config";
 import { useOrganizationQuery } from "generated/graphql";
+import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
 
@@ -48,11 +49,14 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
           // NB: The padding is necessary to prevent clipping of the card borders/box shadows
           p="1px"
           gap={6}
-          columns={{ base: 1, md: 2 }}
+          columns={{
+            base: 1,
+            md: projects?.length ? Math.min(projects.length, 2) : 1,
+          }}
         >
           {isLoading ? (
             <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
-          ) : (
+          ) : projects?.length ? (
             projects?.map((project) => (
               <ProjectCard
                 key={project?.rowId}
@@ -61,6 +65,20 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
                 h={48}
               />
             ))
+          ) : (
+            <EmptyState
+              message={app.organizationPage.projects.emptyState.message}
+              action={{
+                label: app.organizationPage.projects.emptyState.cta.label,
+                icon: LuPlusCircle,
+                actionProps: {
+                  variant: "outline",
+                  color: "brand.primary",
+                  borderColor: "brand.primary",
+                },
+              }}
+              h={48}
+            />
           )}
         </Grid>
       )}

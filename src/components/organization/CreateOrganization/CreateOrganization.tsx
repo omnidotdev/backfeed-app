@@ -114,7 +114,7 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
         await addUserToOrganization({
           input: {
             userOrganization: {
-              userId: user?.id!,
+              userId: user?.hidraId!,
               organizationId: createOrganizationResponse?.organization?.rowId!,
             },
           },
@@ -193,7 +193,7 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
                 <Text
                   whiteSpace="nowrap"
                   fontSize="lg"
-                >{`.../${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
+                >{`/${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
 
                 <Input
                   id={app.dashboardPage.cta.newOrganization.organizationSlug.id}

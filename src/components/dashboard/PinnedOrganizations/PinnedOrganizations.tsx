@@ -33,7 +33,7 @@ const PinnedOrganizations = () => {
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.id!,
+      userId: user?.hidraId!,
     },
     {
       enabled: !!user,

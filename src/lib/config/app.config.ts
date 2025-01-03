@@ -225,6 +225,12 @@ const app = {
     projects: {
       title: "Projects",
       description: "Manage feedback collection across your applications",
+      emptyState: {
+        message: "No projects found. Would you like to create one?",
+        cta: {
+          label: "Create Project",
+        },
+      },
     },
     metrics: {
       title: "Organization Metrics",
