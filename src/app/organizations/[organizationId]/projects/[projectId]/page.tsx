@@ -5,13 +5,21 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import { ProjectOverview } from "components/project";
 import { Page } from "components/layout";
 import { app } from "lib/config";
+import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
-import type { Project } from "generated/graphql";
 
-const project: Pick<Project, "id" | "name" | "description"> = {
-  id: "c924ed9c-a9c0-4510-8b18-fd0b10b69e1f",
-  name: "Web Platform Beta",
-  description: "Beta testing feedback for the new web platform",
+import type { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { projectId } = await params;
+
+  const { project } = await sdk.Project({ rowId: projectId });
+
+  return {
+    title: `${project?.name} | ${app.name}`,
+  };
 };
 
 interface Props {
@@ -24,7 +32,11 @@ interface Props {
  */
 const ProjectPage = async ({ params }: Props) => {
   const { organizationId, projectId } = await params;
-  const session = await getAuthSession();
+
+  const [session, { project }] = await Promise.all([
+    getAuthSession(),
+    sdk.Project({ rowId: projectId }),
+  ]);
 
   const breadcrumbs = [
     {
@@ -32,8 +44,7 @@ const ProjectPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
-      label: organizationId,
+      label: project?.organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
     {
@@ -41,23 +52,18 @@ const ProjectPage = async ({ params }: Props) => {
       href: `/organizations/${organizationId}/projects`,
     },
     {
-      // TODO: Use actual project name here instead of ID
-      label: projectId,
+      label: project?.name ?? projectId,
     },
   ];
 
-  const name = project.name!;
-  const description = project.description!;
-
-  if (!session) notFound();
+  if (!session || !project) notFound();
 
   return (
     <Page
       breadcrumbs={breadcrumbs}
-      // TODO: Use actual project data here instead of placeholder
       header={{
-        title: name,
-        description,
+        title: project.name!,
+        description: project.description!,
         // TODO: add button actions
         cta: [
           {
@@ -75,7 +81,7 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview name={name} description={description} />
+      <ProjectOverview projectId={projectId} />
     </Page>
   );
 };

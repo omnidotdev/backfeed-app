@@ -5,7 +5,7 @@ import { Badge, Flex, Text } from "@omnidev/sigil";
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
-// TODO: Discuss status breakdown and how they should appear as badges when appropriate..
+// TODO: Discuss status breakdown and how it should be implemented.
 
 /**
  * Status breakdown for a project.
