@@ -73,9 +73,6 @@ const PricingCard = ({ tier }: Props) => (
         )}
       </HStack>
 
-      {/* <Text as="h4" fontSize="4xl" fontWeight="bold" my={2}>
-            {app.pricingPage.pricingCard.features}
-          </Text> */}
       <Divider my={4} />
 
       <sigil.ul
