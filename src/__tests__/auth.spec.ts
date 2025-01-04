@@ -20,5 +20,7 @@ test.describe("authentication", () => {
     await page.getByRole("button", { name: "Sign In" }).click();
 
     expect(page.url()).toBe("http://localhost:3000/");
+
+    // TODO extend test (resolve `JWTSessionError` which might be due to corrupt cookie management in test environment/possible with https://playwright.dev/docs/api/class-browsercontext#browser-context-cookies), test logout, etc. The test is decent for now; it tests that the user can login via IDP and navigates back to the app home page successfully
   });
 });
