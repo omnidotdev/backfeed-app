@@ -1,13 +1,13 @@
-"use client";
-import { Page } from "components/layout";
+import { PricingOverview } from "components/pricing";
+import { app } from "lib/config";
+
+export const metadata = {
+  title: `${app.pricingPage.title} | ${app.name}`,
+};
 
 /**
  * Pricing page.
  */
-const PricingPage = () => (
-  <Page align="center" justify="center" w="100%" h="100%">
-    Pricing Page
-  </Page>
-);
+const PricingPage = () => <PricingOverview />;
 
 export default PricingPage;
