@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  AuthProvider,
   BlockchainProvider,
   QueryProvider,
   SearchParamsProvider,
-  AuthProvider,
   ThemeProvider,
 } from "providers";
 

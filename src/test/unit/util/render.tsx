@@ -1,6 +1,11 @@
 import { render as rtlRender } from "@testing-library/react";
 
-import { ThemeProvider } from "providers";
+import {
+  BlockchainProvider,
+  QueryProvider,
+  SearchParamsProvider,
+  ThemeProvider,
+} from "providers";
 
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
@@ -13,8 +18,19 @@ import type { ReactElement } from "react";
  */
 const render = (ui: ReactElement, options?: RenderOptions) =>
   rtlRender(ui, {
-    // NB: other application providers may need to wrap the testing tree here depending on coverage.
-    wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
+    wrapper: ({ children }) => (
+      // TODO enable `AuthProvider` when API routes are mocked (currently throws fetch errors)
+      // NB: other application providers may need to wrap the testing tree here depending on fixture requirements.
+      // <AuthProvider>
+      <ThemeProvider>
+        <SearchParamsProvider>
+          <QueryProvider>
+            <BlockchainProvider>{children}</BlockchainProvider>
+          </QueryProvider>
+        </SearchParamsProvider>
+      </ThemeProvider>
+      // </AuthProvider>
+    ),
     ...options,
   });
 
