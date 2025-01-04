@@ -5,6 +5,9 @@ import type { Types } from "@graphql-codegen/plugin-helpers";
 
 type GraphQLCodegenConfig = Types.ConfiguredOutput;
 
+/**
+ * Shared plugins across each of the generated GraphQL Codegen artifacts, expect for mock/testing artifacts.
+ */
 const sharedPlugins: GraphQLCodegenConfig["plugins"] = [
   "typescript",
   "typescript-operations",
@@ -16,6 +19,9 @@ const sharedPlugins: GraphQLCodegenConfig["plugins"] = [
   },
 ];
 
+/**
+ * Shared configuration across each of the generated GraphQL Codegen artifacts.
+ */
 const sharedConfig: GraphQLCodegenConfig["config"] = {
   scalars: {
     Date: "Date",
@@ -27,7 +33,7 @@ const sharedConfig: GraphQLCodegenConfig["config"] = {
 };
 
 /**
- * GraphQL Code Generator configuration.
+ * GraphQL Code Generator configuration. This generates various artifacts based on the GraphQL schema.
  */
 const graphqlCodegenConfig: CodegenConfig = {
   schema: API_BASE_URL,
@@ -40,17 +46,25 @@ const graphqlCodegenConfig: CodegenConfig = {
     sort: true,
   },
   generates: {
-    // TODO switch to client preset after DX improves, track https://github.com/dotansimha/graphql-code-generator/discussions/8773
-    // "src/generated/": {
-    // preset: "client",
-    // plugins: [],
-    // },
+    // mocks for testing
+    "src/generated/graphql.mock.ts": {
+      // https://github.com/dotansimha/graphql-code-generator/discussions/9972#discussioncomment-9892339
+      preset: "import-types",
+      plugins: ["typescript-msw"],
+      presetConfig: {
+        typesPath: "./generated",
+      },
+    },
+    // TypeScript SDK
     "src/generated/graphql.sdk.ts": {
       plugins: [...sharedPlugins, "typescript-graphql-request"],
       config: sharedConfig,
     },
+    // React Query hooks, types, and utilities
     "src/generated/graphql.ts": {
-      plugins: [...sharedPlugins, "typescript-react-query", "typescript-msw"],
+      // TODO switch to client preset after DX improves, track https://github.com/dotansimha/graphql-code-generator/discussions/8773
+      // preset: "client",
+      plugins: [...sharedPlugins, "typescript-react-query"],
       config: {
         ...sharedConfig,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
