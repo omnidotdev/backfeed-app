@@ -6,13 +6,20 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DestructiveAction, OverflowText } from "components/core";
+import {
+  useDeleteOrganizationMutation,
+  useLeaveOrganizationMutation,
+} from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization } from "generated/graphql";
 
-const deleteOrganization = app.organizationsPage.dialogs.deleteOrganization;
-const leaveOrganization = app.organizationsPage.dialogs.leaveOrganization;
+const deleteOrganizationDetails =
+  app.organizationsPage.dialogs.deleteOrganization;
+const leaveOrganizationDetails =
+  app.organizationsPage.dialogs.leaveOrganization;
 
 interface Props {
   /** Organization details. */
@@ -25,7 +32,12 @@ interface Props {
  * Organization list item.
  */
 const OrganizationListItem = ({ organization, index }: Props) => {
+  const { user } = useAuth();
+
   const isOrganizationOwner = index % 2 === 0;
+
+  const { mutate: deleteOrganization } = useDeleteOrganizationMutation(),
+    { mutate: leaveOrganization } = useLeaveOrganizationMutation();
 
   const AGGREGATES = [
     {
@@ -40,31 +52,33 @@ const OrganizationListItem = ({ organization, index }: Props) => {
     },
   ];
 
-  // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
   const DELETE_ORGANIZATION: DestructiveActionProps = {
-    title: deleteOrganization.title,
-    description: deleteOrganization.description,
+    title: deleteOrganizationDetails.title,
+    description: deleteOrganizationDetails.description,
     action: {
-      // TODO: handle delete organization in onClick for primary action
-      label: deleteOrganization.action.label,
+      label: deleteOrganizationDetails.action.label,
+      onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
     },
     triggerProps: {
-      "aria-label": `${deleteOrganization.action.label} organization`,
+      "aria-label": `${deleteOrganizationDetails.action.label} organization`,
       color: "omni.ruby",
     },
   };
 
-  // NB: this could currently be pulled out of the component, but will need to be here when we provide appropriate action logic
   const LEAVE_ORGANIZATION: DestructiveActionProps = {
-    title: leaveOrganization.title,
-    description: leaveOrganization.description,
+    title: leaveOrganizationDetails.title,
+    description: leaveOrganizationDetails.description,
     icon: RiUserSharedLine,
     action: {
-      // TODO: handle leave organization in onClick for primary action
-      label: leaveOrganization.action.label,
+      label: leaveOrganizationDetails.action.label,
+      onClick: () =>
+        leaveOrganization({
+          organizationId: organization?.rowId!,
+          userId: user?.hidraId!,
+        }),
     },
     triggerProps: {
-      "aria-label": `${leaveOrganization.action.label} organization`,
+      "aria-label": `${leaveOrganizationDetails.action.label} organization`,
       color: "blue",
     },
   };

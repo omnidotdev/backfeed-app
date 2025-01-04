@@ -4431,6 +4431,21 @@ export type CreateOrganizationMutationVariables = Exact<{
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization?: { __typename?: 'CreateOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string, slug: string } | null } | null };
 
+export type DeleteOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteOrganizationMutation = { __typename?: 'Mutation', deleteOrganization?: { __typename?: 'DeleteOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string } | null } | null };
+
+export type LeaveOrganizationMutationVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4610,6 +4625,27 @@ export const CreateOrganizationDocument = gql`
     organization {
       rowId
       slug
+    }
+  }
+}
+    `;
+export const DeleteOrganizationDocument = gql`
+    mutation DeleteOrganization($rowId: UUID!) {
+  deleteOrganization(input: {rowId: $rowId}) {
+    organization {
+      rowId
+    }
+  }
+}
+    `;
+export const LeaveOrganizationDocument = gql`
+    mutation LeaveOrganization($userId: UUID!, $organizationId: UUID!) {
+  deleteUserOrganizationByUserIdAndOrganizationId(
+    input: {userId: $userId, organizationId: $organizationId}
+  ) {
+    userOrganization {
+      userId
+      organizationId
     }
   }
 }
@@ -4957,6 +4993,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     CreateOrganization(variables: CreateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationMutation>(CreateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganization', 'mutation', variables);
+    },
+    DeleteOrganization(variables: DeleteOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteOrganizationMutation>(DeleteOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteOrganization', 'mutation', variables);
+    },
+    LeaveOrganization(variables: LeaveOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<LeaveOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LeaveOrganizationMutation>(LeaveOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LeaveOrganization', 'mutation', variables);
     },
     CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation', variables);

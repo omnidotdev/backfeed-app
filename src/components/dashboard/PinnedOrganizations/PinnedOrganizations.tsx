@@ -1,7 +1,6 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { useState } from "react";
 import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 
 import { Link, SkeletonArray } from "components/core";
@@ -10,7 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { DialogType, useAuth, useDialogStore } from "lib/hooks";
 
 import type { Organization } from "generated/graphql";
 
@@ -20,8 +19,9 @@ import type { Organization } from "generated/graphql";
 const PinnedOrganizations = () => {
   const { user } = useAuth();
 
-  const [isCreateOrganizationDialogOpen, setIsCreateOrganizationDialogOpen] =
-    useState(false);
+  const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
 
   const {
     data: pinnedOrganizations,
@@ -127,10 +127,7 @@ const PinnedOrganizations = () => {
         </Grid>
       )}
 
-      <CreateOrganization
-        isOpen={isCreateOrganizationDialogOpen}
-        setIsOpen={setIsCreateOrganizationDialogOpen}
-      />
+      <CreateOrganization />
     </Flex>
   );
 };

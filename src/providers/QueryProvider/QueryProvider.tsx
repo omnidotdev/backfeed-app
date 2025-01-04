@@ -1,4 +1,5 @@
 import {
+  MutationCache,
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "@tanstack/react-query";
@@ -6,7 +7,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import type { PropsWithChildren } from "react";
 
-const reactQueryClient = new ReactQueryClient();
+const reactQueryClient = new ReactQueryClient({
+  mutationCache: new MutationCache({
+    onSuccess: () => {
+      reactQueryClient.invalidateQueries();
+    },
+  }),
+});
 
 /**
  * Client-side remote data fetching provider.

@@ -21,7 +21,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { useAuth } from "lib/hooks";
+import { DialogType, useAuth, useDialogStore } from "lib/hooks";
 
 /** Schema for defining the shape of the create organization form fields. */
 const baseSchema = z.object({
@@ -57,28 +57,22 @@ const createOrganizationSchema = baseSchema.superRefine(
   }
 );
 
-interface Props {
-  /** State to determine if the dialog is open. */
-  isOpen: boolean;
-  /** Callback to manage the open state of the dialog. */
-  setIsOpen: (isOpen: boolean) => void;
-}
-
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
+const CreateOrganization = () => {
   const router = useRouter();
 
   const { user } = useAuth();
 
-  const {
-    data,
-    mutateAsync: createOrganization,
-    isPending: isPendingCreateOrganization,
-  } = useCreateOrganizationMutation();
+  const { isOpen, setIsOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
 
-  const { mutateAsync: addUserToOrganization, isPending: isPendingAddUser } =
+  const { data, mutateAsync: createOrganization } =
+    useCreateOrganizationMutation();
+
+  const { mutateAsync: addUserToOrganization } =
     useCreateUserOrganizationMutation({
       onSuccess: () => {
         router.push(

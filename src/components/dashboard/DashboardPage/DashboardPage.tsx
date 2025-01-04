@@ -1,7 +1,6 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { useState } from "react";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -16,7 +15,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { DialogType, useAuth, useDialogStore } from "lib/hooks";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
@@ -24,8 +23,9 @@ import { useAuth } from "lib/hooks";
 const DashboardPage = () => {
   const { user } = useAuth();
 
-  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] =
-    useState(false);
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   const {
     data: dashboardAggregates,
@@ -100,10 +100,7 @@ const DashboardPage = () => {
 
       <Feedback />
 
-      <CreateProject
-        isOpen={isCreateProjectDialogOpen}
-        setIsOpen={setIsCreateProjectDialogOpen}
-      />
+      <CreateProject />
     </Page>
   );
 };
