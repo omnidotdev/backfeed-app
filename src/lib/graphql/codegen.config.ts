@@ -6,7 +6,7 @@ import type { Types } from "@graphql-codegen/plugin-helpers";
 type GraphQLCodegenConfig = Types.ConfiguredOutput;
 
 /**
- * Shared plugins across each of the generated GraphQL Codegen artifacts, expect for mock/testing artifacts.
+ * Shared plugins across each of the generated GraphQL Codegen artifacts, except for mock/testing artifacts.
  */
 const sharedPlugins: GraphQLCodegenConfig["plugins"] = [
   "typescript",
