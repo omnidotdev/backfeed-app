@@ -47,7 +47,7 @@ jobs:
           path: .env.test
       - name: Run E2E tests
         # TODO remove debug flag, just for testing the action
-        run: DEBUG=playwright* bun test:e2e --shard ${{ matrix.shard }}
+        run: bun test:e2e --shard ${{ matrix.shard }}
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
