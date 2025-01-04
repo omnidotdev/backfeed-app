@@ -20,13 +20,10 @@ jobs:
       #     test-script: bun test:coverage
       #     annotations: failed-tests
       # TODO replace below with commented job above, blocked by Bun not yet supporting a JSON coverage reporter for the action to consume nor generate (similar: https://github.com/oven-sh/bun/issues/4099)
+      - name: Install Zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
       - name: Install dependencies
         run: bun install
-        # TODO remove, just for testing workflow
-      - name: Debug script
-        run: |
-          ls -l src/scripts/
-          cat src/scripts/execute_tests.sh
       - name: Run unit tests
         run: bun run test
 
