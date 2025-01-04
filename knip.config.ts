@@ -29,6 +29,8 @@ const knipConfig: KnipConfig = {
     "@happy-dom/global-registrator",
     // included by Next.js metapackage, used in Playwright config
     "@next/env",
+    // used in unit test setup file
+    "@testing-library/jest-dom",
     // used by GraphQL Code Generator scripts
     "dotenv",
   ],
