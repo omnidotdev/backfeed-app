@@ -24,6 +24,8 @@ jobs:
         run: bun install
       - name: Run unit tests
         run: bun run test
+        env:
+          WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
 
   test_e2e:
     name: Run E2E tests 🗺️
