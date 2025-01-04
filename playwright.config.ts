@@ -2,16 +2,18 @@ import { loadEnvConfig } from "@next/env";
 import { defineConfig, devices } from "@playwright/test";
 import ms from "ms";
 
-import type {
-  PlaywrightTestOptions,
-  PlaywrightWorkerOptions,
-  Project,
-} from "@playwright/test";
+// import type {
+// PlaywrightTestOptions,
+// PlaywrightWorkerOptions,
+// Project,
+// } from "@playwright/test";
 
-type PlaywrightDevices = Project<
-  PlaywrightTestOptions,
-  PlaywrightWorkerOptions
->;
+// TODO use Bun runtime instead of Node.js (pending https://github.com/oven-sh/bun/issues/8222). After this is resolved, consider using Playwright for running all tests including unit tests (see https://pkerschbaum.com/blog/using-playwright-to-run-unit-tests)
+
+// type PlaywrightDevices = Project<
+//   PlaywrightTestOptions,
+//   PlaywrightWorkerOptions
+// >;
 
 // load environment variables (see https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#loading-environment-variables-with-nextenv)
 loadEnvConfig(process.cwd());
