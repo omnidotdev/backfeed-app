@@ -149,7 +149,7 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
           name="name"
           asyncDebounceMs={300}
           validators={{
-            onChangeAsync: baseSchema.shape.name,
+            onBlurAsync: baseSchema.shape.name,
           }}
         >
           {({ handleChange, handleBlur, state }) => (
