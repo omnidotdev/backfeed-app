@@ -29,11 +29,12 @@ jobs:
     name: Run E2E tests 🗺️
     timeout-minutes: 3
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      # shard tests across 4 nodes (https://playwright.dev/docs/test-sharding)
-      matrix:
-        shard: [1/4, 2/4, 3/4, 4/4]
+    # TODO enable, disabled for now while E2E tests are simple. No need to shard early
+    # strategy:
+    # fail-fast: false
+    # shard tests across 4 nodes (https://playwright.dev/docs/test-sharding)
+    # matrix:
+    # shard: [1/4, 2/4, 3/4, 4/4]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -46,8 +47,9 @@ jobs:
         with:
           path: .env.test
       - name: Run E2E tests
-        # handle empty shards gracefully (echo fallback ensures the command doesn't fail if no tests are assigned to the shard)'
-        run: bun test:e2e --shard ${{ matrix.shard }} > test-results.txt || echo "No tests to run"
+        # TODO enable, disabled for now while E2E tests are simple. No need to shard early
+        # run: bun test:e2e --shard ${{ matrix.shard }}
+        run: bun test:e2e
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
