@@ -2,11 +2,12 @@
 
 import { Button, Flex, Stack, Text } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
+
 import { Breadcrumb } from "components/core";
 
 import type { ButtonProps, FlexProps, StackProps } from "@omnidev/sigil";
-import type { ReactNode } from "react";
 import type { BreadcrumbRecord } from "components/core";
+import type { ReactNode } from "react";
 
 interface ActionButton extends ButtonProps {
   /** Button label. */
@@ -41,6 +42,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
 
   return (
     <Stack
+      h="100%"
       maxW={{ base: "90svw", lg: "8xl" }}
       mx="auto"
       px={{ lg: 6 }}

@@ -2,9 +2,24 @@ import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import { ProjectsOverview } from "components/project";
+import { ProjectFilters, ProjectList } from "components/project";
 import { app } from "lib/config";
+import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
+
+import type { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { organizationId } = await params;
+
+  const { organization } = await sdk.Organization({ rowId: organizationId });
+
+  return {
+    title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
+  };
+};
 
 interface Props {
   /** Projects page params. */
@@ -16,7 +31,11 @@ interface Props {
  */
 const ProjectsPage = async ({ params }: Props) => {
   const { organizationId } = await params;
-  const session = await getAuthSession();
+
+  const [session, { organization }] = await Promise.all([
+    getAuthSession(),
+    sdk.Organization({ rowId: organizationId }),
+  ]);
 
   const breadcrumbs = [
     {
@@ -24,8 +43,7 @@ const ProjectsPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      // TODO: Use actual organization name here instead of ID
-      label: organizationId,
+      label: organization?.name ?? organizationId,
       href: `/organizations/${organizationId}`,
     },
     {
@@ -33,7 +51,7 @@ const ProjectsPage = async ({ params }: Props) => {
     },
   ];
 
-  if (!session) notFound();
+  if (!session || !organization) notFound();
 
   return (
     <Page
@@ -50,7 +68,9 @@ const ProjectsPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectsOverview />
+      <ProjectFilters />
+
+      <ProjectList />
     </Page>
   );
 };

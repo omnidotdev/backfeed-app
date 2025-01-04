@@ -10,168 +10,48 @@ import {
   Textarea,
   VStack,
 } from "@omnidev/sigil";
-import { useState } from "react";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { ErrorBoundary, SectionContainer } from "components/layout";
+import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { FeedbackDetails } from "components/feedback";
+import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDataState } from "lib/hooks";
 
-import type { Feedback } from "components/feedback";
-
-interface Responses {
-  /** Total feedback count. */
-  totalCount: number;
-  /** Feedback data. */
-  data: Feedback[];
+interface Props {
+  /** Project ID. */
+  projectId: string;
 }
-
-const RESPONSES: Responses = {
-  totalCount: 24,
-  data: [
-    {
-      id: "b25a9f2e-0b6f-42e4-b2d9-3f8e8e7ec1c1",
-      title: "Enhance Mobile UX",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-05T18:40:27.761Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-    {
-      id: "fb1de8c3-413e-452c-a4d8-98dc7a89f3f2",
-      title: "Add Dark Mode",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-17T18:40:27.761Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-    {
-      id: "c761fb6d-62b3-47b5-b3c1-6572f7e523c2",
-      title: "Improve Dashboard Analytics",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-12T18:40:27.761Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-    {
-      id: "cbe8b752-dc2d-4ad9-b191-6c68a64d5d74",
-      title: "Optimize Page Load Times",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-14T12:00:00.000Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-    {
-      id: "ab83f88e-59c5-4c9e-b997-09a22f8f81ec",
-      title: "Integrate AI Chatbot",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-16T15:30:00.000Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-    {
-      id: "d2baf2c5-497c-464b-9b91-327ea59202c5",
-      title: "Streamline Signup Process",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dicta modi cupiditate deleniti perspiciatis illo animi odio rerum placeat veritatis cumque deserunt dolore, distinctio, libero eaque a harum voluptatum ullam?",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2024-11-10T09:45:00.000Z",
-      status: "Planned",
-      upvotes: 420,
-      downvotes: 69,
-      user: {
-        id: "1",
-        firstName: "Back",
-        lastName: "Feed",
-      },
-    },
-  ],
-};
 
 /**
  * Project feedback.
  */
-const ProjectFeedback = () => {
-  const [shownResponses, setShownResponses] = useState<Feedback[]>(
-    RESPONSES.data
+const ProjectFeedback = ({ projectId }: Props) => {
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
+    useInfinitePostsQuery(
+      {
+        pageSize: 5,
+        projectId,
+      },
+      {
+        initialPageParam: undefined,
+        getNextPageParam: (lastPage) =>
+          lastPage?.posts?.pageInfo?.hasNextPage
+            ? { after: lastPage?.posts?.pageInfo?.endCursor }
+            : undefined,
+      }
+    );
+
+  const totalCount = data?.pages?.[0]?.posts?.totalCount ?? 0;
+  const posts = data?.pages?.flatMap((page) =>
+    page?.posts?.nodes?.map((post) => post)
   );
-
-  const [pageState, setPageState] = useState<{
-    currentPage: number;
-    hasNextPage: boolean;
-  }>({ currentPage: 1, hasNextPage: true });
-
-  const { isLoading, isError } = useDataState({ timeout: 700 });
-
-  // NB: temporarily used to mock an infinite query
-  const handleLoadMore = () => {
-    if (!pageState.hasNextPage) return;
-
-    setPageState((prev) => ({
-      ...prev,
-      currentPage: prev.currentPage + 1,
-    }));
-
-    if (
-      pageState.currentPage >=
-      Math.floor(RESPONSES.totalCount / RESPONSES.data.length) - 1
-    ) {
-      setPageState((prev) => ({
-        ...prev,
-        hasNextPage: false,
-      }));
-    }
-
-    setShownResponses((prev) => prev.concat(RESPONSES.data));
-  };
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
-    hasNextPage: pageState.hasNextPage,
-    onLoadMore: handleLoadMore,
+    hasNextPage: hasNextPage,
+    onLoadMore: fetchNextPage,
     disabled: isError,
     // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
     rootMargin: "0px 0px 400px 0px",
@@ -182,65 +62,70 @@ const ProjectFeedback = () => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
-      h="100%"
     >
-      <Stack h="100%" gap={6}>
-        <Stack>
-          {/* TODO: Extract this form into its own component when hooking up. */}
-          <Input
-            placeholder={app.projectPage.projectFeedback.inputPlaceholder}
-            borderColor="border.subtle"
-            fontSize="sm"
-          />
+      <Stack>
+        {/* TODO: Extract this form into its own component when hooking up. */}
+        <Input
+          placeholder={app.projectPage.projectFeedback.inputPlaceholder}
+          borderColor="border.subtle"
+          fontSize="sm"
+        />
 
-          <Textarea
-            placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
-            borderColor="border.subtle"
-            fontSize="sm"
-            rows={5}
-            minH={32}
-          />
+        <Textarea
+          placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
+          borderColor="border.subtle"
+          fontSize="sm"
+          rows={5}
+          minH={32}
+        />
 
-          <Stack justify="space-between" direction="row">
-            <Skeleton isLoaded={!isLoading} h="fit-content">
-              <Text
-                fontSize="sm"
-                color="foreground.muted"
-              >{`${isError ? 0 : RESPONSES.totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
-            </Skeleton>
+        <Stack justify="space-between" direction="row">
+          <Skeleton isLoaded={!isLoading} h="fit-content">
+            <Text
+              fontSize="sm"
+              color="foreground.muted"
+            >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
+          </Skeleton>
 
-            <Button
-              w="fit-content"
-              placeSelf="flex-end"
-              // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-              disabled={isLoading || isError}
-            >
-              {app.projectPage.projectFeedback.submit}
-            </Button>
-          </Stack>
-
-          {isError ? (
-            <ErrorBoundary message="Error fetching feedback" h="sm" />
-          ) : (
-            <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
-              {isLoading ? (
-                <SkeletonArray count={5} h={32} />
-              ) : (
-                <VStack>
-                  {shownResponses.map((feedback, index) => (
-                    <FeedbackDetails
-                      key={`${feedback.id} - ${index}`}
-                      feedback={feedback}
-                      projectPage
-                    />
-                  ))}
-
-                  {pageState.hasNextPage && <Spinner ref={loaderRef} />}
-                </VStack>
-              )}
-            </Grid>
-          )}
+          <Button
+            w="fit-content"
+            placeSelf="flex-end"
+            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
+            disabled={isLoading || isError}
+          >
+            {app.projectPage.projectFeedback.submit}
+          </Button>
         </Stack>
+
+        {isError ? (
+          <ErrorBoundary message="Error fetching feedback" h="sm" />
+        ) : (
+          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
+            {isLoading ? (
+              <SkeletonArray count={5} h={21} />
+            ) : posts?.length ? (
+              <VStack>
+                {posts?.map((feedback) => (
+                  <FeedbackDetails
+                    key={feedback?.rowId}
+                    feedbackId={feedback?.rowId!}
+                    projectPage
+                    w="full"
+                    minH={21}
+                  />
+                ))}
+
+                {hasNextPage && <Spinner ref={loaderRef} />}
+              </VStack>
+            ) : (
+              <EmptyState
+                message={app.projectPage.projectFeedback.emptyState.message}
+                h="xs"
+                w="full"
+              />
+            )}
+          </Grid>
+        )}
       </Stack>
     </SectionContainer>
   );

@@ -1,17 +1,20 @@
 query Organizations(
-  $first: Int
+  $pageSize: Int!
+  $offset: Int!
   $orderBy: [OrganizationOrderBy!]
   $userId: UUID!
   $search: String
 ) {
   organizations(
-    first: $first
+    first: $pageSize
+    offset: $offset
     orderBy: $orderBy
     filter: {
       name: { includesInsensitive: $search }
       userOrganizations: { some: { userId: { equalTo: $userId } } }
     }
   ) {
+    totalCount
     nodes {
       rowId
       name

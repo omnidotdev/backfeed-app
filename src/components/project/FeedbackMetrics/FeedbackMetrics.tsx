@@ -1,26 +1,42 @@
 "use client";
 
-import { Flex, Text, Icon } from "@omnidev/sigil";
+import { Flex, Text, Icon, Skeleton } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { PiArrowFatLineUpFill } from "react-icons/pi";
+import { TbHeartbeat } from "react-icons/tb";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
+interface Props {
+  /** Total feedback for the project. */
+  totalFeedback: number;
+  /** Total upvotes for the project posts. */
+  totalEngagement: number;
+  /** Whether the project data is loaded. */
+  isLoaded?: boolean;
+  /** Whether loading the project data encountered an error. */
+  isError?: boolean;
+}
+
 /**
  * Feedback metrics for a project.
  */
-const FeedbackMetrics = () => {
+const FeedbackMetrics = ({
+  totalFeedback,
+  totalEngagement,
+  isLoaded,
+  isError,
+}: Props) => {
   const metrics = [
     {
       title: app.projectPage.feedbackMetrics.totalFeedback,
       icon: HiOutlineFolder,
-      value: "69",
+      value: totalFeedback,
     },
     {
-      title: app.projectPage.feedbackMetrics.totalUpvotes,
-      icon: PiArrowFatLineUpFill,
-      value: "69",
+      title: app.projectPage.feedbackMetrics.totalEngagement,
+      icon: TbHeartbeat,
+      value: totalEngagement,
     },
   ];
 
@@ -34,7 +50,11 @@ const FeedbackMetrics = () => {
             <Text color="foreground.muted">{title}</Text>
           </Flex>
 
-          <Text>{value}</Text>
+          <Skeleton isLoaded={isLoaded} minW={8}>
+            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+              {isError ? 0 : value}
+            </Text>
+          </Skeleton>
         </Flex>
       ))}
     </SectionContainer>
