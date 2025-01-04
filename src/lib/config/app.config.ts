@@ -205,6 +205,95 @@ const app = {
       },
     },
   },
+  // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
+  pricingPage: {
+    title: "Pricing",
+    pricingCard: {
+      perMonth: "/month",
+      getStarted: "Get Started",
+    },
+    pricingTiers: {
+      recommended: "Recommended",
+      tiers: [
+        {
+          title: "Basic",
+          price: "$29",
+          description: "Perfect for small teams just getting started",
+          features: [
+            "Up to 1,000 responses per month",
+            "Basic analytics dashboard",
+            "Email support",
+            "1 project",
+            "Basic integrations",
+          ],
+        },
+        {
+          title: "Professional",
+          price: "$79",
+          description: "Everything you need for a growing business",
+          features: [
+            "Up to 10,000 responses per month",
+            "Advanced analytics & reporting",
+            "Priority email & chat support",
+            "Unlimited projects",
+            "Advanced integrations",
+            "Custom branding",
+            "Team collaboration",
+          ],
+        },
+        {
+          title: "Enterprise",
+          price: "Contact Us",
+          description: "Advanced features for large organizations",
+          features: [
+            "Unlimited responses",
+            "Custom analytics solutions",
+            "24/7 phone & email support",
+            "Dedicated account manager",
+            "Custom integrations",
+            "SLA guarantee",
+            "Advanced security features",
+            "On-premise deployment option",
+          ],
+        },
+      ],
+    },
+    pricingFAQ: {
+      FAQ: "Frequently Asked Questions",
+      items: [
+        {
+          title: "How does the 14-day trial work?",
+          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe or your account will automatically switch to the free plan.",
+        },
+        {
+          title: "Can I switch plans later?",
+          body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
+        },
+        {
+          title: "What payment methods do you accept?",
+          body: "We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. For Enterprise plans, we also support wire transfers and purchase orders.",
+        },
+        {
+          title:
+            "Do you offer discounts for non-profits or educational institutions?",
+          body: "Yes, we offer special pricing for non-profits, educational institutions, and open-source projects. Please contact our sales team for more information.",
+        },
+        {
+          title: "What happens to my data if I cancel?",
+          body: "You'll have 30 days to export your data after cancellation. After that period, your data will be permanently deleted from our servers.",
+        },
+        {
+          title: "Can I self-host this software?",
+          body: "Yes! We offer open access to our API free of charge so you can build your own feedback provider around our infrastructure.",
+        },
+      ],
+    },
+    pricingHeader: {
+      title: "Simple, transparent pricing",
+      description:
+        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+    },
+  },
   projectsPage: {
     breadcrumb: "Projects",
     header: {
