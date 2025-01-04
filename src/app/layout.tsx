@@ -1,11 +1,18 @@
 import Providers from "app/providers";
 import { Layout } from "components/layout";
-import { app } from "lib/config";
+import { app, isTestEnv, NEXT_RUNTIME } from "lib/config";
+import { mswNodeServer } from "test/e2e/util";
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
+
+// set up MSW Node server for server-side requests (in test environment)
+if (isTestEnv && NEXT_RUNTIME === "nodejs") {
+  console.log("Setting up MSW Node.js server...");
+  mswNodeServer.listen();
+}
 
 export const metadata: Metadata = {
   title: app.name,
