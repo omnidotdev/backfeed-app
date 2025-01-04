@@ -1,11 +1,19 @@
 import { expect } from "@playwright/test";
 
-import { test } from "test/e2e/util";
+import { mswNodeServer, test } from "test/e2e/util";
 
 if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD)
   throw new Error("TEST_USERNAME and TEST_PASSWORD must be set");
 
-test.describe("authentication", () => {
+/**
+ * MSW currently does not fully support the Next.js app router (both in browser and server-side contexts), so this test suite is currently skipped. After https://github.com/mswjs/examples/pull/101 is completed, the tests can be enabled with that as a reference. (https://linear.app/omnidev/issue/OMNI-162/enable-e2e-tests-skipped-due-to-msw-app-router-integration-pending)
+ */
+test.describe.skip("authentication", () => {
+  // `.listen()` is already called in `src/app/layout.tsx`, just used here for breadcrumbs when tests are enabled again (see note about app router above)
+  // test.beforeAll(() => mswNodeServer.listen());
+  test.afterEach(() => mswNodeServer.resetHandlers());
+  test.afterAll(() => mswNodeServer.close());
+
   test.beforeEach(async ({ homePage }) => {
     await homePage.goto();
   });
