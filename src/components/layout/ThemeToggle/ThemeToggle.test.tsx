@@ -7,6 +7,7 @@ import { render } from "test/unit/util";
 
 describe("theme toggle", () => {
   beforeEach(() => {
+    // TODO figure out why this line is somehow causing extra logging (e.g.`{"level":10,"time":1736031877509,"pid":1840,"hostname":"fv-az1378-175","context":"core","context":"core/relayer","context":"core/relayer/subscription","msg":"Initialized"}`). This can be seen in the GitHub Actions workflow and locally
     render(<ThemeToggle />);
   });
 
