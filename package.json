@@ -83,8 +83,6 @@
     "utf-8-validate"
   ],
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   }
 }
