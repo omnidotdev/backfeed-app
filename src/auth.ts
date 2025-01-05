@@ -6,9 +6,9 @@ import "next-auth/jwt";
 
 import { token } from "generated/panda/tokens";
 
+import { sdk } from "lib/graphql";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
-import { sdk } from "lib/graphql";
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
@@ -115,6 +115,7 @@ export const { handlers, auth } = NextAuth({
       const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
 
       if (userByHidraId) {
+        // TODO: discuss removing additional augmentation of the session object (i.e. user.rowId) and just overwriting the user.id field here. Currently, the user.id field is ovewritten within the `useAuth` hook to supply mock data, but when that is no longer required, we could simply overwrite that field here instead.
         session.user.rowId = userByHidraId.rowId;
       }
 
