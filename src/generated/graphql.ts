@@ -4592,7 +4592,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', id: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5531,7 +5531,7 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 export const UserDocument = `
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
-    id
+    rowId
     hidraId
     username
     firstName

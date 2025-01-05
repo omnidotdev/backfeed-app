@@ -75,10 +75,9 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
   const {
     data,
     mutateAsync: createOrganization,
-    isPending: isPendingCreateOrganization,
   } = useCreateOrganizationMutation();
 
-  const { mutateAsync: addUserToOrganization, isPending: isPendingAddUser } =
+  const { mutateAsync: addUserToOrganization } =
     useCreateUserOrganizationMutation({
       onSuccess: () => {
         router.push(
@@ -114,7 +113,7 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
         await addUserToOrganization({
           input: {
             userOrganization: {
-              userId: user?.hidraId!,
+              userId: user?.rowId!,
               organizationId: createOrganizationResponse?.organization?.rowId!,
             },
           },

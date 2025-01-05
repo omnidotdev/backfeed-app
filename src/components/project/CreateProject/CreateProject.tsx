@@ -77,7 +77,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
 
   const { data: organizations } = useOrganizationsQuery(
     {
-      userId: user?.hidraId!,
+      userId: user?.rowId!,
     },
     {
       enabled: !!user,
@@ -89,7 +89,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
     }
   );
 
-  const { mutate: createProject, isPending } = useCreateProjectMutation({
+  const { mutate: createProject } = useCreateProjectMutation({
     onSuccess: (data) => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
