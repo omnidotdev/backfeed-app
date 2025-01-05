@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 
 /**
- * Mock [WalletConnect](https://walletconnect.network/) handlers.
+ * Mock [WalletConnect](https://walletconnect.network) handlers.
  */
 const mockWalletConnectHandlers = [
   http.post("https://pulse.walletconnect.org/batch", () => {
