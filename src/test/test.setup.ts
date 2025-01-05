@@ -6,6 +6,8 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import * as rtlDomMatchers from "@testing-library/jest-dom/matchers";
 import { expect } from "bun:test";
 
+import "__mocks__/nextRouter.mock";
+
 import type { ExpectExtendMatchers } from "bun:test";
 import type { TestingLibraryMatchers } from "@testing-library/jest-dom/matchers";
 

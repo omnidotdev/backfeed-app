@@ -21,7 +21,12 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
-  ignore: ["panda.config.ts", "src/generated/**", "src/test/**"],
+  ignore: [
+    "panda.config.ts",
+    "src/__mocks__/**",
+    "src/generated/**",
+    "src/test/**",
+  ],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency
     "@ark-ui/react",
@@ -33,6 +38,8 @@ const knipConfig: KnipConfig = {
     "@testing-library/jest-dom",
     // used by GraphQL Code Generator scripts
     "dotenv",
+    // used in unit test setup file
+    "next-router-mock",
   ],
 };
 
