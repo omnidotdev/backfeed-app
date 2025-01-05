@@ -28,6 +28,7 @@ declare module "next-auth/jwt" {
 declare module "next-auth" {
   interface Session {
     user: {
+      rowId?: string;
       hidraId?: string;
       firstName?: string;
       lastName?: string;
@@ -109,6 +110,13 @@ export const { handlers, auth } = NextAuth({
       session.user.firstName = token.given_name;
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
+
+      // retrieve user by Hidra ID
+      const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
+
+      if (userByHidraId) {
+        session.user.rowId = userByHidraId.rowId;
+      }
 
       return session;
     },

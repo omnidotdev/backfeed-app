@@ -46,7 +46,7 @@ const DashboardPage = () => {
 
   const { data: numberOfOrganizations } = useOrganizationsQuery(
     {
-      userId: user?.hidraId!,
+      userId: user?.rowId!,
     },
     {
       enabled: !!user,

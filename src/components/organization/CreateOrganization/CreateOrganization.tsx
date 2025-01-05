@@ -108,7 +108,7 @@ const CreateOrganization = () => {
         await addUserToOrganization({
           input: {
             userOrganization: {
-              userId: user?.hidraId!,
+              userId: user?.rowId!,
               organizationId: createOrganizationResponse?.organization?.rowId!,
             },
           },
