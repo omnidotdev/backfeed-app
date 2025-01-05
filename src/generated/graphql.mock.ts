@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Types from './generated';
 
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'

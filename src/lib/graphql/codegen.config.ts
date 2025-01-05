@@ -6,7 +6,7 @@ import type { Types } from "@graphql-codegen/plugin-helpers";
 type GraphQLCodegenConfig = Types.ConfiguredOutput;
 
 /**
- * Shared plugins across each of the generated GraphQL Codegen artifacts, except for mock/testing artifacts.
+ * Shared plugins across the generated GraphQL Codegen artifacts.
  */
 const sharedPlugins: GraphQLCodegenConfig["plugins"] = [
   "typescript",
@@ -50,7 +50,13 @@ const graphqlCodegenConfig: CodegenConfig = {
     "src/generated/graphql.mock.ts": {
       // https://github.com/dotansimha/graphql-code-generator/discussions/9972#discussioncomment-9892339
       preset: "import-types",
-      plugins: ["typescript-msw"],
+      plugins: [
+        // filter in only the shared `add` plugin config
+        ...sharedPlugins.filter((plugin) =>
+          Object.keys(plugin).includes("add")
+        ),
+        "typescript-msw",
+      ],
       presetConfig: {
         typesPath: "./generated",
       },
