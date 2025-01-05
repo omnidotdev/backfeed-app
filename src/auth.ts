@@ -110,10 +110,10 @@ export const { handlers, auth } = NextAuth({
       session.user.firstName = token.given_name;
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
-      
+
       // retrieve user by Hidra ID
       const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
-      
+
       if (userByHidraId) {
         session.user.rowId = userByHidraId.rowId;
       }

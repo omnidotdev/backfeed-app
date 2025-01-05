@@ -72,10 +72,8 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
 
   const { user } = useAuth();
 
-  const {
-    data,
-    mutateAsync: createOrganization,
-  } = useCreateOrganizationMutation();
+  const { data, mutateAsync: createOrganization } =
+    useCreateOrganizationMutation();
 
   const { mutateAsync: addUserToOrganization } =
     useCreateUserOrganizationMutation({
