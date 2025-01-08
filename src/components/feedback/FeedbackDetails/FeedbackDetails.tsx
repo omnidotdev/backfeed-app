@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
@@ -23,6 +22,7 @@ import {
 } from "react-icons/pi";
 import { match } from "ts-pattern";
 
+import { Link } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { useFeedbackByIdQuery } from "generated/graphql";
 import { app } from "lib/config";

@@ -1,10 +1,10 @@
 "use client";
 
 import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
+import { Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
