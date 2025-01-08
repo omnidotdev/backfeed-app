@@ -249,7 +249,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
         <Field
           name="slug"
           asyncDebounceMs={300}
-          // onChange validation is used here to keep in sync with the async form level validation of the slug field
+          // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
           validators={{
             onChangeAsync: baseSchema.shape.slug,
           }}
