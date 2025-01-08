@@ -1,7 +1,6 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
@@ -9,7 +8,7 @@ import {
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { OverflowText } from "components/core";
+import { Link, OverflowText } from "components/core";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Project } from "generated/graphql";

@@ -1,9 +1,10 @@
 "use client";
 
 import { Flex, Icon, Text } from "@omnidev/sigil";
-import { app } from "lib/config";
-import Link from "next/link";
 import { LuChevronRight } from "react-icons/lu";
+
+import { Link } from "components/core";
+import { app } from "lib/config";
 
 export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */

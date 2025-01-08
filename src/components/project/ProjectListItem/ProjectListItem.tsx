@@ -1,13 +1,12 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { DestructiveAction, OverflowText } from "components/core";
+import { DestructiveAction, Link, OverflowText } from "components/core";
 import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";

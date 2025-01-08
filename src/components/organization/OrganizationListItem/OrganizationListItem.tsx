@@ -1,11 +1,10 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiUserSharedLine } from "react-icons/ri";
 
-import { DestructiveAction, OverflowText } from "components/core";
+import { DestructiveAction, Link, OverflowText } from "components/core";
 import {
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,

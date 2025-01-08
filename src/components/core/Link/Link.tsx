@@ -14,7 +14,7 @@ interface Props extends LinkProps {
  * Link component.
  */
 const Link = ({ children, disabled, ...rest }: Props) => {
-  if (disabled) return <>{children}</>;
+  if (disabled) return children;
 
   return <NextLink {...rest}>{children}</NextLink>;
 };
