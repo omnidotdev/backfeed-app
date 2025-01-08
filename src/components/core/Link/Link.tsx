@@ -1,9 +1,9 @@
 import NextLink from "next/link";
 
 import type { LinkProps } from "next/link";
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-interface Props extends LinkProps {
+interface Props extends LinkProps, HTMLAttributes<HTMLAnchorElement> {
   /** Children to render in the link. */
   children: ReactNode;
   /** State to determine if the link is disabled. */
