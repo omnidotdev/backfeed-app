@@ -120,12 +120,12 @@ const app = {
         description: "Create a new organization by submitting the form below.",
         organizationName: {
           id: "Organization Name",
-          placeholder: "Insert organization name...",
+          placeholder: "Omni",
           error: "Must be at least 3 characters.",
         },
         organizationSlug: {
           id: "Organization Slug",
-          placeholder: "Insert organization slug...",
+          placeholder: "omni-dev",
           error: {
             invalid: "Must be at least 3 characters.",
             duplicate: "Organization slug already exists.",
@@ -149,17 +149,18 @@ const app = {
         },
         projectName: {
           id: "Project Name",
-          placeholder: "Insert project name...",
+          placeholder: "Backfeed",
           error: "Must be at least 3 characters.",
         },
         projectDescription: {
           id: "Project Description",
-          placeholder: "Insert project description...",
+          placeholder:
+            "Backfeed is an open-source feedback reporting platform.",
           error: "Must be at least 10 characters.",
         },
         projectSlug: {
           id: "Project Slug",
-          placeholder: "Insert project slug...",
+          placeholder: "omni-backfeed",
           error: {
             invalid: "Must be at least 3 characters.",
             duplicate: "Project slug already exists.",
