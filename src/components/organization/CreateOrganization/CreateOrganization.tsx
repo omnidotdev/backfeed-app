@@ -228,9 +228,15 @@ const CreateOrganization = () => {
           )}
         </Field>
 
-        <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <Button type="submit" disabled={!canSubmit} mt={4}>
+        <Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
+        >
+          {([canSubmit, isSubmitting, isDirty]) => (
+            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
               {isSubmitting
                 ? app.dashboardPage.cta.newOrganization.action.pending
                 : app.dashboardPage.cta.newOrganization.action.submit}

@@ -93,6 +93,7 @@ const CreateProject = () => {
   );
 
   const { mutate: createProject } = useCreateProjectMutation({
+    mutationKey: ["project", "create"],
     onSuccess: (data) => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
@@ -288,9 +289,15 @@ const CreateProject = () => {
           )}
         </Field>
 
-        <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <Button type="submit" disabled={!canSubmit} mt={4}>
+        <Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
+        >
+          {([canSubmit, isSubmitting, isDirty]) => (
+            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
               {isSubmitting
                 ? app.dashboardPage.cta.newProject.action.pending
                 : app.dashboardPage.cta.newProject.action.submit}

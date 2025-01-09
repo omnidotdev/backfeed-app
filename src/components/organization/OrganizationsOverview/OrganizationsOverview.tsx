@@ -4,11 +4,7 @@ import { Suspense } from "react";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
-import {
-  CreateOrganization,
-  OrganizationFilters,
-  OrganizationList,
-} from "components/organization";
+import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
 import { DialogType, useDialogStore } from "lib/hooks";
 
@@ -48,8 +44,6 @@ const OrganizationsOverview = () => {
 
         <OrganizationList />
       </Suspense>
-
-      <CreateOrganization />
     </Page>
   );
 };

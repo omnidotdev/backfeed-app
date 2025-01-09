@@ -9,7 +9,6 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
-import { CreateProject } from "components/project";
 import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
@@ -99,8 +98,6 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
-
-      <CreateProject />
     </Page>
   );
 };

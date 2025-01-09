@@ -6,7 +6,6 @@ import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
-import { CreateOrganization } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { DialogType, useAuth, useDialogStore } from "lib/hooks";
@@ -126,8 +125,6 @@ const PinnedOrganizations = () => {
           )}
         </Grid>
       )}
-
-      <CreateOrganization />
     </Flex>
   );
 };

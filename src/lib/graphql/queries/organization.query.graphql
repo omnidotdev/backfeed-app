@@ -2,6 +2,7 @@ query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
     rowId
     name
+    slug
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
