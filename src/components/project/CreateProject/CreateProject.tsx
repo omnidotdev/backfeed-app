@@ -23,6 +23,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 
@@ -37,7 +38,12 @@ const baseSchema = z.object({
     .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
   slug: z
     .string()
-    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.invalid),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      app.dashboardPage.cta.newProject.projectSlug.error.invalidFormat
+    )
+    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.minLength)
+    .max(50, app.dashboardPage.cta.newProject.projectSlug.error.maxLength),
 });
 
 /** Schema for validation of the create project form. */
@@ -107,6 +113,7 @@ const CreateProject = ({ isOpen, setIsOpen }: Props) => {
       slug: "",
     },
     asyncDebounceMs: 300,
+    validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
       onChangeAsync: createProjectSchema,
