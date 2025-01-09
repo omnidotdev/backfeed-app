@@ -8,8 +8,8 @@
     "start": "next start",
     "format": "biome format --write src",
     "lint": "biome lint src",
-    "test": "bun test .test",
-    "test:e2e": "NODE_ENV=test playwright test",
+    "test": "bun test --env-file .env.local --env-file .env.test .test",
+    "test:e2e": "NODE_ENV=test bun run --env-file .env.local --env-file .env.test playwright test",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
     "knip": "knip-bun --cache --tags=-knipignore",
@@ -83,6 +83,8 @@
     "utf-8-validate"
   ],
   "msw": {
-    "workerDirectory": ["public"]
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
