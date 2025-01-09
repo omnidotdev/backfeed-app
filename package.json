@@ -21,6 +21,7 @@
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@pandacss/dev": "^0.48.0",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20.11.19",
