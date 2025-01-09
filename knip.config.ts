@@ -14,6 +14,7 @@ const knipConfig: KnipConfig = {
     "src/app/{manifest,sitemap,robots}.ts",
     "src/app/**/{icon,apple-icon}.{ts,tsx}",
     "src/app/**/{opengraph,twitter}-image.{ts,tsx}",
+    "src/test/**/*.{ts,tsx}",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
   project: ["src/**/*.{ts,tsx}"],
@@ -21,25 +22,14 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
-  ignore: [
-    "panda.config.ts",
-    "src/__mocks__/**",
-    "src/generated/**",
-    "src/test/**",
-  ],
+  ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
   ignoreDependencies: [
     // @omnidev/sigil peer dependency
     "@ark-ui/react",
-    // used by Bun test runner (for DOM-based tests)
-    "@happy-dom/global-registrator",
     // included by Next.js metapackage, used in Playwright config
     "@next/env",
-    // used in unit test setup file
-    "@testing-library/jest-dom",
     // used by GraphQL Code Generator scripts
     "dotenv",
-    // used in unit test setup file
-    "next-router-mock",
   ],
 };
 
