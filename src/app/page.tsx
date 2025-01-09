@@ -1,4 +1,8 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
@@ -12,10 +16,9 @@ import type { OrganizationsQueryVariables } from "generated/graphql";
  */
 const HomePage = async () => {
   const queryClient = new QueryClient();
-  
+
   const session = await getAuthSession();
 
-  
   if (session) {
     const variables: OrganizationsQueryVariables = {
       pageSize: 3,
@@ -23,11 +26,11 @@ const HomePage = async () => {
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
       userId: session.user.rowId!,
     };
-    
+
     await queryClient.prefetchQuery({
       queryKey: useOrganizationsQuery.getKey(variables),
-      queryFn: useOrganizationsQuery.fetcher(variables)
-    })
+      queryFn: useOrganizationsQuery.fetcher(variables),
+    });
   }
 
   if (!session) return <LandingPage />;
