@@ -15,6 +15,11 @@
     "knip": "knip-bun --cache --tags=-knipignore",
     "prepare": "panda codegen && husky"
   },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@graphql-codegen/add": "^5.0.3",
@@ -81,10 +86,5 @@
     "msw",
     "sharp",
     "utf-8-validate"
-  ],
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
-  }
+  ]
 }
