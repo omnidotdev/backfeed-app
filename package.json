@@ -16,9 +16,7 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -31,16 +29,16 @@
     "@graphql-codegen/typescript-msw": "^3.0.0",
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
-    "@happy-dom/global-registrator": "^16.3.0",
+    "@happy-dom/global-registrator": "^16.5.3",
     "@pandacss/dev": "^0.48.0",
     "@playwright/test": "^1.49.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/bun": "^1.1.14",
+    "@types/bun": "^1.1.16",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^20.11.19",
-    "@types/react": "^19.0.2",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.7",
