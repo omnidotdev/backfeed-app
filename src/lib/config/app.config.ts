@@ -127,7 +127,9 @@ const app = {
           id: "Organization Slug",
           placeholder: "omni-dev",
           error: {
-            invalid: "Must be at least 3 characters.",
+            invalidFormat: "Invalid slug format.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 50 characters.",
             duplicate: "Organization slug already exists.",
           },
         },
@@ -162,7 +164,9 @@ const app = {
           id: "Project Slug",
           placeholder: "omni-backfeed",
           error: {
-            invalid: "Must be at least 3 characters.",
+            invalidFormat: "Invalid slug format.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 50 characters.",
             duplicate: "Project slug already exists.",
           },
         },

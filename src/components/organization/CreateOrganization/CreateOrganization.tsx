@@ -20,6 +20,7 @@ import {
   useCreateUserOrganizationMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { DialogType, useAuth, useDialogStore } from "lib/hooks";
 
@@ -30,9 +31,17 @@ const baseSchema = z.object({
     .min(3, app.dashboardPage.cta.newOrganization.organizationName.error),
   slug: z
     .string()
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalidFormat
+    )
     .min(
       3,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalid
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength
+    )
+    .max(
+      50,
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength
     ),
 });
 
@@ -89,6 +98,7 @@ const CreateOrganization = () => {
       slug: "",
     },
     asyncDebounceMs: 300,
+    validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
       onChangeAsync: createOrganizationSchema,
