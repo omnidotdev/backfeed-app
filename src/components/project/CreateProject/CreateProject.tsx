@@ -27,6 +27,8 @@ import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { DialogType, useAuth, useDialogStore } from "lib/hooks";
 
+// TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
+
 /** Schema for defining the shape of the create project form fields. */
 const baseSchema = z.object({
   organizationId: z
