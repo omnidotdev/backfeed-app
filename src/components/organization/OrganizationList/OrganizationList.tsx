@@ -39,7 +39,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
       pageSize,
       offset: (page - 1) * pageSize,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.hidraId!,
+      userId: user?.rowId!,
       search: debouncedSearch,
     },
     {
