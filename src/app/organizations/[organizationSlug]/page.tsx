@@ -1,9 +1,11 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { OrganizationOverview } from "components/organization";
+import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Organization } from "generated/graphql";
 import type { Metadata } from "next";
@@ -31,19 +33,28 @@ interface Props {
  * Organization overview page.
  */
 const OrganizationPage = async ({ params }: Props) => {
+  const queryClient = getQueryClient();
+
   const { organizationSlug } = await params;
 
   const [session, { organizationBySlug: organization }] = await Promise.all([
     getAuthSession(),
-    sdk.Organization({ slug: organizationSlug }),
+    // NB: using `fetchQuery` as the partial organization is required for prop drilling.
+    queryClient.fetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+      retry: false,
+    }),
   ]);
 
   if (!session || !organization) notFound();
 
   return (
-    <OrganizationOverview
-      organization={organization as Partial<Organization>}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <OrganizationOverview
+        organization={organization as Partial<Organization>}
+      />
+    </HydrationBoundary>
   );
 };
 
