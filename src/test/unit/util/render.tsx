@@ -2,7 +2,6 @@ import { render as rtlRender } from "@testing-library/react";
 
 import {
   // AuthProvider,
-  // BlockchainProvider,
   QueryProvider,
   SearchParamsProvider,
   ThemeProvider,
@@ -20,16 +19,12 @@ import type { ReactElement } from "react";
 const render = (ui: ReactElement, options?: RenderOptions) =>
   rtlRender(ui, {
     wrapper: ({ children }) => (
-      // TODO enable `AuthProvider` when API routes are mocked (currently throws fetch errors). Also enable `BlockchainProvider` when WalletConnect requests are mocked. Both of these can be handled by MSW integration with the Bun test runner, however this is blocked by TODO enable below, blocked by https://github.com/oven-sh/bun/issues/13072 (see test setup file for corresponding TODO)
+      // TODO enable `AuthProvider` when API routes are mocked (currently throws fetch errors). This can be handled by MSW integration with the Bun test runner, however this is blocked by TODO enable below, blocked by https://github.com/oven-sh/bun/issues/13072 (see test setup file for corresponding TODO)
       // NB: other application providers may need to wrap the testing tree here depending on fixture requirements.
       // <AuthProvider>
       <ThemeProvider>
         <SearchParamsProvider>
-          <QueryProvider>
-            {/* <BlockchainProvider> */}
-            {children}
-            {/* </BlockchainProvider> */}
-          </QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </SearchParamsProvider>
       </ThemeProvider>
       // </AuthProvider>
