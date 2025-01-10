@@ -83,7 +83,7 @@ const CreateProject = () => {
       userId: user?.rowId!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       select: (data) =>
         data?.organizations?.nodes?.map((organization) => ({
           label: organization?.name,

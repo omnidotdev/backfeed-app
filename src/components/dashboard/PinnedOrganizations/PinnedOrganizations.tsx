@@ -34,7 +34,7 @@ const PinnedOrganizations = () => {
       userId: user?.rowId!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.nodes,
     }
   );

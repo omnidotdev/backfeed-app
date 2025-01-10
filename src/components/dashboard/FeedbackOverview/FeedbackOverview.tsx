@@ -40,7 +40,7 @@ const FeedbackOverview = () => {
       startDate: oneWeekAgo,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.id,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
           name: dayjs(aggregate.keys?.[0]).format("ddd"),

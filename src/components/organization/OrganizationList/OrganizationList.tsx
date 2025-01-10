@@ -43,7 +43,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
       search: debouncedSearch,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       placeholderData: keepPreviousData,
       select: (data) => ({
         totalCount: data?.organizations?.totalCount,

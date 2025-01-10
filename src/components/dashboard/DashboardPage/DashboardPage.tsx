@@ -35,7 +35,7 @@ const DashboardPage = () => {
       userId: user?.id!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.id,
       select: (data) => ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
@@ -48,7 +48,7 @@ const DashboardPage = () => {
       userId: user?.rowId!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.totalCount,
     }
   );
