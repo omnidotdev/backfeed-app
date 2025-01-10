@@ -111,7 +111,7 @@ export const { handlers, auth } = NextAuth({
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
 
-      // retrieve user by Hidra ID
+      // retrieve user by HIDRA ID
       const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
 
       if (userByHidraId) {
