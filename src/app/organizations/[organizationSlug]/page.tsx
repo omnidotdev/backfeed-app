@@ -2,7 +2,10 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { OrganizationOverview } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
+import {
+  useOrganizationMetricsQuery,
+  useOrganizationQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -44,11 +47,20 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  // This pattern is used (rather than `fetchQuery` in replace of the sdk implementation) to avoid having out of sync state. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#data-ownership-and-revalidation for more details.
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-    queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-  });
+  await Promise.allSettled([
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationMetricsQuery.getKey({
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationMetricsQuery.fetcher({
+        organizationId: organization.rowId,
+      }),
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
