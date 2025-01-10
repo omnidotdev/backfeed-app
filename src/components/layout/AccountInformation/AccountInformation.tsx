@@ -16,7 +16,7 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 import { signOut } from "next-auth/react";
-import { FiUser, FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiUser } from "react-icons/fi";
 
 /**
  * User account information.
@@ -52,6 +52,9 @@ const AccountInformation = () => {
           <Avatar name={user?.name} />
         </Button>
       }
+      triggerProps={{
+        px: 0,
+      }}
     >
       <MenuItemGroup>
         <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>

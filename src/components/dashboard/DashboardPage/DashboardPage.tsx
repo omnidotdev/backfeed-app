@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
+import { useState } from "react";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -9,18 +10,28 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
-import { useDashboardAggregatesQuery } from "generated/graphql";
+import { CreateProject } from "components/project";
+import {
+  useDashboardAggregatesQuery,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useDataState } from "lib/hooks";
+import { useAuth } from "lib/hooks";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
-  const { user } = useAuth(),
-    { isLoading, isError } = useDataState({ timeout: 400 });
+  const { user } = useAuth();
 
-  const { data: dashboardAggregates } = useDashboardAggregatesQuery(
+  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] =
+    useState(false);
+
+  const {
+    data: dashboardAggregates,
+    isLoading,
+    isError,
+  } = useDashboardAggregatesQuery(
     {
       userId: user?.id!,
     },
@@ -30,6 +41,16 @@ const DashboardPage = () => {
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
       }),
+    }
+  );
+
+  const { data: numberOfOrganizations } = useOrganizationsQuery(
+    {
+      userId: user?.rowId!,
+    },
+    {
+      enabled: !!user,
+      select: (data) => data?.organizations?.totalCount,
     }
   );
 
@@ -56,7 +77,8 @@ const DashboardPage = () => {
             label: app.dashboardPage.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
-            disabled: true,
+            onClick: () => setIsCreateProjectDialogOpen(true),
+            disabled: !numberOfOrganizations,
           },
         ],
       }}
@@ -77,6 +99,11 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
+
+      <CreateProject
+        isOpen={isCreateProjectDialogOpen}
+        setIsOpen={setIsCreateProjectDialogOpen}
+      />
     </Page>
   );
 };

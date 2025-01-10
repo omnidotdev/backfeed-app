@@ -1,6 +1,6 @@
 query Organizations(
-  $pageSize: Int!
-  $offset: Int!
+  $pageSize: Int
+  $offset: Int
   $orderBy: [OrganizationOrderBy!]
   $userId: UUID!
   $search: String
@@ -18,6 +18,7 @@ query Organizations(
     nodes {
       rowId
       name
+      slug
       projects {
         totalCount
       }

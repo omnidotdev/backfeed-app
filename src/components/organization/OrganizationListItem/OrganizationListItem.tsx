@@ -1,11 +1,10 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiUserSharedLine } from "react-icons/ri";
 
-import { DestructiveAction, OverflowText } from "components/core";
+import { DestructiveAction, Link, OverflowText } from "components/core";
 import { app } from "lib/config";
 
 import type { DestructiveActionProps } from "components/core";
@@ -87,7 +86,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
         <Stack maxW="65svw">
-          <Link href={`/organizations/${organization?.rowId}`} role="group">
+          <Link href={`/organizations/${organization?.slug}`} role="group">
             <OverflowText
               fontWeight="semibold"
               whiteSpace="nowrap"

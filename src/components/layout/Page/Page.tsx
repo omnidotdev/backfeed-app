@@ -1,9 +1,8 @@
 "use client";
 
 import { Button, Flex, Stack, Text } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
-
 import { Breadcrumb } from "components/core";
+import { useRouter } from "next/navigation";
 
 import type { ButtonProps, FlexProps, StackProps } from "@omnidev/sigil";
 import type { BreadcrumbRecord } from "components/core";
@@ -85,13 +84,12 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
               width={{ base: "full", md: "auto" }}
               direction={{ base: "column", sm: "row" }}
             >
-              {header.cta.map(({ label, icon, href, ...rest }) => (
+              {header.cta.map(({ label, icon, href, onClick, ...rest }) => (
                 <Button
                   key={label}
                   size="sm"
                   width={{ base: "full", md: "auto" }}
-                  disabled={!href}
-                  onClick={href ? () => router.push(href) : undefined}
+                  onClick={(e) => (href ? router.push(href) : onClick?.(e))}
                   {...rest}
                 >
                   {icon}

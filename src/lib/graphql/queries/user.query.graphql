@@ -1,6 +1,6 @@
 query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
-    id
+    rowId
     hidraId
     username
     firstName

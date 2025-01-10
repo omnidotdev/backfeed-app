@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
@@ -23,6 +22,7 @@ import {
 } from "react-icons/pi";
 import { match } from "ts-pattern";
 
+import { Link } from "components/core";
 import { ErrorBoundary } from "components/layout";
 import { useFeedbackByIdQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -60,7 +60,7 @@ const FeedbackDetails = ({
   projectPage = false,
   ...rest
 }: Props) => {
-  const params = useParams<{ organizationId: string; projectId: string }>();
+  const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
   const {
     data: feedback,
@@ -243,7 +243,7 @@ const FeedbackDetails = ({
             <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
               {projectPage && (
                 <Link
-                  href={`/organizations/${params.organizationId}/projects/${params.projectId}/${feedback?.rowId}`}
+                  href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
                 >
                   <Button>
                     {app.projectPage.projectFeedback.details.feedbackLink}

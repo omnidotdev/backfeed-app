@@ -11,7 +11,7 @@ const useAuth = () => {
   return {
     isAuthenticated: status === "authenticated",
     isLoading: status === "loading",
-    // ! NB: mock user ID from seeded database until we sync with hidra
+    // ! NB: mock user ID from seeded database until we sync completely with hidra authentication flow
     user: { ...data?.user, id: MOCK_USER_ID },
     expiresAt: data?.expires,
     update,
