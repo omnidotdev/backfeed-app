@@ -26,7 +26,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   const session = await getAuthSession();
 
-  const { page, pageSize, search } = await getSearchParams(searchParams);
+  const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
   if (session) {
     const variables: OrganizationsQueryVariables = {
