@@ -1,13 +1,9 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
@@ -15,7 +11,7 @@ import type { OrganizationsQueryVariables } from "generated/graphql";
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
 const HomePage = async () => {
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const session = await getAuthSession();
 
