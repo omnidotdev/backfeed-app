@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BlockchainProvider,
   QueryProvider,
   SearchParamsProvider,
   AuthProvider,
@@ -17,9 +16,7 @@ const Providers = ({ children }: { children: ReactNode }) => (
   <AuthProvider>
     <ThemeProvider>
       <SearchParamsProvider>
-        <QueryProvider>
-          <BlockchainProvider>{children}</BlockchainProvider>
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </SearchParamsProvider>
     </ThemeProvider>
   </AuthProvider>
