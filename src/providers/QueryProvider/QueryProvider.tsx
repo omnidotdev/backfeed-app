@@ -1,8 +1,8 @@
 import {
-  isServer,
   MutationCache,
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
+  isServer,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -31,7 +31,7 @@ const makeQueryClient = () => {
 const getQueryClient = () => {
   if (isServer) return makeQueryClient();
 
-  // ! NB: Important to make a new query client if don't already have one. This is so we don't re-make a new client if React suspends during the initial render. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#initial-setup
+  // ! NB: Important to make a new query client if we don't already have one. This is so we don't re-make a new client if React suspends during the initial render. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#initial-setup
   if (!browserQueryClient) {
     browserQueryClient = makeQueryClient();
   }
