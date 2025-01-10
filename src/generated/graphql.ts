@@ -4488,7 +4488,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', clientMutationId?: string | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4831,9 +4831,7 @@ export const CreateUserDocument = `
   createUser(
     input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
   ) {
-    user {
-      id
-    }
+    clientMutationId
   }
 }
     `;
