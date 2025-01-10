@@ -22,28 +22,26 @@ interface Props {
  * Organizations overview page.
  */
 const OrganizationsPage = async ({ searchParams }: Props) => {
-  const queryClient = getQueryClient();
-
   const session = await getAuthSession();
+
+  if (!session) notFound();
+
+  const queryClient = getQueryClient();
 
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
-  if (session) {
-    const variables: OrganizationsQueryVariables = {
-      pageSize: pageSize,
-      offset: (page - 1) * pageSize,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: session.user.rowId!,
-      search,
-    };
+  const variables: OrganizationsQueryVariables = {
+    pageSize: pageSize,
+    offset: (page - 1) * pageSize,
+    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    userId: session.user.rowId!,
+    search,
+  };
 
-    await queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey(variables),
-      queryFn: useOrganizationsQuery.fetcher(variables),
-    });
-  }
-
-  if (!session) notFound();
+  await queryClient.prefetchQuery({
+    queryKey: useOrganizationsQuery.getKey(variables),
+    queryFn: useOrganizationsQuery.fetcher(variables),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

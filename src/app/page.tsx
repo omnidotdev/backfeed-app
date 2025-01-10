@@ -11,25 +11,23 @@ import type { OrganizationsQueryVariables } from "generated/graphql";
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
 const HomePage = async () => {
-  const queryClient = getQueryClient();
-
   const session = await getAuthSession();
 
-  if (session) {
-    const variables: OrganizationsQueryVariables = {
-      pageSize: 3,
-      offset: 0,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: session.user.rowId!,
-    };
-
-    await queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey(variables),
-      queryFn: useOrganizationsQuery.fetcher(variables),
-    });
-  }
-
   if (!session) return <LandingPage />;
+
+  const queryClient = getQueryClient();
+
+  const variables: OrganizationsQueryVariables = {
+    pageSize: 3,
+    offset: 0,
+    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    userId: session.user.rowId!,
+  };
+
+  await queryClient.prefetchQuery({
+    queryKey: useOrganizationsQuery.getKey(variables),
+    queryFn: useOrganizationsQuery.fetcher(variables),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -33,21 +33,22 @@ interface Props {
  * Organization overview page.
  */
 const OrganizationPage = async ({ params }: Props) => {
-  const queryClient = getQueryClient();
-
   const { organizationSlug } = await params;
 
   const [session, { organizationBySlug: organization }] = await Promise.all([
     getAuthSession(),
-    // NB: using `fetchQuery` as the partial organization is required for prop drilling.
-    queryClient.fetchQuery({
-      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-      retry: false,
-    }),
+    sdk.Organization({ slug: organizationSlug }),
   ]);
 
   if (!session || !organization) notFound();
+
+  const queryClient = getQueryClient();
+
+  // This pattern is used (rather than `fetchQuery` in replace of the sdk implementation) to avoid having out of sync state. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#data-ownership-and-revalidation for more details.
+  await queryClient.prefetchQuery({
+    queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+    queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
