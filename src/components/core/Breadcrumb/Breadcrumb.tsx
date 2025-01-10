@@ -1,9 +1,10 @@
 "use client";
 
 import { Flex, Icon, Text } from "@omnidev/sigil";
-import { app } from "lib/config";
-import Link from "next/link";
 import { LuChevronRight } from "react-icons/lu";
+
+import { Link } from "components/core";
+import { app } from "lib/config";
 
 export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */
@@ -32,7 +33,8 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
       const isLastItem = breadcrumbs.length - 1 === index;
 
       return (
-        <Flex key={label} align="center">
+        // biome-ignore lint/suspicious/noArrayIndexKey: index used in the key in case an organization and project have the same label
+        <Flex key={`${label}-${index}`} align="center">
           <Icon src={LuChevronRight} color="foreground.subtle" mx={2} />
 
           {href ? (

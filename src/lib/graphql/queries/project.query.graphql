@@ -1,10 +1,16 @@
-query Project($rowId: UUID!) {
-  project(rowId: $rowId) {
-    rowId
-    name
-    description
-    organization {
+query Project($projectSlug: String!, $organizationSlug: String!) {
+  projects(
+    first: 1
+    condition: { slug: $projectSlug }
+    filter: { organization: { slug: { equalTo: $organizationSlug } } }
+  ) {
+    nodes {
+      rowId
       name
+      description
+      organization {
+        name
+      }
     }
   }
 }

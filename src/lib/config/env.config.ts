@@ -4,9 +4,6 @@ const APP_ENV = process.env.APP_ENV;
 export const NEXT_RUNTIME = process.env.NEXT_RUNTIME;
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// web3
-export const WALLETCONNECT_PROJECT_ID = process.env.WALLETCONNECT_PROJECT_ID;
-
 // simplified environment helpers
 /** @knipignore TODO remove this directive once `isProdEnv` is used */
 export const isProdEnv = NODE_ENV === "production";
@@ -17,7 +14,7 @@ export const isDevEnv = NODE_ENV === "development";
 export const isTestEnv = APP_ENV === "test";
 
 // tests
-// TODO remove once HIDRA is synced with database
-export const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID;
+// TODO remove once HIDRA is synced with database and mock data is no longer needed
+export const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_HIDRA_ID;
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;

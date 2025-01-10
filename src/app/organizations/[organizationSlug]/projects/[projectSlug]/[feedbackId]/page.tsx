@@ -13,8 +13,8 @@ export const metadata = {
 interface Props {
   /** Feedback page params. */
   params: Promise<{
-    organizationId: string;
-    projectId: string;
+    organizationSlug: string;
+    projectSlug: string;
     feedbackId: string;
   }>;
 }
@@ -23,7 +23,7 @@ interface Props {
  * Feedback overview page.
  */
 const FeedbackPage = async ({ params }: Props) => {
-  const { organizationId, projectId, feedbackId } = await params;
+  const { organizationSlug, projectSlug, feedbackId } = await params;
 
   const [session, { post: feedback }] = await Promise.all([
     getAuthSession(),
@@ -36,16 +36,16 @@ const FeedbackPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      label: feedback?.project?.organization?.name ?? organizationId,
-      href: `/organizations/${organizationId}`,
+      label: feedback?.project?.organization?.name ?? organizationSlug,
+      href: `/organizations/${organizationSlug}`,
     },
     {
       label: app.projectsPage.breadcrumb,
-      href: `/organizations/${organizationId}/projects`,
+      href: `/organizations/${organizationSlug}/projects`,
     },
     {
-      label: feedback?.project?.name ?? projectId,
-      href: `/organizations/${organizationId}/projects/${projectId}`,
+      label: feedback?.project?.name ?? projectSlug,
+      href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
     },
     {
       label: app.feedbackPage.breadcrumb,

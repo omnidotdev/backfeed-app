@@ -12,9 +12,11 @@ import type { Metadata } from "next";
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const { organizationId } = await params;
+  const { organizationSlug } = await params;
 
-  const { organization } = await sdk.Organization({ rowId: organizationId });
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
 
   return {
     title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
@@ -23,18 +25,18 @@ export const generateMetadata = async ({
 
 interface Props {
   /** Projects page params. */
-  params: Promise<{ organizationId: string }>;
+  params: Promise<{ organizationSlug: string }>;
 }
 
 /**
  * Projects overview page.
  */
 const ProjectsPage = async ({ params }: Props) => {
-  const { organizationId } = await params;
+  const { organizationSlug } = await params;
 
-  const [session, { organization }] = await Promise.all([
+  const [session, { organizationBySlug: organization }] = await Promise.all([
     getAuthSession(),
-    sdk.Organization({ rowId: organizationId }),
+    sdk.Organization({ slug: organizationSlug }),
   ]);
 
   const breadcrumbs = [
@@ -43,8 +45,8 @@ const ProjectsPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      label: organization?.name ?? organizationId,
-      href: `/organizations/${organizationId}`,
+      label: organization?.name ?? organizationSlug,
+      href: `/organizations/${organizationSlug}`,
     },
     {
       label: app.projectsPage.breadcrumb,

@@ -13,9 +13,11 @@ import type { Metadata } from "next";
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const { organizationId } = await params;
+  const { organizationSlug } = await params;
 
-  const { organization } = await sdk.Organization({ rowId: organizationId });
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
 
   return {
     title: `${organization?.name} | ${app.name}`,
@@ -24,18 +26,18 @@ export const generateMetadata = async ({
 
 interface Props {
   /** Organization page params. */
-  params: Promise<{ organizationId: string }>;
+  params: Promise<{ organizationSlug: string }>;
 }
 
 /**
  * Organization overview page.
  */
 const OrganizationPage = async ({ params }: Props) => {
-  const { organizationId } = await params;
+  const { organizationSlug } = await params;
 
-  const [session, { organization }] = await Promise.all([
+  const [session, { organizationBySlug: organization }] = await Promise.all([
     getAuthSession(),
-    sdk.Organization({ rowId: organizationId }),
+    sdk.Organization({ slug: organizationSlug }),
   ]);
 
   const breadcrumbs = [
@@ -44,7 +46,7 @@ const OrganizationPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      label: organization?.name ?? organizationId,
+      label: organization?.name ?? organizationSlug,
     },
   ];
 
@@ -62,7 +64,7 @@ const OrganizationPage = async ({ params }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <HiOutlineFolder />,
             variant: "outline",
-            href: `/organizations/${organizationId}/projects`,
+            href: `/organizations/${organizationSlug}/projects`,
           },
           {
             label: app.organizationPage.header.cta.newProject.label,
@@ -72,7 +74,10 @@ const OrganizationPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <OrganizationOverview organizationId={organizationId} />
+      <OrganizationOverview
+        organizationId={organization?.rowId}
+        organizationSlug={organizationSlug}
+      />
     </Page>
   );
 };

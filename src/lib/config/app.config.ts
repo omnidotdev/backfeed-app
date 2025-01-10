@@ -111,8 +111,65 @@ const app = {
       },
     },
     cta: {
+      newOrganization: {
+        action: {
+          submit: "Create Organization",
+          pending: "Creating Organization...",
+        },
+        label: "New Organization",
+        description: "Create a new organization by submitting the form below.",
+        organizationName: {
+          id: "Organization Name",
+          placeholder: "Omni",
+          error: "Must be at least 3 characters.",
+        },
+        organizationSlug: {
+          id: "Organization Slug",
+          placeholder: "omni-dev",
+          error: {
+            invalidFormat: "Invalid slug format.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 50 characters.",
+            duplicate: "Organization slug already exists.",
+          },
+        },
+      },
       newProject: {
+        action: {
+          submit: "Create Project",
+          pending: "Creating Project...",
+        },
         label: "New Project",
+        description: "Create a new project by submitting the form below.",
+        selectOrganization: {
+          label: {
+            id: "organizations",
+            singular: "Organization",
+            plural: "Organizations",
+          },
+          error: "Please select an organization.",
+        },
+        projectName: {
+          id: "Project Name",
+          placeholder: "Backfeed",
+          error: "Must be at least 3 characters.",
+        },
+        projectDescription: {
+          id: "Project Description",
+          placeholder:
+            "Backfeed is an open-source feedback reporting platform.",
+          error: "Must be at least 10 characters.",
+        },
+        projectSlug: {
+          id: "Project Slug",
+          placeholder: "omni-backfeed",
+          error: {
+            invalidFormat: "Invalid slug format.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 50 characters.",
+            duplicate: "Project slug already exists.",
+          },
+        },
       },
       viewOrganizations: {
         label: "View All Organizations",
@@ -173,6 +230,12 @@ const app = {
     projects: {
       title: "Projects",
       description: "Manage feedback collection across your applications",
+      emptyState: {
+        message: "No projects found. Would you like to create one?",
+        cta: {
+          label: "Create Project",
+        },
+      },
     },
     metrics: {
       title: "Organization Metrics",

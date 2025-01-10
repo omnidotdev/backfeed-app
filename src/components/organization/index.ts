@@ -1,3 +1,4 @@
+export { default as CreateOrganization } from "./CreateOrganization/CreateOrganization";
 export { default as OrganizationActions } from "./OrganizationActions/OrganizationActions";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";

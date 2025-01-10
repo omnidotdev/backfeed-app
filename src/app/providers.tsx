@@ -2,7 +2,6 @@
 
 import {
   AuthProvider,
-  BlockchainProvider,
   QueryProvider,
   SearchParamsProvider,
   ThemeProvider,
@@ -17,9 +16,7 @@ const Providers = ({ children }: { children: ReactNode }) => (
   <AuthProvider>
     <ThemeProvider>
       <SearchParamsProvider>
-        <QueryProvider>
-          <BlockchainProvider>{children}</BlockchainProvider>
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </SearchParamsProvider>
     </ThemeProvider>
   </AuthProvider>

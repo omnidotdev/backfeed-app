@@ -1,11 +1,10 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
-import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
-import { OverflowText } from "components/core";
+import { Link, OverflowText } from "components/core";
 import { DashboardMetric } from "components/dashboard";
 
 import type { FlexProps } from "@omnidev/sigil";
@@ -29,7 +28,7 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
     p={8}
     {...rest}
   >
-    <Link href={`/organizations/${organization?.rowId}`}>
+    <Link href={`/organizations/${organization?.slug}`}>
       <Button
         position="absolute"
         top={0}

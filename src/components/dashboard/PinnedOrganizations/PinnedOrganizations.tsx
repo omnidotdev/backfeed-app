@@ -1,12 +1,13 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
+import { useState } from "react";
 import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
 
-import { SkeletonArray } from "components/core";
+import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
+import { CreateOrganization } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -19,6 +20,9 @@ import type { Organization } from "generated/graphql";
 const PinnedOrganizations = () => {
   const { user } = useAuth();
 
+  const [isCreateOrganizationDialogOpen, setIsCreateOrganizationDialogOpen] =
+    useState(false);
+
   const {
     data: pinnedOrganizations,
     isLoading,
@@ -28,7 +32,7 @@ const PinnedOrganizations = () => {
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.id!,
+      userId: user?.rowId!,
     },
     {
       enabled: !!user,
@@ -66,11 +70,13 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Link href="/organizations">
+        <Link href="/organizations" disabled={!pinnedOrganizations?.length}>
           <Button
             variant="outline"
             color="brand.primary"
             borderColor="brand.primary"
+            opacity={{ base: 1, _disabled: 0.5 }}
+            disabled={!pinnedOrganizations?.length}
           >
             {app.dashboardPage.cta.viewOrganizations.label}
           </Button>
@@ -84,9 +90,11 @@ const PinnedOrganizations = () => {
           gap={6}
           columns={{
             base: 1,
-            md: pinnedOrganizations?.length
-              ? Math.min(pinnedOrganizations.length, 3)
-              : 1,
+            md: isLoading
+              ? 3
+              : pinnedOrganizations?.length
+                ? Math.min(3, pinnedOrganizations.length)
+                : 1,
           }}
         >
           {isLoading ? (
@@ -110,6 +118,7 @@ const PinnedOrganizations = () => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
+                  onClick: () => setIsCreateOrganizationDialogOpen(true),
                 },
               }}
               h={48}
@@ -117,6 +126,11 @@ const PinnedOrganizations = () => {
           )}
         </Grid>
       )}
+
+      <CreateOrganization
+        isOpen={isCreateOrganizationDialogOpen}
+        setIsOpen={setIsCreateOrganizationDialogOpen}
+      />
     </Flex>
   );
 };

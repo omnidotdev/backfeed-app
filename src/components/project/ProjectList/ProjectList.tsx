@@ -21,7 +21,7 @@ const IS_ORGANIZATION_OWNER = Math.random() < 0.5;
  * Project list.
  */
 const ProjectList = () => {
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
@@ -31,7 +31,7 @@ const ProjectList = () => {
     {
       pageSize,
       offset: (page - 1) * pageSize,
-      organizationId,
+      organizationSlug,
       search: debouncedSearch,
     },
     {

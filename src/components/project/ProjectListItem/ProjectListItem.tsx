@@ -1,13 +1,12 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import Link from "next/link";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { DestructiveAction, OverflowText } from "components/core";
+import { DestructiveAction, Link, OverflowText } from "components/core";
 import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
@@ -24,7 +23,7 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { rowId, organizationId, name, description, posts },
+  project: { slug, organization, name, description, posts },
   index,
 }: Props) => {
   const isOrganizationOwner = index % 2 === 0;
@@ -57,7 +56,7 @@ const ProjectListItem = ({
         <HStack alignItems="center" justify="space-between" minH={10}>
           <Stack maxW="65svw">
             <Link
-              href={`/organizations/${organizationId}/projects/${rowId}`}
+              href={`/organizations/${organization?.slug}/projects/${slug}`}
               role="group"
             >
               <OverflowText

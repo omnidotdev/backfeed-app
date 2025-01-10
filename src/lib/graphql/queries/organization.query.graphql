@@ -1,5 +1,5 @@
-query Organization($rowId: UUID!) {
-  organization(rowId: $rowId) {
+query Organization($slug: String!) {
+  organizationBySlug(slug: $slug) {
     rowId
     name
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
@@ -7,6 +7,7 @@ query Organization($rowId: UUID!) {
         rowId
         name
         description
+        slug
         posts {
           totalCount
           aggregates {

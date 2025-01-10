@@ -11,9 +11,11 @@ import { useOrganizationMetricsQuery } from "generated/graphql";
 interface Props {
   /** Organization ID. */
   organizationId: string;
+  /** Organization slug. */
+  organizationSlug: string;
 }
 
-const OrganizationOverview = ({ organizationId }: Props) => {
+const OrganizationOverview = ({ organizationId, organizationSlug }: Props) => {
   const {
     data: organizationMetrics,
     isLoading,
@@ -33,7 +35,7 @@ const OrganizationOverview = ({ organizationId }: Props) => {
 
   return (
     <>
-      <OrganizationProjectsOverview organizationId={organizationId} />
+      <OrganizationProjectsOverview organizationSlug={organizationSlug} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
         {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}
