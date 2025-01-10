@@ -14,8 +14,8 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { FeedbackDetails } from "components/feedback";
+import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
 
