@@ -44,10 +44,10 @@
     "dotenv": "^16.4.7",
     "dotenv-cli": "^7.3.0",
     "husky": "^9.1.6",
-    "knip": "^5.37.1",
+    "knip": "^5.42.0",
     "msw": "^2.7.0",
     "next-router-mock": "^0.9.13",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@ark-ui/react": "^4.4.3",
