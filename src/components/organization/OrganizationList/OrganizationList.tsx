@@ -28,7 +28,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
@@ -53,6 +53,8 @@ const OrganizationList = ({ ...props }: StackProps) => {
   );
 
   const organizations = data?.organizations;
+
+  if (isAuthLoading) return null;
 
   if (isError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;

@@ -20,7 +20,7 @@ import { DialogType, useAuth, useDialogStore } from "lib/hooks";
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -65,6 +65,8 @@ const DashboardPage = () => {
       icon: HiOutlineUserGroup,
     },
   ];
+
+  if (isAuthLoading) return null;
 
   return (
     <Page
