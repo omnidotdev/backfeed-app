@@ -7,7 +7,7 @@ import { app } from "lib/config";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
-import type { SearchParams } from "nuqs/server"
+import type { SearchParams } from "nuqs/server";
 
 export const metadata = {
   title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
