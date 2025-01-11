@@ -47,7 +47,7 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  await Promise.allSettled([
+  await Promise.all([
     queryClient.prefetchQuery({
       queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
       queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),

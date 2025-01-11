@@ -70,7 +70,7 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.allSettled([
+  await Promise.all([
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         pageSize: 5,

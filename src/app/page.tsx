@@ -33,7 +33,7 @@ const HomePage = async () => {
     userId: session.user.rowId!,
   };
 
-  await Promise.allSettled([
+  await Promise.all([
     queryClient.prefetchQuery({
       queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
       queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
