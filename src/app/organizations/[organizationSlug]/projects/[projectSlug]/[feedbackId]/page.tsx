@@ -1,3 +1,4 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Comments, FeedbackDetails } from "components/feedback";
@@ -75,9 +76,11 @@ const FeedbackPage = async ({ params }: Props) => {
 
   return (
     <Page breadcrumbs={breadcrumbs}>
-      <FeedbackDetails feedbackId={feedbackId} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <FeedbackDetails feedbackId={feedbackId} />
 
-      <Comments feedbackId={feedbackId} />
+        <Comments feedbackId={feedbackId} />
+      </HydrationBoundary>
     </Page>
   );
 };
