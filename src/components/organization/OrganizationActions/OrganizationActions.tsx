@@ -6,7 +6,9 @@ import { MdManageAccounts } from "react-icons/md";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-import { DialogType, useAuth, useDialogStore } from "lib/hooks";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";

@@ -9,13 +9,9 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  DialogType,
-  useAuth,
-  useDebounceValue,
-  useDialogStore,
-  useSearchParams,
-} from "lib/hooks";
+import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";

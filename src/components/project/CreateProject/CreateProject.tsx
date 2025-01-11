@@ -25,7 +25,9 @@ import {
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
-import { DialogType, useAuth, useDialogStore } from "lib/hooks";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 

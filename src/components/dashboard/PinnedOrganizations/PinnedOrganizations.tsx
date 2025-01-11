@@ -8,7 +8,9 @@ import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { DialogType, useAuth, useDialogStore } from "lib/hooks";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
 
