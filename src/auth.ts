@@ -19,7 +19,6 @@ declare module "next-auth/jwt" {
     family_name?: string;
     preferred_username?: string;
     sub?: string;
-    id_token?: string;
   }
 }
 
@@ -34,7 +33,6 @@ declare module "next-auth" {
       firstName?: string;
       lastName?: string;
       username?: string;
-      idToken?: string;
     } & NextAuthUser;
   }
 }
@@ -61,7 +59,7 @@ export const { handlers, auth } = NextAuth({
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
     // include additional claims in the token
-    jwt: async ({ token, profile, account }) => {
+    jwt: async ({ token, profile }) => {
       if (profile) {
         // NB: Auth.js makes its own rotating `sub`, not to be confused with the IDP `sub`. Auth.js sets this on `token.sub` by default, so it is overwritten here
         if (profile.sub) token.sub = profile.sub;
@@ -69,10 +67,6 @@ export const { handlers, auth } = NextAuth({
         if (profile.family_name) token.family_name = profile.family_name;
         if (profile.preferred_username)
           token.preferred_username = profile.preferred_username;
-      }
-
-      if (account) {
-        token.id_token = account.id_token;
       }
 
       // create or update local app user
@@ -116,7 +110,6 @@ export const { handlers, auth } = NextAuth({
       session.user.firstName = token.given_name;
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
-      session.user.idToken = token.id_token;
 
       // retrieve user by HIDRA ID
       const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
