@@ -9,7 +9,8 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { DialogType, useDialogStore } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
 

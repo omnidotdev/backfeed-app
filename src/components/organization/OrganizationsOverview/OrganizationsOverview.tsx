@@ -6,7 +6,8 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
-import { DialogType, useDialogStore } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 const breadcrumbs = [
   {

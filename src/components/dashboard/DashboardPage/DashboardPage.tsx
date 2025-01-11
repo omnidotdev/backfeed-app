@@ -14,7 +14,9 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DialogType, useAuth, useDialogStore } from "lib/hooks";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
