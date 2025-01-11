@@ -37,12 +37,12 @@ const AccountInformation = () => {
   const handleLogout = async () => {
     try {
       const response = await fetch("/api/auth/federated-logout");
-      
+
       if (response.ok) {
         await signOut();
-        
+
         const { url } = await response.json();
-        
+
         window.location.href = url;
       }
     } catch (error) {
