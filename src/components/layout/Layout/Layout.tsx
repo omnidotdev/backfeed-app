@@ -56,7 +56,7 @@ const Layout = ({ children }: Props) => {
 
       <Footer />
 
-      {/* Dialogs */}
+      {/* dialogs */}
       <CreateProject />
       <CreateOrganization />
     </Grid>
