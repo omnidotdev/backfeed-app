@@ -1,17 +1,18 @@
 import { auth } from "auth";
+import { AUTH_KEYCLOAK_ISSUER, BASE_URL } from "lib/config";
 
 /**
  * Federated logout route handler. This route is used to handle the backchannel logout flow.
  */
 export const GET = async () => {
-  let redirectURL = "http://localhost:3000/";
+  let redirectURL = BASE_URL!;
 
   try {
     const session = await auth();
 
     if (session) {
       const signOutURL =
-        "https://hidra.omni.dev/realms/test/protocol/openid-connect/logout";
+        `${AUTH_KEYCLOAK_ISSUER!}/protocol/openid-connect/logout`
 
       const signOutParams = new URLSearchParams({
         id_token_hint: session.user.idToken!,
