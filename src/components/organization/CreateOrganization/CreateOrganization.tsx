@@ -23,6 +23,8 @@ import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -68,20 +70,17 @@ const createOrganizationSchema = baseSchema.superRefine(
   }
 );
 
-interface Props {
-  /** State to determine if the dialog is open. */
-  isOpen: boolean;
-  /** Callback to manage the open state of the dialog. */
-  setIsOpen: (isOpen: boolean) => void;
-}
-
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
+const CreateOrganization = () => {
   const router = useRouter();
 
   const { user } = useAuth();
+
+  const { isOpen, setIsOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
 
   const { data, mutateAsync: createOrganization } =
     useCreateOrganizationMutation();
@@ -233,9 +232,15 @@ const CreateOrganization = ({ isOpen, setIsOpen }: Props) => {
           )}
         </Field>
 
-        <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <Button type="submit" disabled={!canSubmit} mt={4}>
+        <Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
+        >
+          {([canSubmit, isSubmitting, isDirty]) => (
+            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
               {isSubmitting
                 ? app.dashboardPage.cta.newOrganization.action.pending
                 : app.dashboardPage.cta.newOrganization.action.submit}

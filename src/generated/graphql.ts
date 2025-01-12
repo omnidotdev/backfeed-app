@@ -4430,6 +4430,21 @@ export type CreateOrganizationMutationVariables = Exact<{
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization?: { __typename?: 'CreateOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string, slug: string } | null } | null };
 
+export type DeleteOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteOrganizationMutation = { __typename?: 'Mutation', deleteOrganization?: { __typename?: 'DeleteOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string } | null } | null };
+
+export type LeaveOrganizationMutationVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4518,7 +4533,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4624,6 +4639,55 @@ export const useCreateOrganizationMutation = <
       {
     mutationKey: ['CreateOrganization'],
     mutationFn: useGraphqlClient<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument),
+    ...options
+  }
+    )};
+
+export const DeleteOrganizationDocument = `
+    mutation DeleteOrganization($rowId: UUID!) {
+  deleteOrganization(input: {rowId: $rowId}) {
+    organization {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useDeleteOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteOrganizationMutation, TError, DeleteOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteOrganizationMutation, TError, DeleteOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteOrganization'],
+    mutationFn: useGraphqlClient<DeleteOrganizationMutation, DeleteOrganizationMutationVariables>(DeleteOrganizationDocument),
+    ...options
+  }
+    )};
+
+export const LeaveOrganizationDocument = `
+    mutation LeaveOrganization($userId: UUID!, $organizationId: UUID!) {
+  deleteUserOrganizationByUserIdAndOrganizationId(
+    input: {userId: $userId, organizationId: $organizationId}
+  ) {
+    userOrganization {
+      userId
+      organizationId
+    }
+  }
+}
+    `;
+
+export const useLeaveOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LeaveOrganizationMutation, TError, LeaveOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<LeaveOrganizationMutation, TError, LeaveOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['LeaveOrganization'],
+    mutationFn: useGraphqlClient<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument),
     ...options
   }
     )};
@@ -4998,6 +5062,7 @@ export const OrganizationDocument = `
   organizationBySlug(slug: $slug) {
     rowId
     name
+    slug
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
