@@ -22,7 +22,7 @@
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
     "@pandacss/dev": "^0.48.0",
-    "@types/node": "^20.11.19",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "concurrently": "^8.2.2",
