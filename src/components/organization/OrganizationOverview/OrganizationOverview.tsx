@@ -13,6 +13,7 @@ import {
 } from "components/organization";
 import { useOrganizationMetricsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { CREATE_PROJECT_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -26,7 +27,7 @@ interface Props {
 
 const OrganizationOverview = ({ organization }: Props) => {
   const projectsBeingCreated = useIsMutating({
-    mutationKey: ["project", "create"],
+    mutationKey: CREATE_PROJECT_MUTATION_KEY,
   });
 
   const { isLoading: isAuthLoading } = useAuth();
