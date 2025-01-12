@@ -1,7 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-
 import {
   Avatar,
   Badge,
@@ -14,10 +12,11 @@ import {
   MenuItemGroupLabel,
   MenuSeparator,
 } from "@omnidev/sigil";
+import { signOut } from "next-auth/react";
+import { FiLogOut, FiUser } from "react-icons/fi";
+
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
-
-import { FiLogOut, FiUser } from "react-icons/fi";
 
 /**
  * User account information.
