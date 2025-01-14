@@ -11,6 +11,8 @@ import { ProjectListItem } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
 
@@ -26,6 +28,10 @@ const ProjectList = () => {
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
+
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   const { data, isLoading, isError } = useProjectsQuery(
     {
@@ -72,6 +78,7 @@ const ProjectList = () => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
+                  onClick: () => setIsCreateProjectDialogOpen(true),
                 },
               }
             : undefined
