@@ -34,9 +34,7 @@ const defaultDialogStores = new Map<
 /**
  * Retrieve a dialog store.
  */
-const getDialogStore = ({ type }: { type?: DialogType }) => {
-  if (!type) return;
-
+const getDialogStore = ({ type }: { type: DialogType }) => {
   if (!defaultDialogStores.has(type)) {
     defaultDialogStores.set(type, createDialogStore());
   }
