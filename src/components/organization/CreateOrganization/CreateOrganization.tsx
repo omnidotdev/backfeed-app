@@ -158,13 +158,6 @@ const CreateOrganization = () => {
           asyncDebounceMs={300}
           validators={{
             onBlurAsync: baseSchema.shape.name,
-            // onBlurAsync: async (value) => {
-            //   try {
-            //     baseSchema.shape.name.parse(value);
-            //   } catch (e) {
-            //     return e.errors[0].message;
-            //   }
-            // },
           }}
         >
           {({ handleChange, handleBlur, state }) => (
@@ -201,8 +194,7 @@ const CreateOrganization = () => {
           asyncDebounceMs={300}
           // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
           validators={{
-            // onChangeAsync: baseSchema.shape.slug,
-            onBlurAsync: async (value) => baseSchema.shape.name.parse(value),
+            onChangeAsync: baseSchema.shape.slug,
           }}
         >
           {({ handleChange, state }) => (
