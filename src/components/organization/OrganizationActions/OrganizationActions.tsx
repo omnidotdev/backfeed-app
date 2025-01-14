@@ -6,6 +6,7 @@ import { MdManageAccounts } from "react-icons/md";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -23,6 +24,8 @@ interface Action extends ButtonProps {
  * Organization actions.
  */
 const OrganizationActions = () => {
+  const { isLoading: isAuthLoading } = useAuth();
+
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -32,6 +35,7 @@ const OrganizationActions = () => {
       label: app.organizationPage.actions.cta.createProject.label,
       icon: LuPlusCircle,
       onClick: () => setIsCreateProjectDialogOpen(true),
+      disabled: isAuthLoading,
     },
     {
       label: app.organizationPage.actions.cta.manageTeam.label,

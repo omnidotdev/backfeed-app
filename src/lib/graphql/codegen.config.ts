@@ -53,13 +53,6 @@ const graphqlCodegenConfig: CodegenConfig = {
       plugins: [...sharedPlugins, "typescript-react-query"],
       config: {
         ...sharedConfig,
-        // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#using-graphql-request
-        // fetcher: "graphql-request",
-        // NB: the custom fetcher hook has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation
-        fetcher: {
-          func: "lib/hooks#useGraphqlClient",
-          isReactHook: true,
-        },
         // https://github.com/dotansimha/graphql-code-generator-community/commit/935b51f0777047102cc1c33a1a18a4527902e0f9#diff-0e40fc3fdce3118ff7551a9e1fcd7216a6ec4951b18ea5d5f356999418e8383eR93-R98
         reactQueryVersion: 5,
         // enable infinite query generation
@@ -67,8 +60,11 @@ const graphqlCodegenConfig: CodegenConfig = {
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys
         exposeQueryKeys: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposefetcher
-        // ! NB: this seems to be bugged for custom fetchers, https://github.com/dotansimha/graphql-code-generator-community/issues/202#issuecomment-1541174562
         exposeFetcher: true,
+        // NB: the custom fetcher has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation
+        fetcher: {
+          func: "lib/graphql/graphqlFetch#graphqlFetch",
+        },
       },
     },
   },

@@ -58,6 +58,10 @@ const AccountInformation = () => {
       }
       triggerProps={{
         px: 0,
+        rounded: "full",
+      }}
+      positioning={{
+        shift: 12,
       }}
     >
       <MenuItemGroup>

@@ -22,7 +22,7 @@ import { DialogType } from "store";
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -37,7 +37,7 @@ const DashboardPage = () => {
       userId: user?.id!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.id,
       select: (data) => ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
@@ -50,7 +50,7 @@ const DashboardPage = () => {
       userId: user?.rowId!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.totalCount,
     }
   );
@@ -67,6 +67,8 @@ const DashboardPage = () => {
       icon: HiOutlineUserGroup,
     },
   ];
+
+  if (isAuthLoading) return null;
 
   return (
     <Page

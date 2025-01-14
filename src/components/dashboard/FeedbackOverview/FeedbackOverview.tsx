@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton, useIsClient } from "@omnidev/sigil";
+import { Skeleton } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import {
   Bar,
@@ -26,8 +26,6 @@ const getFormattedDate = (diff: number) =>
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = () => {
-  const isClient = useIsClient();
-
   const { user } = useAuth();
 
   const {
@@ -40,7 +38,7 @@ const FeedbackOverview = () => {
       startDate: oneWeekAgo,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.id,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
           name: dayjs(aggregate.keys?.[0]).format("ddd"),
@@ -66,7 +64,7 @@ const FeedbackOverview = () => {
       title="Feedback Overview"
       contentProps={{ align: "center", justify: "center" }}
     >
-      {isClient && !isLoading ? (
+      {!isLoading ? (
         isError ? (
           <ErrorBoundary
             message="Error fetching feedback overview"
