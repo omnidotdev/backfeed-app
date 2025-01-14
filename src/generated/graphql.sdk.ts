@@ -4580,6 +4580,7 @@ export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
 }>;
 
 
@@ -4894,10 +4895,11 @@ export const OrganizationsDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {
   posts(
     after: $after
     first: $pageSize
+    orderBy: $orderBy
     filter: {projectId: {equalTo: $projectId}}
   ) {
     pageInfo {

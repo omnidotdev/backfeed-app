@@ -4579,6 +4579,7 @@ export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
 }>;
 
 
@@ -5442,10 +5443,11 @@ useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) 
 useOrganizationsQuery.fetcher = (variables: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {
   posts(
     after: $after
     first: $pageSize
+    orderBy: $orderBy
     filter: {projectId: {equalTo: $projectId}}
   ) {
     pageInfo {
