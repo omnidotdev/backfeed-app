@@ -11,6 +11,7 @@ import {
   Text,
   Tooltip,
 } from "@omnidev/sigil";
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import {
@@ -40,6 +41,7 @@ import type {
   TooltipTriggerProps,
   VstackProps,
 } from "@omnidev/sigil";
+import type { InvalidateOptions } from "@tanstack/react-query";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -70,6 +72,8 @@ const FeedbackDetails = ({
 }: Props) => {
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
+  const queryClient = useQueryClient();
+
   const { user } = useAuth();
 
   const {
@@ -81,6 +85,7 @@ const FeedbackDetails = ({
       rowId: feedbackId,
     },
     {
+      placeholderData: keepPreviousData,
       select: (data) => data?.post,
     }
   );
@@ -107,24 +112,79 @@ const FeedbackDetails = ({
     }
   );
 
+  // Forces mutations to stay pending until refetches are done
+  const onSuccess = () => {
+    // NB: Since our global callback has already invalidated everything, we just use `invalidateQueries` to "pick up" the already in flight Promises and return them. See: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations#to-await-or-not-to-await
+    const invalidationOptions: InvalidateOptions = {
+      cancelRefetch: false,
+    };
+
+    return Promise.all([
+      queryClient.invalidateQueries(
+        {
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+        },
+        invalidationOptions
+      ),
+      queryClient.invalidateQueries(
+        {
+          queryKey: useUpvoteQuery.getKey({ feedbackId, userId: user?.rowId! }),
+        },
+        invalidationOptions
+      ),
+      queryClient.invalidateQueries(
+        {
+          queryKey: useDownvoteQuery.getKey({
+            feedbackId,
+            userId: user?.rowId!,
+          }),
+        },
+        invalidationOptions
+      ),
+    ]);
+  };
+
   const { mutate: upvote, isPending: isUpvotePending } =
-    useCreateUpvoteMutation();
+    useCreateUpvoteMutation({ onSuccess });
   const { mutate: downvote, isPending: isDownvotePending } =
-    useCreateDownvoteMutation();
+    useCreateDownvoteMutation({ onSuccess });
   const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
-    useDeleteUpvoteMutation();
+    useDeleteUpvoteMutation({ onSuccess });
   const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
-    useDeleteDownvoteMutation();
+    useDeleteDownvoteMutation({ onSuccess });
 
   const isVotingDisabled = isLoading || isError;
+
+  const totalUpvotes =
+    (feedback?.upvotes?.totalCount ?? 0) +
+    (isUpvotePending ? 1 : isDeleteUpvotePending ? -1 : 0);
+
+  const totalDownvotes =
+    (feedback?.downvotes?.totalCount ?? 0) +
+    (isDownvotePending ? 1 : isDeleteDownvotePending ? -1 : 0);
+
+  const netTotalVotes = totalUpvotes - totalDownvotes;
+
+  const netVotesColor = match(netTotalVotes)
+    .with(0, () => "gray.400")
+    .when(
+      (net) => net > 0,
+      () => "brand.tertiary"
+    )
+    .otherwise(() => "brand.quinary");
+
+  const netVotesSign = match(netTotalVotes)
+    .with(0, () => "+/- ")
+    .when(
+      (net) => net > 0,
+      () => "+"
+    )
+    .otherwise(() => "");
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes:
-        (feedback?.upvotes?.totalCount ?? 0) +
-        (isUpvotePending ? 1 : 0) -
-        (isDeleteUpvotePending ? 1 : 0),
+      votes: totalUpvotes,
       tooltip: app.feedbackPage.details.upvote,
       icon:
         hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
@@ -149,10 +209,7 @@ const FeedbackDetails = ({
     },
     {
       id: "downvote",
-      votes:
-        (feedback?.downvotes?.totalCount ?? 0) +
-        (isDownvotePending ? 1 : 0) -
-        (isDeleteDownvotePending ? 1 : 0),
+      votes: totalDownvotes,
       tooltip: app.feedbackPage.details.downvote,
       icon:
         hasDownvoted || isDownvotePending
@@ -178,26 +235,6 @@ const FeedbackDetails = ({
       },
     },
   ];
-
-  const netTotalVotes =
-    (feedback?.upvotes?.totalCount ?? 0) -
-    (feedback?.downvotes?.totalCount ?? 0);
-
-  const netVotesColor = match(netTotalVotes)
-    .with(0, () => "gray.400")
-    .when(
-      (net) => net > 0,
-      () => "brand.tertiary"
-    )
-    .otherwise(() => "brand.quinary");
-
-  const netVotesSign = match(netTotalVotes)
-    .with(0, () => "+/- ")
-    .when(
-      (net) => net > 0,
-      () => "+"
-    )
-    .otherwise(() => "");
 
   return (
     <HStack
@@ -312,34 +349,32 @@ const FeedbackDetails = ({
               )}
 
               <Flex gap={1}>
-                {VOTE_BUTTONS.map(
-                  ({ id, votes = 0, tooltip, icon, ...rest }) => (
-                    <Skeleton key={id} isLoaded={!isLoading} h={7}>
-                      <Tooltip
-                        positioning={{ placement: "top" }}
-                        trigger={
-                          <HStack gap={2} py={1} fontVariant="tabular-nums">
-                            <Icon src={icon} w={5} h={5} />
-                            {votes}
-                          </HStack>
-                        }
-                        triggerProps={{
-                          variant: "ghost",
-                          w: "full",
-                          bgColor: "transparent",
-                          opacity: {
-                            base: 1,
-                            _disabled: 0.3,
-                            _hover: { base: 0.8, _disabled: 0.3 },
-                          },
-                          ...rest,
-                        }}
-                      >
-                        {tooltip}
-                      </Tooltip>
-                    </Skeleton>
-                  )
-                )}
+                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                  <Skeleton key={id} isLoaded={!isLoading} h={7}>
+                    <Tooltip
+                      positioning={{ placement: "top" }}
+                      trigger={
+                        <HStack gap={2} py={1} fontVariant="tabular-nums">
+                          <Icon src={icon} w={5} h={5} />
+                          {votes}
+                        </HStack>
+                      }
+                      triggerProps={{
+                        variant: "ghost",
+                        w: "full",
+                        bgColor: "transparent",
+                        opacity: {
+                          base: 1,
+                          _disabled: 0.3,
+                          _hover: { base: 0.8, _disabled: 0.3 },
+                        },
+                        ...rest,
+                      }}
+                    >
+                      {tooltip}
+                    </Tooltip>
+                  </Skeleton>
+                ))}
               </Flex>
             </HStack>
           </Stack>

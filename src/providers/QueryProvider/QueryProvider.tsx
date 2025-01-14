@@ -19,7 +19,7 @@ const makeQueryClient = () => {
       },
     },
     mutationCache: new MutationCache({
-      onSuccess: () => {
+      onSettled: () => {
         queryClient.invalidateQueries();
       },
     }),
