@@ -63,6 +63,7 @@ const CTA = ({ action }: Props) => {
   return (
     <Button
       size="sm"
+      disabled={action.disabled}
       width={{ base: "full", md: "auto" }}
       onClick={(e) => handleClick(e, action)}
       {...action}
