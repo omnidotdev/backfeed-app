@@ -1,20 +1,15 @@
 "use client";
 
 import {
-  Button,
   Grid,
-  Input,
-  Skeleton,
   Stack,
-  Text,
-  Textarea,
   VStack,
 } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { FeedbackDetails } from "components/feedback";
+import { CreateFeedback, FeedbackDetails } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -64,39 +59,8 @@ const ProjectFeedback = ({ projectId }: Props) => {
       icon={HiOutlineFolder}
     >
       <Stack>
-        {/* TODO: Extract this form into its own component when hooking up. */}
-        <Input
-          placeholder={app.projectPage.projectFeedback.inputPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
-        />
-
-        <Textarea
-          placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
-          rows={5}
-          minH={32}
-        />
-
-        <Stack justify="space-between" direction="row">
-          <Skeleton isLoaded={!isLoading} h="fit-content">
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
-          </Skeleton>
-
-          <Button
-            w="fit-content"
-            placeSelf="flex-end"
-            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-            disabled={isLoading || isError}
-          >
-            {app.projectPage.projectFeedback.submit}
-          </Button>
-        </Stack>
-
+       <CreateFeedback isLoading={isLoading} isError={isError} totalCount={totalCount} />
+       
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
         ) : (
