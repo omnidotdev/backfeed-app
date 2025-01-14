@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Grid,
-  Stack,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Stack, VStack } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -59,8 +55,12 @@ const ProjectFeedback = ({ projectId }: Props) => {
       icon={HiOutlineFolder}
     >
       <Stack>
-       <CreateFeedback isLoading={isLoading} isError={isError} totalCount={totalCount} />
-       
+        <CreateFeedback
+          isLoading={isLoading}
+          isError={isError}
+          totalCount={totalCount}
+        />
+
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
         ) : (
