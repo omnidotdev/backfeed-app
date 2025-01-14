@@ -4529,6 +4529,14 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
+export type DownvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', id: string } | null };
+
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
@@ -4609,6 +4617,14 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+
+export type UpvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', id: string } | null };
 
 export type UserQueryVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4764,6 +4780,13 @@ export const DashboardAggregatesDocument = gql`
     filter: {userOrganizations: {some: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}}}
   ) {
     totalCount
+  }
+}
+    `;
+export const DownvoteDocument = gql`
+    query Downvote($userId: UUID!, $feedbackId: UUID!) {
+  downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    id
   }
 }
     `;
@@ -4971,6 +4994,13 @@ export const RecentFeedbackDocument = gql`
   }
 }
     `;
+export const UpvoteDocument = gql`
+    query Upvote($userId: UUID!, $feedbackId: UUID!) {
+  upvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    id
+  }
+}
+    `;
 export const UserDocument = gql`
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
@@ -5046,6 +5076,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
     },
+    Downvote(variables: DownvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DownvoteQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DownvoteQuery>(DownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Downvote', 'query', variables);
+    },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
     },
@@ -5075,6 +5108,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     RecentFeedback(variables: RecentFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecentFeedbackQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<RecentFeedbackQuery>(RecentFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RecentFeedback', 'query', variables);
+    },
+    Upvote(variables: UpvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpvoteQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpvoteQuery>(UpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Upvote', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);

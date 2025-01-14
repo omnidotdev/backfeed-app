@@ -13,7 +13,6 @@ import {
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
-import { useState } from "react";
 import {
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
@@ -24,8 +23,15 @@ import { match } from "ts-pattern";
 
 import { Link } from "components/core";
 import { ErrorBoundary } from "components/layout";
-import { useFeedbackByIdQuery } from "generated/graphql";
+import {
+  useCreateDownvoteMutation,
+  useCreateUpvoteMutation,
+  useDownvoteQuery,
+  useFeedbackByIdQuery,
+  useUpvoteQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 import type {
   HstackProps,
@@ -62,6 +68,8 @@ const FeedbackDetails = ({
 }: Props) => {
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
+  const { user } = useAuth();
+
   const {
     data: feedback,
     isLoading,
@@ -75,47 +83,73 @@ const FeedbackDetails = ({
     }
   );
 
-  const [votingState, setVotingState] = useState<{
-    hasUpvoted: boolean;
-    hasDownvoted: boolean;
-  }>({ hasUpvoted: false, hasDownvoted: false });
+  const { data: hasUpvoted } = useUpvoteQuery(
+    {
+      userId: user?.rowId!,
+      feedbackId,
+    },
+    {
+      enabled: !!user?.rowId,
+      select: (data) => data?.upvoteByPostIdAndUserId,
+    }
+  );
+
+  const { data: hasDownvoted } = useDownvoteQuery(
+    {
+      userId: user?.rowId!,
+      feedbackId,
+    },
+    {
+      enabled: !!user?.rowId,
+      select: (data) => data?.downvoteByPostIdAndUserId,
+    }
+  );
+
+  const { mutate: upvote, isPending: isUpvotePending } =
+    useCreateUpvoteMutation();
+  const { mutate: downvote, isPending: isDownvotePending } =
+    useCreateDownvoteMutation();
 
   const isVotingDisabled = isLoading || isError;
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: votingState.hasUpvoted
+      votes: isUpvotePending
         ? (feedback?.upvotes?.totalCount ?? 0) + 1
         : (feedback?.upvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.upvote,
-      icon: votingState.hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+      icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
       disabled: isVotingDisabled,
-      onClick: () => {
-        setVotingState((prev) => ({
-          hasUpvoted: !prev.hasUpvoted,
-          hasDownvoted: false,
-        }));
-      },
+      onClick: () =>
+        upvote({
+          input: {
+            upvote: {
+              postId: feedbackId,
+              userId: user?.rowId!,
+            },
+          },
+        }),
     },
     {
       id: "downvote",
-      votes: votingState.hasDownvoted
+      votes: isDownvotePending
         ? (feedback?.downvotes?.totalCount ?? 0) + 1
         : (feedback?.downvotes?.totalCount ?? 0),
       tooltip: app.feedbackPage.details.downvote,
-      icon: votingState.hasDownvoted
-        ? PiArrowFatLineDownFill
-        : PiArrowFatLineDown,
+      icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
       disabled: isVotingDisabled,
-      onClick: () => {
-        setVotingState((prev) => ({
-          hasUpvoted: false,
-          hasDownvoted: !prev.hasDownvoted,
-        }));
-      },
+      onClick: () =>
+        downvote({
+          input: {
+            downvote: {
+              postId: feedbackId,
+              userId: user?.rowId!,
+            },
+          },
+        }),
     },
   ];
 

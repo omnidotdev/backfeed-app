@@ -4528,6 +4528,14 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
+export type DownvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', id: string } | null };
+
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
@@ -4608,6 +4616,14 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+
+export type UpvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', id: string } | null };
 
 export type UserQueryVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -5080,6 +5096,56 @@ useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQuer
 
 
 useDashboardAggregatesQuery.fetcher = (variables: DashboardAggregatesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables, options);
+
+export const DownvoteDocument = `
+    query Downvote($userId: UUID!, $feedbackId: UUID!) {
+  downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    id
+  }
+}
+    `;
+
+export const useDownvoteQuery = <
+      TData = DownvoteQuery,
+      TError = unknown
+    >(
+      variables: DownvoteQueryVariables,
+      options?: Omit<UseQueryOptions<DownvoteQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DownvoteQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<DownvoteQuery, TError, TData>(
+      {
+    queryKey: ['Downvote', variables],
+    queryFn: graphqlFetch<DownvoteQuery, DownvoteQueryVariables>(DownvoteDocument, variables),
+    ...options
+  }
+    )};
+
+useDownvoteQuery.getKey = (variables: DownvoteQueryVariables) => ['Downvote', variables];
+
+export const useInfiniteDownvoteQuery = <
+      TData = InfiniteData<DownvoteQuery>,
+      TError = unknown
+    >(
+      variables: DownvoteQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<DownvoteQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DownvoteQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<DownvoteQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Downvote.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<DownvoteQuery, DownvoteQueryVariables>(DownvoteDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteDownvoteQuery.getKey = (variables: DownvoteQueryVariables) => ['Downvote.infinite', variables];
+
+
+useDownvoteQuery.fetcher = (variables: DownvoteQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DownvoteQuery, DownvoteQueryVariables>(DownvoteDocument, variables, options);
 
 export const FeedbackByIdDocument = `
     query FeedbackById($rowId: UUID!) {
@@ -5714,6 +5780,56 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 
 
 useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
+
+export const UpvoteDocument = `
+    query Upvote($userId: UUID!, $feedbackId: UUID!) {
+  upvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    id
+  }
+}
+    `;
+
+export const useUpvoteQuery = <
+      TData = UpvoteQuery,
+      TError = unknown
+    >(
+      variables: UpvoteQueryVariables,
+      options?: Omit<UseQueryOptions<UpvoteQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UpvoteQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UpvoteQuery, TError, TData>(
+      {
+    queryKey: ['Upvote', variables],
+    queryFn: graphqlFetch<UpvoteQuery, UpvoteQueryVariables>(UpvoteDocument, variables),
+    ...options
+  }
+    )};
+
+useUpvoteQuery.getKey = (variables: UpvoteQueryVariables) => ['Upvote', variables];
+
+export const useInfiniteUpvoteQuery = <
+      TData = InfiniteData<UpvoteQuery>,
+      TError = unknown
+    >(
+      variables: UpvoteQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UpvoteQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UpvoteQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UpvoteQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Upvote.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UpvoteQuery, UpvoteQueryVariables>(UpvoteDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUpvoteQuery.getKey = (variables: UpvoteQueryVariables) => ['Upvote.infinite', variables];
+
+
+useUpvoteQuery.fetcher = (variables: UpvoteQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UpvoteQuery, UpvoteQueryVariables>(UpvoteDocument, variables, options);
 
 export const UserDocument = `
     query User($hidraId: UUID!) {
