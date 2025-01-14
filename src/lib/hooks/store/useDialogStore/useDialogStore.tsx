@@ -9,7 +9,7 @@ import type { DialogType } from "store";
 
 interface Options {
   /** Dialog type. */
-  type?: DialogType;
+  type: DialogType | undefined;
 }
 
 /**
