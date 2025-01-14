@@ -4643,6 +4643,8 @@ export const useCreateOrganizationMutation = <
   }
     )};
 
+useCreateOrganizationMutation.getKey = () => ['CreateOrganization'];
+
 
 useCreateOrganizationMutation.fetcher = (variables: CreateOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument, variables, options);
 
@@ -4668,6 +4670,8 @@ export const useDeleteOrganizationMutation = <
     ...options
   }
     )};
+
+useDeleteOrganizationMutation.getKey = () => ['DeleteOrganization'];
 
 
 useDeleteOrganizationMutation.fetcher = (variables: DeleteOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteOrganizationMutation, DeleteOrganizationMutationVariables>(DeleteOrganizationDocument, variables, options);
@@ -4698,6 +4702,8 @@ export const useLeaveOrganizationMutation = <
   }
     )};
 
+useLeaveOrganizationMutation.getKey = () => ['LeaveOrganization'];
+
 
 useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
 
@@ -4722,6 +4728,8 @@ export const useCreateFeedbackMutation = <
   }
     )};
 
+useCreateFeedbackMutation.getKey = () => ['CreateFeedback'];
+
 
 useCreateFeedbackMutation.fetcher = (variables: CreateFeedbackMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateFeedbackMutation, CreateFeedbackMutationVariables>(CreateFeedbackDocument, variables, options);
 
@@ -4745,6 +4753,8 @@ export const useDeletePostMutation = <
     ...options
   }
     )};
+
+useDeletePostMutation.getKey = () => ['DeletePost'];
 
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
@@ -4775,6 +4785,8 @@ export const useCreateProjectMutation = <
   }
     )};
 
+useCreateProjectMutation.getKey = () => ['CreateProject'];
+
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
@@ -4799,6 +4811,8 @@ export const useDeleteUpvoteMutation = <
   }
     )};
 
+useDeleteUpvoteMutation.getKey = () => ['DeleteUpvote'];
+
 
 useDeleteUpvoteMutation.fetcher = (variables: DeleteUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables, options);
 
@@ -4822,6 +4836,8 @@ export const useUpvotePostMutation = <
     ...options
   }
     )};
+
+useUpvotePostMutation.getKey = () => ['UpvotePost'];
 
 
 useUpvotePostMutation.fetcher = (variables: UpvotePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument, variables, options);
@@ -4849,6 +4865,8 @@ export const useCreateUserMutation = <
   }
     )};
 
+useCreateUserMutation.getKey = () => ['CreateUser'];
+
 
 useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
 
@@ -4873,6 +4891,8 @@ export const useUpdateUserMutation = <
   }
     )};
 
+useUpdateUserMutation.getKey = () => ['UpdateUser'];
+
 
 useUpdateUserMutation.fetcher = (variables: UpdateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
 
@@ -4896,6 +4916,8 @@ export const useCreateUserOrganizationMutation = <
     ...options
   }
     )};
+
+useCreateUserOrganizationMutation.getKey = () => ['CreateUserOrganization'];
 
 
 useCreateUserOrganizationMutation.fetcher = (variables: CreateUserOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument, variables, options);
