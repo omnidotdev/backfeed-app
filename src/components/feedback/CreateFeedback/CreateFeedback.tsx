@@ -8,9 +8,27 @@ import {
   Stack,
   Text,
   Textarea,
+  sigil,
 } from "@omnidev/sigil";
+import { useForm } from "@tanstack/react-form";
+import { useParams } from "next/navigation";
+import { z } from "zod";
 
+import { FormFieldError } from "components/core";
+import { useCreateFeedbackMutation, useProjectQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { standardSchemaValidator } from "lib/constants";
+import { useAuth } from "lib/hooks";
+
+// TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
+
+/** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
+const createFeedbackSchema = z.object({
+  projectId: z.string().uuid("Invalid format"),
+  userId: z.string().uuid("Invalid format"),
+  title: z.string().min(3, "Must be at least 3 characters."),
+  description: z.string().min(10, "Must be at least 10 characters."),
+});
 
 interface Props {
   /** Loading state for current feedback. */
@@ -25,31 +43,132 @@ interface Props {
  * Create feedback form.
  */
 const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
-  return (
-    <>
-      <Stack gap={1.5}>
-        <Label>{app.projectPage.projectFeedback.feedbackTitle.label}</Label>
-        <Input
-          placeholder={
-            app.projectPage.projectFeedback.feedbackTitle.placeholder
-          }
-          borderColor="border.subtle"
-        />
-      </Stack>
+  const { organizationSlug, projectSlug } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+  }>();
 
-      <Stack gap={1.5}>
-        <Label>
-          {app.projectPage.projectFeedback.feedbackDescription.label}
-        </Label>
-        <Textarea
-          placeholder={
-            app.projectPage.projectFeedback.feedbackDescription.placeholder
-          }
-          borderColor="border.subtle"
-          rows={5}
-          minH={32}
-        />
-      </Stack>
+  const { user, isLoading: isAuthLoading } = useAuth();
+
+  const { data: projectId, isLoading: isProjectLoading } = useProjectQuery(
+    {
+      projectSlug,
+      organizationSlug,
+    },
+    {
+      enabled: !!projectSlug && !!organizationSlug,
+      select: (data) => data?.projects?.nodes?.[0]?.rowId,
+    }
+  );
+
+  const { mutate: createFeedback } = useCreateFeedbackMutation({
+    onSuccess: () => reset(),
+  });
+
+  const { handleSubmit, Field, Subscribe, reset } = useForm({
+    defaultValues: {
+      projectId: projectId ?? "",
+      userId: user?.rowId ?? "",
+      title: "",
+      description: "",
+    },
+    asyncDebounceMs: 300,
+    validatorAdapter: standardSchemaValidator,
+    validators: {
+      onMount: createFeedbackSchema,
+      onChangeAsync: createFeedbackSchema,
+    },
+    onSubmit: ({ value }) =>
+      createFeedback({
+        input: {
+          post: {
+            projectId: value.projectId,
+            userId: value.userId,
+            title: value.title,
+            description: value.description,
+          },
+        },
+      }),
+  });
+
+  const isFormDisabled = isProjectLoading || isAuthLoading;
+
+  return (
+    <sigil.form
+      display="flex"
+      flexDirection="column"
+      gap={4}
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSubmit();
+      }}
+    >
+      <Field
+        name="title"
+        validators={{
+          onBlur: createFeedbackSchema.shape.title,
+        }}
+      >
+        {({ handleChange, handleBlur, state }) => (
+          <Stack position="relative" gap={1.5}>
+            <Label htmlFor="title">
+              {app.projectPage.projectFeedback.feedbackTitle.label}
+            </Label>
+
+            <Input
+              id="title"
+              placeholder={
+                app.projectPage.projectFeedback.feedbackTitle.placeholder
+              }
+              borderColor="border.subtle"
+              value={state.value}
+              onChange={(e) => handleChange(e.target.value)}
+              onBlur={handleBlur}
+              disabled={isFormDisabled}
+            />
+
+            <FormFieldError
+              error={state.meta.errorMap.onBlur}
+              isDirty={state.meta.isDirty}
+            />
+          </Stack>
+        )}
+      </Field>
+
+      <Field
+        name="description"
+        validators={{
+          onBlur: createFeedbackSchema.shape.description,
+        }}
+      >
+        {({ handleChange, handleBlur, state }) => (
+          <Stack position="relative" gap={1.5}>
+            <Label htmlFor="description">
+              {app.projectPage.projectFeedback.feedbackDescription.label}
+            </Label>
+
+            <Textarea
+              id="description"
+              placeholder={
+                app.projectPage.projectFeedback.feedbackDescription.placeholder
+              }
+              borderColor="border.subtle"
+              rows={5}
+              minH={32}
+              value={state.value}
+              onChange={(e) => handleChange(e.target.value)}
+              onBlur={handleBlur}
+              disabled={isFormDisabled}
+            />
+
+            <FormFieldError
+              error={state.meta.errorMap.onBlur}
+              isDirty={state.meta.isDirty}
+            />
+          </Stack>
+        )}
+      </Field>
 
       <Stack justify="space-between" direction="row">
         <Skeleton isLoaded={!isLoading} h="fit-content">
@@ -59,16 +178,28 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
           >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
         </Skeleton>
 
-        <Button
-          w="fit-content"
-          placeSelf="flex-end"
-          // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-          disabled={isLoading || isError}
+        <Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
         >
-          {app.projectPage.projectFeedback.submit}
-        </Button>
+          {([canSubmit, isSubmitting, isDirty]) => (
+            <Button
+              type="submit"
+              w="fit-content"
+              placeSelf="flex-end"
+              disabled={isLoading || isError || !canSubmit || !isDirty}
+            >
+              {isSubmitting
+                ? app.projectPage.projectFeedback.action.pending
+                : app.projectPage.projectFeedback.action.submit}
+            </Button>
+          )}
+        </Subscribe>
       </Stack>
-    </>
+    </sigil.form>
   );
 };
 

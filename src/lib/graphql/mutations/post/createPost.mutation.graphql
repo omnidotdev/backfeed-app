@@ -1,5 +1,5 @@
-mutation CreatePost($postInput: PostInput!) {
-  createPost(input: { post: $postInput }) {
+mutation CreateFeedback($input: CreatePostInput!) {
+  createPost(input: $input) {
     clientMutationId
   }
 }

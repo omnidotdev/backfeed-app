@@ -4445,12 +4445,12 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
-export type CreatePostMutationVariables = Exact<{
-  postInput: PostInput;
+export type CreateFeedbackMutationVariables = Exact<{
+  input: CreatePostInput;
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', clientMutationId?: string | null } | null };
+export type CreateFeedbackMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', clientMutationId?: string | null } | null };
 
 export type DeletePostMutationVariables = Exact<{
   postId: Scalars['UUID']['input'];
@@ -4701,29 +4701,29 @@ export const useLeaveOrganizationMutation = <
 
 useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
 
-export const CreatePostDocument = `
-    mutation CreatePost($postInput: PostInput!) {
-  createPost(input: {post: $postInput}) {
+export const CreateFeedbackDocument = `
+    mutation CreateFeedback($input: CreatePostInput!) {
+  createPost(input: $input) {
     clientMutationId
   }
 }
     `;
 
-export const useCreatePostMutation = <
+export const useCreateFeedbackMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>) => {
+    >(options?: UseMutationOptions<CreateFeedbackMutation, TError, CreateFeedbackMutationVariables, TContext>) => {
     
-    return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+    return useMutation<CreateFeedbackMutation, TError, CreateFeedbackMutationVariables, TContext>(
       {
-    mutationKey: ['CreatePost'],
-    mutationFn: (variables?: CreatePostMutationVariables) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables)(),
+    mutationKey: ['CreateFeedback'],
+    mutationFn: (variables?: CreateFeedbackMutationVariables) => graphqlFetch<CreateFeedbackMutation, CreateFeedbackMutationVariables>(CreateFeedbackDocument, variables)(),
     ...options
   }
     )};
 
 
-useCreatePostMutation.fetcher = (variables: CreatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables, options);
+useCreateFeedbackMutation.fetcher = (variables: CreateFeedbackMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateFeedbackMutation, CreateFeedbackMutationVariables>(CreateFeedbackDocument, variables, options);
 
 export const DeletePostDocument = `
     mutation DeletePost($postId: UUID!) {

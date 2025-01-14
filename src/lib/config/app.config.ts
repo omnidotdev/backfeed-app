@@ -423,7 +423,10 @@ const app = {
         placeholder:
           "I have really enjoyed working with this project. It has helped me to learn a lot about the industry.",
       },
-      submit: "Create",
+      action: {
+        pending: "Submitting...",
+        submit: "Create",
+      },
       totalResponses: "Total Responses",
       details: {
         upvote: "Upvote",
