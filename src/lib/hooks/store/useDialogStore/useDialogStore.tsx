@@ -16,9 +16,9 @@ interface Options {
  * Hook for managing the open state of dialogs.
  */
 const useDialogStore = ({ type }: Options) => {
+  if (!type) return { isOpen: false, setIsOpen: () => null };
+  
   const store = getDialogStore({ type });
-
-  if (!store) return;
 
   return useStoreWithEqualityFn(store, (state) => state, shallow);
 };
