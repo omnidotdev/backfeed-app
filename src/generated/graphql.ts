@@ -4423,6 +4423,13 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type CreateDownvoteMutationVariables = Exact<{
+  input: CreateDownvoteInput;
+}>;
+
+
+export type CreateDownvoteMutation = { __typename?: 'Mutation', createDownvote?: { __typename?: 'CreateDownvotePayload', clientMutationId?: string | null } | null };
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
 }>;
@@ -4466,19 +4473,19 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
 
+export type CreateUpvoteMutationVariables = Exact<{
+  input: CreateUpvoteInput;
+}>;
+
+
+export type CreateUpvoteMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
+
 export type DeleteUpvoteMutationVariables = Exact<{
   upvoteId: Scalars['UUID']['input'];
 }>;
 
 
 export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
-
-export type UpvotePostMutationVariables = Exact<{
-  upvote: UpvoteInput;
-}>;
-
-
-export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4618,6 +4625,32 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
+
+export const CreateDownvoteDocument = `
+    mutation CreateDownvote($input: CreateDownvoteInput!) {
+  createDownvote(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreateDownvoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateDownvoteMutation, TError, CreateDownvoteMutationVariables, TContext>) => {
+    
+    return useMutation<CreateDownvoteMutation, TError, CreateDownvoteMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateDownvote'],
+    mutationFn: (variables?: CreateDownvoteMutationVariables) => graphqlFetch<CreateDownvoteMutation, CreateDownvoteMutationVariables>(CreateDownvoteDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateDownvoteMutation.getKey = () => ['CreateDownvote'];
+
+
+useCreateDownvoteMutation.fetcher = (variables: CreateDownvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateDownvoteMutation, CreateDownvoteMutationVariables>(CreateDownvoteDocument, variables, options);
 
 export const CreateOrganizationDocument = `
     mutation CreateOrganization($input: CreateOrganizationInput!) {
@@ -4790,6 +4823,32 @@ useCreateProjectMutation.getKey = () => ['CreateProject'];
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
+export const CreateUpvoteDocument = `
+    mutation CreateUpvote($input: CreateUpvoteInput!) {
+  createUpvote(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreateUpvoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateUpvoteMutation, TError, CreateUpvoteMutationVariables, TContext>) => {
+    
+    return useMutation<CreateUpvoteMutation, TError, CreateUpvoteMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateUpvote'],
+    mutationFn: (variables?: CreateUpvoteMutationVariables) => graphqlFetch<CreateUpvoteMutation, CreateUpvoteMutationVariables>(CreateUpvoteDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateUpvoteMutation.getKey = () => ['CreateUpvote'];
+
+
+useCreateUpvoteMutation.fetcher = (variables: CreateUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUpvoteMutation, CreateUpvoteMutationVariables>(CreateUpvoteDocument, variables, options);
+
 export const DeleteUpvoteDocument = `
     mutation DeleteUpvote($upvoteId: UUID!) {
   deleteUpvote(input: {rowId: $upvoteId}) {
@@ -4815,32 +4874,6 @@ useDeleteUpvoteMutation.getKey = () => ['DeleteUpvote'];
 
 
 useDeleteUpvoteMutation.fetcher = (variables: DeleteUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables, options);
-
-export const UpvotePostDocument = `
-    mutation UpvotePost($upvote: UpvoteInput!) {
-  createUpvote(input: {upvote: $upvote}) {
-    clientMutationId
-  }
-}
-    `;
-
-export const useUpvotePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>) => {
-    
-    return useMutation<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>(
-      {
-    mutationKey: ['UpvotePost'],
-    mutationFn: (variables?: UpvotePostMutationVariables) => graphqlFetch<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpvotePostMutation.getKey = () => ['UpvotePost'];
-
-
-useUpvotePostMutation.fetcher = (variables: UpvotePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument, variables, options);
 
 export const CreateUserDocument = `
     mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String) {
