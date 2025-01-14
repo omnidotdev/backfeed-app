@@ -1,5 +1,6 @@
 import {
   useCreateDownvoteMutation,
+  useCreateFeedbackMutation,
   useCreateProjectMutation,
   useCreateUpvoteMutation,
 } from "generated/graphql";
@@ -11,6 +12,10 @@ export const CREATE_PROJECT_MUTATION_KEY = [
 ];
 
 const FEEDBACK_MUTATION_KEY = ["feedback"];
+export const CREATE_FEEDBACK_MUTATION_KEY = [
+  ...FEEDBACK_MUTATION_KEY,
+  ...useCreateFeedbackMutation.getKey(),
+];
 export const CREATE_DOWNVOTE_MUTATION_KEY = [
   ...FEEDBACK_MUTATION_KEY,
   ...useCreateDownvoteMutation.getKey(),

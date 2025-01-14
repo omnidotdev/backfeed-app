@@ -13,6 +13,7 @@ import {
 import { useProjectMetricsQuery } from "generated/graphql";
 import {
   CREATE_DOWNVOTE_MUTATION_KEY,
+  CREATE_FEEDBACK_MUTATION_KEY,
   CREATE_UPVOTE_MUTATION_KEY,
   DELETE_DOWNVOTE_MUTATION_KEY,
   DELETE_UPVOTE_MUTATION_KEY,
@@ -43,23 +44,29 @@ const ProjectOverview = ({ projectId }: Props) => {
     }
   );
 
+  const pendingFeedback = useIsMutating({
+    mutationKey: CREATE_FEEDBACK_MUTATION_KEY,
+  });
+
   const pendingUpvotes = useIsMutating({
-    mutationKey: CREATE_UPVOTE_MUTATION_KEY,
-  });
-  const pendingDownvotes = useIsMutating({
-    mutationKey: CREATE_DOWNVOTE_MUTATION_KEY,
-  });
-  const pendingDeleteUpvotes = useIsMutating({
-    mutationKey: DELETE_UPVOTE_MUTATION_KEY,
-  });
-  const pendingDeleteDownvotes = useIsMutating({
-    mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
-  });
+      mutationKey: CREATE_UPVOTE_MUTATION_KEY,
+    }),
+    pendingDownvotes = useIsMutating({
+      mutationKey: CREATE_DOWNVOTE_MUTATION_KEY,
+    }),
+    pendingDeleteUpvotes = useIsMutating({
+      mutationKey: DELETE_UPVOTE_MUTATION_KEY,
+    }),
+    pendingDeleteDownvotes = useIsMutating({
+      mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
+    });
 
   const totalEngagement =
     (data?.totalEngagement ?? 0) +
     (pendingUpvotes + pendingDownvotes) -
     (pendingDeleteUpvotes + pendingDeleteDownvotes);
+
+  const totalFeedback = (data?.totalFeedback ?? 0) + pendingFeedback;
 
   return (
     <Grid h="100%" columns={{ lg: 3 }} gap={6}>
@@ -77,7 +84,7 @@ const ProjectOverview = ({ projectId }: Props) => {
           />
 
           <FeedbackMetrics
-            totalFeedback={data?.totalFeedback ?? 0}
+            totalFeedback={totalFeedback}
             totalEngagement={totalEngagement}
             isLoaded={!isLoading}
             isError={isError}

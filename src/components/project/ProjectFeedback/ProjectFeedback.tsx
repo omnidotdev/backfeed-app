@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { useIsMutating } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -9,6 +10,7 @@ import { CreateFeedback, FeedbackDetails } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { CREATE_FEEDBACK_MUTATION_KEY } from "lib/constants";
 
 interface Props {
   /** Project ID. */
@@ -34,7 +36,12 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const totalCount = data?.pages?.[0]?.posts?.totalCount ?? 0;
+  const pendingFeedback = useIsMutating({
+    mutationKey: CREATE_FEEDBACK_MUTATION_KEY,
+  });
+
+  const totalCount =
+    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback;
   const posts = data?.pages?.flatMap((page) =>
     page?.posts?.nodes?.map((post) => post)
   );
