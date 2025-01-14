@@ -98,7 +98,7 @@ const OrganizationOverview = ({ organization }: Props) => {
           isError={isError}
         />
 
-        <OrganizationActions />
+        <OrganizationActions organizationSlug={organization.slug!} />
       </Grid>
     </Page>
   );
