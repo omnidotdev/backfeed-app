@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
+import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 import {
@@ -10,6 +11,12 @@ import {
   StatusBreakdown,
 } from "components/project";
 import { useProjectMetricsQuery } from "generated/graphql";
+import {
+  CREATE_DOWNVOTE_MUTATION_KEY,
+  CREATE_UPVOTE_MUTATION_KEY,
+  DELETE_DOWNVOTE_MUTATION_KEY,
+  DELETE_UPVOTE_MUTATION_KEY,
+} from "lib/constants";
 
 import type { Project } from "generated/graphql";
 
@@ -36,6 +43,24 @@ const ProjectOverview = ({ projectId }: Props) => {
     }
   );
 
+  const pendingUpvotes = useIsMutating({
+    mutationKey: CREATE_UPVOTE_MUTATION_KEY,
+  });
+  const pendingDownvotes = useIsMutating({
+    mutationKey: CREATE_DOWNVOTE_MUTATION_KEY,
+  });
+  const pendingDeleteUpvotes = useIsMutating({
+    mutationKey: DELETE_UPVOTE_MUTATION_KEY,
+  });
+  const pendingDeleteDownvotes = useIsMutating({
+    mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
+  });
+
+  const totalEngagement =
+    (data?.totalEngagement ?? 0) +
+    (pendingUpvotes + pendingDownvotes) -
+    (pendingDeleteUpvotes + pendingDeleteDownvotes);
+
   return (
     <Grid h="100%" columns={{ lg: 3 }} gap={6}>
       <GridItem h="100%" colSpan={{ lg: 2 }}>
@@ -53,7 +78,7 @@ const ProjectOverview = ({ projectId }: Props) => {
 
           <FeedbackMetrics
             totalFeedback={data?.totalFeedback ?? 0}
-            totalEngagement={data?.totalEngagement ?? 0}
+            totalEngagement={totalEngagement}
             isLoaded={!isLoading}
             isError={isError}
           />
