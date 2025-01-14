@@ -1,14 +1,18 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuPlusCircle } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
+import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { ProjectsQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
+import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({
   params,
@@ -27,18 +31,22 @@ export const generateMetadata = async ({
 interface Props {
   /** Projects page params. */
   params: Promise<{ organizationSlug: string }>;
+  /** Projects page search params. */
+  searchParams: Promise<SearchParams>;
 }
 
 /**
  * Projects overview page.
  */
-const ProjectsPage = async ({ params }: Props) => {
+const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
   const [session, { organizationBySlug: organization }] = await Promise.all([
     getAuthSession(),
     sdk.Organization({ slug: organizationSlug }),
   ]);
+
+  if (!session || !organization) notFound();
 
   const breadcrumbs = [
     {
@@ -54,7 +62,21 @@ const ProjectsPage = async ({ params }: Props) => {
     },
   ];
 
-  if (!session || !organization) notFound();
+  const queryClient = getQueryClient();
+
+  const { page, pageSize, search } = await getSearchParams.parse(searchParams);
+
+  const variables: ProjectsQueryVariables = {
+    pageSize: pageSize,
+    offset: (page - 1) * pageSize,
+    organizationSlug,
+    search,
+  };
+
+  await queryClient.prefetchQuery({
+    queryKey: useProjectsQuery.getKey(variables),
+    queryFn: useProjectsQuery.fetcher(variables),
+  });
 
   return (
     <Page
@@ -74,7 +96,9 @@ const ProjectsPage = async ({ params }: Props) => {
     >
       <ProjectFilters />
 
-      <ProjectList />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ProjectList />
+      </HydrationBoundary>
     </Page>
   );
 };

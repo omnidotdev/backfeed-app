@@ -1,12 +1,18 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
+import {
+  useInfinitePostsQuery,
+  usePostsQuery,
+  useProjectMetricsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
 
@@ -42,13 +48,17 @@ const ProjectPage = async ({ params }: Props) => {
 
   const project = projects?.nodes?.[0];
 
+  if (!session || !project) notFound();
+
+  const queryClient = getQueryClient();
+
   const breadcrumbs = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",
     },
     {
-      label: project?.organization?.name ?? organizationSlug,
+      label: project.organization?.name ?? organizationSlug,
       href: `/organizations/${organizationSlug}`,
     },
     {
@@ -56,11 +66,27 @@ const ProjectPage = async ({ params }: Props) => {
       href: `/organizations/${organizationSlug}/projects`,
     },
     {
-      label: project?.name ?? projectSlug,
+      label: project.name ?? projectSlug,
     },
   ];
 
-  if (!session || !project) notFound();
+  await Promise.all([
+    queryClient.prefetchInfiniteQuery({
+      queryKey: useInfinitePostsQuery.getKey({
+        pageSize: 5,
+        projectId: project.rowId,
+      }),
+      queryFn: usePostsQuery.fetcher({
+        pageSize: 5,
+        projectId: project.rowId,
+      }),
+      initialPageParam: undefined,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
+      queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
+    }),
+  ]);
 
   return (
     <Page
@@ -85,7 +111,9 @@ const ProjectPage = async ({ params }: Props) => {
         ],
       }}
     >
-      <ProjectOverview projectId={project?.rowId} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ProjectOverview projectId={project.rowId} />
+      </HydrationBoundary>
     </Page>
   );
 };

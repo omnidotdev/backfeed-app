@@ -9,8 +9,9 @@ import {
   ProjectInformation,
   StatusBreakdown,
 } from "components/project";
+import { useProjectMetricsQuery } from "generated/graphql";
 
-import { useProjectMetricsQuery, type Project } from "generated/graphql";
+import type { Project } from "generated/graphql";
 
 interface Props {
   /** Project ID. */
