@@ -26,6 +26,8 @@ import { ErrorBoundary } from "components/layout";
 import {
   useCreateDownvoteMutation,
   useCreateUpvoteMutation,
+  useDeleteDownvoteMutation,
+  useDeleteUpvoteMutation,
   useDownvoteQuery,
   useFeedbackByIdQuery,
   useUpvoteQuery,
@@ -109,20 +111,32 @@ const FeedbackDetails = ({
     useCreateUpvoteMutation();
   const { mutate: downvote, isPending: isDownvotePending } =
     useCreateDownvoteMutation();
+  const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
+    useDeleteUpvoteMutation();
+  const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
+    useDeleteDownvoteMutation();
 
   const isVotingDisabled = isLoading || isError;
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
-      votes: isUpvotePending
-        ? (feedback?.upvotes?.totalCount ?? 0) + 1
-        : (feedback?.upvotes?.totalCount ?? 0),
+      votes:
+        (feedback?.upvotes?.totalCount ?? 0) +
+        (isUpvotePending ? 1 : 0) -
+        (isDeleteUpvotePending ? 1 : 0),
       tooltip: app.feedbackPage.details.upvote,
-      icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+      icon:
+        hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
-      disabled: isVotingDisabled,
-      onClick: () =>
+      disabled: isVotingDisabled || !!hasUpvoted,
+      onClick: () => {
+        if (hasDownvoted) {
+          deleteDownvote({
+            id: hasDownvoted.id,
+          });
+        }
+
         upvote({
           input: {
             upvote: {
@@ -130,18 +144,29 @@ const FeedbackDetails = ({
               userId: user?.rowId!,
             },
           },
-        }),
+        });
+      },
     },
     {
       id: "downvote",
-      votes: isDownvotePending
-        ? (feedback?.downvotes?.totalCount ?? 0) + 1
-        : (feedback?.downvotes?.totalCount ?? 0),
+      votes:
+        (feedback?.downvotes?.totalCount ?? 0) +
+        (isDownvotePending ? 1 : 0) -
+        (isDeleteDownvotePending ? 1 : 0),
       tooltip: app.feedbackPage.details.downvote,
-      icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
+      icon:
+        hasDownvoted || isDownvotePending
+          ? PiArrowFatLineDownFill
+          : PiArrowFatLineDown,
       color: "brand.quinary",
-      disabled: isVotingDisabled,
-      onClick: () =>
+      disabled: isVotingDisabled || !!hasDownvoted,
+      onClick: () => {
+        if (hasUpvoted) {
+          deleteUpvote({
+            id: hasUpvoted.id,
+          });
+        }
+
         downvote({
           input: {
             downvote: {
@@ -149,7 +174,8 @@ const FeedbackDetails = ({
               userId: user?.rowId!,
             },
           },
-        }),
+        });
+      },
     },
   ];
 

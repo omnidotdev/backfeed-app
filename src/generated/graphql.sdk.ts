@@ -4431,6 +4431,13 @@ export type CreateDownvoteMutationVariables = Exact<{
 
 export type CreateDownvoteMutation = { __typename?: 'Mutation', createDownvote?: { __typename?: 'CreateDownvotePayload', clientMutationId?: string | null } | null };
 
+export type DeleteDownvoteMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvoteById?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
 }>;
@@ -4482,11 +4489,11 @@ export type CreateUpvoteMutationVariables = Exact<{
 export type CreateUpvoteMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
 export type DeleteUpvoteMutationVariables = Exact<{
-  upvoteId: Scalars['UUID']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
+export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvoteById?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4649,6 +4656,13 @@ export const CreateDownvoteDocument = gql`
   }
 }
     `;
+export const DeleteDownvoteDocument = gql`
+    mutation DeleteDownvote($id: ID!) {
+  deleteDownvoteById(input: {id: $id}) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateOrganizationDocument = gql`
     mutation CreateOrganization($input: CreateOrganizationInput!) {
   createOrganization(input: $input) {
@@ -4714,8 +4728,8 @@ export const CreateUpvoteDocument = gql`
 }
     `;
 export const DeleteUpvoteDocument = gql`
-    mutation DeleteUpvote($upvoteId: UUID!) {
-  deleteUpvote(input: {rowId: $upvoteId}) {
+    mutation DeleteUpvote($id: ID!) {
+  deleteUpvoteById(input: {id: $id}) {
     clientMutationId
   }
 }
@@ -5036,6 +5050,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     CreateDownvote(variables: CreateDownvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateDownvoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateDownvoteMutation>(CreateDownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateDownvote', 'mutation', variables);
+    },
+    DeleteDownvote(variables: DeleteDownvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteDownvoteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteDownvoteMutation>(DeleteDownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteDownvote', 'mutation', variables);
     },
     CreateOrganization(variables: CreateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationMutation>(CreateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganization', 'mutation', variables);

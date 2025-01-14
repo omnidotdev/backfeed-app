@@ -4430,6 +4430,13 @@ export type CreateDownvoteMutationVariables = Exact<{
 
 export type CreateDownvoteMutation = { __typename?: 'Mutation', createDownvote?: { __typename?: 'CreateDownvotePayload', clientMutationId?: string | null } | null };
 
+export type DeleteDownvoteMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvoteById?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
 }>;
@@ -4481,11 +4488,11 @@ export type CreateUpvoteMutationVariables = Exact<{
 export type CreateUpvoteMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
 export type DeleteUpvoteMutationVariables = Exact<{
-  upvoteId: Scalars['UUID']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
+export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvoteById?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4667,6 +4674,32 @@ useCreateDownvoteMutation.getKey = () => ['CreateDownvote'];
 
 
 useCreateDownvoteMutation.fetcher = (variables: CreateDownvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateDownvoteMutation, CreateDownvoteMutationVariables>(CreateDownvoteDocument, variables, options);
+
+export const DeleteDownvoteDocument = `
+    mutation DeleteDownvote($id: ID!) {
+  deleteDownvoteById(input: {id: $id}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteDownvoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteDownvoteMutation, TError, DeleteDownvoteMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteDownvoteMutation, TError, DeleteDownvoteMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteDownvote'],
+    mutationFn: (variables?: DeleteDownvoteMutationVariables) => graphqlFetch<DeleteDownvoteMutation, DeleteDownvoteMutationVariables>(DeleteDownvoteDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteDownvoteMutation.getKey = () => ['DeleteDownvote'];
+
+
+useDeleteDownvoteMutation.fetcher = (variables: DeleteDownvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteDownvoteMutation, DeleteDownvoteMutationVariables>(DeleteDownvoteDocument, variables, options);
 
 export const CreateOrganizationDocument = `
     mutation CreateOrganization($input: CreateOrganizationInput!) {
@@ -4866,8 +4899,8 @@ useCreateUpvoteMutation.getKey = () => ['CreateUpvote'];
 useCreateUpvoteMutation.fetcher = (variables: CreateUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUpvoteMutation, CreateUpvoteMutationVariables>(CreateUpvoteDocument, variables, options);
 
 export const DeleteUpvoteDocument = `
-    mutation DeleteUpvote($upvoteId: UUID!) {
-  deleteUpvote(input: {rowId: $upvoteId}) {
+    mutation DeleteUpvote($id: ID!) {
+  deleteUpvoteById(input: {id: $id}) {
     clientMutationId
   }
 }

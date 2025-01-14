@@ -1,0 +1,5 @@
+mutation DeleteDownvote($id: ID!) {
+  deleteDownvoteById(input: { id: $id }) {
+    clientMutationId
+  }
+}
