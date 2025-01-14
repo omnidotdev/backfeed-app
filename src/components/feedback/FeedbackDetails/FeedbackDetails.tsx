@@ -34,7 +34,12 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { CREATE_DOWNVOTE_MUTATION_KEY, CREATE_UPVOTE_MUTATION_KEY, DELETE_DOWNVOTE_MUTATION_KEY, DELETE_UPVOTE_MUTATION_KEY } from "lib/constants";
+import {
+  CREATE_DOWNVOTE_MUTATION_KEY,
+  CREATE_UPVOTE_MUTATION_KEY,
+  DELETE_DOWNVOTE_MUTATION_KEY,
+  DELETE_UPVOTE_MUTATION_KEY,
+} from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 import type {
@@ -146,13 +151,25 @@ const FeedbackDetails = ({
   };
 
   const { mutate: upvote, isPending: isUpvotePending } =
-    useCreateUpvoteMutation({ mutationKey: CREATE_UPVOTE_MUTATION_KEY, onSuccess });
+    useCreateUpvoteMutation({
+      mutationKey: CREATE_UPVOTE_MUTATION_KEY,
+      onSuccess,
+    });
   const { mutate: downvote, isPending: isDownvotePending } =
-    useCreateDownvoteMutation({ mutationKey: CREATE_DOWNVOTE_MUTATION_KEY, onSuccess });
+    useCreateDownvoteMutation({
+      mutationKey: CREATE_DOWNVOTE_MUTATION_KEY,
+      onSuccess,
+    });
   const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
-    useDeleteUpvoteMutation({ mutationKey: DELETE_UPVOTE_MUTATION_KEY, onSuccess });
+    useDeleteUpvoteMutation({
+      mutationKey: DELETE_UPVOTE_MUTATION_KEY,
+      onSuccess,
+    });
   const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
-    useDeleteDownvoteMutation({ mutationKey: DELETE_DOWNVOTE_MUTATION_KEY, onSuccess });
+    useDeleteDownvoteMutation({
+      mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
+      onSuccess,
+    });
 
   const isVotingDisabled = isLoading || isError;
 
@@ -197,7 +214,7 @@ const FeedbackDetails = ({
             id: hasDownvoted.id,
           });
         }
-        
+
         if (hasUpvoted) {
           deleteUpvote({
             id: hasUpvoted.id,
@@ -210,7 +227,7 @@ const FeedbackDetails = ({
                 userId: user?.rowId!,
               },
             },
-          })
+          });
         }
       },
     },
@@ -230,7 +247,7 @@ const FeedbackDetails = ({
             id: hasUpvoted.id,
           });
         }
-        
+
         if (hasDownvoted) {
           deleteDownvote({
             id: hasDownvoted.id,
