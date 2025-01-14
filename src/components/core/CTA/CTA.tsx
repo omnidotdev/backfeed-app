@@ -24,6 +24,9 @@ interface Props {
   action: ActionButton;
 }
 
+/**
+ * Call to action button component.
+ */
 const CTA = ({ action }: Props) => {
   const router = useRouter();
 
