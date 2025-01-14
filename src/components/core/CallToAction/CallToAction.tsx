@@ -32,7 +32,7 @@ const CallToAction = ({ action, ...rest }: Props) => {
 
   const { label, icon, href, dialogType } = action;
 
-  const dialogStore = useDialogStore({
+  const { setIsOpen } = useDialogStore({
     type: dialogType,
   });
 
