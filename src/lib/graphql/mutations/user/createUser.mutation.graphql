@@ -14,8 +14,6 @@ mutation CreateUser(
       }
     }
   ) {
-    user {
-      id
-    }
+    clientMutationId
   }
 }

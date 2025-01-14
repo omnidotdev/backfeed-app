@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  AuthProvider,
   QueryProvider,
   SearchParamsProvider,
-  AuthProvider,
   ThemeProvider,
 } from "providers";
 

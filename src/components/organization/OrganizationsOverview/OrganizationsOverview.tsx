@@ -6,6 +6,7 @@ import { LuPlusCircle } from "react-icons/lu";
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -19,6 +20,8 @@ const breadcrumbs = [
  * Organizations overview.
  */
 const OrganizationsOverview = () => {
+  const { isLoading: isAuthLoading } = useAuth();
+
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -35,6 +38,7 @@ const OrganizationsOverview = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
             onClick: () => setIsCreateOrganizationDialogOpen(true),
+            disabled: isAuthLoading,
           },
         ],
       }}

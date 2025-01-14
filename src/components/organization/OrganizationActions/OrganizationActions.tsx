@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -31,6 +32,8 @@ interface Props {
 const OrganizationActions = ({ organizationSlug }: Props) => {
   const router = useRouter();
 
+  const { isLoading: isAuthLoading } = useAuth();
+
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -40,6 +43,7 @@ const OrganizationActions = ({ organizationSlug }: Props) => {
       label: app.organizationPage.actions.cta.createProject.label,
       icon: LuPlusCircle,
       onClick: () => setIsCreateProjectDialogOpen(true),
+      disabled: isAuthLoading,
     },
     {
       label: app.organizationPage.actions.cta.manageTeam.label,
