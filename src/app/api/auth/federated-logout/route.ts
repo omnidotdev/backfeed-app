@@ -10,11 +10,11 @@ export const GET = async () => {
   try {
     const session = await auth();
 
-    if (session) {
+    if (session?.user.idToken) {
       const signOutURL = `${AUTH_KEYCLOAK_ISSUER!}/protocol/openid-connect/logout`;
 
       const signOutParams = new URLSearchParams({
-        id_token_hint: session.user.idToken!,
+        id_token_hint: session.user.idToken,
         post_logout_redirect_uri: redirectURL,
       });
 
