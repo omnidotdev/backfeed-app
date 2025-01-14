@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Input, Skeleton, Stack, Text, Textarea } from "@omnidev/sigil";
+import {
+  Button,
+  Input,
+  Label,
+  Skeleton,
+  Stack,
+  Text,
+  Textarea,
+} from "@omnidev/sigil";
 
 import { app } from "lib/config";
 
@@ -19,19 +27,29 @@ interface Props {
 const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
   return (
     <>
-      <Input
-        placeholder={app.projectPage.projectFeedback.inputPlaceholder}
-        borderColor="border.subtle"
-        fontSize="sm"
-      />
+      <Stack gap={1.5}>
+        <Label>{app.projectPage.projectFeedback.feedbackTitle.label}</Label>
+        <Input
+          placeholder={
+            app.projectPage.projectFeedback.feedbackTitle.placeholder
+          }
+          borderColor="border.subtle"
+        />
+      </Stack>
 
-      <Textarea
-        placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
-        borderColor="border.subtle"
-        fontSize="sm"
-        rows={5}
-        minH={32}
-      />
+      <Stack gap={1.5}>
+        <Label>
+          {app.projectPage.projectFeedback.feedbackDescription.label}
+        </Label>
+        <Textarea
+          placeholder={
+            app.projectPage.projectFeedback.feedbackDescription.placeholder
+          }
+          borderColor="border.subtle"
+          rows={5}
+          minH={32}
+        />
+      </Stack>
 
       <Stack justify="space-between" direction="row">
         <Skeleton isLoaded={!isLoading} h="fit-content">
