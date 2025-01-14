@@ -39,12 +39,9 @@ const CTA = ({ action }: Props) => {
     }),
   };
 
-  const handleClick = (
-    e: MouseEvent<HTMLButtonElement>,
-    action: ActionButton
-  ) => {
-    const { href, onClick, dialogType } = action;
+  const { label, icon, href, onClick, dialogType, disabled } = action;
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (href) {
       router.push(href);
       return;
@@ -63,14 +60,14 @@ const CTA = ({ action }: Props) => {
   return (
     <Button
       size="sm"
-      disabled={action.disabled}
+      disabled={disabled}
       width={{ base: "full", md: "auto" }}
-      onClick={(e) => handleClick(e, action)}
+      onClick={(e) => handleClick(e)}
       {...action}
     >
-      {action.icon}
+      {icon}
 
-      <Text>{action.label}</Text>
+      <Text>{label}</Text>
     </Button>
   );
 };
