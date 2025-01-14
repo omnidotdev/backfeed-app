@@ -2,7 +2,10 @@ export {
   default as Breadcrumb,
   type BreadcrumbRecord,
 } from "./Breadcrumb/Breadcrumb";
-export { default as CTA, type ActionButton } from "./CTA/CTA";
+export {
+  default as CallToAction,
+  type ActionButton,
+} from "./CallToAction/CallToAction";
 export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,

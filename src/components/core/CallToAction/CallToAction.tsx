@@ -3,9 +3,9 @@
 import { Button, Text } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useDialogStore } from "lib/hooks/store";
-import { DialogType } from "store";
 
-import type { ReactNode, MouseEvent } from "react";
+import type { DialogType } from "store";
+import type { ReactNode } from "react";
 import type { ButtonProps } from "@omnidev/sigil";
 
 export interface ActionButton extends ButtonProps {
@@ -27,43 +27,32 @@ interface Props {
 /**
  * Call to action button component.
  */
-const CTA = ({ action }: Props) => {
+const CallToAction = ({ action, ...rest }: Props) => {
   const router = useRouter();
 
-  const dialogStores = {
-    [DialogType.CreateProject]: useDialogStore({
-      type: DialogType.CreateProject,
-    }),
-    [DialogType.CreateOrganization]: useDialogStore({
-      type: DialogType.CreateOrganization,
-    }),
-  };
+  const { label, icon, href, dialogType } = action;
 
-  const { label, icon, href, onClick, dialogType, disabled } = action;
+  const dialogStore = useDialogStore({
+    type: dialogType,
+  });
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleAction = () => {
     if (href) {
       router.push(href);
       return;
     }
 
-    if (onClick) {
-      onClick(e);
-      return;
-    }
-
-    if (dialogType) {
-      dialogStores[dialogType]?.setIsOpen(true);
+    if (dialogType && dialogStore?.setIsOpen) {
+      dialogStore.setIsOpen(true);
     }
   };
 
   return (
     <Button
       size="sm"
-      disabled={disabled}
       width={{ base: "full", md: "auto" }}
-      onClick={(e) => handleClick(e)}
-      {...action}
+      onClick={handleAction}
+      {...rest}
     >
       {icon}
 
@@ -72,4 +61,4 @@ const CTA = ({ action }: Props) => {
   );
 };
 
-export default CTA;
+export default CallToAction;

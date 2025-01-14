@@ -1,7 +1,7 @@
 "use client";
 
 import { Flex, Stack, Text } from "@omnidev/sigil";
-import { Breadcrumb, CTA } from "components/core";
+import { Breadcrumb, CallToAction } from "components/core";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { ActionButton, BreadcrumbRecord } from "components/core";
@@ -72,7 +72,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
               direction={{ base: "column", sm: "row" }}
             >
               {header.cta.map((action) => (
-                <CTA key={action.label} action={action} />
+                <CallToAction key={action.label} action={action} />
               ))}
             </Flex>
           </Flex>
