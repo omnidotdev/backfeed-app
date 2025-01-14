@@ -15,7 +15,7 @@ import {
 import { signOut } from "next-auth/react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 
-import { app } from "lib/config";
+import { app, isDev } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -45,7 +45,9 @@ const AccountInformation = () => {
         window.location.href = url;
       }
     } catch (error) {
-      console.error(error);
+      if (isDev) {
+        console.error(error);
+      }
     }
   };
 
