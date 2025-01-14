@@ -27,10 +27,10 @@ interface Props {
 /**
  * Call to action button component.
  */
-const CallToAction = ({ action, ...rest }: Props) => {
+const CallToAction = ({ action }: Props) => {
   const router = useRouter();
 
-  const { label, icon, href, dialogType } = action;
+  const { label, icon, href, dialogType, ...buttonProps } = action;
 
   const { setIsOpen } = useDialogStore({
     type: dialogType,
@@ -52,7 +52,7 @@ const CallToAction = ({ action, ...rest }: Props) => {
       size="sm"
       width={{ base: "full", md: "auto" }}
       onClick={handleAction}
-      {...rest}
+      {...buttonProps}
     >
       {icon}
 
