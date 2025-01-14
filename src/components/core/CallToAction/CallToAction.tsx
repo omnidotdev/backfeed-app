@@ -42,8 +42,8 @@ const CallToAction = ({ action, ...rest }: Props) => {
       return;
     }
 
-    if (dialogType && dialogStore?.setIsOpen) {
-      dialogStore.setIsOpen(true);
+    if (dialogType) {
+      setIsOpen(true);
     }
   };
 
