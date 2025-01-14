@@ -34,6 +34,7 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { CREATE_DOWNVOTE_MUTATION_KEY, CREATE_UPVOTE_MUTATION_KEY, DELETE_DOWNVOTE_MUTATION_KEY, DELETE_UPVOTE_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 import type {
@@ -145,13 +146,13 @@ const FeedbackDetails = ({
   };
 
   const { mutate: upvote, isPending: isUpvotePending } =
-    useCreateUpvoteMutation({ onSuccess });
+    useCreateUpvoteMutation({ mutationKey: CREATE_UPVOTE_MUTATION_KEY, onSuccess });
   const { mutate: downvote, isPending: isDownvotePending } =
-    useCreateDownvoteMutation({ onSuccess });
+    useCreateDownvoteMutation({ mutationKey: CREATE_DOWNVOTE_MUTATION_KEY, onSuccess });
   const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
-    useDeleteUpvoteMutation({ onSuccess });
+    useDeleteUpvoteMutation({ mutationKey: DELETE_UPVOTE_MUTATION_KEY, onSuccess });
   const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
-    useDeleteDownvoteMutation({ onSuccess });
+    useDeleteDownvoteMutation({ mutationKey: DELETE_DOWNVOTE_MUTATION_KEY, onSuccess });
 
   const isVotingDisabled = isLoading || isError;
 
@@ -189,22 +190,28 @@ const FeedbackDetails = ({
       icon:
         hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
-      disabled: isVotingDisabled || !!hasUpvoted,
+      disabled: isVotingDisabled,
       onClick: () => {
         if (hasDownvoted) {
           deleteDownvote({
             id: hasDownvoted.id,
           });
         }
-
-        upvote({
-          input: {
-            upvote: {
-              postId: feedbackId,
-              userId: user?.rowId!,
+        
+        if (hasUpvoted) {
+          deleteUpvote({
+            id: hasUpvoted.id,
+          });
+        } else {
+          upvote({
+            input: {
+              upvote: {
+                postId: feedbackId,
+                userId: user?.rowId!,
+              },
             },
-          },
-        });
+          })
+        }
       },
     },
     {
@@ -216,22 +223,28 @@ const FeedbackDetails = ({
           ? PiArrowFatLineDownFill
           : PiArrowFatLineDown,
       color: "brand.quinary",
-      disabled: isVotingDisabled || !!hasDownvoted,
+      disabled: isVotingDisabled,
       onClick: () => {
         if (hasUpvoted) {
           deleteUpvote({
             id: hasUpvoted.id,
           });
         }
-
-        downvote({
-          input: {
-            downvote: {
-              postId: feedbackId,
-              userId: user?.rowId!,
+        
+        if (hasDownvoted) {
+          deleteDownvote({
+            id: hasDownvoted.id,
+          });
+        } else {
+          downvote({
+            input: {
+              downvote: {
+                postId: feedbackId,
+                userId: user?.rowId!,
+              },
             },
-          },
-        });
+          });
+        }
       },
     },
   ];
