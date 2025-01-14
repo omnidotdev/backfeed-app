@@ -6,6 +6,7 @@ import { ProjectFilters, ProjectList } from "components/project";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
+import { DialogType } from "store";
 
 import type { Metadata } from "next";
 
@@ -66,6 +67,7 @@ const ProjectsPage = async ({ params }: Props) => {
             label: app.projectsPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
+            dialogType: DialogType.CreateProject,
           },
         ],
       }}

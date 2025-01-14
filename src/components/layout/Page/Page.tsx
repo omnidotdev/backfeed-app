@@ -1,21 +1,10 @@
 "use client";
 
-import { Button, Flex, Stack, Text } from "@omnidev/sigil";
-import { Breadcrumb } from "components/core";
-import { useRouter } from "next/navigation";
+import { Flex, Stack, Text } from "@omnidev/sigil";
+import { Breadcrumb, CTA } from "components/core";
 
-import type { ButtonProps, FlexProps, StackProps } from "@omnidev/sigil";
-import type { BreadcrumbRecord } from "components/core";
-import type { ReactNode } from "react";
-
-interface ActionButton extends ButtonProps {
-  /** Button label. */
-  label: string;
-  /** Button icon. */
-  icon: ReactNode;
-  /** URL path for navigation. */
-  href?: string;
-}
+import type { FlexProps, StackProps } from "@omnidev/sigil";
+import type { ActionButton, BreadcrumbRecord } from "components/core";
 
 interface Props extends StackProps {
   /** Page breadcrumbs for navigation. */
@@ -37,8 +26,6 @@ interface Props extends StackProps {
  * Page layout.
  */
 const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
-  const router = useRouter();
-
   return (
     <Stack
       h="100%"
@@ -84,18 +71,8 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => {
               width={{ base: "full", md: "auto" }}
               direction={{ base: "column", sm: "row" }}
             >
-              {header.cta.map(({ label, icon, href, onClick, ...rest }) => (
-                <Button
-                  key={label}
-                  size="sm"
-                  width={{ base: "full", md: "auto" }}
-                  onClick={(e) => (href ? router.push(href) : onClick?.(e))}
-                  {...rest}
-                >
-                  {icon}
-
-                  <Text>{label}</Text>
-                </Button>
+              {header.cta.map((action) => (
+                <CTA key={action.label} action={action} />
               ))}
             </Flex>
           </Flex>
