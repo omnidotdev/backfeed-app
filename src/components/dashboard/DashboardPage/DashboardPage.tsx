@@ -1,7 +1,6 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { useState } from "react";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -10,22 +9,24 @@ import { LuPlusCircle } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
-import { CreateProject } from "components/project";
 import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
-  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] =
-    useState(false);
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   const {
     data: dashboardAggregates,
@@ -36,7 +37,7 @@ const DashboardPage = () => {
       userId: user?.id!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.id,
       select: (data) => ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
@@ -49,7 +50,7 @@ const DashboardPage = () => {
       userId: user?.rowId!,
     },
     {
-      enabled: !!user,
+      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.totalCount,
     }
   );
@@ -66,6 +67,8 @@ const DashboardPage = () => {
       icon: HiOutlineUserGroup,
     },
   ];
+
+  if (isAuthLoading) return null;
 
   return (
     <Page
@@ -99,11 +102,6 @@ const DashboardPage = () => {
       </Grid>
 
       <Feedback />
-
-      <CreateProject
-        isOpen={isCreateProjectDialogOpen}
-        setIsOpen={setIsCreateProjectDialogOpen}
-      />
     </Page>
   );
 };

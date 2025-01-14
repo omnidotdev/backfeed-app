@@ -1,13 +1,16 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuPlusCircle } from "react-icons/lu";
 
-import { Page } from "components/layout";
 import { OrganizationOverview } from "components/organization";
+import {
+  useOrganizationMetricsQuery,
+  useOrganizationQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
+import type { Organization } from "generated/graphql";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -40,45 +43,31 @@ const OrganizationPage = async ({ params }: Props) => {
     sdk.Organization({ slug: organizationSlug }),
   ]);
 
-  const breadcrumbs = [
-    {
-      label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
-    },
-    {
-      label: organization?.name ?? organizationSlug,
-    },
-  ];
-
   if (!session || !organization) notFound();
 
+  const queryClient = getQueryClient();
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationMetricsQuery.getKey({
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationMetricsQuery.fetcher({
+        organizationId: organization.rowId,
+      }),
+    }),
+  ]);
+
   return (
-    <Page
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: organization.name!,
-        description: app.organizationPage.header.description,
-        cta: [
-          {
-            label: app.organizationPage.header.cta.viewAllProjects.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <HiOutlineFolder />,
-            variant: "outline",
-            href: `/organizations/${organizationSlug}/projects`,
-          },
-          {
-            label: app.organizationPage.header.cta.newProject.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
-          },
-        ],
-      }}
-    >
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <OrganizationOverview
-        organizationId={organization?.rowId}
-        organizationSlug={organizationSlug}
+        organization={organization as Partial<Organization>}
       />
-    </Page>
+    </HydrationBoundary>
   );
 };
 

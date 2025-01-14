@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { Footer, Header } from "components/layout";
+import { CreateOrganization } from "components/organization";
+import { CreateProject } from "components/project";
 import { app } from "lib/config";
 
 import type { ReactNode } from "react";
@@ -53,6 +55,10 @@ const Layout = ({ children }: Props) => {
       <sigil.main>{children}</sigil.main>
 
       <Footer />
+
+      {/* dialogs */}
+      <CreateProject />
+      <CreateOrganization />
     </Grid>
   );
 };

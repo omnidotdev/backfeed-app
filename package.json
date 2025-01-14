@@ -3,9 +3,10 @@
   "private": true,
   "scripts": {
     "dev": "rm -rf .next && concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"bun dev:next\"",
-    "dev:next": "next dev",
+    "dev:next": "next dev --turbo",
     "build": "next build",
     "start": "next start",
+    "check": "biome check src",
     "format": "biome format --write src",
     "lint": "biome lint src",
     "test": "bun test --env-file .env.local --env-file .env.test .test",
@@ -16,7 +17,9 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": ["public"]
+    "workerDirectory": [
+      "public"
+    ]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -29,8 +32,9 @@
     "@graphql-codegen/typescript-msw": "^3.0.0",
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@happy-dom/global-registrator": "^16.5.3",
-    "@pandacss/dev": "^0.48.0",
+    "@pandacss/dev": "^0.51.1",
     "@playwright/test": "^1.49.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -39,9 +43,9 @@
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
-    "dotenv-cli": "^7.3.0",
+    "dotenv-cli": "^8.0.0",
     "husky": "^9.1.6",
     "knip": "^5.42.0",
     "msw": "^2.7.0",
@@ -62,7 +66,7 @@
     "next": "^15.0.3",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.3",
-    "nuqs": "^2.2.3",
+    "nuqs": "^2.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.0.1",
@@ -70,7 +74,8 @@
     "recharts": "^2.13.3",
     "ts-pattern": "^5.5.0",
     "usehooks-ts": "^3.1.0",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
   },
   "trustedDependencies": [
     "@biomejs/biome",

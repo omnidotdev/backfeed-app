@@ -1,16 +1,10 @@
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { useQueryStates } from "nuqs";
 
-const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 10;
+import { searchParams } from "lib/constants";
 
 /**
- * Access and update search paramaters.
+ * Access and update search paramaters from the client.
  */
-const useSearchParams = () =>
-  useQueryStates({
-    search: parseAsString.withDefault(""),
-    page: parseAsInteger.withDefault(DEFAULT_PAGE_NUMBER),
-    pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
-  });
+const useSearchParams = () => useQueryStates(searchParams);
 
 export default useSearchParams;

@@ -6,6 +6,9 @@ import { MdManageAccounts } from "react-icons/md";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -17,39 +20,51 @@ interface Action extends ButtonProps {
   icon: IconType;
 }
 
-const ORGANIZATION_ACTIONS: Action[] = [
-  {
-    label: app.organizationPage.actions.cta.createProject.label,
-    icon: LuPlusCircle,
-  },
-  {
-    label: app.organizationPage.actions.cta.manageTeam.label,
-    icon: MdManageAccounts,
-  },
-  {
-    label: app.organizationPage.actions.cta.settings.label,
-    icon: LuSettings,
-  },
-];
-
 /**
  * Organization actions.
  */
-const OrganizationActions = () => (
-  <SectionContainer
-    title={app.organizationPage.actions.title}
-    description={app.organizationPage.actions.description}
-  >
-    <Grid gap={4}>
-      {ORGANIZATION_ACTIONS.map(({ label, icon, ...rest }) => (
-        <Button key={label} variant="outline" {...rest}>
-          <Icon src={icon} w={4} h={4} />
+const OrganizationActions = () => {
+  const { isLoading: isAuthLoading } = useAuth();
 
-          {label}
-        </Button>
-      ))}
-    </Grid>
-  </SectionContainer>
-);
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
+
+  const ORGANIZATION_ACTIONS: Action[] = [
+    {
+      label: app.organizationPage.actions.cta.createProject.label,
+      icon: LuPlusCircle,
+      onClick: () => setIsCreateProjectDialogOpen(true),
+      disabled: isAuthLoading,
+    },
+    {
+      label: app.organizationPage.actions.cta.manageTeam.label,
+      icon: MdManageAccounts,
+      disabled: true,
+    },
+    {
+      label: app.organizationPage.actions.cta.settings.label,
+      icon: LuSettings,
+      disabled: true,
+    },
+  ];
+
+  return (
+    <SectionContainer
+      title={app.organizationPage.actions.title}
+      description={app.organizationPage.actions.description}
+    >
+      <Grid gap={4}>
+        {ORGANIZATION_ACTIONS.map(({ label, icon, ...rest }) => (
+          <Button key={label} variant="outline" {...rest}>
+            <Icon src={icon} w={4} h={4} />
+
+            {label}
+          </Button>
+        ))}
+      </Grid>
+    </SectionContainer>
+  );
+};
 
 export default OrganizationActions;

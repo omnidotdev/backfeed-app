@@ -9,6 +9,9 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
 
@@ -21,6 +24,12 @@ interface Props {
  * Organization projects overview.
  */
 const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
+  const { isLoading: isAuthLoading } = useAuth();
+
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
+
   const {
     data: projects,
     isLoading,
@@ -51,7 +60,11 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
           gap={6}
           columns={{
             base: 1,
-            md: projects?.length ? Math.min(projects.length, 2) : 1,
+            md: isLoading
+              ? 2
+              : projects?.length
+                ? Math.min(2, projects.length)
+                : 1,
           }}
         >
           {isLoading ? (
@@ -75,6 +88,8 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
+                  onClick: () => setIsCreateProjectDialogOpen(true),
+                  disabled: isAuthLoading,
                 },
               }}
               h={48}

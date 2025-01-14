@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
-import { useGraphqlClient } from 'lib/hooks';
+import { graphqlFetch } from 'lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -4430,6 +4430,21 @@ export type CreateOrganizationMutationVariables = Exact<{
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization?: { __typename?: 'CreateOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string, slug: string } | null } | null };
 
+export type DeleteOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteOrganizationMutation = { __typename?: 'Mutation', deleteOrganization?: { __typename?: 'DeleteOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string } | null } | null };
+
+export type LeaveOrganizationMutationVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4473,7 +4488,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', clientMutationId?: string | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4518,7 +4533,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4623,10 +4638,68 @@ export const useCreateOrganizationMutation = <
     return useMutation<CreateOrganizationMutation, TError, CreateOrganizationMutationVariables, TContext>(
       {
     mutationKey: ['CreateOrganization'],
-    mutationFn: useGraphqlClient<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument),
+    mutationFn: (variables?: CreateOrganizationMutationVariables) => graphqlFetch<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument, variables)(),
     ...options
   }
     )};
+
+
+useCreateOrganizationMutation.fetcher = (variables: CreateOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument, variables, options);
+
+export const DeleteOrganizationDocument = `
+    mutation DeleteOrganization($rowId: UUID!) {
+  deleteOrganization(input: {rowId: $rowId}) {
+    organization {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useDeleteOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteOrganizationMutation, TError, DeleteOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteOrganizationMutation, TError, DeleteOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteOrganization'],
+    mutationFn: (variables?: DeleteOrganizationMutationVariables) => graphqlFetch<DeleteOrganizationMutation, DeleteOrganizationMutationVariables>(DeleteOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useDeleteOrganizationMutation.fetcher = (variables: DeleteOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteOrganizationMutation, DeleteOrganizationMutationVariables>(DeleteOrganizationDocument, variables, options);
+
+export const LeaveOrganizationDocument = `
+    mutation LeaveOrganization($userId: UUID!, $organizationId: UUID!) {
+  deleteUserOrganizationByUserIdAndOrganizationId(
+    input: {userId: $userId, organizationId: $organizationId}
+  ) {
+    userOrganization {
+      userId
+      organizationId
+    }
+  }
+}
+    `;
+
+export const useLeaveOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LeaveOrganizationMutation, TError, LeaveOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<LeaveOrganizationMutation, TError, LeaveOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['LeaveOrganization'],
+    mutationFn: (variables?: LeaveOrganizationMutationVariables) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
 
 export const CreatePostDocument = `
     mutation CreatePost($postInput: PostInput!) {
@@ -4644,10 +4717,13 @@ export const useCreatePostMutation = <
     return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
       {
     mutationKey: ['CreatePost'],
-    mutationFn: useGraphqlClient<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument),
+    mutationFn: (variables?: CreatePostMutationVariables) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables)(),
     ...options
   }
     )};
+
+
+useCreatePostMutation.fetcher = (variables: CreatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables, options);
 
 export const DeletePostDocument = `
     mutation DeletePost($postId: UUID!) {
@@ -4665,10 +4741,13 @@ export const useDeletePostMutation = <
     return useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
       {
     mutationKey: ['DeletePost'],
-    mutationFn: useGraphqlClient<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument),
+    mutationFn: (variables?: DeletePostMutationVariables) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables)(),
     ...options
   }
     )};
+
+
+useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
 
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
@@ -4691,10 +4770,13 @@ export const useCreateProjectMutation = <
     return useMutation<CreateProjectMutation, TError, CreateProjectMutationVariables, TContext>(
       {
     mutationKey: ['CreateProject'],
-    mutationFn: useGraphqlClient<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument),
+    mutationFn: (variables?: CreateProjectMutationVariables) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables)(),
     ...options
   }
     )};
+
+
+useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
 export const DeleteUpvoteDocument = `
     mutation DeleteUpvote($upvoteId: UUID!) {
@@ -4712,10 +4794,13 @@ export const useDeleteUpvoteMutation = <
     return useMutation<DeleteUpvoteMutation, TError, DeleteUpvoteMutationVariables, TContext>(
       {
     mutationKey: ['DeleteUpvote'],
-    mutationFn: useGraphqlClient<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument),
+    mutationFn: (variables?: DeleteUpvoteMutationVariables) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables)(),
     ...options
   }
     )};
+
+
+useDeleteUpvoteMutation.fetcher = (variables: DeleteUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables, options);
 
 export const UpvotePostDocument = `
     mutation UpvotePost($upvote: UpvoteInput!) {
@@ -4733,19 +4818,20 @@ export const useUpvotePostMutation = <
     return useMutation<UpvotePostMutation, TError, UpvotePostMutationVariables, TContext>(
       {
     mutationKey: ['UpvotePost'],
-    mutationFn: useGraphqlClient<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument),
+    mutationFn: (variables?: UpvotePostMutationVariables) => graphqlFetch<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument, variables)(),
     ...options
   }
     )};
+
+
+useUpvotePostMutation.fetcher = (variables: UpvotePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpvotePostMutation, UpvotePostMutationVariables>(UpvotePostDocument, variables, options);
 
 export const CreateUserDocument = `
     mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String) {
   createUser(
     input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
   ) {
-    user {
-      id
-    }
+    clientMutationId
   }
 }
     `;
@@ -4758,10 +4844,13 @@ export const useCreateUserMutation = <
     return useMutation<CreateUserMutation, TError, CreateUserMutationVariables, TContext>(
       {
     mutationKey: ['CreateUser'],
-    mutationFn: useGraphqlClient<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument),
+    mutationFn: (variables?: CreateUserMutationVariables) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables)(),
     ...options
   }
     )};
+
+
+useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
 
 export const UpdateUserDocument = `
     mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
@@ -4779,10 +4868,13 @@ export const useUpdateUserMutation = <
     return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
       {
     mutationKey: ['UpdateUser'],
-    mutationFn: useGraphqlClient<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument),
+    mutationFn: (variables?: UpdateUserMutationVariables) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables)(),
     ...options
   }
     )};
+
+
+useUpdateUserMutation.fetcher = (variables: UpdateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
 
 export const CreateUserOrganizationDocument = `
     mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
@@ -4800,10 +4892,13 @@ export const useCreateUserOrganizationMutation = <
     return useMutation<CreateUserOrganizationMutation, TError, CreateUserOrganizationMutationVariables, TContext>(
       {
     mutationKey: ['CreateUserOrganization'],
-    mutationFn: useGraphqlClient<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument),
+    mutationFn: (variables?: CreateUserOrganizationMutationVariables) => graphqlFetch<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument, variables)(),
     ...options
   }
     )};
+
+
+useCreateUserOrganizationMutation.fetcher = (variables: CreateUserOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument, variables, options);
 
 export const CommentsDocument = `
     query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
@@ -4843,7 +4938,7 @@ export const useCommentsQuery = <
     return useQuery<CommentsQuery, TError, TData>(
       {
     queryKey: ['Comments', variables],
-    queryFn: useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument).bind(null, variables),
+    queryFn: graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, variables),
     ...options
   }
     )};
@@ -4857,19 +4952,22 @@ export const useInfiniteCommentsQuery = <
       variables: CommentsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<CommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<CommentsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<CommentsQuery, CommentsQueryVariables>(CommentsDocument)
+    
     return useInfiniteQuery<CommentsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Comments.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comments.infinite', variables];
+
+
+useCommentsQuery.fetcher = (variables: CommentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, variables, options);
 
 export const DashboardAggregatesDocument = `
     query DashboardAggregates($userId: UUID!) {
@@ -4897,7 +4995,7 @@ export const useDashboardAggregatesQuery = <
     return useQuery<DashboardAggregatesQuery, TError, TData>(
       {
     queryKey: ['DashboardAggregates', variables],
-    queryFn: useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument).bind(null, variables),
+    queryFn: graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables),
     ...options
   }
     )};
@@ -4911,19 +5009,22 @@ export const useInfiniteDashboardAggregatesQuery = <
       variables: DashboardAggregatesQueryVariables,
       options: Omit<UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument)
+    
     return useInfiniteQuery<DashboardAggregatesQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['DashboardAggregates.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQueryVariables) => ['DashboardAggregates.infinite', variables];
+
+
+useDashboardAggregatesQuery.fetcher = (variables: DashboardAggregatesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables, options);
 
 export const FeedbackByIdDocument = `
     query FeedbackById($rowId: UUID!) {
@@ -4965,7 +5066,7 @@ export const useFeedbackByIdQuery = <
     return useQuery<FeedbackByIdQuery, TError, TData>(
       {
     queryKey: ['FeedbackById', variables],
-    queryFn: useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument).bind(null, variables),
+    queryFn: graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables),
     ...options
   }
     )};
@@ -4979,13 +5080,13 @@ export const useInfiniteFeedbackByIdQuery = <
       variables: FeedbackByIdQueryVariables,
       options: Omit<UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<FeedbackByIdQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument)
+    
     return useInfiniteQuery<FeedbackByIdQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['FeedbackById.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -4993,11 +5094,15 @@ export const useInfiniteFeedbackByIdQuery = <
 
 useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) => ['FeedbackById.infinite', variables];
 
+
+useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
+
 export const OrganizationDocument = `
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
     rowId
     name
+    slug
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
@@ -5029,7 +5134,7 @@ export const useOrganizationQuery = <
     return useQuery<OrganizationQuery, TError, TData>(
       {
     queryKey: ['Organization', variables],
-    queryFn: useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument).bind(null, variables),
+    queryFn: graphqlFetch<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument, variables),
     ...options
   }
     )};
@@ -5043,19 +5148,22 @@ export const useInfiniteOrganizationQuery = <
       variables: OrganizationQueryVariables,
       options: Omit<UseInfiniteQueryOptions<OrganizationQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument)
+    
     return useInfiniteQuery<OrganizationQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Organization.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) => ['Organization.infinite', variables];
+
+
+useOrganizationQuery.fetcher = (variables: OrganizationQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument, variables, options);
 
 export const OrganizationMetricsDocument = `
     query OrganizationMetrics($organizationId: UUID!) {
@@ -5082,7 +5190,7 @@ export const useOrganizationMetricsQuery = <
     return useQuery<OrganizationMetricsQuery, TError, TData>(
       {
     queryKey: ['OrganizationMetrics', variables],
-    queryFn: useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument).bind(null, variables),
+    queryFn: graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables),
     ...options
   }
     )};
@@ -5096,19 +5204,22 @@ export const useInfiniteOrganizationMetricsQuery = <
       variables: OrganizationMetricsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationMetricsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument)
+    
     return useInfiniteQuery<OrganizationMetricsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['OrganizationMetrics.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQueryVariables) => ['OrganizationMetrics.infinite', variables];
+
+
+useOrganizationMetricsQuery.fetcher = (variables: OrganizationMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables, options);
 
 export const OrganizationsDocument = `
     query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
@@ -5145,7 +5256,7 @@ export const useOrganizationsQuery = <
     return useQuery<OrganizationsQuery, TError, TData>(
       {
     queryKey: ['Organizations', variables],
-    queryFn: useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument).bind(null, variables),
+    queryFn: graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables),
     ...options
   }
     )};
@@ -5159,19 +5270,22 @@ export const useInfiniteOrganizationsQuery = <
       variables: OrganizationsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument)
+    
     return useInfiniteQuery<OrganizationsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
+
+
+useOrganizationsQuery.fetcher = (variables: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
@@ -5205,7 +5319,7 @@ export const usePostsQuery = <
     return useQuery<PostsQuery, TError, TData>(
       {
     queryKey: ['Posts', variables],
-    queryFn: useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument).bind(null, variables),
+    queryFn: graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, variables),
     ...options
   }
     )};
@@ -5219,19 +5333,22 @@ export const useInfinitePostsQuery = <
       variables: PostsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<PostsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<PostsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<PostsQuery, PostsQueryVariables>(PostsDocument)
+    
     return useInfiniteQuery<PostsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Posts.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infinite', variables];
+
+
+usePostsQuery.fetcher = (variables: PostsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, variables, options);
 
 export const ProjectDocument = `
     query Project($projectSlug: String!, $organizationSlug: String!) {
@@ -5263,7 +5380,7 @@ export const useProjectQuery = <
     return useQuery<ProjectQuery, TError, TData>(
       {
     queryKey: ['Project', variables],
-    queryFn: useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument).bind(null, variables),
+    queryFn: graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables),
     ...options
   }
     )};
@@ -5277,19 +5394,22 @@ export const useInfiniteProjectQuery = <
       variables: ProjectQueryVariables,
       options: Omit<UseInfiniteQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<ProjectQuery, ProjectQueryVariables>(ProjectDocument)
+    
     return useInfiniteQuery<ProjectQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Project.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+
+
+useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
 export const ProjectBySlugDocument = `
     query ProjectBySlug($slug: String!, $organizationId: UUID!) {
@@ -5310,7 +5430,7 @@ export const useProjectBySlugQuery = <
     return useQuery<ProjectBySlugQuery, TError, TData>(
       {
     queryKey: ['ProjectBySlug', variables],
-    queryFn: useGraphqlClient<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument).bind(null, variables),
+    queryFn: graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables),
     ...options
   }
     )};
@@ -5324,19 +5444,22 @@ export const useInfiniteProjectBySlugQuery = <
       variables: ProjectBySlugQueryVariables,
       options: Omit<UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument)
+    
     return useInfiniteQuery<ProjectBySlugQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['ProjectBySlug.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infinite', variables];
+
+
+useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
 
 export const ProjectMetricsDocument = `
     query ProjectMetrics($projectId: UUID!) {
@@ -5371,7 +5494,7 @@ export const useProjectMetricsQuery = <
     return useQuery<ProjectMetricsQuery, TError, TData>(
       {
     queryKey: ['ProjectMetrics', variables],
-    queryFn: useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument).bind(null, variables),
+    queryFn: graphqlFetch<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument, variables),
     ...options
   }
     )};
@@ -5385,19 +5508,22 @@ export const useInfiniteProjectMetricsQuery = <
       variables: ProjectMetricsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectMetricsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument)
+    
     return useInfiniteQuery<ProjectMetricsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['ProjectMetrics.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables) => ['ProjectMetrics.infinite', variables];
+
+
+useProjectMetricsQuery.fetcher = (variables: ProjectMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument, variables, options);
 
 export const ProjectsDocument = `
     query Projects($pageSize: Int!, $offset: Int!, $organizationSlug: String!, $search: String) {
@@ -5440,7 +5566,7 @@ export const useProjectsQuery = <
     return useQuery<ProjectsQuery, TError, TData>(
       {
     queryKey: ['Projects', variables],
-    queryFn: useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument).bind(null, variables),
+    queryFn: graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables),
     ...options
   }
     )};
@@ -5454,19 +5580,22 @@ export const useInfiniteProjectsQuery = <
       variables: ProjectsQueryVariables,
       options: Omit<UseInfiniteQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument)
+    
     return useInfiniteQuery<ProjectsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
+
+
+useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
 
 export const RecentFeedbackDocument = `
     query RecentFeedback($userId: UUID!) {
@@ -5500,7 +5629,7 @@ export const useRecentFeedbackQuery = <
     return useQuery<RecentFeedbackQuery, TError, TData>(
       {
     queryKey: ['RecentFeedback', variables],
-    queryFn: useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument).bind(null, variables),
+    queryFn: graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables),
     ...options
   }
     )};
@@ -5514,19 +5643,22 @@ export const useInfiniteRecentFeedbackQuery = <
       variables: RecentFeedbackQueryVariables,
       options: Omit<UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<RecentFeedbackQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument)
+    
     return useInfiniteQuery<RecentFeedbackQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['RecentFeedback.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables) => ['RecentFeedback.infinite', variables];
+
+
+useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
 
 export const UserDocument = `
     query User($hidraId: UUID!) {
@@ -5551,7 +5683,7 @@ export const useUserQuery = <
     return useQuery<UserQuery, TError, TData>(
       {
     queryKey: ['User', variables],
-    queryFn: useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument).bind(null, variables),
+    queryFn: graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables),
     ...options
   }
     )};
@@ -5565,19 +5697,22 @@ export const useInfiniteUserQuery = <
       variables: UserQueryVariables,
       options: Omit<UseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<UserQuery, UserQueryVariables>(UserDocument)
+    
     return useInfiniteQuery<UserQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['User.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
+
+
+useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
 export const WeeklyFeedbackDocument = `
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
@@ -5605,7 +5740,7 @@ export const useWeeklyFeedbackQuery = <
     return useQuery<WeeklyFeedbackQuery, TError, TData>(
       {
     queryKey: ['WeeklyFeedback', variables],
-    queryFn: useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument).bind(null, variables),
+    queryFn: graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, variables),
     ...options
   }
     )};
@@ -5619,16 +5754,19 @@ export const useInfiniteWeeklyFeedbackQuery = <
       variables: WeeklyFeedbackQueryVariables,
       options: Omit<UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
     ) => {
-    const query = useGraphqlClient<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument)
+    
     return useInfiniteQuery<WeeklyFeedbackQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['WeeklyFeedback.infinite', variables],
-      queryFn: (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      queryFn: (metaData) => graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
 useInfiniteWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback.infinite', variables];
+
+
+useWeeklyFeedbackQuery.fetcher = (variables: WeeklyFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, variables, options);
