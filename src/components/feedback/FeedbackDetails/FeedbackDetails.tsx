@@ -352,11 +352,7 @@ const FeedbackDetails = ({
           >
             {projectPage && (
               <Link
-                href={
-                  isPending
-                    ? "/"
-                    : `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
-                }
+                href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
                 disabled={isPending}
               >
                 <Button disabled={isPending}>
