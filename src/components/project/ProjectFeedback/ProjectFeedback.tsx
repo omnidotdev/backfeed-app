@@ -1,7 +1,7 @@
 "use client";
 
 import { Grid, Stack, VStack } from "@omnidev/sigil";
-import { useIsMutating } from "@tanstack/react-query";
+import { useMutationState } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -11,6 +11,12 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { CREATE_FEEDBACK_MUTATION_KEY } from "lib/constants";
+import { useAuth } from "lib/hooks";
+
+import type {
+  CreateFeedbackMutationVariables,
+  FeedbackFragment,
+} from "generated/graphql";
 
 interface Props {
   /** Project ID. */
@@ -21,6 +27,8 @@ interface Props {
  * Project feedback.
  */
 const ProjectFeedback = ({ projectId }: Props) => {
+  const { user } = useAuth();
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
@@ -36,12 +44,34 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const pendingFeedback = useIsMutating({
-    mutationKey: CREATE_FEEDBACK_MUTATION_KEY,
+  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+    filters: { mutationKey: CREATE_FEEDBACK_MUTATION_KEY, status: "pending" },
+    select: (mutation) => {
+      const { input } = mutation.state
+        .variables as CreateFeedbackMutationVariables;
+
+      return {
+        rowId: "pending",
+        title: input.post.title,
+        description: input.post.description,
+        project: {
+          rowId: input.post.projectId,
+        },
+        user: {
+          username: user?.username,
+        },
+        upvotes: {
+          totalCount: 0,
+        },
+        downvotes: {
+          totalCount: 0,
+        },
+      };
+    },
   });
 
   const totalCount =
-    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback;
+    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
   const posts = data?.pages?.flatMap((page) =>
     page?.posts?.nodes?.map((post) => post)
   );
@@ -74,12 +104,21 @@ const ProjectFeedback = ({ projectId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : posts?.length ? (
+            ) : posts?.length || pendingFeedback.length ? (
               <VStack>
+                {!!pendingFeedback.length && (
+                  <FeedbackDetails
+                    feedback={pendingFeedback[0]}
+                    projectPage
+                    w="full"
+                    minH={21}
+                  />
+                )}
+
                 {posts?.map((feedback) => (
                   <FeedbackDetails
                     key={feedback?.rowId}
-                    feedbackId={feedback?.rowId!}
+                    feedback={feedback!}
                     projectPage
                     w="full"
                     minH={21}

@@ -77,7 +77,7 @@ const FeedbackPage = async ({ params }: Props) => {
   return (
     <Page breadcrumbs={breadcrumbs}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <FeedbackDetails feedbackId={feedbackId} />
+        <FeedbackDetails feedback={feedback} />
 
         <Comments feedbackId={feedbackId} />
       </HydrationBoundary>

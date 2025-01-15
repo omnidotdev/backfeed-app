@@ -6,12 +6,11 @@ import {
   Flex,
   HStack,
   Icon,
-  Skeleton,
   Stack,
   Text,
   Tooltip,
 } from "@omnidev/sigil";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import {
@@ -23,14 +22,13 @@ import {
 import { match } from "ts-pattern";
 
 import { Link } from "components/core";
-import { ErrorBoundary } from "components/layout";
 import {
   useCreateDownvoteMutation,
   useCreateUpvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
   useDownvoteQuery,
-  useFeedbackByIdQuery,
+  useInfinitePostsQuery,
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -41,6 +39,8 @@ import {
   DELETE_UPVOTE_MUTATION_KEY,
 } from "lib/constants";
 import { useAuth } from "lib/hooks";
+
+import type { FeedbackFragment } from "generated/graphql";
 
 import type {
   HstackProps,
@@ -63,7 +63,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
 
 interface Props extends HstackProps {
   /** Feedback details. */
-  feedbackId: string;
+  feedback: Partial<FeedbackFragment>;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -71,38 +71,22 @@ interface Props extends HstackProps {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({
-  feedbackId,
-  projectPage = false,
-  ...rest
-}: Props) => {
+const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
+  const isPending = feedback.rowId === "pending";
+
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
   const queryClient = useQueryClient();
 
   const { user } = useAuth();
 
-  const {
-    data: feedback,
-    isLoading,
-    isError,
-  } = useFeedbackByIdQuery(
-    {
-      rowId: feedbackId,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => data?.post,
-    }
-  );
-
   const { data: hasUpvoted } = useUpvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId,
+      feedbackId: feedback.rowId!,
     },
     {
-      enabled: !!user?.rowId,
+      enabled: !!user?.rowId && !isPending,
       select: (data) => data?.upvoteByPostIdAndUserId,
     }
   );
@@ -110,15 +94,14 @@ const FeedbackDetails = ({
   const { data: hasDownvoted } = useDownvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId,
+      feedbackId: feedback.rowId!,
     },
     {
-      enabled: !!user?.rowId,
+      enabled: !!user?.rowId && !isPending,
       select: (data) => data?.downvoteByPostIdAndUserId,
     }
   );
 
-  // Forces mutations to stay pending until refetches are done
   const onSuccess = () => {
     // NB: Since our global callback has already invalidated everything, we just use `invalidateQueries` to "pick up" the already in flight Promises and return them. See: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations#to-await-or-not-to-await
     const invalidationOptions: InvalidateOptions = {
@@ -128,25 +111,28 @@ const FeedbackDetails = ({
     return Promise.all([
       queryClient.invalidateQueries(
         {
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-        },
-        invalidationOptions
-      ),
-      queryClient.invalidateQueries(
-        {
-          queryKey: useUpvoteQuery.getKey({ feedbackId, userId: user?.rowId! }),
+          queryKey: useUpvoteQuery.getKey({
+            feedbackId: feedback.rowId!,
+            userId: user?.rowId!,
+          }),
         },
         invalidationOptions
       ),
       queryClient.invalidateQueries(
         {
           queryKey: useDownvoteQuery.getKey({
-            feedbackId,
+            feedbackId: feedback.rowId!,
             userId: user?.rowId!,
           }),
         },
         invalidationOptions
       ),
+      queryClient.invalidateQueries({
+        queryKey: useInfinitePostsQuery.getKey({
+          pageSize: 5,
+          projectId: feedback.project?.rowId!,
+        }),
+      }),
     ]);
   };
 
@@ -170,8 +156,6 @@ const FeedbackDetails = ({
       mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
       onSuccess,
     });
-
-  const isVotingDisabled = isLoading || isError;
 
   const totalUpvotes =
     (feedback?.upvotes?.totalCount ?? 0) +
@@ -207,7 +191,7 @@ const FeedbackDetails = ({
       icon:
         hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
-      disabled: isVotingDisabled,
+      disabled: isPending,
       onClick: () => {
         if (hasDownvoted) {
           deleteDownvote({
@@ -223,7 +207,7 @@ const FeedbackDetails = ({
           upvote({
             input: {
               upvote: {
-                postId: feedbackId,
+                postId: feedback.rowId!,
                 userId: user?.rowId!,
               },
             },
@@ -240,7 +224,7 @@ const FeedbackDetails = ({
           ? PiArrowFatLineDownFill
           : PiArrowFatLineDown,
       color: "brand.quinary",
-      disabled: isVotingDisabled,
+      disabled: isPending,
       onClick: () => {
         if (hasUpvoted) {
           deleteUpvote({
@@ -256,7 +240,7 @@ const FeedbackDetails = ({
           downvote({
             input: {
               downvote: {
-                postId: feedbackId,
+                postId: feedback.rowId!,
                 userId: user?.rowId!,
               },
             },
@@ -274,142 +258,114 @@ const FeedbackDetails = ({
       borderRadius="lg"
       boxShadow="lg"
       p={{ base: 4, sm: 6 }}
+      opacity={isPending ? 0.5 : 1}
       {...rest}
     >
-      {isError ? (
-        <ErrorBoundary
-          message="Error fetching feedback details"
-          h={52}
-          w="full"
-        />
-      ) : (
-        <Stack w="full">
-          <HStack justify="space-between">
-            <Stack direction={{ base: "column", sm: "row" }} gap={4}>
-              <Skeleton
-                isLoaded={!isLoading}
-                maxW={isLoading ? 48 : undefined}
-                h={isLoading ? 9 : undefined}
+      <Stack w="full">
+        <HStack justify="space-between">
+          <Stack direction={{ base: "column", sm: "row" }} gap={4}>
+            <Text fontWeight="semibold" fontSize="2xl">
+              {feedback?.title}
+            </Text>
+
+            <HStack>
+              <Badge
+                variant="outline"
+                color="brand.secondary"
+                borderColor="brand.secondary"
               >
-                <Text fontWeight="semibold" fontSize="2xl">
-                  {feedback?.title}
-                </Text>
-              </Skeleton>
+                {/* TODO: implement status logic */}
+                Planned
+              </Badge>
 
-              <HStack>
-                <Skeleton isLoaded={!isLoading}>
-                  <Badge
-                    variant="outline"
-                    color="brand.secondary"
-                    borderColor="brand.secondary"
-                  >
-                    {/* TODO: implement status logic */}
-                    Planned
-                  </Badge>
-                </Skeleton>
-
-                <Skeleton isLoaded={!isLoading}>
-                  <Text
-                    fontSize="sm"
-                    color="foreground.subtle"
-                  >{`Updated: ${dayjs(feedback?.updatedAt).fromNow()}`}</Text>
-                </Skeleton>
-              </HStack>
-            </Stack>
-
-            <Skeleton
-              isLoaded={!isLoading}
-              fontWeight="semibold"
-              alignSelf={{ base: "flex-start", sm: "center" }}
-              px={2}
-              mt={{ base: 1.5, sm: 0 }}
-            >
               <Text
-                color={netVotesColor}
-                whiteSpace="nowrap"
-              >{`${netVotesSign}${netTotalVotes}`}</Text>
-            </Skeleton>
-          </HStack>
-
-          <Skeleton
-            isLoaded={!isLoading}
-            minH={isLoading ? 24 : undefined}
-            mt={2}
-          >
-            <Text color="foreground.muted">{feedback?.description}</Text>
-          </Skeleton>
-
-          <Stack justify="space-between" gap={4} mt={2}>
-            <Stack
-              direction={{ base: "column", sm: "row" }}
-              fontSize="sm"
-              gap={{ base: 1, sm: 2 }}
-            >
-              <Skeleton isLoaded={!isLoading} maxW={isLoading ? 32 : undefined}>
-                <Text color="foreground.subtle">
-                  {feedback?.user?.username}
-                </Text>
-              </Skeleton>
-
-              <Flex
-                borderRadius="full"
-                h={1}
-                w={1}
-                bgColor="foreground.subtle"
-                display={{ base: "none", sm: "flex" }}
-                placeSelf="center"
-              />
-
-              <Skeleton isLoaded={!isLoading} maxW={isLoading ? 24 : undefined}>
-                <Text color="foreground.subtle">
-                  {dayjs(feedback?.createdAt).fromNow()}
-                </Text>
-              </Skeleton>
-            </Stack>
-
-            <HStack fontSize="sm" justify="space-between" gap={1} py={2}>
-              {projectPage && (
-                <Link
-                  href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
-                >
-                  <Button>
-                    {app.projectPage.projectFeedback.details.feedbackLink}
-                  </Button>
-                </Link>
-              )}
-
-              <Flex gap={1}>
-                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-                  <Skeleton key={id} isLoaded={!isLoading} h={7}>
-                    <Tooltip
-                      positioning={{ placement: "top" }}
-                      trigger={
-                        <HStack gap={2} py={1} fontVariant="tabular-nums">
-                          <Icon src={icon} w={5} h={5} />
-                          {votes}
-                        </HStack>
-                      }
-                      triggerProps={{
-                        variant: "ghost",
-                        w: "full",
-                        bgColor: "transparent",
-                        opacity: {
-                          base: 1,
-                          _disabled: 0.3,
-                          _hover: { base: 0.8, _disabled: 0.3 },
-                        },
-                        ...rest,
-                      }}
-                    >
-                      {tooltip}
-                    </Tooltip>
-                  </Skeleton>
-                ))}
-              </Flex>
+                fontSize="sm"
+                color="foreground.subtle"
+              >{`Updated: ${dayjs(isPending ? new Date() : feedback?.updatedAt).fromNow()}`}</Text>
             </HStack>
           </Stack>
+
+          <Text
+            color={netVotesColor}
+            whiteSpace="nowrap"
+          >{`${netVotesSign}${netTotalVotes}`}</Text>
+        </HStack>
+
+        <Text color="foreground.muted">{feedback?.description}</Text>
+
+        <Stack justify="space-between" gap={4} mt={2}>
+          <Stack
+            direction={{ base: "column", sm: "row" }}
+            fontSize="sm"
+            gap={{ base: 1, sm: 2 }}
+          >
+            <Text color="foreground.subtle">{feedback?.user?.username}</Text>
+
+            <Flex
+              borderRadius="full"
+              h={1}
+              w={1}
+              bgColor="foreground.subtle"
+              display={{ base: "none", sm: "flex" }}
+              placeSelf="center"
+            />
+
+            <Text color="foreground.subtle">
+              {dayjs(isPending ? new Date() : feedback?.createdAt).fromNow()}
+            </Text>
+          </Stack>
+
+          <HStack
+            fontSize="sm"
+            justify={projectPage ? "space-between" : "flex-end"}
+            gap={1}
+            py={2}
+          >
+            {projectPage && (
+              <Link
+                href={
+                  isPending
+                    ? "/"
+                    : `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
+                }
+                disabled={isPending}
+              >
+                <Button disabled={isPending}>
+                  {app.projectPage.projectFeedback.details.feedbackLink}
+                </Button>
+              </Link>
+            )}
+
+            <Flex gap={1}>
+              {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                <Tooltip
+                  key={id}
+                  positioning={{ placement: "top" }}
+                  trigger={
+                    <HStack gap={2} py={1} fontVariant="tabular-nums">
+                      <Icon src={icon} w={5} h={5} />
+                      {votes}
+                    </HStack>
+                  }
+                  triggerProps={{
+                    variant: "ghost",
+                    w: "full",
+                    bgColor: "transparent",
+                    opacity: {
+                      base: 1,
+                      _disabled: 0.3,
+                      _hover: { base: 0.8, _disabled: 0.3 },
+                    },
+                    ...rest,
+                  }}
+                >
+                  {tooltip}
+                </Tooltip>
+              ))}
+            </Flex>
+          </HStack>
         </Stack>
-      )}
+      </Stack>
     </HStack>
   );
 };

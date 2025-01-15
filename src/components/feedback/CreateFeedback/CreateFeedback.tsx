@@ -11,11 +11,16 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
-import { useCreateFeedbackMutation, useProjectQuery } from "generated/graphql";
+import {
+  useCreateFeedbackMutation,
+  useInfinitePostsQuery,
+  useProjectQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import {
   CREATE_FEEDBACK_MUTATION_KEY,
@@ -46,6 +51,8 @@ interface Props {
  * Create feedback form.
  */
 const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
+  const queryClient = useQueryClient();
+
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
@@ -64,9 +71,21 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
     }
   );
 
-  const { mutate: createFeedback } = useCreateFeedbackMutation({
+  const { mutate: createFeedback, isPending } = useCreateFeedbackMutation({
     mutationKey: CREATE_FEEDBACK_MUTATION_KEY,
-    onSuccess: () => reset(),
+    onSuccess: () => {
+      reset();
+
+      return queryClient.invalidateQueries(
+        {
+          queryKey: useInfinitePostsQuery.getKey({
+            pageSize: 5,
+            projectId: projectId!,
+          }),
+        },
+        { cancelRefetch: false }
+      );
+    },
   });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
@@ -194,9 +213,11 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               type="submit"
               w="fit-content"
               placeSelf="flex-end"
-              disabled={isLoading || isError || !canSubmit || !isDirty}
+              disabled={
+                isLoading || isError || !canSubmit || !isDirty || isPending
+              }
             >
-              {isSubmitting
+              {isSubmitting || isPending
                 ? app.projectPage.projectFeedback.action.pending
                 : app.projectPage.projectFeedback.action.submit}
             </Button>

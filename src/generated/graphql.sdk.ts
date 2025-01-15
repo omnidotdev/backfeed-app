@@ -4424,6 +4424,8 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+
 export type CreateDownvoteMutationVariables = Exact<{
   input: CreateDownvoteInput;
 }>;
@@ -4591,7 +4593,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4656,7 +4658,32 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
-
+export const FeedbackFragmentDoc = gql`
+    fragment Feedback on Post {
+  rowId
+  project {
+    rowId
+    name
+    organization {
+      rowId
+      name
+    }
+  }
+  title
+  description
+  user {
+    username
+  }
+  upvotes {
+    totalCount
+  }
+  downvotes {
+    totalCount
+  }
+  createdAt
+  updatedAt
+}
+    `;
 export const CreateDownvoteDocument = gql`
     mutation CreateDownvote($input: CreateDownvoteInput!) {
   createDownvote(input: $input) {
@@ -4824,31 +4851,10 @@ export const DownvoteDocument = gql`
 export const FeedbackByIdDocument = gql`
     query FeedbackById($rowId: UUID!) {
   post(rowId: $rowId) {
-    rowId
-    project {
-      rowId
-      name
-      organization {
-        rowId
-        name
-      }
-    }
-    title
-    description
-    user {
-      username
-    }
-    upvotes {
-      totalCount
-    }
-    downvotes {
-      totalCount
-    }
-    createdAt
-    updatedAt
+    ...Feedback
   }
 }
-    `;
+    ${FeedbackFragmentDoc}`;
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
@@ -4926,11 +4932,11 @@ export const PostsDocument = gql`
     }
     totalCount
     nodes {
-      rowId
+      ...Feedback
     }
   }
 }
-    `;
+    ${FeedbackFragmentDoc}`;
 export const ProjectDocument = gql`
     query Project($projectSlug: String!, $organizationSlug: String!) {
   projects(
