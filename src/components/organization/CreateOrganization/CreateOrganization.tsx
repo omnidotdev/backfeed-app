@@ -149,10 +149,11 @@ const CreateOrganization = () => {
         display="flex"
         flexDirection="column"
         gap={4}
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          handleSubmit();
+          await handleSubmit();
+          reset();
         }}
       >
         <Field
