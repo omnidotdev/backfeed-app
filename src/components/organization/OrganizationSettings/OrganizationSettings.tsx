@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 import { FormFieldError } from "components/core";
 import {
@@ -14,7 +15,7 @@ import {
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 
-/** Schema for defining the shape of the create organization form fields. */
+/** Schema for defining the shape of the update organization form fields. */
 const baseSchema = z.object({
   name: z
     .string()
@@ -42,13 +43,14 @@ const baseSchema = z.object({
 });
 
 interface Props {
-  /** Organization details. */
+  /** Organization slug. */
   organizationSlug: string;
 }
 
 /** Organization settings. */
 const OrganizationSettings = ({ organizationSlug }: Props) => {
   const [readOnly, setReadOnly] = useState(true);
+  const router = useRouter();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -59,7 +61,12 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
     }
   );
 
-  const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation();
+  const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
+    onSuccess: (data) =>
+      router.replace(
+        `/organizations/${data.updateOrganization?.organization?.slug}/settings`
+      ),
+  });
 
   const inputStyles = {
     minWidth: "lg",
@@ -72,8 +79,8 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
-      name: organization?.name!,
-      slug: organization?.slug!,
+      name: organization?.name ?? "",
+      slug: organization?.slug ?? "",
     },
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
@@ -95,6 +102,9 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
       }
     },
   });
+
+  // TODO: add loading state
+  if (!organization) return null;
 
   return (
     // TODO: Maybe use SectionContainer component here
