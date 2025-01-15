@@ -8,10 +8,11 @@ import {
 
 import { DestructiveAction, Link, OverflowText } from "components/core";
 import { app } from "lib/config";
+import { useDeleteProjectMutation } from "generated/graphql";
 
 import type { Project } from "generated/graphql";
 
-const deleteProject = app.projectsPage.dialogs.deleteProject;
+const deleteProjectDetails = app.projectsPage.dialogs.deleteProject;
 
 interface Props {
   project: Partial<Project>;
@@ -23,9 +24,11 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { slug, organization, name, description, posts },
+  project: { slug, organization, name, description, posts, rowId },
   index,
 }: Props) => {
+  const { mutate: deleteProject } = useDeleteProjectMutation();
+
   const isOrganizationOwner = index % 2 === 0;
 
   const AGGREGATES = [
@@ -77,14 +80,14 @@ const ProjectListItem = ({
 
           {isOrganizationOwner && (
             <DestructiveAction
-              title={deleteProject.title}
-              description={deleteProject.description}
+              title={deleteProjectDetails.title}
+              description={deleteProjectDetails.description}
               action={{
-                label: deleteProject.action.label,
-                // TODO: handle delete project in onClick for primary action
+                label: deleteProjectDetails.action.label,
+                onClick: () => deleteProject({ rowId: rowId! }),
               }}
               triggerProps={{
-                "aria-label": `${deleteProject.action.label} organization`,
+                "aria-label": `${deleteProjectDetails.action.label} organization`,
                 color: "omni.ruby",
               }}
             />

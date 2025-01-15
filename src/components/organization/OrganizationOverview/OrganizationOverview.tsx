@@ -15,7 +15,6 @@ import { useOrganizationMetricsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { CREATE_PROJECT_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
-import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
@@ -31,10 +30,6 @@ const OrganizationOverview = ({ organization }: Props) => {
   });
 
   const { isLoading: isAuthLoading } = useAuth();
-
-  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
 
   const {
     data: organizationMetrics,
@@ -82,7 +77,7 @@ const OrganizationOverview = ({ organization }: Props) => {
             label: app.organizationPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
-            onClick: () => setIsCreateProjectDialogOpen(true),
+            dialogType: DialogType.CreateProject,
             disabled: isAuthLoading,
           },
         ],

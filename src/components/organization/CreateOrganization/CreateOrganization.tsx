@@ -19,7 +19,7 @@ import {
   useCreateOrganizationMutation,
   useCreateUserOrganizationMutation,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDev } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
@@ -128,7 +128,9 @@ const CreateOrganization = () => {
           },
         });
       } catch (error) {
-        console.error(error);
+        if (isDev) {
+          console.error(error);
+        }
       }
     },
   });
@@ -147,10 +149,11 @@ const CreateOrganization = () => {
         display="flex"
         flexDirection="column"
         gap={4}
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          handleSubmit();
+          await handleSubmit();
+          reset();
         }}
       >
         <Field

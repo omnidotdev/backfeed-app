@@ -1,0 +1,7 @@
+mutation DeleteProject($rowId: UUID!) {
+  deleteProject(input: { rowId: $rowId }) {
+    project {
+      rowId
+    }
+  }
+}
