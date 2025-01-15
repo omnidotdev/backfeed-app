@@ -28,6 +28,7 @@ import {
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
   useDownvoteQuery,
+  useFeedbackByIdQuery,
   useInfinitePostsQuery,
   useUpvoteQuery,
 } from "generated/graphql";
@@ -62,8 +63,10 @@ interface VoteButtonProps extends TooltipTriggerProps {
 }
 
 interface Props extends HstackProps {
-  /** Feedback details. */
-  feedback: Partial<FeedbackFragment>;
+  /** Feedback ID. Used to fetch feedback details when viewing the dynamic feedback page. */
+  feedbackId?: string;
+  /** Feedback details. Used to display feedback details when viewing the project page. */
+  feedback?: Partial<FeedbackFragment>;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
 }
@@ -71,8 +74,25 @@ interface Props extends HstackProps {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
-  const isPending = feedback.rowId === "pending";
+const FeedbackDetails = ({
+  feedbackId,
+  feedback: projectFeedback,
+  projectPage = false,
+  ...rest
+}: Props) => {
+  const { data: pageFeedback } = useFeedbackByIdQuery(
+    {
+      rowId: feedbackId!,
+    },
+    {
+      enabled: !projectPage && !!feedbackId,
+      select: (data) => data?.post,
+    }
+  );
+
+  const feedback = projectPage ? projectFeedback : pageFeedback;
+
+  const isPending = feedback?.rowId === "pending";
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
@@ -83,7 +103,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
   const { data: hasUpvoted } = useUpvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId: feedback.rowId!,
+      feedbackId: feedback?.rowId!,
     },
     {
       enabled: !!user?.rowId && !isPending,
@@ -94,7 +114,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
   const { data: hasDownvoted } = useDownvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId: feedback.rowId!,
+      feedbackId: feedback?.rowId!,
     },
     {
       enabled: !!user?.rowId && !isPending,
@@ -112,7 +132,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
       queryClient.invalidateQueries(
         {
           queryKey: useUpvoteQuery.getKey({
-            feedbackId: feedback.rowId!,
+            feedbackId: feedback?.rowId!,
             userId: user?.rowId!,
           }),
         },
@@ -121,18 +141,27 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
       queryClient.invalidateQueries(
         {
           queryKey: useDownvoteQuery.getKey({
-            feedbackId: feedback.rowId!,
+            feedbackId: feedback?.rowId!,
             userId: user?.rowId!,
           }),
         },
         invalidationOptions
       ),
-      queryClient.invalidateQueries({
-        queryKey: useInfinitePostsQuery.getKey({
-          pageSize: 5,
-          projectId: feedback.project?.rowId!,
-        }),
-      }),
+      queryClient.invalidateQueries(
+        {
+          queryKey: useInfinitePostsQuery.getKey({
+            pageSize: 5,
+            projectId: feedback?.project?.rowId!,
+          }),
+        },
+        invalidationOptions
+      ),
+      queryClient.invalidateQueries(
+        {
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback?.rowId! }),
+        },
+        invalidationOptions
+      ),
     ]);
   };
 
@@ -207,7 +236,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
           upvote({
             input: {
               upvote: {
-                postId: feedback.rowId!,
+                postId: feedback?.rowId!,
                 userId: user?.rowId!,
               },
             },
@@ -240,7 +269,7 @@ const FeedbackDetails = ({ feedback, projectPage = false, ...rest }: Props) => {
           downvote({
             input: {
               downvote: {
-                postId: feedback.rowId!,
+                postId: feedback?.rowId!,
                 userId: user?.rowId!,
               },
             },
