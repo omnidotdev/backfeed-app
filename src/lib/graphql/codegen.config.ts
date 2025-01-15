@@ -59,7 +59,7 @@ const graphqlCodegenConfig: CodegenConfig = {
         addInfiniteQuery: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys
         exposeQueryKeys: true,
-        // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys
+        // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposemutationkeys
         exposeMutationKeys: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposefetcher
         exposeFetcher: true,
