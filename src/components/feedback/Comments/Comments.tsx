@@ -1,19 +1,11 @@
 "use client";
 
-import {
-  Button,
-  Grid,
-  Skeleton,
-  Stack,
-  Text,
-  Textarea,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Stack, VStack } from "@omnidev/sigil";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { CommentCard } from "components/feedback";
+import { CommentCard, CommentForm } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfiniteCommentsQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -65,26 +57,7 @@ const Comments = ({ feedbackId }: Props) => {
       icon={LuMessageSquare}
     >
       <Stack>
-        <Textarea
-          placeholder={app.feedbackPage.comments.textAreaPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
-          minH={16}
-          disabled
-        />
-
-        <Stack justify="space-between" direction="row">
-          <Skeleton isLoaded={!isLoading} h="fit-content">
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`${isError ? 0 : totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
-          </Skeleton>
-
-          <Button w="fit-content" placeSelf="flex-end" disabled>
-            {app.feedbackPage.comments.submit}
-          </Button>
-        </Stack>
+        <CommentForm totalCount={totalCount} />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" />
