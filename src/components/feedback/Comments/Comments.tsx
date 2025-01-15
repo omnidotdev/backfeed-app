@@ -8,9 +8,11 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
-import { useInfiniteCommentsQuery } from "generated/graphql";
+import {
+  useCreateCommentMutation,
+  useInfiniteCommentsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
-import { CREATE_COMMENT_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 import type {
@@ -45,7 +47,10 @@ const Comments = ({ feedbackId }: Props) => {
     );
 
   const pendingComments = useMutationState<Partial<CommentFragment>>({
-    filters: { mutationKey: CREATE_COMMENT_MUTATION_KEY, status: "pending" },
+    filters: {
+      mutationKey: useCreateCommentMutation.getKey(),
+      status: "pending",
+    },
     select: (mutation) => {
       const { input } = mutation.state
         .variables as CreateCommentMutationVariables;

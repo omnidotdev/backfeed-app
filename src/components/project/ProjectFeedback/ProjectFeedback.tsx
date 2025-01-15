@@ -8,9 +8,11 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackDetails } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
-import { useInfinitePostsQuery } from "generated/graphql";
+import {
+  useCreateFeedbackMutation,
+  useInfinitePostsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
-import { CREATE_FEEDBACK_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 import type {
@@ -45,7 +47,10 @@ const ProjectFeedback = ({ projectId }: Props) => {
     );
 
   const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
-    filters: { mutationKey: CREATE_FEEDBACK_MUTATION_KEY, status: "pending" },
+    filters: {
+      mutationKey: useCreateFeedbackMutation.getKey(),
+      status: "pending",
+    },
     select: (mutation) => {
       const { input } = mutation.state
         .variables as CreateFeedbackMutationVariables;

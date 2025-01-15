@@ -9,12 +9,11 @@ import { z } from "zod";
 import { FormFieldError } from "components/core";
 import {
   useCreateCommentMutation,
+  useDeleteCommentMutation,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
-  CREATE_COMMENT_MUTATION_KEY,
-  DELETE_COMMENT_MUTATION_KEY,
   standardSchemaValidator,
 } from "lib/constants";
 import { useAuth } from "lib/hooks";
@@ -50,11 +49,10 @@ const CreateComment = ({ totalCount }: Props) => {
   const { feedbackId } = useParams<{ feedbackId: string }>();
 
   const pendingDeletedComments = useIsMutating({
-    mutationKey: DELETE_COMMENT_MUTATION_KEY,
+    mutationKey: useDeleteCommentMutation.getKey(),
   });
 
   const { mutate: createComment, isPending } = useCreateCommentMutation({
-    mutationKey: CREATE_COMMENT_MUTATION_KEY,
     onSuccess: () => {
       reset();
 

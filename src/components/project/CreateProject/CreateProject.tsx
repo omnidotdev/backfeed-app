@@ -23,10 +23,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  CREATE_PROJECT_MUTATION_KEY,
-  standardSchemaValidator,
-} from "lib/constants";
+import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -100,7 +97,6 @@ const CreateProject = () => {
   );
 
   const { mutate: createProject } = useCreateProjectMutation({
-    mutationKey: CREATE_PROJECT_MUTATION_KEY,
     onSuccess: (data) => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
