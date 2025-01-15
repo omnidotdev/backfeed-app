@@ -58,6 +58,8 @@ const Comment = ({
         }),
     });
 
+  const actionIsPending = isPending || isDeletePending;
+
   return (
     <Stack
       position="relative"
@@ -66,7 +68,7 @@ const Comment = ({
       borderRadius="sm"
       gap={4}
       p={4}
-      opacity={isPending || isDeletePending ? 0.5 : 1}
+      opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
       <VStack
@@ -101,7 +103,7 @@ const Comment = ({
             triggerProps={{
               "aria-label": app.feedbackPage.comments.delete.title,
               color: "omni.ruby",
-              disabled: isPending,
+              disabled: actionIsPending,
             }}
           />
         </Stack>
