@@ -53,7 +53,7 @@ const DestructiveAction = ({
   const actions: Action[] = [
     {
       ...action,
-      variant: "outline",
+      ...buttonProps,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -62,6 +62,7 @@ const DestructiveAction = ({
     {
       label: app.actions.cancel.label,
       onClick: onClose,
+      variant: "outline",
     },
   ];
 
