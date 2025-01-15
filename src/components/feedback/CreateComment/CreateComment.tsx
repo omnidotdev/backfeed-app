@@ -2,7 +2,7 @@
 
 import { Button, Stack, Text, Textarea, sigil } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useIsMutating, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
@@ -14,6 +14,7 @@ import {
 import { app } from "lib/config";
 import {
   CREATE_COMMENT_MUTATION_KEY,
+  DELETE_COMMENT_MUTATION_KEY,
   standardSchemaValidator,
 } from "lib/constants";
 import { useAuth } from "lib/hooks";
@@ -47,6 +48,10 @@ const CreateComment = ({ totalCount }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
+
+  const pendingDeletedComments = useIsMutating({
+    mutationKey: DELETE_COMMENT_MUTATION_KEY,
+  });
 
   const { mutate: createComment, isPending } = useCreateCommentMutation({
     mutationKey: CREATE_COMMENT_MUTATION_KEY,
@@ -89,6 +94,9 @@ const CreateComment = ({ totalCount }: Props) => {
       }),
   });
 
+  const totalComments =
+    totalCount - pendingDeletedComments + (isPending ? 1 : 0);
+
   return (
     <sigil.form
       display="flex"
@@ -130,7 +138,7 @@ const CreateComment = ({ totalCount }: Props) => {
 
       <Stack justify="space-between" direction="row">
         <Text fontSize="sm" color="foreground.muted">
-          {`${totalCount + (isPending ? 1 : 0)} ${app.feedbackPage.comments.totalComments}`}
+          {`${totalComments} ${app.feedbackPage.comments.totalComments}`}
         </Text>
 
         <Subscribe

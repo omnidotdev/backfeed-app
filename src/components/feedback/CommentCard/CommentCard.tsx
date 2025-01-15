@@ -11,6 +11,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { DELETE_COMMENT_MUTATION_KEY } from "lib/constants";
 
 import type { StackProps } from "@omnidev/sigil";
 
@@ -47,6 +48,7 @@ const Comment = ({
 
   const { mutate: deleteComment, isPending: isDeletePending } =
     useDeleteCommentMutation({
+      mutationKey: DELETE_COMMENT_MUTATION_KEY,
       onSuccess: () =>
         queryClient.invalidateQueries({
           queryKey: useInfiniteCommentsQuery.getKey({

@@ -4,6 +4,7 @@ import {
   useCreateFeedbackMutation,
   useCreateProjectMutation,
   useCreateUpvoteMutation,
+  useDeleteCommentMutation,
 } from "generated/graphql";
 
 const PROJECT_MUTATION_KEY = ["project"];
@@ -38,4 +39,8 @@ const COMMENT_MUTATION_KEY = ["comment"];
 export const CREATE_COMMENT_MUTATION_KEY = [
   ...COMMENT_MUTATION_KEY,
   ...useCreateCommentMutation.getKey(),
+];
+export const DELETE_COMMENT_MUTATION_KEY = [
+  ...COMMENT_MUTATION_KEY,
+  ...useDeleteCommentMutation.getKey(),
 ];
