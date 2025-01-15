@@ -4445,6 +4445,14 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
+export type UpdateOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: OrganizationPatch;
+}>;
+
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', clientMutationId?: string | null } | null };
+
 export type CreatePostMutationVariables = Exact<{
   postInput: PostInput;
 }>;
@@ -4700,6 +4708,30 @@ export const useLeaveOrganizationMutation = <
 
 
 useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
+
+export const UpdateOrganizationDocument = `
+    mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
+  updateOrganization(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateOrganization'],
+    mutationFn: (variables?: UpdateOrganizationMutationVariables) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useUpdateOrganizationMutation.fetcher = (variables: UpdateOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables, options);
 
 export const CreatePostDocument = `
     mutation CreatePost($postInput: PostInput!) {

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { SectionContainer, Page } from "components/layout";
+import { Page } from "components/layout";
 import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
 import { app } from "lib/config";
@@ -54,15 +54,15 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   if (!session || !organization) notFound();
 
   return (
-    <Page breadcrumbs={breadcrumbs}>
-      <SectionContainer
-        title={app.organizationSettingsPage.breadcrumb}
-        description={app.organizationSettingsPage.description}
-      >
-        <OrganizationSettings
-          organization={organization as Partial<Organization>}
-        />
-      </SectionContainer>
+    <Page
+      breadcrumbs={breadcrumbs}
+      header={{
+        title: app.organizationSettingsPage.breadcrumb,
+        description: app.organizationSettingsPage.description,
+        cta: [],
+      }}
+    >
+      <OrganizationSettings organizationSlug={organizationSlug} />
     </Page>
   );
 };

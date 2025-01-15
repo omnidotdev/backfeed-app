@@ -271,6 +271,28 @@ const app = {
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
+    cta: {
+      updateOrganization: {
+        action: {
+          edit: "Edit",
+          submit: "Save",
+          pending: "Updating Organization...",
+        },
+        organizationName: {
+          label: "Organization Name",
+          error: "Must be at least 3 characters.",
+        },
+        organizationSlug: {
+          label: "Organization Slug",
+          error: {
+            invalidFormat: "Invalid slug format.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 50 characters.",
+            duplicate: "Organization slug already exists.",
+          },
+        },
+      },
+    },
   },
   // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
