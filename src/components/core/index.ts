@@ -3,6 +3,10 @@ export {
   type BreadcrumbRecord,
 } from "./Breadcrumb/Breadcrumb";
 export {
+  default as CallToAction,
+  type ActionButton,
+} from "./CallToAction/CallToAction";
+export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
 } from "./DestructiveAction/DestructiveAction";

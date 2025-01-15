@@ -19,7 +19,7 @@ import {
   useCreateOrganizationMutation,
   useCreateUserOrganizationMutation,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
@@ -37,15 +37,16 @@ const baseSchema = z.object({
     .string()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalidFormat
+      app.dashboardPage.cta.newOrganization.organizationSlug.error
+        .invalidFormat,
     )
     .min(
       3,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength,
     )
     .max(
       50,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength,
     ),
 });
 
@@ -67,7 +68,7 @@ const createOrganizationSchema = baseSchema.superRefine(
         path: ["slug"],
       });
     }
-  }
+  },
 );
 
 /**
@@ -89,7 +90,7 @@ const CreateOrganization = () => {
     useCreateUserOrganizationMutation({
       onSuccess: () => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`,
         );
 
         setIsOpen(false);
@@ -128,7 +129,9 @@ const CreateOrganization = () => {
           },
         });
       } catch (error) {
-        console.error(error);
+        if (isDevEnv) {
+          console.error(error);
+        }
       }
     },
   });
@@ -147,10 +150,11 @@ const CreateOrganization = () => {
         display="flex"
         flexDirection="column"
         gap={4}
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          handleSubmit();
+          await handleSubmit();
+          reset();
         }}
       >
         <Field

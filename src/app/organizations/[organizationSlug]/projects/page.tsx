@@ -8,6 +8,7 @@ import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { DialogType } from "store";
 
 import type { ProjectsQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
@@ -88,6 +89,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
             label: app.projectsPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
+            dialogType: DialogType.CreateProject,
           },
         ],
       }}
