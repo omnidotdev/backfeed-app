@@ -53,6 +53,7 @@ const Comments = ({ feedbackId }: Props) => {
       return {
         message: input.comment.message,
         user: {
+          rowId: user?.rowId!,
           username: user?.username,
         },
       };
@@ -95,21 +96,25 @@ const Comments = ({ feedbackId }: Props) => {
               <VStack>
                 {!!pendingComments.length && (
                   <CommentCard
+                    commentId="pending"
                     senderName={pendingComments[0].user?.username}
                     message={pendingComments[0].message}
                     date={new Date()}
+                    isSender
+                    isPending
                     w="full"
                     minH={21}
-                    isPending
                   />
                 )}
 
                 {comments?.map((comment) => (
                   <CommentCard
                     key={comment?.rowId}
+                    commentId={comment?.rowId!}
                     senderName={comment?.user?.username}
                     message={comment?.message}
                     date={comment?.createdAt}
+                    isSender={comment?.user?.rowId === user?.rowId}
                     w="full"
                     minH={21}
                   />

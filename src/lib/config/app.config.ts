@@ -485,6 +485,13 @@ const app = {
       emptyState: {
         message: "No comments found. Add a comment to start the conversation.",
       },
+      delete: {
+        title: "Delete Comment",
+        description: "Are you sure you want to delete this comment?",
+        action: {
+          label: "Delete",
+        },
+      },
     },
     statusHistory: {
       title: "Status History",
