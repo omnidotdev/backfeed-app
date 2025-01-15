@@ -19,11 +19,9 @@ import {
   DELETE_UPVOTE_MUTATION_KEY,
 } from "lib/constants";
 
-import type { Project } from "generated/graphql";
-
 interface Props {
   /** Project ID. */
-  projectId: Project["id"];
+  projectId: string;
 }
 
 const ProjectOverview = ({ projectId }: Props) => {
