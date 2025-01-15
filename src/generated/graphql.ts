@@ -4480,6 +4480,13 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
 
+export type DeleteProjectMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'DeleteProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -4872,6 +4879,34 @@ useCreateProjectMutation.getKey = () => ['CreateProject'];
 
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
+
+export const DeleteProjectDocument = `
+    mutation DeleteProject($rowId: UUID!) {
+  deleteProject(input: {rowId: $rowId}) {
+    project {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useDeleteProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteProjectMutation, TError, DeleteProjectMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteProjectMutation, TError, DeleteProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteProject'],
+    mutationFn: (variables?: DeleteProjectMutationVariables) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteProjectMutation.getKey = () => ['DeleteProject'];
+
+
+useDeleteProjectMutation.fetcher = (variables: DeleteProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables, options);
 
 export const CreateUpvoteDocument = `
     mutation CreateUpvote($input: CreateUpvoteInput!) {
