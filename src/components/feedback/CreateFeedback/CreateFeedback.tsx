@@ -32,10 +32,18 @@ import { useAuth } from "lib/hooks";
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
-  projectId: z.string().uuid("Invalid format"),
-  userId: z.string().uuid("Invalid format"),
-  title: z.string().min(3, "Must be at least 3 characters."),
-  description: z.string().min(10, "Must be at least 10 characters."),
+  projectId: z
+    .string()
+    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
+  userId: z
+    .string()
+    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
+  title: z
+    .string()
+    .min(3, app.projectPage.projectFeedback.createFeedback.errors.title),
+  description: z
+    .string()
+    .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
 });
 
 interface Props {

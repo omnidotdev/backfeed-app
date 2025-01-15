@@ -423,6 +423,13 @@ const app = {
         placeholder:
           "I have really enjoyed working with this project. It has helped me to learn a lot about the industry.",
       },
+      createFeedback: {
+        errors: {
+          invalid: "Invalid format",
+          title: "Must be at least 3 characters.",
+          description: "Must be at least 10 characters.",
+        },
+      },
       action: {
         pending: "Submitting...",
         submit: "Create",
