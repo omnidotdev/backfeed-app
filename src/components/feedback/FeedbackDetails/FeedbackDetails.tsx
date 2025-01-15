@@ -224,13 +224,13 @@ const FeedbackDetails = ({
       onClick: () => {
         if (hasDownvoted) {
           deleteDownvote({
-            id: hasDownvoted.id,
+            rowId: hasDownvoted.rowId,
           });
         }
 
         if (hasUpvoted) {
           deleteUpvote({
-            id: hasUpvoted.id,
+            rowId: hasUpvoted.rowId,
           });
         } else {
           upvote({
@@ -257,13 +257,13 @@ const FeedbackDetails = ({
       onClick: () => {
         if (hasUpvoted) {
           deleteUpvote({
-            id: hasUpvoted.id,
+            rowId: hasUpvoted.rowId,
           });
         }
 
         if (hasDownvoted) {
           deleteDownvote({
-            id: hasDownvoted.id,
+            rowId: hasDownvoted.rowId,
           });
         } else {
           downvote({

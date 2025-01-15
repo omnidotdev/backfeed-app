@@ -4433,11 +4433,11 @@ export type CreateDownvoteMutationVariables = Exact<{
 export type CreateDownvoteMutation = { __typename?: 'Mutation', createDownvote?: { __typename?: 'CreateDownvotePayload', clientMutationId?: string | null } | null };
 
 export type DeleteDownvoteMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvoteById?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
+export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvote?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
@@ -4497,11 +4497,11 @@ export type CreateUpvoteMutationVariables = Exact<{
 export type CreateUpvoteMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
 export type DeleteUpvoteMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvoteById?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
+export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4550,7 +4550,7 @@ export type DownvoteQueryVariables = Exact<{
 }>;
 
 
-export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', id: string } | null };
+export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', rowId: string } | null };
 
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4640,7 +4640,7 @@ export type UpvoteQueryVariables = Exact<{
 }>;
 
 
-export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', id: string } | null };
+export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', rowId: string } | null };
 
 export type UserQueryVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4711,8 +4711,8 @@ useCreateDownvoteMutation.getKey = () => ['CreateDownvote'];
 useCreateDownvoteMutation.fetcher = (variables: CreateDownvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateDownvoteMutation, CreateDownvoteMutationVariables>(CreateDownvoteDocument, variables, options);
 
 export const DeleteDownvoteDocument = `
-    mutation DeleteDownvote($id: ID!) {
-  deleteDownvoteById(input: {id: $id}) {
+    mutation DeleteDownvote($rowId: UUID!) {
+  deleteDownvote(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
@@ -4962,8 +4962,8 @@ useCreateUpvoteMutation.getKey = () => ['CreateUpvote'];
 useCreateUpvoteMutation.fetcher = (variables: CreateUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUpvoteMutation, CreateUpvoteMutationVariables>(CreateUpvoteDocument, variables, options);
 
 export const DeleteUpvoteDocument = `
-    mutation DeleteUpvote($id: ID!) {
-  deleteUpvoteById(input: {id: $id}) {
+    mutation DeleteUpvote($rowId: UUID!) {
+  deleteUpvote(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
@@ -5196,7 +5196,7 @@ useDashboardAggregatesQuery.fetcher = (variables: DashboardAggregatesQueryVariab
 export const DownvoteDocument = `
     query Downvote($userId: UUID!, $feedbackId: UUID!) {
   downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
-    id
+    rowId
   }
 }
     `;
@@ -5860,7 +5860,7 @@ useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, optio
 export const UpvoteDocument = `
     query Upvote($userId: UUID!, $feedbackId: UUID!) {
   upvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
-    id
+    rowId
   }
 }
     `;
