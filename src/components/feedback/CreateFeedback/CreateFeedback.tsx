@@ -213,9 +213,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               type="submit"
               w="fit-content"
               placeSelf="flex-end"
-              disabled={
-                isLoading || isError || !canSubmit || !isDirty || isPending
-              }
+              disabled={!canSubmit || !isDirty || isPending}
             >
               {isSubmitting || isPending
                 ? app.projectPage.projectFeedback.action.pending
