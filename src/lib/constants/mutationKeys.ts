@@ -32,5 +32,5 @@ export const DELETE_DOWNVOTE_MUTATION_KEY = [
 ];
 export const DELETE_UPVOTE_MUTATION_KEY = [
   ...FEEDBACK_MUTATION_KEY,
-  ...useCreateUpvoteMutation.getKey(),
+  ...useDeleteUpvoteMutation.getKey(),
 ];
