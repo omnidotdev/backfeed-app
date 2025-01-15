@@ -12,12 +12,7 @@ query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
     }
     edges {
       node {
-        rowId
-        message
-        user {
-          username
-        }
-        createdAt
+        ...Comment
       }
     }
   }

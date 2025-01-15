@@ -12,12 +12,20 @@ interface Props extends StackProps {
   message: string | null | undefined;
   /** Comment date. */
   date: Date | null | undefined;
+  /** Whether the comment is pending. */
+  isPending?: boolean;
 }
 
 /**
  * Comment card.
  */
-const Comment = ({ senderName, message, date, ...rest }: Props) => (
+const Comment = ({
+  senderName,
+  message,
+  date,
+  isPending = false,
+  ...rest
+}: Props) => (
   <Stack
     position="relative"
     direction="row"
@@ -25,6 +33,7 @@ const Comment = ({ senderName, message, date, ...rest }: Props) => (
     borderRadius="sm"
     gap={4}
     p={4}
+    opacity={isPending ? 0.5 : 1}
     {...rest}
   >
     <VStack

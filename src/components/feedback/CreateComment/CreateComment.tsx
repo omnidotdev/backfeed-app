@@ -2,11 +2,15 @@
 
 import { Button, Stack, Text, Textarea, sigil } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
-import { useCreateCommentMutation } from "generated/graphql";
+import {
+  useCreateCommentMutation,
+  useInfiniteCommentsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import {
   CREATE_COMMENT_MUTATION_KEY,
@@ -38,13 +42,29 @@ interface Props {
  * Create comment form.
  */
 const CreateComment = ({ totalCount }: Props) => {
+  const queryClient = useQueryClient();
+
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
 
   const { mutate: createComment, isPending } = useCreateCommentMutation({
     mutationKey: CREATE_COMMENT_MUTATION_KEY,
-    onSuccess: () => reset(),
+    onMutate: async () =>
+      await new Promise((resolve) => setTimeout(resolve, 3000)),
+    onSuccess: () => {
+      reset();
+
+      return queryClient.invalidateQueries(
+        {
+          queryKey: useInfiniteCommentsQuery.getKey({
+            pageSize: 5,
+            feedbackId,
+          }),
+        },
+        { cancelRefetch: false }
+      );
+    },
   });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({

@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -9,6 +10,13 @@ import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfiniteCommentsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { CREATE_COMMENT_MUTATION_KEY } from "lib/constants";
+import { useAuth } from "lib/hooks";
+
+import type {
+  CommentFragment,
+  CreateCommentMutationVariables,
+} from "generated/graphql";
 
 interface Props {
   /** Feedback ID. */
@@ -19,6 +27,8 @@ interface Props {
  * Feedback comments section.
  */
 const Comments = ({ feedbackId }: Props) => {
+  const { user } = useAuth();
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
@@ -33,6 +43,21 @@ const Comments = ({ feedbackId }: Props) => {
             : undefined,
       }
     );
+
+  const pendingComments = useMutationState<Partial<CommentFragment>>({
+    filters: { mutationKey: CREATE_COMMENT_MUTATION_KEY, status: "pending" },
+    select: (mutation) => {
+      const { input } = mutation.state
+        .variables as CreateCommentMutationVariables;
+
+      return {
+        message: input.comment.message,
+        user: {
+          username: user?.username,
+        },
+      };
+    },
+  });
 
   // These are not defined within the `select` function in order to preserve type safety.
   const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
@@ -66,8 +91,19 @@ const Comments = ({ feedbackId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : comments?.length ? (
+            ) : comments?.length || pendingComments.length ? (
               <VStack>
+                {!!pendingComments.length && (
+                  <CommentCard
+                    senderName={pendingComments[0].user?.username}
+                    message={pendingComments[0].message}
+                    date={new Date()}
+                    w="full"
+                    minH={21}
+                    isPending
+                  />
+                )}
+
                 {comments?.map((comment) => (
                   <CommentCard
                     key={comment?.rowId}

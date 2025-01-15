@@ -4423,6 +4423,8 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null };
+
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
 export type CreateCommentMutationVariables = Exact<{
@@ -4665,6 +4667,16 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
+export const CommentFragmentDoc = `
+    fragment Comment on Comment {
+  rowId
+  message
+  user {
+    username
+  }
+  createdAt
+}
+    `;
 export const FeedbackFragmentDoc = `
     fragment Feedback on Post {
   rowId
@@ -5115,17 +5127,12 @@ export const CommentsDocument = `
     }
     edges {
       node {
-        rowId
-        message
-        user {
-          username
-        }
-        createdAt
+        ...Comment
       }
     }
   }
 }
-    `;
+    ${CommentFragmentDoc}`;
 
 export const useCommentsQuery = <
       TData = CommentsQuery,
