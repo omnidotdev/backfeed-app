@@ -50,8 +50,6 @@ const CreateComment = ({ totalCount }: Props) => {
 
   const { mutate: createComment, isPending } = useCreateCommentMutation({
     mutationKey: CREATE_COMMENT_MUTATION_KEY,
-    onMutate: async () =>
-      await new Promise((resolve) => setTimeout(resolve, 3000)),
     onSuccess: () => {
       reset();
 
@@ -91,8 +89,6 @@ const CreateComment = ({ totalCount }: Props) => {
       }),
   });
 
-  const isFormDisabled = isAuthLoading;
-
   return (
     <sigil.form
       display="flex"
@@ -106,11 +102,12 @@ const CreateComment = ({ totalCount }: Props) => {
     >
       <Field
         name="message"
+        asyncDebounceMs={300}
         validators={{
-          onBlur: createCommentSchema.shape.message,
+          onChangeAsync: createCommentSchema.shape.message,
         }}
       >
-        {({ handleChange, handleBlur, state }) => (
+        {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
             <Textarea
               placeholder={app.feedbackPage.comments.textAreaPlaceholder}
@@ -119,13 +116,13 @@ const CreateComment = ({ totalCount }: Props) => {
               minH={16}
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              onBlur={handleBlur}
-              disabled={isFormDisabled}
+              disabled={isAuthLoading}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onBlur}
+              error={state.meta.errorMap.onChange}
               isDirty={state.meta.isDirty}
+              top={-6}
             />
           </Stack>
         )}
