@@ -1,7 +1,7 @@
 mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
   updateOrganization(input: { rowId: $rowId, patch: $patch }) {
     clientMutationId
-     organization {
+    organization {
       slug
     }
   }
