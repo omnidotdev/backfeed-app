@@ -1,4 +1,5 @@
 import {
+  useCreateCommentMutation,
   useCreateDownvoteMutation,
   useCreateFeedbackMutation,
   useCreateProjectMutation,
@@ -31,4 +32,10 @@ export const DELETE_DOWNVOTE_MUTATION_KEY = [
 export const DELETE_UPVOTE_MUTATION_KEY = [
   ...FEEDBACK_MUTATION_KEY,
   ...useCreateUpvoteMutation.getKey(),
+];
+
+const COMMENT_MUTATION_KEY = ["comment"];
+export const CREATE_COMMENT_MUTATION_KEY = [
+  ...COMMENT_MUTATION_KEY,
+  ...useCreateCommentMutation.getKey(),
 ];

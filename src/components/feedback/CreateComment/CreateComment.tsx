@@ -8,7 +8,10 @@ import { z } from "zod";
 import { FormFieldError } from "components/core";
 import { useCreateCommentMutation } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import {
+  CREATE_COMMENT_MUTATION_KEY,
+  standardSchemaValidator,
+} from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -32,14 +35,15 @@ interface Props {
 }
 
 /**
- * Comment form.
+ * Create comment form.
  */
-const CommentForm = ({ totalCount }: Props) => {
+const CreateComment = ({ totalCount }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
 
-  const { mutate: createComment } = useCreateCommentMutation({
+  const { mutate: createComment, isPending } = useCreateCommentMutation({
+    mutationKey: CREATE_COMMENT_MUTATION_KEY,
     onSuccess: () => reset(),
   });
 
@@ -109,7 +113,7 @@ const CommentForm = ({ totalCount }: Props) => {
 
       <Stack justify="space-between" direction="row">
         <Text fontSize="sm" color="foreground.muted">
-          {`${totalCount} ${app.feedbackPage.comments.totalComments}`}
+          {`${totalCount + (isPending ? 1 : 0)} ${app.feedbackPage.comments.totalComments}`}
         </Text>
 
         <Subscribe
@@ -134,4 +138,4 @@ const CommentForm = ({ totalCount }: Props) => {
   );
 };
 
-export default CommentForm;
+export default CreateComment;

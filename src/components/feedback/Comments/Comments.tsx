@@ -5,7 +5,7 @@ import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { CommentCard, CommentForm } from "components/feedback";
+import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfiniteCommentsQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -57,7 +57,7 @@ const Comments = ({ feedbackId }: Props) => {
       icon={LuMessageSquare}
     >
       <Stack>
-        <CommentForm totalCount={totalCount} />
+        <CreateComment totalCount={totalCount} />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" />
