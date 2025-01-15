@@ -110,6 +110,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                   <FeedbackDetails
                     feedback={pendingFeedback[0]}
                     projectPage
+                    isPending
                     w="full"
                     minH={21}
                   />

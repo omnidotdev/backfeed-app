@@ -69,6 +69,8 @@ interface Props extends HstackProps {
   feedback?: Partial<FeedbackFragment>;
   /** Whether we are viewing the project page. */
   projectPage?: boolean;
+  /** Whether the feedback is pending. */
+  isPending?: boolean;
 }
 
 /**
@@ -78,6 +80,7 @@ const FeedbackDetails = ({
   feedbackId,
   feedback: projectFeedback,
   projectPage = false,
+  isPending = false,
   ...rest
 }: Props) => {
   const { data: pageFeedback } = useFeedbackByIdQuery(
@@ -91,8 +94,6 @@ const FeedbackDetails = ({
   );
 
   const feedback = projectPage ? projectFeedback : pageFeedback;
-
-  const isPending = feedback?.rowId === "pending";
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
