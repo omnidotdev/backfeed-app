@@ -83,12 +83,10 @@ const OrganizationList = ({ ...props }: StackProps) => {
   return (
     <Stack align="center" justify="space-between" h="100%" {...props}>
       <Stack w="100%">
-        {organizations.map((organization, index) => (
-          // TODO: remove index once ownership check is implemented
+        {organizations.map((organization) => (
           <OrganizationListItem
             key={organization?.rowId}
             organization={organization as Partial<Organization>}
-            index={index}
           />
         ))}
       </Stack>

@@ -1,19 +1,37 @@
 "use client";
 
-import { Button, Flex, Icon, Input, Label, sigil, Stack } from "@omnidev/sigil";
+import {
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Input,
+  Label,
+  sigil,
+  Stack,
+  Text,
+} from "@omnidev/sigil";
 import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { RiUserSharedLine } from "react-icons/ri";
+import dayjs from "dayjs";
 
-import { FormFieldError } from "components/core";
+import { DestructiveAction, FormFieldError } from "components/core";
+import { SectionContainer } from "components/layout";
 import {
+  useDeleteOrganizationMutation,
+  useLeaveOrganizationMutation,
   useOrganizationQuery,
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
+import { useAuth } from "lib/hooks";
+
+import type { DestructiveActionProps } from "components/core";
 
 /** Schema for defining the shape of the update organization form fields. */
 const baseSchema = z.object({
@@ -42,6 +60,11 @@ const baseSchema = z.object({
     ),
 });
 
+const deleteOrganizationDetails =
+  app.organizationsPage.dialogs.deleteOrganization;
+const leaveOrganizationDetails =
+  app.organizationsPage.dialogs.leaveOrganization;
+
 interface Props {
   /** Organization slug. */
   organizationSlug: string;
@@ -49,8 +72,11 @@ interface Props {
 
 /** Organization settings. */
 const OrganizationSettings = ({ organizationSlug }: Props) => {
-  const [readOnly, setReadOnly] = useState(true);
+  const { user } = useAuth();
   const router = useRouter();
+
+  const [readOnly, setReadOnly] = useState(true);
+  const isOrganizationOwner = true;
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -62,11 +88,13 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
   );
 
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
-    onSuccess: (data) =>
-      router.replace(
-        `/organizations/${data.updateOrganization?.organization?.slug}/settings`
-      ),
-  });
+      onSuccess: (data) =>
+        router.replace(
+          `/organizations/${data.updateOrganization?.organization?.slug}/settings`
+        ),
+    }),
+    { mutate: deleteOrganization } = useDeleteOrganizationMutation(),
+    { mutate: leaveOrganization } = useLeaveOrganizationMutation();
 
   const inputStyles = {
     minWidth: "lg",
@@ -95,6 +123,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
           patch: {
             name: value.name,
             slug: value.slug,
+            updatedAt: new Date(),
           },
         });
       } catch (error) {
@@ -103,110 +132,176 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
     },
   });
 
+  const DELETE_ORGANIZATION: DestructiveActionProps = {
+    title: deleteOrganizationDetails.title,
+    description: deleteOrganizationDetails.description,
+    buttonText: "Delete",
+    action: {
+      label: deleteOrganizationDetails.action.label,
+      onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
+    },
+    triggerProps: {
+      "aria-label": `${deleteOrganizationDetails.action.label} organization`,
+      color: "foreground.primary",
+    },
+    iconProps: {
+      color: "foreground.primary",
+    },
+    buttonProps: {
+      borderColor: "omni.ruby",
+      backgroundColor: "omni.ruby",
+    },
+  };
+
+  const LEAVE_ORGANIZATION: DestructiveActionProps = {
+    title: leaveOrganizationDetails.title,
+    description: leaveOrganizationDetails.description,
+    buttonText: "Delete",
+    icon: RiUserSharedLine,
+    action: {
+      label: leaveOrganizationDetails.action.label,
+      onClick: () =>
+        leaveOrganization({
+          organizationId: organization?.rowId!,
+          userId: user?.hidraId!,
+        }),
+    },
+    triggerProps: {
+      "aria-label": `${leaveOrganizationDetails.action.label} organization`,
+      color: "blue",
+    },
+    buttonProps: {
+      variant: "solid",
+      borderColor: "omni.ruby",
+      backgroundColor: "omni.ruby",
+    },
+  };
+
+  const DESTRUCTIVE_ACTION = isOrganizationOwner
+    ? DELETE_ORGANIZATION
+    : LEAVE_ORGANIZATION;
+
   // TODO: add loading state
   if (!organization) return null;
 
   return (
-    // TODO: Maybe use SectionContainer component here
-    <Flex
-      bgColor="background.default"
-      borderRadius="lg"
-      boxShadow="lg"
-      p={{ base: 4, sm: 6 }}
-      gap={6}
-    >
-      <sigil.form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await handleSubmit();
-          reset();
-        }}
-        w="full"
+    <Stack>
+      <SectionContainer title="Update organization">
+        <sigil.form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            await handleSubmit();
+            reset();
+          }}
+        >
+          <Flex justifyContent="space-between">
+            <Stack gap={2}>
+              <Field name="name" asyncDebounceMs={300}>
+                {({ handleChange, handleBlur, state }) => (
+                  <Stack position="relative" gap={1.5}>
+                    <Label htmlFor="name">
+                      {
+                        app.organizationSettingsPage.cta.updateOrganization
+                          .organizationName.label
+                      }
+                    </Label>
+
+                    <Input
+                      value={state.value}
+                      readOnly={readOnly}
+                      onBlur={handleBlur}
+                      onChange={(e) => handleChange(e.target.value)}
+                      {...inputStyles}
+                    />
+
+                    <FormFieldError
+                      error={state.meta.errorMap.onBlur}
+                      isDirty={state.meta.isDirty}
+                    />
+                  </Stack>
+                )}
+              </Field>
+
+              <Field name="slug" asyncDebounceMs={300}>
+                {({ handleChange, handleBlur, state }) => (
+                  <Stack position="relative" gap={1.5}>
+                    <Label htmlFor="slug">
+                      {
+                        app.organizationSettingsPage.cta.updateOrganization
+                          .organizationSlug.label
+                      }
+                    </Label>
+
+                    <Input
+                      value={state.value}
+                      readOnly={readOnly}
+                      onBlur={handleBlur}
+                      onChange={(e) => handleChange(e.target.value)}
+                      {...inputStyles}
+                    />
+
+                    <FormFieldError
+                      error={state.meta.errorMap.onBlur}
+                      isDirty={state.meta.isDirty}
+                    />
+                  </Stack>
+                )}
+              </Field>
+            </Stack>
+
+            {readOnly && (
+              <Button onClick={() => setReadOnly(false)} gap={2}>
+                <Icon src={FaRegEdit} />
+
+                {
+                  app.organizationSettingsPage.cta.updateOrganization.action
+                    .edit
+                }
+              </Button>
+            )}
+          </Flex>
+
+          <Subscribe
+            selector={(state) => [
+              state.canSubmit,
+              state.isSubmitting,
+              state.isDirty,
+            ]}
+          >
+            {([canSubmit, isSubmitting, isDirty]) => (
+              <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+                {isSubmitting
+                  ? app.organizationSettingsPage.cta.updateOrganization.action
+                      .pending
+                  : app.organizationSettingsPage.cta.updateOrganization.action
+                      .submit}
+              </Button>
+            )}
+          </Subscribe>
+        </sigil.form>
+      </SectionContainer>
+
+      <SectionContainer
+        title="Delete Organization"
+        description="The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and can not be undone."
+        border="1px solid"
+        borderColor="brand.quinary"
       >
-        <Flex justifyContent="space-between">
-          <Stack gap={2}>
-            <Field name="name" asyncDebounceMs={300}>
-              {({ handleChange, handleBlur, state }) => (
-                <Stack position="relative" gap={1.5}>
-                  <Label htmlFor="name">
-                    {
-                      app.organizationSettingsPage.cta.updateOrganization
-                        .organizationName.label
-                    }
-                  </Label>
+        <HStack alignItems="center" justifyContent="space-between">
+          <Stack gap={1}>
+            <Text fontWeight="semibold">{organization.name}</Text>
 
-                  <Input
-                    value={state.value}
-                    readOnly={readOnly}
-                    onBlur={handleBlur}
-                    onChange={(e) => handleChange(e.target.value)}
-                    {...inputStyles}
-                  />
-
-                  <FormFieldError
-                    error={state.meta.errorMap.onBlur}
-                    isDirty={state.meta.isDirty}
-                  />
-                </Stack>
-              )}
-            </Field>
-
-            <Field name="slug" asyncDebounceMs={300}>
-              {({ handleChange, handleBlur, state }) => (
-                <Stack position="relative" gap={1.5}>
-                  <Label htmlFor="slug">
-                    {
-                      app.organizationSettingsPage.cta.updateOrganization
-                        .organizationSlug.label
-                    }
-                  </Label>
-
-                  <Input
-                    value={state.value}
-                    readOnly={readOnly}
-                    onBlur={handleBlur}
-                    onChange={(e) => handleChange(e.target.value)}
-                    {...inputStyles}
-                  />
-
-                  <FormFieldError
-                    error={state.meta.errorMap.onBlur}
-                    isDirty={state.meta.isDirty}
-                  />
-                </Stack>
-              )}
-            </Field>
+            <Text
+              fontSize="sm"
+              color="foreground.muted"
+            >{`Updated: ${dayjs(organization.updatedAt).fromNow()}`}</Text>
           </Stack>
 
-          {readOnly && (
-            <Button onClick={() => setReadOnly(false)} gap={2}>
-              <Icon src={FaRegEdit} />
-
-              {app.organizationSettingsPage.cta.updateOrganization.action.edit}
-            </Button>
-          )}
-        </Flex>
-
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
-              {isSubmitting
-                ? app.organizationSettingsPage.cta.updateOrganization.action
-                    .pending
-                : app.organizationSettingsPage.cta.updateOrganization.action
-                    .submit}
-            </Button>
-          )}
-        </Subscribe>
-      </sigil.form>
-    </Flex>
+          <DestructiveAction {...DESTRUCTIVE_ACTION} />
+        </HStack>
+      </SectionContainer>
+    </Stack>
   );
 };
 
