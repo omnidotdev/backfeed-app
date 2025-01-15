@@ -1,7 +1,13 @@
-query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+query Posts(
+  $projectId: UUID!
+  $after: Cursor
+  $pageSize: Int
+  $orderBy: [PostOrderBy!] = CREATED_AT_DESC
+) {
   posts(
     after: $after
     first: $pageSize
+    orderBy: $orderBy
     filter: { projectId: { equalTo: $projectId } }
   ) {
     pageInfo {
@@ -12,7 +18,7 @@ query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
     }
     totalCount
     nodes {
-      rowId
+      ...Feedback
     }
   }
 }

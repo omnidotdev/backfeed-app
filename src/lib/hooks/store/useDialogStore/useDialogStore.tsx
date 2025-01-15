@@ -17,7 +17,7 @@ interface Options {
  */
 const useDialogStore = ({ type }: Options) => {
   if (!type) return { isOpen: false, setIsOpen: () => null };
-  
+
   const store = getDialogStore({ type });
 
   return useStoreWithEqualityFn(store, (state) => state, shallow);

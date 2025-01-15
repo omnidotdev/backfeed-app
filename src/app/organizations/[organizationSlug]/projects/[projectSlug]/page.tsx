@@ -100,6 +100,7 @@ const ProjectPage = async ({ params }: Props) => {
             label: app.projectPage.header.cta.settings.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuSettings />,
+            disabled: true,
           },
           {
             label: app.projectPage.header.cta.viewAllProjects.label,

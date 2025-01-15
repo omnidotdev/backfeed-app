@@ -414,9 +414,26 @@ const app = {
     },
     projectFeedback: {
       title: "Project Feeback",
-      inputPlaceholder: "Short, descriptive title",
-      textareaPlaceholder: "Describe additional details...",
-      submit: "Create",
+      feedbackTitle: {
+        label: "Title",
+        placeholder: "This project has been a great success!",
+      },
+      feedbackDescription: {
+        label: "Description",
+        placeholder:
+          "I really enjoy working with this project. It helped me learn a lot about the industry.",
+      },
+      createFeedback: {
+        errors: {
+          invalid: "Invalid format",
+          title: "Must be at least 3 characters.",
+          description: "Must be at least 10 characters.",
+        },
+      },
+      action: {
+        pending: "Submitting...",
+        submit: "Create",
+      },
       totalResponses: "Total Responses",
       details: {
         upvote: "Upvote",

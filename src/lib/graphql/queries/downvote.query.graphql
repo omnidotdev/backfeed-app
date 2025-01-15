@@ -1,0 +1,5 @@
+query Downvote($userId: UUID!, $feedbackId: UUID!) {
+  downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    rowId
+  }
+}

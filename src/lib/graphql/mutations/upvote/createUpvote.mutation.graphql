@@ -1,0 +1,5 @@
+mutation CreateUpvote($input: CreateUpvoteInput!) {
+  createUpvote(input: $input) {
+    clientMutationId
+  }
+}
