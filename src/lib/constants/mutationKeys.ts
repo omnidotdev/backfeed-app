@@ -3,6 +3,8 @@ import {
   useCreateFeedbackMutation,
   useCreateProjectMutation,
   useCreateUpvoteMutation,
+  useDeleteDownvoteMutation,
+  useDeleteUpvoteMutation,
 } from "generated/graphql";
 
 const PROJECT_MUTATION_KEY = ["project"];
