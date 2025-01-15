@@ -307,17 +307,15 @@ const FeedbackDetails = ({
                 Planned
               </Badge>
 
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-              >{`Updated: ${dayjs(isPending ? new Date() : feedback?.updatedAt).fromNow()}`}</Text>
+              <Text fontSize="sm" color="foreground.subtle">
+                {`Updated: ${dayjs(isPending ? new Date() : feedback?.updatedAt).fromNow()}`}
+              </Text>
             </HStack>
           </Stack>
 
-          <Text
-            color={netVotesColor}
-            whiteSpace="nowrap"
-          >{`${netVotesSign}${netTotalVotes}`}</Text>
+          <Text color={netVotesColor} whiteSpace="nowrap">
+            {`${netVotesSign}${netTotalVotes}`}
+          </Text>
         </HStack>
 
         <Text color="foreground.muted">{feedback?.description}</Text>
