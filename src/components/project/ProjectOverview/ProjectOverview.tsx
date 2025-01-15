@@ -11,9 +11,11 @@ import {
 } from "components/project";
 import { useProjectMetricsQuery } from "generated/graphql";
 
+import type { Project } from "generated/graphql";
+
 interface Props {
   /** Project ID. */
-  projectId: string;
+  projectId: Project["rowId"];
 }
 
 const ProjectOverview = ({ projectId }: Props) => {
