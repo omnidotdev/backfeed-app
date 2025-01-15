@@ -25,8 +25,8 @@ export interface Props extends DialogProps {
   icon?: IconType;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
-  /** Dialog button text. */
-  buttonText?: string;
+  /** Dialog trigger button label. */
+  triggerLabel?: string;
   /** Icon props. */
   iconProps?: Omit<IconProps, "src">;
   /** Button trigger props. */
@@ -44,7 +44,7 @@ const DestructiveAction = ({
   triggerProps,
   iconProps,
   children,
-  buttonText,
+  triggerLabel,
   buttonProps,
   ...rest
 }: Props) => {
@@ -76,7 +76,7 @@ const DestructiveAction = ({
         <Button {...buttonProps}>
           <Icon src={icon} w={5} h={5} {...iconProps} />
 
-          {buttonText && buttonText}
+          {triggerLabel && triggerLabel}
         </Button>
       }
       triggerProps={triggerProps}

@@ -118,7 +118,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
     description: deleteOrganizationDetails.destruciveAction.description,
-    buttonText: deleteOrganizationDetails.destruciveAction.actionLabel,
+    triggerLabel: deleteOrganizationDetails.destruciveAction.actionLabel,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
@@ -135,7 +135,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
   const LEAVE_ORGANIZATION: DestructiveActionProps = {
     title: leaveOrganizationDetails.destruciveAction.title,
     description: leaveOrganizationDetails.destruciveAction.description,
-    buttonText: leaveOrganizationDetails.destruciveAction.actionLabel,
+    triggerLabel: leaveOrganizationDetails.destruciveAction.actionLabel,
     icon: RiUserSharedLine,
     action: {
       label: leaveOrganizationDetails.destruciveAction.actionLabel,
