@@ -5,8 +5,6 @@ import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
 import { app } from "lib/config";
 import { OrganizationSettings } from "components/organization";
-
-import type { Organization } from "generated/graphql";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
