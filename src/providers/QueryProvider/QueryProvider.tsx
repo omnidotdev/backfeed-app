@@ -19,7 +19,7 @@ const makeQueryClient = () => {
       },
     },
     mutationCache: new MutationCache({
-      // NB: using `onSettled` to invalidate queriess so if manually updating the cache for optimistic updates, where the mutation fails or succeeds the query is properly invalidated and refetched
+      // NB: using `onSettled` to invalidate queries so if manually updating the cache for optimistic updates, whether the mutation fails or succeeds the query is properly invalidated and refetched
       onSettled: () => {
         queryClient.invalidateQueries();
       },
