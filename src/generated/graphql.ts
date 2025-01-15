@@ -4425,6 +4425,13 @@ export type UserToManyUserOrganizationFilter = {
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment?: { __typename?: 'CreateCommentPayload', clientMutationId?: string | null } | null };
+
 export type CreateDownvoteMutationVariables = Exact<{
   input: CreateDownvoteInput;
 }>;
@@ -4684,6 +4691,32 @@ export const FeedbackFragmentDoc = `
   updatedAt
 }
     `;
+export const CreateCommentDocument = `
+    mutation CreateComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreateCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>) => {
+    
+    return useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateComment'],
+    mutationFn: (variables?: CreateCommentMutationVariables) => graphqlFetch<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateCommentMutation.getKey = () => ['CreateComment'];
+
+
+useCreateCommentMutation.fetcher = (variables: CreateCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, variables, options);
+
 export const CreateDownvoteDocument = `
     mutation CreateDownvote($input: CreateDownvoteInput!) {
   createDownvote(input: $input) {

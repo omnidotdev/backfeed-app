@@ -4426,6 +4426,13 @@ export type UserToManyUserOrganizationFilter = {
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment?: { __typename?: 'CreateCommentPayload', clientMutationId?: string | null } | null };
+
 export type CreateDownvoteMutationVariables = Exact<{
   input: CreateDownvoteInput;
 }>;
@@ -4682,6 +4689,13 @@ export const FeedbackFragmentDoc = gql`
   }
   createdAt
   updatedAt
+}
+    `;
+export const CreateCommentDocument = gql`
+    mutation CreateComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    clientMutationId
+  }
 }
     `;
 export const CreateDownvoteDocument = gql`
@@ -5072,6 +5086,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CreateComment(variables: CreateCommentMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateCommentMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateCommentMutation>(CreateCommentDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateComment', 'mutation', variables);
+    },
     CreateDownvote(variables: CreateDownvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateDownvoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateDownvoteMutation>(CreateDownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateDownvote', 'mutation', variables);
     },
