@@ -100,7 +100,7 @@ const FeedbackDetails = ({
 
   const { user } = useAuth();
 
-  const { data: hasUpvoted } = useUpvoteQuery(
+  const { data: hasUpvoted, isLoading: isHasUpvotedLoading } = useUpvoteQuery(
     {
       userId: user?.rowId!,
       feedbackId: feedback?.rowId!,
@@ -111,16 +111,20 @@ const FeedbackDetails = ({
     }
   );
 
-  const { data: hasDownvoted } = useDownvoteQuery(
-    {
-      userId: user?.rowId!,
-      feedbackId: feedback?.rowId!,
-    },
-    {
-      enabled: !!user?.rowId && !isPending,
-      select: (data) => data?.downvoteByPostIdAndUserId,
-    }
-  );
+  const { data: hasDownvoted, isLoading: isHasDownvotedLoading } =
+    useDownvoteQuery(
+      {
+        userId: user?.rowId!,
+        feedbackId: feedback?.rowId!,
+      },
+      {
+        enabled: !!user?.rowId && !isPending,
+        select: (data) => data?.downvoteByPostIdAndUserId,
+      }
+    );
+
+  const showVoteButtons =
+    !!user?.rowId && !isHasUpvotedLoading && !isHasDownvotedLoading;
 
   const onSuccess = () => {
     // NB: Since our global callback has already invalidated everything, we just use `invalidateQueries` to "pick up" the already in flight Promises and return them. See: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations#to-await-or-not-to-await
@@ -359,33 +363,35 @@ const FeedbackDetails = ({
               </Link>
             )}
 
-            <Flex gap={1}>
-              {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-                <Tooltip
-                  key={id}
-                  positioning={{ placement: "top" }}
-                  trigger={
-                    <HStack gap={2} py={1} fontVariant="tabular-nums">
-                      <Icon src={icon} w={5} h={5} />
-                      {votes}
-                    </HStack>
-                  }
-                  triggerProps={{
-                    variant: "ghost",
-                    w: "full",
-                    bgColor: "transparent",
-                    opacity: {
-                      base: 1,
-                      _disabled: 0.3,
-                      _hover: { base: 0.8, _disabled: 0.3 },
-                    },
-                    ...rest,
-                  }}
-                >
-                  {tooltip}
-                </Tooltip>
-              ))}
-            </Flex>
+            {showVoteButtons && (
+              <Flex gap={1}>
+                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                  <Tooltip
+                    key={id}
+                    positioning={{ placement: "top" }}
+                    trigger={
+                      <HStack gap={2} py={1} fontVariant="tabular-nums">
+                        <Icon src={icon} w={5} h={5} />
+                        {votes}
+                      </HStack>
+                    }
+                    triggerProps={{
+                      variant: "ghost",
+                      w: "full",
+                      bgColor: "transparent",
+                      opacity: {
+                        base: 1,
+                        _disabled: 0.3,
+                        _hover: { base: 0.8, _disabled: 0.3 },
+                      },
+                      ...rest,
+                    }}
+                  >
+                    {tooltip}
+                  </Tooltip>
+                ))}
+              </Flex>
+            )}
           </HStack>
         </Stack>
       </Stack>
