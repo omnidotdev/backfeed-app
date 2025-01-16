@@ -84,7 +84,7 @@ const CreateComment = ({ totalCount }: Props) => {
           comment: {
             postId: value.postId,
             userId: value.userId,
-            message: value.message,
+            message: value.message.trim(),
           },
         },
       }),
@@ -113,7 +113,7 @@ const CreateComment = ({ totalCount }: Props) => {
               fontSize="sm"
               minH={16}
               value={state.value}
-              onChange={(e) => handleChange(e.target.value.trim())}
+              onChange={(e) => handleChange(e.target.value)}
               disabled={isAuthLoading}
             />
 

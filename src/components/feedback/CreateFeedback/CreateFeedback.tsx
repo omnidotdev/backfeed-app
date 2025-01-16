@@ -111,8 +111,8 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
           post: {
             projectId: value.projectId,
             userId: value.userId,
-            title: value.title,
-            description: value.description,
+            title: value.title.trim(),
+            description: value.description.trim(),
           },
         },
       }),
@@ -145,7 +145,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               }
               borderColor="border.subtle"
               value={state.value}
-              onChange={(e) => handleChange(e.target.value.trim())}
+              onChange={(e) => handleChange(e.target.value)}
               disabled={isFormDisabled}
             />
 
@@ -173,7 +173,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               rows={5}
               minH={32}
               value={state.value}
-              onChange={(e) => handleChange(e.target.value.trim())}
+              onChange={(e) => handleChange(e.target.value)}
               disabled={isFormDisabled}
             />
 
