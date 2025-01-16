@@ -5,7 +5,7 @@ import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
@@ -74,14 +74,14 @@ const DashboardPage = () => {
           {
             label: app.dashboardPage.cta.newOrganization.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
+            icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             variant: "outline",
           },
           {
             label: app.dashboardPage.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
+            icon: <LuCirclePlus />,
             dialogType: DialogType.CreateProject,
             disabled: !numberOfOrganizations,
           },

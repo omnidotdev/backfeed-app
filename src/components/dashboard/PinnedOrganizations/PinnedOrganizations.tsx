@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { LuBuilding2, LuPlusCircle } from "react-icons/lu";
+import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
 import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
@@ -114,7 +114,7 @@ const PinnedOrganizations = () => {
               message={app.dashboardPage.organizations.emptyState.message}
               action={{
                 label: app.dashboardPage.organizations.emptyState.cta.label,
-                icon: LuPlusCircle,
+                icon: LuCirclePlus,
                 actionProps: {
                   variant: "outline",
                   color: "brand.primary",
