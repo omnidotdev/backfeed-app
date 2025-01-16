@@ -104,7 +104,7 @@ const Comments = ({ feedbackId }: Props) => {
                     commentId="pending"
                     senderName={pendingComments[0].user?.username}
                     message={pendingComments[0].message}
-                    date={new Date()}
+                    createdAt={new Date()}
                     isSender
                     isPending
                     w="full"
@@ -118,7 +118,7 @@ const Comments = ({ feedbackId }: Props) => {
                     commentId={comment?.rowId!}
                     senderName={comment?.user?.username}
                     message={comment?.message}
-                    date={comment?.createdAt}
+                    createdAt={comment?.createdAt}
                     isSender={comment?.user?.rowId === user?.rowId}
                     w="full"
                     minH={21}

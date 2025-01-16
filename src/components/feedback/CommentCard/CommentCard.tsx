@@ -21,8 +21,8 @@ interface Props extends StackProps {
   senderName: string | null | undefined;
   /** Comment message. */
   message: string | null | undefined;
-  /** Comment date. */
-  date: Date | null | undefined;
+  /** Date the comment was created. */
+  createdAt: Date | null | undefined;
   /** Whether the comment is pending. */
   isPending?: boolean;
   /** Whether the logged in user is the comment sender. */
@@ -36,7 +36,7 @@ const Comment = ({
   commentId,
   senderName,
   message,
-  date,
+  createdAt,
   isPending = false,
   isSender = false,
   ...rest
@@ -114,7 +114,7 @@ const Comment = ({
         fontSize="sm"
         color="foreground.muted"
       >
-        {dayjs(date).fromNow()}
+        {dayjs(createdAt).fromNow()}
       </Text>
     </Stack>
   );
