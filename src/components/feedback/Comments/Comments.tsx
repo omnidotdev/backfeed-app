@@ -18,7 +18,7 @@ import { useAuth } from "lib/hooks";
 import type {
   CommentFragment,
   CreateCommentMutationVariables,
-  Post
+  Post,
 } from "generated/graphql";
 
 interface Props {
