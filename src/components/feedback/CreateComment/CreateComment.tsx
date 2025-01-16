@@ -76,7 +76,7 @@ const CreateComment = ({ totalCount }: Props) => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: createCommentSchema,
-      onChangeAsync: createCommentSchema,
+      onSubmitAsync: createCommentSchema,
     },
     onSubmit: ({ value }) =>
       createComment({
@@ -106,10 +106,6 @@ const CreateComment = ({ totalCount }: Props) => {
     >
       <Field
         name="message"
-        asyncDebounceMs={300}
-        validators={{
-          onChangeAsync: createCommentSchema.shape.message,
-        }}
       >
         {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
@@ -119,12 +115,12 @@ const CreateComment = ({ totalCount }: Props) => {
               fontSize="sm"
               minH={16}
               value={state.value}
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={(e) => handleChange(e.target.value.trim())}
               disabled={isAuthLoading}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onChange}
+              error={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
               top={-6}
             />

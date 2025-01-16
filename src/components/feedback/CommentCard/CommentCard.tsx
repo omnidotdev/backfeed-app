@@ -81,7 +81,7 @@ const Comment = ({
         <Text color="foreground.muted">{senderName?.[0]}</Text>
       </VStack>
 
-      <Stack gap={1} flex={1}>
+      <Stack gap={1} flex={1} pb={8}>
         <Text fontWeight="semibold">{senderName}</Text>
 
         <Text fontSize="sm" color="foreground.subtle">
