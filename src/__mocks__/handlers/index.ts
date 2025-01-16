@@ -4,4 +4,3 @@
 
 export * from "./hidra";
 export * from "./user";
-export * from "./walletConnect";

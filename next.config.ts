@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   // enable standalone mode for running in a container (https://github.com/vercel/next.js/tree/canary/examples/with-docker#in-existing-projects)
   output: "standalone",
   env: {
-    WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
     // below are safe to be public, but `NEXT_PUBLIC_` is not used because Auth.js uses these to automatically set its own Keycloak provider configuration
     AUTH_KEYCLOAK_ID: process.env.AUTH_KEYCLOAK_ID,
     AUTH_KEYCLOAK_ISSUER: process.env.AUTH_KEYCLOAK_ISSUER,

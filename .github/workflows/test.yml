@@ -24,8 +24,6 @@ jobs:
         run: bun install
       - name: Run unit tests
         run: bun run test
-        env:
-          WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
 
   test_e2e:
     name: Run E2E tests 🗺️
@@ -55,6 +53,5 @@ jobs:
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           AUTH_KEYCLOAK_SECRET: ${{ secrets.AUTH_KEYCLOAK_SECRET }}
