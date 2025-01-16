@@ -104,9 +104,7 @@ const CreateComment = ({ totalCount }: Props) => {
         await handleSubmit();
       }}
     >
-      <Field
-        name="message"
-      >
+      <Field name="message">
         {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
             <Textarea
