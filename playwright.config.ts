@@ -1,5 +1,5 @@
 import { loadEnvConfig } from "@next/env";
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 import ms from "ms";
 
 // import type {
