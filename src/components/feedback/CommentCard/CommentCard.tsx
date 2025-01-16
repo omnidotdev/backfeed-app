@@ -85,7 +85,13 @@ const Comment = ({
         <Text fontWeight="semibold">{senderName}</Text>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {message}
+          {message?.split("\n").map((line, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
         </Text>
       </Stack>
 
