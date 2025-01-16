@@ -10,6 +10,7 @@ import { sdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
@@ -48,14 +49,14 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!session || !organization) notFound();
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
-      href: "/organizations" as const,
+      href: "/organizations",
     },
     {
       label: organization?.name ?? organizationSlug,
-      href: `/organizations/${organizationSlug}` as const,
+      href: `/organizations/${organizationSlug}`,
     },
     {
       label: app.projectsPage.breadcrumb,
