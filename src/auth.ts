@@ -5,8 +5,8 @@ import Keycloak from "next-auth/providers/keycloak";
 import "next-auth/jwt";
 
 import { token } from "generated/panda/tokens";
-
 import { sdk } from "lib/graphql";
+
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 

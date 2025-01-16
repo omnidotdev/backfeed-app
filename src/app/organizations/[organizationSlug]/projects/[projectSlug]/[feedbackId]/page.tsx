@@ -43,19 +43,19 @@ const FeedbackPage = async ({ params }: Props) => {
   const breadcrumbs = [
     {
       label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
+      href: "/organizations" as const,
     },
     {
       label: feedback?.project?.organization?.name ?? organizationSlug,
-      href: `/organizations/${organizationSlug}`,
+      href: `/organizations/${organizationSlug}` as const,
     },
     {
       label: app.projectsPage.breadcrumb,
-      href: `/organizations/${organizationSlug}/projects`,
+      href: `/organizations/${organizationSlug}/projects` as const,
     },
     {
       label: feedback?.project?.name ?? projectSlug,
-      href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      href: `/organizations/${organizationSlug}/projects/${projectSlug}` as const,
     },
     {
       label: app.feedbackPage.breadcrumb,

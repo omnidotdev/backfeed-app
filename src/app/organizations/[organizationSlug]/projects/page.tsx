@@ -51,11 +51,11 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   const breadcrumbs = [
     {
       label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
+      href: "/organizations" as const,
     },
     {
       label: organization?.name ?? organizationSlug,
-      href: `/organizations/${organizationSlug}`,
+      href: `/organizations/${organizationSlug}` as const,
     },
     {
       label: app.projectsPage.breadcrumb,

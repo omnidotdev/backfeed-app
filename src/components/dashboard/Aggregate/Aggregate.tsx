@@ -20,7 +20,13 @@ interface Props {
 /**
  * Aggregate statistic card. Displays KPI information such as total feedback, active users, or average response time.
  */
-const Aggregate = ({ title, value, icon, isLoaded = true, isError }: Props) => (
+const Aggregate = ({
+  title,
+  value,
+  icon,
+  isLoaded = true,
+  isError = false,
+}: Props) => (
   <Flex
     direction="column"
     gap={3}

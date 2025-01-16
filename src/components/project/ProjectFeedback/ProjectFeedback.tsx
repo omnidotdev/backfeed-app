@@ -18,11 +18,12 @@ import { useAuth } from "lib/hooks";
 import type {
   CreateFeedbackMutationVariables,
   FeedbackFragment,
+  Project,
 } from "generated/graphql";
 
 interface Props {
   /** Project ID. */
-  projectId: string;
+  projectId: Project["rowId"];
 }
 
 /**

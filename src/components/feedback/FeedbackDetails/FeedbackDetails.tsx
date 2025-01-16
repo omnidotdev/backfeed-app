@@ -43,6 +43,7 @@ import type {
   VstackProps,
 } from "@omnidev/sigil";
 import type { InvalidateOptions } from "@tanstack/react-query";
+import type { Post } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -58,7 +59,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
 
 interface Props extends HstackProps {
   /** Feedback ID. Used to fetch feedback details when viewing the dynamic feedback page. */
-  feedbackId?: string;
+  feedbackId?: Post["rowId"];
   /** Feedback details. Used to display feedback details when viewing the project page. */
   feedback?: Partial<FeedbackFragment>;
   /** Whether we are viewing the project page. */

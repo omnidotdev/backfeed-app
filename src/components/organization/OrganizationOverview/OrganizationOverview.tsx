@@ -53,7 +53,7 @@ const OrganizationOverview = ({ organization }: Props) => {
   const breadcrumbs = [
     {
       label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
+      href: "/organizations" as const,
     },
     {
       label: organization.name ?? organization.slug!,

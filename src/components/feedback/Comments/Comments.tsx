@@ -18,11 +18,12 @@ import { useAuth } from "lib/hooks";
 import type {
   CommentFragment,
   CreateCommentMutationVariables,
+  Post
 } from "generated/graphql";
 
 interface Props {
   /** Feedback ID. */
-  feedbackId: string;
+  feedbackId: Post["rowId"];
 }
 
 /**
