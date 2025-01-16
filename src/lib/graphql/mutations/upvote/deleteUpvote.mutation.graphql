@@ -1,5 +1,5 @@
-mutation DeleteUpvote($upvoteId: UUID!) {
-  deleteUpvote(input: { rowId: $upvoteId }) {
+mutation DeleteUpvote($rowId: UUID!) {
+  deleteUpvote(input: { rowId: $rowId }) {
     clientMutationId
   }
 }

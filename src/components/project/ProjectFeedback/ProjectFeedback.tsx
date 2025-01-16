@@ -1,23 +1,22 @@
 "use client";
 
-import {
-  Button,
-  Grid,
-  Input,
-  Skeleton,
-  Stack,
-  Text,
-  Textarea,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { useMutationState } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { FeedbackDetails } from "components/feedback";
+import { CreateFeedback, FeedbackDetails } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { useInfinitePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { CREATE_FEEDBACK_MUTATION_KEY } from "lib/constants";
+import { useAuth } from "lib/hooks";
+
+import type {
+  CreateFeedbackMutationVariables,
+  FeedbackFragment,
+} from "generated/graphql";
 
 interface Props {
   /** Project ID. */
@@ -28,6 +27,8 @@ interface Props {
  * Project feedback.
  */
 const ProjectFeedback = ({ projectId }: Props) => {
+  const { user } = useAuth();
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
@@ -43,7 +44,34 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const totalCount = data?.pages?.[0]?.posts?.totalCount ?? 0;
+  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+    filters: { mutationKey: CREATE_FEEDBACK_MUTATION_KEY, status: "pending" },
+    select: (mutation) => {
+      const { input } = mutation.state
+        .variables as CreateFeedbackMutationVariables;
+
+      return {
+        rowId: "pending",
+        title: input.post.title,
+        description: input.post.description,
+        project: {
+          rowId: input.post.projectId,
+        },
+        user: {
+          username: user?.username,
+        },
+        upvotes: {
+          totalCount: 0,
+        },
+        downvotes: {
+          totalCount: 0,
+        },
+      };
+    },
+  });
+
+  const totalCount =
+    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
   const posts = data?.pages?.flatMap((page) =>
     page?.posts?.nodes?.map((post) => post)
   );
@@ -64,38 +92,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
       icon={HiOutlineFolder}
     >
       <Stack>
-        {/* TODO: Extract this form into its own component when hooking up. */}
-        <Input
-          placeholder={app.projectPage.projectFeedback.inputPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
+        <CreateFeedback
+          isLoading={isLoading}
+          isError={isError}
+          totalCount={totalCount}
         />
-
-        <Textarea
-          placeholder={app.projectPage.projectFeedback.textareaPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
-          rows={5}
-          minH={32}
-        />
-
-        <Stack justify="space-between" direction="row">
-          <Skeleton isLoaded={!isLoading} h="fit-content">
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
-          </Skeleton>
-
-          <Button
-            w="fit-content"
-            placeSelf="flex-end"
-            // TODO: discuss if disabling this button (mutation) is the right approach if an error is encountered fetching the comments
-            disabled={isLoading || isError}
-          >
-            {app.projectPage.projectFeedback.submit}
-          </Button>
-        </Stack>
 
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
@@ -103,12 +104,22 @@ const ProjectFeedback = ({ projectId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : posts?.length ? (
+            ) : posts?.length || pendingFeedback.length ? (
               <VStack>
+                {!!pendingFeedback.length && (
+                  <FeedbackDetails
+                    feedback={pendingFeedback[0]}
+                    projectPage
+                    isPending
+                    w="full"
+                    minH={21}
+                  />
+                )}
+
                 {posts?.map((feedback) => (
                   <FeedbackDetails
                     key={feedback?.rowId}
-                    feedbackId={feedback?.rowId!}
+                    feedback={feedback!}
                     projectPage
                     w="full"
                     minH={21}

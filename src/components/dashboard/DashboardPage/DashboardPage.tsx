@@ -76,7 +76,7 @@ const DashboardPage = () => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuPlusCircle />,
             dialogType: DialogType.CreateOrganization,
-            variant: "muted",
+            variant: "outline",
           },
           {
             label: app.dashboardPage.cta.newProject.label,

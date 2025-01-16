@@ -1,0 +1,5 @@
+mutation CreateDownvote($input: CreateDownvoteInput!) {
+  createDownvote(input: $input) {
+    clientMutationId
+  }
+}

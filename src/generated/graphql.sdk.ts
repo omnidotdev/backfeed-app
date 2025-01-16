@@ -4424,6 +4424,22 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+
+export type CreateDownvoteMutationVariables = Exact<{
+  input: CreateDownvoteInput;
+}>;
+
+
+export type CreateDownvoteMutation = { __typename?: 'Mutation', createDownvote?: { __typename?: 'CreateDownvotePayload', clientMutationId?: string | null } | null };
+
+export type DeleteDownvoteMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvote?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
 }>;
@@ -4446,12 +4462,12 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
-export type CreatePostMutationVariables = Exact<{
-  postInput: PostInput;
+export type CreateFeedbackMutationVariables = Exact<{
+  input: CreatePostInput;
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', clientMutationId?: string | null } | null };
+export type CreateFeedbackMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', clientMutationId?: string | null } | null };
 
 export type DeletePostMutationVariables = Exact<{
   postId: Scalars['UUID']['input'];
@@ -4474,19 +4490,19 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'DeleteProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
+export type CreateUpvoteMutationVariables = Exact<{
+  input: CreateUpvoteInput;
+}>;
+
+
+export type CreateUpvoteMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
+
 export type DeleteUpvoteMutationVariables = Exact<{
-  upvoteId: Scalars['UUID']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
 export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
-
-export type UpvotePostMutationVariables = Exact<{
-  upvote: UpvoteInput;
-}>;
-
-
-export type UpvotePostMutation = { __typename?: 'Mutation', createUpvote?: { __typename?: 'CreateUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4529,6 +4545,14 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
+export type DownvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', rowId: string } | null };
+
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
@@ -4565,10 +4589,11 @@ export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4610,6 +4635,14 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
 
+export type UpvoteQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  feedbackId: Scalars['UUID']['input'];
+}>;
+
+
+export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', rowId: string } | null };
+
 export type UserQueryVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
 }>;
@@ -4625,7 +4658,46 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
-
+export const FeedbackFragmentDoc = gql`
+    fragment Feedback on Post {
+  rowId
+  project {
+    rowId
+    name
+    organization {
+      rowId
+      name
+    }
+  }
+  title
+  description
+  user {
+    username
+  }
+  upvotes {
+    totalCount
+  }
+  downvotes {
+    totalCount
+  }
+  createdAt
+  updatedAt
+}
+    `;
+export const CreateDownvoteDocument = gql`
+    mutation CreateDownvote($input: CreateDownvoteInput!) {
+  createDownvote(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+export const DeleteDownvoteDocument = gql`
+    mutation DeleteDownvote($rowId: UUID!) {
+  deleteDownvote(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateOrganizationDocument = gql`
     mutation CreateOrganization($input: CreateOrganizationInput!) {
   createOrganization(input: $input) {
@@ -4657,9 +4729,9 @@ export const LeaveOrganizationDocument = gql`
   }
 }
     `;
-export const CreatePostDocument = gql`
-    mutation CreatePost($postInput: PostInput!) {
-  createPost(input: {post: $postInput}) {
+export const CreateFeedbackDocument = gql`
+    mutation CreateFeedback($input: CreatePostInput!) {
+  createPost(input: $input) {
     clientMutationId
   }
 }
@@ -4692,16 +4764,16 @@ export const DeleteProjectDocument = gql`
   }
 }
     `;
-export const DeleteUpvoteDocument = gql`
-    mutation DeleteUpvote($upvoteId: UUID!) {
-  deleteUpvote(input: {rowId: $upvoteId}) {
+export const CreateUpvoteDocument = gql`
+    mutation CreateUpvote($input: CreateUpvoteInput!) {
+  createUpvote(input: $input) {
     clientMutationId
   }
 }
     `;
-export const UpvotePostDocument = gql`
-    mutation UpvotePost($upvote: UpvoteInput!) {
-  createUpvote(input: {upvote: $upvote}) {
+export const DeleteUpvoteDocument = gql`
+    mutation DeleteUpvote($rowId: UUID!) {
+  deleteUpvote(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
@@ -4769,34 +4841,20 @@ export const DashboardAggregatesDocument = gql`
   }
 }
     `;
-export const FeedbackByIdDocument = gql`
-    query FeedbackById($rowId: UUID!) {
-  post(rowId: $rowId) {
+export const DownvoteDocument = gql`
+    query Downvote($userId: UUID!, $feedbackId: UUID!) {
+  downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
     rowId
-    project {
-      rowId
-      name
-      organization {
-        rowId
-        name
-      }
-    }
-    title
-    description
-    user {
-      username
-    }
-    upvotes {
-      totalCount
-    }
-    downvotes {
-      totalCount
-    }
-    createdAt
-    updatedAt
   }
 }
     `;
+export const FeedbackByIdDocument = gql`
+    query FeedbackById($rowId: UUID!) {
+  post(rowId: $rowId) {
+    ...Feedback
+  }
+}
+    ${FeedbackFragmentDoc}`;
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
@@ -4859,10 +4917,11 @@ export const OrganizationsDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {
   posts(
     after: $after
     first: $pageSize
+    orderBy: $orderBy
     filter: {projectId: {equalTo: $projectId}}
   ) {
     pageInfo {
@@ -4873,11 +4932,11 @@ export const PostsDocument = gql`
     }
     totalCount
     nodes {
-      rowId
+      ...Feedback
     }
   }
 }
-    `;
+    ${FeedbackFragmentDoc}`;
 export const ProjectDocument = gql`
     query Project($projectSlug: String!, $organizationSlug: String!) {
   projects(
@@ -4973,6 +5032,13 @@ export const RecentFeedbackDocument = gql`
   }
 }
     `;
+export const UpvoteDocument = gql`
+    query Upvote($userId: UUID!, $feedbackId: UUID!) {
+  upvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
+    rowId
+  }
+}
+    `;
 export const UserDocument = gql`
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
@@ -5006,6 +5072,12 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CreateDownvote(variables: CreateDownvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateDownvoteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateDownvoteMutation>(CreateDownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateDownvote', 'mutation', variables);
+    },
+    DeleteDownvote(variables: DeleteDownvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteDownvoteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteDownvoteMutation>(DeleteDownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteDownvote', 'mutation', variables);
+    },
     CreateOrganization(variables: CreateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationMutation>(CreateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganization', 'mutation', variables);
     },
@@ -5015,8 +5087,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     LeaveOrganization(variables: LeaveOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<LeaveOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<LeaveOrganizationMutation>(LeaveOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LeaveOrganization', 'mutation', variables);
     },
-    CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation', variables);
+    CreateFeedback(variables: CreateFeedbackMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateFeedbackMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateFeedbackMutation>(CreateFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateFeedback', 'mutation', variables);
     },
     DeletePost(variables: DeletePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeletePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeletePost', 'mutation', variables);
@@ -5027,11 +5099,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     DeleteProject(variables: DeleteProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteProjectMutation>(DeleteProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteProject', 'mutation', variables);
     },
+    CreateUpvote(variables: CreateUpvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUpvoteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateUpvoteMutation>(CreateUpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUpvote', 'mutation', variables);
+    },
     DeleteUpvote(variables: DeleteUpvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteUpvoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteUpvoteMutation>(DeleteUpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteUpvote', 'mutation', variables);
-    },
-    UpvotePost(variables: UpvotePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpvotePostMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpvotePostMutation>(UpvotePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpvotePost', 'mutation', variables);
     },
     CreateUser(variables: CreateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUserMutation>(CreateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUser', 'mutation', variables);
@@ -5047,6 +5119,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
+    },
+    Downvote(variables: DownvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DownvoteQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DownvoteQuery>(DownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Downvote', 'query', variables);
     },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
@@ -5077,6 +5152,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     RecentFeedback(variables: RecentFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecentFeedbackQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<RecentFeedbackQuery>(RecentFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RecentFeedback', 'query', variables);
+    },
+    Upvote(variables: UpvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpvoteQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpvoteQuery>(UpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Upvote', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);

@@ -79,6 +79,8 @@ const graphqlCodegenConfig: CodegenConfig = {
         addInfiniteQuery: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys
         exposeQueryKeys: true,
+        // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposemutationkeys
+        exposeMutationKeys: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposefetcher
         exposeFetcher: true,
         // NB: the custom fetcher has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation
