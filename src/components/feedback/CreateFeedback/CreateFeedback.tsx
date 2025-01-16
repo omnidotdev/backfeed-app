@@ -37,9 +37,11 @@ const createFeedbackSchema = z.object({
     .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
   title: z
     .string()
+    .trim()
     .min(3, app.projectPage.projectFeedback.createFeedback.errors.title),
   description: z
     .string()
+    .trim()
     .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
 });
 

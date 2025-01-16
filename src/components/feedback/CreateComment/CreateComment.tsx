@@ -28,6 +28,7 @@ const createCommentSchema = z.object({
     .uuid(app.feedbackPage.comments.createComment.errors.invalid),
   message: z
     .string()
+    .trim()
     .min(10, app.feedbackPage.comments.createComment.errors.message),
 });
 
