@@ -3,7 +3,7 @@
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
@@ -73,7 +73,7 @@ const ProjectList = () => {
           IS_ORGANIZATION_OWNER
             ? {
                 label: app.projectsPage.emptyState.cta.label,
-                icon: LuPlusCircle,
+                icon: LuCirclePlus,
                 actionProps: {
                   variant: "outline",
                   color: "brand.primary",

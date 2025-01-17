@@ -1,6 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
@@ -88,7 +88,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
           {
             label: app.projectsPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
+            icon: <LuCirclePlus />,
             dialogType: DialogType.CreateProject,
           },
         ],

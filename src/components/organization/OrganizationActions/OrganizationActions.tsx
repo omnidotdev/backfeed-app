@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Grid, Icon } from "@omnidev/sigil";
-import { LuPlusCircle, LuSettings } from "react-icons/lu";
+import { LuCirclePlus, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
 
 import { SectionContainer } from "components/layout";
@@ -33,7 +33,7 @@ const OrganizationActions = () => {
   const ORGANIZATION_ACTIONS: Action[] = [
     {
       label: app.organizationPage.actions.cta.createProject.label,
-      icon: LuPlusCircle,
+      icon: LuCirclePlus,
       onClick: () => setIsCreateProjectDialogOpen(true),
       disabled: isAuthLoading,
     },
