@@ -8,6 +8,7 @@ import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
+  useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -62,6 +63,10 @@ const HomePage = async () => {
     queryClient.prefetchQuery({
       queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
       queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
+      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
     }),
   ]);
 

@@ -16,14 +16,11 @@ import type { JWT } from "next-auth/jwt";
  */
 declare module "next-auth/jwt" {
   interface JWT {
+    sub: string;
+    id_token: string;
     access_token: string;
     expires_at: number;
     refresh_token: string;
-    given_name?: string;
-    family_name?: string;
-    preferred_username?: string;
-    sub?: string;
-    id_token?: string;
   }
 }
 
@@ -37,9 +34,6 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
-      firstName?: string;
-      lastName?: string;
-      username?: string;
       idToken?: string;
     } & NextAuthUser;
   }
@@ -67,76 +61,21 @@ export const { handlers, auth } = NextAuth({
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
     // include additional claims in the token
-    jwt: async ({ token, profile, account }) => {
-      // create or update local app user
-      // TODO refactor to simple upsert (one mutation) (https://linear.app/omnidev/issue/OMNI-144/set-up-upsert-mutations-plugin)
-      // TODO refactor to more robust app database sync method, e.g. periodic sync or event-driven activity like webhooks (https://linear.app/omnidev/issue/OMNI-145/set-up-event-driven-architecture-for-local-app-db-user-sync)
-      const upsertUser = async () => {
-        // TODO: figure out how to appropriately pass headers to the SDK
-        const requestHeaders: HeadersInit = {
-          Authorization: `Bearer ${token.access_token ?? ""}`,
-        };
-
-        const user = await sdk({ headers: requestHeaders }).User({
-          hidraId: token.sub!,
-        });
-
-        if (!user.userByHidraId) {
-          // create app user synced with IDP user
-          await sdk({ headers: requestHeaders }).CreateUser({
-            hidraId: token.sub!,
-            username: token.preferred_username,
-            firstName: token.given_name,
-            lastName: token.family_name,
-          });
-        } else {
-          // update app user if any fields have changed
-          if (
-            ["username", "firstName", "lastName"].some(
-              (field) =>
-                user.userByHidraId?.[
-                  field as keyof typeof user.userByHidraId
-                ] !== token[field]
-            )
-          ) {
-            await sdk({ headers: requestHeaders }).UpdateUser({
-              hidraId: token.sub!,
-              patch: {
-                username: token.preferred_username,
-                firstName: token.given_name,
-                lastName: token.family_name,
-              },
-            });
-          }
-        }
-      };
-
-      if (profile) {
-        // NB: Auth.js makes its own rotating `sub`, not to be confused with the IDP `sub`. Auth.js sets this on `token.sub` by default, so it is overwritten here
-        if (profile.sub) token.sub = profile.sub;
-        if (profile.given_name) token.given_name = profile.given_name;
-        if (profile.family_name) token.family_name = profile.family_name;
-        if (profile.preferred_username)
-          token.preferred_username = profile.preferred_username;
-      }
-
+    jwt: async ({ token, account }) => {
       if (account) {
         const freshToken = {
           ...token,
+          sub: account.sub,
           id_token: account.id_token,
           access_token: account.access_token,
           expires_at: account.expires_at,
           refresh_token: account.refresh_token,
         };
 
-        await upsertUser();
-
         return freshToken as JWT;
       }
 
       if (Date.now() < token.expires_at * 1000) {
-        await upsertUser();
-
         return token as JWT;
       }
 
@@ -161,7 +100,6 @@ export const { handlers, auth } = NextAuth({
 
         if (!response.ok) throw tokensOrError;
 
-        // TODO: grab id_token, decode it, and set updated claims on the token
         const newTokens = tokensOrError as {
           access_token: string;
           expires_in: number;
@@ -171,8 +109,6 @@ export const { handlers, auth } = NextAuth({
         token.access_token = newTokens.access_token;
         token.expires_at = Math.floor(Date.now() / 1000 + newTokens.expires_in);
         token.refresh_token = newTokens.refresh_token;
-
-        await upsertUser();
 
         return token as JWT;
       } catch (error) {
@@ -184,9 +120,6 @@ export const { handlers, auth } = NextAuth({
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
-      session.user.firstName = token.given_name;
-      session.user.lastName = token.family_name;
-      session.user.username = token.preferred_username;
       session.user.idToken = token.id_token;
       session.accessToken = token.access_token;
       session.expires = new Date(token.expires_at * 1000);
@@ -197,7 +130,6 @@ export const { handlers, auth } = NextAuth({
       }).User({ hidraId: token.sub! });
 
       if (userByHidraId) {
-        // TODO: discuss removing additional augmentation of the session object (i.e. user.rowId) and just overwriting the user.id field here. Currently, the user.id field is ovewritten within the `useAuth` hook to supply mock data, but when that is no longer required, we could simply overwrite that field here instead.
         session.user.rowId = userByHidraId.rowId;
       }
 

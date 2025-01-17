@@ -4,6 +4,5 @@ query User($hidraId: UUID!) {
     hidraId
     username
     firstName
-    lastName
   }
 }

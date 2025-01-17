@@ -11,6 +11,7 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateCommentMutation,
   useInfiniteCommentsQuery,
+  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -31,6 +32,16 @@ interface Props {
  */
 const Comments = ({ feedbackId }: Props) => {
   const { user } = useAuth();
+
+  const { data: username } = useUserQuery(
+    {
+      hidraId: user?.hidraId!,
+    },
+    {
+      enabled: !!user?.hidraId,
+      select: (data) => data?.userByHidraId?.username,
+    }
+  );
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
@@ -60,7 +71,7 @@ const Comments = ({ feedbackId }: Props) => {
         message: input.comment.message,
         user: {
           rowId: user?.rowId!,
-          username: user?.username,
+          username,
         },
       };
     },
