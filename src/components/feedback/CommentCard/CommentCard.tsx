@@ -22,7 +22,7 @@ interface Props extends StackProps {
   senderName: string | null | undefined;
   /** Comment message. */
   message: Comment["message"];
-  /** Comment date. */
+  /** Date the comment was created. */
   createdAt: Comment["createdAt"];
   /** Whether the comment is pending. */
   isPending?: boolean;
