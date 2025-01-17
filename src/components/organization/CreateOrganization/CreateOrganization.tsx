@@ -19,7 +19,7 @@ import {
   useCreateOrganizationMutation,
   useCreateUserOrganizationMutation,
 } from "generated/graphql";
-import { app, isDev } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { sdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
@@ -128,7 +128,7 @@ const CreateOrganization = () => {
           },
         });
       } catch (error) {
-        if (isDev) {
+        if (isDevEnv) {
           console.error(error);
         }
       }
