@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
@@ -33,7 +33,7 @@ const OrganizationsOverview = () => {
           {
             label: app.organizationsPage.header.cta.newOrganization.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
+            icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             disabled: isAuthLoading,
           },

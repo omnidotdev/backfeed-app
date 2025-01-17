@@ -4,7 +4,7 @@ Backfeed is an open-source feedback reporting platform.
 
 ## Local Development
 
-First, `cp .env.local.template` to `.env.local` and fill in the values.
+First, `cp .env.local.template .env.local` and fill in the values.
 
 ### Building and Running (Native)
 

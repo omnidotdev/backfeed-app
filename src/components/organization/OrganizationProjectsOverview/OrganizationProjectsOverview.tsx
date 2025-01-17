@@ -2,7 +2,7 @@
 
 import { Grid } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
@@ -83,7 +83,7 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
               message={app.organizationPage.projects.emptyState.message}
               action={{
                 label: app.organizationPage.projects.emptyState.cta.label,
-                icon: LuPlusCircle,
+                icon: LuCirclePlus,
                 actionProps: {
                   variant: "outline",
                   color: "brand.primary",

@@ -97,7 +97,7 @@ const Comments = ({ feedbackId }: Props) => {
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
-              <SkeletonArray count={5} h={21} />
+              <SkeletonArray count={5} h={28} />
             ) : comments?.length || pendingComments.length ? (
               <VStack>
                 {!!pendingComments.length && (
@@ -105,7 +105,7 @@ const Comments = ({ feedbackId }: Props) => {
                     commentId="pending"
                     senderName={pendingComments[0].user?.username}
                     message={pendingComments[0].message}
-                    date={new Date()}
+                    createdAt={new Date()}
                     isSender
                     isPending
                     w="full"
@@ -119,7 +119,7 @@ const Comments = ({ feedbackId }: Props) => {
                     commentId={comment?.rowId!}
                     senderName={comment?.user?.username}
                     message={comment?.message}
-                    date={comment?.createdAt}
+                    createdAt={comment?.createdAt}
                     isSender={comment?.user?.rowId === user?.rowId}
                     w="full"
                     minH={21}

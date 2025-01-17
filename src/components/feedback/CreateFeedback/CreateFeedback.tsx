@@ -37,9 +37,11 @@ const createFeedbackSchema = z.object({
     .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
   title: z
     .string()
+    .trim()
     .min(3, app.projectPage.projectFeedback.createFeedback.errors.title),
   description: z
     .string()
+    .trim()
     .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
 });
 
@@ -103,7 +105,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: createFeedbackSchema,
-      onChangeAsync: createFeedbackSchema,
+      onSubmitAsync: createFeedbackSchema,
     },
     onSubmit: ({ value }) =>
       createFeedback({
@@ -111,8 +113,8 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
           post: {
             projectId: value.projectId,
             userId: value.userId,
-            title: value.title,
-            description: value.description,
+            title: value.title.trim(),
+            description: value.description.trim(),
           },
         },
       }),
@@ -131,13 +133,8 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
         handleSubmit();
       }}
     >
-      <Field
-        name="title"
-        validators={{
-          onBlur: createFeedbackSchema.shape.title,
-        }}
-      >
-        {({ handleChange, handleBlur, state }) => (
+      <Field name="title">
+        {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
             <Label htmlFor="title">
               {app.projectPage.projectFeedback.feedbackTitle.label}
@@ -151,25 +148,19 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               borderColor="border.subtle"
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              onBlur={handleBlur}
               disabled={isFormDisabled}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onBlur}
+              error={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>
         )}
       </Field>
 
-      <Field
-        name="description"
-        validators={{
-          onBlur: createFeedbackSchema.shape.description,
-        }}
-      >
-        {({ handleChange, handleBlur, state }) => (
+      <Field name="description">
+        {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
             <Label htmlFor="description">
               {app.projectPage.projectFeedback.feedbackDescription.label}
@@ -185,12 +176,11 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               minH={32}
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              onBlur={handleBlur}
               disabled={isFormDisabled}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onBlur}
+              error={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>

@@ -28,6 +28,7 @@ const createCommentSchema = z.object({
     .uuid(app.feedbackPage.comments.createComment.errors.invalid),
   message: z
     .string()
+    .trim()
     .min(10, app.feedbackPage.comments.createComment.errors.message),
 });
 
@@ -76,7 +77,7 @@ const CreateComment = ({ totalCount }: Props) => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: createCommentSchema,
-      onChangeAsync: createCommentSchema,
+      onSubmitAsync: createCommentSchema,
     },
     onSubmit: ({ value }) =>
       createComment({
@@ -84,7 +85,7 @@ const CreateComment = ({ totalCount }: Props) => {
           comment: {
             postId: value.postId,
             userId: value.userId,
-            message: value.message,
+            message: value.message.trim(),
           },
         },
       }),
@@ -104,13 +105,7 @@ const CreateComment = ({ totalCount }: Props) => {
         await handleSubmit();
       }}
     >
-      <Field
-        name="message"
-        asyncDebounceMs={300}
-        validators={{
-          onChangeAsync: createCommentSchema.shape.message,
-        }}
-      >
+      <Field name="message">
         {({ handleChange, state }) => (
           <Stack position="relative" gap={1.5}>
             <Textarea
@@ -124,7 +119,7 @@ const CreateComment = ({ totalCount }: Props) => {
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onChange}
+              error={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
               top={-6}
             />

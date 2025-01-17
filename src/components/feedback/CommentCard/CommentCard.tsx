@@ -23,7 +23,7 @@ interface Props extends StackProps {
   /** Comment message. */
   message: Comment["message"];
   /** Comment date. */
-  date: Comment["createdAt"];
+  createdAt: Comment["createdAt"];
   /** Whether the comment is pending. */
   isPending?: boolean;
   /** Whether the logged in user is the comment sender. */
@@ -37,7 +37,7 @@ const CommentCard = ({
   commentId,
   senderName,
   message,
-  date,
+  createdAt,
   isPending = false,
   isSender = false,
   ...rest
@@ -82,11 +82,17 @@ const CommentCard = ({
         <Text color="foreground.muted">{senderName?.[0]}</Text>
       </VStack>
 
-      <Stack gap={1} flex={1}>
+      <Stack gap={1} flex={1} pb={8}>
         <Text fontWeight="semibold">{senderName}</Text>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {message}
+          {message?.split("\n").map((line, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
         </Text>
       </Stack>
 
@@ -115,7 +121,7 @@ const CommentCard = ({
         fontSize="sm"
         color="foreground.muted"
       >
-        {dayjs(date).fromNow()}
+        {dayjs(createdAt).fromNow()}
       </Text>
     </Stack>
   );
