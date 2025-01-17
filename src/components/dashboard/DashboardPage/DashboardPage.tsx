@@ -29,10 +29,10 @@ const DashboardPage = () => {
     isError,
   } = useDashboardAggregatesQuery(
     {
-      userId: user?.id!,
+      userId: user?.rowId!,
     },
     {
-      enabled: !!user?.id,
+      enabled: !!user?.rowId,
       select: (data) => ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,

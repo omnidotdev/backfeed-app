@@ -3,11 +3,13 @@ import { GraphQLClient } from "graphql-request";
 import { getSdk } from "generated/graphql.sdk";
 import { API_BASE_URL } from "lib/config";
 
-const graphqlClient = new GraphQLClient(API_BASE_URL!);
-
 /**
- * GraphQL client SDK.
+ * GraphQL client SDKs
  */
-const sdk = getSdk(graphqlClient);
+const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
+  const graphqlClient = new GraphQLClient(API_BASE_URL!, { headers });
+
+  return getSdk(graphqlClient);
+};
 
 export default sdk;

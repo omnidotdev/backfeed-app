@@ -20,9 +20,11 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const session = await getAuthSession();
+
+  const { organizationBySlug: organization } = await sdk({
+    headers: { Authorization: `Bearer ${session?.accessToken}` },
+  }).Organization({ slug: organizationSlug });
 
   return {
     title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
@@ -42,10 +44,11 @@ interface Props {
 const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, { organizationBySlug: organization }] = await Promise.all([
-    getAuthSession(),
-    sdk.Organization({ slug: organizationSlug }),
-  ]);
+  const session = await getAuthSession();
+
+  const { organizationBySlug: organization } = await sdk({
+    headers: { Authorization: `Bearer ${session?.accessToken}` },
+  }).Organization({ slug: organizationSlug });
 
   if (!session || !organization) notFound();
 

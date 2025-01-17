@@ -8,13 +8,17 @@ import { token } from "generated/panda/tokens";
 import { sdk } from "lib/graphql";
 
 import type { User as NextAuthUser } from "next-auth";
-import type { DefaultJWT } from "next-auth/jwt";
+
+import type { JWT } from "next-auth/jwt";
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
  */
 declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
+  interface JWT {
+    access_token: string;
+    expires_at: number;
+    refresh_token: string;
     given_name?: string;
     family_name?: string;
     preferred_username?: string;
@@ -28,6 +32,8 @@ declare module "next-auth/jwt" {
  */
 declare module "next-auth" {
   interface Session {
+    accessToken: string;
+    expires: Date;
     user: {
       rowId?: string;
       hidraId?: string;
@@ -62,6 +68,49 @@ export const { handlers, auth } = NextAuth({
   callbacks: {
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
+      // create or update local app user
+      // TODO refactor to simple upsert (one mutation) (https://linear.app/omnidev/issue/OMNI-144/set-up-upsert-mutations-plugin)
+      // TODO refactor to more robust app database sync method, e.g. periodic sync or event-driven activity like webhooks (https://linear.app/omnidev/issue/OMNI-145/set-up-event-driven-architecture-for-local-app-db-user-sync)
+      const upsertUser = async () => {
+        // TODO: figure out how to appropriately pass headers to the SDK
+        const requestHeaders: HeadersInit = {
+          Authorization: `Bearer ${token.access_token ?? ""}`,
+        };
+
+        const user = await sdk({ headers: requestHeaders }).User({
+          hidraId: token.sub!,
+        });
+
+        if (!user.userByHidraId) {
+          // create app user synced with IDP user
+          await sdk({ headers: requestHeaders }).CreateUser({
+            hidraId: token.sub!,
+            username: token.preferred_username,
+            firstName: token.given_name,
+            lastName: token.family_name,
+          });
+        } else {
+          // update app user if any fields have changed
+          if (
+            ["username", "firstName", "lastName"].some(
+              (field) =>
+                user.userByHidraId?.[
+                  field as keyof typeof user.userByHidraId
+                ] !== token[field]
+            )
+          ) {
+            await sdk({ headers: requestHeaders }).UpdateUser({
+              hidraId: token.sub!,
+              patch: {
+                username: token.preferred_username,
+                firstName: token.given_name,
+                lastName: token.family_name,
+              },
+            });
+          }
+        }
+      };
+
       if (profile) {
         // NB: Auth.js makes its own rotating `sub`, not to be confused with the IDP `sub`. Auth.js sets this on `token.sub` by default, so it is overwritten here
         if (profile.sub) token.sub = profile.sub;
@@ -72,43 +121,65 @@ export const { handlers, auth } = NextAuth({
       }
 
       if (account) {
-        token.id_token = account.id_token;
+        const freshToken = {
+          ...token,
+          id_token: account.id_token,
+          access_token: account.access_token,
+          expires_at: account.expires_at,
+          refresh_token: account.refresh_token,
+        };
+
+        await upsertUser();
+
+        return freshToken as JWT;
       }
 
-      // create or update local app user
-      // TODO refactor to simple upsert (one mutation) (https://linear.app/omnidev/issue/OMNI-144/set-up-upsert-mutations-plugin)
-      // TODO refactor to more robust app database sync method, e.g. periodic sync or event-driven activity like webhooks (https://linear.app/omnidev/issue/OMNI-145/set-up-event-driven-architecture-for-local-app-db-user-sync)
-      const user = await sdk.User({ hidraId: token.sub! });
+      if (Date.now() < token.expires_at * 1000) {
+        await upsertUser();
 
-      if (!user.userByHidraId) {
-        // create app user synced with IDP user
-        await sdk.CreateUser({
-          hidraId: token.sub!,
-          username: token.preferred_username,
-          firstName: token.given_name,
-          lastName: token.family_name,
-        });
-      } else {
-        // update app user if any fields have changed
-        if (
-          ["username", "firstName", "lastName"].some(
-            (field) =>
-              user.userByHidraId?.[field as keyof typeof user.userByHidraId] !==
-              token[field]
-          )
-        ) {
-          await sdk.UpdateUser({
-            hidraId: token.sub!,
-            patch: {
-              username: token.preferred_username,
-              firstName: token.given_name,
-              lastName: token.family_name,
+        return token as JWT;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
             },
-          });
-        }
-      }
+            body: new URLSearchParams({
+              client_id: process.env.AUTH_KEYCLOAK_ID!,
+              client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+              grant_type: "refresh_token",
+              refresh_token: token.refresh_token,
+            }),
+          }
+        );
 
-      return token;
+        const tokensOrError = await response.json();
+
+        if (!response.ok) throw tokensOrError;
+
+        // TODO: grab id_token, decode it, and set updated claims on the token
+        const newTokens = tokensOrError as {
+          access_token: string;
+          expires_in: number;
+          refresh_token: string;
+        };
+
+        token.access_token = newTokens.access_token;
+        token.expires_at = Math.floor(Date.now() / 1000 + newTokens.expires_in);
+        token.refresh_token = newTokens.refresh_token;
+
+        await upsertUser();
+
+        return token as JWT;
+      } catch (error) {
+        console.error(error);
+
+        return token as JWT;
+      }
     },
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
@@ -117,9 +188,13 @@ export const { handlers, auth } = NextAuth({
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
       session.user.idToken = token.id_token;
+      session.accessToken = token.access_token;
+      session.expires = new Date(token.expires_at * 1000);
 
       // retrieve user by HIDRA ID
-      const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
+      const { userByHidraId } = await sdk({
+        headers: { Authorization: `Bearer ${token.access_token}` },
+      }).User({ hidraId: token.sub! });
 
       if (userByHidraId) {
         // TODO: discuss removing additional augmentation of the session object (i.e. user.rowId) and just overwriting the user.id field here. Currently, the user.id field is ovewritten within the `useAuth` hook to supply mock data, but when that is no longer required, we could simply overwrite that field here instead.

@@ -40,25 +40,25 @@ const HomePage = async () => {
     }),
     queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
       }),
       queryFn: useDashboardAggregatesQuery.fetcher({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
       }),
     }),
     queryClient.prefetchQuery({
       queryKey: useWeeklyFeedbackQuery.getKey({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
         startDate: oneWeekAgo,
       }),
       queryFn: useWeeklyFeedbackQuery.fetcher({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
         startDate: oneWeekAgo,
       }),
     }),
     queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.id! }),
-      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.id! }),
+      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
+      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
     }),
   ]);
 

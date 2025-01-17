@@ -33,10 +33,11 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const [session, { post: feedback }] = await Promise.all([
-    getAuthSession(),
-    sdk.FeedbackById({ rowId: feedbackId }),
-  ]);
+  const session = await getAuthSession();
+
+  const { post: feedback } = await sdk({
+    headers: { Authorization: `Bearer ${session?.accessToken}` },
+  }).FeedbackById({ rowId: feedbackId });
 
   if (!session || !feedback) notFound();
 

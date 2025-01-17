@@ -22,7 +22,11 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug, projectSlug } = await params;
 
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
+  const session = await getAuthSession();
+
+  const { projects } = await sdk({
+    headers: { Authorization: `Bearer ${session?.accessToken}` },
+  }).Project({ projectSlug, organizationSlug });
 
   const project = projects?.nodes?.[0];
 
@@ -42,10 +46,11 @@ interface Props {
 const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const [session, { projects }] = await Promise.all([
-    getAuthSession(),
-    sdk.Project({ projectSlug, organizationSlug }),
-  ]);
+  const session = await getAuthSession();
+
+  const { projects } = await sdk({
+    headers: { Authorization: `Bearer ${session?.accessToken}` },
+  }).Project({ projectSlug, organizationSlug });
 
   const project = projects?.nodes?.[0];
 

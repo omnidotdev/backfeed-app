@@ -17,7 +17,5 @@ export const isDevEnv = NODE_ENV === "development";
 export const isTestEnv = APP_ENV === "test";
 
 // tests
-// TODO remove once HIDRA is synced with database and mock data is no longer needed
-export const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID;
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;

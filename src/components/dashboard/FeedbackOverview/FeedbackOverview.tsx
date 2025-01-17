@@ -34,11 +34,11 @@ const FeedbackOverview = () => {
     isError,
   } = useWeeklyFeedbackQuery(
     {
-      userId: user?.id!,
+      userId: user?.rowId!,
       startDate: oneWeekAgo,
     },
     {
-      enabled: !!user?.id,
+      enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
           name: dayjs(aggregate.keys?.[0]).format("ddd"),

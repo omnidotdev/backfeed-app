@@ -50,33 +50,35 @@ const baseSchema = z.object({
     .max(50, app.dashboardPage.cta.newProject.projectSlug.error.maxLength),
 });
 
-/** Schema for validation of the create project form. */
-const createProjectSchema = baseSchema.superRefine(
-  async ({ organizationId, slug }, ctx) => {
-    if (!organizationId.length || !slug.length) return z.NEVER;
-
-    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
-      organizationId,
-      slug,
-    });
-
-    if (projectBySlugAndOrganizationId) {
-      ctx.addIssue({
-        code: "custom",
-        message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
-        path: ["slug"],
-      });
-    }
-  }
-);
-
 /**
  * Dialog for creating a new project.
  */
 const CreateProject = () => {
   const router = useRouter();
 
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
+
+  /** Schema for validation of the create project form. */
+  const createProjectSchema = baseSchema.superRefine(
+    async ({ organizationId, slug }, ctx) => {
+      if (!organizationId.length || !slug.length) return z.NEVER;
+
+      const { projectBySlugAndOrganizationId } = await sdk({
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }).ProjectBySlug({
+        organizationId,
+        slug,
+      });
+
+      if (projectBySlugAndOrganizationId) {
+        ctx.addIssue({
+          code: "custom",
+          message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
+          path: ["slug"],
+        });
+      }
+    }
+  );
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
