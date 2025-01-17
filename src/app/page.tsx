@@ -15,6 +15,7 @@ import { getAuthSession, getQueryClient } from "lib/util";
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
+const startOfToday = dayjs().startOf("day").toDate();
 
 /**
  * Home page. This route is dynamically rendered based on the user's authentication status.
@@ -50,10 +51,12 @@ const HomePage = async () => {
       queryKey: useWeeklyFeedbackQuery.getKey({
         userId: session.user.rowId!,
         startDate: oneWeekAgo,
+        endDate: startOfToday,
       }),
       queryFn: useWeeklyFeedbackQuery.fetcher({
         userId: session.user.rowId!,
         startDate: oneWeekAgo,
+        endDate: startOfToday,
       }),
     }),
     queryClient.prefetchQuery({
