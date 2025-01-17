@@ -15,6 +15,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useEffect } from "react";
 import { DialogType } from "store";
 
 /**
@@ -40,7 +41,7 @@ const DashboardPage = () => {
     }
   );
 
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
+  const { data: numberOfOrganizations, error } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
     },
@@ -49,6 +50,12 @@ const DashboardPage = () => {
       select: (data) => data?.organizations?.totalCount,
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
   const aggregates = [
     {
