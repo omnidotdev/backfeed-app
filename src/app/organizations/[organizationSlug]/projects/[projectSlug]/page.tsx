@@ -9,7 +9,6 @@ import {
   useInfinitePostsQuery,
   usePostsQuery,
   useProjectMetricsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
@@ -92,10 +91,6 @@ const ProjectPage = async ({ params }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
       queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
     }),
   ]);
 

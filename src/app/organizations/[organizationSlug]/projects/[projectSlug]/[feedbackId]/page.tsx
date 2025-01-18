@@ -7,7 +7,6 @@ import {
   useCommentsQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
@@ -75,10 +74,6 @@ const FeedbackPage = async ({ params }: Props) => {
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
       queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
       initialPageParam: undefined,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
     }),
   ]);
 

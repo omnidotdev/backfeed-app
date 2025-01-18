@@ -12,10 +12,10 @@ import { Page } from "components/layout";
 import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useEffect } from "react";
 import { DialogType } from "store";
 
 /**
@@ -23,16 +23,6 @@ import { DialogType } from "store";
  */
 const DashboardPage = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
-
-  const { data: firstName } = useUserQuery(
-    {
-      hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.firstName,
-    }
-  );
 
   const {
     data: dashboardAggregates,
@@ -51,7 +41,7 @@ const DashboardPage = () => {
     }
   );
 
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
+  const { data: numberOfOrganizations, error } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
     },
@@ -60,6 +50,12 @@ const DashboardPage = () => {
       select: (data) => data?.organizations?.totalCount,
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
   const aggregates = [
     {
@@ -79,7 +75,7 @@ const DashboardPage = () => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${user?.firstName}!`,
         description: app.dashboardPage.description,
         cta: [
           {
