@@ -6,5 +6,6 @@ export { default as Header } from "./Header/Header";
 export { default as HeaderActions } from "./HeaderActions/HeaderActions";
 export { default as Layout } from "./Layout/Layout";
 export { default as Page } from "./Page/Page";
+export { default as RefreshTokenError } from "./RefreshTokenError/RefreshTokenError";
 export { default as SectionContainer } from "./SectionContainer/SectionContainer";
 export { default as ThemeToggle } from "./ThemeToggle/ThemeToggle";

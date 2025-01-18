@@ -16,15 +16,13 @@ import type { DefaultJWT } from "next-auth/jwt";
  */
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
-    access_token: string;
-    expires_at: number;
-    refresh_token: string;
-    given_name?: string;
-    family_name?: string;
-    preferred_username?: string;
     sub?: string;
     id_token?: string;
     row_id?: string;
+    access_token: string;
+    expires_at: number;
+    refresh_token: string;
+    error?: "RefreshTokenError";
   }
 }
 
@@ -38,11 +36,9 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
-      firstName?: string;
-      lastName?: string;
-      username?: string;
       idToken?: string;
     } & NextAuthUser;
+    error?: "RefreshTokenError";
   }
 }
 
@@ -69,85 +65,36 @@ export const { handlers, auth } = NextAuth({
   callbacks: {
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      // create or update local app user
-      // TODO refactor to simple upsert (one mutation) (https://linear.app/omnidev/issue/OMNI-144/set-up-upsert-mutations-plugin)
-      // TODO refactor to more robust app database sync method, e.g. periodic sync or event-driven activity like webhooks (https://linear.app/omnidev/issue/OMNI-145/set-up-event-driven-architecture-for-local-app-db-user-sync)
-      const upsertUser = async () => {
-        // TODO: figure out how to appropriately pass headers to the SDK
-        const requestHeaders: HeadersInit = {
-          Authorization: `Bearer ${token.access_token ?? ""}`,
-        };
-
-        const user = await sdk({ headers: requestHeaders }).User({
+      // retrieve user row ID from database using the access token granted by IDP
+      const setRowIdClaim = async (accessToken: string) => {
+        const user = await sdk({
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }).User({
           hidraId: token.sub!,
         });
 
-        if (!user.userByHidraId) {
-          // create app user synced with IDP user
-          const { createUser } = await sdk({
-            headers: requestHeaders,
-          }).CreateUser({
-            hidraId: token.sub!,
-            username: token.preferred_username,
-            firstName: token.given_name,
-            lastName: token.family_name,
-          });
-
-          token.row_id = createUser?.user?.rowId;
-        } else {
-          // update app user if any fields have changed
-          if (
-            ["username", "firstName", "lastName"].some(
-              (field) =>
-                user.userByHidraId?.[
-                  field as keyof typeof user.userByHidraId
-                ] !== token[field]
-            )
-          ) {
-            const { updateUserByHidraId } = await sdk({
-              headers: requestHeaders,
-            }).UpdateUser({
-              hidraId: token.sub!,
-              patch: {
-                username: token.preferred_username,
-                firstName: token.given_name,
-                lastName: token.family_name,
-              },
-            });
-
-            token.row_id = updateUserByHidraId?.user?.rowId;
-          } else {
-            token.row_id = user?.userByHidraId?.rowId;
-          }
-        }
+        token.row_id = user?.userByHidraId?.rowId;
       };
 
-      if (profile) {
-        // NB: Auth.js makes its own rotating `sub`, not to be confused with the IDP `sub`. Auth.js sets this on `token.sub` by default, so it is overwritten here
-        if (profile.sub) token.sub = profile.sub;
-        if (profile.given_name) token.given_name = profile.given_name;
-        if (profile.family_name) token.family_name = profile.family_name;
-        if (profile.preferred_username)
-          token.preferred_username = profile.preferred_username;
-      }
-
+      // Account is present on fresh login. We can set additional claims on the token given this information.
       if (account) {
+        token.sub = profile?.sub!;
         token.id_token = account.id_token;
         token.access_token = account.access_token!;
         token.expires_at = account.expires_at!;
         token.refresh_token = account.refresh_token!;
 
-        await upsertUser();
+        await setRowIdClaim(account.access_token!);
 
         return token;
       }
 
+      // On subsequent logins, where the access token is still valid, we can use the existing token.
       if (Date.now() < token.expires_at * 1000) {
-        await upsertUser();
-
         return token;
       }
 
+      // If the access token is expired, we need to refresh it.
       try {
         const response = await fetch(
           `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
@@ -167,9 +114,9 @@ export const { handlers, auth } = NextAuth({
 
         const tokensOrError = await response.json();
 
+        // If the refresh token is invalid, we can't refresh the access token, so we need to throw an error, and handle it within the catch block.
         if (!response.ok) throw tokensOrError;
 
-        // TODO: grab id_token, decode it, and set updated claims on the token
         const newTokens = tokensOrError as {
           access_token: string;
           expires_in: number;
@@ -180,22 +127,26 @@ export const { handlers, auth } = NextAuth({
         token.expires_at = Math.floor(Date.now() / 1000 + newTokens.expires_in);
         token.refresh_token = newTokens.refresh_token;
 
-        await upsertUser();
+        await setRowIdClaim(newTokens.access_token);
 
         return token;
       } catch (error) {
-        console.error(error);
+        token.error = "RefreshTokenError";
 
         return token;
       }
     },
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
+      if (token.error) {
+        // Forward the error to the client, so it can be handled appropriately.
+        session.error = token.error;
+
+        return session;
+      }
+
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
-      session.user.firstName = token.given_name;
-      session.user.lastName = token.family_name;
-      session.user.username = token.preferred_username;
       session.user.idToken = token.id_token;
       session.accessToken = token.access_token;
       session.expires = new Date(token.expires_at * 1000);

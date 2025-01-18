@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
+import { RefreshTokenError } from "components/layout";
 import { OrganizationsOverview } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -25,6 +26,8 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
   const session = await getAuthSession();
 
   if (!session) notFound();
+
+  if (session.error) return <RefreshTokenError />;
 
   const queryClient = getQueryClient();
 
