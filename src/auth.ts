@@ -9,13 +9,13 @@ import { sdk } from "lib/graphql";
 
 import type { User as NextAuthUser } from "next-auth";
 
-import type { JWT } from "next-auth/jwt";
+import type { DefaultJWT } from "next-auth/jwt";
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
  */
 declare module "next-auth/jwt" {
-  interface JWT {
+  interface JWT extends DefaultJWT {
     access_token: string;
     expires_at: number;
     refresh_token: string;
@@ -24,6 +24,7 @@ declare module "next-auth/jwt" {
     preferred_username?: string;
     sub?: string;
     id_token?: string;
+    row_id?: string;
   }
 }
 
@@ -83,12 +84,16 @@ export const { handlers, auth } = NextAuth({
 
         if (!user.userByHidraId) {
           // create app user synced with IDP user
-          await sdk({ headers: requestHeaders }).CreateUser({
+          const { createUser } = await sdk({
+            headers: requestHeaders,
+          }).CreateUser({
             hidraId: token.sub!,
             username: token.preferred_username,
             firstName: token.given_name,
             lastName: token.family_name,
           });
+
+          token.row_id = createUser?.user?.rowId;
         } else {
           // update app user if any fields have changed
           if (
@@ -99,7 +104,9 @@ export const { handlers, auth } = NextAuth({
                 ] !== token[field]
             )
           ) {
-            await sdk({ headers: requestHeaders }).UpdateUser({
+            const { updateUserByHidraId } = await sdk({
+              headers: requestHeaders,
+            }).UpdateUser({
               hidraId: token.sub!,
               patch: {
                 username: token.preferred_username,
@@ -107,6 +114,10 @@ export const { handlers, auth } = NextAuth({
                 lastName: token.family_name,
               },
             });
+
+            token.row_id = updateUserByHidraId?.user?.rowId;
+          } else {
+            token.row_id = user?.userByHidraId?.rowId;
           }
         }
       };
@@ -121,23 +132,20 @@ export const { handlers, auth } = NextAuth({
       }
 
       if (account) {
-        const freshToken = {
-          ...token,
-          id_token: account.id_token,
-          access_token: account.access_token,
-          expires_at: account.expires_at,
-          refresh_token: account.refresh_token,
-        };
+        token.id_token = account.id_token;
+        token.access_token = account.access_token!;
+        token.expires_at = account.expires_at!;
+        token.refresh_token = account.refresh_token!;
 
         await upsertUser();
 
-        return freshToken as JWT;
+        return token;
       }
 
       if (Date.now() < token.expires_at * 1000) {
         await upsertUser();
 
-        return token as JWT;
+        return token;
       }
 
       try {
@@ -174,32 +182,23 @@ export const { handlers, auth } = NextAuth({
 
         await upsertUser();
 
-        return token as JWT;
+        return token;
       } catch (error) {
         console.error(error);
 
-        return token as JWT;
+        return token;
       }
     },
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
+      session.user.rowId = token.row_id;
       session.user.firstName = token.given_name;
       session.user.lastName = token.family_name;
       session.user.username = token.preferred_username;
       session.user.idToken = token.id_token;
       session.accessToken = token.access_token;
       session.expires = new Date(token.expires_at * 1000);
-
-      // retrieve user by HIDRA ID
-      const { userByHidraId } = await sdk({
-        headers: { Authorization: `Bearer ${token.access_token}` },
-      }).User({ hidraId: token.sub! });
-
-      if (userByHidraId) {
-        // TODO: discuss removing additional augmentation of the session object (i.e. user.rowId) and just overwriting the user.id field here. Currently, the user.id field is ovewritten within the `useAuth` hook to supply mock data, but when that is no longer required, we could simply overwrite that field here instead.
-        session.user.rowId = userByHidraId.rowId;
-      }
 
       return session;
     },
