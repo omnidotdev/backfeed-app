@@ -21,5 +21,3 @@ next-env.d.ts
 
 **/generated/*
 !**/generated/.gitignore
-
-**/public/mockServiceWorker-*.js
