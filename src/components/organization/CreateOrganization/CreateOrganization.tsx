@@ -107,7 +107,7 @@ const CreateOrganization = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
-      onChangeAsync: createOrganizationSchema,
+      onSubmitAsync: createOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -158,14 +158,8 @@ const CreateOrganization = () => {
           reset();
         }}
       >
-        <Field
-          name="name"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.name,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="name">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={
@@ -183,25 +177,17 @@ const CreateOrganization = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="slug"
-          asyncDebounceMs={300}
-          // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
-          validators={{
-            onChangeAsync: baseSchema.shape.slug,
-          }}
-        >
+        <Field name="slug">
           {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
@@ -230,7 +216,7 @@ const CreateOrganization = () => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onChange}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -245,7 +231,11 @@ const CreateOrganization = () => {
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+            <Button
+              type="submit"
+              disabled={!canSubmit || !isDirty || isSubmitting}
+              mt={4}
+            >
               {isSubmitting
                 ? app.dashboardPage.cta.newOrganization.action.pending
                 : app.dashboardPage.cta.newOrganization.action.submit}

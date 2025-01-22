@@ -119,7 +119,7 @@ const CreateProject = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
-      onChangeAsync: createProjectSchema,
+      onSubmitAsync: createProjectSchema,
     },
     onSubmit: ({ value }) =>
       createProject({
@@ -155,13 +155,8 @@ const CreateProject = () => {
           reset();
         }}
       >
-        <Field
-          name="organizationId"
-          validators={{
-            onBlur: baseSchema.shape.organizationId,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="organizationId">
+          {({ handleChange, state }) => (
             <Stack position="relative">
               <Select
                 label={
@@ -181,25 +176,18 @@ const CreateProject = () => {
                 onValueChange={({ value }) =>
                   handleChange(value.length ? value[0] : "")
                 }
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="name"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.name,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="name">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
                 {app.dashboardPage.cta.newProject.projectName.id}
@@ -212,25 +200,18 @@ const CreateProject = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="description"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.description,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="description">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
@@ -246,25 +227,17 @@ const CreateProject = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="slug"
-          asyncDebounceMs={300}
-          // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
-          validators={{
-            onChangeAsync: baseSchema.shape.slug,
-          }}
-        >
+        <Field name="slug">
           {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
@@ -288,7 +261,7 @@ const CreateProject = () => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onChange}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -303,7 +276,11 @@ const CreateProject = () => {
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+            <Button
+              type="submit"
+              disabled={!canSubmit || !isDirty || isSubmitting}
+              mt={4}
+            >
               {isSubmitting
                 ? app.dashboardPage.cta.newProject.action.pending
                 : app.dashboardPage.cta.newProject.action.submit}
