@@ -22,33 +22,21 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
 
 /**
  * Sign out handler. This helper function is used to sign out the user from the application.
- * TODO: verify / test this (need to wait for refresh token to expire, or pick up misc flaky errors which hopefully aren't happening)
+ * TODO: update to use federated-logout handler here?
+ * TODO: update to redirect to custom sign in page
  */
-const signOut = async (request: NextRequest) => {
-  try {
-    const federatedLogoutResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/federated-logout`
-    );
+const signOut = (request: NextRequest) => {
+  const response = NextResponse.redirect(new URL("/", request.url));
 
-    if (federatedLogoutResponse.ok) {
-      const { url } = await federatedLogoutResponse.json();
+  const requestCookies = request.cookies.getAll();
 
-      const response = NextResponse.redirect(url as string);
-
-      const requestCookies = request.cookies.getAll();
-
-      // Delete all authjs cookies
-      for (const cookie of requestCookies) {
-        if (cookie.name.includes("authjs.session-token"))
-          response.cookies.delete(cookie.name);
-      }
-
-      return response;
-    }
-  } catch (error) {
-    console.error(error);
-    return NextResponse.next();
+  // Delete all authjs cookies
+  for (const cookie of requestCookies) {
+    if (cookie.name.includes("authjs.session-token"))
+      response.cookies.delete(cookie.name);
   }
+
+  return response;
 };
 
 /**
@@ -205,7 +193,7 @@ export const middleware: NextMiddleware = async (request: NextRequest) => {
     console.error(error);
 
     // If there is an error, sign out the user
-    return await signOut(request);
+    return signOut(request);
   }
 };
 
