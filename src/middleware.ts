@@ -68,13 +68,13 @@ const signOut = async (request: NextAuthRequest) => {
           }),
         }
       );
-
-      return removeSessionCookie(request);
     } catch (error) {
       // If the backchannel logout fails, fallback to logging out the user from the frontend application
       return removeSessionCookie(request);
     }
   }
+
+  return removeSessionCookie(request);
 };
 
 /**
