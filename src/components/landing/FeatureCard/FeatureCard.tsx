@@ -24,7 +24,7 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
     boxShadow="lg"
     p={6}
   >
-    <Stack align="flex-start" h="full">
+    <Stack align="center" h="full" textAlign="center">
       <Icon src={featureIcon} w={10} h={10} color="brand.primary" mb={2} />
 
       <Text fontSize="lg" fontWeight="bold" my={2}>

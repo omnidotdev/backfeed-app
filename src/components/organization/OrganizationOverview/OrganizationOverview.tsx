@@ -3,7 +3,7 @@
 import { Grid } from "@omnidev/sigil";
 import { useIsMutating } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { LuPlusCircle } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import {
@@ -76,7 +76,7 @@ const OrganizationOverview = ({ organization }: Props) => {
           {
             label: app.organizationPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuPlusCircle />,
+            icon: <LuCirclePlus />,
             dialogType: DialogType.CreateProject,
             disabled: isAuthLoading,
           },

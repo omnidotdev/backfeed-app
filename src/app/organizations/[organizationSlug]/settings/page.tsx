@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
+import { OrganizationSettings } from "components/organization";
+import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
-import { app } from "lib/config";
-import { OrganizationSettings } from "components/organization";
+
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({

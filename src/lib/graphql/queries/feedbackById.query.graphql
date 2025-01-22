@@ -1,26 +1,5 @@
 query FeedbackById($rowId: UUID!) {
   post(rowId: $rowId) {
-    rowId
-    project {
-      rowId
-      name
-      organization {
-        rowId
-        name
-      }
-    }
-    title
-    description
-    user {
-      username
-    }
-    upvotes {
-      totalCount
-    }
-    downvotes {
-      totalCount
-    }
-    createdAt
-    updatedAt
+    ...Feedback
   }
 }
