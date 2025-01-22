@@ -11,34 +11,6 @@ import type { User as NextAuthUser } from "next-auth";
 
 import type { DefaultJWT } from "next-auth/jwt";
 
-const fetchUserProfileClaims = async (accessToken: string) =>
-  await fetch(
-    `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/userinfo`,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-const refreshAccessToken = async (refreshToken: string) =>
-  await fetch(
-    `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: process.env.AUTH_KEYCLOAK_ID!,
-        client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-    }
-  );
-
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
  */
@@ -94,17 +66,6 @@ export const { handlers, auth } = NextAuth({
   callbacks: {
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      // retrieve user row ID from database using the access token granted by IDP
-      const setRowIdClaim = async (accessToken: string) => {
-        const user = await sdk({
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }).User({
-          hidraId: token.sub!,
-        });
-
-        token.row_id = user?.userByHidraId?.rowId;
-      };
-
       // Account is present on fresh login. We can set additional claims on the token given this information.
       if (account) {
         token.sub = profile?.sub!;
@@ -116,7 +77,13 @@ export const { handlers, auth } = NextAuth({
         token.expires_at = account.expires_at!;
         token.refresh_token = account.refresh_token!;
 
-        await setRowIdClaim(account.access_token!);
+        const user = await sdk({
+          headers: { Authorization: `Bearer ${account.access_token}` },
+        }).User({
+          hidraId: token.sub!,
+        });
+
+        token.row_id = user?.userByHidraId?.rowId;
 
         return token;
       }
