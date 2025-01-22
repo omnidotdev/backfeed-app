@@ -28,31 +28,10 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
   : "authjs.session-token";
 
 /**
- * Sign out handler. This helper function is used to sign out the user from the application.
+ * Remove authjs session cookies. This effectively signs the user out from the frontend application.
  * TODO: update to redirect to custom sign in page
  */
-const signOut = async (request: NextAuthRequest) => {
-  const session = request.auth;
-
-  if (session) {
-    // TODO: error handling
-    await fetch(
-      `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: new URLSearchParams({
-          client_id: process.env.AUTH_KEYCLOAK_ID!,
-          client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
-          refresh_token: session.refreshToken,
-        }),
-      }
-    );
-  }
-
+const removeSessionCookie = (request: NextAuthRequest) => {
   const response = NextResponse.next();
 
   const requestCookies = request.cookies.getAll();
@@ -64,6 +43,39 @@ const signOut = async (request: NextAuthRequest) => {
   }
 
   return response;
+};
+
+/**
+ * Sign out handler. This helper function is used to sign out the user from the application.
+ */
+const signOut = async (request: NextAuthRequest) => {
+  const session = request.auth;
+
+  if (session) {
+    // TODO: error handling
+    try {
+      await fetch(
+        `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: new URLSearchParams({
+            client_id: process.env.AUTH_KEYCLOAK_ID!,
+            client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+            refresh_token: session.refreshToken,
+          }),
+        }
+      );
+
+      return removeSessionCookie(request);
+    } catch (error) {
+      // If the backchannel logout fails, fallback to logging out the user from the frontend application
+      return removeSessionCookie(request);
+    }
+  }
 };
 
 /**
