@@ -11,6 +11,34 @@ import type { User as NextAuthUser } from "next-auth";
 
 import type { DefaultJWT } from "next-auth/jwt";
 
+const fetchUserProfileClaims = async (accessToken: string) =>
+  await fetch(
+    `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/userinfo`,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+const refreshAccessToken = async (refreshToken: string) =>
+  await fetch(
+    `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: process.env.AUTH_KEYCLOAK_ID!,
+        client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+      }),
+    }
+  );
+
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
  */
@@ -19,6 +47,9 @@ declare module "next-auth/jwt" {
     sub?: string;
     id_token?: string;
     row_id?: string;
+    preferred_username?: string;
+    given_name?: string;
+    family_name?: string;
     access_token: string;
     expires_at: number;
     refresh_token: string;
@@ -46,6 +77,10 @@ declare module "next-auth" {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
+  session: {
+    strategy: "jwt",
+    updateAge: 0,
+  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,
@@ -79,6 +114,9 @@ export const { handlers, auth } = NextAuth({
       // Account is present on fresh login. We can set additional claims on the token given this information.
       if (account) {
         token.sub = profile?.sub!;
+        token.preferred_username = profile?.preferred_username!;
+        token.given_name = profile?.given_name!;
+        token.family_name = profile?.family_name!;
         token.id_token = account.id_token;
         token.access_token = account.access_token!;
         token.expires_at = account.expires_at!;
@@ -91,26 +129,42 @@ export const { handlers, auth } = NextAuth({
 
       // On subsequent logins, where the access token is still valid, we can use the existing token.
       if (Date.now() < token.expires_at * 1000) {
+        const response = await fetchUserProfileClaims(token.access_token!);
+
+        const { preferred_username, given_name, family_name, ...rest } =
+          await response.json();
+
+        // TODO: discuss. This is ALWAYS true once the user claims are updated.
+        const userClaimsHaveChanged =
+          preferred_username !== token.preferred_username ||
+          given_name !== token.given_name ||
+          family_name !== token.family_name;
+
+        if (userClaimsHaveChanged) {
+          const refreshTokenResponse = await refreshAccessToken(
+            token.refresh_token!
+          );
+
+          if (refreshTokenResponse.ok) {
+            const { access_token, expires_in, refresh_token } =
+              await refreshTokenResponse.json();
+
+            token.access_token = access_token;
+            token.expires_at = Math.floor(Date.now() / 1000 + expires_in);
+            token.refresh_token = refresh_token;
+
+            await setRowIdClaim(access_token);
+
+            return token;
+          }
+        }
+
         return token;
       }
 
       // If the access token is expired, we need to refresh it.
       try {
-        const response = await fetch(
-          `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              client_id: process.env.AUTH_KEYCLOAK_ID!,
-              client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
-              grant_type: "refresh_token",
-              refresh_token: token.refresh_token,
-            }),
-          }
-        );
+        const response = await refreshAccessToken(token.refresh_token!);
 
         const tokensOrError = await response.json();
 
