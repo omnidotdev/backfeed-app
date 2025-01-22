@@ -153,7 +153,7 @@ const refreshAccessToken = async (
 };
 
 /**
- * Middleware function for handling authentication and authorization flows on designated routes.
+ * Middleware function for handling authentication flows on designated routes.
  */
 export const middleware: NextMiddleware = async (request: NextRequest) => {
   const response = NextResponse.next();
