@@ -52,7 +52,6 @@ const signOut = async (request: NextAuthRequest) => {
   const session = request.auth;
 
   if (session) {
-    // TODO: error handling
     try {
       await fetch(
         `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
