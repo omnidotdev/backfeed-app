@@ -34,6 +34,7 @@ declare module "next-auth/jwt" {
 declare module "next-auth" {
   interface Session {
     accessToken: string;
+    refreshToken: string;
     expires: Date;
     user: {
       rowId?: string;
@@ -96,6 +97,7 @@ export const { handlers, auth } = NextAuth({
       session.user.rowId = token.row_id;
       session.user.idToken = token.id_token;
       session.accessToken = token.access_token;
+      session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * 1000);
 
       return session;

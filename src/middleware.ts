@@ -1,8 +1,15 @@
 import { encode, getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
+import { auth } from "auth";
+
+import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
-import type { NextMiddleware, NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
+
+interface NextAuthRequest extends NextRequest {
+  auth: Session | null;
+}
 
 interface UpdatedProfileClaims {
   preferred_username?: string;
@@ -22,11 +29,31 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
 
 /**
  * Sign out handler. This helper function is used to sign out the user from the application.
- * TODO: update to use federated-logout handler here?
  * TODO: update to redirect to custom sign in page
  */
-const signOut = (request: NextRequest) => {
-  const response = NextResponse.redirect(new URL("/", request.url));
+const signOut = async (request: NextAuthRequest) => {
+  const session = request.auth;
+
+  if (session) {
+    // TODO: error handling
+    await fetch(
+      `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: new URLSearchParams({
+          client_id: process.env.AUTH_KEYCLOAK_ID!,
+          client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+          refresh_token: session.refreshToken,
+        }),
+      }
+    );
+  }
+
+  const response = NextResponse.next();
 
   const requestCookies = request.cookies.getAll();
 
@@ -79,7 +106,7 @@ const getUpdatedProfileClaims = async (sessionToken: JWT) => {
  */
 const refreshAccessToken = async (
   sessionToken: JWT,
-  request: NextRequest,
+  request: NextAuthRequest,
   updatedClaims?: UpdatedProfileClaims
 ) => {
   try {
@@ -155,7 +182,7 @@ const refreshAccessToken = async (
 /**
  * Middleware function for handling authentication flows on designated routes.
  */
-export const middleware: NextMiddleware = async (request: NextRequest) => {
+export const middleware = auth(async (request) => {
   const response = NextResponse.next();
 
   try {
@@ -193,9 +220,9 @@ export const middleware: NextMiddleware = async (request: NextRequest) => {
     console.error(error);
 
     // If there is an error, sign out the user
-    return signOut(request);
+    return await signOut(request);
   }
-};
+});
 
 export const config = {
   // See: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
