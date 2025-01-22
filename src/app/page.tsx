@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
-import { RefreshTokenError } from "components/layout";
 import {
   OrganizationOrderBy,
   useDashboardAggregatesQuery,
@@ -26,8 +25,6 @@ const HomePage = async () => {
   const session = await getAuthSession();
 
   if (!session) return <LandingPage />;
-
-  if (session.error) return <RefreshTokenError />;
 
   const queryClient = getQueryClient();
 

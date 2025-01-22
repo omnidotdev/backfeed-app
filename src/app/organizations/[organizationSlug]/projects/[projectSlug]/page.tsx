@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
-import { Page, RefreshTokenError } from "components/layout";
+import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
   useInfinitePostsQuery,
@@ -47,8 +47,6 @@ const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await getAuthSession();
-
-  if (session?.error) return <RefreshTokenError />;
 
   const { projects } = await sdk({
     headers: { Authorization: `Bearer ${session?.accessToken}` },

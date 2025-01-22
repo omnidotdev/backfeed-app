@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { RefreshTokenError } from "components/layout";
 import { OrganizationOverview } from "components/organization";
 import {
   useOrganizationMetricsQuery,
@@ -44,8 +43,6 @@ const OrganizationPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
   const session = await getAuthSession();
-
-  if (session?.error) return <RefreshTokenError />;
 
   const { organizationBySlug: organization } = await sdk({
     headers: { Authorization: `Bearer ${session?.accessToken}` },

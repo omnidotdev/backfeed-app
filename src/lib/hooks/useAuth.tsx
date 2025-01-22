@@ -12,7 +12,6 @@ const useAuth = () => {
     user: data?.user,
     expiresAt: data?.expires,
     accessToken: data?.accessToken,
-    error: data?.error,
     update,
   };
 };

@@ -2,7 +2,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
-import { Page, RefreshTokenError } from "components/layout";
+import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -45,8 +45,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
   const session = await getAuthSession();
-
-  if (session?.error) return <RefreshTokenError />;
 
   const { organizationBySlug: organization } = await sdk({
     headers: { Authorization: `Bearer ${session?.accessToken}` },

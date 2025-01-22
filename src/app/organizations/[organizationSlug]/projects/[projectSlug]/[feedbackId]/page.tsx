@@ -2,7 +2,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Comments, FeedbackDetails } from "components/feedback";
-import { Page, RefreshTokenError } from "components/layout";
+import { Page } from "components/layout";
 import {
   useCommentsQuery,
   useFeedbackByIdQuery,
@@ -34,8 +34,6 @@ const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
   const session = await getAuthSession();
-
-  if (session?.error) return <RefreshTokenError />;
 
   const { post: feedback } = await sdk({
     headers: { Authorization: `Bearer ${session?.accessToken}` },

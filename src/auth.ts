@@ -53,7 +53,6 @@ declare module "next-auth/jwt" {
     access_token: string;
     expires_at: number;
     refresh_token: string;
-    error?: "RefreshTokenError";
   }
 }
 
@@ -69,7 +68,6 @@ declare module "next-auth" {
       hidraId?: string;
       idToken?: string;
     } & NextAuthUser;
-    error?: "RefreshTokenError";
   }
 }
 
@@ -77,10 +75,6 @@ declare module "next-auth" {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
-  session: {
-    strategy: "jwt",
-    updateAge: 0,
-  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,
@@ -127,78 +121,10 @@ export const { handlers, auth } = NextAuth({
         return token;
       }
 
-      // On subsequent logins, where the access token is still valid, we can use the existing token.
-      if (Date.now() < token.expires_at * 1000) {
-        const response = await fetchUserProfileClaims(token.access_token!);
-
-        const { preferred_username, given_name, family_name, ...rest } =
-          await response.json();
-
-        // TODO: discuss. This is ALWAYS true once the user claims are updated.
-        const userClaimsHaveChanged =
-          preferred_username !== token.preferred_username ||
-          given_name !== token.given_name ||
-          family_name !== token.family_name;
-
-        if (userClaimsHaveChanged) {
-          const refreshTokenResponse = await refreshAccessToken(
-            token.refresh_token!
-          );
-
-          if (refreshTokenResponse.ok) {
-            const { access_token, expires_in, refresh_token } =
-              await refreshTokenResponse.json();
-
-            token.access_token = access_token;
-            token.expires_at = Math.floor(Date.now() / 1000 + expires_in);
-            token.refresh_token = refresh_token;
-
-            await setRowIdClaim(access_token);
-
-            return token;
-          }
-        }
-
-        return token;
-      }
-
-      // If the access token is expired, we need to refresh it.
-      try {
-        const response = await refreshAccessToken(token.refresh_token!);
-
-        const tokensOrError = await response.json();
-
-        // If the refresh token is invalid, we can't refresh the access token, so we need to throw an error, and handle it within the catch block.
-        if (!response.ok) throw tokensOrError;
-
-        const newTokens = tokensOrError as {
-          access_token: string;
-          expires_in: number;
-          refresh_token: string;
-        };
-
-        token.access_token = newTokens.access_token;
-        token.expires_at = Math.floor(Date.now() / 1000 + newTokens.expires_in);
-        token.refresh_token = newTokens.refresh_token;
-
-        await setRowIdClaim(newTokens.access_token);
-
-        return token;
-      } catch (error) {
-        token.error = "RefreshTokenError";
-
-        return token;
-      }
+      return token;
     },
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
-      if (token.error) {
-        // Forward the error to the client, so it can be handled appropriately.
-        session.error = token.error;
-
-        return session;
-      }
-
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
       session.user.idToken = token.id_token;
