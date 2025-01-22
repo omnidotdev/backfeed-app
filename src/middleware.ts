@@ -23,9 +23,11 @@ interface UpdatedTokens {
   refresh_token: string;
 }
 
+const SESSION_COOKIE_PREFIX = "authjs.session-token";
+
 const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
-  ? "__Secure-authjs.session-token"
-  : "authjs.session-token";
+  ? `__Secure-${SESSION_COOKIE_PREFIX}`
+  : SESSION_COOKIE_PREFIX;
 
 /**
  * Remove authjs session cookies. This effectively signs the user out from the frontend application.
@@ -38,7 +40,7 @@ const removeSessionCookie = (request: NextAuthRequest) => {
 
   // Delete all authjs cookies
   for (const cookie of requestCookies) {
-    if (cookie.name.includes("authjs.session-token"))
+    if (cookie.name.includes(SESSION_COOKIE_PREFIX))
       response.cookies.delete(cookie.name);
   }
 
@@ -149,7 +151,7 @@ const refreshAccessToken = async (
         ...updatedClaims,
       },
       secret: process.env.AUTH_SECRET!,
-      salt: "authjs.session-token", // TODO: create secure salt?
+      salt: SESSION_COOKIE_PREFIX, // TODO: create secure salt?
     });
 
     // There is typically a limit of around 4096 bytes per cookie, though the exact limit varies between browsers. See: https://authjs.dev/concepts/session-strategies#disadvantages
@@ -200,7 +202,7 @@ export const middleware = auth(async (request) => {
     const sessionToken = await getToken({
       req: request,
       secret: process.env.AUTH_SECRET!,
-      salt: "authjs.session-token", // TODO: create secure salt?
+      salt: SESSION_COOKIE_PREFIX, // TODO: create secure salt?
     });
 
     // If no session token is found, return the response, indicating that the user is not authenticated
