@@ -285,7 +285,7 @@ const app = {
       deleteOrganization: {
         title: "Delete Organization",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and can not be undone.",
+          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
         actionLabel: "Delete",
         destruciveAction: {
           title: "Delete Organization",
