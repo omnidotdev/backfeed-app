@@ -224,7 +224,11 @@ const OrganizationSettings = () => {
             ]}
           >
             {([canSubmit, isSubmitting, isDirty]) => (
-              <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+              <Button
+                type="submit"
+                disabled={!canSubmit || !isDirty || isSubmitting}
+                mt={4}
+              >
                 {!isSubmitting && <Icon src={LuSave} h={4} w={4} />}
 
                 {isSubmitting
