@@ -39,38 +39,26 @@ const deleteOrganizationDetails =
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
-/** Schema for defining the shape of the update organization form fields. */
-const updateOrganizationSchema = z.union([
-  z.object({
-    name: z
-      .string()
-      .min(
-        3,
-        updateOrganizationDetails.fields.organizationName.errors.minLength
-      )
-      .optional(),
-    slug: z.string().or(z.undefined()),
-  }),
-  z.object({
-    slug: z
-      .string()
-      .regex(
-        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-        updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
-      )
-      .min(
-        3,
-        updateOrganizationDetails.fields.organizationSlug.errors.minLength
-      )
-      .max(
-        50,
-        updateOrganizationDetails.fields.organizationSlug.errors.maxLength
-      )
-      .optional(),
-    name: z.string().or(z.undefined()),
-  }),
-]);
+const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
+/** Schema for defining the shape of the update organization form fields. */
+const updateOrganizationSchema = z.object({
+  name: z
+    .string()
+    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength)
+    .or(emptyStringAsUndefined)
+    .optional(),
+  slug: z
+    .string()
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
+    )
+    .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
+    .max(50, updateOrganizationDetails.fields.organizationSlug.errors.maxLength)
+    .or(emptyStringAsUndefined)
+    .optional(),
+});
 /** Organization settings. */
 const OrganizationSettings = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
