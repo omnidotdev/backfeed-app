@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Dialog, HStack, Icon, useDisclosure } from "@omnidev/sigil";
+import { useState } from "react";
+import {
+  Button,
+  Dialog,
+  HStack,
+  Icon,
+  Input,
+  useDisclosure,
+} from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
 
 import { app } from "lib/config";
@@ -12,6 +20,8 @@ import type { IconType } from "react-icons";
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;
+  /** Disable the button. */
+  disabled?: boolean;
 }
 
 export interface Props extends DialogProps {
@@ -23,6 +33,7 @@ export interface Props extends DialogProps {
   action: Action;
   /** Icon used for the default dialog trigger. */
   icon?: IconType;
+  isTwoFactorDelete?: boolean;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
 }
@@ -37,14 +48,24 @@ const DestructiveAction = ({
   icon = HiOutlineTrash,
   triggerProps,
   children,
+  isTwoFactorDelete,
   ...rest
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
+  const [inputValue, setInputValue] = useState("");
+
+  // Define the confirmation text only if isTwoFactorDelete is true
+  const confirmationText = isTwoFactorDelete ? "DELETE PERMANENTLY" : null;
+
+  const isDeleteDisabled = confirmationText
+    ? inputValue !== confirmationText
+    : false;
 
   const actions: Action[] = [
     {
       ...action,
       variant: "outline",
+      disabled: isDeleteDisabled,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -71,6 +92,15 @@ const DestructiveAction = ({
       {...rest}
     >
       {children}
+
+      {isTwoFactorDelete && (
+        <Input
+          title={`Type "${confirmationText}" to confirm`}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          mb={4}
+        />
+      )}
 
       <HStack>
         {actions.map(({ label, ...rest }) => (
