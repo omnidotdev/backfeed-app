@@ -54,6 +54,7 @@ const OrganizationListItem = ({ organization, index }: Props) => {
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.title,
     description: deleteOrganizationDetails.description,
+    isTwoFactorDelete: true,
     action: {
       label: deleteOrganizationDetails.action.label,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
