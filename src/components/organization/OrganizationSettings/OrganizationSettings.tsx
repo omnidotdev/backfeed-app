@@ -157,11 +157,7 @@ const OrganizationSettings = () => {
 
   return (
     <Stack gap={6}>
-      <SectionContainer
-        title={updateOrganizationDetails.title}
-        border="1px solid"
-        borderColor="border.subtle"
-      >
+      <SectionContainer title={updateOrganizationDetails.title}>
         <Divider />
 
         <sigil.form
@@ -226,6 +222,7 @@ const OrganizationSettings = () => {
             {([canSubmit, isSubmitting, isDirty]) => (
               <Button
                 type="submit"
+                width={48}
                 disabled={!canSubmit || !isDirty || isSubmitting}
                 mt={4}
               >
