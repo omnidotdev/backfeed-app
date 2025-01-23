@@ -7,8 +7,8 @@ import {
 } from "react-icons/hi2";
 
 import { DestructiveAction, Link, OverflowText } from "components/core";
-import { app } from "lib/config";
 import { useDeleteProjectMutation } from "generated/graphql";
+import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
 

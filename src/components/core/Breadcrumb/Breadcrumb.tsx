@@ -10,7 +10,7 @@ export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */
   label: string;
   /** URL path the breadcrumb navigates to. */
-  href?: string;
+  href?: `/${string}`;
 }
 
 interface Props {

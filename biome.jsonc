@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["src/generated/**", "public/mockServiceWorker.js"]
+    "ignore": ["src/generated/**", "public/**"]
   },
   "formatter": {
     "enabled": true,
