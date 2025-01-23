@@ -40,9 +40,7 @@ interface Props {
 const OrganizationPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await getAuthSession();
-
-  const sdk = await getSdk();
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
