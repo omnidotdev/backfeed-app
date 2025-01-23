@@ -4595,6 +4595,7 @@ export type OrganizationsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5492,12 +5493,12 @@ useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQuer
 useOrganizationMetricsQuery.fetcher = (variables: OrganizationMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
     totalCount
     nodes {

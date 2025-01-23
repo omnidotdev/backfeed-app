@@ -4,6 +4,7 @@ query Organizations(
   $orderBy: [OrganizationOrderBy!]
   $userId: UUID!
   $search: String
+  $slug: String
 ) {
   organizations(
     first: $pageSize
@@ -11,6 +12,7 @@ query Organizations(
     orderBy: $orderBy
     filter: {
       name: { includesInsensitive: $search }
+      slug: { equalTo: $slug }
       userOrganizations: { some: { userId: { equalTo: $userId } } }
     }
   ) {
