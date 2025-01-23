@@ -212,7 +212,11 @@ export const middleware = auth(async (request) => {
     if (Date.now() >= sessionToken.expires_at * 1000) {
       const refreshResponse = await refreshAccessToken(sessionToken, request);
 
-      return refreshResponse;
+      if (refreshResponse.ok) {
+        return refreshResponse;
+      }
+
+      throw refreshResponse;
     }
 
     const updatedClaims = await getUpdatedProfileClaims(sessionToken);
@@ -225,7 +229,11 @@ export const middleware = auth(async (request) => {
         updatedClaims
       );
 
-      return updatedClaimsResponse;
+      if (updatedClaimsResponse.ok) {
+        return updatedClaimsResponse;
+      }
+
+      throw updatedClaimsResponse;
     }
 
     // If the access token has not expired and the user's profile claims have not changed, return the response
