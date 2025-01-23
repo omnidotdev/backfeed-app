@@ -1,5 +1,5 @@
-import { setupServer } from "msw/node";
 import * as handlers from "__mocks__/handlers";
+import { setupServer } from "msw/node";
 
 /**
  * MSW Node.js server for server-side contexts.

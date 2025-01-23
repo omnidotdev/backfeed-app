@@ -14,6 +14,7 @@ import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -52,7 +53,7 @@ const ProjectPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",

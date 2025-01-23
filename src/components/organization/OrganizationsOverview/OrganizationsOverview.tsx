@@ -9,7 +9,9 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
-const breadcrumbs = [
+import type { BreadcrumbRecord } from "components/core";
+
+const breadcrumbs: BreadcrumbRecord[] = [
   {
     label: app.organizationsPage.breadcrumb,
   },

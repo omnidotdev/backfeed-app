@@ -13,11 +13,11 @@ import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
-import type { Project } from "generated/graphql";
+import type { Organization, Project } from "generated/graphql";
 
 interface Props {
-  /** Organization ID. */
-  organizationSlug: string;
+  /** Organization slug. */
+  organizationSlug: Organization["slug"];
 }
 
 /**

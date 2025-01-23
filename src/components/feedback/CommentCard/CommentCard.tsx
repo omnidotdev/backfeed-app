@@ -13,16 +13,17 @@ import {
 import { app } from "lib/config";
 
 import type { StackProps } from "@omnidev/sigil";
+import type { Comment } from "generated/graphql";
 
 interface Props extends StackProps {
   /** Comment ID. */
-  commentId: string;
+  commentId: Comment["rowId"];
   /** Comment sender. */
   senderName: string | null | undefined;
   /** Comment message. */
-  message: string | null | undefined;
+  message: Comment["message"];
   /** Date the comment was created. */
-  createdAt: Date | null | undefined;
+  createdAt: Comment["createdAt"];
   /** Whether the comment is pending. */
   isPending?: boolean;
   /** Whether the logged in user is the comment sender. */
@@ -32,7 +33,7 @@ interface Props extends StackProps {
 /**
  * Comment card.
  */
-const Comment = ({
+const CommentCard = ({
   commentId,
   senderName,
   message,
@@ -126,4 +127,4 @@ const Comment = ({
   );
 };
 
-export default Comment;
+export default CommentCard;

@@ -19,6 +19,7 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { Organization } from "generated/graphql";
 
 interface Props {
@@ -50,7 +51,7 @@ const OrganizationOverview = ({ organization }: Props) => {
     }
   );
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",

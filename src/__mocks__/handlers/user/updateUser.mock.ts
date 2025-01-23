@@ -20,7 +20,7 @@ export const mockUpdateUserMutationSuccess = mockUpdateUserMutation(
         },
       },
     });
-  },
+  }
 );
 
 // TODO mock error as well
