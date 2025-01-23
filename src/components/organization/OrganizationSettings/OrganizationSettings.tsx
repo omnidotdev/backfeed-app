@@ -81,14 +81,14 @@ const OrganizationSettings = () => {
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
       onSuccess: (data) =>
         router.replace(
-          `/organizations/${data.updateOrganization?.organization?.slug}/settings`
+          `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
         ),
     }),
     { mutate: deleteOrganization } = useDeleteOrganizationMutation({
-      onSuccess: () => router.replace("/"),
+      onMutate: () => router.replace("/"),
     }),
     { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onSuccess: () => router.replace("/"),
+      onMutate: () => router.replace("/"),
     });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({

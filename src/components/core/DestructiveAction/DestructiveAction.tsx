@@ -69,8 +69,13 @@ const DestructiveAction = ({
       open={isOpen}
       onOpenChange={onToggle}
       trigger={
-        <Button colorPalette="omni.ruby" variant="outline" {...triggerProps}>
-          <Icon src={icon} w={5} h={5} {...iconProps} />
+        <Button
+          colorPalette="omni.ruby"
+          variant="outline"
+          fontSize="md"
+          {...triggerProps}
+        >
+          <Icon src={icon} {...iconProps} />
 
           {triggerLabel}
         </Button>
