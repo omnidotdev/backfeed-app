@@ -471,13 +471,26 @@ const app = {
       downvote: "Downvote",
     },
     comments: {
+      createComment: {
+        errors: {
+          invalid: "Invalid format",
+          message: "Must be at least 10 characters.",
+        },
+      },
       title: "Comments",
       description: "View all feedback comments.",
-      textAreaPlaceholder: "Add a comment...",
+      textAreaPlaceholder: "I agree! This sounds like a great idea.",
       submit: "Add Comment",
       totalComments: "total comments",
       emptyState: {
         message: "No comments found. Add a comment to start the conversation.",
+      },
+      delete: {
+        title: "Delete Comment",
+        description: "Are you sure you want to delete this comment?",
+        action: {
+          label: "Delete",
+        },
       },
     },
     statusHistory: {

@@ -1,0 +1,5 @@
+mutation DeleteComment($rowId: UUID!) {
+  deleteComment(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

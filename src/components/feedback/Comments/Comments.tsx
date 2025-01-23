@@ -1,32 +1,37 @@
 "use client";
 
-import {
-  Button,
-  Grid,
-  Skeleton,
-  Stack,
-  Text,
-  Textarea,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { CommentCard } from "components/feedback";
+import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
-import { useInfiniteCommentsQuery } from "generated/graphql";
+import {
+  useCreateCommentMutation,
+  useInfiniteCommentsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
+
+import type {
+  CommentFragment,
+  CreateCommentMutationVariables,
+  Post,
+} from "generated/graphql";
 
 interface Props {
   /** Feedback ID. */
-  feedbackId: string;
+  feedbackId: Post["rowId"];
 }
 
 /**
  * Feedback comments section.
  */
 const Comments = ({ feedbackId }: Props) => {
+  const { user } = useAuth();
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
@@ -41,6 +46,25 @@ const Comments = ({ feedbackId }: Props) => {
             : undefined,
       }
     );
+
+  const pendingComments = useMutationState<Partial<CommentFragment>>({
+    filters: {
+      mutationKey: useCreateCommentMutation.getKey(),
+      status: "pending",
+    },
+    select: (mutation) => {
+      const { input } = mutation.state
+        .variables as CreateCommentMutationVariables;
+
+      return {
+        message: input.comment.message,
+        user: {
+          rowId: user?.rowId!,
+          username: user?.username,
+        },
+      };
+    },
+  });
 
   // These are not defined within the `select` function in order to preserve type safety.
   const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
@@ -65,26 +89,7 @@ const Comments = ({ feedbackId }: Props) => {
       icon={LuMessageSquare}
     >
       <Stack>
-        <Textarea
-          placeholder={app.feedbackPage.comments.textAreaPlaceholder}
-          borderColor="border.subtle"
-          fontSize="sm"
-          minH={16}
-          disabled
-        />
-
-        <Stack justify="space-between" direction="row">
-          <Skeleton isLoaded={!isLoading} h="fit-content">
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`${isError ? 0 : totalCount} ${app.feedbackPage.comments.totalComments}`}</Text>
-          </Skeleton>
-
-          <Button w="fit-content" placeSelf="flex-end" disabled>
-            {app.feedbackPage.comments.submit}
-          </Button>
-        </Stack>
+        <CreateComment totalCount={totalCount} />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" />
@@ -92,15 +97,30 @@ const Comments = ({ feedbackId }: Props) => {
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
-              <SkeletonArray count={5} h={21} />
-            ) : comments?.length ? (
+              <SkeletonArray count={5} h={28} />
+            ) : comments?.length || pendingComments.length ? (
               <VStack>
+                {!!pendingComments.length && (
+                  <CommentCard
+                    commentId="pending"
+                    senderName={pendingComments[0].user?.username}
+                    message={pendingComments[0].message}
+                    createdAt={new Date()}
+                    isSender
+                    isPending
+                    w="full"
+                    minH={21}
+                  />
+                )}
+
                 {comments?.map((comment) => (
                   <CommentCard
                     key={comment?.rowId}
+                    commentId={comment?.rowId!}
                     senderName={comment?.user?.username}
                     message={comment?.message}
-                    date={comment?.createdAt}
+                    createdAt={comment?.createdAt}
+                    isSender={comment?.user?.rowId === user?.rowId}
                     w="full"
                     minH={21}
                   />

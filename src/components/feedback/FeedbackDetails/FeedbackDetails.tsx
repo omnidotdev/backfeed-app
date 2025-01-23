@@ -33,12 +33,6 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  CREATE_DOWNVOTE_MUTATION_KEY,
-  CREATE_UPVOTE_MUTATION_KEY,
-  DELETE_DOWNVOTE_MUTATION_KEY,
-  DELETE_UPVOTE_MUTATION_KEY,
-} from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 import type { FeedbackFragment } from "generated/graphql";
@@ -49,6 +43,7 @@ import type {
   VstackProps,
 } from "@omnidev/sigil";
 import type { InvalidateOptions } from "@tanstack/react-query";
+import type { Post } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -64,7 +59,7 @@ interface VoteButtonProps extends TooltipTriggerProps {
 
 interface Props extends HstackProps {
   /** Feedback ID. Used to fetch feedback details when viewing the dynamic feedback page. */
-  feedbackId?: string;
+  feedbackId?: Post["rowId"];
   /** Feedback details. Used to display feedback details when viewing the project page. */
   feedback?: Partial<FeedbackFragment>;
   /** Whether we are viewing the project page. */
@@ -172,22 +167,18 @@ const FeedbackDetails = ({
 
   const { mutate: upvote, isPending: isUpvotePending } =
     useCreateUpvoteMutation({
-      mutationKey: CREATE_UPVOTE_MUTATION_KEY,
       onSuccess,
     });
   const { mutate: downvote, isPending: isDownvotePending } =
     useCreateDownvoteMutation({
-      mutationKey: CREATE_DOWNVOTE_MUTATION_KEY,
       onSuccess,
     });
   const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
     useDeleteUpvoteMutation({
-      mutationKey: DELETE_UPVOTE_MUTATION_KEY,
       onSuccess,
     });
   const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
     useDeleteDownvoteMutation({
-      mutationKey: DELETE_DOWNVOTE_MUTATION_KEY,
       onSuccess,
     });
 
