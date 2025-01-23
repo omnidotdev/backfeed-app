@@ -296,7 +296,7 @@ const app = {
       leaveOrganization: {
         title: "Leave Organization",
         description:
-          "You will no longer have access to this organization and its projects. This action is irreversible and can not be undone.",
+          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
         actionLabel: "Leave",
         destruciveAction: {
           title: "Leave Organization",
