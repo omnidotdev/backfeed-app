@@ -4,7 +4,7 @@ import { getSdk } from "generated/graphql.sdk";
 import { API_BASE_URL } from "lib/config";
 
 /**
- * GraphQL client SDKs
+ * GraphQL client SDK.
  */
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   const graphqlClient = new GraphQLClient(API_BASE_URL!, { headers });
