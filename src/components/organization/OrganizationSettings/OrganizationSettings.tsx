@@ -14,7 +14,7 @@ import {
 import { LuSave } from "react-icons/lu";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { RiUserSharedLine } from "react-icons/ri";
 import dayjs from "dayjs";
 
@@ -71,13 +71,9 @@ const updateOrganizationSchema = z.union([
   }),
 ]);
 
-interface Props {
-  /** Organization slug. */
-  organizationSlug: string;
-}
-
 /** Organization settings. */
-const OrganizationSettings = ({ organizationSlug }: Props) => {
+const OrganizationSettings = () => {
+  const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const { user } = useAuth();
   const router = useRouter();
 

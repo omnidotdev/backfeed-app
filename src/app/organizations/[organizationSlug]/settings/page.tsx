@@ -62,7 +62,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         cta: [],
       }}
     >
-      <OrganizationSettings organizationSlug={organizationSlug} />
+      <OrganizationSettings />
     </Page>
   );
 };

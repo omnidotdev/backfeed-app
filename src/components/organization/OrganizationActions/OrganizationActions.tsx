@@ -3,7 +3,7 @@
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -21,15 +21,11 @@ interface Action extends ButtonProps {
   icon: IconType;
 }
 
-interface Props {
-  /** Organization slug. */
-  organizationSlug: string;
-}
-
 /**
  * Organization actions.
  */
-const OrganizationActions = ({ organizationSlug }: Props) => {
+const OrganizationActions = () => {
+  const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
   const { isLoading: isAuthLoading } = useAuth();
