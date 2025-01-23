@@ -3,6 +3,7 @@
 import { Center, Flex, Grid, sigil, useIsClient } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useParams } from "next/navigation";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
@@ -22,6 +23,8 @@ interface Props {
  */
 const Layout = ({ children }: Props) => {
   const isClient = useIsClient();
+
+  const { organizationSlug } = useParams<{ organizationSlug?: string }>();
 
   // TODO remove this and prod URL check below once ready for public launch
   if (!isClient) return null;
@@ -57,7 +60,7 @@ const Layout = ({ children }: Props) => {
       <Footer />
 
       {/* dialogs */}
-      <CreateProject />
+      <CreateProject organizationSlug={organizationSlug} />
       <CreateOrganization />
     </Grid>
   );

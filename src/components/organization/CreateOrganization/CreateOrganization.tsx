@@ -49,36 +49,36 @@ const baseSchema = z.object({
     ),
 });
 
+/** Schema for validation of the create organization form. */
+const createOrganizationSchema = baseSchema.superRefine(
+  async ({ slug }, ctx) => {
+    if (!slug.length) return z.NEVER;
+
+    const sdk = await getSdk();
+
+    const { organizationBySlug } = await sdk.Organization({
+      slug,
+    });
+
+    if (organizationBySlug) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          app.dashboardPage.cta.newOrganization.organizationSlug.error
+            .duplicate,
+        path: ["slug"],
+      });
+    }
+  }
+);
+
 /**
  * Dialog for creating a new organization.
  */
 const CreateOrganization = () => {
   const router = useRouter();
 
-  const { user, accessToken } = useAuth();
-
-  /** Schema for validation of the create organization form. */
-  const createOrganizationSchema = baseSchema.superRefine(
-    async ({ slug }, ctx) => {
-      if (!slug.length) return z.NEVER;
-
-      const sdk = await getSdk();
-
-      const { organizationBySlug } = await sdk.Organization({
-        slug,
-      });
-
-      if (organizationBySlug) {
-        ctx.addIssue({
-          code: "custom",
-          message:
-            app.dashboardPage.cta.newOrganization.organizationSlug.error
-              .duplicate,
-          path: ["slug"],
-        });
-      }
-    }
-  );
+  const { user } = useAuth();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
