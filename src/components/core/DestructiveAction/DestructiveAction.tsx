@@ -22,7 +22,6 @@ interface Action extends ButtonProps {
   /** Action label. */
   label: string;
   /** Disable the button. */
-  disabled?: boolean;
 }
 
 export interface Props extends DialogProps {
