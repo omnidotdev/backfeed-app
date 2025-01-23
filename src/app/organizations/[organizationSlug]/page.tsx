@@ -7,7 +7,7 @@ import {
   useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Organization } from "generated/graphql";
@@ -18,11 +18,9 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
-  const session = await getAuthSession();
+  const sdk = await getSdk();
 
-  const { organizationBySlug: organization } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Organization({
+  const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
   });
 
@@ -44,9 +42,11 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const session = await getAuthSession();
 
-  const { organizationBySlug: organization } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Organization({ slug: organizationSlug });
+  const sdk = await getSdk();
+
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
 
   if (!session || !organization) notFound();
 

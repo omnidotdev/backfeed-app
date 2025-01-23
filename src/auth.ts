@@ -1,15 +1,27 @@
+import { GraphQLClient } from "graphql-request";
 import NextAuth from "next-auth";
 import Keycloak from "next-auth/providers/keycloak";
 
 // import required for `next-auth/jwt` module augmentation: https://github.com/nextauthjs/next-auth/issues/9571#issuecomment-2143363518
 import "next-auth/jwt";
 
+import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { sdk } from "lib/graphql";
 
 import type { User as NextAuthUser } from "next-auth";
-
 import type { DefaultJWT } from "next-auth/jwt";
+
+/**
+ * GraphQL client SDK.
+ */
+const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
+  const graphqlClient = new GraphQLClient(
+    process.env.NEXT_PUBLIC_API_BASE_URL!,
+    { headers }
+  );
+
+  return getSdk(graphqlClient);
+};
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.

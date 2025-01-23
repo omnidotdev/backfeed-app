@@ -24,7 +24,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -63,9 +63,9 @@ const CreateProject = () => {
     async ({ organizationId, slug }, ctx) => {
       if (!organizationId.length || !slug.length) return z.NEVER;
 
-      const { projectBySlugAndOrganizationId } = await sdk({
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }).ProjectBySlug({
+      const sdk = await getSdk();
+
+      const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
         organizationId,
         slug,
       });

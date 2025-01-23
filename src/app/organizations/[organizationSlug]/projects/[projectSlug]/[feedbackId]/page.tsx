@@ -9,7 +9,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -33,11 +33,9 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const session = await getAuthSession();
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  const { post: feedback } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).FeedbackById({ rowId: feedbackId });
+  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
 
   if (!session || !feedback) notFound();
 

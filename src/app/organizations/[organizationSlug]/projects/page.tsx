@@ -6,7 +6,7 @@ import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
@@ -20,11 +20,11 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
-  const session = await getAuthSession();
+  const sdk = await getSdk();
 
-  const { organizationBySlug: organization } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Organization({ slug: organizationSlug });
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
 
   return {
     title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
@@ -44,11 +44,11 @@ interface Props {
 const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await getAuthSession();
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  const { organizationBySlug: organization } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Organization({ slug: organizationSlug });
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
 
   if (!session || !organization) notFound();
 

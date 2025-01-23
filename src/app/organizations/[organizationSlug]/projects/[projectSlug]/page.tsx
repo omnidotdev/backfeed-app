@@ -11,7 +11,7 @@ import {
   useProjectMetricsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -22,11 +22,9 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug, projectSlug } = await params;
 
-  const session = await getAuthSession();
+  const sdk = await getSdk();
 
-  const { projects } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Project({ projectSlug, organizationSlug });
+  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
 
   const project = projects?.nodes?.[0];
 
@@ -46,11 +44,9 @@ interface Props {
 const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const session = await getAuthSession();
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  const { projects } = await sdk({
-    headers: { Authorization: `Bearer ${session?.accessToken}` },
-  }).Project({ projectSlug, organizationSlug });
+  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
 
   const project = projects?.nodes?.[0];
 

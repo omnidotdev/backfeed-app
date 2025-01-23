@@ -21,7 +21,7 @@ import {
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -62,9 +62,9 @@ const CreateOrganization = () => {
     async ({ slug }, ctx) => {
       if (!slug.length) return z.NEVER;
 
-      const { organizationBySlug } = await sdk({
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }).Organization({
+      const sdk = await getSdk();
+
+      const { organizationBySlug } = await sdk.Organization({
         slug,
       });
 

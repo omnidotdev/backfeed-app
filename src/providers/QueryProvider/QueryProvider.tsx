@@ -16,10 +16,6 @@ const makeQueryClient = () => {
       queries: {
         // NB: with SSR, it is recommended to set a default staleTime above 0 to avoid refetching immediately on the client. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#initial-setup
         staleTime: 60 * 1000,
-        // ! NB: each request now requires a valid authorization header. If the previously used accessToken is no longer valid, the refetch will fail. The following settings are a workaround for this issue.
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        refetchOnMount: false,
       },
     },
     mutationCache: new MutationCache({
