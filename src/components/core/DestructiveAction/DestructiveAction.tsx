@@ -72,7 +72,7 @@ const DestructiveAction = ({
         <Button colorPalette="omni.ruby" variant="outline" {...triggerProps}>
           <Icon src={icon} w={5} h={5} {...iconProps} />
 
-          {triggerLabel && triggerLabel}
+          {triggerLabel}
         </Button>
       }
       triggerProps={triggerProps}
