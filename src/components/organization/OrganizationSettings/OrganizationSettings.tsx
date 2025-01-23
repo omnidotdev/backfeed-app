@@ -59,6 +59,7 @@ const updateOrganizationSchema = z.object({
     .or(emptyStringAsUndefined)
     .optional(),
 });
+
 /** Organization settings. */
 const OrganizationSettings = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
