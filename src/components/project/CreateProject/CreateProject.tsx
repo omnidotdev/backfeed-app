@@ -73,10 +73,15 @@ const createProjectSchema = baseSchema.superRefine(
   }
 );
 
+interface Props {
+  /** Slug of the organization to create the project under. */
+  organizationSlug?: string;
+}
+
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = () => {
+const CreateProject = ({ organizationSlug }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
@@ -88,6 +93,7 @@ const CreateProject = () => {
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
+      slug: organizationSlug,
     },
     {
       enabled: !!user?.rowId,
@@ -98,6 +104,8 @@ const CreateProject = () => {
         })),
     }
   );
+
+  const firstOrganization = organizations?.[0];
 
   const { mutate: createProject } = useCreateProjectMutation({
     mutationKey: CREATE_PROJECT_MUTATION_KEY,
@@ -112,7 +120,7 @@ const CreateProject = () => {
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
-      organizationId: "",
+      organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
       description: "",
       slug: "",
@@ -173,6 +181,10 @@ const CreateProject = () => {
                   items: organizations ?? [],
                 })}
                 displayGroupLabel={false}
+                clearTriggerProps={{
+                  display: organizationSlug ? "none" : undefined,
+                }}
+                disabled={!!organizationSlug}
                 valueTextProps={{
                   placeholder: "Select an organization",
                 }}
