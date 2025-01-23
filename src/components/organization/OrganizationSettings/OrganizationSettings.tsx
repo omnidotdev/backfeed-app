@@ -111,7 +111,7 @@ const OrganizationSettings = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: updateOrganizationSchema,
-      onChangeAsync: updateOrganizationSchema,
+      onSubmitAsync: updateOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -184,8 +184,8 @@ const OrganizationSettings = () => {
           }}
         >
           <Stack gap={4} maxW="lg">
-            <Field name="name" asyncDebounceMs={300}>
-              {({ handleChange, handleBlur, state }) => (
+            <Field name="name">
+              {({ handleChange, state }) => (
                 <Stack position="relative" gap={1.5}>
                   <Label htmlFor="name" fontWeight="semibold">
                     {updateOrganizationDetails.fields.organizationName.label}
@@ -194,20 +194,19 @@ const OrganizationSettings = () => {
                   <Input
                     id="name"
                     value={state.value}
-                    onBlur={handleBlur}
                     onChange={(e) => handleChange(e.target.value)}
                   />
 
                   <FormFieldError
-                    error={state.meta.errorMap.onBlur}
+                    error={state.meta.errorMap.onSubmit}
                     isDirty={state.meta.isDirty}
                   />
                 </Stack>
               )}
             </Field>
 
-            <Field name="slug" asyncDebounceMs={300}>
-              {({ handleChange, handleBlur, state }) => (
+            <Field name="slug">
+              {({ handleChange, state }) => (
                 <Stack position="relative" gap={1.5}>
                   <Label htmlFor="slug" fontWeight="semibold">
                     {updateOrganizationDetails.fields.organizationSlug.label}
@@ -216,12 +215,11 @@ const OrganizationSettings = () => {
                   <Input
                     id="slug"
                     value={state.value}
-                    onBlur={handleBlur}
                     onChange={(e) => handleChange(e.target.value)}
                   />
 
                   <FormFieldError
-                    error={state.meta.errorMap.onBlur}
+                    error={state.meta.errorMap.onSubmit}
                     isDirty={state.meta.isDirty}
                   />
                 </Stack>
