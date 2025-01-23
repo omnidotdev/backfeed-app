@@ -22,7 +22,7 @@ interface Action extends ButtonProps {
 }
 
 interface Props {
-  /** Organization ID. */
+  /** Organization slug. */
   organizationSlug: string;
 }
 
