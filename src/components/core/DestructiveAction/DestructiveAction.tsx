@@ -53,7 +53,7 @@ const DestructiveAction = ({
   const actions: Action[] = [
     {
       ...action,
-      colorPalette:"omni.ruby",
+      colorPalette: "omni.ruby",
       onClick: (e) => {
         action.onClick?.(e);
         onClose();

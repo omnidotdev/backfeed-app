@@ -40,23 +40,35 @@ const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
 /** Schema for defining the shape of the update organization form fields. */
-const updateOrganizationSchema = 
-z.union([
+const updateOrganizationSchema = z.union([
   z.object({
     name: z
       .string()
-      .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength).optional(), slug: z.string().or(z.undefined()) }),
-  z.object({ slug: z
-    .string()
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
-    )
-    .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
-    .max(
-      50,
-      updateOrganizationDetails.fields.organizationSlug.errors.maxLength
-    ).optional(), name: z.string().or(z.undefined()) }),
+      .min(
+        3,
+        updateOrganizationDetails.fields.organizationName.errors.minLength
+      )
+      .optional(),
+    slug: z.string().or(z.undefined()),
+  }),
+  z.object({
+    slug: z
+      .string()
+      .regex(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
+      )
+      .min(
+        3,
+        updateOrganizationDetails.fields.organizationSlug.errors.minLength
+      )
+      .max(
+        50,
+        updateOrganizationDetails.fields.organizationSlug.errors.maxLength
+      )
+      .optional(),
+    name: z.string().or(z.undefined()),
+  }),
 ]);
 
 interface Props {
@@ -156,7 +168,11 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
 
   return (
     <Stack gap={6}>
-      <SectionContainer title={updateOrganizationDetails.title} border="1px solid" borderColor="border.subtle">
+      <SectionContainer
+        title={updateOrganizationDetails.title}
+        border="1px solid"
+        borderColor="border.subtle"
+      >
         <Divider />
 
         <sigil.form
@@ -214,26 +230,21 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
           </Stack>
 
           <Subscribe
-             selector={(state) => [
+            selector={(state) => [
               state.canSubmit,
               state.isSubmitting,
               state.isDirty,
             ]}
           >
-            {([ canSubmit, isSubmitting, isDirty ]) => (
-              <Button
-                type="submit"
-                disabled={!canSubmit || !isDirty}
-                mt={4}
-              >
+            {([canSubmit, isSubmitting, isDirty]) => (
+              <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
                 {!isSubmitting && <Icon src={LuSave} h={4} w={4} />}
 
                 {isSubmitting
                   ? updateOrganizationDetails.statuses.pending
                   : updateOrganizationDetails.actions.submit}
               </Button>
-              )
-            }
+            )}
           </Subscribe>
         </sigil.form>
       </SectionContainer>
