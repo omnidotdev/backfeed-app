@@ -29,8 +29,6 @@ export interface Props extends DialogProps {
   triggerLabel?: string;
   /** Icon props. */
   iconProps?: Omit<IconProps, "src">;
-  /** Button trigger props. */
-  buttonProps?: ButtonProps;
 }
 
 /**
@@ -45,7 +43,6 @@ const DestructiveAction = ({
   iconProps,
   children,
   triggerLabel,
-  buttonProps,
   ...rest
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
@@ -72,7 +69,7 @@ const DestructiveAction = ({
       open={isOpen}
       onOpenChange={onToggle}
       trigger={
-        <Button colorPalette="omni.ruby" variant="outline" {...buttonProps}>
+        <Button colorPalette="omni.ruby" variant="outline" {...triggerProps}>
           <Icon src={icon} w={5} h={5} {...iconProps} />
 
           {triggerLabel && triggerLabel}
