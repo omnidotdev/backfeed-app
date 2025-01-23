@@ -7,6 +7,7 @@ import {
   HStack,
   Icon,
   Input,
+  Label,
   useDisclosure,
 } from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
@@ -55,7 +56,7 @@ const DestructiveAction = ({
   const [inputValue, setInputValue] = useState("");
 
   // Define the confirmation text only if isTwoFactorDelete is true
-  const confirmationText = isTwoFactorDelete ? "DELETE PERMANENTLY" : null;
+  const confirmationText = isTwoFactorDelete ? "DELETE FOREVER" : null;
 
   const isDeleteDisabled = confirmationText
     ? inputValue !== confirmationText
@@ -94,12 +95,14 @@ const DestructiveAction = ({
       {children}
 
       {isTwoFactorDelete && (
-        <Input
-          title={`Type "${confirmationText}" to confirm`}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          mb={4}
-        />
+        <>
+          <Label mb={-6}>{`Type "${confirmationText}" to confirm`}</Label>
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            mb={4}
+          />
+        </>
       )}
 
       <HStack>
