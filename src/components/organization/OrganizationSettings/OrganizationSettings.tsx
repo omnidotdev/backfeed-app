@@ -82,7 +82,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
   const router = useRouter();
 
   // NB: used to mock ownership
-  const isOrganizationOwner = false;
+  const isOrganizationOwner = true;
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -99,8 +99,12 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
           `/organizations/${data.updateOrganization?.organization?.slug}/settings`
         ),
     }),
-    { mutate: deleteOrganization } = useDeleteOrganizationMutation(),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation();
+    { mutate: deleteOrganization } = useDeleteOrganizationMutation({
+      onSuccess: () => router.replace("/"),
+    }),
+    { mutate: leaveOrganization } = useLeaveOrganizationMutation({
+      onSuccess: () => router.replace("/"),
+    });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
