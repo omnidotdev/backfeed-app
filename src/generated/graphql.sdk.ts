@@ -4484,7 +4484,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 
-export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', clientMutationId?: string | null, organization?: { __typename?: 'Organization', slug: string } | null } | null };
+export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', organization?: { __typename?: 'Organization', slug: string } | null } | null };
 
 export type CreateFeedbackMutationVariables = Exact<{
   input: CreatePostInput;
@@ -4782,7 +4782,6 @@ export const LeaveOrganizationDocument = gql`
 export const UpdateOrganizationDocument = gql`
     mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
   updateOrganization(input: {rowId: $rowId, patch: $patch}) {
-    clientMutationId
     organization {
       slug
     }
