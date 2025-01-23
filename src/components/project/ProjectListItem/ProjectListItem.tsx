@@ -91,9 +91,9 @@ const ProjectListItem = ({
                 "aria-label": `${deleteProjectDetails.action.label} organization`,
               }}
               buttonProps={{
-                size: "xs",
                 colorPalette: "omni.ruby",
                 variant: "outline",
+                px: "2"
               }}
             />
           )}

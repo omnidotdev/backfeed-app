@@ -26,7 +26,7 @@ import {
   useOrganizationQuery,
   useUpdateOrganizationMutation,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
@@ -40,11 +40,13 @@ const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
 /** Schema for defining the shape of the update organization form fields. */
-const baseSchema = z.object({
-  name: z
-    .string()
-    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength),
-  slug: z
+const updateOrganizationSchema = 
+z.union([
+  z.object({
+    name: z
+      .string()
+      .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength).optional(), slug: z.string().or(z.undefined()) }),
+  z.object({ slug: z
     .string()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
@@ -54,8 +56,8 @@ const baseSchema = z.object({
     .max(
       50,
       updateOrganizationDetails.fields.organizationSlug.errors.maxLength
-    ),
-});
+    ).optional(), name: z.string().or(z.undefined()) }),
+]);
 
 interface Props {
   /** Organization slug. */
@@ -68,7 +70,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
   const router = useRouter();
 
   // NB: used to mock ownership
-  const isOrganizationOwner = true;
+  const isOrganizationOwner = false;
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -96,8 +98,8 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
-      onChangeAsync: baseSchema,
+      onMount: updateOrganizationSchema,
+      onChangeAsync: updateOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -110,7 +112,9 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
           },
         });
       } catch (error) {
-        console.error(error);
+        if (isDevEnv) {
+          console.error(error);
+        }
       }
     },
   });
@@ -125,10 +129,6 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
     },
     triggerProps: {
       "aria-label": `${deleteOrganizationDetails.destruciveAction.actionLabel} organization`,
-    },
-    buttonProps: {
-      colorPalette: "omni.ruby",
-      variant: "outline",
     },
   };
 
@@ -148,10 +148,6 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
     triggerProps: {
       "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
     },
-    buttonProps: {
-      colorPalette: "blue",
-      variant: "outline",
-    },
   };
 
   const DESTRUCTIVE_ACTION = isOrganizationOwner
@@ -160,7 +156,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
 
   return (
     <Stack gap={6}>
-      <SectionContainer title={updateOrganizationDetails.title}>
+      <SectionContainer title={updateOrganizationDetails.title} border="1px solid" borderColor="border.subtle">
         <Divider />
 
         <sigil.form
@@ -180,6 +176,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
                   </Label>
 
                   <Input
+                    id="name"
                     value={state.value}
                     onBlur={handleBlur}
                     onChange={(e) => handleChange(e.target.value)}
@@ -201,6 +198,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
                   </Label>
 
                   <Input
+                    id="slug"
                     value={state.value}
                     onBlur={handleBlur}
                     onChange={(e) => handleChange(e.target.value)}
@@ -216,19 +214,16 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
           </Stack>
 
           <Subscribe
-            selector={(state) => ({
-              canSubmit: state.canSubmit,
-              isSubmitting: state.isSubmitting,
-              isDirty: state.isDirty,
-              isChanged:
-                state.values.name !== organization?.name ||
-                state.values.slug !== organization?.slug,
-            })}
+             selector={(state) => [
+              state.canSubmit,
+              state.isSubmitting,
+              state.isDirty,
+            ]}
           >
-            {({ canSubmit, isSubmitting, isDirty, isChanged }) => (
+            {([ canSubmit, isSubmitting, isDirty ]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || !isDirty || !isChanged}
+                disabled={!canSubmit || !isDirty}
                 mt={4}
               >
                 {!isSubmitting && <Icon src={LuSave} h={4} w={4} />}
@@ -237,7 +232,8 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
                   ? updateOrganizationDetails.statuses.pending
                   : updateOrganizationDetails.actions.submit}
               </Button>
-            )}
+              )
+            }
           </Subscribe>
         </sigil.form>
       </SectionContainer>
@@ -254,7 +250,7 @@ const OrganizationSettings = ({ organizationSlug }: Props) => {
             : leaveOrganizationDetails.description
         }
         border="1px solid"
-        borderColor={isOrganizationOwner ? "omni.ruby" : "blue"}
+        borderColor="omni.ruby"
       >
         <Divider />
 

@@ -53,7 +53,7 @@ const DestructiveAction = ({
   const actions: Action[] = [
     {
       ...action,
-      ...buttonProps,
+      colorPalette:"omni.ruby",
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -62,7 +62,6 @@ const DestructiveAction = ({
     {
       label: app.actions.cancel.label,
       onClick: onClose,
-      variant: "outline",
     },
   ];
 
@@ -73,7 +72,7 @@ const DestructiveAction = ({
       open={isOpen}
       onOpenChange={onToggle}
       trigger={
-        <Button {...buttonProps}>
+        <Button colorPalette="omni.ruby" variant="outline" {...buttonProps}>
           <Icon src={icon} w={5} h={5} {...iconProps} />
 
           {triggerLabel && triggerLabel}
@@ -86,7 +85,7 @@ const DestructiveAction = ({
 
       <HStack>
         {actions.map(({ label, ...rest }) => (
-          <Button key={label} flex={1} {...rest}>
+          <Button key={label} flex={1} variant="outline" {...rest}>
             {label}
           </Button>
         ))}

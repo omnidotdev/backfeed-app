@@ -70,8 +70,8 @@ const OrganizationListItem = ({ organization }: Props) => {
         </Stack>
 
         <Link href={`${`/organizations/${organization.slug}/settings`}`}>
-          <Button variant="icon">
-            <Icon src={LuSettings} w={5} h={5} />
+          <Button variant="ghost" px="2">
+            <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
           </Button>
         </Link>
       </HStack>

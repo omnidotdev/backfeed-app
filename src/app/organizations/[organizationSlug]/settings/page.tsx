@@ -6,6 +6,7 @@ import { app } from "lib/config";
 import { sdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -36,7 +37,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
     sdk.Organization({ slug: organizationSlug }),
   ]);
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",
