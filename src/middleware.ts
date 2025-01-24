@@ -138,7 +138,14 @@ const refreshAccessToken = async (
     });
 
     // Set the session cookie on response which will be sent to the browser
-    response.cookies.set(sessionCookie, newSessionToken);
+    response.cookies.set({
+      name: sessionCookie,
+      value: newSessionToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax", // default for authjs session cookies
+      path: "/",
+    });
 
     return response;
   } catch (error) {
