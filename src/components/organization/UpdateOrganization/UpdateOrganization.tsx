@@ -155,7 +155,7 @@ const UpdateOrganization = () => {
                 />
 
                 <FormFieldError
-                  error={state.meta.errorMap.onChange}
+                  error={state.meta.errorMap.onSubmit}
                   isDirty={state.meta.isDirty}
                 />
               </Stack>
