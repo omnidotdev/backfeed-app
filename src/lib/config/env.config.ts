@@ -4,10 +4,6 @@ const APP_ENV = process.env.APP_ENV;
 export const NEXT_RUNTIME = process.env.NEXT_RUNTIME;
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// auth
-export const AUTH_KEYCLOAK_ISSUER = process.env.AUTH_KEYCLOAK_ISSUER;
-export const AUTH_KEYCLOAK_ID = process.env.NEXT_PUBLIC_AUTH_KEYCLOAK_ID;
-
 // simplified environment helpers
 /** @knipignore TODO remove this directive once `isProdEnv` is used */
 export const isProdEnv = NODE_ENV === "production";
