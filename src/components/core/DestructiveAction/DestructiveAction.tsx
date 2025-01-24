@@ -8,6 +8,7 @@ import {
   Icon,
   Input,
   Label,
+  Stack,
   useDisclosure,
 } from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
@@ -32,6 +33,7 @@ export interface Props extends DialogProps {
   action: Action;
   /** Icon used for the default dialog trigger. */
   icon?: IconType;
+  /** Trigger user input for deleting. */
   isTwoFactorDelete?: boolean;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
@@ -93,14 +95,14 @@ const DestructiveAction = ({
       {children}
 
       {isTwoFactorDelete && (
-        <>
-          <Label mb={-6}>{`Type "${confirmationText}" to confirm`}</Label>
+        <Stack gap={2}>
+          <Label>{`Type "${confirmationText}" to confirm`}</Label>
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             mb={4}
           />
-        </>
+        </Stack>
       )}
 
       <HStack>
