@@ -73,23 +73,10 @@ const UpdateOrganization = () => {
 
   /** Schema for validation of the update organization form. */
   const updateOrganizationSchema = baseSchema.superRefine(
-    async ({ slug, name }, ctx) => {
-      if (!name || !name.length || !slug || !slug.length) return z.NEVER;
+    async ({ slug }, ctx) => {
+      if (!slug || !slug.length) return z.NEVER;
 
-      const [{ organizationByName }, { organizationBySlug }] =
-        await Promise.all([
-          sdk.OrganizationByName({ name }),
-          sdk.Organization({ slug }),
-        ]);
-
-      if (organizationByName && organization?.name !== name) {
-        ctx.addIssue({
-          code: "custom",
-          message:
-            updateOrganizationDetails.fields.organizationName.errors.duplicate,
-          path: ["name"],
-        });
-      }
+      const { organizationBySlug } = await sdk.Organization({ slug });
 
       if (organizationBySlug && organization?.slug !== slug) {
         ctx.addIssue({

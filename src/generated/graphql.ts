@@ -4590,13 +4590,6 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
-export type OrganizationByNameQueryVariables = Exact<{
-  name: Scalars['String']['input'];
-}>;
-
-
-export type OrganizationByNameQuery = { __typename?: 'Query', organizationByName?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null } | null };
-
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
 }>;
@@ -5479,59 +5472,6 @@ useInfiniteOrganizationQuery.getKey = (variables: OrganizationQueryVariables) =>
 
 
 useOrganizationQuery.fetcher = (variables: OrganizationQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationQuery, OrganizationQueryVariables>(OrganizationDocument, variables, options);
-
-export const OrganizationByNameDocument = `
-    query OrganizationByName($name: String!) {
-  organizationByName(name: $name) {
-    rowId
-    name
-    slug
-    updatedAt
-  }
-}
-    `;
-
-export const useOrganizationByNameQuery = <
-      TData = OrganizationByNameQuery,
-      TError = unknown
-    >(
-      variables: OrganizationByNameQueryVariables,
-      options?: Omit<UseQueryOptions<OrganizationByNameQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationByNameQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<OrganizationByNameQuery, TError, TData>(
-      {
-    queryKey: ['OrganizationByName', variables],
-    queryFn: graphqlFetch<OrganizationByNameQuery, OrganizationByNameQueryVariables>(OrganizationByNameDocument, variables),
-    ...options
-  }
-    )};
-
-useOrganizationByNameQuery.getKey = (variables: OrganizationByNameQueryVariables) => ['OrganizationByName', variables];
-
-export const useInfiniteOrganizationByNameQuery = <
-      TData = InfiniteData<OrganizationByNameQuery>,
-      TError = unknown
-    >(
-      variables: OrganizationByNameQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<OrganizationByNameQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationByNameQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<OrganizationByNameQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['OrganizationByName.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<OrganizationByNameQuery, OrganizationByNameQueryVariables>(OrganizationByNameDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteOrganizationByNameQuery.getKey = (variables: OrganizationByNameQueryVariables) => ['OrganizationByName.infinite', variables];
-
-
-useOrganizationByNameQuery.fetcher = (variables: OrganizationByNameQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationByNameQuery, OrganizationByNameQueryVariables>(OrganizationByNameDocument, variables, options);
 
 export const OrganizationMetricsDocument = `
     query OrganizationMetrics($organizationId: UUID!) {
