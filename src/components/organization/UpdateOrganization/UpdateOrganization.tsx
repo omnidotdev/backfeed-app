@@ -6,13 +6,13 @@ import {
   Icon,
   Input,
   Label,
-  sigil,
   Stack,
+  sigil,
 } from "@omnidev/sigil";
-import { LuSave } from "react-icons/lu";
 import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
 import { useParams, useRouter } from "next/navigation";
+import { LuSave } from "react-icons/lu";
+import { z } from "zod";
 
 import { FormFieldError } from "components/core";
 import { SectionContainer } from "components/layout";
@@ -22,7 +22,7 @@ import {
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -52,6 +52,8 @@ const baseSchema = z.object({
 const updateOrganizationSchema = baseSchema.superRefine(
   async ({ slug }, ctx) => {
     if (!slug?.length) return z.NEVER;
+
+    const sdk = await getSdk();
 
     const { organizationBySlug } = await sdk.Organization({ slug });
 

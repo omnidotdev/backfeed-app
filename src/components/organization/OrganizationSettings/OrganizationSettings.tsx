@@ -1,9 +1,9 @@
 "use client";
 
 import { Divider, HStack, Stack, Text } from "@omnidev/sigil";
+import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { RiUserSharedLine } from "react-icons/ri";
-import dayjs from "dayjs";
 
 import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";

@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { AccountInformation, ThemeToggle } from "components/layout";
-import { app, AUTH_KEYCLOAK_ID, AUTH_KEYCLOAK_ISSUER } from "lib/config";
+import { AUTH_KEYCLOAK_ID, AUTH_KEYCLOAK_ISSUER, app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
