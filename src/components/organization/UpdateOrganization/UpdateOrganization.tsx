@@ -101,8 +101,7 @@ const UpdateOrganization = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
-      // onSubmitAsync: updateOrganizationSchema,
-      onChangeAsync: updateOrganizationSchema,
+      onSubmitAsync: updateOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
