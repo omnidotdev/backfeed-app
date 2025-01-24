@@ -86,12 +86,10 @@ const UpdateOrganization = () => {
   );
 
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
-    onSuccess: (data) => {
+    onSuccess: (data) =>
       router.replace(
         `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
-      );
-      reset();
-    },
+      ),
   });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
