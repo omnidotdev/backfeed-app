@@ -61,10 +61,9 @@ declare module "next-auth" {
 export const { handlers, auth } = NextAuth({
   debug: process.env.NODE_ENV === "development",
   session: {
-    // 2 minutes
+    // 30 minutes
     // ! NB: this should match the expiry time of the refresh token from the IDP
-    // TODO: update prior to merging when defaults are reset
-    maxAge: 60 * 2,
+    maxAge: 60 * 30,
   },
   providers: [
     Keycloak({
@@ -83,6 +82,8 @@ export const { handlers, auth } = NextAuth({
   ],
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
+    // verify authentication within middleware
+    authorized: async ({ auth }) => !!auth,
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
       // Account is present on fresh login. We can set additional claims on the token given this information.

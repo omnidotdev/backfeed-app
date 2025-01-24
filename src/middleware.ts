@@ -24,11 +24,32 @@ interface UpdatedTokens {
   refresh_token: string;
 }
 
+// TODO: update this to sign in route when custom auth pages are implemented
+const REDIRECT_PATH = "/";
+
 const SESSION_COOKIE_PREFIX = "authjs.session-token";
 
 const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
   ? `__Secure-${SESSION_COOKIE_PREFIX}`
   : SESSION_COOKIE_PREFIX;
+
+/**
+ * Redirect helper function. This helper function is used to redirect the user's request.
+ * NB: need to use rewrite instead of redirect to avoid infinite redirect loop if the user is already on the redirect path
+ */
+const redirect = (request: NextAuthRequest, init?: ResponseInit) => {
+  if (request.nextUrl.pathname !== REDIRECT_PATH) {
+    return NextResponse.redirect(
+      new URL(REDIRECT_PATH, request.nextUrl.origin),
+      init
+    );
+  }
+
+  return NextResponse.rewrite(
+    new URL(REDIRECT_PATH, request.nextUrl.origin),
+    init
+  );
+};
 
 /**
  * Sign out handler. This helper function is used to sign out the user from the application.
@@ -37,9 +58,8 @@ const signOut = async (request: NextAuthRequest) => {
   // Delete session cookie on request as server-side auth will read from the request headers
   request.cookies.delete(sessionCookie);
 
-  const response = NextResponse.rewrite(new URL("/", request.url), {
+  const response = redirect(request, {
     headers: request.headers,
-    status: 303,
   });
 
   // Delete session cookie on response which will be sent to the browser
@@ -157,7 +177,9 @@ const refreshAccessToken = async (
  * Middleware function for handling authentication flows on designated routes.
  */
 export const middleware = auth(async (request) => {
-  const response = NextResponse.next();
+  if (!request.auth) {
+    return redirect(request);
+  }
 
   try {
     const sessionToken = await getToken({
@@ -167,14 +189,10 @@ export const middleware = auth(async (request) => {
       salt: sessionCookie,
     });
 
-    // If no session token is found, return the response, indicating that the user is not authenticated
-    if (!sessionToken) return response;
-
     // Difference between access token and refresh token expiry times
-    // TODO: update prior to merging when defaults are reset
-    const REFRESH_TOKEN_DIFFERENCE = ms("1m");
+    const REFRESH_TOKEN_DIFFERENCE = ms("25m");
 
-    const ACCESS_TOKEN_EXPIRES_AT = sessionToken.expires_at * ms("1s");
+    const ACCESS_TOKEN_EXPIRES_AT = sessionToken?.expires_at! * ms("1s");
     const REFRESH_TOKEN_EXPIRES_AT =
       ACCESS_TOKEN_EXPIRES_AT + REFRESH_TOKEN_DIFFERENCE;
 
@@ -185,21 +203,21 @@ export const middleware = auth(async (request) => {
 
     // If the access token has expired, fetching the updated claims will throw an error, so we need to refresh the access token anyways. This should also provide the updated claims set by the user to the backend through the updated access token.
     if (Date.now() >= ACCESS_TOKEN_EXPIRES_AT) {
-      const refreshResponse = await refreshAccessToken(sessionToken, request);
+      const refreshResponse = await refreshAccessToken(sessionToken!, request);
 
       if (refreshResponse.ok) {
         return refreshResponse;
       }
 
-      throw refreshResponse;
+      throw new Error("Failed to refresh access token");
     }
 
-    const updatedClaims = await getUpdatedProfileClaims(sessionToken);
+    const updatedClaims = await getUpdatedProfileClaims(sessionToken!);
 
     // If the user's profile claims have changed, refresh the access token and update the session accordingly
     if (updatedClaims) {
       const updatedClaimsResponse = await refreshAccessToken(
-        sessionToken,
+        sessionToken!,
         request,
         updatedClaims
       );
@@ -208,11 +226,11 @@ export const middleware = auth(async (request) => {
         return updatedClaimsResponse;
       }
 
-      throw updatedClaimsResponse;
+      throw new Error("Failed to update profile claims");
     }
 
     // If the access token has not expired and the user's profile claims have not changed, return the response
-    return response;
+    return NextResponse.next();
   } catch (error) {
     console.error(error);
 
@@ -226,11 +244,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - pricing (not authenticated routes)
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - img, favicon.ico, sitemap.xml, robots.txt (metadata files)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!pricing|api|_next/static|_next/image|img|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };
