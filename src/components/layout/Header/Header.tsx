@@ -26,7 +26,7 @@ const Header = () => {
     <sigil.header
       display="flex"
       h={20}
-      p={4}
+      p={2}
       // TODO: discuss why this style prop is necessary
       style={{
         borderBottom: "1px solid",
@@ -35,7 +35,7 @@ const Header = () => {
       }}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
-        <Flex gap={4} alignItems="center">
+        <Flex gap={{ base: 2, md: 4 }} alignItems="center">
           <Link href="/">
             <HStack gap={2} alignItems="center">
               <Icon src={LuMessageSquarePlus} w={6} h={6} />
