@@ -33,8 +33,8 @@ export interface Props extends DialogProps {
   action: Action;
   /** Icon used for the default dialog trigger. */
   icon?: IconType;
-  /** Trigger user input for deleting. */
-  isTwoFactorDelete?: boolean;
+  /** Dynamic confirmation text for destructive actions. */
+  destructiveInput?: string;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
 }
@@ -49,24 +49,27 @@ const DestructiveAction = ({
   icon = HiOutlineTrash,
   triggerProps,
   children,
-  isTwoFactorDelete,
+  destructiveInput,
   ...rest
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
+  const [requiredDestructiveInput] = useState(
+    `Permanently delete ${destructiveInput}`
+  );
 
-  // Define the confirmation text only if isTwoFactorDelete is true
-  const confirmationText = isTwoFactorDelete ? "DELETE FOREVER" : null;
+  // Use the dynamic destructive input text
+  // const requiredDestructiveInput = destructiveInput || "";
 
-  const isDeleteDisabled = confirmationText
-    ? inputValue !== confirmationText
+  const isDeleteDisabled = requiredDestructiveInput
+    ? inputValue !== requiredDestructiveInput
     : false;
 
   const actions: Action[] = [
     {
       ...action,
       variant: "outline",
-      disabled: isDeleteDisabled,
+      disabled: inputValue !== requiredDestructiveInput,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -94,9 +97,9 @@ const DestructiveAction = ({
     >
       {children}
 
-      {isTwoFactorDelete && (
+      {destructiveInput && (
         <Stack gap={2}>
-          <Label>{`Type "${confirmationText}" to confirm`}</Label>
+          <Label>{`Type "${requiredDestructiveInput}" to confirm`}</Label>
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

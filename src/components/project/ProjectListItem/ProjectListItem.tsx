@@ -82,7 +82,7 @@ const ProjectListItem = ({
             <DestructiveAction
               title={deleteProjectDetails.title}
               description={deleteProjectDetails.description}
-              isTwoFactorDelete={true}
+              destructiveInput="project"
               action={{
                 label: deleteProjectDetails.action.label,
                 onClick: () => deleteProject({ rowId: rowId! }),
