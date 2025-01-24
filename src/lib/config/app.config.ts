@@ -258,6 +258,7 @@ const app = {
     cta: {
       updateOrganization: {
         title: "Update Organization",
+        memberTitle: "Organization Details",
         actions: {
           submit: "Update Organization",
         },

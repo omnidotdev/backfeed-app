@@ -122,7 +122,13 @@ const UpdateOrganization = () => {
   });
 
   return (
-    <SectionContainer title={updateOrganizationDetails.title}>
+    <SectionContainer
+      title={
+        isOrganizationOwner
+          ? updateOrganizationDetails.title
+          : updateOrganizationDetails.memberTitle
+      }
+    >
       <Divider />
 
       <sigil.form
