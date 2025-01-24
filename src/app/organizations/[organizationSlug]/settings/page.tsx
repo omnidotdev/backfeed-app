@@ -38,21 +38,21 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
     sdk.Organization({ slug: organizationSlug }),
   ]);
 
+  if (!session || !organization) notFound();
+  
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",
     },
     {
-      label: organization?.name ?? organization?.slug!,
-      href: `/organizations/${organization?.slug}`,
+      label: organization.name ?? organization.slug!,
+      href: `/organizations/${organization.slug}`,
     },
     {
       label: app.organizationSettingsPage.breadcrumb,
     },
   ];
-
-  if (!session || !organization) notFound();
 
   const queryClient = getQueryClient();
 
