@@ -17,7 +17,7 @@ interface Props extends StackProps {
     /** Header section description. */
     description: string;
     /** Header section call to action buttons. */
-    cta: ActionButton[];
+    cta?: ActionButton[];
     /** Props to pass to the header section. */
     headerProps?: FlexProps;
   };
@@ -66,7 +66,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
             width={{ base: "full", md: "auto" }}
             direction={{ base: "column", sm: "row" }}
           >
-            {header.cta.map((action) => (
+            {header.cta?.map((action) => (
               <CallToAction key={action.label} action={action} />
             ))}
           </Flex>

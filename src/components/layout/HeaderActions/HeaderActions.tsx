@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { AccountInformation, ThemeToggle } from "components/layout";
-import { app } from "lib/config";
+import { app, AUTH_KEYCLOAK_ID, AUTH_KEYCLOAK_ISSUER } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -17,7 +17,7 @@ const HeaderActions = () => {
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
-    const signUpUrl = `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/registrations?client_id=${process.env.AUTH_KEYCLOAK_ID}&redirect_uri=${window.location.origin}/auth/callback/keycloak&response_type=code`;
+    const signUpUrl = `${AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/registrations?client_id=${AUTH_KEYCLOAK_ID}&redirect_uri=${window.location.origin}/auth/callback/keycloak&response_type=code`;
 
     router.push(signUpUrl);
   };

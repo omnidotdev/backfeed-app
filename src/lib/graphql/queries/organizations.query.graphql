@@ -21,6 +21,7 @@ query Organizations(
       rowId
       name
       slug
+      updatedAt
       projects {
         totalCount
       }

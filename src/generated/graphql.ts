@@ -4477,6 +4477,14 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
+export type UpdateOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: OrganizationPatch;
+}>;
+
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', organization?: { __typename?: 'Organization', slug: string } | null } | null };
+
 export type CreateFeedbackMutationVariables = Exact<{
   input: CreatePostInput;
 }>;
@@ -4580,7 +4588,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4599,7 +4607,7 @@ export type OrganizationsQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4904,6 +4912,34 @@ useLeaveOrganizationMutation.getKey = () => ['LeaveOrganization'];
 
 
 useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
+
+export const UpdateOrganizationDocument = `
+    mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
+  updateOrganization(input: {rowId: $rowId, patch: $patch}) {
+    organization {
+      slug
+    }
+  }
+}
+    `;
+
+export const useUpdateOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateOrganization'],
+    mutationFn: (variables?: UpdateOrganizationMutationVariables) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateOrganizationMutation.getKey = () => ['UpdateOrganization'];
+
+
+useUpdateOrganizationMutation.fetcher = (variables: UpdateOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables, options);
 
 export const CreateFeedbackDocument = `
     mutation CreateFeedback($input: CreatePostInput!) {
@@ -5379,6 +5415,7 @@ export const OrganizationDocument = `
     rowId
     name
     slug
+    updatedAt
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
@@ -5510,6 +5547,7 @@ export const OrganizationsDocument = `
       rowId
       name
       slug
+      updatedAt
       projects {
         totalCount
       }
