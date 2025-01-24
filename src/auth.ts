@@ -1,4 +1,5 @@
 import { GraphQLClient } from "graphql-request";
+import ms from "ms";
 import NextAuth from "next-auth";
 import Keycloak from "next-auth/providers/keycloak";
 
@@ -62,6 +63,7 @@ export const { handlers, auth } = NextAuth({
   session: {
     // 2 minutes
     // ! NB: this should match the expiry time of the refresh token from the IDP
+    // TODO: update prior to merging when defaults are reset
     maxAge: 60 * 2,
   },
   providers: [
@@ -112,7 +114,7 @@ export const { handlers, auth } = NextAuth({
       session.user.rowId = token.row_id;
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
-      session.expires = new Date(token.expires_at * 1000);
+      session.expires = new Date(token.expires_at * ms("1s"));
 
       return session;
     },

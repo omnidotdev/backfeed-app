@@ -1,3 +1,4 @@
+import ms from "ms";
 import { encode, getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
@@ -160,9 +161,13 @@ export const middleware = auth(async (request) => {
     // If no session token is found, return the response, indicating that the user is not authenticated
     if (!sessionToken) return response;
 
-    // TODO: discuss the best way to stabilize these expiry times
-    const ACCESS_TOKEN_EXPIRES_AT = sessionToken.expires_at * 1000;
-    const REFRESH_TOKEN_EXPIRES_AT = ACCESS_TOKEN_EXPIRES_AT + 60000;
+    // Difference between access token and refresh token expiry times
+    // TODO: update prior to merging when defaults are reset
+    const REFRESH_TOKEN_DIFFERENCE = ms("1m");
+
+    const ACCESS_TOKEN_EXPIRES_AT = sessionToken.expires_at * ms("1s");
+    const REFRESH_TOKEN_EXPIRES_AT =
+      ACCESS_TOKEN_EXPIRES_AT + REFRESH_TOKEN_DIFFERENCE;
 
     // If the refresh token has expired, sign out the user
     if (Date.now() >= REFRESH_TOKEN_EXPIRES_AT) {
