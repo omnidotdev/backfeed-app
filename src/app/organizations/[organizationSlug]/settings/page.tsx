@@ -4,10 +4,11 @@ import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import { app } from "lib/config";
 import { sdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
+import { useOrganizationQuery } from "generated/graphql";
 
 export const generateMetadata = async ({
   params,
@@ -52,6 +53,17 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   ];
 
   if (!session || !organization) notFound();
+
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: useOrganizationQuery.getKey({
+      slug: organizationSlug,
+    }),
+    queryFn: useOrganizationQuery.fetcher({
+      slug: organizationSlug,
+    }),
+  });
 
   return (
     <Page
