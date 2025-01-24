@@ -58,13 +58,6 @@ const DestructiveAction = ({
     `Permanently delete ${destructiveInput}`
   );
 
-  // Use the dynamic destructive input text
-  // const requiredDestructiveInput = destructiveInput || "";
-
-  const isDeleteDisabled = requiredDestructiveInput
-    ? inputValue !== requiredDestructiveInput
-    : false;
-
   const actions: Action[] = [
     {
       ...action,
