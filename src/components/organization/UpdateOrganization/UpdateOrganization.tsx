@@ -55,6 +55,9 @@ const UpdateOrganization = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
+  // NB: used to mock ownership
+  const isOrganizationOwner = true;
+
   const { data: organization } = useOrganizationQuery(
     {
       slug: organizationSlug,
@@ -143,6 +146,7 @@ const UpdateOrganization = () => {
                   id="name"
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
+                  disabled={!isOrganizationOwner}
                 />
 
                 <FormFieldError
@@ -164,6 +168,7 @@ const UpdateOrganization = () => {
                   id="slug"
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
+                  disabled={!isOrganizationOwner}
                 />
 
                 <FormFieldError
@@ -189,7 +194,13 @@ const UpdateOrganization = () => {
             <Button
               type="submit"
               width={48}
-              disabled={!canSubmit || !isDirty || isSubmitting || !isChanged}
+              disabled={
+                isSubmitting ||
+                !canSubmit ||
+                !isDirty ||
+                !isChanged ||
+                !isOrganizationOwner
+              }
               mt={4}
             >
               {!isSubmitting && <Icon src={LuSave} h={4} w={4} />}
