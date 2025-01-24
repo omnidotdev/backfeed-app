@@ -48,24 +48,6 @@ const baseSchema = z.object({
     .optional(),
 });
 
-/** Schema for validation of the update organization form. */
-const updateOrganizationSchema = baseSchema.superRefine(
-  async ({ slug }, ctx) => {
-    if (!slug?.length) return z.NEVER;
-
-    const { organizationBySlug } = await sdk.Organization({ slug });
-
-    if (organizationBySlug) {
-      ctx.addIssue({
-        code: "custom",
-        message:
-          updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
-        path: ["slug"],
-      });
-    }
-  }
-);
-
 /**
  * Form for updating organization details.
  */
@@ -91,6 +73,24 @@ const UpdateOrganization = () => {
         `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
       ),
   });
+
+  /** Schema for validation of the update organization form. */
+  const updateOrganizationSchema = baseSchema.superRefine(
+    async ({ slug }, ctx) => {
+      if (!slug?.length) return z.NEVER;
+
+      const { organizationBySlug } = await sdk.Organization({ slug });
+
+      if (organizationBySlug && organization?.slug !== slug) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
+          path: ["slug"],
+        });
+      }
+    }
+  );
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
