@@ -95,6 +95,7 @@ const CreateOrganization = () => {
         );
 
         setIsOpen(false);
+        reset();
       },
     });
 
@@ -155,7 +156,6 @@ const CreateOrganization = () => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
         <Field name="name">

@@ -113,6 +113,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       );
 
       setIsOpen(false);
+      reset();
     },
   });
 
@@ -160,7 +161,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
         <Field name="organizationId">

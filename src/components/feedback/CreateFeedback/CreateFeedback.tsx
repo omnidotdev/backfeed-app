@@ -127,10 +127,10 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       display="flex"
       flexDirection="column"
       gap={4}
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleSubmit();
+        await handleSubmit();
       }}
     >
       <Field name="title">
