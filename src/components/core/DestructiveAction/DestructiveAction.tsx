@@ -5,17 +5,22 @@ import { HiOutlineTrash } from "react-icons/hi2";
 
 import { app } from "lib/config";
 
-import type { ButtonProps, DialogProps, IconProps } from "@omnidev/sigil";
+import type {
+  ButtonProps,
+  DialogProps,
+  IconProps,
+  JsxStyleProps,
+} from "@omnidev/sigil";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-const destructiveButtonStyles = {
+const destructiveButtonStyles: JsxStyleProps = {
   color: "white",
   backgroundColor: {
-    base: "#ef4444",
-    _hover: "#dc2626",
-    _active: "#b91c1c",
-    _focus: "#b91c1c",
+    base: "red",
+    _hover: "destructive.hover",
+    _active: "destructive.active",
+    _focus: "destructive.focus",
   },
 };
 
