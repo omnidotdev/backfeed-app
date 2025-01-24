@@ -186,6 +186,7 @@ const UpdateOrganization = () => {
             canSubmit: state.canSubmit,
             isSubmitting: state.isSubmitting,
             isDirty: state.isDirty,
+            // TODO: look into managing default state through `useStore` or better yet zod schema.
             isChanged:
               state.values.name !== organization?.name ||
               state.values.slug !== organization?.slug,
