@@ -60,8 +60,8 @@ const DestructiveAction = ({
   const actions: Action[] = [
     {
       variant: "solid",
-      ...action,
       ...destructiveButtonStyles,
+      ...action,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
