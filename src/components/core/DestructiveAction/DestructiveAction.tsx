@@ -21,7 +21,6 @@ import type { IconType } from "react-icons";
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;
-  /** Disable the button. */
 }
 
 export interface Props extends DialogProps {
