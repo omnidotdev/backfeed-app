@@ -136,7 +136,6 @@ const UpdateOrganization = () => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
         <Stack gap={4} maxW="lg">
