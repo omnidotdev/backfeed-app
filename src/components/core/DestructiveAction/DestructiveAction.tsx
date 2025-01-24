@@ -11,10 +11,12 @@ import type { IconType } from "react-icons";
 
 const destructiveButtonStyles = {
   color: "white",
-  backgroundColor: "#ef4444",
-  _hover: { backgroundColor: "#dc2626" },
-  _active: { backgroundColor: "#b91c1c" },
-  _focus: { backgroundColor: "#b91c1c" },
+  backgroundColor: {
+    base: "#ef4444",
+    _hover: "#dc2626",
+    _active: "#b91c1c",
+    _focus: "#b91c1c",
+  },
 };
 
 interface Action extends ButtonProps {
