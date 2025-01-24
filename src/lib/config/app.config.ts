@@ -269,6 +269,7 @@ const app = {
             label: "Organization Name",
             errors: {
               minLength: "Must be at least 3 characters.",
+              duplicate: "Organization name already exists.",
             },
           },
           organizationSlug: {

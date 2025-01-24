@@ -9,3 +9,4 @@ export { default as OrganizationProjectsOverview } from "./OrganizationProjectsO
 export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";
 export { default as OrganizationsOverview } from "./OrganizationsOverview/OrganizationsOverview";
 export { default as ProjectCard } from "./ProjectCard/ProjectCard";
+export { default as UpdateOrganization } from "./UpdateOrganization/UpdateOrganization";

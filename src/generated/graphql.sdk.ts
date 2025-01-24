@@ -4591,6 +4591,13 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
+export type OrganizationByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type OrganizationByNameQuery = { __typename?: 'Query', organizationByName?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null } | null };
+
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
 }>;
@@ -4935,6 +4942,16 @@ export const OrganizationDocument = gql`
   }
 }
     `;
+export const OrganizationByNameDocument = gql`
+    query OrganizationByName($name: String!) {
+  organizationByName(name: $name) {
+    rowId
+    name
+    slug
+    updatedAt
+  }
+}
+    `;
 export const OrganizationMetricsDocument = gql`
     query OrganizationMetrics($organizationId: UUID!) {
   projects(condition: {organizationId: $organizationId}) {
@@ -5193,6 +5210,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Organization(variables: OrganizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationQuery>(OrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organization', 'query', variables);
+    },
+    OrganizationByName(variables: OrganizationByNameQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationByNameQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OrganizationByNameQuery>(OrganizationByNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationByName', 'query', variables);
     },
     OrganizationMetrics(variables: OrganizationMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationMetricsQuery>(OrganizationMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationMetrics', 'query', variables);

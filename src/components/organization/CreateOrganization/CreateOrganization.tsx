@@ -109,6 +109,7 @@ const CreateOrganization = () => {
     },
     onSubmit: async ({ value }) => {
       try {
+        // TODO: better error handling for unique constraints in db.
         const { createOrganization: createOrganizationResponse } =
           await createOrganization({
             input: {

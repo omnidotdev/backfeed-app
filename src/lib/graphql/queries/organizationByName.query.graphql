@@ -1,0 +1,8 @@
+query OrganizationByName($name: String!) {
+  organizationByName(name: $name) {
+    rowId
+    name
+    slug
+    updatedAt
+  }
+}
