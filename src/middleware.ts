@@ -124,7 +124,8 @@ const refreshAccessToken = async (
         ...updatedClaims,
       },
       secret: process.env.AUTH_SECRET!,
-      salt: SESSION_COOKIE_PREFIX, // TODO: create secure salt?
+      // See: https://github.com/nextauthjs/next-auth/discussions/9133#discussioncomment-9732602
+      salt: sessionCookie,
     });
 
     // Set the session cookie on request as server-side auth will read from the request headers
@@ -155,7 +156,8 @@ export const middleware = auth(async (request) => {
     const sessionToken = await getToken({
       req: request,
       secret: process.env.AUTH_SECRET!,
-      salt: SESSION_COOKIE_PREFIX, // TODO: create secure salt?
+      // See: https://github.com/nextauthjs/next-auth/discussions/9133#discussioncomment-9732602
+      salt: sessionCookie,
     });
 
     // If no session token is found, return the response, indicating that the user is not authenticated
