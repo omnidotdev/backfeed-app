@@ -198,22 +198,6 @@ const app = {
         placeholder: "Search all organizations...",
       },
     },
-    dialogs: {
-      deleteOrganization: {
-        title: "Delete Organization",
-        description: "Are you sure you want to delete this organization?",
-        action: {
-          label: "Delete",
-        },
-      },
-      leaveOrganization: {
-        title: "Leave Organization",
-        description: "Are you sure you want to leave this organization?",
-        action: {
-          label: "Leave",
-        },
-      },
-    },
   },
   organizationPage: {
     header: {
@@ -264,6 +248,61 @@ const app = {
         },
         settings: {
           label: "Organization Settings",
+        },
+      },
+    },
+  },
+  organizationSettingsPage: {
+    breadcrumb: "Settings",
+    description: "Manage your organization settings.",
+    cta: {
+      updateOrganization: {
+        title: "Update Organization",
+        memberTitle: "Organization Details",
+        actions: {
+          submit: "Update Organization",
+        },
+        statuses: {
+          pending: "Updating Organization...",
+        },
+        fields: {
+          organizationName: {
+            label: "Organization Name",
+            errors: {
+              minLength: "Must be at least 3 characters.",
+            },
+          },
+          organizationSlug: {
+            label: "Organization Slug",
+            errors: {
+              invalidFormat: "Invalid slug format.",
+              minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 50 characters.",
+              duplicate: "Organization slug already exists.",
+            },
+          },
+        },
+      },
+      deleteOrganization: {
+        title: "Delete Organization",
+        description:
+          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
+        actionLabel: "Delete",
+        destruciveAction: {
+          title: "Delete Organization",
+          description: "Are you sure you want to delete this organization?",
+          actionLabel: "Delete",
+        },
+      },
+      leaveOrganization: {
+        title: "Leave Organization",
+        description:
+          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
+        actionLabel: "Leave",
+        destruciveAction: {
+          title: "Leave Organization",
+          description: "Are you sure you want to leave this organization?",
+          actionLabel: "Leave",
         },
       },
     },

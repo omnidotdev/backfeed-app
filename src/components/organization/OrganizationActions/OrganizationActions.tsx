@@ -3,6 +3,7 @@
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
 import { MdManageAccounts } from "react-icons/md";
+import { useParams, useRouter } from "next/navigation";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -24,6 +25,9 @@ interface Action extends ButtonProps {
  * Organization actions.
  */
 const OrganizationActions = () => {
+  const { organizationSlug } = useParams<{ organizationSlug: string }>();
+  const router = useRouter();
+
   const { isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -45,7 +49,7 @@ const OrganizationActions = () => {
     {
       label: app.organizationPage.actions.cta.settings.label,
       icon: LuSettings,
-      disabled: true,
+      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
     },
   ];
 
