@@ -39,7 +39,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   ]);
 
   if (!session || !organization) notFound();
-  
+
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -71,7 +71,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
       header={{
         title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
         description: app.organizationSettingsPage.description,
-        cta: [],
       }}
     >
       <OrganizationSettings />

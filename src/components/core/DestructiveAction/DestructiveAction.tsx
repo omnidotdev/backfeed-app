@@ -9,6 +9,14 @@ import type { ButtonProps, DialogProps, IconProps } from "@omnidev/sigil";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
+const destructiveButtonStyles = {
+  color: "white",
+  backgroundColor: "#ef4444",
+  _hover: { backgroundColor: "#dc2626" },
+  _active: { backgroundColor: "#b91c1c" },
+  _focus: { backgroundColor: "#b91c1c" },
+};
+
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;
@@ -51,9 +59,7 @@ const DestructiveAction = ({
     {
       ...action,
       variant: "solid",
-      backgroundColor: "#ef4444",
-      _hover: { backgroundColor: "#dc2626" },
-      color: "white",
+      ...destructiveButtonStyles,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -76,11 +82,8 @@ const DestructiveAction = ({
         <Button
           type="button"
           variant="solid"
-          backgroundColor="#ef4444"
-          _hover={{ backgroundColor: "#dc2626" }}
-          _active={{ backgroundColor: "#b91c1c" }}
-          color="white"
           fontSize="md"
+          {...destructiveButtonStyles}
           {...triggerProps}
         >
           <Icon src={icon} {...iconProps} />
