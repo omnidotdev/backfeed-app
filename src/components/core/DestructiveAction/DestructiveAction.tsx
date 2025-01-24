@@ -59,8 +59,8 @@ const DestructiveAction = ({
 
   const actions: Action[] = [
     {
-      ...action,
       variant: "solid",
+      ...action,
       ...destructiveButtonStyles,
       onClick: (e) => {
         action.onClick?.(e);
