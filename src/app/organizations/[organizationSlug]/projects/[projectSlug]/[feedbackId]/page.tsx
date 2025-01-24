@@ -35,9 +35,11 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
+  if (!session || !sdk) notFound();
+
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
 
-  if (!session || !feedback) notFound();
+  if (!feedback) notFound();
 
   const queryClient = getQueryClient();
 

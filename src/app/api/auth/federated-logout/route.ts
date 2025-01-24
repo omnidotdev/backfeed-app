@@ -1,28 +1,38 @@
 import { auth } from "auth";
-import { AUTH_KEYCLOAK_ISSUER, BASE_URL } from "lib/config";
 
 /**
- * Federated logout route handler. This route is used to construct the redirect URL for the backchannel logout flow.
+ * Federated logout route handler. This route is used to log the user out of the IDP session.
  */
-export const GET = async () => {
-  let redirectURL = BASE_URL!;
-
+export const POST = async () => {
   try {
     const session = await auth();
 
-    if (session?.user.idToken) {
-      const signOutURL = `${AUTH_KEYCLOAK_ISSUER!}/protocol/openid-connect/logout`;
-
-      const signOutParams = new URLSearchParams({
-        id_token_hint: session.user.idToken,
-        post_logout_redirect_uri: redirectURL,
-      });
-
-      redirectURL = `${signOutURL}?${signOutParams.toString()}`;
+    if (session) {
+      await fetch(
+        `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: new URLSearchParams({
+            client_id: process.env.AUTH_KEYCLOAK_ID!,
+            client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+            refresh_token: session.refreshToken,
+          }),
+        }
+      );
     }
-  } catch (error) {
-    console.error(error);
-  }
 
-  return Response.json({ url: redirectURL });
+    return Response.json(
+      { message: "Successfully logged out of IDP" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return Response.json(
+      { error: "Error logging out of IDP" },
+      { status: 500 }
+    );
+  }
 };

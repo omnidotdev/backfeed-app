@@ -46,11 +46,13 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
+  if (!session || !sdk) notFound();
+
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
   });
 
-  if (!session || !organization) notFound();
+  if (!organization) notFound();
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {

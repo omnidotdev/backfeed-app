@@ -30,53 +30,25 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
   : SESSION_COOKIE_PREFIX;
 
 /**
- * Remove authjs session cookies. This effectively signs the user out from the frontend application.
- * TODO: update to redirect to custom sign in page
- */
-const removeSessionCookie = (request: NextAuthRequest) => {
-  const response = NextResponse.next();
-
-  const requestCookies = request.cookies.getAll();
-
-  // Delete all authjs cookies
-  for (const cookie of requestCookies) {
-    if (cookie.name.includes(SESSION_COOKIE_PREFIX))
-      response.cookies.delete(cookie.name);
-  }
-
-  return response;
-};
-
-/**
  * Sign out handler. This helper function is used to sign out the user from the application.
  */
 const signOut = async (request: NextAuthRequest) => {
-  const session = request.auth;
+  // Delete session cookie on request as server-side auth will read from the request headers
+  request.cookies.delete(sessionCookie);
 
-  if (session) {
-    try {
-      await fetch(
-        `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `Bearer ${session.accessToken}`,
-          },
-          body: new URLSearchParams({
-            client_id: process.env.AUTH_KEYCLOAK_ID!,
-            client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
-            refresh_token: session.refreshToken,
-          }),
-        }
-      );
-    } catch (error) {
-      // If the backchannel logout fails, fallback to logging out the user from the frontend application
-      return removeSessionCookie(request);
-    }
-  }
+  const response = NextResponse.rewrite(new URL("/", request.url), {
+    headers: request.headers,
+    status: 303,
+  });
 
-  return removeSessionCookie(request);
+  // Delete session cookie on response which will be sent to the browser
+  response.cookies.delete(sessionCookie);
+
+  await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/federated-logout`, {
+    method: "POST",
+  });
+
+  return response;
 };
 
 /**
@@ -154,37 +126,17 @@ const refreshAccessToken = async (
       salt: SESSION_COOKIE_PREFIX, // TODO: create secure salt?
     });
 
-    // There is typically a limit of around 4096 bytes per cookie, though the exact limit varies between browsers. See: https://authjs.dev/concepts/session-strategies#disadvantages
-    const size = 3958;
-    const regex = new RegExp(`.{1,${size}}`, "g");
+    // Set the session cookie on request as server-side auth will read from the request headers
+    request.cookies.set(sessionCookie, newSessionToken);
 
-    const tokenChunks = newSessionToken.match(regex);
-
-    if (tokenChunks) {
-      for (const chunk of tokenChunks) {
-        request.cookies.set(
-          `${sessionCookie}.${tokenChunks.indexOf(chunk)}`,
-          chunk
-        );
-      }
-    }
-
-    // Return the response with the updated cookies within the request headers
     const response = NextResponse.next({
       request: {
         headers: request.headers,
       },
     });
 
-    // Set the updated cookies within the response headers
-    if (tokenChunks) {
-      for (const chunk of tokenChunks) {
-        response.cookies.set(
-          `${sessionCookie}.${tokenChunks.indexOf(chunk)}`,
-          chunk
-        );
-      }
-    }
+    // Set the session cookie on response which will be sent to the browser
+    response.cookies.set(sessionCookie, newSessionToken);
 
     return response;
   } catch (error) {
@@ -208,8 +160,17 @@ export const middleware = auth(async (request) => {
     // If no session token is found, return the response, indicating that the user is not authenticated
     if (!sessionToken) return response;
 
+    // TODO: discuss the best way to stabilize these expiry times
+    const ACCESS_TOKEN_EXPIRES_AT = sessionToken.expires_at * 1000;
+    const REFRESH_TOKEN_EXPIRES_AT = ACCESS_TOKEN_EXPIRES_AT + 60000;
+
+    // If the refresh token has expired, sign out the user
+    if (Date.now() >= REFRESH_TOKEN_EXPIRES_AT) {
+      return await signOut(request);
+    }
+
     // If the access token has expired, fetching the updated claims will throw an error, so we need to refresh the access token anyways. This should also provide the updated claims set by the user to the backend through the updated access token.
-    if (Date.now() >= sessionToken.expires_at * 1000) {
+    if (Date.now() >= ACCESS_TOKEN_EXPIRES_AT) {
       const refreshResponse = await refreshAccessToken(sessionToken, request);
 
       if (refreshResponse.ok) {

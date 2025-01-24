@@ -29,7 +29,6 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     sub?: string;
-    id_token?: string;
     row_id?: string;
     preferred_username?: string;
     given_name?: string;
@@ -51,7 +50,6 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
-      idToken?: string;
     } & NextAuthUser;
   }
 }
@@ -60,6 +58,12 @@ declare module "next-auth" {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
+  debug: process.env.NODE_ENV === "development",
+  session: {
+    // 2 minutes
+    // ! NB: this should match the expiry time of the refresh token from the IDP
+    maxAge: 60 * 2,
+  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,
@@ -85,7 +89,6 @@ export const { handlers, auth } = NextAuth({
         token.preferred_username = profile?.preferred_username!;
         token.given_name = profile?.given_name!;
         token.family_name = profile?.family_name!;
-        token.id_token = account.id_token;
         token.access_token = account.access_token!;
         token.expires_at = account.expires_at!;
         token.refresh_token = account.refresh_token!;
@@ -107,7 +110,6 @@ export const { handlers, auth } = NextAuth({
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
-      session.user.idToken = token.id_token;
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * 1000);
