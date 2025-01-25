@@ -12,6 +12,7 @@ import {
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
@@ -80,9 +81,24 @@ const CreateOrganization = () => {
 
   const { user } = useAuth();
 
+  const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
+
+  useHotkeys(
+    "mod+o",
+    () => setIsOpen(!isOpen),
+    {
+      enabled: !!user && !isCreateProjectDialogOpen,
+      enableOnFormTags: true,
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateProjectDialogOpen]
+  );
 
   const { data, mutateAsync: createOrganization } =
     useCreateOrganizationMutation();
