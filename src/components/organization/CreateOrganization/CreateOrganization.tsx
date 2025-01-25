@@ -21,7 +21,7 @@ import {
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -53,6 +53,8 @@ const baseSchema = z.object({
 const createOrganizationSchema = baseSchema.superRefine(
   async ({ slug }, ctx) => {
     if (!slug.length) return z.NEVER;
+
+    const sdk = await getSdk();
 
     const { organizationBySlug } = await sdk.Organization({
       slug,
@@ -93,6 +95,7 @@ const CreateOrganization = () => {
         );
 
         setIsOpen(false);
+        reset();
       },
     });
 
@@ -153,7 +156,6 @@ const CreateOrganization = () => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
         <Field name="name">

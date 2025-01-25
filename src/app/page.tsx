@@ -8,6 +8,7 @@ import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
+  useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -15,6 +16,7 @@ import { getAuthSession, getQueryClient } from "lib/util";
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
+const startOfToday = dayjs().startOf("day").toDate();
 
 /**
  * Home page. This route is dynamically rendered based on the user's authentication status.
@@ -40,25 +42,31 @@ const HomePage = async () => {
     }),
     queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
       }),
       queryFn: useDashboardAggregatesQuery.fetcher({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
       }),
     }),
     queryClient.prefetchQuery({
       queryKey: useWeeklyFeedbackQuery.getKey({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
         startDate: oneWeekAgo,
+        endDate: startOfToday,
       }),
       queryFn: useWeeklyFeedbackQuery.fetcher({
-        userId: session.user.id!,
+        userId: session.user.rowId!,
         startDate: oneWeekAgo,
+        endDate: startOfToday,
       }),
     }),
     queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.id! }),
-      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.id! }),
+      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
+      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
+      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
     }),
   ]);
 

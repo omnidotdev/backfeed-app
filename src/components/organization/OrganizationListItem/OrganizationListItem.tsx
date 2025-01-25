@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import dayjs from "dayjs";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
-import dayjs from "dayjs";
 
 import { Link, OverflowText } from "components/core";
 

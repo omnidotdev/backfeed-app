@@ -1,25 +1,43 @@
+import { GraphQLClient } from "graphql-request";
+import ms from "ms";
 import NextAuth from "next-auth";
 import Keycloak from "next-auth/providers/keycloak";
 
 // import required for `next-auth/jwt` module augmentation: https://github.com/nextauthjs/next-auth/issues/9571#issuecomment-2143363518
 import "next-auth/jwt";
 
+import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { sdk } from "lib/graphql";
+import { isDevEnv } from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
+
+/**
+ * GraphQL client SDK.
+ */
+const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
+  const graphqlClient = new GraphQLClient(
+    process.env.NEXT_PUBLIC_API_BASE_URL!,
+    { headers }
+  );
+
+  return getSdk(graphqlClient);
+};
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
  */
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
+    sub?: string;
+    row_id?: string;
+    preferred_username?: string;
     given_name?: string;
     family_name?: string;
-    preferred_username?: string;
-    sub?: string;
-    id_token?: string;
+    access_token: string;
+    expires_at: number;
+    refresh_token: string;
   }
 }
 
@@ -28,13 +46,12 @@ declare module "next-auth/jwt" {
  */
 declare module "next-auth" {
   interface Session {
+    accessToken: string;
+    refreshToken: string;
+    expires: Date;
     user: {
       rowId?: string;
       hidraId?: string;
-      firstName?: string;
-      lastName?: string;
-      username?: string;
-      idToken?: string;
     } & NextAuthUser;
   }
 }
@@ -43,6 +60,12 @@ declare module "next-auth" {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
+  debug: isDevEnv,
+  session: {
+    // 30 minutes
+    // ! NB: this should match the expiry time of the refresh token from the IDP
+    maxAge: 60 * 30,
+  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,
@@ -60,52 +83,29 @@ export const { handlers, auth } = NextAuth({
   ],
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
+    // verify authentication within middleware
+    authorized: async ({ auth }) => !!auth,
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      if (profile) {
-        // NB: Auth.js makes its own rotating `sub`, not to be confused with the IDP `sub`. Auth.js sets this on `token.sub` by default, so it is overwritten here
-        if (profile.sub) token.sub = profile.sub;
-        if (profile.given_name) token.given_name = profile.given_name;
-        if (profile.family_name) token.family_name = profile.family_name;
-        if (profile.preferred_username)
-          token.preferred_username = profile.preferred_username;
-      }
-
+      // Account is present on fresh login. We can set additional claims on the token given this information.
       if (account) {
-        token.id_token = account.id_token;
-      }
+        token.sub = profile?.sub!;
+        token.preferred_username = profile?.preferred_username!;
+        token.given_name = profile?.given_name!;
+        token.family_name = profile?.family_name!;
+        token.access_token = account.access_token!;
+        token.expires_at = account.expires_at!;
+        token.refresh_token = account.refresh_token!;
 
-      // create or update local app user
-      // TODO refactor to simple upsert (one mutation) (https://linear.app/omnidev/issue/OMNI-144/set-up-upsert-mutations-plugin)
-      // TODO refactor to more robust app database sync method, e.g. periodic sync or event-driven activity like webhooks (https://linear.app/omnidev/issue/OMNI-145/set-up-event-driven-architecture-for-local-app-db-user-sync)
-      const user = await sdk.User({ hidraId: token.sub! });
-
-      if (!user.userByHidraId) {
-        // create app user synced with IDP user
-        await sdk.CreateUser({
+        const user = await sdk({
+          headers: { Authorization: `Bearer ${account.access_token}` },
+        }).User({
           hidraId: token.sub!,
-          username: token.preferred_username,
-          firstName: token.given_name,
-          lastName: token.family_name,
         });
-      } else {
-        // update app user if any fields have changed
-        if (
-          ["username", "firstName", "lastName"].some(
-            (field) =>
-              user.userByHidraId?.[field as keyof typeof user.userByHidraId] !==
-              token[field]
-          )
-        ) {
-          await sdk.UpdateUser({
-            hidraId: token.sub!,
-            patch: {
-              username: token.preferred_username,
-              firstName: token.given_name,
-              lastName: token.family_name,
-            },
-          });
-        }
+
+        token.row_id = user?.userByHidraId?.rowId;
+
+        return token;
       }
 
       return token;
@@ -113,18 +113,10 @@ export const { handlers, auth } = NextAuth({
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
-      session.user.firstName = token.given_name;
-      session.user.lastName = token.family_name;
-      session.user.username = token.preferred_username;
-      session.user.idToken = token.id_token;
-
-      // retrieve user by HIDRA ID
-      const { userByHidraId } = await sdk.User({ hidraId: token.sub! });
-
-      if (userByHidraId) {
-        // TODO: discuss removing additional augmentation of the session object (i.e. user.rowId) and just overwriting the user.id field here. Currently, the user.id field is ovewritten within the `useAuth` hook to supply mock data, but when that is no longer required, we could simply overwrite that field here instead.
-        session.user.rowId = userByHidraId.rowId;
-      }
+      session.user.rowId = token.row_id;
+      session.accessToken = token.access_token;
+      session.refreshToken = token.refresh_token;
+      session.expires = new Date(token.expires_at * ms("1s"));
 
       return session;
     },

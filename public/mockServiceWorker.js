@@ -273,7 +273,7 @@ function sendToClient(client, message, transferrables = []) {
     const channel = new MessageChannel();
 
     channel.port1.onmessage = (event) => {
-      if (event.data && event.data.error) {
+      if (event.data?.error) {
         return reject(event.data.error);
       }
 
