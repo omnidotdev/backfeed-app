@@ -3,6 +3,7 @@ import { encode, getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 import { auth } from "auth";
+import { isProdEnv } from "lib/config";
 
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
@@ -162,7 +163,7 @@ const refreshAccessToken = async (
       name: sessionCookie,
       value: newSessionToken,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProdEnv,
       sameSite: "lax", // default for authjs session cookies
       path: "/",
     });

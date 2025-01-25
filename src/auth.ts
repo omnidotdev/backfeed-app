@@ -8,6 +8,7 @@ import "next-auth/jwt";
 
 import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
+import { isDevEnv } from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
@@ -59,7 +60,7 @@ declare module "next-auth" {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
-  debug: process.env.NODE_ENV === "development",
+  debug: isDevEnv,
   session: {
     // 30 minutes
     // ! NB: this should match the expiry time of the refresh token from the IDP
