@@ -15,6 +15,7 @@ import {
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
@@ -85,9 +86,26 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const { user } = useAuth();
 
+  const { isOpen: isCreateOrganizationDialogOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
+
+  useHotkeys(
+    "mod+p",
+    () => setIsOpen(!isOpen),
+    {
+      enabled: !!user && !isCreateOrganizationDialogOpen,
+      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enableOnFormTags: true,
+      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateOrganizationDialogOpen]
+  );
 
   const { data: organizations } = useOrganizationsQuery(
     {
