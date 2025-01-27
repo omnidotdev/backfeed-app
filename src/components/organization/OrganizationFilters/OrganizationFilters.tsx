@@ -10,11 +10,11 @@ import {
 } from "@omnidev/sigil";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { HiOutlineSlash } from "react-icons/hi2";
 import { useIsClient, useToggle } from "usehooks-ts";
 
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
-import { HiOutlineSlash } from "react-icons/hi2";
 
 interface SegmentOption {
   /** Label for the segment option. */
@@ -77,7 +77,6 @@ const OrganizationFilters = () => {
             px: 8,
             justifyContent: "center",
           }}
-          // NB: add a gap and display to allow the entire width of segment group to be clickable.
           gap={0}
           display="flex"
         />

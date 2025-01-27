@@ -98,7 +98,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
 
   if (isAuthLoading) return null;
 
-  if (isAllOrganizationsError || isUserOrganizationsError)
+  if (userOrganizations ? isUserOrganizationsError : isAllOrganizationsError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;
 
   if (
