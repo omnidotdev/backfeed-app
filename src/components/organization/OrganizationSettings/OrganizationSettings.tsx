@@ -71,7 +71,7 @@ const OrganizationSettings = () => {
       onClick: () =>
         leaveOrganization({
           organizationId: organization?.rowId!,
-          userId: user?.hidraId!,
+          userId: user?.rowId!,
         }),
     },
     triggerProps: {
