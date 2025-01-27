@@ -9,10 +9,7 @@ query Organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {
-      name: { includesInsensitive: $search }
-      slug: { equalTo: $slug }
-    }
+    filter: { name: { includesInsensitive: $search }, slug: { equalTo: $slug } }
   ) {
     totalCount
     nodes {
