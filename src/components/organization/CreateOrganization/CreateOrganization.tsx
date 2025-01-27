@@ -17,6 +17,7 @@ import { z } from "zod";
 
 import { FormFieldError } from "components/core";
 import {
+  Role,
   useCreateOrganizationMutation,
   useCreateUserOrganizationMutation,
 } from "generated/graphql";
@@ -143,6 +144,7 @@ const CreateOrganization = () => {
             userOrganization: {
               userId: user?.rowId!,
               organizationId: createOrganizationResponse?.organization?.rowId!,
+              role: Role.Owner,
             },
           },
         });
