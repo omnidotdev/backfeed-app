@@ -19,7 +19,11 @@ import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";
-import type { Organization } from "generated/graphql";
+import type {
+  Organization,
+  OrganizationsQueryVariables,
+  UserOrganizationsQueryVariables,
+} from "generated/graphql";
 
 /**
  * Organization list.
@@ -36,52 +40,53 @@ const OrganizationList = ({ ...props }: StackProps) => {
     type: DialogType.CreateOrganization,
   });
 
-  const sharedVariables = {
+  const sharedVariables:
+    | OrganizationsQueryVariables
+    | UserOrganizationsQueryVariables = {
     pageSize,
     offset: (page - 1) * pageSize,
     search: debouncedSearch,
   };
 
   const {
-    data: allOrganizations,
-    isLoading: isAllOrganizationsLoading,
-    isError: isAllOrganizationsError,
-  } = useOrganizationsQuery(
+      data: allOrganizations,
+      isLoading: isAllOrganizationsLoading,
+      isError: isAllOrganizationsError,
+    } = useOrganizationsQuery(
+      {
+        ...sharedVariables,
+        orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      },
+      {
+        enabled: !!user?.rowId,
+        placeholderData: keepPreviousData,
+        select: (data) => ({
+          totalCount: data?.organizations?.totalCount,
+          organizations: data?.organizations?.nodes,
+        }),
+      }
+    ),
     {
-      ...sharedVariables,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-    },
-    {
-      enabled: !!user?.rowId,
-      placeholderData: keepPreviousData,
-      select: (data) => ({
-        totalCount: data?.organizations?.totalCount,
-        organizations: data?.organizations?.nodes,
-      }),
-    }
-  );
-
-  const {
-    data: allUserOrganizations,
-    isLoading: isUserOrganizationsLoading,
-    isError: isUserOrganizationsError,
-  } = useUserOrganizationsQuery(
-    {
-      ...sharedVariables,
-      orderBy: [UserOrganizationOrderBy.OrganizationIdAsc],
-      userId: user?.rowId!,
-    },
-    {
-      enabled: !!user?.rowId,
-      placeholderData: keepPreviousData,
-      select: (data) => ({
-        totalCount: data?.userOrganizations?.totalCount,
-        organizations: data?.userOrganizations?.nodes.flatMap(
-          (node) => node?.organization
-        ),
-      }),
-    }
-  );
+      data: allUserOrganizations,
+      isLoading: isUserOrganizationsLoading,
+      isError: isUserOrganizationsError,
+    } = useUserOrganizationsQuery(
+      {
+        ...sharedVariables,
+        userId: user?.rowId!,
+        orderBy: [UserOrganizationOrderBy.OrganizationIdAsc],
+      },
+      {
+        enabled: !!user?.rowId && userOrganizations,
+        placeholderData: keepPreviousData,
+        select: (data) => ({
+          totalCount: data?.userOrganizations?.totalCount,
+          organizations: data?.userOrganizations?.nodes.map(
+            (node) => node?.organization
+          ),
+        }),
+      }
+    );
 
   const organizations = userOrganizations
     ? allUserOrganizations?.organizations
@@ -96,7 +101,9 @@ const OrganizationList = ({ ...props }: StackProps) => {
   if (isAllOrganizationsError || isUserOrganizationsError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;
 
-  if (isAllOrganizationsLoading || isUserOrganizationsLoading)
+  if (
+    userOrganizations ? isUserOrganizationsLoading : isAllOrganizationsLoading
+  )
     return (
       <Stack>
         <SkeletonArray count={6} h={36} borderRadius="sm" />
