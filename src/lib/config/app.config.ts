@@ -305,6 +305,12 @@ const app = {
           actionLabel: "Leave",
         },
       },
+      joinOrganization: {
+        title: "Join Organization",
+        description:
+          "You will be able to collaborate with other members of this organization.",
+        actionLabel: "Join",
+      },
     },
   },
   // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)

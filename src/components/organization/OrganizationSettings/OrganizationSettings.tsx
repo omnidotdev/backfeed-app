@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, HStack, Stack, Text } from "@omnidev/sigil";
+import { Button, Divider, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { RiUserSharedLine } from "react-icons/ri";
@@ -9,6 +9,8 @@ import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
+  Role,
+  useCreateUserOrganizationMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
@@ -22,14 +24,17 @@ const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
+const joinOrganizationDetails =
+  app.organizationSettingsPage.cta.joinOrganization;
 
-// TODO: discuss joining an organization
+// TODO: discuss joining an organization. Should this be invite only?
 
 /** Organization settings. */
 const OrganizationSettings = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const { user } = useAuth();
   const router = useRouter();
+
+  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -48,9 +53,8 @@ const OrganizationSettings = () => {
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onMutate: () => router.replace("/"),
-    });
+    { mutate: leaveOrganization } = useLeaveOrganizationMutation(),
+    { mutate: joinOrganization } = useCreateUserOrganizationMutation();
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -89,37 +93,59 @@ const OrganizationSettings = () => {
     <Stack gap={6}>
       <UpdateOrganization />
 
-      {isMember && (
-        <SectionContainer
-          title={
-            isOwner
+      <SectionContainer
+        title={
+          isMember
+            ? isOwner
               ? deleteOrganizationDetails.title
               : leaveOrganizationDetails.title
-          }
-          description={
-            isOwner
+            : joinOrganizationDetails.title
+        }
+        description={
+          isMember
+            ? isOwner
               ? deleteOrganizationDetails.description
               : leaveOrganizationDetails.description
-          }
-          border="1px solid"
-          borderColor="omni.ruby"
-        >
-          <Divider />
+            : joinOrganizationDetails.description
+        }
+        border="1px solid"
+        borderColor={isMember ? "omni.ruby" : "omni.emerald"}
+      >
+        <Divider />
 
-          <HStack alignItems="center" justifyContent="space-between">
-            <Stack gap={1}>
-              <Text fontWeight="semibold">{organization?.name}</Text>
+        <HStack alignItems="center" justifyContent="space-between">
+          <Stack gap={1}>
+            <Text fontWeight="semibold">{organization?.name}</Text>
 
-              <Text
-                fontSize="sm"
-                color="foreground.muted"
-              >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
-            </Stack>
+            <Text
+              fontSize="sm"
+              color="foreground.muted"
+            >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
+          </Stack>
 
+          {isMember ? (
             <DestructiveAction {...DESTRUCTIVE_ACTION} />
-          </HStack>
-        </SectionContainer>
-      )}
+          ) : (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    userOrganization: {
+                      userId: user?.rowId!,
+                      organizationId: organization?.rowId!,
+                      role: Role.Member,
+                    },
+                  },
+                })
+              }
+            >
+              {joinOrganizationDetails.actionLabel}
+            </Button>
+          )}
+        </HStack>
+      </SectionContainer>
     </Stack>
   );
 };
