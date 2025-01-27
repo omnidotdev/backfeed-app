@@ -4478,6 +4478,14 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
+export type UpdateOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: OrganizationPatch;
+}>;
+
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', organization?: { __typename?: 'Organization', slug: string } | null } | null };
+
 export type CreateFeedbackMutationVariables = Exact<{
   input: CreatePostInput;
 }>;
@@ -4528,7 +4536,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', clientMutationId?: string | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4536,7 +4544,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type CreateUserOrganizationMutationVariables = Exact<{
   input: CreateUserOrganizationInput;
@@ -4581,7 +4589,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4600,7 +4608,7 @@ export type OrganizationsQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4670,6 +4678,7 @@ export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: '
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   startDate: Scalars['Datetime']['input'];
+  endDate: Scalars['Datetime']['input'];
 }>;
 
 
@@ -4771,6 +4780,15 @@ export const LeaveOrganizationDocument = gql`
   }
 }
     `;
+export const UpdateOrganizationDocument = gql`
+    mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
+  updateOrganization(input: {rowId: $rowId, patch: $patch}) {
+    organization {
+      slug
+    }
+  }
+}
+    `;
 export const CreateFeedbackDocument = gql`
     mutation CreateFeedback($input: CreatePostInput!) {
   createPost(input: $input) {
@@ -4825,14 +4843,18 @@ export const CreateUserDocument = gql`
   createUser(
     input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
   ) {
-    clientMutationId
+    user {
+      rowId
+    }
   }
 }
     `;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
   updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
-    clientMutationId
+    user {
+      rowId
+    }
   }
 }
     `;
@@ -4898,6 +4920,7 @@ export const OrganizationDocument = gql`
     rowId
     name
     slug
+    updatedAt
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
@@ -4943,6 +4966,7 @@ export const OrganizationsDocument = gql`
       rowId
       name
       slug
+      updatedAt
       projects {
         totalCount
       }
@@ -5088,9 +5112,9 @@ export const UserDocument = gql`
 }
     `;
 export const WeeklyFeedbackDocument = gql`
-    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
   posts(
-    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate, lessThan: $endDate}}
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
       keys
@@ -5129,6 +5153,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     LeaveOrganization(variables: LeaveOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<LeaveOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<LeaveOrganizationMutation>(LeaveOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LeaveOrganization', 'mutation', variables);
+    },
+    UpdateOrganization(variables: UpdateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationMutation>(UpdateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganization', 'mutation', variables);
     },
     CreateFeedback(variables: CreateFeedbackMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateFeedbackMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateFeedbackMutation>(CreateFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateFeedback', 'mutation', variables);

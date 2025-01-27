@@ -6,5 +6,7 @@ export { default as OrganizationListItem } from "./OrganizationListItem/Organiza
 export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export { default as OrganizationOverview } from "./OrganizationOverview/OrganizationOverview";
 export { default as OrganizationProjectsOverview } from "./OrganizationProjectsOverview/OrganizationProjectsOverview";
+export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";
 export { default as OrganizationsOverview } from "./OrganizationsOverview/OrganizationsOverview";
 export { default as ProjectCard } from "./ProjectCard/ProjectCard";
+export { default as UpdateOrganization } from "./UpdateOrganization/UpdateOrganization";

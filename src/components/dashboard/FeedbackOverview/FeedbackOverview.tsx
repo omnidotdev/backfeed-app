@@ -18,6 +18,7 @@ import { token } from "generated/panda/tokens";
 import { useAuth } from "lib/hooks";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
+const startOfToday = dayjs().startOf("day").toDate();
 
 const getFormattedDate = (diff: number) =>
   dayjs(oneWeekAgo).add(diff, "day").format("ddd");
@@ -34,11 +35,12 @@ const FeedbackOverview = () => {
     isError,
   } = useWeeklyFeedbackQuery(
     {
-      userId: user?.id!,
+      userId: user?.rowId!,
       startDate: oneWeekAgo,
+      endDate: startOfToday,
     },
     {
-      enabled: !!user?.id,
+      enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
           name: dayjs(aggregate.keys?.[0]).format("ddd"),

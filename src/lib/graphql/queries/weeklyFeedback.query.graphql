@@ -1,4 +1,8 @@
-query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+query WeeklyFeedback(
+  $userId: UUID!
+  $startDate: Datetime!
+  $endDate: Datetime!
+) {
   posts(
     filter: {
       project: {
@@ -6,7 +10,7 @@ query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
           userOrganizations: { some: { userId: { equalTo: $userId } } }
         }
       }
-      createdAt: { greaterThanOrEqualTo: $startDate }
+      createdAt: { greaterThanOrEqualTo: $startDate, lessThan: $endDate }
     }
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {

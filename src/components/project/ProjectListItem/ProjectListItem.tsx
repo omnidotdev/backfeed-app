@@ -78,6 +78,7 @@ const ProjectListItem = ({
             </Link>
           </Stack>
 
+          {/* TODO: handle in dedicated project settings page. */}
           {isOrganizationOwner && (
             <DestructiveAction
               title={deleteProjectDetails.title}
@@ -89,7 +90,8 @@ const ProjectListItem = ({
               }}
               triggerProps={{
                 "aria-label": `${deleteProjectDetails.action.label} organization`,
-                color: "omni.ruby",
+                colorPalette: "omni.ruby",
+                px: "2",
               }}
             />
           )}

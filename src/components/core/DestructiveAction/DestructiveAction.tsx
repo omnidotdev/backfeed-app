@@ -15,9 +15,24 @@ import { HiOutlineTrash } from "react-icons/hi2";
 
 import { app } from "lib/config";
 
-import type { ButtonProps, DialogProps } from "@omnidev/sigil";
+import type {
+  ButtonProps,
+  DialogProps,
+  IconProps,
+  JsxStyleProps,
+} from "@omnidev/sigil";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
+
+const destructiveButtonStyles: JsxStyleProps = {
+  color: "white",
+  backgroundColor: {
+    base: "red",
+    _hover: "destructive.hover",
+    _active: "destructive.active",
+    _focus: "destructive.focus",
+  },
+};
 
 interface Action extends ButtonProps {
   /** Action label. */
@@ -37,6 +52,10 @@ export interface Props extends DialogProps {
   destructiveInput?: string;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
+  /** Dialog trigger button label. */
+  triggerLabel?: string;
+  /** Icon props. */
+  iconProps?: Omit<IconProps, "src">;
 }
 
 /**
@@ -48,8 +67,10 @@ const DestructiveAction = ({
   action,
   icon = HiOutlineTrash,
   triggerProps,
+  iconProps,
   children,
   destructiveInput,
+  triggerLabel,
   ...rest
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
@@ -60,8 +81,10 @@ const DestructiveAction = ({
 
   const actions: Action[] = [
     {
+      variant: "solid",
+      ...destructiveButtonStyles,
       ...action,
-      variant: "outline",
+      // variant: "outline",
       disabled: inputValue !== requiredDestructiveInput,
       onClick: (e) => {
         action.onClick?.(e);
@@ -71,6 +94,7 @@ const DestructiveAction = ({
     {
       label: app.actions.cancel.label,
       onClick: onClose,
+      variant: "outline",
     },
   ];
 
@@ -81,8 +105,16 @@ const DestructiveAction = ({
       open={isOpen}
       onOpenChange={onToggle}
       trigger={
-        <Button variant="icon" p={1} bgColor="transparent" {...triggerProps}>
-          <Icon src={icon} w={5} h={5} />
+        <Button
+          type="button"
+          variant="solid"
+          fontSize="md"
+          {...destructiveButtonStyles}
+          {...triggerProps}
+        >
+          <Icon src={icon} {...iconProps} />
+
+          {triggerLabel}
         </Button>
       }
       triggerProps={triggerProps}

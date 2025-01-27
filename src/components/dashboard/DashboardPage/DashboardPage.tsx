@@ -12,6 +12,7 @@ import { Page } from "components/layout";
 import {
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
+  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -23,16 +24,26 @@ import { DialogType } from "store";
 const DashboardPage = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
+  const { data: firstName } = useUserQuery(
+    {
+      hidraId: user?.hidraId!,
+    },
+    {
+      enabled: !!user?.hidraId,
+      select: (data) => data?.userByHidraId?.firstName,
+    }
+  );
+
   const {
     data: dashboardAggregates,
     isLoading,
     isError,
   } = useDashboardAggregatesQuery(
     {
-      userId: user?.id!,
+      userId: user?.rowId!,
     },
     {
-      enabled: !!user?.id,
+      enabled: !!user?.rowId,
       select: (data) => ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
@@ -68,7 +79,7 @@ const DashboardPage = () => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${user?.firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
         description: app.dashboardPage.description,
         cta: [
           {

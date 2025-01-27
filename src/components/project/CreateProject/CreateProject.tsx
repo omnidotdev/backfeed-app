@@ -15,6 +15,7 @@ import {
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
@@ -24,7 +25,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -55,6 +56,8 @@ const createProjectSchema = baseSchema.superRefine(
   async ({ organizationId, slug }, ctx) => {
     if (!organizationId.length || !slug.length) return z.NEVER;
 
+    const sdk = await getSdk();
+
     const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
       organizationId,
       slug,
@@ -83,9 +86,26 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const { user } = useAuth();
 
+  const { isOpen: isCreateOrganizationDialogOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
+
+  useHotkeys(
+    "mod+p",
+    () => setIsOpen(!isOpen),
+    {
+      enabled: !!user && !isCreateOrganizationDialogOpen,
+      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enableOnFormTags: true,
+      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateOrganizationDialogOpen]
+  );
 
   const { data: organizations } = useOrganizationsQuery(
     {
@@ -111,6 +131,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       );
 
       setIsOpen(false);
+      reset();
     },
   });
 
@@ -158,7 +179,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
         <Field name="organizationId">
