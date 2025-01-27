@@ -1,8 +1,12 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
+import {
+  useOrganizationQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -61,25 +65,39 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationQuery.getKey({
-      slug: organizationSlug,
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({
+        slug: organizationSlug,
+      }),
+      queryFn: useOrganizationQuery.fetcher({
+        slug: organizationSlug,
+      }),
     }),
-    queryFn: useOrganizationQuery.fetcher({
-      slug: organizationSlug,
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
     }),
-  });
+  ]);
 
   return (
-    <Page
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
-        description: app.organizationSettingsPage.description,
-      }}
-    >
-      <OrganizationSettings />
-    </Page>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
+          description: app.organizationSettingsPage.description,
+        }}
+      >
+        <OrganizationSettings />
+      </Page>
+    </HydrationBoundary>
   );
 };
 

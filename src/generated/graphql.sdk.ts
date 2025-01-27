@@ -4647,6 +4647,14 @@ export type OrganizationMetricsQueryVariables = Exact<{
 
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
+export type OrganizationRoleQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type OrganizationRoleQuery = { __typename?: 'Query', userOrganizationByUserIdAndOrganizationId?: { __typename?: 'UserOrganization', role: Role } | null };
+
 export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5002,6 +5010,16 @@ export const OrganizationMetricsDocument = gql`
   }
 }
     `;
+export const OrganizationRoleDocument = gql`
+    query OrganizationRole($userId: UUID!, $organizationId: UUID!) {
+  userOrganizationByUserIdAndOrganizationId(
+    userId: $userId
+    organizationId: $organizationId
+  ) {
+    role
+  }
+}
+    `;
 export const OrganizationsDocument = gql`
     query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
   organizations(
@@ -5250,6 +5268,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     OrganizationMetrics(variables: OrganizationMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationMetricsQuery>(OrganizationMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationMetrics', 'query', variables);
+    },
+    OrganizationRole(variables: OrganizationRoleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationRoleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OrganizationRoleQuery>(OrganizationRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationRole', 'query', variables);
     },
     Organizations(variables: OrganizationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationsQuery>(OrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organizations', 'query', variables);

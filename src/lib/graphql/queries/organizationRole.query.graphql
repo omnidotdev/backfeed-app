@@ -1,0 +1,8 @@
+query OrganizationRole($userId: UUID!, $organizationId: UUID!) {
+  userOrganizationByUserIdAndOrganizationId(
+    userId: $userId
+    organizationId: $organizationId
+  ) {
+    role
+  }
+}

@@ -4646,6 +4646,14 @@ export type OrganizationMetricsQueryVariables = Exact<{
 
 export type OrganizationMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null, userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number } | null };
 
+export type OrganizationRoleQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type OrganizationRoleQuery = { __typename?: 'Query', userOrganizationByUserIdAndOrganizationId?: { __typename?: 'UserOrganization', role: Role } | null };
+
 export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5582,6 +5590,59 @@ useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQuer
 
 
 useOrganizationMetricsQuery.fetcher = (variables: OrganizationMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables, options);
+
+export const OrganizationRoleDocument = `
+    query OrganizationRole($userId: UUID!, $organizationId: UUID!) {
+  userOrganizationByUserIdAndOrganizationId(
+    userId: $userId
+    organizationId: $organizationId
+  ) {
+    role
+  }
+}
+    `;
+
+export const useOrganizationRoleQuery = <
+      TData = OrganizationRoleQuery,
+      TError = unknown
+    >(
+      variables: OrganizationRoleQueryVariables,
+      options?: Omit<UseQueryOptions<OrganizationRoleQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationRoleQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<OrganizationRoleQuery, TError, TData>(
+      {
+    queryKey: ['OrganizationRole', variables],
+    queryFn: graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, variables),
+    ...options
+  }
+    )};
+
+useOrganizationRoleQuery.getKey = (variables: OrganizationRoleQueryVariables) => ['OrganizationRole', variables];
+
+export const useInfiniteOrganizationRoleQuery = <
+      TData = InfiniteData<OrganizationRoleQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationRoleQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<OrganizationRoleQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationRoleQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<OrganizationRoleQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['OrganizationRole.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteOrganizationRoleQuery.getKey = (variables: OrganizationRoleQueryVariables) => ['OrganizationRole.infinite', variables];
+
+
+useOrganizationRoleQuery.fetcher = (variables: OrganizationRoleQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, variables, options);
 
 export const OrganizationsDocument = `
     query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {

@@ -9,9 +9,11 @@ import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
+  Role,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -29,15 +31,24 @@ const OrganizationSettings = () => {
   const { user } = useAuth();
   const router = useRouter();
 
-  // NB: used to mock ownership
-  const isOrganizationOwner = true;
-
   const { data: organization } = useOrganizationQuery(
     {
       slug: organizationSlug,
     },
     {
       select: (data) => data.organizationBySlug,
+    }
+  );
+
+  const { data: isOrganizationOwner } = useOrganizationRoleQuery(
+    {
+      userId: user?.rowId!,
+      organizationId: organization?.rowId!,
+    },
+    {
+      enabled: !!user?.rowId && !!organization?.rowId,
+      select: (data) =>
+        data.userOrganizationByUserIdAndOrganizationId?.role === Role.Owner,
     }
   );
 
