@@ -1,9 +1,9 @@
 "use client";
 
-import { Button, Divider, HStack, Stack, Text } from "@omnidev/sigil";
+import { Button, Divider, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
-import { RiUserSharedLine } from "react-icons/ri";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
 import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
@@ -129,6 +129,7 @@ const OrganizationSettings = () => {
             <Button
               fontSize="md"
               colorPalette="green"
+              color="white"
               onClick={() =>
                 joinOrganization({
                   input: {
@@ -141,6 +142,7 @@ const OrganizationSettings = () => {
                 })
               }
             >
+              <Icon src={RiUserAddLine} />
               {joinOrganizationDetails.actionLabel}
             </Button>
           )}
