@@ -28,12 +28,14 @@ const destructiveButtonStyles: JsxStyleProps = {
   color: "white",
   backgroundColor: {
     base: "red",
-    _hover: "destructive.hover",
+    _hover: { base: "destructive.hover", _disabled: "red" },
     _active: "destructive.active",
     _focus: "destructive.focus",
   },
+  opacity: {
+    _disabled: 0.5,
+  },
 };
-
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;
@@ -75,17 +77,18 @@ const DestructiveAction = ({
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
-  const [requiredDestructiveInput] = useState(
-    `Permanently ${destructiveInput}`
-  );
+  // const [requiredDestructiveInput] = useState(
+  //   `Permanently ${destructiveInput}`
+  // );
 
   const actions: Action[] = [
     {
       variant: "solid",
       ...destructiveButtonStyles,
       ...action,
-      // variant: "outline",
-      // disabled: inputValue !== requiredDestructiveInput,
+      disabled: destructiveInput
+        ? inputValue !== destructiveInput || action.disabled
+        : action.disabled,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -124,10 +127,12 @@ const DestructiveAction = ({
 
       {destructiveInput && (
         <Stack gap={2}>
-          <Label>{`Type "${requiredDestructiveInput}" below to confirm`}</Label>
+          <Label>{`Type "${destructiveInput}" below to confirm`}</Label>
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            borderColor={{ base: "border.default", _focus: "red" }}
+            boxShadow={{ _focus: "0 0 0 1px red" }}
             mb={4}
           />
         </Stack>
@@ -135,14 +140,7 @@ const DestructiveAction = ({
 
       <HStack>
         {actions.map(({ label, ...rest }) => (
-          <Button
-            key={label}
-            flex={1}
-            disabled={
-              label === "Delete" && inputValue !== requiredDestructiveInput
-            }
-            {...rest}
-          >
+          <Button key={label} flex={1} {...rest}>
             {label}
           </Button>
         ))}

@@ -20,6 +20,7 @@ import type { DestructiveActionProps } from "components/core";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
+
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
