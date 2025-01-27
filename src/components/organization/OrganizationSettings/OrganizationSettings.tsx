@@ -14,7 +14,7 @@ import {
   useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useIsOrganizationOwner } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
 
@@ -38,7 +38,7 @@ const OrganizationSettings = () => {
     }
   );
 
-  const { data: isOrganizationOwner } = useIsOrganizationOwner({
+  const { isOwner } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,
   });
@@ -81,11 +81,7 @@ const OrganizationSettings = () => {
     },
   };
 
-  const DESTRUCTIVE_ACTION = isOrganizationOwner
-    ? DELETE_ORGANIZATION
-    : LEAVE_ORGANIZATION;
-
-  if (isOrganizationOwner == null) return null;
+  const DESTRUCTIVE_ACTION = isOwner ? DELETE_ORGANIZATION : LEAVE_ORGANIZATION;
 
   return (
     <Stack gap={6}>
@@ -93,12 +89,12 @@ const OrganizationSettings = () => {
 
       <SectionContainer
         title={
-          isOrganizationOwner
+          isOwner
             ? deleteOrganizationDetails.title
             : leaveOrganizationDetails.title
         }
         description={
-          isOrganizationOwner
+          isOwner
             ? deleteOrganizationDetails.description
             : leaveOrganizationDetails.description
         }

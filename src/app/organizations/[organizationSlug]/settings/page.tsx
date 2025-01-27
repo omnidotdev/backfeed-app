@@ -26,7 +26,7 @@ export const generateMetadata = async ({
   });
 
   return {
-    title: `${organization?.name} | ${app.name}`,
+    title: `${organization?.name} Settings | ${app.name}`,
   };
 };
 

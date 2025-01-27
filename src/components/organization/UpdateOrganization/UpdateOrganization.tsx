@@ -23,7 +23,7 @@ import {
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useIsOrganizationOwner } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -87,7 +87,7 @@ const UpdateOrganization = () => {
     }
   );
 
-  const { data: isOrganizationOwner } = useIsOrganizationOwner({
+  const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,
   });
@@ -133,7 +133,7 @@ const UpdateOrganization = () => {
   return (
     <SectionContainer
       title={
-        isOrganizationOwner
+        isAdmin
           ? updateOrganizationDetails.title
           : updateOrganizationDetails.memberTitle
       }
@@ -159,7 +159,7 @@ const UpdateOrganization = () => {
                   id="name"
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isOrganizationOwner}
+                  disabled={!isAdmin}
                 />
 
                 <FormFieldError
@@ -181,7 +181,7 @@ const UpdateOrganization = () => {
                   id="slug"
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isOrganizationOwner}
+                  disabled={!isAdmin}
                 />
 
                 <FormFieldError
@@ -209,11 +209,7 @@ const UpdateOrganization = () => {
               type="submit"
               width={48}
               disabled={
-                isSubmitting ||
-                !canSubmit ||
-                !isDirty ||
-                !isChanged ||
-                !isOrganizationOwner
+                isSubmitting || !canSubmit || !isDirty || !isChanged || !isAdmin
               }
               mt={4}
             >
