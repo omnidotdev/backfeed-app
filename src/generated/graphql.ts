@@ -4658,6 +4658,7 @@ export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
+  userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   excludeRoles?: InputMaybe<Array<Role> | Role>;
   search?: InputMaybe<Scalars['String']['input']>;
@@ -5646,12 +5647,12 @@ useInfiniteOrganizationRoleQuery.getKey = (variables: OrganizationRoleQueryVaria
 useOrganizationRoleQuery.fetcher = (variables: OrganizationRoleQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userOrganizationsExist: Boolean, $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {and: [{userId: {equalTo: $userId}}, {role: {notIn: $excludeRoles}}]}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {and: [{user: {rowId: {equalTo: $userId}}}, {role: {notIn: $excludeRoles}}]}}}
   ) {
     totalCount
     nodes {

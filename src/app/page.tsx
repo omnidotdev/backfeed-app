@@ -33,6 +33,7 @@ const HomePage = async () => {
     offset: 0,
     orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
     userId: session.user.rowId!,
+    userOrganizationsExist: true,
   };
 
   await Promise.all([
