@@ -54,7 +54,10 @@ const OrganizationSettings = () => {
       onMutate: () => router.replace("/"),
     }),
     { mutate: leaveOrganization } = useLeaveOrganizationMutation(),
-    { mutate: joinOrganization } = useCreateUserOrganizationMutation();
+    { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
+      useCreateUserOrganizationMutation();
+
+  const isCurrentMember = isMember || isJoinOrganizationPending;
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -84,6 +87,7 @@ const OrganizationSettings = () => {
     },
     triggerProps: {
       "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
+      disabled: isJoinOrganizationPending,
     },
   };
 
@@ -95,21 +99,21 @@ const OrganizationSettings = () => {
 
       <SectionContainer
         title={
-          isMember
+          isCurrentMember
             ? isOwner
               ? deleteOrganizationDetails.title
               : leaveOrganizationDetails.title
             : joinOrganizationDetails.title
         }
         description={
-          isMember
+          isCurrentMember
             ? isOwner
               ? deleteOrganizationDetails.description
               : leaveOrganizationDetails.description
             : joinOrganizationDetails.description
         }
         border="1px solid"
-        borderColor={isMember ? "omni.ruby" : "omni.emerald"}
+        borderColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
       >
         <Divider />
 
@@ -123,7 +127,7 @@ const OrganizationSettings = () => {
             >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
           </Stack>
 
-          {isMember ? (
+          {isCurrentMember ? (
             <DestructiveAction {...DESTRUCTIVE_ACTION} />
           ) : (
             <Button
