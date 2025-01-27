@@ -52,6 +52,7 @@ const OrganizationSettings = () => {
     title: deleteOrganizationDetails.destruciveAction.title,
     description: deleteOrganizationDetails.destruciveAction.description,
     triggerLabel: deleteOrganizationDetails.destruciveAction.actionLabel,
+    destructiveInput: deleteOrganizationDetails.title.toLowerCase() ?? "",
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),

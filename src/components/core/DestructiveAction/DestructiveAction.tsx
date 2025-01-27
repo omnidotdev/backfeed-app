@@ -76,7 +76,7 @@ const DestructiveAction = ({
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
   const [requiredDestructiveInput] = useState(
-    `Permanently delete ${destructiveInput}`
+    `Permanently ${destructiveInput}`
   );
 
   const actions: Action[] = [
@@ -85,7 +85,7 @@ const DestructiveAction = ({
       ...destructiveButtonStyles,
       ...action,
       // variant: "outline",
-      disabled: inputValue !== requiredDestructiveInput,
+      // disabled: inputValue !== requiredDestructiveInput,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -135,7 +135,14 @@ const DestructiveAction = ({
 
       <HStack>
         {actions.map(({ label, ...rest }) => (
-          <Button key={label} flex={1} {...rest}>
+          <Button
+            key={label}
+            flex={1}
+            disabled={
+              label === "Delete" && inputValue !== requiredDestructiveInput
+            }
+            {...rest}
+          >
             {label}
           </Button>
         ))}
