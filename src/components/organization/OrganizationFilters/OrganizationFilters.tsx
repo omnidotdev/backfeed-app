@@ -8,7 +8,7 @@ import {
   Input,
   SegmentGroup,
 } from "@omnidev/sigil";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient, useToggle } from "usehooks-ts";
 
