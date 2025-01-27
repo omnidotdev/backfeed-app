@@ -124,7 +124,7 @@ const CreateOrganization = () => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
     },
     onSubmit: async ({ value }) => {

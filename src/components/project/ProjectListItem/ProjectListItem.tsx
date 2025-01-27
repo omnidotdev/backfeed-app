@@ -9,6 +9,7 @@ import {
 import { DestructiveAction, Link, OverflowText } from "components/core";
 import { useDeleteProjectMutation } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { Project } from "generated/graphql";
 
@@ -16,8 +17,6 @@ const deleteProjectDetails = app.projectsPage.dialogs.deleteProject;
 
 interface Props {
   project: Partial<Project>;
-  /** ! TODO remove, just used to implement dynamic ownership check for now. */
-  index: number;
 }
 
 /**
@@ -25,11 +24,15 @@ interface Props {
  */
 const ProjectListItem = ({
   project: { slug, organization, name, description, posts, rowId },
-  index,
 }: Props) => {
-  const { mutate: deleteProject } = useDeleteProjectMutation();
+  const { user } = useAuth();
 
-  const isOrganizationOwner = index % 2 === 0;
+  const { isOwner } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
+
+  const { mutate: deleteProject } = useDeleteProjectMutation();
 
   const AGGREGATES = [
     {
@@ -79,7 +82,7 @@ const ProjectListItem = ({
           </Stack>
 
           {/* TODO: handle in dedicated project settings page. */}
-          {isOrganizationOwner && (
+          {isOwner && (
             <DestructiveAction
               title={deleteProjectDetails.title}
               description={deleteProjectDetails.description}

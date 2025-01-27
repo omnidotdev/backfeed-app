@@ -157,7 +157,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createProjectSchema,
     },
     onSubmit: ({ value }) =>

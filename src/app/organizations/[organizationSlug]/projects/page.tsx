@@ -4,7 +4,11 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
-import { useProjectsQuery } from "generated/graphql";
+import {
+  useOrganizationQuery,
+  useOrganizationRoleQuery,
+  useProjectsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
@@ -79,10 +83,26 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
     search,
   };
 
-  await queryClient.prefetchQuery({
-    queryKey: useProjectsQuery.getKey(variables),
-    queryFn: useProjectsQuery.fetcher(variables),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useProjectsQuery.getKey(variables),
+      queryFn: useProjectsQuery.fetcher(variables),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+    }),
+  ]);
 
   return (
     <Page

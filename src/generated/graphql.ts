@@ -4709,7 +4709,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organization?: { __typename?: 'Organization', slug: string } | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, slug: string } | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5967,6 +5967,7 @@ export const ProjectsDocument = `
       description
       slug
       organization {
+        rowId
         slug
       }
       posts {
