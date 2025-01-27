@@ -11,7 +11,7 @@ import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
 import {
   useDashboardAggregatesQuery,
-  useOrganizationsQuery,
+  useUserOrganizationsQuery,
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -51,13 +51,13 @@ const DashboardPage = () => {
     }
   );
 
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
+  const { data: numberOfOrganizations } = useUserOrganizationsQuery(
     {
       userId: user?.rowId!,
     },
     {
       enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
+      select: (data) => data?.userOrganizations?.totalCount,
     }
   );
 

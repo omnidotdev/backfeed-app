@@ -34,7 +34,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     pageSize: pageSize,
     offset: (page - 1) * pageSize,
     orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-    userId: session.user.rowId!,
     search,
   };
 

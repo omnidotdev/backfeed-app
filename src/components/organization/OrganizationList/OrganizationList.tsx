@@ -7,7 +7,12 @@ import { LuCirclePlus } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import {
+  OrganizationOrderBy,
+  UserOrganizationOrderBy,
+  useOrganizationsQuery,
+  useUserOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -20,7 +25,8 @@ import type { Organization } from "generated/graphql";
  * Organization list.
  */
 const OrganizationList = ({ ...props }: StackProps) => {
-  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
+  const [{ page, pageSize, search, userOrganizations }, setSearchParams] =
+    useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
@@ -30,13 +36,20 @@ const OrganizationList = ({ ...props }: StackProps) => {
     type: DialogType.CreateOrganization,
   });
 
-  const { data, isLoading, isError } = useOrganizationsQuery(
+  const sharedVariables = {
+    pageSize,
+    offset: (page - 1) * pageSize,
+    search: debouncedSearch,
+  };
+
+  const {
+    data: allOrganizations,
+    isLoading: isAllOrganizationsLoading,
+    isError: isAllOrganizationsError,
+  } = useOrganizationsQuery(
     {
-      pageSize,
-      offset: (page - 1) * pageSize,
+      ...sharedVariables,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.rowId!,
-      search: debouncedSearch,
     },
     {
       enabled: !!user?.rowId,
@@ -48,14 +61,42 @@ const OrganizationList = ({ ...props }: StackProps) => {
     }
   );
 
-  const organizations = data?.organizations;
+  const {
+    data: allUserOrganizations,
+    isLoading: isUserOrganizationsLoading,
+    isError: isUserOrganizationsError,
+  } = useUserOrganizationsQuery(
+    {
+      ...sharedVariables,
+      orderBy: [UserOrganizationOrderBy.OrganizationIdAsc],
+      userId: user?.rowId!,
+    },
+    {
+      enabled: !!user?.rowId,
+      placeholderData: keepPreviousData,
+      select: (data) => ({
+        totalCount: data?.userOrganizations?.totalCount,
+        organizations: data?.userOrganizations?.nodes.flatMap(
+          (node) => node?.organization
+        ),
+      }),
+    }
+  );
+
+  const organizations = userOrganizations
+    ? allUserOrganizations?.organizations
+    : allOrganizations?.organizations;
+
+  const totalCount = userOrganizations
+    ? allUserOrganizations?.totalCount
+    : allOrganizations?.totalCount;
 
   if (isAuthLoading) return null;
 
-  if (isError)
+  if (isAllOrganizationsError || isUserOrganizationsError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;
 
-  if (isLoading)
+  if (isAllOrganizationsLoading || isUserOrganizationsLoading)
     return (
       <Stack>
         <SkeletonArray count={6} h={36} borderRadius="sm" />
@@ -92,7 +133,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
       </Stack>
 
       <Pagination
-        count={data?.totalCount ?? 0}
+        count={totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) => setSearchParams({ page })}

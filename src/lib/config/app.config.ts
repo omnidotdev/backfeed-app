@@ -197,6 +197,16 @@ const app = {
       search: {
         placeholder: "Search all organizations...",
       },
+      segmentGroup: {
+        all: {
+          label: "All",
+          value: "all",
+        },
+        yours: {
+          label: "Yours",
+          value: "yours",
+        },
+      },
     },
   },
   organizationPage: {

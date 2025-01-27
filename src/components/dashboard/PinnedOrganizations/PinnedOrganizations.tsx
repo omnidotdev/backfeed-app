@@ -6,7 +6,10 @@ import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import {
+  UserOrganizationOrderBy,
+  useUserOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -28,16 +31,17 @@ const PinnedOrganizations = () => {
     data: pinnedOrganizations,
     isLoading,
     isError,
-  } = useOrganizationsQuery(
+  } = useUserOrganizationsQuery(
     {
       pageSize: 3,
       offset: 0,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      orderBy: [UserOrganizationOrderBy.OrganizationIdDesc],
       userId: user?.rowId!,
     },
     {
       enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.nodes,
+      select: (data) =>
+        data?.userOrganizations?.nodes.map((node) => node?.organization),
     }
   );
 

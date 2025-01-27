@@ -2,7 +2,6 @@ query Organizations(
   $pageSize: Int
   $offset: Int
   $orderBy: [OrganizationOrderBy!]
-  $userId: UUID!
   $search: String
   $slug: String
 ) {
@@ -13,7 +12,6 @@ query Organizations(
     filter: {
       name: { includesInsensitive: $search }
       slug: { equalTo: $slug }
-      userOrganizations: { some: { userId: { equalTo: $userId } } }
     }
   ) {
     totalCount

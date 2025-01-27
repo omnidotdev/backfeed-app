@@ -4601,7 +4601,6 @@ export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
-  userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -4673,6 +4672,18 @@ export type UserQueryVariables = Exact<{
 
 
 export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+
+export type UserOrganizationsQueryVariables = Exact<{
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserOrganizationOrderBy> | UserOrganizationOrderBy>;
+  userId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UserOrganizationsQuery = { __typename?: 'Query', userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'UserOrganization', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null> } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5535,12 +5546,12 @@ useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQuer
 useOrganizationMetricsQuery.fetcher = (variables: OrganizationMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}}
   ) {
     totalCount
     nodes {
@@ -5563,19 +5574,19 @@ export const useOrganizationsQuery = <
       TData = OrganizationsQuery,
       TError = unknown
     >(
-      variables: OrganizationsQueryVariables,
+      variables?: OrganizationsQueryVariables,
       options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<OrganizationsQuery, TError, TData>(
       {
-    queryKey: ['Organizations', variables],
+    queryKey: variables === undefined ? ['Organizations'] : ['Organizations', variables],
     queryFn: graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables),
     ...options
   }
     )};
 
-useOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations', variables];
+useOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations'] : ['Organizations', variables];
 
 export const useInfiniteOrganizationsQuery = <
       TData = InfiniteData<OrganizationsQuery>,
@@ -5589,17 +5600,17 @@ export const useInfiniteOrganizationsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables],
       queryFn: (metaData) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
+useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables];
 
 
-useOrganizationsQuery.fetcher = (variables: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
+useOrganizationsQuery.fetcher = (variables?: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {
@@ -6078,6 +6089,72 @@ useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite
 
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
+
+export const UserOrganizationsDocument = `
+    query UserOrganizations($pageSize: Int, $offset: Int, $orderBy: [UserOrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
+  userOrganizations(
+    first: $pageSize
+    offset: $offset
+    orderBy: $orderBy
+    filter: {userId: {equalTo: $userId}, organization: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}}}
+  ) {
+    totalCount
+    nodes {
+      organization {
+        rowId
+        name
+        slug
+        updatedAt
+        projects {
+          totalCount
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useUserOrganizationsQuery = <
+      TData = UserOrganizationsQuery,
+      TError = unknown
+    >(
+      variables: UserOrganizationsQueryVariables,
+      options?: Omit<UseQueryOptions<UserOrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserOrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UserOrganizationsQuery, TError, TData>(
+      {
+    queryKey: ['UserOrganizations', variables],
+    queryFn: graphqlFetch<UserOrganizationsQuery, UserOrganizationsQueryVariables>(UserOrganizationsDocument, variables),
+    ...options
+  }
+    )};
+
+useUserOrganizationsQuery.getKey = (variables: UserOrganizationsQueryVariables) => ['UserOrganizations', variables];
+
+export const useInfiniteUserOrganizationsQuery = <
+      TData = InfiniteData<UserOrganizationsQuery>,
+      TError = unknown
+    >(
+      variables: UserOrganizationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserOrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserOrganizationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UserOrganizationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserOrganizations.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UserOrganizationsQuery, UserOrganizationsQueryVariables>(UserOrganizationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUserOrganizationsQuery.getKey = (variables: UserOrganizationsQueryVariables) => ['UserOrganizations.infinite', variables];
+
+
+useUserOrganizationsQuery.fetcher = (variables: UserOrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserOrganizationsQuery, UserOrganizationsQueryVariables>(UserOrganizationsDocument, variables, options);
 
 export const WeeklyFeedbackDocument = `
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
