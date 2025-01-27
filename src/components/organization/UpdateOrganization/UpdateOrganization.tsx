@@ -23,6 +23,7 @@ import {
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { getSdk } from "lib/graphql";
+import { useAuth, useIsOrganizationOwner } from "lib/hooks";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -75,8 +76,7 @@ const UpdateOrganization = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  // NB: used to mock ownership
-  const isOrganizationOwner = true;
+  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -86,6 +86,11 @@ const UpdateOrganization = () => {
       select: (data) => data.organizationBySlug,
     }
   );
+
+  const { data: isOrganizationOwner } = useIsOrganizationOwner({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
 
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
     onSuccess: (data) => {

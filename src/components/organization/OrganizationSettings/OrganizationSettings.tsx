@@ -9,14 +9,12 @@ import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
-  Role,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
-  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useIsOrganizationOwner } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
 
@@ -40,17 +38,10 @@ const OrganizationSettings = () => {
     }
   );
 
-  const { data: isOrganizationOwner } = useOrganizationRoleQuery(
-    {
-      userId: user?.rowId!,
-      organizationId: organization?.rowId!,
-    },
-    {
-      enabled: !!user?.rowId && !!organization?.rowId,
-      select: (data) =>
-        data.userOrganizationByUserIdAndOrganizationId?.role === Role.Owner,
-    }
-  );
+  const { data: isOrganizationOwner } = useIsOrganizationOwner({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
@@ -93,6 +84,8 @@ const OrganizationSettings = () => {
   const DESTRUCTIVE_ACTION = isOrganizationOwner
     ? DELETE_ORGANIZATION
     : LEAVE_ORGANIZATION;
+
+  if (isOrganizationOwner == null) return null;
 
   return (
     <Stack gap={6}>
