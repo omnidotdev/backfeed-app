@@ -55,8 +55,8 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
       href: "/organizations",
     },
     {
-      label: organization.name ?? organization.slug!,
-      href: `/organizations/${organization.slug}`,
+      label: organization.name ?? organizationSlug,
+      href: `/organizations/${organizationSlug}`,
     },
     {
       label: app.organizationSettingsPage.breadcrumb,

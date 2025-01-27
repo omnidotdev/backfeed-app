@@ -23,6 +23,8 @@ const deleteOrganizationDetails =
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
+// TODO: discuss joining an organization
+
 /** Organization settings. */
 const OrganizationSettings = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
@@ -38,7 +40,7 @@ const OrganizationSettings = () => {
     }
   );
 
-  const { isOwner } = useOrganizationMembership({
+  const { isOwner, isMember } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,
   });
@@ -87,35 +89,37 @@ const OrganizationSettings = () => {
     <Stack gap={6}>
       <UpdateOrganization />
 
-      <SectionContainer
-        title={
-          isOwner
-            ? deleteOrganizationDetails.title
-            : leaveOrganizationDetails.title
-        }
-        description={
-          isOwner
-            ? deleteOrganizationDetails.description
-            : leaveOrganizationDetails.description
-        }
-        border="1px solid"
-        borderColor="omni.ruby"
-      >
-        <Divider />
+      {isMember && (
+        <SectionContainer
+          title={
+            isOwner
+              ? deleteOrganizationDetails.title
+              : leaveOrganizationDetails.title
+          }
+          description={
+            isOwner
+              ? deleteOrganizationDetails.description
+              : leaveOrganizationDetails.description
+          }
+          border="1px solid"
+          borderColor="omni.ruby"
+        >
+          <Divider />
 
-        <HStack alignItems="center" justifyContent="space-between">
-          <Stack gap={1}>
-            <Text fontWeight="semibold">{organization?.name}</Text>
+          <HStack alignItems="center" justifyContent="space-between">
+            <Stack gap={1}>
+              <Text fontWeight="semibold">{organization?.name}</Text>
 
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
-          </Stack>
+              <Text
+                fontSize="sm"
+                color="foreground.muted"
+              >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
+            </Stack>
 
-          <DestructiveAction {...DESTRUCTIVE_ACTION} />
-        </HStack>
-      </SectionContainer>
+            <DestructiveAction {...DESTRUCTIVE_ACTION} />
+          </HStack>
+        </SectionContainer>
+      )}
     </Stack>
   );
 };

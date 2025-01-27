@@ -4659,7 +4659,8 @@ export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
-  userId: Scalars['UUID']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -5021,12 +5022,12 @@ export const OrganizationRoleDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {and: [{userId: {equalTo: $userId}}, {role: {notIn: $excludeRoles}}]}}}
   ) {
     totalCount
     nodes {
@@ -5272,7 +5273,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     OrganizationRole(variables: OrganizationRoleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationRoleQuery>(OrganizationRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OrganizationRole', 'query', variables);
     },
-    Organizations(variables: OrganizationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationsQuery> {
+    Organizations(variables?: OrganizationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationsQuery>(OrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organizations', 'query', variables);
     },
     Posts(variables: PostsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PostsQuery> {

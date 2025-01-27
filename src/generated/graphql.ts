@@ -4658,7 +4658,8 @@ export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
-  userId: Scalars['UUID']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -5645,12 +5646,12 @@ useInfiniteOrganizationRoleQuery.getKey = (variables: OrganizationRoleQueryVaria
 useOrganizationRoleQuery.fetcher = (variables: OrganizationRoleQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {and: [{userId: {equalTo: $userId}}, {role: {notIn: $excludeRoles}}]}}}
   ) {
     totalCount
     nodes {
@@ -5673,19 +5674,19 @@ export const useOrganizationsQuery = <
       TData = OrganizationsQuery,
       TError = unknown
     >(
-      variables: OrganizationsQueryVariables,
+      variables?: OrganizationsQueryVariables,
       options?: Omit<UseQueryOptions<OrganizationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<OrganizationsQuery, TError, TData>(
       {
-    queryKey: ['Organizations', variables],
+    queryKey: variables === undefined ? ['Organizations'] : ['Organizations', variables],
     queryFn: graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables),
     ...options
   }
     )};
 
-useOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations', variables];
+useOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations'] : ['Organizations', variables];
 
 export const useInfiniteOrganizationsQuery = <
       TData = InfiniteData<OrganizationsQuery>,
@@ -5699,17 +5700,17 @@ export const useInfiniteOrganizationsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Organizations.infinite', variables],
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables],
       queryFn: (metaData) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteOrganizationsQuery.getKey = (variables: OrganizationsQueryVariables) => ['Organizations.infinite', variables];
+useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables) => variables === undefined ? ['Organizations.infinite'] : ['Organizations.infinite', variables];
 
 
-useOrganizationsQuery.fetcher = (variables: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
+useOrganizationsQuery.fetcher = (variables?: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {

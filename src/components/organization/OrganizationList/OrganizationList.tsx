@@ -35,11 +35,9 @@ const OrganizationList = ({ ...props }: StackProps) => {
       pageSize,
       offset: (page - 1) * pageSize,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.rowId!,
       search: debouncedSearch,
     },
     {
-      enabled: !!user?.rowId,
       placeholderData: keepPreviousData,
       select: (data) => ({
         totalCount: data?.organizations?.totalCount,

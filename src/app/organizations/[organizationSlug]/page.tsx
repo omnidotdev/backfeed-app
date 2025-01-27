@@ -5,6 +5,7 @@ import { OrganizationOverview } from "components/organization";
 import {
   useOrganizationMetricsQuery,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -62,6 +63,16 @@ const OrganizationPage = async ({ params }: Props) => {
         organizationId: organization.rowId,
       }),
       queryFn: useOrganizationMetricsQuery.fetcher({
+        organizationId: organization.rowId,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
         organizationId: organization.rowId,
       }),
     }),

@@ -16,7 +16,7 @@ import {
   useOrganizationMetricsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -32,7 +32,12 @@ const OrganizationOverview = ({ organization }: Props) => {
     mutationKey: useCreateProjectMutation.getKey(),
   });
 
-  const { isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
+
+  const { isAdmin } = useOrganizationMembership({
+    organizationId: organization.rowId!,
+    userId: user?.rowId,
+  });
 
   const {
     data: organizationMetrics,
@@ -81,7 +86,7 @@ const OrganizationOverview = ({ organization }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateProject,
-            disabled: isAuthLoading,
+            disabled: !isAdmin,
           },
         ],
       }}
@@ -100,7 +105,7 @@ const OrganizationOverview = ({ organization }: Props) => {
           isError={isError}
         />
 
-        <OrganizationActions />
+        <OrganizationActions organizationId={organization.rowId!} />
       </Grid>
     </Page>
   );
