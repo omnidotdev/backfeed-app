@@ -58,7 +58,7 @@ const Comments = ({ feedbackId }: Props) => {
       }
     );
 
-  const pendingComments = useMutationState<Partial<CommentFragment>>({
+  const pendingComments = useMutationState<CommentFragment>({
     filters: {
       mutationKey: useCreateCommentMutation.getKey(),
       status: "pending",
@@ -68,6 +68,7 @@ const Comments = ({ feedbackId }: Props) => {
         .variables as CreateCommentMutationVariables;
 
       return {
+        rowId: "pending",
         message: input.comment.message,
         user: {
           rowId: user?.rowId!,

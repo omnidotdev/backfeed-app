@@ -4757,6 +4757,10 @@ export const CommentFragmentDoc = gql`
 export const FeedbackFragmentDoc = gql`
     fragment Feedback on Post {
   rowId
+  title
+  description
+  createdAt
+  updatedAt
   project {
     rowId
     name
@@ -4765,8 +4769,6 @@ export const FeedbackFragmentDoc = gql`
       name
     }
   }
-  title
-  description
   user {
     username
   }
@@ -4776,8 +4778,6 @@ export const FeedbackFragmentDoc = gql`
   downvotes {
     totalCount
   }
-  createdAt
-  updatedAt
 }
     `;
 export const CreateCommentDocument = gql`
