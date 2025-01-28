@@ -8,10 +8,10 @@ import {
 } from "react-icons/hi2";
 
 import { SectionContainer } from "components/layout";
+import { useOrganizationMetricsQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { FlexProps } from "@omnidev/sigil";
-import { useOrganizationMetricsQuery } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface Props {
