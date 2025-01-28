@@ -129,7 +129,7 @@ const UpdateOrganization = () => {
 
   const isDefaultForm = useStore(store, ({ values }) =>
     Object.entries(values).every(
-      // @ts-ignore this works as long as the key of the form does in fact match the key of a member on the organization object. If that changes, this will break.
+      // @ts-ignore this works as long as the key of the form does in fact match the key on the organization object. If that changes, this will break.
       ([key, value]) => value === organization?.[key]
     )
   );
