@@ -104,7 +104,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: createFeedbackSchema,
+      onChange: createFeedbackSchema,
       onSubmitAsync: createFeedbackSchema,
     },
     onSubmit: ({ value }) =>

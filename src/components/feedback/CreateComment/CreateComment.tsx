@@ -76,7 +76,7 @@ const CreateComment = ({ totalCount }: Props) => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: createCommentSchema,
+      onChange: createCommentSchema,
       onSubmitAsync: createCommentSchema,
     },
     onSubmit: ({ value }) =>
