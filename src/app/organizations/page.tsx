@@ -1,11 +1,16 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { LuCirclePlus } from "react-icons/lu";
 
-import { OrganizationsOverview } from "components/organization";
+import { Page } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { DialogType } from "store";
 
+import type { BreadcrumbRecord } from "components/core";
+import { OrganizationFilters, OrganizationList } from "components/organization";
 import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
@@ -26,6 +31,12 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   if (!session) notFound();
 
+  const breadcrumbs: BreadcrumbRecord[] = [
+    {
+      label: app.organizationsPage.breadcrumb,
+    },
+  ];
+
   const queryClient = getQueryClient();
 
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
@@ -44,7 +55,28 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <OrganizationsOverview />
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: app.organizationsPage.header.title,
+          description: app.organizationsPage.header.description,
+          cta: [
+            {
+              label: app.organizationsPage.header.cta.newOrganization.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <LuCirclePlus />,
+              dialogType: DialogType.CreateOrganization,
+            },
+          ],
+        }}
+      >
+        {/* // ! NB: wrapped in a suspense boundary to avoid opting entire page into CSR. See: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
+        <Suspense fallback={null}>
+          <OrganizationFilters />
+
+          <OrganizationList />
+        </Suspense>
+      </Page>
     </HydrationBoundary>
   );
 };

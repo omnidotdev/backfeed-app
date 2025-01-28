@@ -94,7 +94,6 @@ const OrganizationOverview = ({ organization }: Props) => {
       <OrganizationProjectsOverview organizationSlug={organization.slug!} />
 
       <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        {/* NB: these aggregates should be fine to fetch from the top level `organizationQuery` */}
         <OrganizationMetrics
           totalProjects={
             (organizationMetrics?.totalProjects ?? 0) + projectsBeingCreated
