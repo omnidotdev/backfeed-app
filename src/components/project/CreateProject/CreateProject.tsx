@@ -229,14 +229,14 @@ const CreateProject = ({ organizationSlug }: Props) => {
         </Field>
 
         <Field name="name">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newProject.projectName.id}
               </Label>
 
               <Input
-                id={app.dashboardPage.cta.newProject.projectName.id}
+                id={name}
                 placeholder={
                   app.dashboardPage.cta.newProject.projectName.placeholder
                 }

@@ -154,14 +154,14 @@ const UpdateOrganization = () => {
       >
         <Stack gap={4} maxW="lg">
           <Field name="name">
-            {({ handleChange, state }) => (
+            {({ handleChange, state, name }) => (
               <Stack position="relative" gap={1.5}>
-                <Label htmlFor="name" fontWeight="semibold">
+                <Label htmlFor={name} fontWeight="semibold">
                   {updateOrganizationDetails.fields.organizationName.label}
                 </Label>
 
                 <Input
-                  id="name"
+                  id={name}
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
                   disabled={!isAdmin}
@@ -176,14 +176,14 @@ const UpdateOrganization = () => {
           </Field>
 
           <Field name="slug">
-            {({ handleChange, state }) => (
+            {({ handleChange, state, name }) => (
               <Stack position="relative" gap={1.5}>
-                <Label htmlFor="slug" fontWeight="semibold">
+                <Label htmlFor={name} fontWeight="semibold">
                   {updateOrganizationDetails.fields.organizationSlug.label}
                 </Label>
 
                 <Input
-                  id="slug"
+                  id={name}
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
                   disabled={!isAdmin}

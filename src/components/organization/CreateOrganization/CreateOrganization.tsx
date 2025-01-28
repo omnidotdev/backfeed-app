@@ -177,18 +177,14 @@ const CreateOrganization = () => {
         }}
       >
         <Field name="name">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationName.id
-                }
-              >
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newOrganization.organizationName.id}
               </Label>
 
               <Input
-                id={app.dashboardPage.cta.newOrganization.organizationName.id}
+                id={name}
                 placeholder={
                   app.dashboardPage.cta.newOrganization.organizationName
                     .placeholder
@@ -206,13 +202,9 @@ const CreateOrganization = () => {
         </Field>
 
         <Field name="slug">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationSlug.id
-                }
-              >
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newOrganization.organizationSlug.id}
               </Label>
 
@@ -223,7 +215,7 @@ const CreateOrganization = () => {
                 >{`/${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
 
                 <Input
-                  id={app.dashboardPage.cta.newOrganization.organizationSlug.id}
+                  id={name}
                   placeholder={
                     app.dashboardPage.cta.newOrganization.organizationSlug
                       .placeholder

@@ -134,14 +134,14 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       }}
     >
       <Field name="title">
-        {({ handleChange, state }) => (
+        {({ handleChange, state, name }) => (
           <Stack position="relative" gap={1.5}>
-            <Label htmlFor="title">
+            <Label htmlFor={name}>
               {app.projectPage.projectFeedback.feedbackTitle.label}
             </Label>
 
             <Input
-              id="title"
+              id={name}
               placeholder={
                 app.projectPage.projectFeedback.feedbackTitle.placeholder
               }
@@ -160,14 +160,14 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       </Field>
 
       <Field name="description">
-        {({ handleChange, state }) => (
+        {({ handleChange, state, name }) => (
           <Stack position="relative" gap={1.5}>
-            <Label htmlFor="description">
+            <Label htmlFor={name}>
               {app.projectPage.projectFeedback.feedbackDescription.label}
             </Label>
 
             <Textarea
-              id="description"
+              id={name}
               placeholder={
                 app.projectPage.projectFeedback.feedbackDescription.placeholder
               }
