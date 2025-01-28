@@ -10,6 +10,7 @@ import { LuCirclePlus } from "react-icons/lu";
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
 import {
+  Role,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
   useUserQuery,
@@ -54,6 +55,8 @@ const DashboardPage = () => {
   const { data: numberOfOrganizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
+      userOrganizationsExist: true,
+      excludeRoles: [Role.Member],
     },
     {
       enabled: !!user?.rowId,
