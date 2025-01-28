@@ -1,17 +1,24 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { HiOutlineFolder } from "react-icons/hi2";
 
-import { OrganizationOverview } from "components/organization";
+import { Page } from "components/layout";
+import {
+  OrganizationActions,
+  OrganizationMetrics,
+  OrganizationProjectsOverview,
+} from "components/organization";
 import {
   useOrganizationMetricsQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
+import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
-import type { Organization } from "generated/graphql";
+import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -51,6 +58,16 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
+  const breadcrumbs: BreadcrumbRecord[] = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      label: organization.name ?? organizationSlug,
+    },
+  ];
+
   const queryClient = getQueryClient();
 
   await Promise.all([
@@ -80,9 +97,30 @@ const OrganizationPage = async ({ params }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <OrganizationOverview
-        organization={organization as Partial<Organization>}
-      />
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: organization.name!,
+          description: app.organizationPage.header.description,
+          cta: [
+            {
+              label: app.organizationPage.header.cta.viewAllProjects.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <HiOutlineFolder />,
+              href: `/organizations/${organizationSlug}/projects`,
+              disabled: !organization.projects?.nodes.length,
+            },
+          ],
+        }}
+      >
+        <OrganizationProjectsOverview organizationSlug={organizationSlug} />
+
+        <Grid columns={{ base: 1, md: 2 }} gap={6}>
+          <OrganizationMetrics organizationId={organization.rowId} />
+
+          <OrganizationActions organizationId={organization.rowId} />
+        </Grid>
+      </Page>
     </HydrationBoundary>
   );
 };

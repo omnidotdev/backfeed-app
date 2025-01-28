@@ -11,19 +11,12 @@ import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
 import type { FlexProps } from "@omnidev/sigil";
+import { useOrganizationMetricsQuery } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface Props {
-  /** The total amount of organization projects */
-  totalProjects: number;
-  /** The total amount of feedback across all projects */
-  totalFeedback: number;
-  /** The total amount of active users across all projects */
-  activeUsers: number;
-  /** Whether the organization data is loaded. */
-  isLoaded?: boolean;
-  /** Whether loading the organization data encountered an error. */
-  isError?: boolean;
+/** Organization ID. */
+  organizationId: string;
 }
 
 interface OrganizationMetric extends FlexProps {
@@ -38,27 +31,38 @@ interface OrganizationMetric extends FlexProps {
 /**
  * Organization metrics.
  */
-const OrganizationMetrics = ({
-  totalProjects,
-  totalFeedback,
-  activeUsers,
-  isLoaded,
-  isError,
-}: Props) => {
+const OrganizationMetrics = ({ organizationId }: Props) => {
+  const {
+    data: organizationMetrics,
+    isLoading,
+    isError,
+  } = useOrganizationMetricsQuery(
+    {
+      organizationId,
+    },
+    {
+      select: (data) => ({
+        totalProjects: data?.projects?.totalCount,
+        totalFeedback: data?.posts?.totalCount,
+        activeUsers: data?.userOrganizations?.totalCount,
+      }),
+    }
+  );
+
   const ORGANIZATION_METRICS: OrganizationMetric[] = [
     {
       title: app.organizationPage.metrics.data.totalProjects.title,
-      value: totalProjects,
+      value: organizationMetrics?.totalProjects ?? 0,
       icon: HiOutlineFolder,
     },
     {
       title: app.organizationPage.metrics.data.totalFeedback.title,
-      value: totalFeedback,
+      value: organizationMetrics?.totalFeedback ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
     },
     {
       title: app.organizationPage.metrics.data.activeUsers.title,
-      value: activeUsers,
+      value: organizationMetrics?.activeUsers ?? 0,
       icon: HiOutlineUserGroup,
     },
   ];
@@ -87,7 +91,7 @@ const OrganizationMetrics = ({
               </Text>
             </Flex>
 
-            <Skeleton isLoaded={isLoaded} minW={8}>
+            <Skeleton isLoaded={!isLoading} minW={8}>
               <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
                 {isError ? 0 : value}
               </Text>
