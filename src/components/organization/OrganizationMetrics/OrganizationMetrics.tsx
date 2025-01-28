@@ -15,7 +15,7 @@ import { useOrganizationMetricsQuery } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface Props {
-/** Organization ID. */
+  /** Organization ID. */
   organizationId: string;
 }
 
