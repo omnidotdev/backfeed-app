@@ -77,9 +77,6 @@ const DestructiveAction = ({
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
-  // const [requiredDestructiveInput] = useState(
-  //   `Permanently ${destructiveInput}`
-  // );
 
   const actions: Action[] = [
     {
