@@ -7,23 +7,14 @@ import { LuCirclePlus } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
-import {
-  OrganizationOrderBy,
-  UserOrganizationOrderBy,
-  useOrganizationsQuery,
-  useUserOrganizationsQuery,
-} from "generated/graphql";
+import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";
-import type {
-  Organization,
-  OrganizationsQueryVariables,
-  UserOrganizationsQueryVariables,
-} from "generated/graphql";
+import type { Organization } from "generated/graphql";
 
 /**
  * Organization list.
@@ -40,70 +31,33 @@ const OrganizationList = ({ ...props }: StackProps) => {
     type: DialogType.CreateOrganization,
   });
 
-  const sharedVariables:
-    | OrganizationsQueryVariables
-    | UserOrganizationsQueryVariables = {
-    pageSize,
-    offset: (page - 1) * pageSize,
-    search: debouncedSearch,
-  };
-
-  const {
-      data: allOrganizations,
-      isLoading: isAllOrganizationsLoading,
-      isError: isAllOrganizationsError,
-    } = useOrganizationsQuery(
-      {
-        ...sharedVariables,
-        orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      },
-      {
-        enabled: !!user?.rowId,
-        placeholderData: keepPreviousData,
-        select: (data) => ({
-          totalCount: data?.organizations?.totalCount,
-          organizations: data?.organizations?.nodes,
-        }),
-      }
-    ),
+  const { data, isLoading, isError } = useOrganizationsQuery(
     {
-      data: allUserOrganizations,
-      isLoading: isUserOrganizationsLoading,
-      isError: isUserOrganizationsError,
-    } = useUserOrganizationsQuery(
-      {
-        ...sharedVariables,
-        userId: user?.rowId!,
-        orderBy: [UserOrganizationOrderBy.OrganizationIdAsc],
-      },
-      {
-        enabled: !!user?.rowId && userOrganizations,
-        placeholderData: keepPreviousData,
-        select: (data) => ({
-          totalCount: data?.userOrganizations?.totalCount,
-          organizations: data?.userOrganizations?.nodes.map(
-            (node) => node?.organization
-          ),
-        }),
-      }
-    );
+      pageSize,
+      offset: (page - 1) * pageSize,
+      search: debouncedSearch,
+      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      userId: userOrganizations ? user?.rowId : undefined,
+      userOrganizationsExist: userOrganizations ? true : undefined,
+    },
+    {
+      enabled: !!user?.rowId,
+      placeholderData: keepPreviousData,
+      select: (data) => ({
+        totalCount: data?.organizations?.totalCount,
+        organizations: data?.organizations?.nodes,
+      }),
+    }
+  );
 
-  const organizations = userOrganizations
-    ? allUserOrganizations?.organizations
-    : allOrganizations?.organizations;
-
-  const totalCount = userOrganizations
-    ? allUserOrganizations?.totalCount
-    : allOrganizations?.totalCount;
+  const organizations = data?.organizations;
 
   if (isAuthLoading) return null;
 
-  if (userOrganizations ? isUserOrganizationsError : isAllOrganizationsError)
+  if (isError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;
 
-  if (
-    userOrganizations ? isUserOrganizationsLoading : isAllOrganizationsLoading
-  )
+  if (isLoading)
     return (
       <Stack>
         <SkeletonArray count={6} h={36} borderRadius="sm" />
@@ -140,7 +94,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
       </Stack>
 
       <Pagination
-        count={totalCount ?? 0}
+        count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) => setSearchParams({ page })}

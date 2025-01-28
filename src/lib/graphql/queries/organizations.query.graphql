@@ -4,12 +4,19 @@ query Organizations(
   $orderBy: [OrganizationOrderBy!]
   $search: String
   $slug: String
+  $userId: UUID
+  $userOrganizationsExist: Boolean
 ) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: { name: { includesInsensitive: $search }, slug: { equalTo: $slug } }
+    filter: { 
+      name: { includesInsensitive: $search }, 
+      slug: { equalTo: $slug } 
+      userOrganizationsExist: $userOrganizationsExist
+      userOrganizations: { every: { user: { rowId: { equalTo: $userId } } } }
+    }
   ) {
     totalCount
     nodes {

@@ -4604,6 +4604,8 @@ export type OrganizationsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+  userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -4673,18 +4675,6 @@ export type UserQueryVariables = Exact<{
 
 
 export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
-
-export type UserOrganizationsQueryVariables = Exact<{
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<UserOrganizationOrderBy> | UserOrganizationOrderBy>;
-  userId: Scalars['UUID']['input'];
-  search?: InputMaybe<Scalars['String']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type UserOrganizationsQuery = { __typename?: 'Query', userOrganizations?: { __typename?: 'UserOrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'UserOrganization', organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null> } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4965,12 +4955,12 @@ export const OrganizationMetricsDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {user: {rowId: {equalTo: $userId}}}}}
   ) {
     totalCount
     nodes {
@@ -5122,29 +5112,6 @@ export const UserDocument = gql`
   }
 }
     `;
-export const UserOrganizationsDocument = gql`
-    query UserOrganizations($pageSize: Int, $offset: Int, $orderBy: [UserOrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
-  userOrganizations(
-    first: $pageSize
-    offset: $offset
-    orderBy: $orderBy
-    filter: {userId: {equalTo: $userId}, organization: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}}}
-  ) {
-    totalCount
-    nodes {
-      organization {
-        rowId
-        name
-        slug
-        updatedAt
-        projects {
-          totalCount
-        }
-      }
-    }
-  }
-}
-    `;
 export const WeeklyFeedbackDocument = gql`
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
   posts(
@@ -5262,9 +5229,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);
-    },
-    UserOrganizations(variables: UserOrganizationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserOrganizationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UserOrganizationsQuery>(UserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UserOrganizations', 'query', variables);
     },
     WeeklyFeedback(variables: WeeklyFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<WeeklyFeedbackQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WeeklyFeedbackQuery>(WeeklyFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'WeeklyFeedback', 'query', variables);
