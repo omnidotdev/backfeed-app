@@ -83,9 +83,7 @@ const ProjectListItem = ({
             <DestructiveAction
               title={deleteProjectDetails.title}
               description={deleteProjectDetails.description}
-              destructiveInput={
-                app.organizationPage.projects.destructiveInput.label
-              }
+              destructiveInput={deleteProjectDetails.destructiveInput.prompt}
               action={{
                 label: deleteProjectDetails.action.label,
                 onClick: () => deleteProject({ rowId: rowId! }),

@@ -220,9 +220,6 @@ const app = {
           label: "Create Project",
         },
       },
-      destructiveInput: {
-        label: "Permanently delete project",
-      },
     },
     metrics: {
       title: "Organization Metrics",
@@ -295,7 +292,7 @@ const app = {
           title: "Delete Organization",
           description: "Are you sure you want to delete this organization?",
           actionLabel: "Delete",
-          destructiveInputPrompt: "Permanently delete organization",
+          prompt: "Permanently delete organization",
         },
       },
       leaveOrganization: {
@@ -440,6 +437,9 @@ const app = {
         description: "Are you sure you want to delete this project?",
         action: {
           label: "Delete",
+        },
+        destructiveInput: {
+          prompt: "Permanently delete project",
         },
       },
     },
