@@ -121,7 +121,10 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   useHotkeys(
     "mod+p",
-    () => setIsOpen(!isOpen),
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
     {
       enabled:
         !!user &&

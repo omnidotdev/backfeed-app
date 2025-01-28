@@ -92,7 +92,10 @@ const CreateOrganization = () => {
 
   useHotkeys(
     "mod+o",
-    () => setIsOpen(!isOpen),
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
     {
       enabled: !!user && !isCreateProjectDialogOpen,
       enableOnFormTags: true,
