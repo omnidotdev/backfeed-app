@@ -114,7 +114,7 @@ const OrganizationSettings = () => {
 
   const DESTRUCTIVE_ACTION = isOwner ? DELETE_ORGANIZATION : LEAVE_ORGANIZATION;
 
-  // TODO: figure out the best way to handle this. rowId is synamically injected into the session, and there can be a flash of incorrect content until `user` is actually loaded from the `useAuth` hook, regardless if there is prefetching.
+  // TODO: figure out the best way to handle this. rowId is dynamically injected into the session, and there can be a flash of incorrect content until `user` is actually loaded from the `useAuth` hook, regardless if there is prefetching.
   if (!user?.rowId) return null;
 
   return (
