@@ -9,7 +9,7 @@ import {
   Stack,
   sigil,
 } from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useParams, useRouter } from "next/navigation";
 import { LuSave } from "react-icons/lu";
 import { z } from "zod";
@@ -28,15 +28,11 @@ import { useAuth, useOrganizationMembership } from "lib/hooks";
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
 
-const emptyStringAsUndefined = z.literal("").transform(() => undefined);
-
 /** Schema for defining the shape of the update organization form fields. */
 const baseSchema = z.object({
   name: z
     .string()
-    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength)
-    .or(emptyStringAsUndefined)
-    .optional(),
+    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength),
   slug: z
     .string()
     .regex(
@@ -44,9 +40,10 @@ const baseSchema = z.object({
       updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
     )
     .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
-    .max(50, updateOrganizationDetails.fields.organizationSlug.errors.maxLength)
-    .or(emptyStringAsUndefined)
-    .optional(),
+    .max(
+      50,
+      updateOrganizationDetails.fields.organizationSlug.errors.maxLength
+    ),
 });
 
 /** Schema for validation of the update organization form. */
@@ -101,7 +98,7 @@ const UpdateOrganization = () => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
     defaultValues: {
       name: organization?.name ?? "",
       slug: organization?.slug ?? "",
@@ -129,6 +126,13 @@ const UpdateOrganization = () => {
       }
     },
   });
+
+  const isDefaultForm = useStore(store, ({ values }) =>
+    Object.entries(values).every(
+      // @ts-ignore this works as long as the key of the form does in fact match the key of a member on the organization object. If that changes, this will break.
+      ([key, value]) => value === organization?.[key]
+    )
+  );
 
   return (
     <SectionContainer
@@ -198,18 +202,18 @@ const UpdateOrganization = () => {
             canSubmit: state.canSubmit,
             isSubmitting: state.isSubmitting,
             isDirty: state.isDirty,
-            // TODO: look into managing default state through `useStore` or better yet zod schema.
-            isChanged:
-              state.values.name !== organization?.name ||
-              state.values.slug !== organization?.slug,
           })}
         >
-          {({ canSubmit, isSubmitting, isDirty, isChanged }) => (
+          {({ canSubmit, isSubmitting, isDirty }) => (
             <Button
               type="submit"
               width={48}
               disabled={
-                isSubmitting || !canSubmit || !isDirty || !isChanged || !isAdmin
+                isDefaultForm ||
+                isSubmitting ||
+                !canSubmit ||
+                !isDirty ||
+                !isAdmin
               }
               mt={4}
             >
