@@ -29,6 +29,7 @@ const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
 
 /** Schema for defining the shape of the update organization form fields. */
+// TODO: dedup these schemas with the create organization form
 const baseSchema = z.object({
   name: z
     .string()
