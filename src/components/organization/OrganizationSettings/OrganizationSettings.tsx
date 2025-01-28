@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Divider, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
@@ -14,6 +15,7 @@ import {
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
@@ -31,6 +33,8 @@ const joinOrganizationDetails =
 
 /** Organization settings. */
 const OrganizationSettings = () => {
+  const queryClient = useQueryClient();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
@@ -50,14 +54,31 @@ const OrganizationSettings = () => {
     organizationId: organization?.rowId,
   });
 
+  const onSuccess = () =>
+    queryClient.invalidateQueries(
+      {
+        queryKey: useOrganizationRoleQuery.getKey({
+          userId: user?.rowId!,
+          organizationId: organization?.rowId!,
+        }),
+      },
+      { cancelRefetch: false }
+    );
+
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation(),
+    { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
+      useLeaveOrganizationMutation({
+        onSuccess,
+      }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
-      useCreateUserOrganizationMutation();
+      useCreateUserOrganizationMutation({
+        onSuccess,
+      });
 
-  const isCurrentMember = isMember || isJoinOrganizationPending;
+  const isCurrentMember =
+    !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -134,6 +155,7 @@ const OrganizationSettings = () => {
               fontSize="md"
               colorPalette="green"
               color="white"
+              disabled={isLeaveOrganizationPending}
               onClick={() =>
                 joinOrganization({
                   input: {
