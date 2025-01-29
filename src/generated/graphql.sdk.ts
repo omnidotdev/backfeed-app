@@ -4608,6 +4608,9 @@ export type OrganizationsQueryVariables = Exact<{
   userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
   projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  upvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  downvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -4957,12 +4960,12 @@ export const OrganizationMetricsDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean, $projectsExist: Boolean, $postsExist: Boolean) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean, $projectsExist: Boolean = false, $postsExist: Boolean = false, $commentsExist: Boolean = false, $upvotesExist: Boolean = false, $downvotesExist: Boolean = false) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {user: {rowId: {equalTo: $userId}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {userId: {equalTo: $userId}}}}}}]}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {user: {rowId: {equalTo: $userId}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {userId: {equalTo: $userId}}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {commentsExist: $commentsExist, comments: {some: {userId: {equalTo: $userId}}}}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {upvotesExist: $upvotesExist, upvotes: {some: {userId: {equalTo: $userId}}}}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {downvotesExist: $downvotesExist, downvotes: {some: {userId: {equalTo: $userId}}}}}}}}]}
   ) {
     totalCount
     nodes {

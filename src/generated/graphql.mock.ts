@@ -516,7 +516,7 @@ export const mockOrganizationMetricsQuery = (resolver: GraphQLResponseResolver<T
  * @example
  * mockOrganizationsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, offset, orderBy, search, slug, userId, userOrganizationsExist, projectsExist, postsExist } = variables;
+ *     const { pageSize, offset, orderBy, search, slug, userId, userOrganizationsExist, projectsExist, postsExist, commentsExist, upvotesExist, downvotesExist } = variables;
  *     return HttpResponse.json({
  *       data: { organizations }
  *     })

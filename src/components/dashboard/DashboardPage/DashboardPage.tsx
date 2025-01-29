@@ -57,7 +57,7 @@ const DashboardPage = () => {
     },
     {
       enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
+      select: (data) => data?.organizations?.nodes?.length,
     }
   );
 

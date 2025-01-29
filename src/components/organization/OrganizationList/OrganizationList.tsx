@@ -32,20 +32,22 @@ const OrganizationList = ({ ...props }: StackProps) => {
     type: DialogType.CreateOrganization,
   });
 
+  const isActiveFilter = organizationsFilter === OrganizationsFilter.Active;
+  const isFiltered = organizationsFilter !== OrganizationsFilter.All;
+
   const { data, isLoading, isError } = useOrganizationsQuery(
     {
       pageSize,
       offset: (page - 1) * pageSize,
       search: debouncedSearch,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId:
-        organizationsFilter !== OrganizationsFilter.All
-          ? user?.rowId
-          : undefined,
-      userOrganizationsExist:
-        organizationsFilter !== OrganizationsFilter.All ? true : undefined,
-      projectsExist: organizationsFilter === OrganizationsFilter.Active,
-      postsExist: organizationsFilter === OrganizationsFilter.Active,
+      userId: isFiltered ? user?.rowId : undefined,
+      userOrganizationsExist: isFiltered ? true : undefined,
+      projectsExist: isActiveFilter || undefined,
+      postsExist: isActiveFilter || undefined,
+      commentsExist: isActiveFilter || undefined,
+      upvotesExist: isActiveFilter || undefined,
+      downvotesExist: isActiveFilter || undefined,
     },
     {
       enabled: !!user?.rowId,

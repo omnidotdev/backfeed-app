@@ -49,7 +49,7 @@ const OrganizationFilters = () => {
   );
 
   return (
-    <Grid columns={1} w="full">
+    <Grid columns={1} gap={4} w="full">
       <GridItem w={{ base: "full", sm: "fit-content" }}>
         <SegmentGroup
           defaultValue={organizationsFilter}
