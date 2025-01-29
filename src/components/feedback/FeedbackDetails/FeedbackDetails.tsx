@@ -213,8 +213,11 @@ const FeedbackDetails = ({
       id: "upvote",
       votes: totalUpvotes,
       tooltip: app.feedbackPage.details.upvote,
-      icon:
-        hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+      icon: isDownvotePending
+        ? PiArrowFatLineUp
+        : hasUpvoted || isUpvotePending
+          ? PiArrowFatLineUpFill
+          : PiArrowFatLineUp,
       color: "brand.tertiary",
       disabled: isPending,
       onClick: () => {
@@ -244,8 +247,9 @@ const FeedbackDetails = ({
       id: "downvote",
       votes: totalDownvotes,
       tooltip: app.feedbackPage.details.downvote,
-      icon:
-        hasDownvoted || isDownvotePending
+      icon: isUpvotePending
+        ? PiArrowFatLineDown
+        : hasDownvoted || isDownvotePending
           ? PiArrowFatLineDownFill
           : PiArrowFatLineDown,
       color: "brand.quinary",

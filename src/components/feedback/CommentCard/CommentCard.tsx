@@ -108,6 +108,7 @@ const CommentCard = ({
             triggerProps={{
               "aria-label": app.feedbackPage.comments.delete.title,
               color: "omni.ruby",
+              backgroundColor: "transparent",
               disabled: actionIsPending,
             }}
           />
