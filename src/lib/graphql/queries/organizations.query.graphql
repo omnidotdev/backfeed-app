@@ -20,7 +20,7 @@ query Organizations(
           userOrganizationsExist: $isUserOrganizations
           userOrganizations: {
             some: {
-              user: { rowId: { equalTo: $userId } }
+              userId: { equalTo: $userId }
               role: { notIn: $excludeRoles }
             }
           }

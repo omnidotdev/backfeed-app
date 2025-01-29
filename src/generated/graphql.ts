@@ -4995,7 +4995,7 @@ export const OrganizationsDocument = `
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{userOrganizationsExist: $isUserOrganizations, userOrganizations: {some: {user: {rowId: {equalTo: $userId}}, role: {notIn: $excludeRoles}}}}, {rowId: {isNull: $isUserOrganizations}}]}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{userOrganizationsExist: $isUserOrganizations, userOrganizations: {some: {userId: {equalTo: $userId}, role: {notIn: $excludeRoles}}}}, {rowId: {isNull: $isUserOrganizations}}]}
   ) {
     totalCount
     nodes {
