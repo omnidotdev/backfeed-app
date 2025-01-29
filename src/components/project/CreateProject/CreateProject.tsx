@@ -15,6 +15,7 @@ import {
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
@@ -23,11 +24,8 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  CREATE_PROJECT_MUTATION_KEY,
-  standardSchemaValidator,
-} from "lib/constants";
-import { sdk } from "lib/graphql";
+import { standardSchemaValidator } from "lib/constants";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -58,6 +56,8 @@ const createProjectSchema = baseSchema.superRefine(
   async ({ organizationId, slug }, ctx) => {
     if (!organizationId.length || !slug.length) return z.NEVER;
 
+    const sdk = await getSdk();
+
     const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
       organizationId,
       slug,
@@ -73,21 +73,44 @@ const createProjectSchema = baseSchema.superRefine(
   }
 );
 
+interface Props {
+  /** Slug of the organization to create the project under. */
+  organizationSlug?: string;
+}
+
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = () => {
+const CreateProject = ({ organizationSlug }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
+
+  const { isOpen: isCreateOrganizationDialogOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
 
+  useHotkeys(
+    "mod+p",
+    () => setIsOpen(!isOpen),
+    {
+      enabled: !!user && !isCreateOrganizationDialogOpen,
+      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enableOnFormTags: true,
+      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateOrganizationDialogOpen]
+  );
+
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
+      slug: organizationSlug,
     },
     {
       enabled: !!user?.rowId,
@@ -99,20 +122,22 @@ const CreateProject = () => {
     }
   );
 
+  const firstOrganization = organizations?.[0];
+
   const { mutate: createProject } = useCreateProjectMutation({
-    mutationKey: CREATE_PROJECT_MUTATION_KEY,
     onSuccess: (data) => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
       );
 
       setIsOpen(false);
+      reset();
     },
   });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
-      organizationId: "",
+      organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
       description: "",
       slug: "",
@@ -121,7 +146,7 @@ const CreateProject = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
-      onChangeAsync: createProjectSchema,
+      onSubmitAsync: createProjectSchema,
     },
     onSubmit: ({ value }) =>
       createProject({
@@ -154,16 +179,10 @@ const CreateProject = () => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
-        <Field
-          name="organizationId"
-          validators={{
-            onBlur: baseSchema.shape.organizationId,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="organizationId">
+          {({ handleChange, state }) => (
             <Stack position="relative">
               <Select
                 label={
@@ -173,6 +192,10 @@ const CreateProject = () => {
                   items: organizations ?? [],
                 })}
                 displayGroupLabel={false}
+                clearTriggerProps={{
+                  display: organizationSlug ? "none" : undefined,
+                }}
+                disabled={!!organizationSlug}
                 valueTextProps={{
                   placeholder: "Select an organization",
                 }}
@@ -183,25 +206,18 @@ const CreateProject = () => {
                 onValueChange={({ value }) =>
                   handleChange(value.length ? value[0] : "")
                 }
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="name"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.name,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="name">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
                 {app.dashboardPage.cta.newProject.projectName.id}
@@ -214,25 +230,18 @@ const CreateProject = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="description"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.description,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="description">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
@@ -248,25 +257,17 @@ const CreateProject = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="slug"
-          asyncDebounceMs={300}
-          // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
-          validators={{
-            onChangeAsync: baseSchema.shape.slug,
-          }}
-        >
+        <Field name="slug">
           {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
@@ -290,7 +291,7 @@ const CreateProject = () => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onChange}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -305,7 +306,11 @@ const CreateProject = () => {
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+            <Button
+              type="submit"
+              disabled={!canSubmit || !isDirty || isSubmitting}
+              mt={4}
+            >
               {isSubmitting
                 ? app.dashboardPage.cta.newProject.action.pending
                 : app.dashboardPage.cta.newProject.action.submit}

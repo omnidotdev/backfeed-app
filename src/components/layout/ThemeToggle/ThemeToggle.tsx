@@ -3,6 +3,7 @@
 import { sigil } from "@omnidev/sigil";
 import { Expand } from "@theme-toggles/react";
 import { useTheme } from "next-themes";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 
 import "@theme-toggles/react/css/Expand.css";
@@ -18,6 +19,15 @@ const ThemeToggle = () => {
 
   const toggleTheme = () =>
     resolvedTheme === "dark" ? setTheme("light") : setTheme("dark");
+
+  useHotkeys(
+    "t",
+    toggleTheme,
+    {
+      enabled: isClient,
+    },
+    [isClient, toggleTheme]
+  );
 
   if (!isClient) return null;
 

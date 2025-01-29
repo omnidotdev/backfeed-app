@@ -4423,7 +4423,23 @@ export type UserToManyUserOrganizationFilter = {
   some?: InputMaybe<UserOrganizationFilter>;
 };
 
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
+
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment?: { __typename?: 'CreateCommentPayload', clientMutationId?: string | null } | null };
+
+export type DeleteCommentMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment?: { __typename?: 'DeleteCommentPayload', clientMutationId?: string | null } | null };
 
 export type CreateDownvoteMutationVariables = Exact<{
   input: CreateDownvoteInput;
@@ -4460,6 +4476,14 @@ export type LeaveOrganizationMutationVariables = Exact<{
 
 
 export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: OrganizationPatch;
+}>;
+
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'UpdateOrganizationPayload', organization?: { __typename?: 'Organization', slug: string } | null } | null };
 
 export type CreateFeedbackMutationVariables = Exact<{
   input: CreatePostInput;
@@ -4511,7 +4535,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', clientMutationId?: string | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -4519,7 +4543,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type CreateUserOrganizationMutationVariables = Exact<{
   input: CreateUserOrganizationInput;
@@ -4535,7 +4559,7 @@ export type CommentsQueryVariables = Exact<{
 }>;
 
 
-export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', username?: string | null } | null } | null } | null> } | null };
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4564,7 +4588,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4579,10 +4603,11 @@ export type OrganizationsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<OrganizationOrderBy> | OrganizationOrderBy>;
   userId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
+export type OrganizationsQuery = { __typename?: 'Query', organizations?: { __typename?: 'OrganizationConnection', totalCount: number, nodes: Array<{ __typename?: 'Organization', rowId: string, name?: string | null, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number }, userOrganizations: { __typename?: 'UserOrganizationConnection', totalCount: number } } | null> } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4652,12 +4677,24 @@ export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: '
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   startDate: Scalars['Datetime']['input'];
+  endDate: Scalars['Datetime']['input'];
 }>;
 
 
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 
+export const CommentFragmentDoc = `
+    fragment Comment on Comment {
+  rowId
+  message
+  user {
+    rowId
+    username
+  }
+  createdAt
+}
+    `;
 export const FeedbackFragmentDoc = `
     fragment Feedback on Post {
   rowId
@@ -4684,6 +4721,58 @@ export const FeedbackFragmentDoc = `
   updatedAt
 }
     `;
+export const CreateCommentDocument = `
+    mutation CreateComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreateCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>) => {
+    
+    return useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateComment'],
+    mutationFn: (variables?: CreateCommentMutationVariables) => graphqlFetch<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateCommentMutation.getKey = () => ['CreateComment'];
+
+
+useCreateCommentMutation.fetcher = (variables: CreateCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, variables, options);
+
+export const DeleteCommentDocument = `
+    mutation DeleteComment($rowId: UUID!) {
+  deleteComment(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteComment'],
+    mutationFn: (variables?: DeleteCommentMutationVariables) => graphqlFetch<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteCommentMutation.getKey = () => ['DeleteComment'];
+
+
+useDeleteCommentMutation.fetcher = (variables: DeleteCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, variables, options);
+
 export const CreateDownvoteDocument = `
     mutation CreateDownvote($input: CreateDownvoteInput!) {
   createDownvote(input: $input) {
@@ -4823,6 +4912,34 @@ useLeaveOrganizationMutation.getKey = () => ['LeaveOrganization'];
 
 
 useLeaveOrganizationMutation.fetcher = (variables: LeaveOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<LeaveOrganizationMutation, LeaveOrganizationMutationVariables>(LeaveOrganizationDocument, variables, options);
+
+export const UpdateOrganizationDocument = `
+    mutation UpdateOrganization($rowId: UUID!, $patch: OrganizationPatch!) {
+  updateOrganization(input: {rowId: $rowId, patch: $patch}) {
+    organization {
+      slug
+    }
+  }
+}
+    `;
+
+export const useUpdateOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateOrganizationMutation, TError, UpdateOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateOrganization'],
+    mutationFn: (variables?: UpdateOrganizationMutationVariables) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateOrganizationMutation.getKey = () => ['UpdateOrganization'];
+
+
+useUpdateOrganizationMutation.fetcher = (variables: UpdateOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(UpdateOrganizationDocument, variables, options);
 
 export const CreateFeedbackDocument = `
     mutation CreateFeedback($input: CreatePostInput!) {
@@ -4992,7 +5109,9 @@ export const CreateUserDocument = `
   createUser(
     input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
   ) {
-    clientMutationId
+    user {
+      rowId
+    }
   }
 }
     `;
@@ -5018,7 +5137,9 @@ useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options
 export const UpdateUserDocument = `
     mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
   updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
-    clientMutationId
+    user {
+      rowId
+    }
   }
 }
     `;
@@ -5082,17 +5203,12 @@ export const CommentsDocument = `
     }
     edges {
       node {
-        rowId
-        message
-        user {
-          username
-        }
-        createdAt
+        ...Comment
       }
     }
   }
 }
-    `;
+    ${CommentFragmentDoc}`;
 
 export const useCommentsQuery = <
       TData = CommentsQuery,
@@ -5299,6 +5415,7 @@ export const OrganizationDocument = `
     rowId
     name
     slug
+    updatedAt
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       nodes {
         rowId
@@ -5418,18 +5535,19 @@ useInfiniteOrganizationMetricsQuery.getKey = (variables: OrganizationMetricsQuer
 useOrganizationMetricsQuery.fetcher = (variables: OrganizationMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMetricsQuery, OrganizationMetricsQueryVariables>(OrganizationMetricsDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $userId: UUID!, $search: String, $slug: String) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizations: {some: {userId: {equalTo: $userId}}}}
   ) {
     totalCount
     nodes {
       rowId
       name
       slug
+      updatedAt
       projects {
         totalCount
       }
@@ -5962,9 +6080,9 @@ useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
 export const WeeklyFeedbackDocument = `
-    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
   posts(
-    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
+    filter: {project: {organization: {userOrganizations: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate, lessThan: $endDate}}
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
       keys

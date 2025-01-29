@@ -3,10 +3,9 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 
-import { getResponseTypeColor } from "lib/util";
-
 import type { Post } from "generated/graphql";
-import type { ResponseType } from "lib/util";
+
+type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 
 interface Props {
   /** Feedback details. */
@@ -20,8 +19,6 @@ interface Props {
  * Recent feedback response.
  */
 const Response = ({ feedback, type }: Props) => {
-  const color = getResponseTypeColor(type);
-
   const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
@@ -38,9 +35,7 @@ const Response = ({ feedback, type }: Props) => {
             {feedback?.user?.username}
           </Text>
 
-          <Badge color={color} borderColor={color}>
-            {type}
-          </Badge>
+          <Badge>{type}</Badge>
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">

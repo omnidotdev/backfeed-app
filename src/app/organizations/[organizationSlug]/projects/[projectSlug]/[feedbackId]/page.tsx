@@ -9,8 +9,10 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
+
+import type { BreadcrumbRecord } from "components/core";
 
 export const metadata = {
   title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
@@ -31,16 +33,17 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const [session, { post: feedback }] = await Promise.all([
-    getAuthSession(),
-    sdk.FeedbackById({ rowId: feedbackId }),
-  ]);
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  if (!session || !feedback) notFound();
+  if (!session || !sdk) notFound();
+
+  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
+
+  if (!feedback) notFound();
 
   const queryClient = getQueryClient();
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",

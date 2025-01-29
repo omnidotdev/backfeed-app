@@ -2,11 +2,12 @@
 
 import { Button, Text } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
+
 import { useDialogStore } from "lib/hooks/store";
 
-import type { DialogType } from "store";
-import type { ReactNode } from "react";
 import type { ButtonProps } from "@omnidev/sigil";
+import type { ReactNode } from "react";
+import type { DialogType } from "store";
 
 export interface ActionButton extends ButtonProps {
   /** Button label. */
@@ -14,7 +15,7 @@ export interface ActionButton extends ButtonProps {
   /** Button icon. */
   icon: ReactNode;
   /** URL path for navigation. */
-  href?: string;
+  href?: `/${string}`;
   /** Type of dialog to trigger. */
   dialogType?: DialogType;
 }

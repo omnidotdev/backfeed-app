@@ -25,7 +25,7 @@ const HeaderActions = () => {
   if (isLoading) return null;
 
   return (
-    <Flex alignItems="center" gap={6}>
+    <Flex alignItems="center" gap={4}>
       <ThemeToggle />
 
       {isAuthenticated ? (

@@ -1,0 +1,9 @@
+fragment Comment on Comment {
+  rowId
+  message
+  user {
+    rowId
+    username
+  }
+  createdAt
+}

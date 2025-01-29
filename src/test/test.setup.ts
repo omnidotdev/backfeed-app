@@ -2,9 +2,9 @@
  * @file Test setup configuration. Anything included in here is injected into tests.
  */
 
+import { expect } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import * as rtlDomMatchers from "@testing-library/jest-dom/matchers";
-import { expect } from "bun:test";
 
 import "__mocks__/nextRouter.mock";
 // import { mswNodeServer } from "test/e2e/util";

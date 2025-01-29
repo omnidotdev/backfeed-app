@@ -12,6 +12,7 @@ import {
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
@@ -21,7 +22,7 @@ import {
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -54,6 +55,8 @@ const createOrganizationSchema = baseSchema.superRefine(
   async ({ slug }, ctx) => {
     if (!slug.length) return z.NEVER;
 
+    const sdk = await getSdk();
+
     const { organizationBySlug } = await sdk.Organization({
       slug,
     });
@@ -78,9 +81,24 @@ const CreateOrganization = () => {
 
   const { user } = useAuth();
 
+  const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
+
+  useHotkeys(
+    "mod+o",
+    () => setIsOpen(!isOpen),
+    {
+      enabled: !!user && !isCreateProjectDialogOpen,
+      enableOnFormTags: true,
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateProjectDialogOpen]
+  );
 
   const { data, mutateAsync: createOrganization } =
     useCreateOrganizationMutation();
@@ -93,6 +111,7 @@ const CreateOrganization = () => {
         );
 
         setIsOpen(false);
+        reset();
       },
     });
 
@@ -105,7 +124,7 @@ const CreateOrganization = () => {
     validatorAdapter: standardSchemaValidator,
     validators: {
       onMount: baseSchema,
-      onChangeAsync: createOrganizationSchema,
+      onSubmitAsync: createOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -153,17 +172,10 @@ const CreateOrganization = () => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
-          reset();
         }}
       >
-        <Field
-          name="name"
-          asyncDebounceMs={300}
-          validators={{
-            onBlurAsync: baseSchema.shape.name,
-          }}
-        >
-          {({ handleChange, handleBlur, state }) => (
+        <Field name="name">
+          {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
                 htmlFor={
@@ -181,25 +193,17 @@ const CreateOrganization = () => {
                 }
                 value={state.value}
                 onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onBlur}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
           )}
         </Field>
 
-        <Field
-          name="slug"
-          asyncDebounceMs={300}
-          // `onChangeAsync` validation is used here to keep in sync with the async form level validation of the slug field
-          validators={{
-            onChangeAsync: baseSchema.shape.slug,
-          }}
-        >
+        <Field name="slug">
           {({ handleChange, state }) => (
             <Stack position="relative" gap={1.5}>
               <Label
@@ -228,7 +232,7 @@ const CreateOrganization = () => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onChange}
+                error={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -243,7 +247,11 @@ const CreateOrganization = () => {
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <Button type="submit" disabled={!canSubmit || !isDirty} mt={4}>
+            <Button
+              type="submit"
+              disabled={!canSubmit || !isDirty || isSubmitting}
+              mt={4}
+            >
               {isSubmitting
                 ? app.dashboardPage.cta.newOrganization.action.pending
                 : app.dashboardPage.cta.newOrganization.action.submit}

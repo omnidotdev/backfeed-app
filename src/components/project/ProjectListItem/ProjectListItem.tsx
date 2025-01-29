@@ -7,8 +7,8 @@ import {
 } from "react-icons/hi2";
 
 import { DestructiveAction, Link, OverflowText } from "components/core";
-import { app } from "lib/config";
 import { useDeleteProjectMutation } from "generated/graphql";
+import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
 
@@ -78,17 +78,20 @@ const ProjectListItem = ({
             </Link>
           </Stack>
 
+          {/* TODO: handle in dedicated project settings page. */}
           {isOrganizationOwner && (
             <DestructiveAction
               title={deleteProjectDetails.title}
               description={deleteProjectDetails.description}
+              destructiveInput={deleteProjectDetails.destructiveInput.prompt}
               action={{
                 label: deleteProjectDetails.action.label,
                 onClick: () => deleteProject({ rowId: rowId! }),
               }}
               triggerProps={{
                 "aria-label": `${deleteProjectDetails.action.label} organization`,
-                color: "omni.ruby",
+                colorPalette: "omni.ruby",
+                px: "2",
               }}
             />
           )}

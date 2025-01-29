@@ -11,12 +11,15 @@ import {
   OrganizationMetrics,
   OrganizationProjectsOverview,
 } from "components/organization";
-import { useOrganizationMetricsQuery } from "generated/graphql";
+import {
+  useCreateProjectMutation,
+  useOrganizationMetricsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
-import { CREATE_PROJECT_MUTATION_KEY } from "lib/constants";
 import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { Organization } from "generated/graphql";
 
 interface Props {
@@ -26,7 +29,7 @@ interface Props {
 
 const OrganizationOverview = ({ organization }: Props) => {
   const projectsBeingCreated = useIsMutating({
-    mutationKey: CREATE_PROJECT_MUTATION_KEY,
+    mutationKey: useCreateProjectMutation.getKey(),
   });
 
   const { isLoading: isAuthLoading } = useAuth();
@@ -48,7 +51,7 @@ const OrganizationOverview = ({ organization }: Props) => {
     }
   );
 
-  const breadcrumbs = [
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",

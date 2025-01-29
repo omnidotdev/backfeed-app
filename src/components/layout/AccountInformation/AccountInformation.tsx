@@ -13,6 +13,7 @@ import {
   MenuSeparator,
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
 
 import { app, isDevEnv } from "lib/config";
@@ -35,15 +36,13 @@ const AccountInformation = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/auth/federated-logout");
+      await fetch("/api/auth/federated-logout", {
+        method: "POST",
+      });
 
-      if (response.ok) {
-        await signOut();
+      await signOut();
 
-        const { url } = await response.json();
-
-        window.location.href = url;
-      }
+      redirect("/");
     } catch (error) {
       if (isDevEnv) {
         console.error(error);

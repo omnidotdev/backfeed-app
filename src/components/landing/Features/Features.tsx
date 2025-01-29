@@ -48,12 +48,12 @@ const Features = () => (
     gap={8}
   >
     <Flex direction="column" align="center" textAlign="center">
-      <Text fontSize={{ base: "2xl", xl: "3xl" }} fontWeight="bold" mb={3}>
+      <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold" mb={3}>
         {app.landingPage.features.title}
       </Text>
 
       <Text
-        fontSize={{ base: "md", xl: "lg" }}
+        fontSize={{ base: "md", md: "lg" }}
         mb={4}
         color="foreground.subtle"
         fontWeight="medium"
@@ -64,7 +64,7 @@ const Features = () => (
       </Text>
     </Flex>
 
-    <Grid gap={8} columns={{ base: 1, md: 2, xl: 4 }}>
+    <Grid gap={8} columns={{ base: 1, md: 2, "2xl": 4 }}>
       {FEATURES.map(({ title, description, Icon }) => (
         <FeatureCard
           key={title}

@@ -24,21 +24,23 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
     boxShadow="lg"
     p={6}
   >
-    <Stack align="center" h="full" textAlign="center">
-      <Icon src={featureIcon} w={10} h={10} color="brand.primary" mb={2} />
+    <Stack align="center" h="full" textAlign="center" gap={6}>
+      <Icon src={featureIcon} w={10} h={10} color="brand.primary" />
 
-      <Text fontSize="lg" fontWeight="bold" my={2}>
-        {title}
-      </Text>
+      <Stack>
+        <Text fontSize="lg" fontWeight="bold" mt={2}>
+          {title}
+        </Text>
 
-      <Text
-        fontSize={{ base: "md", xlTo2xl: "sm" }}
-        color="foreground.subtle"
-        fontWeight="medium"
-        mb={4}
-      >
-        {description}
-      </Text>
+        <Text
+          color="foreground.subtle"
+          fontWeight="medium"
+          textWrap="pretty"
+          mb={4}
+        >
+          {description}
+        </Text>
+      </Stack>
     </Stack>
   </Flex>
 );

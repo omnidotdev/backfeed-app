@@ -6,10 +6,11 @@ import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { sdk } from "lib/graphql";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
@@ -18,6 +19,8 @@ export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { organizationSlug } = await params;
+
+  const sdk = await getSdk();
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
@@ -41,14 +44,17 @@ interface Props {
 const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, { organizationBySlug: organization }] = await Promise.all([
-    getAuthSession(),
-    sdk.Organization({ slug: organizationSlug }),
-  ]);
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  if (!session || !organization) notFound();
+  if (!session || !sdk) notFound();
 
-  const breadcrumbs = [
+  const { organizationBySlug: organization } = await sdk.Organization({
+    slug: organizationSlug,
+  });
+
+  if (!organization) notFound();
+
+  const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
       href: "/organizations",

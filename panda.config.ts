@@ -30,6 +30,28 @@ const pandaConfig = defineConfig({
       groupHover: "[role=group]:where(:hover, [data-hover]) &",
     },
   },
+  theme: {
+    extend: {
+      tokens: {
+        colors: {
+          destructive: {
+            hover: {
+              value: "#dc2626",
+              description: "Destructive hover color.",
+            },
+            active: {
+              value: "#b91c1c",
+              description: "Destructive active color.",
+            },
+            focus: {
+              value: "#b91c1c",
+              description: "Destructive focus color.",
+            },
+          },
+        },
+      },
+    },
+  },
 });
 
 export default pandaConfig;

@@ -1,1 +1,1 @@
-export { default as sdk } from "./sdk";
+export { default as getSdk } from "./getSdk";

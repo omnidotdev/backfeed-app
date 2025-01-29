@@ -1,5 +1,7 @@
 mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
   updateUserByHidraId(input: { hidraId: $hidraId, patch: $patch }) {
-    clientMutationId
+    user {
+      rowId
+    }
   }
 }

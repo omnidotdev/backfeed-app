@@ -23,10 +23,10 @@ const RecentFeedback = () => {
     isError,
   } = useRecentFeedbackQuery(
     {
-      userId: user?.id!,
+      userId: user?.rowId!,
     },
     {
-      enabled: !!user?.id,
+      enabled: !!user?.rowId,
       select: (data) => data?.posts?.nodes,
     }
   );
