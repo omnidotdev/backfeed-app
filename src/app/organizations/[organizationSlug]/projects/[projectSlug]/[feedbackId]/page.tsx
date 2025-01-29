@@ -7,6 +7,7 @@ import {
   useCommentsQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
+  useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -69,6 +70,10 @@ const FeedbackPage = async ({ params }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
