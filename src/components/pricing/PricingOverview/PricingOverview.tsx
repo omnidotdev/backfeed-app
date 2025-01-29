@@ -2,7 +2,12 @@
 
 import { HStack, Stack } from "@omnidev/sigil";
 
-import { PricingCard, PricingFAQ, PricingHeader } from "components/pricing";
+import {
+  PricingCard,
+  PricingFAQ,
+  PricingHeader,
+  PricingMatrix,
+} from "components/pricing";
 import { app } from "lib/config";
 
 /**
@@ -40,7 +45,9 @@ const PricingOverview = () => (
       })}
     </HStack>
 
-    <PricingFAQ />
+    <PricingMatrix maxW="5xl" alignSelf="center" mt={6} />
+
+    <PricingFAQ w="100%" maxW="5xl" alignSelf="center" />
   </Stack>
 );
 
