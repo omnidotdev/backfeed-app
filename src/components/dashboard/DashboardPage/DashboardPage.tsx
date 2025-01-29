@@ -55,7 +55,7 @@ const DashboardPage = () => {
   const { data: numberOfOrganizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
-      userOrganizationsExist: true,
+      isUserOrganizations: true,
       excludeRoles: [Role.Member],
     },
     {

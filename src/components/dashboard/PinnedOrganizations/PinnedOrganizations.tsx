@@ -34,7 +34,7 @@ const PinnedOrganizations = () => {
       offset: 0,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
       userId: user?.rowId!,
-      userOrganizationsExist: true,
+      isUserOrganizations: true,
     },
     {
       enabled: !!user?.rowId,

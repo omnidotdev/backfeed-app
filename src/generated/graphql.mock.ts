@@ -516,7 +516,7 @@ export const mockOrganizationRoleQuery = (resolver: GraphQLResponseResolver<Type
  * @example
  * mockOrganizationsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, offset, orderBy, userOrganizationsExist, userId, excludeRoles, search, slug } = variables;
+ *     const { pageSize, offset, orderBy, isUserOrganizations, userId, excludeRoles, search, slug } = variables;
  *     return HttpResponse.json({
  *       data: { organizations }
  *     })

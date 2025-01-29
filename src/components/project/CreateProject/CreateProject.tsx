@@ -97,8 +97,8 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const { data: organizations } = useOrganizationsQuery(
     {
-      userOrganizationsExist: true,
       userId: user?.rowId!,
+      isUserOrganizations: true,
       slug: organizationSlug,
       excludeRoles: [Role.Member],
     },

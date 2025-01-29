@@ -2,7 +2,7 @@ query Organizations(
   $pageSize: Int
   $offset: Int
   $orderBy: [OrganizationOrderBy!]
-  $userOrganizationsExist: Boolean
+  $isUserOrganizations: Boolean
   $userId: UUID
   $excludeRoles: [Role!]
   $search: String
@@ -15,15 +15,18 @@ query Organizations(
     filter: {
       name: { includesInsensitive: $search }
       slug: { equalTo: $slug }
-      userOrganizationsExist: $userOrganizationsExist
-      userOrganizations: {
-        every: {
-          and: [
-            { user: { rowId: { equalTo: $userId } } }
-            { role: { notIn: $excludeRoles } }
-          ]
+      or: [
+        {
+          userOrganizationsExist: $isUserOrganizations
+          userOrganizations: {
+            some: {
+              user: { rowId: { equalTo: $userId } }
+              role: { notIn: $excludeRoles }
+            }
+          }
         }
-      }
+        { rowId: { isNull: $isUserOrganizations } }
+      ]
     }
   ) {
     totalCount

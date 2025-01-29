@@ -46,6 +46,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     offset: (page - 1) * pageSize,
     orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
     search,
+    isUserOrganizations: false,
   };
 
   await queryClient.prefetchQuery({
