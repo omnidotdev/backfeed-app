@@ -20,6 +20,7 @@ import type { DestructiveActionProps } from "components/core";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
+
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 
@@ -52,6 +53,7 @@ const OrganizationSettings = () => {
     title: deleteOrganizationDetails.destruciveAction.title,
     description: deleteOrganizationDetails.destruciveAction.description,
     triggerLabel: deleteOrganizationDetails.destruciveAction.actionLabel,
+    destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),

@@ -306,6 +306,7 @@ const app = {
           title: "Delete Organization",
           description: "Are you sure you want to delete this organization?",
           actionLabel: "Delete",
+          prompt: "Permanently delete organization",
         },
       },
       leaveOrganization: {
@@ -450,6 +451,9 @@ const app = {
         description: "Are you sure you want to delete this project?",
         action: {
           label: "Delete",
+        },
+        destructiveInput: {
+          prompt: "Permanently delete project",
         },
       },
     },

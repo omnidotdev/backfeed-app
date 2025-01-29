@@ -1,6 +1,16 @@
 "use client";
 
-import { Button, Dialog, HStack, Icon, useDisclosure } from "@omnidev/sigil";
+import { useState } from "react";
+import {
+  Button,
+  Dialog,
+  HStack,
+  Icon,
+  Input,
+  Label,
+  Stack,
+  useDisclosure,
+} from "@omnidev/sigil";
 import { HiOutlineTrash } from "react-icons/hi2";
 
 import { app } from "lib/config";
@@ -18,12 +28,14 @@ const destructiveButtonStyles: JsxStyleProps = {
   color: "white",
   backgroundColor: {
     base: "red",
-    _hover: "destructive.hover",
+    _hover: { base: "destructive.hover", _disabled: "red" },
     _active: "destructive.active",
     _focus: "destructive.focus",
   },
+  opacity: {
+    _disabled: 0.5,
+  },
 };
-
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;
@@ -38,6 +50,8 @@ export interface Props extends DialogProps {
   action: Action;
   /** Icon used for the default dialog trigger. */
   icon?: IconType;
+  /** Dynamic confirmation text for destructive actions. */
+  destructiveInput?: string;
   /** Children to render in the dialog content area. */
   children?: ReactNode;
   /** Dialog trigger button label. */
@@ -57,16 +71,21 @@ const DestructiveAction = ({
   triggerProps,
   iconProps,
   children,
+  destructiveInput,
   triggerLabel,
   ...rest
 }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
+  const [inputValue, setInputValue] = useState("");
 
   const actions: Action[] = [
     {
       variant: "solid",
       ...destructiveButtonStyles,
       ...action,
+      disabled: destructiveInput
+        ? inputValue !== destructiveInput || action.disabled
+        : action.disabled,
       onClick: (e) => {
         action.onClick?.(e);
         onClose();
@@ -102,6 +121,19 @@ const DestructiveAction = ({
       {...rest}
     >
       {children}
+
+      {destructiveInput && (
+        <Stack gap={2}>
+          <Label>{`Type "${destructiveInput}" below to confirm`}</Label>
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            borderColor={{ base: "border.default", _focus: "red" }}
+            boxShadow={{ _focus: "0 0 0 1px red" }}
+            mb={4}
+          />
+        </Stack>
+      )}
 
       <HStack>
         {actions.map(({ label, ...rest }) => (
