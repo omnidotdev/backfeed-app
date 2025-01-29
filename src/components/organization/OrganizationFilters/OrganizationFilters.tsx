@@ -16,32 +16,24 @@ import { useIsClient, useToggle } from "usehooks-ts";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
-interface SegmentOption {
-  /** Label for the segment option. */
+import type { OrganizationsFilter } from "lib/constants/searchParams";
+
+interface OrganizationFilterOption {
+  /** Label for the filter segment option. */
   label: string;
-  /** Value for the segment option. */
+  /** Value for the filter segment option. */
   value: string;
-  /** Whether the segment option is disabled. */
-  isDisabled?: boolean;
 }
 
-const segmentOptions: SegmentOption[] = [
-  {
-    label: app.organizationsPage.filters.segmentGroup.all.label,
-    value: app.organizationsPage.filters.segmentGroup.all.value,
-  },
-  {
-    label: app.organizationsPage.filters.segmentGroup.yours.label,
-    value: app.organizationsPage.filters.segmentGroup.yours.value,
-  },
-];
+const organizationFilterOptions: OrganizationFilterOption[] =
+  app.organizationsPage.filters.organizationFilterOptions;
 
 /**
  * Organization filters.
  */
 const OrganizationFilters = () => {
-  const [{ search }, setSearchParams] = useSearchParams(),
-    [inputFocused, toggleInputFocus] = useToggle(),
+  const [{ search, organizationsFilter }, setSearchParams] = useSearchParams(),
+    [inputFocused, _, setInputFocus] = useToggle(),
     isClient = useIsClient();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -57,16 +49,14 @@ const OrganizationFilters = () => {
   );
 
   return (
-    <Grid columns={1} w="full" gap={4}>
+    <Grid columns={1} w="full">
       <GridItem w={{ base: "full", sm: "fit-content" }}>
         <SegmentGroup
-          defaultValue={app.organizationsPage.filters.segmentGroup.all.value}
-          options={segmentOptions}
+          defaultValue={organizationsFilter}
+          options={organizationFilterOptions}
           onValueChange={({ value }) => {
             setSearchParams({
-              userOrganizations:
-                value ===
-                app.organizationsPage.filters.segmentGroup.yours.value,
+              organizationsFilter: value as OrganizationsFilter,
             });
             // NB: focus the search input when switching segment.
             inputRef.current?.focus();
@@ -88,8 +78,8 @@ const OrganizationFilters = () => {
           borderColor="border.subtle"
           placeholder={app.organizationsPage.filters.search.placeholder}
           defaultValue={search}
-          onBlur={toggleInputFocus}
-          onFocus={toggleInputFocus}
+          onBlur={() => setInputFocus(false)}
+          onFocus={() => setInputFocus(true)}
           onChange={(e) =>
             setSearchParams({
               search: e.target.value.length ? e.target.value.toLowerCase() : "",

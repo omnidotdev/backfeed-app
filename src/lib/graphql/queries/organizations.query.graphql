@@ -6,16 +6,33 @@ query Organizations(
   $slug: String
   $userId: UUID
   $userOrganizationsExist: Boolean
+  $projectsExist: Boolean
+  $postsExist: Boolean
 ) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: { 
-      name: { includesInsensitive: $search }, 
-      slug: { equalTo: $slug } 
-      userOrganizationsExist: $userOrganizationsExist
-      userOrganizations: { every: { user: { rowId: { equalTo: $userId } } } }
+    filter: {
+      name: { includesInsensitive: $search }
+      slug: { equalTo: $slug }
+      or: [
+        {
+          userOrganizationsExist: $userOrganizationsExist
+          userOrganizations: {
+            every: { user: { rowId: { equalTo: $userId } } }
+          }
+        }
+        {
+          projectsExist: $projectsExist
+          projects: {
+            some: {
+              postsExist: $postsExist
+              posts: { some: { userId: { equalTo: $userId } } }
+            }
+          }
+        }
+      ]
     }
   ) {
     totalCount

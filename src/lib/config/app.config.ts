@@ -180,7 +180,7 @@ const app = {
     breadcrumb: "Organizations",
     header: {
       title: "Organizations",
-      description: "Manage and monitor all your organizations in one place.",
+      description: "Manage and monitor organizations in one place.",
       cta: {
         newOrganization: {
           label: "New Organization",
@@ -197,16 +197,20 @@ const app = {
       search: {
         placeholder: "Search all organizations...",
       },
-      segmentGroup: {
-        all: {
+      organizationFilterOptions: [
+        {
           label: "All",
           value: "all",
         },
-        yours: {
+        {
           label: "Yours",
           value: "yours",
         },
-      },
+        {
+          label: "Active",
+          value: "active",
+        },
+      ],
     },
   },
   organizationPage: {

@@ -4606,6 +4606,8 @@ export type OrganizationsQueryVariables = Exact<{
   slug?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  postsExist?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -4955,12 +4957,12 @@ export const OrganizationMetricsDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean, $projectsExist: Boolean, $postsExist: Boolean) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {user: {rowId: {equalTo: $userId}}}}}
+    filter: {name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{userOrganizationsExist: $userOrganizationsExist, userOrganizations: {every: {user: {rowId: {equalTo: $userId}}}}}, {projectsExist: $projectsExist, projects: {some: {postsExist: $postsExist, posts: {some: {userId: {equalTo: $userId}}}}}}]}
   ) {
     totalCount
     nodes {

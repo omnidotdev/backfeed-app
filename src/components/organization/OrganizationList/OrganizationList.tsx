@@ -9,6 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { OrganizationsFilter } from "lib/constants/searchParams";
 import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -20,7 +21,7 @@ import type { Organization } from "generated/graphql";
  * Organization list.
  */
 const OrganizationList = ({ ...props }: StackProps) => {
-  const [{ page, pageSize, search, userOrganizations }, setSearchParams] =
+  const [{ page, pageSize, search, organizationsFilter }, setSearchParams] =
     useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
@@ -37,8 +38,14 @@ const OrganizationList = ({ ...props }: StackProps) => {
       offset: (page - 1) * pageSize,
       search: debouncedSearch,
       orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: userOrganizations ? user?.rowId : undefined,
-      userOrganizationsExist: userOrganizations ? true : undefined,
+      userId:
+        organizationsFilter !== OrganizationsFilter.All
+          ? user?.rowId
+          : undefined,
+      userOrganizationsExist:
+        organizationsFilter !== OrganizationsFilter.All ? true : undefined,
+      projectsExist: organizationsFilter === OrganizationsFilter.Active,
+      postsExist: organizationsFilter === OrganizationsFilter.Active,
     },
     {
       enabled: !!user?.rowId,
@@ -98,6 +105,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) => setSearchParams({ page })}
+        siblingCount={0}
         mt={4}
       />
     </Stack>
