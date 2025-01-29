@@ -47,11 +47,9 @@ export type BigIntFilter = {
   notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
-export type Comment = Node & {
+export type Comment = {
   __typename?: 'Comment';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   message?: Maybe<Scalars['String']['output']>;
   /** Reads a single `Post` that is related to this `Comment`. */
   post?: Maybe<Post>;
@@ -522,6 +520,14 @@ export type CreateUserOrganizationPayload = {
   query?: Maybe<Query>;
   /** The `UserOrganization` that was created by this mutation. */
   userOrganization?: Maybe<UserOrganization>;
+  /** An edge for our `UserOrganization`. May be used by Relay 1. */
+  userOrganizationEdge?: Maybe<UserOrganizationEdge>;
+};
+
+
+/** The output of our create `UserOrganization` mutation. */
+export type CreateUserOrganizationPayloadUserOrganizationEdgeArgs = {
+  orderBy?: Array<UserOrganizationOrderBy>;
 };
 
 /** The output of our create `User` mutation. */
@@ -572,17 +578,6 @@ export type DatetimeFilter = {
   notIn?: InputMaybe<Array<Scalars['Datetime']['input']>>;
 };
 
-/** All input for the `deleteCommentById` mutation. */
-export type DeleteCommentByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Comment` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
 /** All input for the `deleteComment` mutation. */
 export type DeleteCommentInput = {
   /**
@@ -605,7 +600,6 @@ export type DeleteCommentPayload = {
   comment?: Maybe<Comment>;
   /** An edge for our `Comment`. May be used by Relay 1. */
   commentEdge?: Maybe<CommentEdge>;
-  deletedCommentId?: Maybe<Scalars['ID']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
 };
@@ -614,28 +608,6 @@ export type DeleteCommentPayload = {
 /** The output of our delete `Comment` mutation. */
 export type DeleteCommentPayloadCommentEdgeArgs = {
   orderBy?: Array<CommentOrderBy>;
-};
-
-/** All input for the `deleteDownvoteById` mutation. */
-export type DeleteDownvoteByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Downvote` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteDownvoteByPostIdAndUserId` mutation. */
-export type DeleteDownvoteByPostIdAndUserIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  postId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `deleteDownvote` mutation. */
@@ -656,7 +628,6 @@ export type DeleteDownvotePayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedDownvoteId?: Maybe<Scalars['ID']['output']>;
   /** The `Downvote` that was deleted by this mutation. */
   downvote?: Maybe<Downvote>;
   /** An edge for our `Downvote`. May be used by Relay 1. */
@@ -669,37 +640,6 @@ export type DeleteDownvotePayload = {
 /** The output of our delete `Downvote` mutation. */
 export type DeleteDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
-};
-
-/** All input for the `deleteOrganizationById` mutation. */
-export type DeleteOrganizationByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Organization` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteOrganizationByName` mutation. */
-export type DeleteOrganizationByNameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-};
-
-/** All input for the `deleteOrganizationBySlug` mutation. */
-export type DeleteOrganizationBySlugInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  slug: Scalars['String']['input'];
 };
 
 /** All input for the `deleteOrganization` mutation. */
@@ -720,7 +660,6 @@ export type DeleteOrganizationPayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedOrganizationId?: Maybe<Scalars['ID']['output']>;
   /** The `Organization` that was deleted by this mutation. */
   organization?: Maybe<Organization>;
   /** An edge for our `Organization`. May be used by Relay 1. */
@@ -733,17 +672,6 @@ export type DeleteOrganizationPayload = {
 /** The output of our delete `Organization` mutation. */
 export type DeleteOrganizationPayloadOrganizationEdgeArgs = {
   orderBy?: Array<OrganizationOrderBy>;
-};
-
-/** All input for the `deletePostById` mutation. */
-export type DeletePostByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Post` to be deleted. */
-  id: Scalars['ID']['input'];
 };
 
 /** All input for the `deletePost` mutation. */
@@ -764,7 +692,6 @@ export type DeletePostPayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedPostId?: Maybe<Scalars['ID']['output']>;
   /** The `Post` that was deleted by this mutation. */
   post?: Maybe<Post>;
   /** An edge for our `Post`. May be used by Relay 1. */
@@ -777,38 +704,6 @@ export type DeletePostPayload = {
 /** The output of our delete `Post` mutation. */
 export type DeletePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
-};
-
-/** All input for the `deleteProjectById` mutation. */
-export type DeleteProjectByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Project` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteProjectByName` mutation. */
-export type DeleteProjectByNameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-};
-
-/** All input for the `deleteProjectBySlugAndOrganizationId` mutation. */
-export type DeleteProjectBySlugAndOrganizationIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['UUID']['input'];
-  slug: Scalars['String']['input'];
 };
 
 /** All input for the `deleteProject` mutation. */
@@ -829,7 +724,6 @@ export type DeleteProjectPayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedProjectId?: Maybe<Scalars['ID']['output']>;
   /** The `Project` that was deleted by this mutation. */
   project?: Maybe<Project>;
   /** An edge for our `Project`. May be used by Relay 1. */
@@ -842,28 +736,6 @@ export type DeleteProjectPayload = {
 /** The output of our delete `Project` mutation. */
 export type DeleteProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
-};
-
-/** All input for the `deleteUpvoteById` mutation. */
-export type DeleteUpvoteByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Upvote` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteUpvoteByPostIdAndUserId` mutation. */
-export type DeleteUpvoteByPostIdAndUserIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  postId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `deleteUpvote` mutation. */
@@ -884,7 +756,6 @@ export type DeleteUpvotePayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedUpvoteId?: Maybe<Scalars['ID']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
   /** The `Upvote` that was deleted by this mutation. */
@@ -899,37 +770,6 @@ export type DeleteUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
-/** All input for the `deleteUserByHidraId` mutation. */
-export type DeleteUserByHidraIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  hidraId: Scalars['UUID']['input'];
-};
-
-/** All input for the `deleteUserById` mutation. */
-export type DeleteUserByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `User` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteUserByUsername` mutation. */
-export type DeleteUserByUsernameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  username: Scalars['String']['input'];
-};
-
 /** All input for the `deleteUser` mutation. */
 export type DeleteUserInput = {
   /**
@@ -940,15 +780,14 @@ export type DeleteUserInput = {
   rowId: Scalars['UUID']['input'];
 };
 
-/** All input for the `deleteUserOrganizationByUserIdAndOrganizationId` mutation. */
-export type DeleteUserOrganizationByUserIdAndOrganizationIdInput = {
+/** All input for the `deleteUserOrganization` mutation. */
+export type DeleteUserOrganizationInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `UserOrganization` mutation. */
@@ -963,6 +802,14 @@ export type DeleteUserOrganizationPayload = {
   query?: Maybe<Query>;
   /** The `UserOrganization` that was deleted by this mutation. */
   userOrganization?: Maybe<UserOrganization>;
+  /** An edge for our `UserOrganization`. May be used by Relay 1. */
+  userOrganizationEdge?: Maybe<UserOrganizationEdge>;
+};
+
+
+/** The output of our delete `UserOrganization` mutation. */
+export type DeleteUserOrganizationPayloadUserOrganizationEdgeArgs = {
+  orderBy?: Array<UserOrganizationOrderBy>;
 };
 
 /** The output of our delete `User` mutation. */
@@ -973,7 +820,6 @@ export type DeleteUserPayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedUserId?: Maybe<Scalars['ID']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
   /** The `User` that was deleted by this mutation. */
@@ -988,11 +834,9 @@ export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
-export type Downvote = Node & {
+export type Downvote = {
   __typename?: 'Downvote';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   /** Reads a single `Post` that is related to this `Downvote`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
@@ -1251,96 +1095,36 @@ export type Mutation = {
   createUserOrganization?: Maybe<CreateUserOrganizationPayload>;
   /** Deletes a single `Comment` using a unique key. */
   deleteComment?: Maybe<DeleteCommentPayload>;
-  /** Deletes a single `Comment` using its globally unique id. */
-  deleteCommentById?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Downvote` using a unique key. */
   deleteDownvote?: Maybe<DeleteDownvotePayload>;
-  /** Deletes a single `Downvote` using its globally unique id. */
-  deleteDownvoteById?: Maybe<DeleteDownvotePayload>;
-  /** Deletes a single `Downvote` using a unique key. */
-  deleteDownvoteByPostIdAndUserId?: Maybe<DeleteDownvotePayload>;
   /** Deletes a single `Organization` using a unique key. */
   deleteOrganization?: Maybe<DeleteOrganizationPayload>;
-  /** Deletes a single `Organization` using its globally unique id. */
-  deleteOrganizationById?: Maybe<DeleteOrganizationPayload>;
-  /** Deletes a single `Organization` using a unique key. */
-  deleteOrganizationByName?: Maybe<DeleteOrganizationPayload>;
-  /** Deletes a single `Organization` using a unique key. */
-  deleteOrganizationBySlug?: Maybe<DeleteOrganizationPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
-  /** Deletes a single `Post` using its globally unique id. */
-  deletePostById?: Maybe<DeletePostPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProject?: Maybe<DeleteProjectPayload>;
-  /** Deletes a single `Project` using its globally unique id. */
-  deleteProjectById?: Maybe<DeleteProjectPayload>;
-  /** Deletes a single `Project` using a unique key. */
-  deleteProjectByName?: Maybe<DeleteProjectPayload>;
-  /** Deletes a single `Project` using a unique key. */
-  deleteProjectBySlugAndOrganizationId?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Upvote` using a unique key. */
   deleteUpvote?: Maybe<DeleteUpvotePayload>;
-  /** Deletes a single `Upvote` using its globally unique id. */
-  deleteUpvoteById?: Maybe<DeleteUpvotePayload>;
-  /** Deletes a single `Upvote` using a unique key. */
-  deleteUpvoteByPostIdAndUserId?: Maybe<DeleteUpvotePayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using a unique key. */
-  deleteUserByHidraId?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using its globally unique id. */
-  deleteUserById?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using a unique key. */
-  deleteUserByUsername?: Maybe<DeleteUserPayload>;
   /** Deletes a single `UserOrganization` using a unique key. */
-  deleteUserOrganizationByUserIdAndOrganizationId?: Maybe<DeleteUserOrganizationPayload>;
+  deleteUserOrganization?: Maybe<DeleteUserOrganizationPayload>;
   /** Updates a single `Comment` using a unique key and a patch. */
   updateComment?: Maybe<UpdateCommentPayload>;
-  /** Updates a single `Comment` using its globally unique id and a patch. */
-  updateCommentById?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Downvote` using a unique key and a patch. */
   updateDownvote?: Maybe<UpdateDownvotePayload>;
-  /** Updates a single `Downvote` using its globally unique id and a patch. */
-  updateDownvoteById?: Maybe<UpdateDownvotePayload>;
-  /** Updates a single `Downvote` using a unique key and a patch. */
-  updateDownvoteByPostIdAndUserId?: Maybe<UpdateDownvotePayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
   updateOrganization?: Maybe<UpdateOrganizationPayload>;
-  /** Updates a single `Organization` using its globally unique id and a patch. */
-  updateOrganizationById?: Maybe<UpdateOrganizationPayload>;
-  /** Updates a single `Organization` using a unique key and a patch. */
-  updateOrganizationByName?: Maybe<UpdateOrganizationPayload>;
-  /** Updates a single `Organization` using a unique key and a patch. */
-  updateOrganizationBySlug?: Maybe<UpdateOrganizationPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
-  /** Updates a single `Post` using its globally unique id and a patch. */
-  updatePostById?: Maybe<UpdatePostPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProject?: Maybe<UpdateProjectPayload>;
-  /** Updates a single `Project` using its globally unique id and a patch. */
-  updateProjectById?: Maybe<UpdateProjectPayload>;
-  /** Updates a single `Project` using a unique key and a patch. */
-  updateProjectByName?: Maybe<UpdateProjectPayload>;
-  /** Updates a single `Project` using a unique key and a patch. */
-  updateProjectBySlugAndOrganizationId?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Upvote` using a unique key and a patch. */
   updateUpvote?: Maybe<UpdateUpvotePayload>;
-  /** Updates a single `Upvote` using its globally unique id and a patch. */
-  updateUpvoteById?: Maybe<UpdateUpvotePayload>;
-  /** Updates a single `Upvote` using a unique key and a patch. */
-  updateUpvoteByPostIdAndUserId?: Maybe<UpdateUpvotePayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using a unique key and a patch. */
-  updateUserByHidraId?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using its globally unique id and a patch. */
-  updateUserById?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using a unique key and a patch. */
-  updateUserByUsername?: Maybe<UpdateUserPayload>;
   /** Updates a single `UserOrganization` using a unique key and a patch. */
-  updateUserOrganizationByUserIdAndOrganizationId?: Maybe<UpdateUserOrganizationPayload>;
+  updateUserOrganization?: Maybe<UpdateUserOrganizationPayload>;
 };
 
 
@@ -1399,26 +1183,8 @@ export type MutationDeleteCommentArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteCommentByIdArgs = {
-  input: DeleteCommentByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteDownvoteArgs = {
   input: DeleteDownvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteDownvoteByIdArgs = {
-  input: DeleteDownvoteByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteDownvoteByPostIdAndUserIdArgs = {
-  input: DeleteDownvoteByPostIdAndUserIdInput;
 };
 
 
@@ -1429,32 +1195,8 @@ export type MutationDeleteOrganizationArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOrganizationByIdArgs = {
-  input: DeleteOrganizationByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOrganizationByNameArgs = {
-  input: DeleteOrganizationByNameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOrganizationBySlugArgs = {
-  input: DeleteOrganizationBySlugInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeletePostArgs = {
   input: DeletePostInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeletePostByIdArgs = {
-  input: DeletePostByIdInput;
 };
 
 
@@ -1465,38 +1207,8 @@ export type MutationDeleteProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectByIdArgs = {
-  input: DeleteProjectByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectByNameArgs = {
-  input: DeleteProjectByNameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectBySlugAndOrganizationIdArgs = {
-  input: DeleteProjectBySlugAndOrganizationIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUpvoteArgs = {
   input: DeleteUpvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUpvoteByIdArgs = {
-  input: DeleteUpvoteByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUpvoteByPostIdAndUserIdArgs = {
-  input: DeleteUpvoteByPostIdAndUserIdInput;
 };
 
 
@@ -1507,26 +1219,8 @@ export type MutationDeleteUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByHidraIdArgs = {
-  input: DeleteUserByHidraIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByIdArgs = {
-  input: DeleteUserByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByUsernameArgs = {
-  input: DeleteUserByUsernameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserOrganizationByUserIdAndOrganizationIdArgs = {
-  input: DeleteUserOrganizationByUserIdAndOrganizationIdInput;
+export type MutationDeleteUserOrganizationArgs = {
+  input: DeleteUserOrganizationInput;
 };
 
 
@@ -1537,26 +1231,8 @@ export type MutationUpdateCommentArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateCommentByIdArgs = {
-  input: UpdateCommentByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateDownvoteArgs = {
   input: UpdateDownvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateDownvoteByIdArgs = {
-  input: UpdateDownvoteByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateDownvoteByPostIdAndUserIdArgs = {
-  input: UpdateDownvoteByPostIdAndUserIdInput;
 };
 
 
@@ -1567,32 +1243,8 @@ export type MutationUpdateOrganizationArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOrganizationByIdArgs = {
-  input: UpdateOrganizationByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOrganizationByNameArgs = {
-  input: UpdateOrganizationByNameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOrganizationBySlugArgs = {
-  input: UpdateOrganizationBySlugInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePostArgs = {
   input: UpdatePostInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdatePostByIdArgs = {
-  input: UpdatePostByIdInput;
 };
 
 
@@ -1603,38 +1255,8 @@ export type MutationUpdateProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectByIdArgs = {
-  input: UpdateProjectByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectByNameArgs = {
-  input: UpdateProjectByNameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectBySlugAndOrganizationIdArgs = {
-  input: UpdateProjectBySlugAndOrganizationIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUpvoteArgs = {
   input: UpdateUpvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUpvoteByIdArgs = {
-  input: UpdateUpvoteByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUpvoteByPostIdAndUserIdArgs = {
-  input: UpdateUpvoteByPostIdAndUserIdInput;
 };
 
 
@@ -1645,26 +1267,8 @@ export type MutationUpdateUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByHidraIdArgs = {
-  input: UpdateUserByHidraIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByIdArgs = {
-  input: UpdateUserByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByUsernameArgs = {
-  input: UpdateUserByUsernameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserOrganizationByUserIdAndOrganizationIdArgs = {
-  input: UpdateUserOrganizationByUserIdAndOrganizationIdInput;
+export type MutationUpdateUserOrganizationArgs = {
+  input: UpdateUserOrganizationInput;
 };
 
 /** An object with a globally unique `ID`. */
@@ -1673,11 +1277,9 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
-export type Organization = Node & {
+export type Organization = {
   __typename?: 'Organization';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
@@ -1931,6 +1533,8 @@ export enum OrganizationOrderBy {
   UserOrganizationsDistinctCountOrganizationIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
   UserOrganizationsDistinctCountRoleAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROLE_ASC',
   UserOrganizationsDistinctCountRoleDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROLE_DESC',
+  UserOrganizationsDistinctCountRowIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  UserOrganizationsDistinctCountRowIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROW_ID_DESC',
   UserOrganizationsDistinctCountUserIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_ASC',
   UserOrganizationsDistinctCountUserIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_DESC'
 }
@@ -1981,7 +1585,7 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['Cursor']['output']>;
 };
 
-export type Post = Node & {
+export type Post = {
   __typename?: 'Post';
   /** Reads and enables pagination through a set of `Comment`. */
   comments: CommentConnection;
@@ -1989,8 +1593,6 @@ export type Post = Node & {
   description?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Downvote`. */
   downvotes: DownvoteConnection;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   /** Reads a single `Project` that is related to this `Post`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -2365,12 +1967,10 @@ export type PostToManyUpvoteFilter = {
   some?: InputMaybe<UpvoteFilter>;
 };
 
-export type Project = Node & {
+export type Project = {
   __typename?: 'Project';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   image?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   /** Reads a single `Organization` that is related to this `Project`. */
@@ -2680,14 +2280,10 @@ export type Query = Node & {
   __typename?: 'Query';
   /** Get a single `Comment`. */
   comment?: Maybe<Comment>;
-  /** Reads a single `Comment` using its globally unique `ID`. */
-  commentById?: Maybe<Comment>;
   /** Reads and enables pagination through a set of `Comment`. */
   comments?: Maybe<CommentConnection>;
   /** Get a single `Downvote`. */
   downvote?: Maybe<Downvote>;
-  /** Reads a single `Downvote` using its globally unique `ID`. */
-  downvoteById?: Maybe<Downvote>;
   /** Get a single `Downvote`. */
   downvoteByPostIdAndUserId?: Maybe<Downvote>;
   /** Reads and enables pagination through a set of `Downvote`. */
@@ -2698,8 +2294,6 @@ export type Query = Node & {
   node?: Maybe<Node>;
   /** Get a single `Organization`. */
   organization?: Maybe<Organization>;
-  /** Reads a single `Organization` using its globally unique `ID`. */
-  organizationById?: Maybe<Organization>;
   /** Get a single `Organization`. */
   organizationByName?: Maybe<Organization>;
   /** Get a single `Organization`. */
@@ -2708,14 +2302,10 @@ export type Query = Node & {
   organizations?: Maybe<OrganizationConnection>;
   /** Get a single `Post`. */
   post?: Maybe<Post>;
-  /** Reads a single `Post` using its globally unique `ID`. */
-  postById?: Maybe<Post>;
   /** Reads and enables pagination through a set of `Post`. */
   posts?: Maybe<PostConnection>;
   /** Get a single `Project`. */
   project?: Maybe<Project>;
-  /** Reads a single `Project` using its globally unique `ID`. */
-  projectById?: Maybe<Project>;
   /** Get a single `Project`. */
   projectByName?: Maybe<Project>;
   /** Get a single `Project`. */
@@ -2729,8 +2319,6 @@ export type Query = Node & {
   query: Query;
   /** Get a single `Upvote`. */
   upvote?: Maybe<Upvote>;
-  /** Reads a single `Upvote` using its globally unique `ID`. */
-  upvoteById?: Maybe<Upvote>;
   /** Get a single `Upvote`. */
   upvoteByPostIdAndUserId?: Maybe<Upvote>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -2739,10 +2327,10 @@ export type Query = Node & {
   user?: Maybe<User>;
   /** Get a single `User`. */
   userByHidraId?: Maybe<User>;
-  /** Reads a single `User` using its globally unique `ID`. */
-  userById?: Maybe<User>;
   /** Get a single `User`. */
   userByUsername?: Maybe<User>;
+  /** Get a single `UserOrganization`. */
+  userOrganization?: Maybe<UserOrganization>;
   /** Get a single `UserOrganization`. */
   userOrganizationByUserIdAndOrganizationId?: Maybe<UserOrganization>;
   /** Reads and enables pagination through a set of `UserOrganization`. */
@@ -2755,12 +2343,6 @@ export type Query = Node & {
 /** The root query type which gives access points into the data universe. */
 export type QueryCommentArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryCommentByIdArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -2780,12 +2362,6 @@ export type QueryCommentsArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryDownvoteArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryDownvoteByIdArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -2822,12 +2398,6 @@ export type QueryOrganizationArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOrganizationByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryOrganizationByNameArgs = {
   name: Scalars['String']['input'];
 };
@@ -2859,12 +2429,6 @@ export type QueryPostArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryPostByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2880,12 +2444,6 @@ export type QueryPostsArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryProjectByIdArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -2922,12 +2480,6 @@ export type QueryUpvoteArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryUpvoteByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryUpvoteByPostIdAndUserIdArgs = {
   postId: Scalars['UUID']['input'];
   userId: Scalars['UUID']['input'];
@@ -2960,14 +2512,14 @@ export type QueryUserByHidraIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryUserByIdArgs = {
-  id: Scalars['ID']['input'];
+export type QueryUserByUsernameArgs = {
+  username: Scalars['String']['input'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryUserByUsernameArgs = {
-  username: Scalars['String']['input'];
+export type QueryUserOrganizationArgs = {
+  rowId: Scalars['UUID']['input'];
 };
 
 
@@ -3139,19 +2691,6 @@ export type UuidFilter = {
   notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
 };
 
-/** All input for the `updateCommentById` mutation. */
-export type UpdateCommentByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Comment` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Comment` being updated. */
-  patch: CommentPatch;
-};
-
 /** All input for the `updateComment` mutation. */
 export type UpdateCommentInput = {
   /**
@@ -3184,32 +2723,6 @@ export type UpdateCommentPayload = {
 /** The output of our update `Comment` mutation. */
 export type UpdateCommentPayloadCommentEdgeArgs = {
   orderBy?: Array<CommentOrderBy>;
-};
-
-/** All input for the `updateDownvoteById` mutation. */
-export type UpdateDownvoteByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Downvote` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Downvote` being updated. */
-  patch: DownvotePatch;
-};
-
-/** All input for the `updateDownvoteByPostIdAndUserId` mutation. */
-export type UpdateDownvoteByPostIdAndUserIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Downvote` being updated. */
-  patch: DownvotePatch;
-  postId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `updateDownvote` mutation. */
@@ -3246,43 +2759,6 @@ export type UpdateDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
 };
 
-/** All input for the `updateOrganizationById` mutation. */
-export type UpdateOrganizationByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Organization` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Organization` being updated. */
-  patch: OrganizationPatch;
-};
-
-/** All input for the `updateOrganizationByName` mutation. */
-export type UpdateOrganizationByNameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  /** An object where the defined keys will be set on the `Organization` being updated. */
-  patch: OrganizationPatch;
-};
-
-/** All input for the `updateOrganizationBySlug` mutation. */
-export type UpdateOrganizationBySlugInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Organization` being updated. */
-  patch: OrganizationPatch;
-  slug: Scalars['String']['input'];
-};
-
 /** All input for the `updateOrganization` mutation. */
 export type UpdateOrganizationInput = {
   /**
@@ -3315,19 +2791,6 @@ export type UpdateOrganizationPayload = {
 /** The output of our update `Organization` mutation. */
 export type UpdateOrganizationPayloadOrganizationEdgeArgs = {
   orderBy?: Array<OrganizationOrderBy>;
-};
-
-/** All input for the `updatePostById` mutation. */
-export type UpdatePostByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Post` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Post` being updated. */
-  patch: PostPatch;
 };
 
 /** All input for the `updatePost` mutation. */
@@ -3364,44 +2827,6 @@ export type UpdatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
-/** All input for the `updateProjectById` mutation. */
-export type UpdateProjectByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Project` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Project` being updated. */
-  patch: ProjectPatch;
-};
-
-/** All input for the `updateProjectByName` mutation. */
-export type UpdateProjectByNameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  /** An object where the defined keys will be set on the `Project` being updated. */
-  patch: ProjectPatch;
-};
-
-/** All input for the `updateProjectBySlugAndOrganizationId` mutation. */
-export type UpdateProjectBySlugAndOrganizationIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['UUID']['input'];
-  /** An object where the defined keys will be set on the `Project` being updated. */
-  patch: ProjectPatch;
-  slug: Scalars['String']['input'];
-};
-
 /** All input for the `updateProject` mutation. */
 export type UpdateProjectInput = {
   /**
@@ -3434,32 +2859,6 @@ export type UpdateProjectPayload = {
 /** The output of our update `Project` mutation. */
 export type UpdateProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
-};
-
-/** All input for the `updateUpvoteById` mutation. */
-export type UpdateUpvoteByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Upvote` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Upvote` being updated. */
-  patch: UpvotePatch;
-};
-
-/** All input for the `updateUpvoteByPostIdAndUserId` mutation. */
-export type UpdateUpvoteByPostIdAndUserIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Upvote` being updated. */
-  patch: UpvotePatch;
-  postId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
 };
 
 /** All input for the `updateUpvote` mutation. */
@@ -3496,43 +2895,6 @@ export type UpdateUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
-/** All input for the `updateUserByHidraId` mutation. */
-export type UpdateUserByHidraIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  hidraId: Scalars['UUID']['input'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
-/** All input for the `updateUserById` mutation. */
-export type UpdateUserByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `User` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
-/** All input for the `updateUserByUsername` mutation. */
-export type UpdateUserByUsernameInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-  username: Scalars['String']['input'];
-};
-
 /** All input for the `updateUser` mutation. */
 export type UpdateUserInput = {
   /**
@@ -3545,17 +2907,16 @@ export type UpdateUserInput = {
   rowId: Scalars['UUID']['input'];
 };
 
-/** All input for the `updateUserOrganizationByUserIdAndOrganizationId` mutation. */
-export type UpdateUserOrganizationByUserIdAndOrganizationIdInput = {
+/** All input for the `updateUserOrganization` mutation. */
+export type UpdateUserOrganizationInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  organizationId: Scalars['UUID']['input'];
   /** An object where the defined keys will be set on the `UserOrganization` being updated. */
   patch: UserOrganizationPatch;
-  userId: Scalars['UUID']['input'];
+  rowId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `UserOrganization` mutation. */
@@ -3570,6 +2931,14 @@ export type UpdateUserOrganizationPayload = {
   query?: Maybe<Query>;
   /** The `UserOrganization` that was updated by this mutation. */
   userOrganization?: Maybe<UserOrganization>;
+  /** An edge for our `UserOrganization`. May be used by Relay 1. */
+  userOrganizationEdge?: Maybe<UserOrganizationEdge>;
+};
+
+
+/** The output of our update `UserOrganization` mutation. */
+export type UpdateUserOrganizationPayloadUserOrganizationEdgeArgs = {
+  orderBy?: Array<UserOrganizationOrderBy>;
 };
 
 /** The output of our update `User` mutation. */
@@ -3594,11 +2963,9 @@ export type UpdateUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
-export type Upvote = Node & {
+export type Upvote = {
   __typename?: 'Upvote';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   /** Reads a single `Post` that is related to this `Upvote`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
@@ -3824,7 +3191,7 @@ export type UpvotePatch = {
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type User = Node & {
+export type User = {
   __typename?: 'User';
   /** Reads and enables pagination through a set of `Comment`. */
   comments: CommentConnection;
@@ -3833,8 +3200,6 @@ export type User = Node & {
   downvotes: DownvoteConnection;
   firstName?: Maybe<Scalars['String']['output']>;
   hidraId: Scalars['UUID']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
   lastName?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
@@ -4191,6 +3556,8 @@ export enum UserOrderBy {
   UserOrganizationsDistinctCountOrganizationIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
   UserOrganizationsDistinctCountRoleAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROLE_ASC',
   UserOrganizationsDistinctCountRoleDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROLE_DESC',
+  UserOrganizationsDistinctCountRowIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  UserOrganizationsDistinctCountRowIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_ROW_ID_DESC',
   UserOrganizationsDistinctCountUserIdAsc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_ASC',
   UserOrganizationsDistinctCountUserIdDesc = 'USER_ORGANIZATIONS_DISTINCT_COUNT_USER_ID_DESC'
 }
@@ -4202,6 +3569,7 @@ export type UserOrganization = {
   organization?: Maybe<Organization>;
   organizationId: Scalars['UUID']['output'];
   role: Role;
+  rowId: Scalars['UUID']['output'];
   /** Reads a single `User` that is related to this `UserOrganization`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
@@ -4233,6 +3601,8 @@ export type UserOrganizationCondition = {
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `role` field. */
   role?: InputMaybe<Role>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `userId` field. */
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -4265,6 +3635,7 @@ export type UserOrganizationDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   organizationId?: InputMaybe<BigIntFilter>;
   role?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
 };
 
@@ -4276,6 +3647,8 @@ export type UserOrganizationDistinctCountAggregates = {
   organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of role across the matching connection */
   role?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of userId across the matching connection */
   userId?: Maybe<Scalars['BigInt']['output']>;
 };
@@ -4305,6 +3678,8 @@ export type UserOrganizationFilter = {
   organizationId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `role` field. */
   role?: InputMaybe<RoleFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `user` relation. */
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
@@ -4377,6 +3752,7 @@ export type UserOrganizationInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   organizationId: Scalars['UUID']['input'];
   role: Role;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   userId: Scalars['UUID']['input'];
 };
 
@@ -4387,8 +3763,12 @@ export enum UserOrganizationOrderBy {
   Natural = 'NATURAL',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RoleAsc = 'ROLE_ASC',
   RoleDesc = 'ROLE_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
   UserIdAsc = 'USER_ID_ASC',
   UserIdDesc = 'USER_ID_DESC'
 }
@@ -4398,6 +3778,7 @@ export type UserOrganizationPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   role?: InputMaybe<Role>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
@@ -4519,12 +3900,11 @@ export type DeleteOrganizationMutationVariables = Exact<{
 export type DeleteOrganizationMutation = { __typename?: 'Mutation', deleteOrganization?: { __typename?: 'DeleteOrganizationPayload', organization?: { __typename?: 'Organization', rowId: string } | null } | null };
 
 export type LeaveOrganizationMutationVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  organizationId: Scalars['UUID']['input'];
+  rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganizationByUserIdAndOrganizationId?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
+export type LeaveOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganization?: { __typename?: 'DeleteUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', userId: string, organizationId: string } | null } | null };
 
 export type UpdateOrganizationMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4586,14 +3966,6 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
-export type UpdateUserMutationVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
-  patch: UserPatch;
-}>;
-
-
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUserByHidraId?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
-
 export type CreateUserOrganizationMutationVariables = Exact<{
   input: CreateUserOrganizationInput;
 }>;
@@ -4652,7 +4024,7 @@ export type OrganizationRoleQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationRoleQuery = { __typename?: 'Query', userOrganizationByUserIdAndOrganizationId?: { __typename?: 'UserOrganization', role: Role } | null };
+export type OrganizationRoleQuery = { __typename?: 'Query', userOrganizationByUserIdAndOrganizationId?: { __typename?: 'UserOrganization', rowId: string, role: Role } | null };
 
 export type OrganizationsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -4942,10 +4314,8 @@ useDeleteOrganizationMutation.getKey = () => ['DeleteOrganization'];
 useDeleteOrganizationMutation.fetcher = (variables: DeleteOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteOrganizationMutation, DeleteOrganizationMutationVariables>(DeleteOrganizationDocument, variables, options);
 
 export const LeaveOrganizationDocument = `
-    mutation LeaveOrganization($userId: UUID!, $organizationId: UUID!) {
-  deleteUserOrganizationByUserIdAndOrganizationId(
-    input: {userId: $userId, organizationId: $organizationId}
-  ) {
+    mutation LeaveOrganization($rowId: UUID!) {
+  deleteUserOrganization(input: {rowId: $rowId}) {
     userOrganization {
       userId
       organizationId
@@ -5192,34 +4562,6 @@ useCreateUserMutation.getKey = () => ['CreateUser'];
 
 
 useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
-
-export const UpdateUserDocument = `
-    mutation UpdateUser($hidraId: UUID!, $patch: UserPatch!) {
-  updateUserByHidraId(input: {hidraId: $hidraId, patch: $patch}) {
-    user {
-      rowId
-    }
-  }
-}
-    `;
-
-export const useUpdateUserMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateUser'],
-    mutationFn: (variables?: UpdateUserMutationVariables) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateUserMutation.getKey = () => ['UpdateUser'];
-
-
-useUpdateUserMutation.fetcher = (variables: UpdateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
 
 export const CreateUserOrganizationDocument = `
     mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
@@ -5599,6 +4941,7 @@ export const OrganizationRoleDocument = `
     userId: $userId
     organizationId: $organizationId
   ) {
+    rowId
     role
   }
 }

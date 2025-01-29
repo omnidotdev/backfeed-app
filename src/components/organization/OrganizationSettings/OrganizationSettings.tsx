@@ -50,7 +50,7 @@ const OrganizationSettings = () => {
     }
   );
 
-  const { isOwner, isMember } = useOrganizationMembership({
+  const { isOwner, isMember, membershipId } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,
   });
@@ -104,8 +104,7 @@ const OrganizationSettings = () => {
       label: leaveOrganizationDetails.destruciveAction.actionLabel,
       onClick: () =>
         leaveOrganization({
-          organizationId: organization?.rowId!,
-          userId: user?.rowId!,
+          rowId: membershipId!,
         }),
     },
     triggerProps: {

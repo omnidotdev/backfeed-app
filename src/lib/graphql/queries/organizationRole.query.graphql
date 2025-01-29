@@ -3,6 +3,7 @@ query OrganizationRole($userId: UUID!, $organizationId: UUID!) {
     userId: $userId
     organizationId: $organizationId
   ) {
+    rowId
     role
   }
 }
