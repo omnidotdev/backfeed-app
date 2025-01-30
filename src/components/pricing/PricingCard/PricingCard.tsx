@@ -7,14 +7,13 @@ import {
   Divider,
   HStack,
   Icon,
+  Link,
   Stack,
   Text,
   sigil,
 } from "@omnidev/sigil";
-import { FaArrowRight } from "react-icons/fa6";
-
-import { Link } from "components/core";
 import { app } from "lib/config";
+import { FaArrowRight } from "react-icons/fa6";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
@@ -97,7 +96,7 @@ const PricingCard = ({
         ))}
       </sigil.ul>
 
-      {/* TODO: handle this appropriately. This is the recommended approach from polar, but seems to cause some browser errors, although it is still functional.*/}
+      {/* NB: Sigil `Link` being used to prevent CORS issues. See: https://discord.com/channels/1078611507115470849/1330124343044210810/1330296007161810944 */}
       <Link href={`/api/payment/checkout?productId=${product.id}`}>
         <Button
           position="absolute"
