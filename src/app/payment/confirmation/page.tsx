@@ -1,4 +1,7 @@
 import { Center } from "@omnidev/sigil";
+import { notFound } from "next/navigation";
+
+import { getAuthSession } from "lib/util";
 
 import type { SearchParams } from "nuqs/server";
 
@@ -11,6 +14,10 @@ interface Props {
  * TODO: handle restricted access
  */
 const PaymentConfirmationPage = async ({ searchParams }: Props) => {
+  const session = await getAuthSession();
+
+  if (!session || !!session.user?.customerId) notFound();
+
   const { checkoutId } = await searchParams;
 
   return (
