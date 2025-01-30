@@ -15,12 +15,12 @@ import { useAuth } from "lib/hooks";
  */
 const Header = () => {
   const pathname = usePathname(),
-    { isAuthenticated, isLoading } = useAuth();
+    { user, isLoading } = useAuth();
 
   // TODO: make dynamic based on the current route
   const { landingPage, dashboardPage } = navigationRoutes;
 
-  const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
+  const headerRoutes = user?.customerId ? dashboardPage : landingPage;
 
   return (
     <sigil.header

@@ -32,6 +32,8 @@ declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     sub?: string;
     row_id?: string;
+    customer_id?: string | null;
+    product_id?: string | null;
     preferred_username?: string;
     given_name?: string;
     family_name?: string;
@@ -52,6 +54,8 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
+      customerId?: string | null;
+      productId?: string | null;
     } & NextAuthUser;
   }
 }
@@ -97,13 +101,15 @@ export const { handlers, auth } = NextAuth({
         token.expires_at = account.expires_at!;
         token.refresh_token = account.refresh_token!;
 
-        const user = await sdk({
+        const { userByHidraId: user } = await sdk({
           headers: { Authorization: `Bearer ${account.access_token}` },
         }).User({
           hidraId: token.sub!,
         });
 
-        token.row_id = user?.userByHidraId?.rowId;
+        token.row_id = user?.rowId;
+        token.customer_id = user?.customerId ?? null;
+        token.product_id = user?.productId ?? null;
 
         return token;
       }
@@ -114,6 +120,8 @@ export const { handlers, auth } = NextAuth({
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
+      session.user.customerId = token.customer_id ?? null;
+      session.user.productId = token.product_id ?? null;
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * ms("1s"));

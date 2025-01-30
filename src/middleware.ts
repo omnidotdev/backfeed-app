@@ -179,6 +179,10 @@ const refreshAccessToken = async (
  */
 export const middleware = auth(async (request) => {
   if (!request.auth) {
+    if (request.nextUrl.pathname === "/pricing") {
+      return NextResponse.next();
+    }
+
     return redirect(request);
   }
 
@@ -245,12 +249,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - pricing, payment (not authenticated routes)
+     * - payment (not authenticated routes)
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - img, favicon.ico, sitemap.xml, robots.txt (metadata files)
      */
-    "/((?!pricing|payment|api|_next/static|_next/image|img|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!payment|api|_next/static|_next/image|img|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };
