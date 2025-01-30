@@ -37,7 +37,10 @@ const baseSchema = z.object({
   organizationId: z
     .string()
     .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
-  name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
+  name: z
+    .string()
+    .min(3, app.dashboardPage.cta.newProject.projectName.errors.minLength)
+    .max(60, app.dashboardPage.cta.newProject.projectName.errors.maxLength),
   description: z
     .string()
     .min(10, app.dashboardPage.cta.newProject.projectDescription.error),

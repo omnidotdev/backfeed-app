@@ -156,7 +156,10 @@ const app = {
         projectName: {
           id: "Project Name",
           placeholder: "Backfeed",
-          error: "Must be at least 3 characters.",
+          errors: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 60 characters.",
+          },
         },
         projectDescription: {
           id: "Project Description",
