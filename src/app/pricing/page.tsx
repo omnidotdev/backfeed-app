@@ -1,4 +1,6 @@
-import { PricingOverview } from "components/pricing";
+import { HStack, Stack } from "@omnidev/sigil";
+
+import { PricingCard, PricingFAQ, PricingHeader } from "components/pricing";
 import { POLAR_ORGANIZATION_ID, app } from "lib/config";
 import { polar } from "lib/polar";
 
@@ -15,9 +17,43 @@ const PricingPage = async () => {
     isArchived: false,
   });
 
-  console.log(result);
+  return (
+    <Stack px={{ base: 6, md: 2, lg: 0 }}>
+      <PricingHeader />
 
-  return <PricingOverview />;
+      <HStack
+        flexWrap="wrap"
+        flexDirection={{ base: "column", lg: "row" }}
+        justifyContent="center"
+        gap={4}
+        w="100%"
+        mx="auto"
+      >
+        {result.items.reverse().map((product) => {
+          const isProfessionalTier = product.name.includes("Professional");
+          const isEnterpriseTier = product.name.includes("Enterprise");
+
+          return (
+            <PricingCard
+              key={product.id}
+              product={product}
+              borderWidth={isProfessionalTier ? 2 : 1}
+              borderColor={isProfessionalTier ? "brand.primary" : "none"}
+              isRecommendedTier={isProfessionalTier}
+              isPerMonthPricing={!isEnterpriseTier}
+              ctaProps={{
+                bgColor: isProfessionalTier
+                  ? "brand.primary"
+                  : "brand.secondary",
+              }}
+            />
+          );
+        })}
+      </HStack>
+
+      <PricingFAQ />
+    </Stack>
+  );
 };
 
 export default PricingPage;

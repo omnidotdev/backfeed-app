@@ -11,21 +11,18 @@ import {
   Text,
   sigil,
 } from "@omnidev/sigil";
-import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
+import { Link } from "components/core";
+import { app } from "lib/config";
+
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
+import type { Product } from "@polar-sh/sdk/models/components/product";
+import type { ProductPriceOneTimeFixed } from "@polar-sh/sdk/models/components/productpriceonetimefixed";
 
 interface Props extends CardProps {
-  /** Pricing tier information. */
-  tier: {
-    /** Tier title. */
-    title: string;
-    /** Tier price. */
-    price: string;
-    /** Tier features. */
-    features: string[];
-  };
+  /** Product the pricing tier is for. */
+  product: Product;
   /** Whether the tier is recommended. */
   isRecommendedTier?: boolean;
   /** Whether the tier uses a monthly pricing model. */
@@ -38,7 +35,7 @@ interface Props extends CardProps {
  * Pricing tier information.
  */
 const PricingCard = ({
-  tier,
+  product,
   isRecommendedTier = false,
   isPerMonthPricing = true,
   ctaProps,
@@ -70,12 +67,14 @@ const PricingCard = ({
 
     <Stack display="flex" flexDirection="column" alignItems="center" h="md">
       <Text as="h2" fontSize="3xl" textAlign="center">
-        {tier.title}
+        {product.name}
       </Text>
 
       <HStack display="inline-flex" alignItems="center">
+        {/* TODO: handle Enterprise pricing */}
+        {/* TODO: determine approach for handling per-month pricing, yearly pricing, etc. */}
         <Text as="h3" fontSize="3xl" fontWeight="bold">
-          {tier.price}
+          ${(product.prices[0] as ProductPriceOneTimeFixed).priceAmount / 100}
         </Text>
 
         {isPerMonthPricing && (
@@ -93,22 +92,25 @@ const PricingCard = ({
           marginLeft: 2,
         }}
       >
-        {tier.features.map((feature) => (
-          <sigil.li key={feature}>{feature}</sigil.li>
+        {product.benefits.map((benefit) => (
+          <sigil.li key={benefit.id}>{benefit.description}</sigil.li>
         ))}
       </sigil.ul>
 
-      <Button
-        position="absolute"
-        bottom={4}
-        left="50%"
-        transform="translateX(-50%)"
-        w="90%"
-        fontSize="xl"
-        {...ctaProps}
-      >
-        {app.pricingPage.pricingCard.getStarted} <Icon src={FaArrowRight} />
-      </Button>
+      {/* TODO: handle this appropriately. This is the recommended approach from polar, but seems to cause some browser errors, although it is still functional.*/}
+      <Link href={`/api/payment/checkout?productId=${product.id}`}>
+        <Button
+          position="absolute"
+          bottom={4}
+          left="50%"
+          transform="translateX(-50%)"
+          w="90%"
+          fontSize="xl"
+          {...ctaProps}
+        >
+          {app.pricingPage.pricingCard.getStarted} <Icon src={FaArrowRight} />
+        </Button>
+      </Link>
     </Stack>
   </Card>
 );
