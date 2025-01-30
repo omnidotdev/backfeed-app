@@ -33,7 +33,18 @@ import { DialogType } from "store";
 const baseSchema = z.object({
   name: z
     .string()
-    .min(3, app.dashboardPage.cta.newOrganization.organizationName.error),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalidFormat
+    )
+    .min(
+      3,
+      app.dashboardPage.cta.newOrganization.organizationName.errors.minLength
+    )
+    .max(
+      90,
+      app.dashboardPage.cta.newOrganization.organizationName.errors.maxLength
+    ),
   slug: z
     .string()
     .regex(

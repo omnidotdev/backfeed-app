@@ -121,7 +121,11 @@ const app = {
         organizationName: {
           id: "Organization Name",
           placeholder: "Omni",
-          error: "Must be at least 3 characters.",
+          errors: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 90 characters.",
+            invalidFormat: "Invalid organization name.",
+          },
         },
         organizationSlug: {
           id: "Organization Slug",
