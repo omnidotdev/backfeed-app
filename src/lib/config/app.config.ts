@@ -526,7 +526,8 @@ const app = {
       createComment: {
         errors: {
           invalid: "Invalid format",
-          message: "Must be at least 10 characters.",
+          minLengthMessage: "Must be at least 10 characters.",
+          maxLengthMessage: "Must be at most 500 characters.",
         },
       },
       title: "Comments",

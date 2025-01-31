@@ -29,7 +29,8 @@ const createCommentSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(10, app.feedbackPage.comments.createComment.errors.message),
+    .min(10, app.feedbackPage.comments.createComment.errors.minLengthMessage)
+    .max(500, app.feedbackPage.comments.createComment.errors.maxLengthMessage),
 });
 
 interface Props {
