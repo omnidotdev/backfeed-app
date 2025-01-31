@@ -900,16 +900,6 @@ export type DeleteUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
-/** All input for the `deleteUserByCustomerId` mutation. */
-export type DeleteUserByCustomerIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  customerId: Scalars['UUID']['input'];
-};
-
 /** All input for the `deleteUserByHidraId` mutation. */
 export type DeleteUserByHidraIdInput = {
   /**
@@ -1299,8 +1289,6 @@ export type Mutation = {
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using a unique key. */
-  deleteUserByCustomerId?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using a unique key. */
   deleteUserByHidraId?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using its globally unique id. */
   deleteUserById?: Maybe<DeleteUserPayload>;
@@ -1346,8 +1334,6 @@ export type Mutation = {
   updateUpvoteByPostIdAndUserId?: Maybe<UpdateUpvotePayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using a unique key and a patch. */
-  updateUserByCustomerId?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUserByHidraId?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using its globally unique id and a patch. */
@@ -1522,12 +1508,6 @@ export type MutationDeleteUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByCustomerIdArgs = {
-  input: DeleteUserByCustomerIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByHidraIdArgs = {
   input: DeleteUserByHidraIdInput;
 };
@@ -1662,12 +1642,6 @@ export type MutationUpdateUpvoteByPostIdAndUserIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByCustomerIdArgs = {
-  input: UpdateUserByCustomerIdInput;
 };
 
 
@@ -2763,8 +2737,6 @@ export type Query = Node & {
   /** Get a single `User`. */
   user?: Maybe<User>;
   /** Get a single `User`. */
-  userByCustomerId?: Maybe<User>;
-  /** Get a single `User`. */
   userByHidraId?: Maybe<User>;
   /** Reads a single `User` using its globally unique `ID`. */
   userById?: Maybe<User>;
@@ -2977,12 +2949,6 @@ export type QueryUpvotesArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryUserArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryUserByCustomerIdArgs = {
-  customerId: Scalars['UUID']['input'];
 };
 
 
@@ -3497,18 +3463,6 @@ export type UpdateUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
-/** All input for the `updateUserByCustomerId` mutation. */
-export type UpdateUserByCustomerIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  customerId: Scalars['UUID']['input'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
 /** All input for the `updateUserByHidraId` mutation. */
 export type UpdateUserByHidraIdInput = {
   /**
@@ -3842,7 +3796,6 @@ export type User = Node & {
   /** Reads and enables pagination through a set of `Comment`. */
   comments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
-  customerId?: Maybe<Scalars['UUID']['output']>;
   /** Reads and enables pagination through a set of `Downvote`. */
   downvotes: DownvoteConnection;
   firstName?: Maybe<Scalars['String']['output']>;
@@ -3852,7 +3805,6 @@ export type User = Node & {
   lastName?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
-  productId?: Maybe<Scalars['UUID']['output']>;
   rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -3933,16 +3885,12 @@ export type UserAggregates = {
 export type UserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `customerId` field. */
-  customerId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `firstName` field. */
   firstName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `hidraId` field. */
   hidraId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `lastName` field. */
   lastName?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `productId` field. */
-  productId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -3979,16 +3927,12 @@ export type UserDistinctCountAggregates = {
   __typename?: 'UserDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of customerId across the matching connection */
-  customerId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of firstName across the matching connection */
   firstName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hidraId across the matching connection */
   hidraId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of lastName across the matching connection */
   lastName?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of productId across the matching connection */
-  productId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -4016,8 +3960,6 @@ export type UserFilter = {
   commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `customerId` field. */
-  customerId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `downvotes` relation. */
   downvotes?: InputMaybe<UserToManyDownvoteFilter>;
   /** Some related `downvotes` exist. */
@@ -4036,8 +3978,6 @@ export type UserFilter = {
   posts?: InputMaybe<UserToManyPostFilter>;
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `productId` field. */
-  productId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -4061,7 +4001,6 @@ export enum UserGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   FirstName = 'FIRST_NAME',
   LastName = 'LAST_NAME',
-  ProductId = 'PRODUCT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -4130,11 +4069,9 @@ export type UserHavingVarianceSampleInput = {
 /** An input for mutations affecting `User` */
 export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  customerId?: InputMaybe<Scalars['UUID']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   hidraId: Scalars['UUID']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
-  productId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
@@ -4158,8 +4095,6 @@ export enum UserOrderBy {
   CommentsDistinctCountUserIdDesc = 'COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
-  CustomerIdAsc = 'CUSTOMER_ID_ASC',
-  CustomerIdDesc = 'CUSTOMER_ID_DESC',
   DownvotesCountAsc = 'DOWNVOTES_COUNT_ASC',
   DownvotesCountDesc = 'DOWNVOTES_COUNT_DESC',
   DownvotesDistinctCountCreatedAtAsc = 'DOWNVOTES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -4197,8 +4132,6 @@ export enum UserOrderBy {
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProductIdAsc = 'PRODUCT_ID_ASC',
-  ProductIdDesc = 'PRODUCT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -4423,11 +4356,9 @@ export type UserOrganizationPatch = {
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  customerId?: InputMaybe<Scalars['UUID']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   hidraId?: InputMaybe<Scalars['UUID']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
-  productId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
@@ -4742,7 +4673,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, customerId?: string | null, productId?: string | null, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5174,8 +5105,6 @@ export const UserDocument = gql`
   userByHidraId(hidraId: $hidraId) {
     rowId
     hidraId
-    customerId
-    productId
     username
     firstName
     lastName

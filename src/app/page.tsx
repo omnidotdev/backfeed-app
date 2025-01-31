@@ -24,7 +24,7 @@ const startOfToday = dayjs().startOf("day").toDate();
 const HomePage = async () => {
   const session = await getAuthSession();
 
-  if (!session?.user?.customerId) return <LandingPage />;
+  if (!session) return <LandingPage />;
 
   const queryClient = getQueryClient();
 

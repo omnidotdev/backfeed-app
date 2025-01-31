@@ -3,8 +3,6 @@ import { HStack, Stack } from "@omnidev/sigil";
 import { PricingCard, PricingFAQ, PricingHeader } from "components/pricing";
 import { POLAR_ORGANIZATION_ID, app } from "lib/config";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/util";
-import { redirect } from "next/navigation";
 
 export const metadata = {
   title: `${app.pricingPage.title} | ${app.name}`,
@@ -14,15 +12,10 @@ export const metadata = {
  * Pricing page.
  */
 const PricingPage = async () => {
-  const session = await getAuthSession();
-
   const { result } = await polar.products.list({
     organizationId: POLAR_ORGANIZATION_ID!,
     isArchived: false,
   });
-
-  // TODO: discuss handling this case. Set up subscription cancellation?
-  if (session?.user?.customerId) redirect("/");
 
   return (
     <Stack px={{ base: 6, md: 2, lg: 0 }}>

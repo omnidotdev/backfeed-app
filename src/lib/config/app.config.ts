@@ -314,7 +314,6 @@ const app = {
     pricingCard: {
       perMonth: "/month",
       getStarted: "Get Started",
-      enterpriseMessage: "Contact Us",
     },
     pricingTiers: {
       recommended: "Recommended",
