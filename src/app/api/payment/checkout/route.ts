@@ -1,11 +1,36 @@
-import { Checkout } from "@polar-sh/nextjs";
+import { auth } from "auth";
+import { NextResponse } from "next/server";
+
+import { polar } from "lib/polar";
+
+import type { NextRequest } from "next/server";
 
 /**
  * Payment checkout route.
  */
-export const GET = Checkout({
-  accessToken: process.env.POLAR_ACCESS_TOKEN!,
-  successUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/confirmation`,
-  // NB: Use `sandbox` if you're using the sandbox environment - else use 'production' or omit the parameter
-  server: "sandbox",
-});
+export const GET = async (request: NextRequest) => {
+  const session = await auth();
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const productId = request.nextUrl.searchParams.get("productId");
+
+  if (!productId) {
+    return NextResponse.json(
+      { error: "Product ID not provided" },
+      { status: 400 }
+    );
+  }
+
+  const checkout = await polar.checkouts.custom.create({
+    productId: productId,
+    successUrl: `${process.env.NEXT_PUBLIC_BASE_URL!}/payment/confirmation?checkoutId={CHECKOUT_ID}`,
+    customerMetadata: {
+      userId: session.user.rowId!,
+    },
+  });
+
+  return NextResponse.json(checkout);
+};

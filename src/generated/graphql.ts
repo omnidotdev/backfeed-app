@@ -4741,7 +4741,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, productId?: string | null, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, customerId?: string | null, productId?: string | null, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -6099,6 +6099,7 @@ export const UserDocument = `
   userByHidraId(hidraId: $hidraId) {
     rowId
     hidraId
+    customerId
     productId
     username
     firstName

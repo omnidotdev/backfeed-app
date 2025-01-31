@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "auth";
 import { isProdEnv } from "lib/config";
+import { getSdk } from "lib/graphql";
 
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
@@ -91,10 +92,18 @@ const getUpdatedProfileClaims = async (sessionToken: JWT) => {
     const { preferred_username, given_name, family_name } =
       (await response.json()) as UpdatedProfileClaims;
 
+    const sdk = await getSdk();
+
+    const { userByHidraId: user } = await sdk.User({
+      hidraId: sessionToken.sub!,
+    });
+
     const userClaimsHaveChanged =
       preferred_username !== sessionToken.preferred_username ||
       given_name !== sessionToken.given_name ||
-      family_name !== sessionToken.family_name;
+      family_name !== sessionToken.family_name ||
+      user?.customerId !== sessionToken.customer_id ||
+      user?.productId !== sessionToken.product_id;
 
     if (!userClaimsHaveChanged) return null;
 
@@ -102,6 +111,8 @@ const getUpdatedProfileClaims = async (sessionToken: JWT) => {
       preferred_username: preferred_username as string,
       given_name: given_name as string,
       family_name: family_name as string,
+      customer_id: user?.customerId ?? null,
+      product_id: user?.productId ?? null,
     };
   } catch (error) {
     throw new Error(`Failed to get updated profile claims: ${error}`);

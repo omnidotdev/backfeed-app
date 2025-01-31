@@ -1,12 +1,13 @@
 import { Polar } from "@polar-sh/sdk";
 
+import { isDevEnv } from "lib/config";
+
 /**
  * Polar API client instance.
  */
 const polar = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN!,
-  // NB: Use `sandbox` if you're using the sandbox environment - else use 'production' or omit the parameter
-  server: "sandbox",
+  server: isDevEnv ? "sandbox" : "production",
 });
 
 export default polar;

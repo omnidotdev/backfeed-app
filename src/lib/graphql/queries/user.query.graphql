@@ -2,6 +2,7 @@ query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
     rowId
     hidraId
+    customerId
     productId
     username
     firstName

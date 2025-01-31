@@ -45,7 +45,7 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {!isLoading && !user?.productId && (
+          {!isLoading && !user?.customerId && (
             <Link href="/pricing" role="group">
               <Flex
                 h={10}

@@ -16,7 +16,7 @@ export const metadata = {
 const PricingPage = async () => {
   const session = await getAuthSession();
 
-  if (session?.user?.productId) redirect("/");
+  if (session?.user?.customerId) redirect("/");
 
   const { result } = await polar.products.list({
     organizationId: POLAR_ORGANIZATION_ID!,
