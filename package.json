@@ -17,9 +17,7 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -56,6 +54,7 @@
   "dependencies": {
     "@ark-ui/react": "^4.8.1",
     "@omnidev/sigil": "^0.12.3",
+    "@polar-sh/nextjs": "^0.3.15",
     "@polar-sh/sdk": "^0.22.2",
     "@tanstack/react-form": "^0.41.2",
     "@tanstack/react-query": "^5.64.1",
