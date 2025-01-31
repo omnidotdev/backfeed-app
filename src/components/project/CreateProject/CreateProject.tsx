@@ -43,7 +43,8 @@ const baseSchema = z.object({
     .max(60, app.dashboardPage.cta.newProject.projectName.errors.maxLength),
   description: z
     .string()
-    .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
+    .min(10, app.dashboardPage.cta.newProject.projectDescription.minLength)
+    .max(240, app.dashboardPage.cta.newProject.projectDescription.maxLength),
   slug: z
     .string()
     .regex(

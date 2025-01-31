@@ -165,7 +165,8 @@ const app = {
           id: "Project Description",
           placeholder:
             "Backfeed is an open-source feedback reporting platform.",
-          error: "Must be at least 10 characters.",
+          minLength: "Must be at least 10 characters.",
+          maxLength: "Must be at most 240 characters.",
         },
         projectSlug: {
           id: "Project Slug",
