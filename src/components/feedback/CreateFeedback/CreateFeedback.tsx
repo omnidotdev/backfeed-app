@@ -38,11 +38,25 @@ const createFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(3, app.projectPage.projectFeedback.createFeedback.errors.title),
+    .min(
+      3,
+      app.projectPage.projectFeedback.createFeedback.errors.minTitleLength
+    )
+    .max(
+      90,
+      app.projectPage.projectFeedback.createFeedback.errors.maxTitleLength
+    ),
   description: z
     .string()
     .trim()
-    .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
+    .min(
+      10,
+      app.projectPage.projectFeedback.createFeedback.errors.minDescriptionLength
+    )
+    .max(
+      240,
+      app.projectPage.projectFeedback.createFeedback.errors.maxDescriptionLength
+    ),
 });
 
 interface Props {
