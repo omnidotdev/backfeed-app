@@ -249,11 +249,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - payment (not authenticated routes)
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - img, favicon.ico, sitemap.xml, robots.txt (metadata files)
      */
-    "/((?!api|_next/static|_next/image|img|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!payment|api|_next/static|_next/image|img|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };
