@@ -7,7 +7,7 @@ import { LuMessageSquarePlus } from "react-icons/lu";
 import { Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
+import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -16,6 +16,11 @@ import { useAuth } from "lib/hooks";
 const Header = () => {
   const pathname = usePathname(),
     { user, isLoading } = useAuth();
+
+  // TODO: make dynamic based on the current route
+  const { landingPage, dashboardPage } = navigationRoutes;
+
+  const headerRoutes = user?.customerId ? dashboardPage : landingPage;
 
   return (
     <sigil.header
@@ -45,25 +50,28 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {!isLoading && !user?.customerId && (
-            <Link href="/pricing" role="group">
-              <Flex
-                h={10}
-                px={4}
-                align="center"
-                color={{
-                  base: "foreground.muted",
-                  _groupHover: "foreground.default",
-                }}
-                bgColor={
-                  pathname === "/pricing" ? "background.muted" : "transparent"
-                }
-                borderRadius="md"
-              >
-                Pricing
-              </Flex>
-            </Link>
-          )}
+          {!isLoading &&
+            headerRoutes.map(({ label, href }) => {
+              const isActive = pathname === href;
+
+              return (
+                <Link key={href} href={href} role="group">
+                  <Flex
+                    h={10}
+                    px={4}
+                    align="center"
+                    color={{
+                      base: "foreground.muted",
+                      _groupHover: "foreground.default",
+                    }}
+                    bgColor={isActive ? "background.muted" : "transparent"}
+                    borderRadius="md"
+                  >
+                    {label}
+                  </Flex>
+                </Link>
+              );
+            })}
         </Flex>
 
         <HeaderActions />
