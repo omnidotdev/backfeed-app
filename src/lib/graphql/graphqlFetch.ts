@@ -30,7 +30,7 @@ export const graphqlFetch =
 
     const { next, cache, ...restOptions } = options || {};
 
-    const client = new GraphQLClient(`${API_BASE_URL!}/graphql`, {
+    const client = new GraphQLClient(API_BASE_URL!, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session?.accessToken ?? ""}`,

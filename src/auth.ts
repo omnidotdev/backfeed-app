@@ -18,7 +18,7 @@ import type { DefaultJWT } from "next-auth/jwt";
  */
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   const graphqlClient = new GraphQLClient(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL!}/graphql`,
+    process.env.NEXT_PUBLIC_API_BASE_URL!,
     { headers }
   );
 
