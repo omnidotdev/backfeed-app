@@ -10,7 +10,7 @@ import { getAuthSession } from "lib/util";
 const getSdk = async () => {
   const session = await getAuthSession();
 
-  const graphqlClient = new GraphQLClient(API_BASE_URL!, {
+  const graphqlClient = new GraphQLClient(`${API_BASE_URL!}/graphql`, {
     headers: {
       Authorization: `Bearer ${session?.accessToken}`,
     },

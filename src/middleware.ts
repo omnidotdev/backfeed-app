@@ -234,7 +234,25 @@ export const middleware = auth(async (request) => {
       throw new Error("Failed to update profile claims");
     }
 
-    // If the access token has not expired and the user's profile claims have not changed, return the response
+    if (request.nextUrl.pathname.startsWith("/checkout")) {
+      const searchParms = request.nextUrl.searchParams;
+      const productId = searchParms.get("productId");
+
+      const checkoutUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL!}/checkout?productId=${productId}`;
+      const headers = new Headers(request.headers);
+      headers.set("Authorization", `Bearer ${sessionToken?.access_token}`);
+
+      return NextResponse.rewrite(
+        new URL(checkoutUrl, request.nextUrl.origin),
+        {
+          request: {
+            headers,
+          },
+        }
+      );
+    }
+
+    // If the access token has not expired, the user's profile claims have not changed, and the user did not initiate the checkout flow, return the response
     return NextResponse.next();
   } catch (error) {
     console.error(error);

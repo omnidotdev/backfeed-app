@@ -101,10 +101,10 @@ const PricingCard = ({
           ))}
         </sigil.ul>
 
-        {/* TODO: handle checkout from dedicated backfeed API endpoint */}
         {isAuthenticated ? (
           // NB: Sigil `Link` being used to prevent CORS issues. See: https://discord.com/channels/1078611507115470849/1330124343044210810/1330296007161810944
-          <Link href={`/api/payment/checkout?productId=${product.id}`}>
+          // NB: this route is used as a simple proxy to the checkout API endpoint. The rewrite is handled in the middleware.
+          <Link href={`/checkout?productId=${product.id}`}>
             <PricingCardAction {...ctaProps} />
           </Link>
         ) : (
