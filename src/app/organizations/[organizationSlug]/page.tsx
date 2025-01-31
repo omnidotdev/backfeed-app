@@ -42,7 +42,7 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  if (!session?.user?.customerId || !sdk) notFound();
+  if (!session || !sdk) notFound();
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,

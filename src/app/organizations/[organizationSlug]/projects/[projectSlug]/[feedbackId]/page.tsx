@@ -35,7 +35,7 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  if (!session?.user?.customerId || !sdk) notFound();
+  if (!session || !sdk) notFound();
 
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
 

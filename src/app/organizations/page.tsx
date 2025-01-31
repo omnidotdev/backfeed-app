@@ -24,7 +24,7 @@ interface Props {
 const OrganizationsPage = async ({ searchParams }: Props) => {
   const session = await getAuthSession();
 
-  if (!session?.user?.customerId) notFound();
+  if (!session) notFound();
 
   const queryClient = getQueryClient();
 
