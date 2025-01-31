@@ -7,7 +7,7 @@ import { LuMessageSquarePlus } from "react-icons/lu";
 import { Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
-import { app, navigationRoutes } from "lib/config";
+import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -15,12 +15,7 @@ import { useAuth } from "lib/hooks";
  */
 const Header = () => {
   const pathname = usePathname(),
-    { isAuthenticated, isLoading } = useAuth();
-
-  // TODO: make dynamic based on the current route
-  const { landingPage, dashboardPage } = navigationRoutes;
-
-  const headerRoutes = isAuthenticated ? dashboardPage : landingPage;
+    { user, isLoading } = useAuth();
 
   return (
     <sigil.header
@@ -50,28 +45,25 @@ const Header = () => {
             </HStack>
           </Link>
 
-          {!isLoading &&
-            headerRoutes.map(({ label, href }) => {
-              const isActive = pathname === href;
-
-              return (
-                <Link key={href} href={href} role="group">
-                  <Flex
-                    h={10}
-                    px={4}
-                    align="center"
-                    color={{
-                      base: "foreground.muted",
-                      _groupHover: "foreground.default",
-                    }}
-                    bgColor={isActive ? "background.muted" : "transparent"}
-                    borderRadius="md"
-                  >
-                    {label}
-                  </Flex>
-                </Link>
-              );
-            })}
+          {!isLoading && !user?.productId && (
+            <Link href="/pricing" role="group">
+              <Flex
+                h={10}
+                px={4}
+                align="center"
+                color={{
+                  base: "foreground.muted",
+                  _groupHover: "foreground.default",
+                }}
+                bgColor={
+                  pathname === "/pricing" ? "background.muted" : "transparent"
+                }
+                borderRadius="md"
+              >
+                Pricing
+              </Flex>
+            </Link>
+          )}
         </Flex>
 
         <HeaderActions />

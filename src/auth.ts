@@ -32,6 +32,7 @@ declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     sub?: string;
     row_id?: string;
+    product_id?: string | null;
     preferred_username?: string;
     given_name?: string;
     family_name?: string;
@@ -52,6 +53,7 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
+      productId?: string | null;
     } & NextAuthUser;
   }
 }
@@ -104,6 +106,7 @@ export const { handlers, auth } = NextAuth({
         });
 
         token.row_id = user?.userByHidraId?.rowId;
+        token.product_id = user?.userByHidraId?.productId ?? null;
 
         return token;
       }
@@ -114,6 +117,7 @@ export const { handlers, auth } = NextAuth({
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
+      session.user.productId = token.product_id;
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * ms("1s"));
