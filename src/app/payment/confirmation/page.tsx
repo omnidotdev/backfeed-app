@@ -1,5 +1,6 @@
 import { Center } from "@omnidev/sigil";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 import { getAuthSession } from "lib/util";
 
@@ -13,33 +14,31 @@ interface Props {
 
 /**
  * Payment confirmation page.
- * TODO: handle restricted access
  */
 const PaymentConfirmationPage = async ({ searchParams }: Props) => {
-  const session = await getAuthSession();
-
-  if (!session) notFound();
-
-  if (session.user.customerId) redirect("/");
-
   const { checkoutId } = await searchParams;
 
-  const checkout = await polar.checkouts.custom.get({
+  const session = await getAuthSession();
+
+  if (!session || !!session.user.customerId) redirect("/");
+
+  const { customerId, productId } = await polar.checkouts.custom.get({
     id: checkoutId as string,
   });
 
-  const sdk = await getSdk();
+  after(async () => {
+    const sdk = await getSdk();
 
-  if (checkout.customerId) {
     await sdk.UpdateUser({
       hidraId: session.user.hidraId!,
       patch: {
-        customerId: checkout.customerId,
-        productId: checkout.productId,
+        customerId,
+        productId: productId ?? null,
       },
     });
-  }
+  });
 
+  // TODO: add redirect notice for customer.
   return (
     <Center mt={12}>
       Thank you! Your checkout is now being processed. Checkout ID: {checkoutId}
