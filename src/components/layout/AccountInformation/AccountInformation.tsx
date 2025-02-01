@@ -11,13 +11,11 @@ import {
   MenuItemGroupLabel,
   MenuSeparator,
 } from "@omnidev/sigil";
-import { useMutation } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
-import { toast } from "sonner";
 
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 /**
@@ -28,21 +26,21 @@ const AccountInformation = () => {
 
   const { user } = useAuth();
 
-  const { mutateAsync: handleLogout } = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/auth/federated-logout", {
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/federated-logout", {
         method: "POST",
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to log out. Please try again.");
-      }
-
       await signOut();
-    },
-    onError: (error) => toast.error(error.message),
-    onSuccess: () => redirect("/"),
-  });
+
+      redirect("/");
+    } catch (error) {
+      if (isDevEnv) {
+        console.error(error);
+      }
+    }
+  };
 
   // TODO: handle closeOnSelect. Currently, the navigation seems to interfere with the menu item selection.
   return (
@@ -79,7 +77,7 @@ const AccountInformation = () => {
 
         <MenuSeparator />
 
-        <MenuItem value="logout" onClick={async () => await handleLogout()}>
+        <MenuItem value="logout" onClick={handleLogout}>
           <HStack gap={2} color="red">
             <Icon src={FiLogOut} size="sm" color="red" />
 

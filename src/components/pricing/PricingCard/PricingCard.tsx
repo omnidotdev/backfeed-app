@@ -9,7 +9,6 @@ import {
   Text,
   sigil,
 } from "@omnidev/sigil";
-import { useMutation } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -18,7 +17,6 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
-import type { Checkout } from "@polar-sh/sdk/models/components/checkout";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPriceOneTimeFixed } from "@polar-sh/sdk/models/components/productpriceonetimefixed";
 
@@ -45,24 +43,19 @@ const PricingCard = ({
 }: Props) => {
   const { isAuthenticated } = useAuth();
 
-  const { mutateAsync: handleCheckout } = useMutation({
-    mutationFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/checkout?productId=${product.id}`
-      );
+  const handleCheckout = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/checkout?productId=${product.id}`
+    );
 
-      if (!response.ok) {
-        throw new Error("Failed to prepare checkout. Please try again.");
-      }
+    if (!response.ok) {
+      throw new Error("Failed to create checkout");
+    }
 
-      return response.json() as Promise<Checkout>;
-    },
-    onMutate: () => toast.loading("Starting checkout..."),
-    onSuccess: ({ url }) => {
-      window.location.href = url;
-    },
-    onError: (error) => toast.error(error.message),
-  });
+    const { url } = await response.json();
+
+    window.location.href = url;
+  };
 
   return (
     <Card
@@ -126,7 +119,13 @@ const PricingCard = ({
         {isAuthenticated ? (
           <PricingCardAction
             {...ctaProps}
-            onClick={async () => await handleCheckout()}
+            onClick={() =>
+              // No success toast due to external redirect
+              toast.promise(handleCheckout, {
+                loading: "Starting checkout...",
+                error: "Failed to load checkout. Please try again.",
+              })
+            }
           />
         ) : (
           <PricingCardAction {...ctaProps} onClick={() => signIn("omni")} />
