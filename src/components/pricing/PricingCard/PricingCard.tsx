@@ -2,17 +2,18 @@
 
 import {
   Badge,
-  Button,
   Card,
   Divider,
   HStack,
-  Icon,
   Stack,
   Text,
   sigil,
 } from "@omnidev/sigil";
+import { signIn } from "next-auth/react";
+
+import { PricingCardAction } from "components/pricing";
 import { app } from "lib/config";
-import { FaArrowRight } from "react-icons/fa6";
+import { useAuth } from "lib/hooks";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
@@ -39,6 +40,8 @@ const PricingCard = ({
   ctaProps,
   ...rest
 }: Props) => {
+  const { isAuthenticated } = useAuth();
+
   const handleCheckout = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/checkout?productId=${product.id}`
@@ -110,19 +113,11 @@ const PricingCard = ({
           ))}
         </sigil.ul>
 
-        {/* TODO: extract CTA. handle case where user is not logged in. */}
-        <Button
-          position="absolute"
-          bottom={4}
-          left="50%"
-          transform="translateX(-50%)"
-          w="90%"
-          fontSize="xl"
-          {...ctaProps}
-          onClick={handleCheckout}
-        >
-          {app.pricingPage.pricingCard.getStarted} <Icon src={FaArrowRight} />
-        </Button>
+        {isAuthenticated ? (
+          <PricingCardAction {...ctaProps} onClick={handleCheckout} />
+        ) : (
+          <PricingCardAction {...ctaProps} onClick={() => signIn("omni")} />
+        )}
       </Stack>
     </Card>
   );

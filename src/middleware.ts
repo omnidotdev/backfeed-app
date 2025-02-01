@@ -190,6 +190,10 @@ const refreshAccessToken = async (
  */
 export const middleware = auth(async (request) => {
   if (!request.auth) {
+    if (request.nextUrl.pathname === "/pricing") {
+      return NextResponse.next();
+    }
+
     return redirect(request);
   }
 
