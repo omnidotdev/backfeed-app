@@ -36,7 +36,7 @@ const PricingPage = async () => {
         mx="auto"
       >
         {/* ! NB: The order of the products naturally reflect the order they were created in the dashboard. This should be adjusted accordingly.*/}
-        {result.items.reverse().map((product) => {
+        {result.items.toReversed().map((product) => {
           const isProfessionalTier = product.name.includes("Professional");
           const isEnterpriseTier = product.name.includes("Enterprise");
 
