@@ -22,11 +22,11 @@ const PaymentConfirmationPage = async ({ searchParams }: Props) => {
 
   if (!session || !!session.user.customerId) redirect("/");
 
-  const { customerId, productId } = await polar.checkouts.custom.get({
-    id: checkoutId as string,
-  });
-
   after(async () => {
+    const { customerId, productId } = await polar.checkouts.custom.get({
+      id: checkoutId as string,
+    });
+
     const sdk = await getSdk();
 
     await sdk.UpdateUser({
