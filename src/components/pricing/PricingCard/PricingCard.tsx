@@ -88,10 +88,12 @@ const PricingCard = ({
         </Text>
 
         <HStack display="inline-flex" alignItems="center">
-          {/* TODO: handle Enterprise pricing */}
-          {/* TODO: determine approach for handling per-month pricing, yearly pricing, etc. */}
+          {/* TODO: handle Enterprise contact us */}
+          {/* TODO: Handle per-month pricing, yearly pricing, etc. */}
           <Text as="h3" fontSize="3xl" fontWeight="bold">
-            ${(product.prices[0] as ProductPriceOneTimeFixed).priceAmount / 100}
+            {isPerMonthPricing
+              ? `$${(product.prices[0] as ProductPriceOneTimeFixed).priceAmount / 100}`
+              : app.pricingPage.pricingCard.enterpriseNotice}
           </Text>
 
           {isPerMonthPricing && (
