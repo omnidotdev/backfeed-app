@@ -187,6 +187,7 @@ const refreshAccessToken = async (
 
 /**
  * Middleware function for handling authentication flows on designated routes.
+ * TODO: handle subscription changes. Cancels, revokes, etc.
  */
 export const middleware = auth(async (request) => {
   if (!request.auth) {

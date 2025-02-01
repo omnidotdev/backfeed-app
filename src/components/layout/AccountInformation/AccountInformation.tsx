@@ -2,7 +2,6 @@
 
 import {
   Avatar,
-  Badge,
   Button,
   HStack,
   Icon,
@@ -13,7 +12,7 @@ import {
   MenuSeparator,
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
 
 import { app, isDevEnv } from "lib/config";
@@ -23,16 +22,9 @@ import { useAuth } from "lib/hooks";
  * User account information.
  */
 const AccountInformation = () => {
-  const { user } = useAuth();
+  const router = useRouter();
 
-  const handleProfileClick = () => {
-    // TODO fix upstream, then enable here (https://linear.app/omnidev/issue/OMNI-117/enable-client-redirects-in-user-account-management-page)
-    // router.push(
-    //   `${process.env.AUTH_KEYCLOAK_ISSUER}/account?referrer=backfeed-app&referrer_uri=${window.location.origin}`,
-    // );
-    //
-    // TODO refresh updated profile claims (https://linear.app/omnidev/issue/OMNI-119/refresh-updated-profile-claims)
-  };
+  const { user } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -50,6 +42,7 @@ const AccountInformation = () => {
     }
   };
 
+  // TODO: handle closeOnSelect. Currently, the navigation seems to interfere with the menu item selection.
   return (
     <Menu
       trigger={
@@ -62,20 +55,23 @@ const AccountInformation = () => {
         rounded: "full",
       }}
       positioning={{
-        shift: 12,
+        shift: 24,
       }}
     >
-      <MenuItemGroup>
+      <MenuItemGroup minW={40}>
         <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>
 
         <MenuSeparator />
 
-        <MenuItem disabled value="profile" onClick={handleProfileClick}>
+        <MenuItem
+          disabled
+          value="profile"
+          onClick={() => router.push("/user/profile")}
+        >
           <HStack gap={2} color="foreground.subtle">
             <Icon src={FiUser} size="sm" color="foreground.subtle" />
-            {app.auth.profile.label}
 
-            <Badge color="foreground.subtle">{app.info.comingSoon.label}</Badge>
+            {app.auth.profile.label}
           </HStack>
         </MenuItem>
 
@@ -84,6 +80,7 @@ const AccountInformation = () => {
         <MenuItem value="logout" onClick={handleLogout}>
           <HStack gap={2} color="red">
             <Icon src={FiLogOut} size="sm" color="red" />
+
             {app.auth.signOut.label}
           </HStack>
         </MenuItem>

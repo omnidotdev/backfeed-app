@@ -45,7 +45,7 @@ const PricingCard = ({
 
   const handleCheckout = async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/checkout?productId=${product.id}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/checkout?productId=${product.id}`
     );
 
     if (!response.ok) {

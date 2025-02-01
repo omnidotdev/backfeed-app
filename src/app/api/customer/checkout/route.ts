@@ -6,7 +6,8 @@ import { polar } from "lib/polar";
 import type { NextRequest } from "next/server";
 
 /**
- * Payment checkout route.
+ * Customer checkout route.
+ * TODO: better error handling.
  */
 export const GET = async (request: NextRequest) => {
   const session = await auth();
