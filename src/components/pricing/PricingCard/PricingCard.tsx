@@ -10,6 +10,7 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 import { PricingCardAction } from "components/pricing";
 import { app } from "lib/config";
@@ -114,7 +115,16 @@ const PricingCard = ({
         </sigil.ul>
 
         {isAuthenticated ? (
-          <PricingCardAction {...ctaProps} onClick={handleCheckout} />
+          <PricingCardAction
+            {...ctaProps}
+            onClick={() =>
+              // No success toast due to external redirect
+              toast.promise(handleCheckout, {
+                loading: "Starting checkout...",
+                error: "Failed to load checkout. Please try again.",
+              })
+            }
+          />
         ) : (
           <PricingCardAction {...ctaProps} onClick={() => signIn("omni")} />
         )}

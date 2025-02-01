@@ -3,7 +3,9 @@
 import { Center, Flex, Grid, sigil, useIsClient } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useTheme } from "next-themes";
 import { useParams } from "next/navigation";
+import { Toaster } from "sonner";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
@@ -23,6 +25,8 @@ interface Props {
  */
 const Layout = ({ children }: Props) => {
   const isClient = useIsClient();
+
+  const { resolvedTheme } = useTheme();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();
 
@@ -62,6 +66,10 @@ const Layout = ({ children }: Props) => {
       {/* dialogs */}
       <CreateProject organizationSlug={organizationSlug} />
       <CreateOrganization />
+
+      {/* toaster */}
+      {/* TODO: use Sigil toaster once API adjustments are complete */}
+      <Toaster richColors theme={resolvedTheme === "dark" ? "dark" : "light"} />
     </Grid>
   );
 };
