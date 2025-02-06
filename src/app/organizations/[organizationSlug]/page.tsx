@@ -8,7 +8,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/server";
 
 import type { Organization } from "generated/graphql";
 import type { Metadata } from "next";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useDebounceValue as useSigilDebounceValue } from "@omnidev/sigil";
+import { useDebounceValue as useSigilDebounceValue } from "usehooks-ts";
 
 const DEFAULT_DELAY = 300;
 

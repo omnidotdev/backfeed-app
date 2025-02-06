@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { PricingCard, PricingFAQ, PricingHeader } from "components/pricing";
 import { POLAR_ORGANIZATION_ID, app } from "lib/config";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/util";
+import { getAuthSession } from "lib/server";
 
 export const metadata = {
   title: `${app.pricingPage.title} | ${app.name}`,

@@ -2,7 +2,7 @@ import { Stack } from "@omnidev/sigil";
 import { redirect } from "next/navigation";
 
 import { CustomerPortal } from "components/profile";
-import { getAuthSession } from "lib/util";
+import { getAuthSession } from "lib/server";
 
 /**
  * User profile page. This page holds information for the user that is derived from the IDP as well as any subscriptions.

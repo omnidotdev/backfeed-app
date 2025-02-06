@@ -2,7 +2,7 @@ import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { getAuthSession } from "lib/server";
 import { mswNodeServer } from "test/e2e/util";
 
 import type { Metadata } from "next";

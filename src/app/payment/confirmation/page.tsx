@@ -2,7 +2,7 @@ import { Center } from "@omnidev/sigil";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 
-import { getAuthSession } from "lib/util";
+import { getAuthSession } from "lib/server";
 
 import { getSdk } from "lib/graphql";
 import { polar } from "lib/polar";

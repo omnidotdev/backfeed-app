@@ -3,10 +3,10 @@ import { notFound } from "next/navigation";
 
 import { OrganizationsOverview } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
-import { app } from "lib/config";
-import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
-
 import type { OrganizationsQueryVariables } from "generated/graphql";
+import { app } from "lib/config";
+import { getAuthSession, getQueryClient } from "lib/server";
+import { getSearchParams } from "lib/util";
 import type { SearchParams } from "nuqs/server";
 
 export const metadata = {

@@ -2,7 +2,7 @@ import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
 import { API_BASE_URL } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { getAuthSession } from "lib/server";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { Variables } from "graphql-request";

@@ -12,7 +12,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/server";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
