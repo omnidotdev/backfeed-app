@@ -35,8 +35,6 @@ export const metadata: Metadata = {
  */
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getAuthSession();
-  // NB: Being that this is the root layout component, we can safely apply this logic here. This component only gets re-rendered on initial page load, refresh, or redirects.
-  const sessionKey = new Date().valueOf();
 
   return (
     // !!NB: suppressHydrationWarning is required for next-themes to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use for more details
@@ -58,7 +56,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       </head>
 
       <body>
-        <Providers sessionKey={sessionKey} session={session}>
+        <Providers session={session}>
           <Layout>{children}</Layout>
         </Providers>
       </body>
