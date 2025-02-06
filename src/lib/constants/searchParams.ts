@@ -10,6 +10,7 @@ const searchParams = {
   search: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(DEFAULT_PAGE_NUMBER),
   pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
+  checkoutId: parseAsString.withDefault(""),
 };
 
 export default searchParams;
