@@ -17,9 +17,7 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
