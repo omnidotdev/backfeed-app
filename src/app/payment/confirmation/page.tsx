@@ -55,14 +55,18 @@ const PaymentConfirmationPage = async ({ searchParams }: Props) => {
 
   return (
     <Stack mt={12} align="center">
-      Thank you {checkout.customerName}! Your checkout is now being processed.
-      Checkout ID: {checkoutId}
       <SectionContainer
         title="Checkout Details"
-        description={`Thank you for your purchase of ${checkout.product.name}! Below you will find the details of your purchase.`}
+        description={`Thank you ${checkout.customerName} for subscribing to ${checkout.product.name}! Below you will find details of your purchase.`}
         mt={4}
       >
-        <Stack px={2} gap={8}>
+        <Stack gap={8}>
+          <Text>
+            <Text as="span" fontWeight="bold" mr={2}>
+              Checkout ID:
+            </Text>
+            {checkoutId}
+          </Text>
           <Text>
             <Text as="span" fontWeight="bold" mr={2}>
               Price:
