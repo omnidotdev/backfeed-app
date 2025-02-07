@@ -7,6 +7,7 @@ import { polar } from "lib/polar";
 import { getAuthSession } from "lib/server";
 import { getSearchParams } from "lib/util";
 
+import type { Checkout } from "@polar-sh/sdk/models/components/checkout";
 import type { SearchParams } from "nuqs/server";
 
 interface Props {
@@ -17,6 +18,8 @@ interface Props {
  * Payment confirmation page.
  */
 const PaymentConfirmationPage = async ({ searchParams }: Props) => {
+  let checkout: Checkout | null = null;
+
   const { checkoutId } = await getSearchParams.parse(searchParams);
 
   const session = await getAuthSession();
@@ -24,27 +27,29 @@ const PaymentConfirmationPage = async ({ searchParams }: Props) => {
   if (!session) redirect("/");
 
   after(async () => {
-    const { customerId, productId } = await polar.checkouts.custom.get({
+    if (session.user.customerId) return;
+
+    checkout = await polar.checkouts.custom.get({
       id: checkoutId,
     });
 
-    if (!customerId) return;
+    if (!checkout.customerId) return;
 
     const sdk = await getSdk();
 
     await sdk.UpdateUser({
       hidraId: session.user.hidraId!,
       patch: {
-        customerId,
-        productId: productId ?? null,
+        customerId: checkout.customerId,
+        productId: checkout.productId,
       },
     });
   });
 
-  // TODO: add redirect notice for customer.
   return (
     <Center mt={12}>
       Thank you! Your checkout is now being processed. Checkout ID: {checkoutId}
+      {/* TODO: add checkout details */}
     </Center>
   );
 };

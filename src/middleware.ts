@@ -198,6 +198,13 @@ export const middleware = auth(async (request) => {
     return redirect(request);
   }
 
+  if (
+    request.nextUrl.pathname.startsWith("/payment") &&
+    !!request.auth.user.customerId
+  ) {
+    return redirect(request);
+  }
+
   try {
     const sessionToken = await getToken({
       req: request,
