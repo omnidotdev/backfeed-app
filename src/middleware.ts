@@ -198,12 +198,13 @@ export const middleware = auth(async (request) => {
     return redirect(request);
   }
 
-  if (
-    request.nextUrl.pathname.startsWith("/payment") &&
-    !!request.auth.user.customerId
-  ) {
-    return redirect(request);
-  }
+  // TODO: enable when done working on UI for payment confirmation page
+  // if (
+  //   request.nextUrl.pathname.startsWith("/payment") &&
+  //   !!request.auth.user.customerId
+  // ) {
+  //   return redirect(request);
+  // }
 
   try {
     const sessionToken = await getToken({

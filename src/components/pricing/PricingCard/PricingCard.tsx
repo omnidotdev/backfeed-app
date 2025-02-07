@@ -18,7 +18,7 @@ import { useAuth } from "lib/hooks";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
-import type { ProductPriceOneTimeFixed } from "@polar-sh/sdk/models/components/productpriceonetimefixed";
+import type { ProductPriceRecurringFixed } from "@polar-sh/sdk/models/components/productpricerecurringfixed";
 
 interface Props extends CardProps {
   /** Product the pricing tier is for. */
@@ -92,7 +92,7 @@ const PricingCard = ({
           {/* TODO: Handle per-month pricing, yearly pricing, etc. */}
           <Text as="h3" fontSize="3xl" fontWeight="bold">
             {isPerMonthPricing
-              ? `$${(product.prices[0] as ProductPriceOneTimeFixed).priceAmount / 100}`
+              ? `$${(product.prices[0] as ProductPriceRecurringFixed).priceAmount / 100}`
               : app.pricingPage.pricingCard.enterpriseNotice}
           </Text>
 
