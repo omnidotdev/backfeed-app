@@ -25,7 +25,7 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  const checkout = await polar.checkouts.custom.create({
+  const checkout = await polar.checkouts.create({
     productId: productId,
     successUrl: `${process.env.NEXT_PUBLIC_BASE_URL!}/payment/confirmation?checkoutId={CHECKOUT_ID}`,
     customerMetadata: {

@@ -30,7 +30,7 @@ const PaymentConfirmationPage = async ({ searchParams }: Props) => {
   if (!session) redirect("/");
 
   try {
-    checkout = await polar.checkouts.custom.get({
+    checkout = await polar.checkouts.get({
       id: checkoutId,
     });
   } catch (_error) {
