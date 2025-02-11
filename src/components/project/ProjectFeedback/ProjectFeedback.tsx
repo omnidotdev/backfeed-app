@@ -92,9 +92,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
 
   const totalCount =
     (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
-  const posts = data?.pages?.flatMap((page) =>
-    page?.posts?.nodes?.map((post) => post)
-  );
+  const posts =
+    data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
+    [];
+
+  const allPosts = [...pendingFeedback, ...posts];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -124,53 +126,36 @@ const ProjectFeedback = ({ projectId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : posts?.length || pendingFeedback.length ? (
+            ) : allPosts.length ? (
               <VStack>
-                {!!pendingFeedback.length && (
-                  <FeedbackCard
-                    title={pendingFeedback[0].title!}
-                    description={pendingFeedback[0].description!}
-                    username={pendingFeedback[0].user?.username!}
-                    // TODO: adjust status when logic is handled in db
-                    status="Planned"
-                    totalUpvotes={pendingFeedback[0].upvotes?.totalCount}
-                    totalDownvotes={pendingFeedback[0].downvotes?.totalCount}
-                    isPending
-                    w="full"
-                    minH={21}
-                  >
-                    <Link href="#" disabled>
-                      <Button disabled>
-                        {app.projectPage.projectFeedback.details.feedbackLink}
-                      </Button>
-                    </Link>
-                  </FeedbackCard>
-                )}
+                {allPosts.map((feedback) => {
+                  const isPending = feedback?.rowId === "pending";
 
-                {posts?.map((feedback) => (
-                  <FeedbackCard
-                    key={feedback?.rowId}
-                    title={feedback?.title!}
-                    description={feedback?.description!}
-                    username={feedback?.user?.username!}
-                    createdAt={feedback?.createdAt}
-                    status="Planned"
-                    // TODO: implement when status logic is handled in db
-                    statusUpdatedAt={feedback?.updatedAt}
-                    totalUpvotes={feedback?.upvotes?.totalCount}
-                    totalDownvotes={feedback?.downvotes?.totalCount}
-                    w="full"
-                    minH={21}
-                  >
-                    <Link
-                      href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
+                  return (
+                    <FeedbackCard
+                      key={feedback?.rowId}
+                      title={feedback?.title!}
+                      description={feedback?.description!}
+                      username={feedback?.user?.username!}
+                      // TODO: adjust status when logic is handled in db
+                      status="Planned"
+                      totalUpvotes={feedback?.upvotes?.totalCount}
+                      totalDownvotes={feedback?.downvotes?.totalCount}
+                      isPending={isPending}
+                      w="full"
+                      minH={21}
                     >
-                      <Button>
-                        {app.projectPage.projectFeedback.details.feedbackLink}
-                      </Button>
-                    </Link>
-                  </FeedbackCard>
-                ))}
+                      <Link
+                        href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
+                        disabled={isPending}
+                      >
+                        <Button disabled={isPending}>
+                          {app.projectPage.projectFeedback.details.feedbackLink}
+                        </Button>
+                      </Link>
+                    </FeedbackCard>
+                  );
+                })}
 
                 {hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>
