@@ -158,15 +158,17 @@ const CreateOrganization = () => {
         },
         {
           loading: {
-            title: "Creating organization...",
+            title: app.dashboardPage.cta.newOrganization.action.pending,
           },
           success: {
-            title: "Success!",
-            description: "Your organization has been created successfully.",
+            title: app.dashboardPage.cta.newOrganization.action.success.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.success.description,
           },
           error: {
-            title: "Error!",
-            description: "An error occurred while creating your organization.",
+            title: app.dashboardPage.cta.newOrganization.action.error.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.error.description,
           },
         }
       ),
