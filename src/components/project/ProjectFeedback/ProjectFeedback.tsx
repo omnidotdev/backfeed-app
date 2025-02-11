@@ -131,6 +131,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                     title={pendingFeedback[0].title!}
                     description={pendingFeedback[0].description!}
                     username={pendingFeedback[0].user?.username!}
+                    // TODO: adjust status when logic is handled in db
                     status="Planned"
                     totalUpvotes={pendingFeedback[0].upvotes?.totalCount}
                     totalDownvotes={pendingFeedback[0].downvotes?.totalCount}
