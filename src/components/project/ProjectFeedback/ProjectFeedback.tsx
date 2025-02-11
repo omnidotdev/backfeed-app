@@ -1,12 +1,12 @@
 "use client";
 
-import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { Button, Grid, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
-import { CreateFeedback, FeedbackDetails } from "components/feedback";
+import { Link, SkeletonArray, Spinner } from "components/core";
+import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateFeedbackMutation,
@@ -21,6 +21,7 @@ import type {
   FeedbackFragment,
   Project,
 } from "generated/graphql";
+import { useParams } from "next/navigation";
 
 interface Props {
   /** Project ID. */
@@ -32,6 +33,8 @@ interface Props {
  */
 const ProjectFeedback = ({ projectId }: Props) => {
   const { user } = useAuth();
+
+  const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
   const { data: username } = useUserQuery(
     {
@@ -124,23 +127,48 @@ const ProjectFeedback = ({ projectId }: Props) => {
             ) : posts?.length || pendingFeedback.length ? (
               <VStack>
                 {!!pendingFeedback.length && (
-                  <FeedbackDetails
-                    feedback={pendingFeedback[0]}
-                    projectPage
+                  <FeedbackCard
+                    title={pendingFeedback[0].title!}
+                    description={pendingFeedback[0].description!}
+                    username={pendingFeedback[0].user?.username!}
+                    status="Planned"
+                    totalUpvotes={pendingFeedback[0].upvotes?.totalCount}
+                    totalDownvotes={pendingFeedback[0].downvotes?.totalCount}
                     isPending
                     w="full"
                     minH={21}
-                  />
+                  >
+                    <Link href="#" disabled>
+                      <Button disabled>
+                        {app.projectPage.projectFeedback.details.feedbackLink}
+                      </Button>
+                    </Link>
+                  </FeedbackCard>
                 )}
 
                 {posts?.map((feedback) => (
-                  <FeedbackDetails
+                  <FeedbackCard
                     key={feedback?.rowId}
-                    feedback={feedback!}
-                    projectPage
+                    title={feedback?.title!}
+                    description={feedback?.description!}
+                    username={feedback?.user?.username!}
+                    createdAt={feedback?.createdAt}
+                    status="Planned"
+                    // TODO: implement when status logic is handled in db
+                    statusUpdatedAt={feedback?.updatedAt}
+                    totalUpvotes={feedback?.upvotes?.totalCount}
+                    totalDownvotes={feedback?.downvotes?.totalCount}
                     w="full"
                     minH={21}
-                  />
+                  >
+                    <Link
+                      href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
+                    >
+                      <Button>
+                        {app.projectPage.projectFeedback.details.feedbackLink}
+                      </Button>
+                    </Link>
+                  </FeedbackCard>
                 ))}
 
                 {hasNextPage && <Spinner ref={loaderRef} />}
