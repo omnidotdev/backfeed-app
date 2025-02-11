@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, HStack, Icon, Tooltip } from "@omnidev/sigil";
+import { HStack, Icon, Tooltip } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   PiArrowFatLineDown,
@@ -150,9 +150,10 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       id: "upvote",
       votes: totalUpvotes,
       tooltip: app.feedbackPage.details.upvote,
-      // TODO: update optimistic update for icon (handle downvote case if already upvoted)
       icon:
-        hasUpvoted || isUpvotePending ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+        !isDownvotePending && (hasUpvoted || isUpvotePending)
+          ? PiArrowFatLineUpFill
+          : PiArrowFatLineUp,
       color: "brand.tertiary",
       onClick: () => {
         if (hasDownvoted) {
@@ -181,9 +182,8 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       id: "downvote",
       votes: totalDownvotes,
       tooltip: app.feedbackPage.details.downvote,
-      // TODO: update optimistic update for icon (handle upvote case if already downvoted)
       icon:
-        hasDownvoted || isDownvotePending
+        !isUpvotePending && (hasDownvoted || isDownvotePending)
           ? PiArrowFatLineDownFill
           : PiArrowFatLineDown,
       color: "brand.quinary",
@@ -225,33 +225,31 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       totalDownvotes={totalDownvotes}
       {...rest}
     >
-      <Flex gap={1}>
-        {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-          <Tooltip
-            key={id}
-            positioning={{ placement: "top" }}
-            trigger={
-              <HStack gap={2} py={1} fontVariant="tabular-nums">
-                <Icon src={icon} w={5} h={5} />
-                {votes}
-              </HStack>
-            }
-            triggerProps={{
-              variant: "ghost",
-              w: "full",
-              bgColor: "transparent",
-              opacity: {
-                base: 1,
-                _disabled: 0.3,
-                _hover: { base: 0.8, _disabled: 0.3 },
-              },
-              ...rest,
-            }}
-          >
-            {tooltip}
-          </Tooltip>
-        ))}
-      </Flex>
+      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+        <Tooltip
+          key={id}
+          positioning={{ placement: "top" }}
+          trigger={
+            <HStack gap={2} py={1} fontVariant="tabular-nums">
+              <Icon src={icon} w={5} h={5} />
+              {votes}
+            </HStack>
+          }
+          triggerProps={{
+            variant: "ghost",
+            w: "full",
+            bgColor: "transparent",
+            opacity: {
+              base: 1,
+              _disabled: 0.3,
+              _hover: { base: 0.8, _disabled: 0.3 },
+            },
+            ...rest,
+          }}
+        >
+          {tooltip}
+        </Tooltip>
+      ))}
     </FeedbackCard>
   );
 };
