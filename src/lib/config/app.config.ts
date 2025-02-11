@@ -491,7 +491,15 @@ const app = {
       },
       action: {
         pending: "Submitting...",
-        submit: "Create",
+        submit: "Submit",
+        success: {
+          title: "Success!",
+          description: "Your feedback has been successfully submitted.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while submitting your feedback.",
+        },
       },
       totalResponses: "Total Responses",
       details: {
