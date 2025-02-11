@@ -539,6 +539,15 @@ const app = {
     },
     comments: {
       createComment: {
+        pending: "Adding comment...",
+        success: {
+          title: "Success!",
+          description: "Your comment has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your comment.",
+        },
         errors: {
           invalid: "Invalid format",
           message: "Must be at least 10 characters.",
