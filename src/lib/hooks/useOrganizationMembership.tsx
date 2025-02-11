@@ -13,7 +13,7 @@ const useOrganizationMembership = ({ userId, organizationId }: Options) => {
     },
     {
       enabled: !!userId && !!organizationId,
-      select: (data) => data.userOrganizationByUserIdAndOrganizationId,
+      select: (data) => data.memberByUserIdAndOrganizationId,
     }
   );
 

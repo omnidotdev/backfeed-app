@@ -18,8 +18,8 @@ import { z } from "zod";
 import { FormFieldError } from "components/core";
 import {
   Role,
+  useCreateMemberMutation,
   useCreateOrganizationMutation,
-  useCreateUserOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
@@ -107,17 +107,16 @@ const CreateOrganization = () => {
   const { data, mutateAsync: createOrganization } =
     useCreateOrganizationMutation();
 
-  const { mutateAsync: addUserToOrganization } =
-    useCreateUserOrganizationMutation({
-      onSuccess: () => {
-        router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
-        );
+  const { mutateAsync: addMemberToOrganization } = useCreateMemberMutation({
+    onSuccess: () => {
+      router.push(
+        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
+      );
 
-        setIsOpen(false);
-        reset();
-      },
-    });
+      setIsOpen(false);
+      reset();
+    },
+  });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
@@ -142,9 +141,9 @@ const CreateOrganization = () => {
             },
           });
 
-        await addUserToOrganization({
+        await addMemberToOrganization({
           input: {
-            userOrganization: {
+            member: {
               userId: user?.rowId!,
               organizationId: createOrganizationResponse?.organization?.rowId!,
               role: Role.Owner,

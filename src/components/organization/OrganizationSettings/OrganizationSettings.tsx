@@ -11,7 +11,7 @@ import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
   Role,
-  useCreateUserOrganizationMutation,
+  useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
@@ -74,7 +74,7 @@ const OrganizationSettings = () => {
         onSuccess,
       }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
-      useCreateUserOrganizationMutation({
+      useCreateMemberMutation({
         onSuccess,
       });
 
@@ -160,7 +160,7 @@ const OrganizationSettings = () => {
               onClick={() =>
                 joinOrganization({
                   input: {
-                    userOrganization: {
+                    member: {
                       userId: user?.rowId!,
                       organizationId: organization?.rowId!,
                       role: Role.Member,

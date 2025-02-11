@@ -32,9 +32,9 @@ const OrganizationList = ({ ...props }: StackProps) => {
     {
       pageSize,
       offset: (page - 1) * pageSize,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       search: debouncedSearch,
-      isUserOrganizations: false,
+      isMember: false,
     },
     {
       placeholderData: keepPreviousData,

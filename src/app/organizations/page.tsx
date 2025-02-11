@@ -44,9 +44,9 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
   const variables: OrganizationsQueryVariables = {
     pageSize: pageSize,
     offset: (page - 1) * pageSize,
-    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    orderBy: [OrganizationOrderBy.MembersCountDesc],
     search,
-    isUserOrganizations: false,
+    isMember: false,
   };
 
   await queryClient.prefetchQuery({

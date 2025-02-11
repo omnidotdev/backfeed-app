@@ -1,6 +1,6 @@
 mutation LeaveOrganization($rowId: UUID!) {
-  deleteUserOrganization(input: { rowId: $rowId }) {
-    userOrganization {
+  deleteMember(input: { rowId: $rowId }) {
+    member {
       userId
       organizationId
     }

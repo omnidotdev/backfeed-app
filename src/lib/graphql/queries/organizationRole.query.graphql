@@ -1,5 +1,5 @@
 query OrganizationRole($userId: UUID!, $organizationId: UUID!) {
-  userOrganizationByUserIdAndOrganizationId(
+  memberByUserIdAndOrganizationId(
     userId: $userId
     organizationId: $organizationId
   ) {

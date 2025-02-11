@@ -44,7 +44,7 @@ const OrganizationMetrics = ({ organizationId }: Props) => {
       select: (data) => ({
         totalProjects: data?.projects?.totalCount,
         totalFeedback: data?.posts?.totalCount,
-        activeUsers: data?.userOrganizations?.totalCount,
+        activeUsers: data?.members?.totalCount,
       }),
     }
   );

@@ -7,7 +7,7 @@ query OrganizationMetrics($organizationId: UUID!) {
     totalCount
   }
 
-  userOrganizations(condition: { organizationId: $organizationId }) {
+  members(condition: { organizationId: $organizationId }) {
     totalCount
   }
 }

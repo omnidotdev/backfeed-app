@@ -32,9 +32,9 @@ const HomePage = async () => {
   const organizationsQueryVariables: OrganizationsQueryVariables = {
     pageSize: 3,
     offset: 0,
-    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    orderBy: [OrganizationOrderBy.MembersCountDesc],
     userId: session.user.rowId!,
-    isUserOrganizations: true,
+    isMember: true,
   };
 
   await Promise.all([
@@ -45,12 +45,12 @@ const HomePage = async () => {
     queryClient.prefetchQuery({
       queryKey: useOrganizationsQuery.getKey({
         userId: organizationsQueryVariables.userId,
-        isUserOrganizations: true,
+        isMember: true,
         excludeRoles: [Role.Member],
       }),
       queryFn: useOrganizationsQuery.fetcher({
         userId: organizationsQueryVariables.userId,
-        isUserOrganizations: true,
+        isMember: true,
         excludeRoles: [Role.Member],
       }),
     }),

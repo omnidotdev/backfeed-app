@@ -32,9 +32,9 @@ const PinnedOrganizations = () => {
     {
       pageSize: 3,
       offset: 0,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       userId: user?.rowId!,
-      isUserOrganizations: true,
+      isMember: true,
     },
     {
       enabled: !!user?.rowId,

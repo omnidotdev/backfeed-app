@@ -2,9 +2,7 @@ query DashboardAggregates($userId: UUID!) {
   posts(
     filter: {
       project: {
-        organization: {
-          userOrganizations: { some: { userId: { equalTo: $userId } } }
-        }
+        organization: { members: { some: { userId: { equalTo: $userId } } } }
       }
     }
   ) {
@@ -14,11 +12,9 @@ query DashboardAggregates($userId: UUID!) {
   users(
     filter: {
       # NB: this filters out users that are not associated with any organizations that the currently authenticated user is a part of.
-      userOrganizations: {
+      members: {
         some: {
-          organization: {
-            userOrganizations: { some: { userId: { equalTo: $userId } } }
-          }
+          organization: { members: { some: { userId: { equalTo: $userId } } } }
         }
       }
     }
