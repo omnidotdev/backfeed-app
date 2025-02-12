@@ -1,12 +1,41 @@
 "use client";
 
-import { Button, Icon, Stack, Text, useDisclosure } from "@omnidev/sigil";
-import { useOrganizationQuery } from "generated/graphql";
-import { useDebounceValue } from "lib/hooks";
-import { useParams } from "next/navigation";
-import { LuPanelLeft } from "react-icons/lu";
+import {
+  Button,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@omnidev/sigil";
+import {
+  useParams,
+  useRouter,
+  useSelectedLayoutSegment,
+} from "next/navigation";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { LuPanelLeft, LuSettings } from "react-icons/lu";
 
-const ManagementSidebar = () => {
+import { Breadcrumb } from "components/core";
+import { useOrganizationQuery } from "generated/graphql";
+import { app } from "lib/config";
+import { useDebounceValue } from "lib/hooks";
+
+import type { ButtonProps } from "@omnidev/sigil";
+import type { BreadcrumbRecord } from "components/core";
+import { capitalizeFirstLetter } from "lib/util";
+import type { PropsWithChildren } from "react";
+import type { IconType } from "react-icons";
+
+interface NavigationItem extends ButtonProps {
+  label: string;
+  icon: IconType;
+}
+
+const ManagementSidebar = ({ children }: PropsWithChildren) => {
+  const router = useRouter(),
+    segment = useSelectedLayoutSegment();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
   const { data: organization } = useOrganizationQuery(
@@ -24,15 +53,43 @@ const ManagementSidebar = () => {
 
   const [debouncedIsOpen] = useDebounceValue({
     value: isOpen,
-    delay: 100,
+    delay: 50,
   });
+
+  const SIDEBAR_NAVIGATION: NavigationItem[] = [
+    {
+      label: app.organizationSettingsPage.breadcrumb,
+      icon: LuSettings,
+      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
+    },
+    {
+      label: "Members",
+      icon: HiOutlineUserGroup,
+      onClick: () => router.push(`/organizations/${organizationSlug}/members`),
+    },
+  ];
+
+  const breadcrumbs: BreadcrumbRecord[] = [
+    {
+      label: app.organizationsPage.breadcrumb,
+      href: "/organizations",
+    },
+    {
+      label: organization?.name ?? organizationSlug,
+      href: `/organizations/${organizationSlug}`,
+    },
+    {
+      // TODO: make dynamic
+      label: capitalizeFirstLetter(segment!),
+    },
+  ];
 
   return (
     <>
       <Stack
         h="full"
         overflow="hidden"
-        w={isOpen ? "12%" : "4%"}
+        w={isOpen ? "xs" : 20}
         borderRightWidth="1px"
         borderColor="border.subtle"
         transition="all 200ms ease-in-out"
@@ -45,17 +102,36 @@ const ManagementSidebar = () => {
         >
           {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
         </Text>
+        {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
+          <Button
+            key={label}
+            variant="ghost"
+            w="full"
+            rounded="none"
+            alignItems="center"
+            onClick={onClick}
+            data-state={label.toLowerCase() === segment ? "on" : "off"}
+            bgColor={{ _on: "neutral.100a" }}
+          >
+            <Icon src={icon} h={5} w={5} />
+            {debouncedIsOpen && <Text>{label}</Text>}
+          </Button>
+        ))}
       </Stack>
-      <Button
-        variant="icon"
-        bgColor={{ base: "transparent", _hover: "background.subtle" }}
-        color="foreground.default"
-        mt={2}
-        placeSelf="flex-start"
-        onClick={onToggle}
-      >
-        <Icon src={LuPanelLeft} h={5} w={5} />
-      </Button>
+      <Stack w="full" mt={2} placeSelf="flex-start" px={4}>
+        <HStack ml={-4}>
+          <Button
+            variant="icon"
+            bgColor={{ base: "transparent", _hover: "background.subtle" }}
+            color="foreground.default"
+            onClick={onToggle}
+          >
+            <Icon src={LuPanelLeft} h={5} w={5} />
+          </Button>
+          <Breadcrumb breadcrumbs={breadcrumbs} />
+        </HStack>
+        {children}
+      </Stack>
     </>
   );
 };
