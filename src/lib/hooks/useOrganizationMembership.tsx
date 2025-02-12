@@ -5,6 +5,9 @@ interface Options {
   organizationId: string | undefined;
 }
 
+/**
+ * Check organization membership details of a user.
+ */
 const useOrganizationMembership = ({ userId, organizationId }: Options) => {
   const { data } = useOrganizationRoleQuery(
     {
