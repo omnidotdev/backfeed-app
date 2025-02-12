@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Center,
-  Flex,
-  Grid,
-  Toaster,
-  sigil,
-} from "@omnidev/sigil";
+import { Center, Flex, Grid, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useTheme } from "next-themes";

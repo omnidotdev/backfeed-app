@@ -122,15 +122,15 @@ const PricingCard = ({
             onClick={() =>
               toaster.promise(handleCheckout, {
                 loading: {
-                  title: "Starting checkout..."
+                  title: "Starting checkout...",
                 },
                 success: {
                   title: "Checkout started",
-                  description: "You will be redirected to the checkout page."
+                  description: "You will be redirected to the checkout page.",
                 },
                 error: {
                   title: "Error",
-                  description: "Failed to load checkout. Please try again."
+                  description: "Failed to load checkout. Please try again.",
                 },
               })
             }
