@@ -8,6 +8,9 @@ const pandaConfig = defineConfig({
   include: ["src/**/*.{ts,tsx}"],
   outdir: "src/generated/panda",
   staticCss: {
+    recipes: {
+      toast: ["*"],
+    },
     css: [
       {
         properties: {

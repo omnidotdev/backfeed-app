@@ -1,6 +1,13 @@
 "use client";
 
-import { Center, Flex, Grid, sigil, useIsClient } from "@omnidev/sigil";
+import {
+  Center,
+  Flex,
+  Grid,
+  Toaster,
+  sigil,
+  useIsClient,
+} from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
@@ -9,6 +16,7 @@ import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
 import { app } from "lib/config";
+import { toaster } from "lib/constants";
 
 import type { ReactNode } from "react";
 
@@ -62,6 +70,9 @@ const Layout = ({ children }: Props) => {
       {/* dialogs */}
       <CreateProject organizationSlug={organizationSlug} />
       <CreateOrganization />
+
+      {/* toaster */}
+      <Toaster toaster={toaster} />
     </Grid>
   );
 };
