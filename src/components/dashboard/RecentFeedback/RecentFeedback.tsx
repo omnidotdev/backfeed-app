@@ -40,11 +40,11 @@ const RecentFeedback = () => {
       {isError ? (
         <ErrorBoundary
           message="Error fetching recent feedback"
-          h={400}
+          h="full"
           w="full"
         />
       ) : (
-        <Flex w="full" direction="column" gap={2}>
+        <Flex w="full" direction="column" gap={2} h="full">
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
@@ -58,7 +58,7 @@ const RecentFeedback = () => {
           ) : (
             <EmptyState
               message={app.dashboardPage.recentFeedback.emptyState.message}
-              h={400}
+              h="full"
               w="full"
             />
           )}

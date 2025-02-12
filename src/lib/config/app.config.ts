@@ -115,6 +115,14 @@ const app = {
         action: {
           submit: "Create Organization",
           pending: "Creating Organization...",
+          success: {
+            title: "Success!",
+            description: "Your organization has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your organization.",
+          },
         },
         label: "New Organization",
         description: "Create a new organization by submitting the form below.",
@@ -138,6 +146,14 @@ const app = {
         action: {
           submit: "Create Project",
           pending: "Creating Project...",
+          success: {
+            title: "Success!",
+            description: "Your project has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your project.",
+          },
         },
         label: "New Project",
         description: "Create a new project by submitting the form below.",
@@ -475,7 +491,15 @@ const app = {
       },
       action: {
         pending: "Submitting...",
-        submit: "Create",
+        submit: "Submit",
+        success: {
+          title: "Success!",
+          description: "Your feedback has been successfully submitted.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while submitting your feedback.",
+        },
       },
       totalResponses: "Total Responses",
       details: {
@@ -515,6 +539,15 @@ const app = {
     },
     comments: {
       createComment: {
+        pending: "Adding comment...",
+        success: {
+          title: "Success!",
+          description: "Your comment has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your comment.",
+        },
         errors: {
           invalid: "Invalid format",
           message: "Must be at least 10 characters.",
