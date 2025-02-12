@@ -13,7 +13,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { standardSchemaValidator, toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -51,7 +51,7 @@ const CreateComment = ({ totalCount }: Props) => {
     mutationKey: useDeleteCommentMutation.getKey(),
   });
 
-  const { mutate: createComment, isPending } = useCreateCommentMutation({
+  const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
     onSuccess: () => {
       reset();
 
@@ -79,16 +79,33 @@ const CreateComment = ({ totalCount }: Props) => {
       onChange: createCommentSchema,
       onSubmitAsync: createCommentSchema,
     },
-    onSubmit: ({ value }) =>
-      createComment({
-        input: {
-          comment: {
-            postId: value.postId,
-            userId: value.userId,
-            message: value.message.trim(),
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        createComment({
+          input: {
+            comment: {
+              postId: value.postId,
+              userId: value.userId,
+              message: value.message.trim(),
+            },
           },
-        },
-      }),
+        }),
+        {
+          loading: {
+            title: app.feedbackPage.comments.createComment.pending,
+          },
+          success: {
+            title: app.feedbackPage.comments.createComment.success.title,
+            description:
+              app.feedbackPage.comments.createComment.success.description,
+          },
+          error: {
+            title: app.feedbackPage.comments.createComment.error.title,
+            description:
+              app.feedbackPage.comments.createComment.error.description,
+          },
+        }
+      ),
   });
 
   const totalComments =
@@ -143,7 +160,7 @@ const CreateComment = ({ totalCount }: Props) => {
             <Button
               type="submit"
               w="fit-content"
-              disabled={!canSubmit || !isDirty || isSubmitting}
+              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
             >
               {app.feedbackPage.comments.submit}
             </Button>

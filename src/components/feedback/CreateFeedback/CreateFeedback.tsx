@@ -22,7 +22,7 @@ import {
   useProjectQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { standardSchemaValidator, toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -78,7 +78,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
     }
   );
 
-  const { mutate: createFeedback, isPending } = useCreateFeedbackMutation({
+  const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
     onSuccess: () => {
       reset();
 
@@ -107,17 +107,34 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       onChange: createFeedbackSchema,
       onSubmitAsync: createFeedbackSchema,
     },
-    onSubmit: ({ value }) =>
-      createFeedback({
-        input: {
-          post: {
-            projectId: value.projectId,
-            userId: value.userId,
-            title: value.title.trim(),
-            description: value.description.trim(),
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        createFeedback({
+          input: {
+            post: {
+              projectId: value.projectId,
+              userId: value.userId,
+              title: value.title.trim(),
+              description: value.description.trim(),
+            },
           },
-        },
-      }),
+        }),
+        {
+          loading: {
+            title: app.projectPage.projectFeedback.action.pending,
+          },
+          success: {
+            title: app.projectPage.projectFeedback.action.success.title,
+            description:
+              app.projectPage.projectFeedback.action.success.description,
+          },
+          error: {
+            title: app.projectPage.projectFeedback.action.error.title,
+            description:
+              app.projectPage.projectFeedback.action.error.description,
+          },
+        }
+      ),
   });
 
   const isFormDisabled = isProjectLoading || isAuthLoading;

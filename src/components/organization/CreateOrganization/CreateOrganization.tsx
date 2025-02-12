@@ -21,8 +21,8 @@ import {
   useCreateMemberMutation,
   useCreateOrganizationMutation,
 } from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { app } from "lib/config";
+import { standardSchemaValidator, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -104,10 +104,13 @@ const CreateOrganization = () => {
     [user, isOpen, isCreateProjectDialogOpen]
   );
 
-  const { data, mutateAsync: createOrganization } =
-    useCreateOrganizationMutation();
+  const {
+    data,
+    mutateAsync: createOrganization,
+    isPending: isCreatingOrganization,
+  } = useCreateOrganizationMutation();
 
-  const { mutateAsync: addMemberToOrganization } = useCreateMemberMutation({
+  const { mutateAsync: addMemberToOrganization, isPending: isAddingMemberToOrganization, } = useCreateMemberMutation({
     onSuccess: () => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
@@ -117,6 +120,8 @@ const CreateOrganization = () => {
       reset();
     },
   });
+
+  const isPending = isCreatingOrganization || isAddingMemberToOrganization;
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
@@ -129,17 +134,18 @@ const CreateOrganization = () => {
       onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const { createOrganization: createOrganizationResponse } =
-          await createOrganization({
-            input: {
-              organization: {
-                name: value.name,
-                slug: value.slug,
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        async () => {
+          const { createOrganization: createOrganizationResponse } =
+            await createOrganization({
+              input: {
+                organization: {
+                  name: value.name,
+                  slug: value.slug,
+                },
               },
-            },
-          });
+            });
 
         await addMemberToOrganization({
           input: {
@@ -150,12 +156,21 @@ const CreateOrganization = () => {
             },
           },
         });
-      } catch (error) {
-        if (isDevEnv) {
-          console.error(error);
-        }
-      }
-    },
+      },  {
+        loading: {
+          title: app.dashboardPage.cta.newOrganization.action.pending,
+        },
+        success: {
+          title: app.dashboardPage.cta.newOrganization.action.success.title,
+          description:
+            app.dashboardPage.cta.newOrganization.action.success.description,
+        },
+        error: {
+          title: app.dashboardPage.cta.newOrganization.action.error.title,
+          description:
+            app.dashboardPage.cta.newOrganization.action.error.description,
+        },
+      })
   });
 
   return (
@@ -245,10 +260,10 @@ const CreateOrganization = () => {
           {([canSubmit, isSubmitting, isDirty]) => (
             <Button
               type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting}
+              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
               mt={4}
             >
-              {isSubmitting
+              {isSubmitting || isPending
                 ? app.dashboardPage.cta.newOrganization.action.pending
                 : app.dashboardPage.cta.newOrganization.action.submit}
             </Button>

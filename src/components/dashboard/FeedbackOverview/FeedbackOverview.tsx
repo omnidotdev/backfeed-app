@@ -65,6 +65,7 @@ const FeedbackOverview = () => {
   return (
     <FeedbackCard
       title="Feedback Overview"
+      maxH="xl"
       contentProps={{ align: "center", justify: "center" }}
     >
       {!isLoading ? (
