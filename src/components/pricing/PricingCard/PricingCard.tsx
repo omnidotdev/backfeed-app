@@ -10,11 +10,11 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 
 import { PricingCardAction } from "components/pricing";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { toaster } from "lib/constants";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
@@ -120,10 +120,18 @@ const PricingCard = ({
           <PricingCardAction
             {...ctaProps}
             onClick={() =>
-              // No success toast due to external redirect
-              toast.promise(handleCheckout, {
-                loading: "Starting checkout...",
-                error: "Failed to load checkout. Please try again.",
+              toaster.promise(handleCheckout, {
+                loading: {
+                  title: "Starting checkout..."
+                },
+                success: {
+                  title: "Checkout started",
+                  description: "You will be redirected to the checkout page."
+                },
+                error: {
+                  title: "Error",
+                  description: "Failed to load checkout. Please try again."
+                },
               })
             }
           />

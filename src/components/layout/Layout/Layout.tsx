@@ -1,17 +1,23 @@
 "use client";
 
-import { Center, Flex, Grid, sigil } from "@omnidev/sigil";
+import {
+  Center,
+  Flex,
+  Grid,
+  Toaster,
+  sigil,
+} from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useTheme } from "next-themes";
 import { useParams } from "next/navigation";
-import { Toaster } from "sonner";
 import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
 import { app } from "lib/config";
+import { toaster } from "lib/constants";
 
 import type { ReactNode } from "react";
 
@@ -69,8 +75,7 @@ const Layout = ({ children }: Props) => {
       <CreateOrganization />
 
       {/* toaster */}
-      {/* TODO: use Sigil toaster once API adjustments are complete */}
-      <Toaster richColors theme={resolvedTheme === "dark" ? "dark" : "light"} />
+      <Toaster toaster={toaster} />
     </Grid>
   );
 };

@@ -355,35 +355,33 @@ const FeedbackDetails = ({
               </Link>
             )}
 
-            {showVoteButtons && (
-              <Flex gap={1}>
-                {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-                  <Tooltip
-                    key={id}
-                    positioning={{ placement: "top" }}
-                    trigger={
-                      <HStack gap={2} py={1} fontVariant="tabular-nums">
-                        <Icon src={icon} w={5} h={5} />
-                        {votes}
-                      </HStack>
-                    }
-                    triggerProps={{
-                      variant: "ghost",
-                      w: "full",
-                      bgColor: "transparent",
-                      opacity: {
-                        base: 1,
-                        _disabled: 0.3,
-                        _hover: { base: 0.8, _disabled: 0.3 },
-                      },
-                      ...rest,
-                    }}
-                  >
-                    {tooltip}
-                  </Tooltip>
-                ))}
-              </Flex>
-            )}
+            <Flex gap={1} visibility={showVoteButtons ? "visible" : "hidden"}>
+              {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+                <Tooltip
+                  key={id}
+                  positioning={{ placement: "top" }}
+                  trigger={
+                    <HStack gap={2} py={1} fontVariant="tabular-nums">
+                      <Icon src={icon} w={5} h={5} />
+                      {votes}
+                    </HStack>
+                  }
+                  triggerProps={{
+                    variant: "ghost",
+                    w: "full",
+                    bgColor: "transparent",
+                    opacity: {
+                      base: 1,
+                      _disabled: 0.3,
+                      _hover: { base: 0.8, _disabled: 0.3 },
+                    },
+                    ...rest,
+                  }}
+                >
+                  {tooltip}
+                </Tooltip>
+              ))}
+            </Flex>
           </HStack>
         </Stack>
       </Stack>

@@ -24,7 +24,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { standardSchemaValidator, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -124,7 +124,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const firstOrganization = organizations?.[0];
 
-  const { mutate: createProject } = useCreateProjectMutation({
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
     onSuccess: (data) => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
@@ -148,17 +148,34 @@ const CreateProject = ({ organizationSlug }: Props) => {
       onMount: baseSchema,
       onSubmitAsync: createProjectSchema,
     },
-    onSubmit: ({ value }) =>
-      createProject({
-        input: {
-          project: {
-            name: value.name,
-            description: value.description,
-            slug: value.slug,
-            organizationId: value.organizationId,
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        createProject({
+          input: {
+            project: {
+              name: value.name,
+              description: value.description,
+              slug: value.slug,
+              organizationId: value.organizationId,
+            },
           },
-        },
-      }),
+        }),
+        {
+          loading: {
+            title: app.dashboardPage.cta.newProject.action.pending,
+          },
+          success: {
+            title: app.dashboardPage.cta.newProject.action.success.title,
+            description:
+              app.dashboardPage.cta.newProject.action.success.description,
+          },
+          error: {
+            title: app.dashboardPage.cta.newProject.action.error.title,
+            description:
+              app.dashboardPage.cta.newProject.action.error.description,
+          },
+        }
+      ),
   });
 
   return (
@@ -308,10 +325,10 @@ const CreateProject = ({ organizationSlug }: Props) => {
           {([canSubmit, isSubmitting, isDirty]) => (
             <Button
               type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting}
+              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
               mt={4}
             >
-              {isSubmitting
+              {isSubmitting || isPending
                 ? app.dashboardPage.cta.newProject.action.pending
                 : app.dashboardPage.cta.newProject.action.submit}
             </Button>

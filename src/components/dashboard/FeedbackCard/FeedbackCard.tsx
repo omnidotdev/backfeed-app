@@ -13,6 +13,7 @@ interface Props extends FlexProps {
 
 /**
  * Feedback card.
+ * TODO: discuss renaming the component to something more descriptive of its purpose.
  */
 const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
   <Flex
@@ -34,7 +35,7 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
       fontSize="2xl"
       fontWeight="semibold"
       boxShadow="xs"
-      lineHeight={1.2}
+      lineHeight={0.7}
       p={6}
     >
       {title}
