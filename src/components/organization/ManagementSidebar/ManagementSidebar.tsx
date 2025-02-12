@@ -14,7 +14,7 @@ import {
   useSelectedLayoutSegment,
 } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { LuPanelLeft, LuSettings } from "react-icons/lu";
+import { LuPanelLeftClose, LuPanelLeftOpen, LuSettings } from "react-icons/lu";
 
 import { Breadcrumb } from "components/core";
 import { useOrganizationQuery } from "generated/graphql";
@@ -47,13 +47,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     }
   );
 
-  const { isOpen, onToggle } = useDisclosure({
-    defaultIsOpen: true,
-  });
+  const { isOpen, onToggle } = useDisclosure();
 
   const [debouncedIsOpen] = useDebounceValue({
     value: isOpen,
-    delay: 50,
+    delay: 100,
   });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
@@ -93,6 +91,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         borderRightWidth="1px"
         borderColor="border.subtle"
         transition="all 200ms ease-in-out"
+        gap={0}
       >
         <Text
           as="h1"
@@ -109,9 +108,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             w="full"
             rounded="none"
             alignItems="center"
+            py={6}
+            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+            data-active={label.toLowerCase() === segment || undefined}
+            bgColor={{ _active: "neutral.100a" }}
             onClick={onClick}
-            data-state={label.toLowerCase() === segment ? "on" : "off"}
-            bgColor={{ _on: "neutral.100a" }}
           >
             <Icon src={icon} h={5} w={5} />
             {debouncedIsOpen && <Text>{label}</Text>}
@@ -119,14 +120,19 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         ))}
       </Stack>
       <Stack w="full" mt={2} placeSelf="flex-start" px={4}>
-        <HStack ml={-4}>
+        <HStack ml={{ base: 0, md: -4 }} minH={10}>
           <Button
+            display={{ base: "none", md: "flex" }}
             variant="icon"
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
             onClick={onToggle}
           >
-            <Icon src={LuPanelLeft} h={5} w={5} />
+            <Icon
+              src={isOpen ? LuPanelLeftClose : LuPanelLeftOpen}
+              h={5}
+              w={5}
+            />
           </Button>
           <Breadcrumb breadcrumbs={breadcrumbs} />
         </HStack>
