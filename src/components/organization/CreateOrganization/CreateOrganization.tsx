@@ -110,7 +110,10 @@ const CreateOrganization = () => {
     isPending: isCreatingOrganization,
   } = useCreateOrganizationMutation();
 
-  const { mutateAsync: addMemberToOrganization, isPending: isAddingMemberToOrganization, } = useCreateMemberMutation({
+  const {
+    mutateAsync: addMemberToOrganization,
+    isPending: isAddingMemberToOrganization,
+  } = useCreateMemberMutation({
     onSuccess: () => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
@@ -147,30 +150,33 @@ const CreateOrganization = () => {
               },
             });
 
-        await addMemberToOrganization({
-          input: {
-            member: {
-              userId: user?.rowId!,
-              organizationId: createOrganizationResponse?.organization?.rowId!,
-              role: Role.Owner,
+          await addMemberToOrganization({
+            input: {
+              member: {
+                userId: user?.rowId!,
+                organizationId:
+                  createOrganizationResponse?.organization?.rowId!,
+                role: Role.Owner,
+              },
             },
+          });
+        },
+        {
+          loading: {
+            title: app.dashboardPage.cta.newOrganization.action.pending,
           },
-        });
-      },  {
-        loading: {
-          title: app.dashboardPage.cta.newOrganization.action.pending,
-        },
-        success: {
-          title: app.dashboardPage.cta.newOrganization.action.success.title,
-          description:
-            app.dashboardPage.cta.newOrganization.action.success.description,
-        },
-        error: {
-          title: app.dashboardPage.cta.newOrganization.action.error.title,
-          description:
-            app.dashboardPage.cta.newOrganization.action.error.description,
-        },
-      })
+          success: {
+            title: app.dashboardPage.cta.newOrganization.action.success.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.success.description,
+          },
+          error: {
+            title: app.dashboardPage.cta.newOrganization.action.error.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.error.description,
+          },
+        }
+      ),
   });
 
   return (
