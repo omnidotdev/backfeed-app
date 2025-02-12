@@ -1,8 +1,10 @@
+import { Center, Text } from "@omnidev/sigil";
+
 const OrganizationMembersPage = () => {
   return (
-    <div>
-      <h1>Organization Members</h1>
-    </div>
+    <Center h="full" w="full">
+      <Text as="h1">Organization Members</Text>
+    </Center>
   );
 };
 

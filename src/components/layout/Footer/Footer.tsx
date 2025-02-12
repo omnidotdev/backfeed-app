@@ -1,6 +1,7 @@
 "use client";
 
 import { sigil } from "@omnidev/sigil";
+import { token } from "generated/panda/tokens";
 
 import { app } from "lib/config";
 
@@ -16,6 +17,10 @@ const Footer = () => (
     p={4}
     bottom={0}
     w="100%"
+    style={{
+      borderTop: "1px solid",
+      borderColor: token("colors.border.subtle"),
+    }}
   >
     &copy; {new Date().getFullYear()} {app.organization}
   </sigil.footer>
