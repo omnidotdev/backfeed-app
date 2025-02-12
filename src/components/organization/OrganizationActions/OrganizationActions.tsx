@@ -54,7 +54,7 @@ const OrganizationActions = ({ organizationId }: Props) => {
     {
       label: app.organizationPage.actions.cta.manageTeam.label,
       icon: MdManageAccounts,
-      disabled: true,
+      onClick: () => router.push(`/organizations/${organizationSlug}/members`),
     },
     {
       label: app.organizationPage.actions.cta.settings.label,
