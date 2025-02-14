@@ -61,10 +61,12 @@ const signOut = async (request: NextAuthRequest) => {
  * Middleware function for handling authentication flows on designated routes.
  */
 export const middleware = auth(async (request) => {
+  // If the user is not authenticated, redirect to the landing page
   if (!request.auth) {
     return redirect(request);
   }
 
+  // If there is an error from the refresh token rotation, sign out the user (i.e. refresh token was expired)
   if (request.auth.error) {
     return await signOut(request);
   }
