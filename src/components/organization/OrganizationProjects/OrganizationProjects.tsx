@@ -23,7 +23,7 @@ interface Props {
 /**
  * Organization projects overview.
  */
-const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
+const OrganizationProjects = ({ organizationSlug }: Props) => {
   const { isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -101,4 +101,4 @@ const OrganizationProjectsOverview = ({ organizationSlug }: Props) => {
   );
 };
 
-export default OrganizationProjectsOverview;
+export default OrganizationProjects;

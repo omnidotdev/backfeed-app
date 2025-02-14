@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Center,
-  Flex,
-  Grid,
-  Toaster,
-  sigil,
-  useIsClient,
-} from "@omnidev/sigil";
+import { Center, Flex, Grid, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
+import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
