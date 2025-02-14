@@ -6,7 +6,7 @@
       "dependencies": {
         "@ark-ui/react": "^4.8.1",
         "@omnidev/sigil": "^0.13.0",
-        "@tanstack/react-form": "^0.41.2",
+        "@tanstack/react-form": "^0.42.0",
         "@tanstack/react-query": "^5.64.1",
         "@tanstack/react-query-devtools": "^5.64.1",
         "@theme-toggles/react": "^4.1.0",
@@ -512,13 +512,13 @@
 
     "@swc/helpers": ["@swc/helpers@0.5.15", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g=="],
 
-    "@tanstack/form-core": ["@tanstack/form-core@0.41.3", "", { "dependencies": { "@tanstack/store": "^0.7.0" } }, "sha512-ifGRimfnYgc+SQikx8ngWGhIxs5UHutSwUQ1IPFHZ6PRAfCTEEqDtXqaWZGkuzvf8itoxXdwsR+chEdwiPtsPA=="],
+    "@tanstack/form-core": ["@tanstack/form-core@0.42.0", "", { "dependencies": { "@tanstack/store": "^0.7.0" } }, "sha512-NL2tDWK/40zPsbGWwPMPPuXy0STQ0NxzUCfkAKWnW7MuL5N6wVT7VQc5U45M1RruyGUWrRmS2XdKEeYR6H4FrA=="],
 
     "@tanstack/query-core": ["@tanstack/query-core@5.64.2", "", {}, "sha512-hdO8SZpWXoADNTWXV9We8CwTkXU88OVWRBcsiFrk7xJQnhm6WRlweDzMD+uH+GnuieTBVSML6xFa17C2cNV8+g=="],
 
     "@tanstack/query-devtools": ["@tanstack/query-devtools@5.64.2", "", {}, "sha512-3DautR5UpVZdk/qNIhioZVF7g8fdQZ1U98sBEEk4Tzz3tihSBNMPgwlP40nzgbPEDBIrn/j/oyyvNBVSo083Vw=="],
 
-    "@tanstack/react-form": ["@tanstack/react-form@0.41.3", "", { "dependencies": { "@remix-run/node": "^2.15.0", "@tanstack/form-core": "0.41.3", "@tanstack/react-store": "^0.7.0", "decode-formdata": "^0.8.0" }, "peerDependencies": { "@tanstack/start": "^1.43.13", "react": "^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@tanstack/start"] }, "sha512-GZUiapJnQoWRvIFjXwC7IrTileAgLKG9AwQTk+EhZsJi5vXJcaiy9xQy2c6l9SQOv4ue+MNUIrIGNEhgukTBHA=="],
+    "@tanstack/react-form": ["@tanstack/react-form@0.42.0", "", { "dependencies": { "@remix-run/node": "^2.15.0", "@tanstack/form-core": "0.42.0", "@tanstack/react-store": "^0.7.0", "decode-formdata": "^0.8.0" }, "peerDependencies": { "@tanstack/start": "^1.43.13", "react": "^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@tanstack/start"] }, "sha512-y69wk89qG05xzFVIJxepe+x2w2I8Hx1iCMe1EgyuI1ehKu9GUcH4skr8i1oiSbawbdKk0w0X/Gm6/1Xe1zIaeg=="],
 
     "@tanstack/react-query": ["@tanstack/react-query@5.64.2", "", { "dependencies": { "@tanstack/query-core": "5.64.2" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-3pakNscZNm8KJkxmovvtZ4RaXLyiYYobwleTMvpIGUoKRa8j8VlrQKNl5W8VUEfVfZKkikvXVddLuWMbcSCA1Q=="],
 
