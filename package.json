@@ -32,7 +32,7 @@
     "@graphql-codegen/typescript-react-query": "^6.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@happy-dom/global-registrator": "^16.6.0",
-    "@pandacss/dev": "^0.51.1",
+    "@pandacss/dev": "^0.53.0",
     "@playwright/test": "^1.49.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
