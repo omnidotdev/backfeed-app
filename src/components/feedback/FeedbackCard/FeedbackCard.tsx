@@ -5,21 +5,11 @@ import dayjs from "dayjs";
 import { match } from "ts-pattern";
 
 import type { HstackProps } from "@omnidev/sigil";
+import type { FeedbackFragment } from "generated/graphql";
 
 interface Props extends HstackProps {
-  /** Feedback title. */
-  title: string;
-  /** Feedback description. */
-  description: string;
-  /** Username of the feedback author. */
-  username: string;
-  /** Date when the feedback was created. */
-  createdAt?: Date | null;
-  // TODO: implement status logic
-  /** Status of the feedback. */
-  status: string;
-  /** When the status was last updated. */
-  statusUpdatedAt?: Date | null;
+  /** Feedback details. */
+  feedback: Partial<FeedbackFragment>;
   /** Total number of upvotes. */
   totalUpvotes: number | undefined;
   /** Total number of downvotes. */
@@ -32,12 +22,7 @@ interface Props extends HstackProps {
  * Feedback card.
  */
 const FeedbackCard = ({
-  title,
-  description,
-  username,
-  createdAt,
-  status,
-  statusUpdatedAt,
+  feedback,
   totalUpvotes = 0,
   totalDownvotes = 0,
   isPending = false,
@@ -77,7 +62,7 @@ const FeedbackCard = ({
         <HStack justify="space-between">
           <Stack direction={{ base: "column", sm: "row" }} gap={4}>
             <Text fontWeight="semibold" fontSize="2xl">
-              {title}
+              {feedback.title}
             </Text>
 
             <HStack>
@@ -86,11 +71,13 @@ const FeedbackCard = ({
                 color="brand.secondary"
                 borderColor="brand.secondary"
               >
-                {status}
+                {/* TODO: update status when added to db schema */}
+                Planned
               </Badge>
 
               <Text fontSize="sm" color="foreground.subtle">
-                {`Updated: ${dayjs(isPending ? new Date() : statusUpdatedAt).fromNow()}`}
+                {/* TODO: change to statusUpdatedAt when db schema is updated */}
+                {`Updated: ${dayjs(isPending ? new Date() : feedback.updatedAt).fromNow()}`}
               </Text>
             </HStack>
           </Stack>
@@ -100,7 +87,7 @@ const FeedbackCard = ({
           </Text>
         </HStack>
 
-        <Text color="foreground.muted">{description}</Text>
+        <Text color="foreground.muted">{feedback.description}</Text>
 
         <Stack justify="space-between" gap={4} mt={2}>
           <Stack
@@ -108,7 +95,7 @@ const FeedbackCard = ({
             fontSize="sm"
             gap={{ base: 1, sm: 2 }}
           >
-            <Text color="foreground.subtle">{username}</Text>
+            <Text color="foreground.subtle">{feedback.user?.username}</Text>
 
             <Flex
               borderRadius="full"
@@ -120,7 +107,7 @@ const FeedbackCard = ({
             />
 
             <Text color="foreground.subtle">
-              {dayjs(isPending ? new Date() : createdAt).fromNow()}
+              {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
             </Text>
           </Stack>
 

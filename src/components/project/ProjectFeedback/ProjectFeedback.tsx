@@ -134,11 +134,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
-                      title={feedback?.title!}
-                      description={feedback?.description!}
-                      username={feedback?.user?.username!}
-                      // TODO: adjust status when logic is handled in db
-                      status="Planned"
+                      feedback={feedback!}
                       totalUpvotes={feedback?.upvotes?.totalCount}
                       totalDownvotes={feedback?.downvotes?.totalCount}
                       isPending={isPending}

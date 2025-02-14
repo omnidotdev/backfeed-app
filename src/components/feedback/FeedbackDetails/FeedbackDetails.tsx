@@ -214,13 +214,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
 
   return (
     <FeedbackCard
-      title={feedback?.title!}
-      description={feedback?.description!}
-      username={feedback?.user?.username!}
-      createdAt={feedback?.createdAt}
-      status="Planned"
-      // TODO: implement when status logic is handled in db
-      statusUpdatedAt={feedback?.updatedAt}
+      feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
       {...rest}
