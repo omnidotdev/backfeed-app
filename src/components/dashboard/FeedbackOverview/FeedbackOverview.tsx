@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { FeedbackCard, FeedbackTooltip } from "components/dashboard";
+import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
@@ -63,7 +63,7 @@ const FeedbackOverview = () => {
   });
 
   return (
-    <FeedbackCard
+    <FeedbackSection
       title="Feedback Overview"
       maxH="xl"
       contentProps={{ align: "center", justify: "center" }}
@@ -104,7 +104,7 @@ const FeedbackOverview = () => {
       ) : (
         <Skeleton width="full" height={400} />
       )}
-    </FeedbackCard>
+    </FeedbackSection>
   );
 };
 

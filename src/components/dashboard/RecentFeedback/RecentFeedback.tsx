@@ -3,7 +3,7 @@
 import { Flex } from "@omnidev/sigil";
 
 import { SkeletonArray } from "components/core";
-import { FeedbackCard, Response } from "components/dashboard";
+import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -32,7 +32,7 @@ const RecentFeedback = () => {
   );
 
   return (
-    <FeedbackCard
+    <FeedbackSection
       title="Recent Feedback"
       maxH="xl"
       contentProps={{ overflow: "auto" }}
@@ -64,7 +64,7 @@ const RecentFeedback = () => {
           )}
         </Flex>
       )}
-    </FeedbackCard>
+    </FeedbackSection>
   );
 };
 
