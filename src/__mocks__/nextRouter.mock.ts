@@ -22,6 +22,8 @@ await mock.module("next/navigation", () => ({
     const router = require("next-router-mock").useRouter();
     return router.pathname;
   }),
+  // TODO: determine appropriate mock implementation
+  useSelectedLayoutSegment: jest.fn(),
   useServerInsertedHTML: jest.fn(),
   notFound: jest.fn(),
   redirect: jest.fn(),
