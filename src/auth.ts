@@ -61,11 +61,6 @@ declare module "next-auth" {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
-  session: {
-    // 30 minutes
-    // ! NB: this should match the expiry time of the refresh token from the IDP
-    maxAge: 60 * 30,
-  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,

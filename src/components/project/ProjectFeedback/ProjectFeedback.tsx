@@ -58,7 +58,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+  const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
       mutationKey: useCreateFeedbackMutation.getKey(),
       status: "pending",
@@ -133,6 +133,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                   />
                 )}
 
+                {/* TODO: separate concerns for this component. Every render of the list throws many network requests due to the nature of `FeedbackDetails` needing to fetch details such as upvotes and downvotes. */}
                 {posts?.map((feedback) => (
                   <FeedbackDetails
                     key={feedback?.rowId}

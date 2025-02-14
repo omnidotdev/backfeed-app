@@ -5,6 +5,7 @@ import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import {
   OrganizationOrderBy,
+  Role,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
@@ -31,14 +32,27 @@ const HomePage = async () => {
   const organizationsQueryVariables: OrganizationsQueryVariables = {
     pageSize: 3,
     offset: 0,
-    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    orderBy: [OrganizationOrderBy.MembersCountDesc],
     userId: session.user.rowId!,
+    isMember: true,
   };
 
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
       queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationsQuery.getKey({
+        userId: organizationsQueryVariables.userId,
+        isMember: true,
+        excludeRoles: [Role.Member],
+      }),
+      queryFn: useOrganizationsQuery.fetcher({
+        userId: organizationsQueryVariables.userId,
+        isMember: true,
+        excludeRoles: [Role.Member],
+      }),
     }),
     queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({

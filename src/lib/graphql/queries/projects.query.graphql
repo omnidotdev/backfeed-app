@@ -20,6 +20,7 @@ query Projects(
       description
       slug
       organization {
+        rowId
         slug
       }
       posts {
