@@ -29,6 +29,7 @@ interface Props extends StackProps {
 const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
   <Stack
     h="100%"
+    w="full"
     maxW={{ base: "90svw", lg: "8xl" }}
     mx="auto"
     px={{ lg: 6 }}

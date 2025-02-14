@@ -98,6 +98,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           p={4}
           bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
           textAlign="center"
+          whiteSpace="nowrap"
         >
           {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
         </Text>
@@ -108,11 +109,13 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             w="full"
             rounded="none"
             alignItems="center"
+            textWrap="nowrap"
             py={6}
-            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
-            data-active={label.toLowerCase() === segment || undefined}
             bgColor={{ _active: "neutral.100a" }}
             onClick={onClick}
+            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+            data-active={label.toLowerCase() === segment || undefined}
+            aria-label={label}
           >
             <Icon src={icon} h={5} w={5} />
             {debouncedIsOpen && <Text>{label}</Text>}
@@ -126,6 +129,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             variant="icon"
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
+            aria-label="Toggle Sidebar"
             onClick={onToggle}
           >
             <Icon
