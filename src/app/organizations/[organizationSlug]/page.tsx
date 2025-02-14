@@ -6,7 +6,7 @@ import { Page } from "components/layout";
 import {
   OrganizationActions,
   OrganizationMetrics,
-  OrganizationProjectsOverview,
+  OrganizationProjects,
 } from "components/organization";
 import {
   useOrganizationMetricsQuery,
@@ -113,7 +113,7 @@ const OrganizationPage = async ({ params }: Props) => {
           ],
         }}
       >
-        <OrganizationProjectsOverview organizationSlug={organizationSlug} />
+        <OrganizationProjects organizationSlug={organizationSlug} />
 
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
