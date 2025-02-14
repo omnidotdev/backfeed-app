@@ -41,7 +41,7 @@
         "@graphql-codegen/typescript-operations": "^4.4.0",
         "@graphql-codegen/typescript-react-query": "^6.1.0",
         "@graphql-typed-document-node/core": "^3.2.0",
-        "@happy-dom/global-registrator": "^16.6.0",
+        "@happy-dom/global-registrator": "^17.0.0",
         "@pandacss/dev": "^0.51.1",
         "@playwright/test": "^1.49.1",
         "@testing-library/jest-dom": "^6.6.3",
@@ -354,7 +354,7 @@
 
     "@graphql-typed-document-node/core": ["@graphql-typed-document-node/core@3.2.0", "", { "peerDependencies": { "graphql": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0" } }, "sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ=="],
 
-    "@happy-dom/global-registrator": ["@happy-dom/global-registrator@16.7.3", "", { "dependencies": { "happy-dom": "^16.7.3" } }, "sha512-mdV8FJsXEuRlTT5P6m+9GhjX6mTPOlaJWd+Lput+rFen9ZvF6cidKo1xHMrA1BrRFcCbgX4kGyvBUWJZ0BZd5Q=="],
+    "@happy-dom/global-registrator": ["@happy-dom/global-registrator@17.1.0", "", { "dependencies": { "happy-dom": "^17.1.0" } }, "sha512-+fRIMTUeX0p3BXofW0OghieDTHsRptBBwU9ciq1aDh5u7wGAVSn6SYl1B4kyZfGRAo4oSp+oJjnxBXuULhNlKQ=="],
 
     "@img/sharp-darwin-arm64": ["@img/sharp-darwin-arm64@0.33.5", "", { "optionalDependencies": { "@img/sharp-libvips-darwin-arm64": "1.0.4" }, "os": "darwin", "cpu": "arm64" }, "sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ=="],
 
@@ -1062,7 +1062,7 @@
 
     "graphql-ws": ["graphql-ws@5.16.2", "", { "peerDependencies": { "graphql": ">=0.11 <=16" } }, "sha512-E1uccsZxt/96jH/OwmLPuXMACILs76pKF2i3W861LpKBCYtGIyPQGtWLuBLkND4ox1KHns70e83PS4te50nvPQ=="],
 
-    "happy-dom": ["happy-dom@16.7.3", "", { "dependencies": { "webidl-conversions": "^7.0.0", "whatwg-mimetype": "^3.0.0" } }, "sha512-76uiE9jCpC849cOyYZ8YBROpPcstW/hwCKoQYd3aiZaxHeR9zdjpup4z7qYEWbt+lY8Rb3efW2gmrckyoBftKg=="],
+    "happy-dom": ["happy-dom@17.1.0", "", { "dependencies": { "webidl-conversions": "^7.0.0", "whatwg-mimetype": "^3.0.0" } }, "sha512-9tUhXyePCjzUMycaHS/IzrIpF69xiq/laAT7golk4MtZ6t8ft5+Rv7U3lfrs2b4NMH0JTL3EhZzjfahrPmOnaQ=="],
 
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
 
