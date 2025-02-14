@@ -17,8 +17,9 @@ import { z } from "zod";
 
 import { FormFieldError } from "components/core";
 import {
+  Role,
+  useCreateMemberMutation,
   useCreateOrganizationMutation,
-  useCreateUserOrganizationMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
@@ -91,7 +92,10 @@ const CreateOrganization = () => {
 
   useHotkeys(
     "mod+o",
-    () => setIsOpen(!isOpen),
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
     {
       enabled: !!user && !isCreateProjectDialogOpen,
       enableOnFormTags: true,
@@ -107,9 +111,9 @@ const CreateOrganization = () => {
   } = useCreateOrganizationMutation();
 
   const {
-    mutateAsync: addUserToOrganization,
-    isPending: isAddingUserToOrganization,
-  } = useCreateUserOrganizationMutation({
+    mutateAsync: addMemberToOrganization,
+    isPending: isAddingMemberToOrganization,
+  } = useCreateMemberMutation({
     onSuccess: () => {
       router.push(
         `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
@@ -120,7 +124,7 @@ const CreateOrganization = () => {
     },
   });
 
-  const isPending = isCreatingOrganization || isAddingUserToOrganization;
+  const isPending = isCreatingOrganization || isAddingMemberToOrganization;
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
@@ -130,7 +134,7 @@ const CreateOrganization = () => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
     },
     onSubmit: async ({ value }) =>
@@ -146,12 +150,13 @@ const CreateOrganization = () => {
               },
             });
 
-          await addUserToOrganization({
+          await addMemberToOrganization({
             input: {
-              userOrganization: {
+              member: {
                 userId: user?.rowId!,
                 organizationId:
                   createOrganizationResponse?.organization?.rowId!,
+                role: Role.Owner,
               },
             },
           });
@@ -195,18 +200,14 @@ const CreateOrganization = () => {
         }}
       >
         <Field name="name">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationName.id
-                }
-              >
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newOrganization.organizationName.id}
               </Label>
 
               <Input
-                id={app.dashboardPage.cta.newOrganization.organizationName.id}
+                id={name}
                 placeholder={
                   app.dashboardPage.cta.newOrganization.organizationName
                     .placeholder
@@ -224,13 +225,9 @@ const CreateOrganization = () => {
         </Field>
 
         <Field name="slug">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationSlug.id
-                }
-              >
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newOrganization.organizationSlug.id}
               </Label>
 
@@ -241,7 +238,7 @@ const CreateOrganization = () => {
                 >{`/${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
 
                 <Input
-                  id={app.dashboardPage.cta.newOrganization.organizationSlug.id}
+                  id={name}
                   placeholder={
                     app.dashboardPage.cta.newOrganization.organizationSlug
                       .placeholder

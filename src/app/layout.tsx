@@ -2,6 +2,7 @@ import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app } from "lib/config";
+import { getAuthSession } from "lib/util";
 import { mswNodeServer } from "test/e2e/util";
 
 import type { Metadata } from "next";
@@ -32,31 +33,35 @@ export const metadata: Metadata = {
 /**
  * Root layout.
  */
-const RootLayout = ({ children }: { children: ReactNode }) => (
-  // !!NB: suppressHydrationWarning is required for next-themes to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use for more details
-  <html lang="en" suppressHydrationWarning>
-    <head>
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="32x32"
-        href="/img/favicon-32x32.png"
-      />
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="16x16"
-        href="/img/favicon-16x16.png"
-      />
-      <link rel="shortcut icon" href="/favicon.ico" />
-    </head>
+const RootLayout = async ({ children }: { children: ReactNode }) => {
+  const session = await getAuthSession();
 
-    <body>
-      <Providers>
-        <Layout>{children}</Layout>
-      </Providers>
-    </body>
-  </html>
-);
+  return (
+    // !!NB: suppressHydrationWarning is required for next-themes to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use for more details
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/img/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/img/favicon-16x16.png"
+        />
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </head>
+
+      <body>
+        <Providers session={session}>
+          <Layout>{children}</Layout>
+        </Providers>
+      </body>
+    </html>
+  );
+};
 
 export default RootLayout;

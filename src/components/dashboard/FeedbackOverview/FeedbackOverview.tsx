@@ -36,6 +36,7 @@ const FeedbackOverview = () => {
   } = useWeeklyFeedbackQuery(
     {
       userId: user?.rowId!,
+      // TODO: discuss these dates. Should we instead have it include the current day?
       startDate: oneWeekAgo,
       endDate: startOfToday,
     },

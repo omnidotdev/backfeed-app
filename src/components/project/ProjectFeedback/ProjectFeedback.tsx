@@ -61,7 +61,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+  const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
       mutationKey: useCreateFeedbackMutation.getKey(),
       status: "pending",

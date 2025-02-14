@@ -1,0 +1,5 @@
+mutation CreateMember($input: CreateMemberInput!) {
+  createMember(input: $input) {
+    clientMutationId
+  }
+}
