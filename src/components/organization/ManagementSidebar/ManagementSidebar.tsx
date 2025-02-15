@@ -6,6 +6,7 @@ import {
   Icon,
   Stack,
   Text,
+  useBreakpointValue,
   useDisclosure,
 } from "@omnidev/sigil";
 import {
@@ -13,6 +14,7 @@ import {
   useRouter,
   useSelectedLayoutSegment,
 } from "next/navigation";
+import { useEffect } from "react";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuPanelLeftClose, LuPanelLeftOpen, LuSettings } from "react-icons/lu";
 
@@ -20,10 +22,10 @@ import { Breadcrumb } from "components/core";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDebounceValue } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { BreadcrumbRecord } from "components/core";
-import { capitalizeFirstLetter } from "lib/util";
 import type { PropsWithChildren } from "react";
 import type { IconType } from "react-icons";
 
@@ -35,6 +37,8 @@ interface NavigationItem extends ButtonProps {
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
+
+  const isLargeDisplay = useBreakpointValue({ base: false, lg: true });
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
@@ -82,6 +86,12 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     },
   ];
 
+  useEffect(() => {
+    if (!isLargeDisplay && isOpen) {
+      onToggle();
+    }
+  }, [isLargeDisplay, isOpen, onToggle]);
+
   return (
     <>
       <Stack
@@ -123,9 +133,9 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         ))}
       </Stack>
       <Stack w="full" mt={2} placeSelf="flex-start" px={4}>
-        <HStack ml={{ base: 0, md: -4 }} minH={10}>
+        <HStack ml={{ base: 0, lg: -4 }} minH={10}>
           <Button
-            display={{ base: "none", md: "flex" }}
+            display={{ base: "none", lg: "flex" }}
             variant="icon"
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
