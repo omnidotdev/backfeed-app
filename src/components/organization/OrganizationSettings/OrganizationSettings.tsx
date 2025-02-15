@@ -30,7 +30,7 @@ const leaveOrganizationDetails =
 const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
-// TODO: discuss joining an organization. Should this be invite only?
+// TODO: refactor join organization functionality. This should be invite only. This may also require additional adjustments, i.e. locking down organization settings route.
 
 /** Organization settings. */
 const OrganizationSettings = () => {

@@ -81,7 +81,6 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       href: `/organizations/${organizationSlug}`,
     },
     {
-      // TODO: make dynamic
       label: capitalizeFirstLetter(segment!),
     },
   ];
