@@ -268,6 +268,18 @@ const app = {
       },
     },
   },
+  organizationMembersPage: {
+    breadcrumb: "Members",
+    description: "Manage the members and their roles within your organization.",
+    filters: {
+      search: {
+        placeholder: "Search all organization members...",
+      },
+      role: {
+        placeholder: "Select Role",
+      },
+    },
+  },
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
