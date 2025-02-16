@@ -1,7 +1,12 @@
 "use client";
 
 import {
+  Button,
   Checkbox,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
   Table,
   TableCell,
   TableHeader,
@@ -14,6 +19,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
 import { useMembersQuery } from "generated/graphql";
 
@@ -32,6 +38,39 @@ const columns = [
     header: ({ table }) => (
       <Checkbox
         size="sm"
+        // explicit width to prevent CLS with row selection
+        w={28}
+        // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+        gap={0}
+        labelProps={{
+          flex: 1,
+          px: 4,
+          // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+          onClick: (e) => e.preventDefault(),
+        }}
+        label={
+          table.getIsSomeRowsSelected() || table.getIsAllRowsSelected() ? (
+            <Menu
+              trigger={
+                <Button size="sm" variant="outline">
+                  {`${table.getSelectedRowModel().rows.length} Selected`}
+                  <Icon src={LuChevronDown} />
+                </Button>
+              }
+            >
+              <MenuItemGroup>
+                <MenuItem value="admin">
+                  Give administrative privileges
+                </MenuItem>
+                <MenuItem value="remove" color="red">
+                  Remove from organization
+                </MenuItem>
+              </MenuItemGroup>
+            </Menu>
+          ) : (
+            "Members"
+          )
+        }
         checked={
           table.getIsAllRowsSelected()
             ? true
@@ -88,7 +127,7 @@ const Members = ({ organizationId }: Props) => {
   return (
     <Table
       headerContent={table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id}>
+        <TableRow key={headerGroup.id} bgColor="background.subtle">
           {headerGroup.headers.map((header) => (
             <TableHeader key={header.id} fontWeight="bold">
               {header.isPlaceholder
