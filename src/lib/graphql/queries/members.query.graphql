@@ -1,5 +1,6 @@
 query Members($organizationId: UUID!, $roles: [Role!], $search: String) {
   members(
+    orderBy: ROLE_ASC
     condition: { organizationId: $organizationId }
     filter: {
       role: { in: $roles }

@@ -17,20 +17,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { match } from "ts-pattern";
 
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
 
-import type { RowSelectionState } from "@tanstack/react-table";
 import type { MemberFragment } from "generated/graphql";
-import { match } from "ts-pattern";
-
-interface Props {
-  /** Organization ID. */
-  organizationId: string;
-}
 
 const columnHelper = createColumnHelper<MemberFragment>();
 
@@ -100,7 +93,12 @@ const columns = [
         .exhaustive();
 
       return (
-        <Badge bgColor={accentColor} borderColor={accentColor} color="white">
+        <Badge
+          bgColor={accentColor}
+          borderColor={accentColor}
+          color="background.default"
+          fontWeight="semibold"
+        >
           {info.getValue().toUpperCase()}
         </Badge>
       );
@@ -108,9 +106,12 @@ const columns = [
   }),
 ];
 
-const Members = ({ organizationId }: Props) => {
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+interface Props {
+  /** Organization ID. */
+  organizationId: string;
+}
 
+const Members = ({ organizationId }: Props) => {
   const [{ roles, search }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
@@ -127,11 +128,6 @@ const Members = ({ organizationId }: Props) => {
     data: (members as MemberFragment[]) || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onRowSelectionChange: setRowSelection,
-    getRowId: (row) => row.rowId,
-    state: {
-      rowSelection,
-    },
   });
 
   return (

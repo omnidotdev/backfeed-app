@@ -4356,6 +4356,7 @@ export const FeedbackByIdDocument = gql`
 export const MembersDocument = gql`
     query Members($organizationId: UUID!, $roles: [Role!], $search: String) {
   members(
+    orderBy: ROLE_ASC
     condition: {organizationId: $organizationId}
     filter: {role: {in: $roles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
   ) {
