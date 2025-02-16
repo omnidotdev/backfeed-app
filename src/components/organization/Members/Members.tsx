@@ -44,6 +44,7 @@ const columns = [
         labelProps={{
           flex: 1,
           px: 4,
+          fontWeight: "bold",
           // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
           onClick: (e) => e.preventDefault(),
         }}
