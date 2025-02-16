@@ -29,9 +29,19 @@ interface Props extends MenuProps {
   organizationId: string;
   /** The selected rows in the membership table */
   selectedRows: Row<MemberFragment>[];
+  /** Toggle the selection state of the rows. */
+  toggleRowSelection: (value?: boolean) => void;
 }
 
-const MembershipMenu = ({ organizationId, selectedRows, ...rest }: Props) => {
+/**
+ * Organization membership menu to handle actions on selected members.
+ */
+const MembershipMenu = ({
+  organizationId,
+  selectedRows,
+  toggleRowSelection,
+  ...rest
+}: Props) => {
   const { user } = useAuth();
 
   const { isOwner } = useOrganizationMembership({
@@ -42,7 +52,6 @@ const MembershipMenu = ({ organizationId, selectedRows, ...rest }: Props) => {
   const { mutate: updateMember } = useUpdateMemberMutation();
   const { mutate: removeMember } = useRemoveMemberMutation();
 
-  // TODO: handle deselection of rows upon successful action
   const handleMenuAction = ({ type }: { type: MenuAction }) => {
     // !! NB: important to not accidentally apply actions to selected owners.
     // TODO: update API RBAC to ensure that these operations would fail if trying to manage owners, discuss transfer of ownership
@@ -66,6 +75,8 @@ const MembershipMenu = ({ organizationId, selectedRows, ...rest }: Props) => {
         });
       }
     }
+
+    toggleRowSelection(false);
   };
 
   return (

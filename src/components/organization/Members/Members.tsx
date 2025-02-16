@@ -80,6 +80,7 @@ const Members = ({ organizationId }: Props) => {
                 <MembershipMenu
                   organizationId={organizationId}
                   selectedRows={table.getSelectedRowModel().rows}
+                  toggleRowSelection={table.toggleAllRowsSelected}
                 />
               ) : (
                 "Members"
