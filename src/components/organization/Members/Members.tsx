@@ -3,10 +3,12 @@
 import {
   Badge,
   Checkbox,
+  Stack,
   Table,
   TableCell,
   TableHeader,
   TableRow,
+  Text,
 } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
@@ -70,16 +72,23 @@ const columns = [
     cell: ({ row }) => (
       <Checkbox
         size="sm"
+        labelProps={{
+          px: 2,
+        }}
+        label={
+          <Stack py={4}>
+            <Text fontSize="lg">
+              {row.original.user?.firstName} {row.original.user?.lastName}
+            </Text>
+            <Text color="foreground.subtle">{row.original.user?.username}</Text>
+          </Stack>
+        }
         checked={row.getIsSelected()}
         onCheckedChange={({ checked }) =>
           row.toggleSelected(checked as boolean)
         }
       />
     ),
-  }),
-  columnHelper.accessor("user.username", {
-    header: "Username",
-    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("role", {
     header: "Role",

@@ -3855,7 +3855,7 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
-export type MemberFragment = { __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', username?: string | null } | null };
+export type MemberFragment = { __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
@@ -4011,7 +4011,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', username?: string | null } | null } | null> } | null };
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4165,6 +4165,8 @@ export const MemberFragmentDoc = gql`
   rowId
   role
   user {
+    firstName
+    lastName
     username
   }
 }
