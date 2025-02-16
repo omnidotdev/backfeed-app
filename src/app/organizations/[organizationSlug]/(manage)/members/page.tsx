@@ -48,15 +48,17 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const queryClient = getQueryClient();
 
-  const { search } = await getSearchParams.parse(searchParams);
+  const { search, roles } = await getSearchParams.parse(searchParams);
 
   await queryClient.prefetchQuery({
     queryKey: useMembersQuery.getKey({
       organizationId: organization.rowId,
+      roles: roles ?? undefined,
       username: search,
     }),
     queryFn: useMembersQuery.fetcher({
       organizationId: organization.rowId,
+      roles: roles ?? undefined,
       username: search,
     }),
   });
