@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Badge,
   Checkbox,
   Table,
   TableCell,
@@ -17,11 +18,12 @@ import {
 import { useState } from "react";
 
 import { MembershipMenu } from "components/organization";
-import { useMembersQuery } from "generated/graphql";
+import { Role, useMembersQuery } from "generated/graphql";
 import { useDebounceValue, useSearchParams } from "lib/hooks";
 
 import type { RowSelectionState } from "@tanstack/react-table";
 import type { MemberFragment } from "generated/graphql";
+import { match } from "ts-pattern";
 
 interface Props {
   /** Organization ID. */
@@ -80,7 +82,19 @@ const columns = [
   }),
   columnHelper.accessor("role", {
     header: "Role",
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const accentColor = match(info.getValue())
+        .with(Role.Owner, () => "brand.primary")
+        .with(Role.Admin, () => "brand.secondary")
+        .with(Role.Member, () => "brand.tertiary")
+        .exhaustive();
+
+      return (
+        <Badge bgColor={accentColor} borderColor={accentColor} color="white">
+          {info.getValue().toUpperCase()}
+        </Badge>
+      );
+    },
   }),
 ];
 

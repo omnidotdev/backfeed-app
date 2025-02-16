@@ -4831,6 +4831,7 @@ export const MembersDocument = `
     query Members($organizationId: UUID!, $roles: [Role!], $username: String) {
   members(
     condition: {organizationId: $organizationId}
+    orderBy: ROLE_ASC
     filter: {role: {in: $roles}, user: {username: {includesInsensitive: $username}}}
   ) {
     nodes {
