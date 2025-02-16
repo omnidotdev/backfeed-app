@@ -149,7 +149,7 @@ const Members = ({ organizationId }: Props) => {
   );
 
   const table = useReactTable({
-    data: (members as MemberFragment[]) || [],
+    data: members as MemberFragment[],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

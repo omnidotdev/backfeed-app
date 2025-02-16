@@ -28,8 +28,9 @@ export const generateMetadata = async ({
 };
 
 interface Props {
-  /** Organization page params. */
+  /** Organization members page parameters. */
   params: Promise<{ organizationSlug: string }>;
+  /** Organization members page search parameters. */
   searchParams: Promise<SearchParams>;
 }
 

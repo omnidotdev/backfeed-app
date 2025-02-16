@@ -1,8 +1,8 @@
 "use client";
 
 import { sigil } from "@omnidev/sigil";
-import { token } from "generated/panda/tokens";
 
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 
 /**
