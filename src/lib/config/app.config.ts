@@ -276,7 +276,7 @@ const app = {
         placeholder: "Search all organization members...",
       },
       role: {
-        placeholder: "Select Role",
+        placeholder: "Select Roles",
       },
     },
   },
