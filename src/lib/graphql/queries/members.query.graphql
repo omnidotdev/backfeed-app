@@ -1,5 +1,11 @@
-query Members($organizationId: UUID!) {
-  members(condition: { organizationId: $organizationId }) {
+query Members($organizationId: UUID!, $roles: [Role!], $username: String) {
+  members(
+    condition: { organizationId: $organizationId }
+    filter: {
+      role: { in: $roles }
+      user: { username: { includesInsensitive: $username } }
+    }
+  ) {
     nodes {
       ...Member
     }

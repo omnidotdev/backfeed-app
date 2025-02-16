@@ -4006,6 +4006,8 @@ export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'P
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
+  roles?: InputMaybe<Array<Role> | Role>;
+  username?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -4350,8 +4352,11 @@ export const FeedbackByIdDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const MembersDocument = gql`
-    query Members($organizationId: UUID!) {
-  members(condition: {organizationId: $organizationId}) {
+    query Members($organizationId: UUID!, $roles: [Role!], $username: String) {
+  members(
+    condition: {organizationId: $organizationId}
+    filter: {role: {in: $roles}, user: {username: {includesInsensitive: $username}}}
+  ) {
     nodes {
       ...Member
     }

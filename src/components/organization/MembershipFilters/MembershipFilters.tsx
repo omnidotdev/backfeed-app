@@ -12,7 +12,7 @@ import { capitalizeFirstLetter } from "lib/util";
  * Organization membership filters.
  */
 const MembershipFilters = () => {
-  const [{ search, role }, setSearchParams] = useSearchParams();
+  const [{ search, roles }, setSearchParams] = useSearchParams();
 
   return (
     <Grid columns={{ base: 1, lg: 5 }} w="full">
@@ -38,6 +38,7 @@ const MembershipFilters = () => {
               value: role,
             })),
           })}
+          multiple
           displayFieldLabel={false}
           displayGroupLabel={false}
           valueTextProps={{
@@ -46,9 +47,9 @@ const MembershipFilters = () => {
           triggerProps={{
             borderColor: "border.subtle",
           }}
-          defaultValue={role ? [role] : []}
+          defaultValue={roles ? roles : []}
           onValueChange={({ value }) =>
-            setSearchParams({ role: value.length ? (value[0] as Role) : null })
+            setSearchParams({ roles: value.length ? (value as Role[]) : null })
           }
         />
       </GridItem>

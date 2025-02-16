@@ -1,4 +1,9 @@
-import { parseAsInteger, parseAsString, parseAsStringEnum } from "nuqs/server";
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  parseAsStringEnum,
+} from "nuqs/server";
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
@@ -15,7 +20,7 @@ enum Role {
  */
 const searchParams = {
   search: parseAsString.withDefault(""),
-  role: parseAsStringEnum<Role>(Object.values(Role)),
+  roles: parseAsArrayOf(parseAsStringEnum<Role>(Object.values(Role))),
   page: parseAsInteger.withDefault(DEFAULT_PAGE_NUMBER),
   pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
 };

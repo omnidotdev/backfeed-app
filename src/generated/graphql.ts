@@ -4005,6 +4005,8 @@ export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'P
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
+  roles?: InputMaybe<Array<Role> | Role>;
+  username?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -4826,8 +4828,11 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
 
 export const MembersDocument = `
-    query Members($organizationId: UUID!) {
-  members(condition: {organizationId: $organizationId}) {
+    query Members($organizationId: UUID!, $roles: [Role!], $username: String) {
+  members(
+    condition: {organizationId: $organizationId}
+    filter: {role: {in: $roles}, user: {username: {includesInsensitive: $username}}}
+  ) {
     nodes {
       ...Member
     }

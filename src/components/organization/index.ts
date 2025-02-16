@@ -1,7 +1,8 @@
 export { default as CreateOrganization } from "./CreateOrganization/CreateOrganization";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";
-export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
 export { default as Members } from "./Members/Members";
+export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
+export { default as MembershipMenu } from "./MembershipMenu/MembershipMenu";
 export { default as OrganizationActions } from "./OrganizationActions/OrganizationActions";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";

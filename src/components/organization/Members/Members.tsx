@@ -1,17 +1,13 @@
 "use client";
 
 import {
-  Button,
   Checkbox,
-  Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
   Table,
   TableCell,
   TableHeader,
   TableRow,
 } from "@omnidev/sigil";
+import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -19,9 +15,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
 
+import { MembershipMenu } from "components/organization";
 import { useMembersQuery } from "generated/graphql";
+import { useDebounceValue, useSearchParams } from "lib/hooks";
 
 import type { RowSelectionState } from "@tanstack/react-table";
 import type { MemberFragment } from "generated/graphql";
@@ -49,24 +46,8 @@ const columns = [
           onClick: (e) => e.preventDefault(),
         }}
         label={
-          table.getIsSomeRowsSelected() || table.getIsAllRowsSelected() ? (
-            <Menu
-              trigger={
-                <Button size="sm" variant="outline">
-                  {`${table.getSelectedRowModel().rows.length} Selected`}
-                  <Icon src={LuChevronDown} />
-                </Button>
-              }
-            >
-              <MenuItemGroup>
-                <MenuItem value="admin">
-                  Give administrative privileges
-                </MenuItem>
-                <MenuItem value="remove" color="red">
-                  Remove from organization
-                </MenuItem>
-              </MenuItemGroup>
-            </Menu>
+          table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
+            <MembershipMenu selectedRows={table.getSelectedRowModel().rows} />
           ) : (
             "Members"
           )
@@ -106,9 +87,14 @@ const columns = [
 const Members = ({ organizationId }: Props) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
+  const [{ roles, search }] = useSearchParams();
+
+  const [debouncedSearch] = useDebounceValue({ value: search });
+
   const { data: members } = useMembersQuery(
-    { organizationId },
+    { organizationId, roles: roles ?? undefined, username: debouncedSearch },
     {
+      placeholderData: keepPreviousData,
       select: (data) => data.members?.nodes,
     }
   );

@@ -6,9 +6,10 @@ import { Members, MembershipFilters } from "components/organization";
 import { useMembersQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 
 import type { Metadata } from "next";
+import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({
   params,
@@ -29,9 +30,10 @@ export const generateMetadata = async ({
 interface Props {
   /** Organization page params. */
   params: Promise<{ organizationSlug: string }>;
+  searchParams: Promise<SearchParams>;
 }
 
-const OrganizationMembersPage = async ({ params }: Props) => {
+const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
@@ -46,12 +48,16 @@ const OrganizationMembersPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
+  const { search } = await getSearchParams.parse(searchParams);
+
   await queryClient.prefetchQuery({
     queryKey: useMembersQuery.getKey({
       organizationId: organization.rowId,
+      username: search,
     }),
     queryFn: useMembersQuery.fetcher({
       organizationId: organization.rowId,
+      username: search,
     }),
   });
 
