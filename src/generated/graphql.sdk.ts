@@ -3855,6 +3855,8 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type MemberFragment = { __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', username?: string | null } | null };
+
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
@@ -4002,6 +4004,13 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
+export type MembersQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', username?: string | null } | null } | null> } | null };
+
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
@@ -4146,6 +4155,15 @@ export const FeedbackFragmentDoc = gql`
   }
   downvotes {
     totalCount
+  }
+}
+    `;
+export const MemberFragmentDoc = gql`
+    fragment Member on Member {
+  rowId
+  role
+  user {
+    username
   }
 }
     `;
@@ -4331,6 +4349,15 @@ export const FeedbackByIdDocument = gql`
   }
 }
     ${FeedbackFragmentDoc}`;
+export const MembersDocument = gql`
+    query Members($organizationId: UUID!) {
+  members(condition: {organizationId: $organizationId}) {
+    nodes {
+      ...Member
+    }
+  }
+}
+    ${MemberFragmentDoc}`;
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
@@ -4621,6 +4648,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
+    },
+    Members(variables: MembersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<MembersQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MembersQuery>(MembersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Members', 'query', variables);
     },
     Organization(variables: OrganizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationQuery>(OrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organization', 'query', variables);

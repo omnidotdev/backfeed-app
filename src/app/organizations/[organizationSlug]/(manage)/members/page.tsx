@@ -1,10 +1,12 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
-import { MembershipFilters } from "components/organization";
+import { Members, MembershipFilters } from "components/organization";
+import { useMembersQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
 
@@ -42,15 +44,30 @@ const OrganizationMembersPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: useMembersQuery.getKey({
+      organizationId: organization.rowId,
+    }),
+    queryFn: useMembersQuery.fetcher({
+      organizationId: organization.rowId,
+    }),
+  });
+
   return (
-    <Page
-      header={{
-        title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
-        description: app.organizationMembersPage.description,
-      }}
-    >
-      <MembershipFilters />
-    </Page>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        header={{
+          title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
+          description: app.organizationMembersPage.description,
+        }}
+      >
+        <MembershipFilters />
+
+        <Members organizationId={organization.rowId} />
+      </Page>
+    </HydrationBoundary>
   );
 };
 

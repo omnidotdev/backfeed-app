@@ -1,0 +1,7 @@
+fragment Member on Member {
+  rowId
+  role
+  user {
+    username
+  }
+}

@@ -1,0 +1,7 @@
+query Members($organizationId: UUID!) {
+  members(condition: { organizationId: $organizationId }) {
+    nodes {
+      ...Member
+    }
+  }
+}
