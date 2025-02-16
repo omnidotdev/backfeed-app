@@ -3854,7 +3854,7 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
-export type MemberFragment = { __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
+export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
@@ -3890,6 +3890,21 @@ export type CreateMemberMutationVariables = Exact<{
 
 
 export type CreateMemberMutation = { __typename?: 'Mutation', createMember?: { __typename?: 'CreateMemberPayload', clientMutationId?: string | null } | null };
+
+export type RemoveMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type RemoveMemberMutation = { __typename?: 'Mutation', deleteMember?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', userId: string, organizationId: string } | null } | null };
+
+export type UpdateMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: MemberPatch;
+}>;
+
+
+export type UpdateMemberMutation = { __typename?: 'Mutation', updateMember?: { __typename?: 'UpdateMemberPayload', clientMutationId?: string | null } | null };
 
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
@@ -4010,7 +4025,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', rowId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', rowId: string, organizationId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4163,6 +4178,7 @@ export const FeedbackFragmentDoc = `
 export const MemberFragmentDoc = `
     fragment Member on Member {
   rowId
+  organizationId
   role
   user {
     firstName
@@ -4300,6 +4316,61 @@ useCreateMemberMutation.getKey = () => ['CreateMember'];
 
 
 useCreateMemberMutation.fetcher = (variables: CreateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateMemberMutation, CreateMemberMutationVariables>(CreateMemberDocument, variables, options);
+
+export const RemoveMemberDocument = `
+    mutation RemoveMember($rowId: UUID!) {
+  deleteMember(input: {rowId: $rowId}) {
+    member {
+      userId
+      organizationId
+    }
+  }
+}
+    `;
+
+export const useRemoveMemberMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RemoveMemberMutation, TError, RemoveMemberMutationVariables, TContext>) => {
+    
+    return useMutation<RemoveMemberMutation, TError, RemoveMemberMutationVariables, TContext>(
+      {
+    mutationKey: ['RemoveMember'],
+    mutationFn: (variables?: RemoveMemberMutationVariables) => graphqlFetch<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, variables)(),
+    ...options
+  }
+    )};
+
+useRemoveMemberMutation.getKey = () => ['RemoveMember'];
+
+
+useRemoveMemberMutation.fetcher = (variables: RemoveMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, variables, options);
+
+export const UpdateMemberDocument = `
+    mutation UpdateMember($rowId: UUID!, $patch: MemberPatch!) {
+  updateMember(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateMemberMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateMember'],
+    mutationFn: (variables?: UpdateMemberMutationVariables) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateMemberMutation.getKey = () => ['UpdateMember'];
+
+
+useUpdateMemberMutation.fetcher = (variables: UpdateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables, options);
 
 export const CreateOrganizationDocument = `
     mutation CreateOrganization($input: CreateOrganizationInput!) {

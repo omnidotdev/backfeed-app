@@ -17,94 +17,21 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo } from "react";
 import { match } from "ts-pattern";
 
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
-import { useDebounceValue, useSearchParams } from "lib/hooks";
+import {
+  useAuth,
+  useDebounceValue,
+  useOrganizationMembership,
+  useSearchParams,
+} from "lib/hooks";
 
 import type { MemberFragment } from "generated/graphql";
 
 const columnHelper = createColumnHelper<MemberFragment>();
-
-const columns = [
-  columnHelper.accessor("rowId", {
-    header: ({ table }) => (
-      <Checkbox
-        size="sm"
-        // explicit width to prevent CLS with row selection
-        w={28}
-        // Prevent spacing between checkbox and label. See note for label `onClick` handler below
-        gap={0}
-        labelProps={{
-          flex: 1,
-          px: 4,
-          fontWeight: "bold",
-          // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
-          onClick: (e) => e.preventDefault(),
-        }}
-        label={
-          table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
-            <MembershipMenu selectedRows={table.getSelectedRowModel().rows} />
-          ) : (
-            "Members"
-          )
-        }
-        checked={
-          table.getIsAllRowsSelected()
-            ? true
-            : table.getIsSomeRowsSelected()
-              ? "indeterminate"
-              : false
-        }
-        onCheckedChange={({ checked }) =>
-          table.toggleAllRowsSelected(checked as boolean)
-        }
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        size="sm"
-        labelProps={{
-          px: 2,
-        }}
-        label={
-          <Stack py={4}>
-            <Text fontSize="lg">
-              {row.original.user?.firstName} {row.original.user?.lastName}
-            </Text>
-            <Text color="foreground.subtle">{row.original.user?.username}</Text>
-          </Stack>
-        }
-        checked={row.getIsSelected()}
-        onCheckedChange={({ checked }) =>
-          row.toggleSelected(checked as boolean)
-        }
-      />
-    ),
-  }),
-  columnHelper.accessor("role", {
-    header: "Role",
-    cell: (info) => {
-      const accentColor = match(info.getValue())
-        .with(Role.Owner, () => "brand.primary")
-        .with(Role.Admin, () => "brand.secondary")
-        .with(Role.Member, () => "brand.tertiary")
-        .exhaustive();
-
-      return (
-        <Badge
-          bgColor={accentColor}
-          borderColor={accentColor}
-          color="background.default"
-          fontWeight="semibold"
-        >
-          {info.getValue().toUpperCase()}
-        </Badge>
-      );
-    },
-  }),
-];
 
 interface Props {
   /** Organization ID. */
@@ -112,6 +39,13 @@ interface Props {
 }
 
 const Members = ({ organizationId }: Props) => {
+  const { user } = useAuth();
+
+  const { isOwner } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
+
   const [{ roles, search }] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
@@ -122,6 +56,95 @@ const Members = ({ organizationId }: Props) => {
       placeholderData: keepPreviousData,
       select: (data) => data.members?.nodes,
     }
+  );
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("rowId", {
+        header: ({ table }) => (
+          <Checkbox
+            size="sm"
+            // explicit width to prevent CLS with row selection
+            w={28}
+            // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+            gap={0}
+            labelProps={{
+              flex: 1,
+              px: 4,
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
+            }}
+            label={
+              table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
+                <MembershipMenu
+                  organizationId={organizationId}
+                  selectedRows={table.getSelectedRowModel().rows}
+                />
+              ) : (
+                "Members"
+              )
+            }
+            disabled={!isOwner}
+            checked={
+              table.getIsAllRowsSelected()
+                ? true
+                : table.getIsSomeRowsSelected()
+                  ? "indeterminate"
+                  : false
+            }
+            onCheckedChange={({ checked }) =>
+              table.toggleAllRowsSelected(checked as boolean)
+            }
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            size="sm"
+            labelProps={{
+              px: 2,
+            }}
+            label={
+              <Stack py={4}>
+                <Text fontSize="lg">
+                  {row.original.user?.firstName} {row.original.user?.lastName}
+                </Text>
+                <Text color="foreground.subtle">
+                  {row.original.user?.username}
+                </Text>
+              </Stack>
+            }
+            disabled={!isOwner}
+            checked={row.getIsSelected()}
+            onCheckedChange={({ checked }) =>
+              row.toggleSelected(checked as boolean)
+            }
+          />
+        ),
+      }),
+      columnHelper.accessor("role", {
+        header: "Role",
+        cell: (info) => {
+          const accentColor = match(info.getValue())
+            .with(Role.Owner, () => "brand.primary")
+            .with(Role.Admin, () => "brand.secondary")
+            .with(Role.Member, () => "brand.tertiary")
+            .exhaustive();
+
+          return (
+            <Badge
+              bgColor={accentColor}
+              borderColor={accentColor}
+              color="background.default"
+              fontWeight="semibold"
+            >
+              {info.getValue().toUpperCase()}
+            </Badge>
+          );
+        },
+      }),
+    ],
+    [isOwner, organizationId]
   );
 
   const table = useReactTable({

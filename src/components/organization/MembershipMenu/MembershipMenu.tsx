@@ -1,16 +1,73 @@
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
 import { LuChevronDown } from "react-icons/lu";
 
+import {
+  Role,
+  useRemoveMemberMutation,
+  useUpdateMemberMutation,
+} from "generated/graphql";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
+
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
 import type { MemberFragment } from "generated/graphql";
+import type { JsxStyleProps } from "generated/panda/types";
+
+enum MenuAction {
+  MakeAdmin = "admin",
+  Remove = "remove",
+}
+
+const menuItemStyles: JsxStyleProps = {
+  bgColor: { _disabled: "inherit" },
+  opacity: { _disabled: 0.5 },
+  cursor: { _disabled: "not-allowed" },
+};
 
 interface Props extends MenuProps {
+  /** Organization ID. */
+  organizationId: string;
   /** The selected rows in the membership table */
   selectedRows: Row<MemberFragment>[];
 }
 
-const MembershipMenu = ({ selectedRows, ...rest }: Props) => {
+const MembershipMenu = ({ organizationId, selectedRows, ...rest }: Props) => {
+  const { user } = useAuth();
+
+  const { isOwner } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
+
+  const { mutate: updateMember } = useUpdateMemberMutation();
+  const { mutate: removeMember } = useRemoveMemberMutation();
+
+  // TODO: handle deselection of rows upon successful action
+  const handleMenuAction = ({ type }: { type: MenuAction }) => {
+    // !! NB: important to not accidentally apply actions to selected owners.
+    // TODO: update API RBAC to ensure that these operations would fail if trying to manage owners, discuss transfer of ownership
+    const nonOwners = selectedRows.filter(
+      (row) => row.original.role !== Role.Owner
+    );
+
+    for (const row of nonOwners) {
+      const member = row.original;
+
+      if (type === MenuAction.MakeAdmin) {
+        updateMember({
+          rowId: member.rowId,
+          patch: {
+            role: Role.Admin,
+          },
+        });
+      } else {
+        removeMember({
+          rowId: member.rowId,
+        });
+      }
+    }
+  };
+
   return (
     <Menu
       trigger={
@@ -22,8 +79,21 @@ const MembershipMenu = ({ selectedRows, ...rest }: Props) => {
       {...rest}
     >
       <MenuItemGroup>
-        <MenuItem value="admin">Give administrative privileges</MenuItem>
-        <MenuItem value="remove" color="red">
+        <MenuItem
+          value={MenuAction.MakeAdmin}
+          disabled={!isOwner}
+          {...menuItemStyles}
+          onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
+        >
+          Give administrative privileges
+        </MenuItem>
+        <MenuItem
+          value={MenuAction.Remove}
+          color="red"
+          disabled={!isOwner}
+          {...menuItemStyles}
+          onClick={() => handleMenuAction({ type: MenuAction.Remove })}
+        >
           Remove from organization
         </MenuItem>
       </MenuItemGroup>

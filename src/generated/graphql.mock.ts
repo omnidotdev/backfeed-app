@@ -118,6 +118,50 @@ export const mockCreateMemberMutation = (resolver: GraphQLResponseResolver<Types
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockRemoveMemberMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteMember }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockRemoveMemberMutation = (resolver: GraphQLResponseResolver<Types.RemoveMemberMutation, Types.RemoveMemberMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.RemoveMemberMutation, Types.RemoveMemberMutationVariables>(
+    'RemoveMember',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateMemberMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId, patch } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateMember }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateMemberMutation = (resolver: GraphQLResponseResolver<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>(
+    'UpdateMember',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateOrganizationMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
