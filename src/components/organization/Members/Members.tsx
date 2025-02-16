@@ -116,7 +116,7 @@ const Members = ({ organizationId }: Props) => {
   const [debouncedSearch] = useDebounceValue({ value: search });
 
   const { data: members } = useMembersQuery(
-    { organizationId, roles: roles ?? undefined, username: debouncedSearch },
+    { organizationId, roles: roles ?? undefined, search: debouncedSearch },
     {
       placeholderData: keepPreviousData,
       select: (data) => data.members?.nodes,

@@ -450,7 +450,7 @@ export const mockFeedbackByIdQuery = (resolver: GraphQLResponseResolver<Types.Fe
  * @example
  * mockMembersQuery(
  *   ({ query, variables }) => {
- *     const { organizationId, roles, username } = variables;
+ *     const { organizationId, roles, search } = variables;
  *     return HttpResponse.json({
  *       data: { members }
  *     })

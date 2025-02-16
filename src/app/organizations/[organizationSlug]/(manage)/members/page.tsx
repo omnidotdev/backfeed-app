@@ -54,12 +54,12 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
     queryKey: useMembersQuery.getKey({
       organizationId: organization.rowId,
       roles: roles ?? undefined,
-      username: search,
+      search,
     }),
     queryFn: useMembersQuery.fetcher({
       organizationId: organization.rowId,
       roles: roles ?? undefined,
-      username: search,
+      search,
     }),
   });
 
