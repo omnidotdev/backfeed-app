@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
 import { Members, MembershipFilters } from "components/organization";
-import { useMembersQuery } from "generated/graphql";
+import { useMembersQuery, useOrganizationRoleQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
@@ -51,18 +51,30 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const { search, roles } = await getSearchParams.parse(searchParams);
 
-  await queryClient.prefetchQuery({
-    queryKey: useMembersQuery.getKey({
-      organizationId: organization.rowId,
-      roles: roles ?? undefined,
-      search,
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useMembersQuery.getKey({
+        organizationId: organization.rowId,
+        roles: roles ?? undefined,
+        search,
+      }),
+      queryFn: useMembersQuery.fetcher({
+        organizationId: organization.rowId,
+        roles: roles ?? undefined,
+        search,
+      }),
     }),
-    queryFn: useMembersQuery.fetcher({
-      organizationId: organization.rowId,
-      roles: roles ?? undefined,
-      search,
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        organizationId: organization.rowId,
+        userId: session.user.rowId!,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        organizationId: organization.rowId,
+        userId: session.user.rowId!,
+      }),
     }),
-  });
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

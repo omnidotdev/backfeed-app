@@ -70,7 +70,7 @@ const Members = ({ organizationId }: Props) => {
             gap={0}
             labelProps={{
               flex: 1,
-              px: 4,
+              px: isOwner ? 4 : 2,
               fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
@@ -86,6 +86,9 @@ const Members = ({ organizationId }: Props) => {
                 "Members"
               )
             }
+            controlProps={{
+              display: isOwner ? "flex" : "none",
+            }}
             disabled={!isOwner}
             checked={
               table.getIsAllRowsSelected()
@@ -115,6 +118,9 @@ const Members = ({ organizationId }: Props) => {
                 </Text>
               </Stack>
             }
+            controlProps={{
+              display: isOwner ? "flex" : "none",
+            }}
             disabled={!isOwner}
             checked={row.getIsSelected()}
             onCheckedChange={({ checked }) =>
