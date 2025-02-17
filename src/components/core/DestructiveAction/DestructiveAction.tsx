@@ -36,6 +36,7 @@ const destructiveButtonStyles: JsxStyleProps = {
     _disabled: 0.5,
   },
 };
+
 interface Action extends ButtonProps {
   /** Action label. */
   label: string;

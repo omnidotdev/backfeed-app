@@ -33,10 +33,12 @@ const MembershipFilters = () => {
         <Select
           label={app.projectsPage.filters.select.status.label}
           collection={createListCollection({
-            items: Object.values(Role).map((role) => ({
-              label: capitalizeFirstLetter(role),
-              value: role,
-            })),
+            items: Object.values(Role)
+              .filter((role) => role !== Role.Owner)
+              .map((role) => ({
+                label: capitalizeFirstLetter(role),
+                value: role,
+              })),
           })}
           multiple
           displayFieldLabel={false}

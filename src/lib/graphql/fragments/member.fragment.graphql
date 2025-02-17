@@ -1,6 +1,7 @@
 fragment Member on Member {
   rowId
   organizationId
+  userId
   role
   user {
     firstName

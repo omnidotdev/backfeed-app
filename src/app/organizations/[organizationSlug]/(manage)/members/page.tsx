@@ -100,7 +100,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
           description: app.organizationMembersPage.description,
         }}
       >
-        <Owners organizationId={organization.rowId} mb={4} />
+        <Owners organizationId={organization.rowId} />
 
         <MembershipFilters />
 

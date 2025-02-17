@@ -16,9 +16,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { AddOwner } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
-import type { TableProps } from "@omnidev/sigil";
 import type { MemberFragment } from "generated/graphql";
 
 const columnHelper = createColumnHelper<MemberFragment>();
@@ -54,12 +55,19 @@ const columns = [
   }),
 ];
 
-interface Props extends TableProps {
+interface Props {
   /** Organization ID. */
   organizationId: string;
 }
 
-const Owners = ({ organizationId, ...rest }: Props) => {
+const Owners = ({ organizationId }: Props) => {
+  const { user } = useAuth();
+
+  const { isOwner } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
+
   const { data: owners } = useMembersQuery(
     { organizationId, roles: [Role.Owner] },
     {
@@ -74,33 +82,35 @@ const Owners = ({ organizationId, ...rest }: Props) => {
   });
 
   return (
-    <Table
-      headerContent={table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id} bgColor="background.subtle">
-          {headerGroup.headers.map((header) => (
-            <TableHeader key={header.id} fontWeight="bold">
-              {header.isPlaceholder
-                ? null
-                : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-            </TableHeader>
-          ))}
-        </TableRow>
-      ))}
-      {...rest}
-    >
-      {table.getRowModel().rows.map((row) => (
-        <TableRow key={row.id}>
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} fontWeight="light">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
-        </TableRow>
-      ))}
-    </Table>
+    <Stack mb={12}>
+      <Table
+        headerContent={table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id} bgColor="background.subtle">
+            {headerGroup.headers.map((header) => (
+              <TableHeader key={header.id} fontWeight="bold">
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </TableHeader>
+            ))}
+          </TableRow>
+        ))}
+      >
+        {table.getRowModel().rows.map((row) => (
+          <TableRow key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id} fontWeight="light">
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </Table>
+      {isOwner && <AddOwner organizationId={organizationId} />}
+    </Stack>
   );
 };
 

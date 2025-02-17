@@ -1,3 +1,4 @@
+export { default as AddOwner } from "./AddOwner/AddOwner";
 export { default as CreateOrganization } from "./CreateOrganization/CreateOrganization";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";
 export { default as Members } from "./Members/Members";
