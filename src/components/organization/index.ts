@@ -1,5 +1,6 @@
 export { default as AddOwner } from "./AddOwner/AddOwner";
 export { default as CreateOrganization } from "./CreateOrganization/CreateOrganization";
+export { default as DangerZoneAction } from "./DangerZoneAction/DangerZoneAction";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";
 export { default as Members } from "./Members/Members";
 export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";

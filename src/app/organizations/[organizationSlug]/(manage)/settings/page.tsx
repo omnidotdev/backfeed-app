@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import {
+  Role,
+  useMembersQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
@@ -67,6 +69,16 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
       queryFn: useOrganizationRoleQuery.fetcher({
         userId: session.user.rowId!,
         organizationId: organization.rowId,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useMembersQuery.getKey({
+        organizationId: organization.rowId,
+        roles: [Role.Owner],
+      }),
+      queryFn: useMembersQuery.fetcher({
+        organizationId: organization.rowId,
+        roles: [Role.Owner],
       }),
     }),
   ]);

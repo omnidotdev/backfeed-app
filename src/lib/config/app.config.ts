@@ -311,10 +311,21 @@ const app = {
           },
         },
       },
+      transferOwnership: {
+        title: "Transfer Ownership",
+        description:
+          "Transfer ownership of this organization to another member.",
+        actionLabel: "Transfer",
+        destructiveAction: {
+          title: "Transfer Ownership",
+          description: "Are you sure you want to transfer ownership?",
+          actionLabel: "Transfer",
+        },
+      },
       deleteOrganization: {
         title: "Delete Organization",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
+          "The organization will be permanently deleted, including its projects, posts and comments.",
         actionLabel: "Delete",
         destruciveAction: {
           title: "Delete Organization",
@@ -326,7 +337,7 @@ const app = {
       leaveOrganization: {
         title: "Leave Organization",
         description:
-          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
+          "You will no longer have access to this organization and its projects.",
         actionLabel: "Leave",
         destruciveAction: {
           title: "Leave Organization",

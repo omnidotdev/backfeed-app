@@ -1,32 +1,32 @@
 "use client";
 
-import { Button, Divider, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Divider, Icon, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import { useParams, useRouter } from "next/navigation";
-import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
-
-import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import { UpdateOrganization } from "components/organization";
+import { DangerZoneAction, UpdateOrganization } from "components/organization";
 import {
   Role,
   useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
+  useMembersQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useParams, useRouter } from "next/navigation";
+import { BiTransfer } from "react-icons/bi";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
 import type { DestructiveActionProps } from "components/core";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
-
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
+const transferOwnershipDetails =
+  app.organizationSettingsPage.cta.transferOwnership;
 const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
@@ -47,6 +47,17 @@ const OrganizationSettings = () => {
     },
     {
       select: (data) => data.organizationBySlug,
+    }
+  );
+
+  const { data: numberOfOwners } = useMembersQuery(
+    {
+      organizationId: organization?.rowId!,
+      roles: [Role.Owner],
+    },
+    {
+      enabled: !!organization,
+      select: (data) => data.members?.totalCount,
     }
   );
 
@@ -92,6 +103,7 @@ const OrganizationSettings = () => {
     },
     triggerProps: {
       "aria-label": `${deleteOrganizationDetails.destruciveAction.actionLabel} organization`,
+      w: 32,
     },
   };
 
@@ -109,29 +121,40 @@ const OrganizationSettings = () => {
     },
     triggerProps: {
       "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
-      disabled: isJoinOrganizationPending,
+      disabled:
+        isJoinOrganizationPending ||
+        // If the user is the only owner, they cannot leave the organization without transferring ownership, or permanently deleting it
+        (isOwner && (numberOfOwners == null || numberOfOwners === 1)),
+      w: 32,
     },
   };
 
-  const DESTRUCTIVE_ACTION = isOwner ? DELETE_ORGANIZATION : LEAVE_ORGANIZATION;
+  const TRANSFER_OWNERSHIP: DestructiveActionProps = {
+    title: transferOwnershipDetails.title,
+    description: transferOwnershipDetails.description,
+    triggerLabel: transferOwnershipDetails.actionLabel,
+    icon: BiTransfer,
+    action: {
+      label: transferOwnershipDetails.actionLabel,
+      onClick: () => {
+        // TODO: Implement transferOwnership
+      },
+    },
+    triggerProps: {
+      "aria-label": `${transferOwnershipDetails.actionLabel} of organization`,
+      w: 32,
+    },
+  };
 
   return (
     <Stack gap={6}>
       <UpdateOrganization />
 
       <SectionContainer
-        title={
-          isCurrentMember
-            ? isOwner
-              ? deleteOrganizationDetails.title
-              : leaveOrganizationDetails.title
-            : joinOrganizationDetails.title
-        }
+        title={isCurrentMember ? "Danger Zone" : joinOrganizationDetails.title}
         description={
           isCurrentMember
-            ? isOwner
-              ? deleteOrganizationDetails.description
-              : leaveOrganizationDetails.description
+            ? "Below are destructive actions that are irreversible and cannot be undone."
             : joinOrganizationDetails.description
         }
         border="1px solid"
@@ -139,41 +162,52 @@ const OrganizationSettings = () => {
       >
         <Divider />
 
-        <HStack alignItems="center" justifyContent="space-between">
-          <Stack gap={1}>
-            <Text fontWeight="semibold">{organization?.name}</Text>
+        {isCurrentMember && (
+          <DangerZoneAction
+            title={leaveOrganizationDetails.title}
+            description={leaveOrganizationDetails.description}
+            actionProps={LEAVE_ORGANIZATION}
+          />
+        )}
 
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
+        {isOwner && (
+          <Stack gap={6}>
+            <DangerZoneAction
+              title={transferOwnershipDetails.title}
+              description={transferOwnershipDetails.description}
+              actionProps={TRANSFER_OWNERSHIP}
+            />
+
+            <DangerZoneAction
+              title={deleteOrganizationDetails.title}
+              description={deleteOrganizationDetails.description}
+              actionProps={DELETE_ORGANIZATION}
+            />
           </Stack>
+        )}
 
-          {isCurrentMember ? (
-            <DestructiveAction {...DESTRUCTIVE_ACTION} />
-          ) : (
-            <Button
-              fontSize="md"
-              colorPalette="green"
-              color="white"
-              disabled={isLeaveOrganizationPending}
-              onClick={() =>
-                joinOrganization({
-                  input: {
-                    member: {
-                      userId: user?.rowId!,
-                      organizationId: organization?.rowId!,
-                      role: Role.Member,
-                    },
+        {!isCurrentMember && (
+          <Button
+            fontSize="md"
+            colorPalette="green"
+            color="white"
+            disabled={isLeaveOrganizationPending}
+            onClick={() =>
+              joinOrganization({
+                input: {
+                  member: {
+                    userId: user?.rowId!,
+                    organizationId: organization?.rowId!,
+                    role: Role.Member,
                   },
-                })
-              }
-            >
-              <Icon src={RiUserAddLine} />
-              {joinOrganizationDetails.actionLabel}
-            </Button>
-          )}
-        </HStack>
+                },
+              })
+            }
+          >
+            <Icon src={RiUserAddLine} />
+            {joinOrganizationDetails.actionLabel}
+          </Button>
+        )}
       </SectionContainer>
     </Stack>
   );

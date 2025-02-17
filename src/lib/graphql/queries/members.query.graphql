@@ -18,6 +18,7 @@ query Members(
       }
     }
   ) {
+    totalCount
     nodes {
       ...Member
     }
