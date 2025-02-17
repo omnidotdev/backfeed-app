@@ -35,6 +35,9 @@ const pandaConfig = defineConfig({
   theme: {
     extend: {
       tokens: {
+        sizes: {
+          18: { value: "4.5rem" },
+        },
         colors: {
           destructive: {
             hover: {

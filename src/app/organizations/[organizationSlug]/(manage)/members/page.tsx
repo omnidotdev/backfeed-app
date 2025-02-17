@@ -2,8 +2,12 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
-import { Members, MembershipFilters } from "components/organization";
-import { useMembersQuery, useOrganizationRoleQuery } from "generated/graphql";
+import { Members, MembershipFilters, Owners } from "components/organization";
+import {
+  Role,
+  useMembersQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
@@ -55,13 +59,25 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useMembersQuery.getKey({
         organizationId: organization.rowId,
+        roles: [Role.Owner],
+      }),
+      queryFn: useMembersQuery.fetcher({
+        organizationId: organization.rowId,
+        roles: [Role.Owner],
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useMembersQuery.getKey({
+        organizationId: organization.rowId,
         roles: roles ?? undefined,
         search,
+        excludeRoles: [Role.Owner],
       }),
       queryFn: useMembersQuery.fetcher({
         organizationId: organization.rowId,
         roles: roles ?? undefined,
         search,
+        excludeRoles: [Role.Owner],
       }),
     }),
     queryClient.prefetchQuery({
@@ -84,6 +100,8 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
           description: app.organizationMembersPage.description,
         }}
       >
+        <Owners organizationId={organization.rowId} mb={4} />
+
         <MembershipFilters />
 
         <Members organizationId={organization.rowId} />

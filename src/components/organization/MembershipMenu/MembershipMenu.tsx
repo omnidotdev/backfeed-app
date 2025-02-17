@@ -53,13 +53,8 @@ const MembershipMenu = ({
   const { mutate: removeMember } = useRemoveMemberMutation();
 
   const handleMenuAction = ({ type }: { type: MenuAction }) => {
-    // !! NB: important to not accidentally apply actions to selected owners.
-    // TODO: update API RBAC to ensure that these operations would fail if trying to manage owners, discuss transfer of ownership
-    const nonOwners = selectedRows.filter(
-      (row) => row.original.role !== Role.Owner
-    );
-
-    for (const row of nonOwners) {
+    // NB: this is safe as owners are already filtered out by default from the query.
+    for (const row of selectedRows) {
       const member = row.original;
 
       if (type === MenuAction.MakeAdmin) {

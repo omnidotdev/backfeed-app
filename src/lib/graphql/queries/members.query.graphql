@@ -1,9 +1,14 @@
-query Members($organizationId: UUID!, $roles: [Role!], $search: String) {
+query Members(
+  $organizationId: UUID!
+  $roles: [Role!]
+  $search: String
+  $excludeRoles: [Role!]
+) {
   members(
     orderBy: ROLE_ASC
     condition: { organizationId: $organizationId }
     filter: {
-      role: { in: $roles }
+      role: { in: $roles, notIn: $excludeRoles }
       user: {
         or: [
           { firstName: { includesInsensitive: $search } }

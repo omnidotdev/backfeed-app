@@ -51,7 +51,12 @@ const Members = ({ organizationId }: Props) => {
   const [debouncedSearch] = useDebounceValue({ value: search });
 
   const { data: members } = useMembersQuery(
-    { organizationId, roles: roles ?? undefined, search: debouncedSearch },
+    {
+      organizationId,
+      roles: roles ?? undefined,
+      search: debouncedSearch,
+      excludeRoles: [Role.Owner],
+    },
     {
       placeholderData: keepPreviousData,
       select: (data) => data.members?.nodes,
@@ -133,13 +138,14 @@ const Members = ({ organizationId }: Props) => {
         header: "Role",
         cell: (info) => {
           const accentColor = match(info.getValue())
-            .with(Role.Owner, () => "brand.primary")
             .with(Role.Admin, () => "brand.secondary")
             .with(Role.Member, () => "brand.tertiary")
-            .exhaustive();
+            .otherwise(() => undefined);
 
           return (
             <Badge
+              w={18}
+              justifyContent="center"
               bgColor={accentColor}
               borderColor={accentColor}
               color="background.default"

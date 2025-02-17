@@ -4022,6 +4022,7 @@ export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
   roles?: InputMaybe<Array<Role> | Role>;
   search?: InputMaybe<Scalars['String']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
 }>;
 
 
@@ -4901,11 +4902,11 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
 
 export const MembersDocument = `
-    query Members($organizationId: UUID!, $roles: [Role!], $search: String) {
+    query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
   members(
     orderBy: ROLE_ASC
     condition: {organizationId: $organizationId}
-    filter: {role: {in: $roles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
+    filter: {role: {in: $roles, notIn: $excludeRoles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
   ) {
     nodes {
       ...Member

@@ -10,5 +10,6 @@ export { default as OrganizationListItem } from "./OrganizationListItem/Organiza
 export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export { default as OrganizationProjects } from "./OrganizationProjects/OrganizationProjects";
 export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";
+export { default as Owners } from "./Owners/Owners";
 export { default as ProjectCard } from "./ProjectCard/ProjectCard";
 export { default as UpdateOrganization } from "./UpdateOrganization/UpdateOrganization";

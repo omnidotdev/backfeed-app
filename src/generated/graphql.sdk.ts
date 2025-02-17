@@ -4023,6 +4023,7 @@ export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
   roles?: InputMaybe<Array<Role> | Role>;
   search?: InputMaybe<Scalars['String']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
 }>;
 
 
@@ -4387,11 +4388,11 @@ export const FeedbackByIdDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const MembersDocument = gql`
-    query Members($organizationId: UUID!, $roles: [Role!], $search: String) {
+    query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
   members(
     orderBy: ROLE_ASC
     condition: {organizationId: $organizationId}
-    filter: {role: {in: $roles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
+    filter: {role: {in: $roles, notIn: $excludeRoles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
   ) {
     nodes {
       ...Member
