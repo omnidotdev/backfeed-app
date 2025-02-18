@@ -91,7 +91,7 @@ const MembershipMenu = ({
           {...menuItemStyles}
           onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
         >
-          Give administrative privileges
+          {app.organizationMembersPage.membersMenu.admin}
         </MenuItem>
         <MenuItem
           value={MenuAction.Remove}
@@ -100,7 +100,7 @@ const MembershipMenu = ({
           {...menuItemStyles}
           onClick={() => handleMenuAction({ type: MenuAction.Remove })}
         >
-          Remove from organization
+          {app.organizationMembersPage.membersMenu.remove}
         </MenuItem>
       </MenuItemGroup>
     </Menu>

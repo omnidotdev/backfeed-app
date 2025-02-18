@@ -279,6 +279,10 @@ const app = {
         placeholder: "Select Roles",
       },
     },
+    membersMenu: {
+      admin: "Give administrative privileges",
+      remove: "Remove from organization",
+    },
     cta: {
       addOwner: {
         title: "Add Owner",
