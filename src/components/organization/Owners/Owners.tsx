@@ -60,6 +60,9 @@ interface Props {
   organizationId: string;
 }
 
+/**
+ * Organization owners table.
+ */
 const Owners = ({ organizationId }: Props) => {
   const { user } = useAuth();
 
