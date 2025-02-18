@@ -12,7 +12,7 @@ import {
   useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import { getAuthSession, getQueryClient } from "lib/server";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 

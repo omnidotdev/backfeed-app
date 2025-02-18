@@ -12,8 +12,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/server";
-import { getSearchParams } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";

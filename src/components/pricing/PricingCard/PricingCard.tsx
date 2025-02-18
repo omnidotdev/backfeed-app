@@ -13,8 +13,8 @@ import { signIn } from "next-auth/react";
 
 import { PricingCardAction } from "components/pricing";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { toaster } from "lib/constants";
+import { useAuth } from "lib/hooks";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";

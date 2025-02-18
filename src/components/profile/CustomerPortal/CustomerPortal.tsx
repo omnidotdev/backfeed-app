@@ -4,8 +4,7 @@ import dayjs from "dayjs";
 import { match } from "ts-pattern";
 
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/server";
-import { capitalizeFirstLetter } from "lib/util";
+import { capitalizeFirstLetter, getAuthSession } from "lib/util";
 
 import type { ProductPriceRecurringFixed } from "@polar-sh/sdk/models/components/productpricerecurringfixed";
 

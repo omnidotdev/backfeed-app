@@ -2,7 +2,7 @@ import { GraphQLClient } from "graphql-request";
 
 import { getSdk as getGraphQLSdk } from "generated/graphql.sdk";
 import { API_BASE_URL } from "lib/config";
-import { getAuthSession } from "lib/server";
+import { getAuthSession } from "lib/util";
 
 /**
  * Utility for getting the GraphQL client SDK.

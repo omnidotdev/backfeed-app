@@ -6,8 +6,7 @@ import { Link } from "components/core";
 import { SectionContainer } from "components/layout";
 import { getSdk } from "lib/graphql";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/server";
-import { getSearchParams } from "lib/util";
+import { getAuthSession, getSearchParams } from "lib/util";
 
 import type { Checkout } from "@polar-sh/sdk/models/components/checkout";
 import type { ProductPriceRecurringFixed } from "@polar-sh/sdk/models/components/productpricerecurringfixed";
@@ -45,7 +44,7 @@ const PaymentConfirmationPage = async ({ searchParams }: Props) => {
     const sdk = await getSdk();
 
     await sdk.UpdateUser({
-      hidraId: session.user.hidraId!,
+      rowId: session.user.rowId!,
       patch: {
         customerId: checkout.customerId,
         productId: checkout.productId,

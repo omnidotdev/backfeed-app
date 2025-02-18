@@ -16,7 +16,7 @@ import {
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/server";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";

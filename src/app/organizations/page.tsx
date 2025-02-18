@@ -7,8 +7,7 @@ import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { getAuthSession, getQueryClient } from "lib/server";
-import { getSearchParams } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
