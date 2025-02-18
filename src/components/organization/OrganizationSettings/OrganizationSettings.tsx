@@ -145,10 +145,7 @@ const OrganizationSettings = () => {
         }),
     },
     triggerProps: {
-      disabled:
-        isJoinOrganizationPending ||
-        // If the user is the only owner, they cannot leave the organization without transferring ownership, or permanently deleting it
-        isOnlyOwner,
+      disabled: isJoinOrganizationPending,
       w: 32,
     },
   };
