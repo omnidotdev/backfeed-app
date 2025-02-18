@@ -38,6 +38,9 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
+/**
+ * Organization members page.
+ */
 const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
