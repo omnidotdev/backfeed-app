@@ -1,5 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import {
@@ -16,11 +17,10 @@ import {
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { DialogType } from "store";
 
 import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
-import { LuCirclePlus } from "react-icons/lu";
-import { DialogType } from "store";
 
 export const generateMetadata = async ({
   params,
