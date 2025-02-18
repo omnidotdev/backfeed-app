@@ -3,7 +3,6 @@
 import { Center, Flex, Grid, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useTheme } from "next-themes";
 import { useParams } from "next/navigation";
 import { useIsClient } from "usehooks-ts";
 
@@ -26,8 +25,6 @@ interface Props {
  */
 const Layout = ({ children }: Props) => {
   const isClient = useIsClient();
-
-  const { resolvedTheme } = useTheme();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();
 
