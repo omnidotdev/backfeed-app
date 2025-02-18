@@ -5,17 +5,16 @@ import { Flex, Text } from "@omnidev/sigil";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
-  /** Card title. */
+  /** Section title. */
   title: string;
   /** Props to pass to the main content container. */
   contentProps?: FlexProps;
 }
 
 /**
- * Feedback card.
- * TODO: discuss renaming the component to something more descriptive of its purpose.
+ * Feedback section.
  */
-const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
+const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
   <Flex
     position="relative"
     direction="column"
@@ -53,4 +52,4 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
   </Flex>
 );
 
-export default FeedbackCard;
+export default FeedbackSection;

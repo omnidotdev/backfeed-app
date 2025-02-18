@@ -1,20 +1,24 @@
 "use client";
 
-import { Divider, HStack, Stack, Text } from "@omnidev/sigil";
+import { Button, Divider, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
-import { RiUserSharedLine } from "react-icons/ri";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
 import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
+  Role,
+  useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
 
@@ -23,15 +27,19 @@ const deleteOrganizationDetails =
 
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
+const joinOrganizationDetails =
+  app.organizationSettingsPage.cta.joinOrganization;
+
+// TODO: discuss joining an organization. Should this be invite only?
 
 /** Organization settings. */
 const OrganizationSettings = () => {
+  const queryClient = useQueryClient();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const { user } = useAuth();
   const router = useRouter();
 
-  // NB: used to mock ownership
-  const isOrganizationOwner = true;
+  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -42,12 +50,36 @@ const OrganizationSettings = () => {
     }
   );
 
+  const { isOwner, isMember, membershipId } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
+
+  const onSuccess = () =>
+    queryClient.invalidateQueries(
+      {
+        queryKey: useOrganizationRoleQuery.getKey({
+          userId: user?.rowId!,
+          organizationId: organization?.rowId!,
+        }),
+      },
+      { cancelRefetch: false }
+    );
+
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onMutate: () => router.replace("/"),
-    });
+    { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
+      useLeaveOrganizationMutation({
+        onSuccess,
+      }),
+    { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
+      useCreateMemberMutation({
+        onSuccess,
+      });
+
+  const isCurrentMember =
+    !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -72,18 +104,16 @@ const OrganizationSettings = () => {
       label: leaveOrganizationDetails.destruciveAction.actionLabel,
       onClick: () =>
         leaveOrganization({
-          organizationId: organization?.rowId!,
-          userId: user?.hidraId!,
+          rowId: membershipId!,
         }),
     },
     triggerProps: {
       "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
+      disabled: isJoinOrganizationPending,
     },
   };
 
-  const DESTRUCTIVE_ACTION = isOrganizationOwner
-    ? DELETE_ORGANIZATION
-    : LEAVE_ORGANIZATION;
+  const DESTRUCTIVE_ACTION = isOwner ? DELETE_ORGANIZATION : LEAVE_ORGANIZATION;
 
   return (
     <Stack gap={6}>
@@ -91,17 +121,21 @@ const OrganizationSettings = () => {
 
       <SectionContainer
         title={
-          isOrganizationOwner
-            ? deleteOrganizationDetails.title
-            : leaveOrganizationDetails.title
+          isCurrentMember
+            ? isOwner
+              ? deleteOrganizationDetails.title
+              : leaveOrganizationDetails.title
+            : joinOrganizationDetails.title
         }
         description={
-          isOrganizationOwner
-            ? deleteOrganizationDetails.description
-            : leaveOrganizationDetails.description
+          isCurrentMember
+            ? isOwner
+              ? deleteOrganizationDetails.description
+              : leaveOrganizationDetails.description
+            : joinOrganizationDetails.description
         }
         border="1px solid"
-        borderColor="omni.ruby"
+        borderColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
       >
         <Divider />
 
@@ -115,7 +149,30 @@ const OrganizationSettings = () => {
             >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
           </Stack>
 
-          <DestructiveAction {...DESTRUCTIVE_ACTION} />
+          {isCurrentMember ? (
+            <DestructiveAction {...DESTRUCTIVE_ACTION} />
+          ) : (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              color="white"
+              disabled={isLeaveOrganizationPending}
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    member: {
+                      userId: user?.rowId!,
+                      organizationId: organization?.rowId!,
+                      role: Role.Member,
+                    },
+                  },
+                })
+              }
+            >
+              <Icon src={RiUserAddLine} />
+              {joinOrganizationDetails.actionLabel}
+            </Button>
+          )}
         </HStack>
       </SectionContainer>
     </Stack>

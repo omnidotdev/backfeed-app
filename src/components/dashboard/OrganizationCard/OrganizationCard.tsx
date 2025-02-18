@@ -57,7 +57,7 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
       <Grid columns={2} w="full" alignItems="start">
         <DashboardMetric
           type="Members"
-          value={organization?.userOrganizations?.totalCount}
+          value={organization?.members?.totalCount}
           icon={HiOutlineUserGroup}
         />
 

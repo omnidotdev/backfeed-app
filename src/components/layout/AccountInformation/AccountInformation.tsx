@@ -55,7 +55,7 @@ const AccountInformation = () => {
         rounded: "full",
       }}
       positioning={{
-        shift: 24,
+        shift: 20,
       }}
     >
       <MenuItemGroup minW={40}>

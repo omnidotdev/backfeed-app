@@ -1,12 +1,12 @@
 "use client";
 
-import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { Button, Grid, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
-import { CreateFeedback, FeedbackDetails } from "components/feedback";
+import { Link, SkeletonArray, Spinner } from "components/core";
+import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateFeedbackMutation,
@@ -21,6 +21,7 @@ import type {
   FeedbackFragment,
   Project,
 } from "generated/graphql";
+import { useParams } from "next/navigation";
 
 interface Props {
   /** Project ID. */
@@ -32,6 +33,8 @@ interface Props {
  */
 const ProjectFeedback = ({ projectId }: Props) => {
   const { user } = useAuth();
+
+  const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
   const { data: username } = useUserQuery(
     {
@@ -58,7 +61,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+  const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
       mutationKey: useCreateFeedbackMutation.getKey(),
       status: "pending",
@@ -89,9 +92,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
 
   const totalCount =
     (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
-  const posts = data?.pages?.flatMap((page) =>
-    page?.posts?.nodes?.map((post) => post)
-  );
+  const posts =
+    data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
+    [];
+
+  const allPosts = [...pendingFeedback, ...posts];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -121,27 +126,32 @@ const ProjectFeedback = ({ projectId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : posts?.length || pendingFeedback.length ? (
+            ) : allPosts.length ? (
               <VStack>
-                {!!pendingFeedback.length && (
-                  <FeedbackDetails
-                    feedback={pendingFeedback[0]}
-                    projectPage
-                    isPending
-                    w="full"
-                    minH={21}
-                  />
-                )}
+                {allPosts.map((feedback) => {
+                  const isPending = feedback?.rowId === "pending";
 
-                {posts?.map((feedback) => (
-                  <FeedbackDetails
-                    key={feedback?.rowId}
-                    feedback={feedback!}
-                    projectPage
-                    w="full"
-                    minH={21}
-                  />
-                ))}
+                  return (
+                    <FeedbackCard
+                      key={feedback?.rowId}
+                      feedback={feedback!}
+                      totalUpvotes={feedback?.upvotes?.totalCount}
+                      totalDownvotes={feedback?.downvotes?.totalCount}
+                      isPending={isPending}
+                      w="full"
+                      minH={21}
+                    >
+                      <Link
+                        href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
+                        disabled={isPending}
+                      >
+                        <Button disabled={isPending}>
+                          {app.projectPage.projectFeedback.details.feedbackLink}
+                        </Button>
+                      </Link>
+                    </FeedbackCard>
+                  );
+                })}
 
                 {hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>

@@ -1,5 +1,9 @@
 fragment Feedback on Post {
   rowId
+  title
+  description
+  createdAt
+  updatedAt
   project {
     rowId
     name
@@ -8,8 +12,6 @@ fragment Feedback on Post {
       name
     }
   }
-  title
-  description
   user {
     username
   }
@@ -19,6 +21,4 @@ fragment Feedback on Post {
   downvotes {
     totalCount
   }
-  createdAt
-  updatedAt
 }

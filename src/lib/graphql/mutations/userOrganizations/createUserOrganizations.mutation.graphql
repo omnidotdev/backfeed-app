@@ -1,5 +1,0 @@
-mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
-  createUserOrganization(input: $input) {
-    clientMutationId
-  }
-}

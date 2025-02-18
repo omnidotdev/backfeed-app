@@ -9,7 +9,7 @@ import {
   Stack,
   sigil,
 } from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useParams, useRouter } from "next/navigation";
 import { LuSave } from "react-icons/lu";
 import { z } from "zod";
@@ -23,19 +23,17 @@ import {
 import { app, isDevEnv } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
 import { getSdk } from "lib/graphql";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
 
-const emptyStringAsUndefined = z.literal("").transform(() => undefined);
-
 /** Schema for defining the shape of the update organization form fields. */
+// TODO: dedup these schemas with the create organization form
 const baseSchema = z.object({
   name: z
     .string()
-    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength)
-    .or(emptyStringAsUndefined)
-    .optional(),
+    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength),
   slug: z
     .string()
     .regex(
@@ -43,9 +41,10 @@ const baseSchema = z.object({
       updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
     )
     .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
-    .max(50, updateOrganizationDetails.fields.organizationSlug.errors.maxLength)
-    .or(emptyStringAsUndefined)
-    .optional(),
+    .max(
+      50,
+      updateOrganizationDetails.fields.organizationSlug.errors.maxLength
+    ),
 });
 
 /** Schema for validation of the update organization form. */
@@ -75,8 +74,7 @@ const UpdateOrganization = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  // NB: used to mock ownership
-  const isOrganizationOwner = true;
+  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -87,6 +85,11 @@ const UpdateOrganization = () => {
     }
   );
 
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
+
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
     onSuccess: (data) => {
       router.replace(
@@ -96,7 +99,7 @@ const UpdateOrganization = () => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
     defaultValues: {
       name: organization?.name ?? "",
       slug: organization?.slug ?? "",
@@ -104,7 +107,7 @@ const UpdateOrganization = () => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: updateOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
@@ -125,10 +128,17 @@ const UpdateOrganization = () => {
     },
   });
 
+  const isDefaultForm = useStore(store, ({ values }) =>
+    Object.entries(values).every(
+      // @ts-ignore this works as long as the key of the form does in fact match the key on the organization object. If that changes, this will break.
+      ([key, value]) => value === organization?.[key]
+    )
+  );
+
   return (
     <SectionContainer
       title={
-        isOrganizationOwner
+        isAdmin
           ? updateOrganizationDetails.title
           : updateOrganizationDetails.memberTitle
       }
@@ -144,17 +154,17 @@ const UpdateOrganization = () => {
       >
         <Stack gap={4} maxW="lg">
           <Field name="name">
-            {({ handleChange, state }) => (
+            {({ handleChange, state, name }) => (
               <Stack position="relative" gap={1.5}>
-                <Label htmlFor="name" fontWeight="semibold">
+                <Label htmlFor={name} fontWeight="semibold">
                   {updateOrganizationDetails.fields.organizationName.label}
                 </Label>
 
                 <Input
-                  id="name"
+                  id={name}
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isOrganizationOwner}
+                  disabled={!isAdmin}
                 />
 
                 <FormFieldError
@@ -166,17 +176,17 @@ const UpdateOrganization = () => {
           </Field>
 
           <Field name="slug">
-            {({ handleChange, state }) => (
+            {({ handleChange, state, name }) => (
               <Stack position="relative" gap={1.5}>
-                <Label htmlFor="slug" fontWeight="semibold">
+                <Label htmlFor={name} fontWeight="semibold">
                   {updateOrganizationDetails.fields.organizationSlug.label}
                 </Label>
 
                 <Input
-                  id="slug"
+                  id={name}
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isOrganizationOwner}
+                  disabled={!isAdmin}
                 />
 
                 <FormFieldError
@@ -193,22 +203,18 @@ const UpdateOrganization = () => {
             canSubmit: state.canSubmit,
             isSubmitting: state.isSubmitting,
             isDirty: state.isDirty,
-            // TODO: look into managing default state through `useStore` or better yet zod schema.
-            isChanged:
-              state.values.name !== organization?.name ||
-              state.values.slug !== organization?.slug,
           })}
         >
-          {({ canSubmit, isSubmitting, isDirty, isChanged }) => (
+          {({ canSubmit, isSubmitting, isDirty }) => (
             <Button
               type="submit"
               width={48}
               disabled={
+                isDefaultForm ||
                 isSubmitting ||
                 !canSubmit ||
                 !isDirty ||
-                !isChanged ||
-                !isOrganizationOwner
+                !isAdmin
               }
               mt={4}
             >

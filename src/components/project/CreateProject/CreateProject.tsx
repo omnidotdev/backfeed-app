@@ -20,13 +20,14 @@ import { z } from "zod";
 
 import { FormFieldError } from "components/core";
 import {
+  Role,
   useCreateProjectMutation,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -94,23 +95,12 @@ const CreateProject = ({ organizationSlug }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  useHotkeys(
-    "mod+p",
-    () => setIsOpen(!isOpen),
-    {
-      enabled: !!user && !isCreateOrganizationDialogOpen,
-      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
-      enableOnFormTags: true,
-      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
-      preventDefault: true,
-    },
-    [user, isOpen, isCreateOrganizationDialogOpen]
-  );
-
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
+      isMember: true,
       slug: organizationSlug,
+      excludeRoles: [Role.Member],
     },
     {
       enabled: !!user?.rowId,
@@ -123,6 +113,31 @@ const CreateProject = ({ organizationSlug }: Props) => {
   );
 
   const firstOrganization = organizations?.[0];
+
+  const { isAdmin } = useOrganizationMembership({
+    organizationId: firstOrganization?.value,
+    userId: user?.rowId,
+  });
+
+  useHotkeys(
+    "mod+p",
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
+    {
+      enabled:
+        !!user &&
+        !isCreateOrganizationDialogOpen &&
+        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin
+        (organizationSlug ? isAdmin : true),
+      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enableOnFormTags: true,
+      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
+  );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
     onSuccess: (data) => {
@@ -145,7 +160,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
     asyncDebounceMs: 300,
     validatorAdapter: standardSchemaValidator,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createProjectSchema,
     },
     onSubmit: async ({ value }) =>
@@ -234,14 +249,14 @@ const CreateProject = ({ organizationSlug }: Props) => {
         </Field>
 
         <Field name="name">
-          {({ handleChange, state }) => (
+          {({ handleChange, state, name }) => (
             <Stack position="relative" gap={1.5}>
-              <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
+              <Label htmlFor={name}>
                 {app.dashboardPage.cta.newProject.projectName.id}
               </Label>
 
               <Input
-                id={app.dashboardPage.cta.newProject.projectName.id}
+                id={name}
                 placeholder={
                   app.dashboardPage.cta.newProject.projectName.placeholder
                 }

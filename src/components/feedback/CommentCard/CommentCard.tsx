@@ -9,8 +9,10 @@ import { DestructiveAction } from "components/core";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
+  useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { Comment } from "generated/graphql";
@@ -42,9 +44,28 @@ const CommentCard = ({
   isSender = false,
   ...rest
 }: Props) => {
+  const { user } = useAuth();
+
   const queryClient = useQueryClient();
 
-  const { feedbackId } = useParams<{ feedbackId: string }>();
+  const { organizationSlug, feedbackId } = useParams<{
+    organizationSlug: string;
+    feedbackId: string;
+  }>();
+
+  const { data: organizationId } = useOrganizationQuery(
+    {
+      slug: organizationSlug,
+    },
+    {
+      select: (data) => data.organizationBySlug?.rowId,
+    }
+  );
+
+  const { isAdmin } = useOrganizationMembership({
+    organizationId,
+    userId: user?.rowId,
+  });
 
   const { mutate: deleteComment, isPending: isDeletePending } =
     useDeleteCommentMutation({
@@ -96,7 +117,7 @@ const CommentCard = ({
         </Text>
       </Stack>
 
-      {isSender && (
+      {(isSender || isAdmin) && (
         <Stack position="absolute" top={1} right={1}>
           <DestructiveAction
             title={app.feedbackPage.comments.delete.title}
@@ -108,6 +129,7 @@ const CommentCard = ({
             triggerProps={{
               "aria-label": app.feedbackPage.comments.delete.title,
               color: "omni.ruby",
+              backgroundColor: "transparent",
               disabled: actionIsPending,
             }}
           />

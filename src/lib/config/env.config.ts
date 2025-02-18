@@ -6,7 +6,6 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const POLAR_ORGANIZATION_ID = process.env.POLAR_ORGANIZATION_ID;
 
 // simplified environment helpers
-export const isProdEnv = NODE_ENV === "production";
 export const isDevEnv = NODE_ENV === "development";
 // NB: `APP_ENV` is used instead of `NODE_ENV` because `next dev` shadows `NODE_ENV`, so even if `NODE_ENV=test` is injected into the environment, it will be overwritten to "development". See https://github.com/vercel/next.js/issues/17032
 const isTestEnv = APP_ENV === "test";
