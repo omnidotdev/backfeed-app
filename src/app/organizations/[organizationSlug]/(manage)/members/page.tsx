@@ -2,7 +2,12 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
-import { Members, MembershipFilters, Owners } from "components/organization";
+import {
+  AddOwner,
+  Members,
+  MembershipFilters,
+  Owners,
+} from "components/organization";
 import {
   Role,
   useMembersQuery,
@@ -14,6 +19,8 @@ import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 
 import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
+import { LuCirclePlus } from "react-icons/lu";
+import { DialogType } from "store";
 
 export const generateMetadata = async ({
   params,
@@ -53,6 +60,12 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   });
 
   if (!organization) notFound();
+
+  const { memberByUserIdAndOrganizationId: member } =
+    await sdk.OrganizationRole({
+      userId: session.user.rowId!,
+      organizationId: organization.rowId,
+    });
 
   const queryClient = getQueryClient();
 
@@ -101,6 +114,17 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         header={{
           title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
           description: app.organizationMembersPage.description,
+          cta:
+            member?.role === Role.Owner
+              ? [
+                  {
+                    label: app.organizationMembersPage.cta.addOwner.label,
+                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                    icon: <LuCirclePlus />,
+                    dialogType: DialogType.AddOwner,
+                  },
+                ]
+              : undefined,
         }}
       >
         <Owners organizationId={organization.rowId} />
@@ -108,6 +132,9 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         <MembershipFilters />
 
         <Members organizationId={organization.rowId} />
+
+        {/* dialogs */}
+        <AddOwner organizationId={organization.rowId} />
       </Page>
     </HydrationBoundary>
   );

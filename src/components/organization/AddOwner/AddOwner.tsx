@@ -1,17 +1,8 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import {
-  Button,
-  Combobox,
-  Dialog,
-  HStack,
-  Icon,
-  sigil,
-  useDisclosure,
-} from "@omnidev/sigil";
+import { Button, Combobox, Dialog, HStack, sigil } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
-import { LuCirclePlus } from "react-icons/lu";
 import { z } from "zod";
 
 import {
@@ -21,6 +12,8 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 
@@ -38,11 +31,13 @@ interface Props {
  * Dialog for adding an owner to an organization.
  */
 const AddOwner = ({ organizationId }: Props) => {
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { isOpen, setIsOpen } = useDialogStore({
+    type: DialogType.AddOwner,
+  });
 
   const { mutateAsync: addOwner } = useUpdateMemberMutation({
     onSuccess: () => {
-      onClose();
+      setIsOpen(false);
       reset();
     },
   });
@@ -85,16 +80,10 @@ const AddOwner = ({ organizationId }: Props) => {
       title={addOwnerDetails.title}
       description={addOwnerDetails.description}
       open={isOpen}
-      onOpenChange={() => {
+      onOpenChange={({ open }) => {
         reset();
-        onToggle();
+        setIsOpen(open);
       }}
-      trigger={
-        <Button variant="outline">
-          <Icon src={LuCirclePlus} w={4} h={4} />
-          {addOwnerDetails.label}
-        </Button>
-      }
     >
       <sigil.form
         display="flex"
@@ -149,7 +138,7 @@ const AddOwner = ({ organizationId }: Props) => {
             flex={1}
             onClick={() => {
               reset();
-              onClose();
+              setIsOpen(false);
             }}
           >
             {addOwnerDetails.form.cancel}
