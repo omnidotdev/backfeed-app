@@ -8,6 +8,7 @@ import {
   Input,
   Label,
   Stack,
+  Text,
   useDisclosure,
 } from "@omnidev/sigil";
 import { useState } from "react";
@@ -113,9 +114,11 @@ const DestructiveAction = ({
           {...destructiveButtonStyles}
           {...triggerProps}
         >
-          <Icon src={icon} {...iconProps} />
+          <Icon src={icon} h={5} w={5} {...iconProps} />
 
-          {triggerLabel}
+          <Text display={{ base: "none", sm: "inline-flex" }}>
+            {triggerLabel}
+          </Text>
         </Button>
       }
       triggerProps={triggerProps}

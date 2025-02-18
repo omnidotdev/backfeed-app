@@ -6,7 +6,6 @@ import { OrganizationSettings } from "components/organization";
 import {
   Role,
   useMembersQuery,
-  useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -53,14 +52,14 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   const queryClient = getQueryClient();
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationQuery.getKey({
-        slug: organizationSlug,
-      }),
-      queryFn: useOrganizationQuery.fetcher({
-        slug: organizationSlug,
-      }),
-    }),
+    // queryClient.prefetchQuery({
+    //   queryKey: useOrganizationQuery.getKey({
+    //     slug: organizationSlug,
+    //   }),
+    //   queryFn: useOrganizationQuery.fetcher({
+    //     slug: organizationSlug,
+    //   }),
+    // }),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,

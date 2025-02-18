@@ -127,9 +127,6 @@ const OrganizationSettings = () => {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
     },
-    triggerProps: {
-      w: 32,
-    },
   };
 
   const LEAVE_ORGANIZATION: DestructiveActionProps = {
@@ -146,7 +143,6 @@ const OrganizationSettings = () => {
     },
     triggerProps: {
       disabled: isJoinOrganizationPending,
-      w: 32,
     },
   };
 
@@ -173,9 +169,6 @@ const OrganizationSettings = () => {
           },
         });
       },
-    },
-    triggerProps: {
-      w: 32,
     },
     children: (
       <Combobox
@@ -247,6 +240,8 @@ const OrganizationSettings = () => {
             fontSize="md"
             colorPalette="green"
             color="white"
+            w="fit"
+            placeSelf="flex-end"
             disabled={isLeaveOrganizationPending}
             onClick={() =>
               joinOrganization({

@@ -82,7 +82,7 @@ const Owners = ({ organizationId }: Props) => {
   });
 
   return (
-    <Stack mb={12}>
+    <Stack mb={6}>
       <Table
         headerContent={table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} bgColor="background.subtle">

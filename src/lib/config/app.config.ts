@@ -254,16 +254,16 @@ const app = {
     },
     actions: {
       title: "Quick Actions",
-      description: "Common organization tasks",
+      description: "Common organization details or actions",
       cta: {
         createProject: {
           label: "Create New Project",
         },
         manageTeam: {
-          label: "Manage Team",
+          label: "Members",
         },
         settings: {
-          label: "Organization Settings",
+          label: "Settings",
         },
       },
     },
