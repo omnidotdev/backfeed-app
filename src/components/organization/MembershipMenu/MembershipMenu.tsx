@@ -6,6 +6,7 @@ import {
   useRemoveMemberMutation,
   useUpdateMemberMutation,
 } from "generated/graphql";
+import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { MenuProps } from "@omnidev/sigil";
