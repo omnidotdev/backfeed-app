@@ -279,6 +279,20 @@ const app = {
         placeholder: "Select Roles",
       },
     },
+    cta: {
+      addOwner: {
+        title: "Add Owner",
+        description: "Add a new owner to your organization.",
+        label: "New Owner",
+        form: {
+          rowId: {
+            placeholder: "Search for or select a member...",
+          },
+          pending: "Adding Owner...",
+          cancel: "Cancel",
+        },
+      },
+    },
   },
   organizationSettingsPage: {
     breadcrumb: "Settings",

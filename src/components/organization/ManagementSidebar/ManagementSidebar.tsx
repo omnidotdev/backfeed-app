@@ -30,10 +30,15 @@ import type { PropsWithChildren } from "react";
 import type { IconType } from "react-icons";
 
 interface NavigationItem extends ButtonProps {
+  /** Navigation item label. */
   label: string;
+  /** Navigation item icon. */
   icon: IconType;
 }
 
+/**
+ * Sidebar for organization management. Used for navigation between organization management pages.
+ */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
   const router = useRouter(),
     segment = useSelectedLayoutSegment();

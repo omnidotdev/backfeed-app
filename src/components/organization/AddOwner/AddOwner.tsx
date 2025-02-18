@@ -19,7 +19,10 @@ import {
   useMembersQuery,
   useUpdateMemberMutation,
 } from "generated/graphql";
+import { app } from "lib/config";
 import { standardSchemaValidator } from "lib/constants";
+
+const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 
 /** Schema for defining the shape of the add owner form fields. */
 const baseSchema = z.object({
@@ -31,10 +34,12 @@ interface Props {
   organizationId: string;
 }
 
+/**
+ * Dialog for adding an owner to an organization.
+ */
 const AddOwner = ({ organizationId }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
 
-  // TODO: implement optimistic updates / toasts
   const { mutateAsync: addOwner } = useUpdateMemberMutation({
     onSuccess: () => {
       onClose();
@@ -77,8 +82,8 @@ const AddOwner = ({ organizationId }: Props) => {
 
   return (
     <Dialog
-      title="Add Owner"
-      description="Add a new owner to the organization."
+      title={addOwnerDetails.title}
+      description={addOwnerDetails.description}
       open={isOpen}
       onOpenChange={() => {
         reset();
@@ -87,7 +92,7 @@ const AddOwner = ({ organizationId }: Props) => {
       trigger={
         <Button variant="outline">
           <Icon src={LuCirclePlus} w={4} h={4} />
-          New Owner
+          {addOwnerDetails.label}
         </Button>
       }
     >
@@ -106,7 +111,7 @@ const AddOwner = ({ organizationId }: Props) => {
             <Combobox
               label={{ id: "member", singular: "Member", plural: "Members" }}
               collection={createListCollection({ items: members ?? [] })}
-              placeholder="Search for or select a member..."
+              placeholder={addOwnerDetails.form.rowId.placeholder}
               clearTriggerProps={{
                 display: state.value.length ? "block" : "none",
               }}
@@ -132,7 +137,9 @@ const AddOwner = ({ organizationId }: Props) => {
                 flex={1}
                 disabled={!canSubmit || !isDirty || isSubmitting}
               >
-                {isSubmitting ? "Adding Owner..." : "Add Owner"}
+                {isSubmitting
+                  ? addOwnerDetails.form.pending
+                  : addOwnerDetails.title}
               </Button>
             )}
           </Subscribe>
@@ -145,7 +152,7 @@ const AddOwner = ({ organizationId }: Props) => {
               onClose();
             }}
           >
-            Cancel
+            {addOwnerDetails.form.cancel}
           </Button>
         </HStack>
       </sigil.form>

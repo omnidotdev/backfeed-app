@@ -38,6 +38,9 @@ interface Props {
   organizationId: string;
 }
 
+/**
+ * Organization members table.
+ */
 const Members = ({ organizationId }: Props) => {
   const { user } = useAuth();
 
