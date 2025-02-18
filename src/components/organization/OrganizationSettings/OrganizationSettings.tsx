@@ -1,7 +1,13 @@
 "use client";
 
-import { Button, Divider, Icon, Stack } from "@omnidev/sigil";
+import { createListCollection } from "@ark-ui/react";
+import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { BiTransfer } from "react-icons/bi";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
+
 import { SectionContainer } from "components/layout";
 import { DangerZoneAction, UpdateOrganization } from "components/organization";
 import {
@@ -12,12 +18,10 @@ import {
   useMembersQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
+  useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
-import { useParams, useRouter } from "next/navigation";
-import { BiTransfer } from "react-icons/bi";
-import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
 import type { DestructiveActionProps } from "components/core";
 
@@ -34,6 +38,8 @@ const joinOrganizationDetails =
 
 /** Organization settings. */
 const OrganizationSettings = () => {
+  const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
+
   const queryClient = useQueryClient();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
@@ -61,6 +67,21 @@ const OrganizationSettings = () => {
     }
   );
 
+  const { data: members } = useMembersQuery(
+    {
+      organizationId: organization?.rowId!,
+      excludeRoles: [Role.Owner],
+    },
+    {
+      enabled: !!organization,
+      select: (data) =>
+        data.members?.nodes?.map((member) => ({
+          label: `${member?.user?.firstName} ${member?.user?.lastName}`,
+          value: member?.rowId,
+        })),
+    }
+  );
+
   const { isOwner, isMember, membershipId } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,
@@ -84,6 +105,9 @@ const OrganizationSettings = () => {
       useLeaveOrganizationMutation({
         onSuccess,
       }),
+    { mutateAsync: updateMembership } = useUpdateMemberMutation({
+      onSuccess,
+    }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
       useCreateMemberMutation({
         onSuccess,
@@ -91,6 +115,8 @@ const OrganizationSettings = () => {
 
   const isCurrentMember =
     !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
+
+  const isOnlyOwner = isOwner && numberOfOwners === 1;
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -102,7 +128,6 @@ const OrganizationSettings = () => {
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
     },
     triggerProps: {
-      "aria-label": `${deleteOrganizationDetails.destruciveAction.actionLabel} organization`,
       w: 32,
     },
   };
@@ -120,11 +145,10 @@ const OrganizationSettings = () => {
         }),
     },
     triggerProps: {
-      "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
       disabled:
         isJoinOrganizationPending ||
         // If the user is the only owner, they cannot leave the organization without transferring ownership, or permanently deleting it
-        (isOwner && (numberOfOwners == null || numberOfOwners === 1)),
+        isOnlyOwner,
       w: 32,
     },
   };
@@ -136,14 +160,43 @@ const OrganizationSettings = () => {
     icon: BiTransfer,
     action: {
       label: transferOwnershipDetails.actionLabel,
-      onClick: () => {
-        // TODO: Implement transferOwnership
+      disabled: !newOwnerMembershipId.length,
+      onClick: async () => {
+        await updateMembership({
+          rowId: newOwnerMembershipId,
+          patch: {
+            role: Role.Owner,
+          },
+        });
+
+        await updateMembership({
+          rowId: membershipId!,
+          patch: {
+            role: Role.Member,
+          },
+        });
       },
     },
     triggerProps: {
-      "aria-label": `${transferOwnershipDetails.actionLabel} of organization`,
       w: 32,
     },
+    children: (
+      <Combobox
+        label={{ id: "member", singular: "Member", plural: "Members" }}
+        collection={createListCollection({ items: members ?? [] })}
+        placeholder="Search for or select a member..."
+        colorPalette="red"
+        clearTriggerProps={{
+          display: newOwnerMembershipId ? "block" : "none",
+        }}
+        value={[newOwnerMembershipId]}
+        onValueChange={({ value }) => {
+          value.length
+            ? setNewOwnerMembershipId(value[0])
+            : setNewOwnerMembershipId("");
+        }}
+      />
+    ),
   };
 
   return (
@@ -151,10 +204,14 @@ const OrganizationSettings = () => {
       <UpdateOrganization />
 
       <SectionContainer
-        title={isCurrentMember ? "Danger Zone" : joinOrganizationDetails.title}
+        title={
+          isCurrentMember
+            ? app.organizationSettingsPage.dangerZone.title
+            : joinOrganizationDetails.title
+        }
         description={
           isCurrentMember
-            ? "Below are destructive actions that are irreversible and cannot be undone."
+            ? app.organizationSettingsPage.dangerZone.description
             : joinOrganizationDetails.description
         }
         border="1px solid"
@@ -162,7 +219,7 @@ const OrganizationSettings = () => {
       >
         <Divider />
 
-        {isCurrentMember && (
+        {isCurrentMember && !isOnlyOwner && (
           <DangerZoneAction
             title={leaveOrganizationDetails.title}
             description={leaveOrganizationDetails.description}
@@ -172,11 +229,13 @@ const OrganizationSettings = () => {
 
         {isOwner && (
           <Stack gap={6}>
-            <DangerZoneAction
-              title={transferOwnershipDetails.title}
-              description={transferOwnershipDetails.description}
-              actionProps={TRANSFER_OWNERSHIP}
-            />
+            {isOnlyOwner && (
+              <DangerZoneAction
+                title={transferOwnershipDetails.title}
+                description={transferOwnershipDetails.description}
+                actionProps={TRANSFER_OWNERSHIP}
+              />
+            )}
 
             <DangerZoneAction
               title={deleteOrganizationDetails.title}

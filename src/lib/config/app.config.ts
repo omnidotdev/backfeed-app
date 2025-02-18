@@ -283,6 +283,11 @@ const app = {
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
     cta: {
       updateOrganization: {
         title: "Update Organization",
