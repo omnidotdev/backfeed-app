@@ -11,6 +11,9 @@ interface Props extends PropsWithChildren {
   params: Promise<{ organizationSlug: string }>;
 }
 
+/**
+ * Manage organization layout.
+ */
 const ManageOrganizationLayout = async ({ params, children }: Props) => {
   const { organizationSlug } = await params;
 
@@ -22,7 +25,7 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
   });
 
   return (
-    <HStack h="full" w="full">
+    <HStack h="full" w="full" gap={0}>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ManagementSidebar>{children}</ManagementSidebar>
       </HydrationBoundary>

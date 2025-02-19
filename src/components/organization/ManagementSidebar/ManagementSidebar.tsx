@@ -102,48 +102,61 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Stack
+        position="relative"
         h="full"
-        overflow="hidden"
         w={isOpen ? "xs" : 20}
         borderRightWidth="1px"
         borderColor="border.subtle"
         transition="all 200ms ease-in-out"
         gap={0}
       >
-        <OverflowText
-          as="h1"
-          p={4}
-          bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
-          textAlign="center"
-          whiteSpace="nowrap"
-        >
-          {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
-        </OverflowText>
-
-        {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
-          <Button
-            key={label}
-            variant="ghost"
-            w="full"
-            rounded="none"
-            alignItems="center"
-            textWrap="nowrap"
-            py={6}
-            bgColor={{ _active: "neutral.100a" }}
-            onClick={onClick}
-            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
-            data-active={label.toLowerCase() === segment || undefined}
-            aria-label={label}
+        {/* TODO: update `top` position for ManagementSidebar on the `sticky` positioned element when banner is removed */}
+        <Stack position="sticky" gap={0} top={40} zIndex="sticky">
+          <OverflowText
+            as="h1"
+            p={4}
+            bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
+            textAlign="center"
+            whiteSpace="nowrap"
           >
-            <Icon src={icon} h={5} w={5} />
+            {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
+          </OverflowText>
 
-            {debouncedIsOpen && <Text>{label}</Text>}
-          </Button>
-        ))}
+          {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
+            <Button
+              key={label}
+              variant="ghost"
+              w="full"
+              rounded="none"
+              alignItems="center"
+              textWrap="nowrap"
+              py={6}
+              bgColor={{ _active: "neutral.100a" }}
+              onClick={onClick}
+              // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+              data-active={label.toLowerCase() === segment || undefined}
+              aria-label={label}
+            >
+              <Icon src={icon} h={5} w={5} />
+
+              {debouncedIsOpen && <Text>{label}</Text>}
+            </Button>
+          ))}
+        </Stack>
       </Stack>
 
-      <Stack w="full" mt={2} placeSelf="flex-start" px={4}>
-        <HStack ml={{ base: 0, lg: -4 }} minH={10}>
+      <Stack position="relative" w="full" placeSelf="flex-start" px={4}>
+        {/* TODO: update `top` position for ManagementSidebar on the `sticky` positioned element when banner is removed */}
+        <HStack
+          position="sticky"
+          top={40}
+          zIndex="sticky"
+          py={2}
+          ml={{ base: 0, lg: -4 }}
+          minH={14}
+          bgColor="background.default"
+          gap={2}
+        >
           <Button
             display={{ base: "none", lg: "flex" }}
             variant="icon"
@@ -151,6 +164,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             color="foreground.default"
             aria-label="Toggle Sidebar"
             onClick={onToggle}
+            ml={2}
           >
             <Icon
               src={isOpen ? LuPanelLeftClose : LuPanelLeftOpen}

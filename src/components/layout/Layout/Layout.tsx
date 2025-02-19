@@ -44,12 +44,15 @@ const Layout = ({ children }: Props) => {
       gap={0}
     >
       <Flex direction="column" position="sticky" top={0} zIndex="sticky">
+        {/* TODO: when removed, update `top` position for ManagementSidebar on the `sticky` positioned element */}
         <Flex
           p={4}
+          align="center"
           justify="center"
           bgColor="brand.primary.500"
           color="white"
           fontWeight="semibold"
+          h={20}
         >
           ⚠️ {app.name} is early alpha software.
         </Flex>
