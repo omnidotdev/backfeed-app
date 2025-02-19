@@ -72,13 +72,11 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Link href="/organizations" disabled={!pinnedOrganizations?.length}>
+        <Link href="/organizations">
           <Button
             variant="outline"
             color="brand.primary"
             borderColor="brand.primary"
-            opacity={{ base: 1, _disabled: 0.5 }}
-            disabled={!pinnedOrganizations?.length}
           >
             {app.dashboardPage.cta.viewOrganizations.label}
           </Button>

@@ -1,12 +1,11 @@
 "use client";
 
-import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Text, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 import { LuMessageSquarePlus } from "react-icons/lu";
 
 import { Link } from "components/core";
 import { HeaderActions } from "components/layout";
-import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -22,12 +21,12 @@ const Header = () => {
       display="flex"
       h={20}
       p={2}
-      // TODO: discuss why this style prop is necessary
-      style={{
+      // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
+      className={css({
         borderBottom: "1px solid",
-        borderColor: token("colors.border.subtle"),
-        backgroundColor: token("colors.background.default"),
-      }}
+        borderColor: "border.subtle",
+        backgroundColor: "background.default",
+      })}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">

@@ -3886,6 +3886,8 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
+
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
@@ -3920,6 +3922,21 @@ export type CreateMemberMutationVariables = Exact<{
 
 
 export type CreateMemberMutation = { __typename?: 'Mutation', createMember?: { __typename?: 'CreateMemberPayload', clientMutationId?: string | null } | null };
+
+export type RemoveMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type RemoveMemberMutation = { __typename?: 'Mutation', deleteMember?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', userId: string, organizationId: string } | null } | null };
+
+export type UpdateMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: MemberPatch;
+}>;
+
+
+export type UpdateMemberMutation = { __typename?: 'Mutation', updateMember?: { __typename?: 'UpdateMemberPayload', clientMutationId?: string | null } | null };
 
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
@@ -4040,6 +4057,16 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+
+export type MembersQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+  roles?: InputMaybe<Array<Role> | Role>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
+}>;
+
+
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', totalCount: number, nodes: Array<{ __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4188,6 +4215,19 @@ export const FeedbackFragmentDoc = gql`
   }
 }
     `;
+export const MemberFragmentDoc = gql`
+    fragment Member on Member {
+  rowId
+  organizationId
+  userId
+  role
+  user {
+    firstName
+    lastName
+    username
+  }
+}
+    `;
 export const CreateCommentDocument = gql`
     mutation CreateComment($input: CreateCommentInput!) {
   createComment(input: $input) {
@@ -4219,6 +4259,23 @@ export const DeleteDownvoteDocument = gql`
 export const CreateMemberDocument = gql`
     mutation CreateMember($input: CreateMemberInput!) {
   createMember(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+export const RemoveMemberDocument = gql`
+    mutation RemoveMember($rowId: UUID!) {
+  deleteMember(input: {rowId: $rowId}) {
+    member {
+      userId
+      organizationId
+    }
+  }
+}
+    `;
+export const UpdateMemberDocument = gql`
+    mutation UpdateMember($rowId: UUID!, $patch: MemberPatch!) {
+  updateMember(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
   }
 }
@@ -4377,6 +4434,20 @@ export const FeedbackByIdDocument = gql`
   }
 }
     ${FeedbackFragmentDoc}`;
+export const MembersDocument = gql`
+    query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
+  members(
+    orderBy: ROLE_ASC
+    condition: {organizationId: $organizationId}
+    filter: {role: {in: $roles, notIn: $excludeRoles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
+  ) {
+    totalCount
+    nodes {
+      ...Member
+    }
+  }
+}
+    ${MemberFragmentDoc}`;
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
@@ -4625,6 +4696,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateMember(variables: CreateMemberMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateMemberMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateMemberMutation>(CreateMemberDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateMember', 'mutation', variables);
     },
+    RemoveMember(variables: RemoveMemberMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RemoveMemberMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RemoveMemberMutation>(RemoveMemberDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RemoveMember', 'mutation', variables);
+    },
+    UpdateMember(variables: UpdateMemberMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateMemberMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateMemberMutation>(UpdateMemberDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateMember', 'mutation', variables);
+    },
     CreateOrganization(variables: CreateOrganizationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrganizationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationMutation>(CreateOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganization', 'mutation', variables);
     },
@@ -4672,6 +4749,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
+    },
+    Members(variables: MembersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<MembersQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MembersQuery>(MembersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Members', 'query', variables);
     },
     Organization(variables: OrganizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationQuery>(OrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organization', 'query', variables);
