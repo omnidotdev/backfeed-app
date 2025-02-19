@@ -280,8 +280,9 @@ const app = {
       },
     },
     membersMenu: {
-      admin: "Give administrative privileges",
-      remove: "Remove from organization",
+      makeAdmin: "Give administrative privileges",
+      removeAdmin: "Remove administrative privileges",
+      removeMember: "Remove from organization",
     },
     cta: {
       addOwner: {

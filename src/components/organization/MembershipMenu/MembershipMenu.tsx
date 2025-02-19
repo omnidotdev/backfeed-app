@@ -1,5 +1,6 @@
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
 import { LuChevronDown } from "react-icons/lu";
+import { match } from "ts-pattern";
 
 import {
   Role,
@@ -16,7 +17,8 @@ import type { JsxStyleProps } from "generated/panda/types";
 
 enum MenuAction {
   MakeAdmin = "admin",
-  Remove = "remove",
+  RemoveAdmin = "removeAdmin",
+  RemoveMember = "removeMember",
 }
 
 const menuItemStyles: JsxStyleProps = {
@@ -45,6 +47,10 @@ const MembershipMenu = ({
 }: Props) => {
   const { user } = useAuth();
 
+  const selectedRowsAreAdmins = selectedRows.every(
+    (row) => row.original.role === Role.Admin
+  );
+
   const { isOwner } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId,
@@ -58,18 +64,29 @@ const MembershipMenu = ({
     for (const row of selectedRows) {
       const member = row.original;
 
-      if (type === MenuAction.MakeAdmin) {
-        updateMember({
-          rowId: member.rowId,
-          patch: {
-            role: Role.Admin,
-          },
-        });
-      } else {
-        removeMember({
-          rowId: member.rowId,
-        });
-      }
+      match(type)
+        .with(MenuAction.MakeAdmin, () =>
+          updateMember({
+            rowId: member.rowId,
+            patch: {
+              role: Role.Admin,
+            },
+          })
+        )
+        .with(MenuAction.RemoveAdmin, () =>
+          updateMember({
+            rowId: member.rowId,
+            patch: {
+              role: Role.Member,
+            },
+          })
+        )
+        .with(MenuAction.RemoveMember, () =>
+          removeMember({
+            rowId: member.rowId,
+          })
+        )
+        .exhaustive();
     }
 
     toggleRowSelection(false);
@@ -87,23 +104,35 @@ const MembershipMenu = ({
       {...rest}
     >
       <MenuItemGroup>
-        <MenuItem
-          value={MenuAction.MakeAdmin}
-          disabled={!isOwner}
-          {...menuItemStyles}
-          onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
-        >
-          {app.organizationMembersPage.membersMenu.admin}
-        </MenuItem>
+        {selectedRowsAreAdmins ? (
+          <MenuItem
+            value={MenuAction.RemoveAdmin}
+            color="red"
+            disabled={!isOwner}
+            {...menuItemStyles}
+            onClick={() => handleMenuAction({ type: MenuAction.RemoveAdmin })}
+          >
+            {app.organizationMembersPage.membersMenu.removeAdmin}
+          </MenuItem>
+        ) : (
+          <MenuItem
+            value={MenuAction.MakeAdmin}
+            disabled={!isOwner}
+            {...menuItemStyles}
+            onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
+          >
+            {app.organizationMembersPage.membersMenu.makeAdmin}
+          </MenuItem>
+        )}
 
         <MenuItem
-          value={MenuAction.Remove}
+          value={MenuAction.RemoveMember}
           color="red"
           disabled={!isOwner}
           {...menuItemStyles}
-          onClick={() => handleMenuAction({ type: MenuAction.Remove })}
+          onClick={() => handleMenuAction({ type: MenuAction.RemoveMember })}
         >
-          {app.organizationMembersPage.membersMenu.remove}
+          {app.organizationMembersPage.membersMenu.removeMember}
         </MenuItem>
       </MenuItemGroup>
     </Menu>
