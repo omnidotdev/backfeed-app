@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuPanelLeftClose, LuPanelLeftOpen, LuSettings } from "react-icons/lu";
 
-import { Breadcrumb } from "components/core";
+import { Breadcrumb, OverflowText } from "components/core";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDebounceValue } from "lib/hooks";
@@ -107,7 +107,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         transition="all 200ms ease-in-out"
         gap={0}
       >
-        <Text
+        <OverflowText
           as="h1"
           p={4}
           bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
@@ -115,7 +115,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           whiteSpace="nowrap"
         >
           {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
-        </Text>
+        </OverflowText>
         {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
           <Button
             key={label}
