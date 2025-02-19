@@ -130,9 +130,7 @@ const AddOwner = ({ organizationId }: Props) => {
               <Button
                 type="submit"
                 flex={1}
-                disabled={
-                  !canSubmit || !isDirty || isSubmitting || !members?.length
-                }
+                disabled={!canSubmit || !isDirty || isSubmitting}
               >
                 {isSubmitting
                   ? addOwnerDetails.form.pending
