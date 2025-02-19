@@ -289,6 +289,7 @@ const app = {
         title: "Add Owner",
         description: "Add a new owner to your organization.",
         label: "New Owner",
+        noMembersFound: "No members found",
         form: {
           rowId: {
             placeholder: "Search for or select a member...",

@@ -115,7 +115,7 @@ const AddOwner = ({ organizationId }: Props) => {
           </Field>
         ) : (
           // TODO: discuss refactoring this when organization invites are implemented. We could implement a way to invite a new member as an owner.
-          "No members found"
+          app.organizationMembersPage.cta.addOwner.noMembersFound
         )}
 
         <HStack w="full">
