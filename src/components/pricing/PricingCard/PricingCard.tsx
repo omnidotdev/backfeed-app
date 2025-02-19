@@ -106,17 +106,17 @@ const PricingCard = ({
 
         <Divider my={4} />
 
-      <sigil.ul
-        // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-        className={css({
-          listStyle: "disc",
-          marginLeft: 2,
-        })}
-      >
-        {product.benefits.map((benefit) => (
+        <sigil.ul
+          // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
+          className={css({
+            listStyle: "disc",
+            marginLeft: 2,
+          })}
+        >
+          {product.benefits.map((benefit) => (
             <sigil.li key={benefit.id}>{benefit.description}</sigil.li>
           ))}
-      </sigil.ul>
+        </sigil.ul>
 
         {isAuthenticated ? (
           <PricingCardAction
