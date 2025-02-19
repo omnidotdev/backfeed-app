@@ -6,7 +6,6 @@ import {
   Icon,
   Stack,
   Text,
-  useBreakpointValue,
   useDisclosure,
 } from "@omnidev/sigil";
 import {
@@ -17,6 +16,7 @@ import {
 import { useEffect } from "react";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuPanelLeftClose, LuPanelLeftOpen, LuSettings } from "react-icons/lu";
+import { useMediaQuery } from "usehooks-ts";
 
 import { Breadcrumb, OverflowText } from "components/core";
 import { useOrganizationQuery } from "generated/graphql";
@@ -40,10 +40,11 @@ interface NavigationItem extends ButtonProps {
  * Sidebar for organization management. Used for navigation between organization management pages.
  */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
+  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the open state of the sidebar
+  const isLargeDisplay = useMediaQuery("(min-width: 1025px)");
+
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
-
-  const isLargeDisplay = useBreakpointValue({ base: false, lg: true });
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
@@ -56,7 +57,9 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     }
   );
 
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle } = useDisclosure({
+    defaultIsOpen: isLargeDisplay,
+  });
 
   const [debouncedIsOpen] = useDebounceValue({
     value: isOpen,
