@@ -1,0 +1,8 @@
+mutation RemoveMember($rowId: UUID!) {
+  deleteMember(input: { rowId: $rowId }) {
+    member {
+      userId
+      organizationId
+    }
+  }
+}
