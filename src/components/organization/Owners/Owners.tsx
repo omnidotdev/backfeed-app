@@ -17,6 +17,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Role, useMembersQuery } from "generated/graphql";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
 
@@ -41,14 +42,14 @@ const columns = [
     header: "Role",
     cell: (info) => (
       <Badge
+        variant="outline"
         w={18}
         justifyContent="center"
-        bgColor="brand.primary"
+        color="brand.primary"
         borderColor="brand.primary"
-        color="background.default"
         fontWeight="semibold"
       >
-        {info.getValue().toUpperCase()}
+        {capitalizeFirstLetter(info.getValue())}
       </Badge>
     ),
   }),

@@ -28,6 +28,7 @@ import {
   useOrganizationMembership,
   useSearchParams,
 } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
 
@@ -147,14 +148,14 @@ const Members = ({ organizationId }: Props) => {
 
           return (
             <Badge
+              variant="outline"
               w={18}
               justifyContent="center"
-              bgColor={accentColor}
+              color={accentColor}
               borderColor={accentColor}
-              color="background.default"
               fontWeight="semibold"
             >
-              {info.getValue().toUpperCase()}
+              {capitalizeFirstLetter(info.getValue())}
             </Badge>
           );
         },
