@@ -254,7 +254,7 @@ const app = {
     },
     actions: {
       title: "Quick Actions",
-      description: "Common organization details or actions",
+      description: "Common organization details and actions",
       cta: {
         createProject: {
           label: "Create New Project",
