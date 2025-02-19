@@ -11,13 +11,7 @@ import {
 import { useAuth } from "lib/hooks";
 
 import type { UseMutationOptions } from "@tanstack/react-query";
-import type {
-  Downvote,
-  DownvoteQuery,
-  FeedbackByIdQuery,
-  Upvote,
-  UpvoteQuery,
-} from "generated/graphql";
+import type { Downvote, FeedbackByIdQuery, Upvote } from "generated/graphql";
 
 interface Options {
   /** Feedback ID */
@@ -27,16 +21,7 @@ interface Options {
   /** Downvote object. Used to determine if the user has already downvoted */
   downvote: Partial<Downvote> | null | undefined;
   /** mutation options */
-  mutationOptions?: UseMutationOptions<
-    unknown,
-    Error,
-    void,
-    {
-      feedbackSnapshot: FeedbackByIdQuery;
-      upvoteSnapshot: UpvoteQuery;
-      downvoteSnapshot: DownvoteQuery;
-    }
-  >;
+  mutationOptions?: UseMutationOptions;
 }
 
 const useHandleUpvoteMutation = ({
@@ -53,16 +38,7 @@ const useHandleUpvoteMutation = ({
   const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();
   const { mutateAsync: deleteDownvote } = useDeleteDownvoteMutation();
 
-  return useMutation<
-    unknown,
-    Error,
-    void,
-    {
-      feedbackSnapshot: FeedbackByIdQuery;
-      upvoteSnapshot: UpvoteQuery;
-      downvoteSnapshot: DownvoteQuery;
-    }
-  >({
+  return useMutation({
     mutationKey: ["handleUpvote", feedbackId],
     mutationFn: async () => {
       if (downvote) {
@@ -87,37 +63,24 @@ const useHandleUpvoteMutation = ({
       }
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({
-        queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      });
-
-      const feedbackSnapshot = queryClient.getQueryData(
+      const snapshot = queryClient.getQueryData(
         useFeedbackByIdQuery.getKey({ rowId: feedbackId })
       ) as FeedbackByIdQuery;
-
-      const upvoteSnapshot = queryClient.getQueryData(
-        useUpvoteQuery.getKey({ feedbackId, userId: user?.rowId! })
-      ) as UpvoteQuery;
-
-      const downvoteSnapshot = queryClient.getQueryData(
-        useDownvoteQuery.getKey({ feedbackId, userId: user?.rowId! })
-      ) as DownvoteQuery;
 
       queryClient.setQueryData(
         useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
         {
           post: {
-            ...feedbackSnapshot?.post,
+            ...snapshot?.post,
             upvotes: {
-              ...feedbackSnapshot?.post?.upvotes,
+              ...snapshot?.post?.upvotes,
               totalCount:
-                (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
-                (upvote ? -1 : 1),
+                (snapshot?.post?.upvotes?.totalCount ?? 0) + (upvote ? -1 : 1),
             },
             downvotes: {
-              ...feedbackSnapshot?.post?.downvotes,
+              ...snapshot?.post?.downvotes,
               totalCount:
-                (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
+                (snapshot?.post?.downvotes?.totalCount ?? 0) +
                 (downvote ? -1 : 0),
             },
           },
@@ -141,24 +104,6 @@ const useHandleUpvoteMutation = ({
           null
         );
       }
-
-      return { feedbackSnapshot, upvoteSnapshot, downvoteSnapshot };
-    },
-    onError: (_error, _update, context) => {
-      queryClient.setQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-        context?.feedbackSnapshot
-      );
-
-      queryClient.setQueryData(
-        useUpvoteQuery.getKey({ feedbackId, userId: user?.rowId! }),
-        context?.upvoteSnapshot
-      );
-
-      queryClient.setQueryData(
-        useDownvoteQuery.getKey({ feedbackId, userId: user?.rowId! }),
-        context?.downvoteSnapshot
-      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({
