@@ -4,13 +4,13 @@ import { Suspense } from "react";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
+import { OrganizationFilters, OrganizationList } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
-import { OrganizationFilters, OrganizationList } from "components/organization";
 import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 

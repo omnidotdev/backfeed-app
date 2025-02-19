@@ -254,16 +254,48 @@ const app = {
     },
     actions: {
       title: "Quick Actions",
-      description: "Common organization tasks",
+      description: "Common organization details and actions",
       cta: {
         createProject: {
           label: "Create New Project",
         },
         manageTeam: {
-          label: "Manage Team",
+          label: "Members",
         },
         settings: {
-          label: "Organization Settings",
+          label: "Settings",
+        },
+      },
+    },
+  },
+  organizationMembersPage: {
+    breadcrumb: "Members",
+    description: "Manage the members and their roles within your organization.",
+    filters: {
+      search: {
+        placeholder: "Search all organization members...",
+      },
+      role: {
+        placeholder: "Select Roles",
+      },
+    },
+    membersMenu: {
+      makeAdmin: "Give administrative privileges",
+      removeAdmin: "Remove administrative privileges",
+      removeMember: "Remove from organization",
+    },
+    cta: {
+      addOwner: {
+        title: "Add Owner",
+        description: "Add a new owner to your organization.",
+        label: "New Owner",
+        noMembersFound: "No members found",
+        form: {
+          rowId: {
+            placeholder: "Search for or select a member...",
+          },
+          pending: "Adding Owner...",
+          cancel: "Cancel",
         },
       },
     },
@@ -271,6 +303,11 @@ const app = {
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
     cta: {
       updateOrganization: {
         title: "Update Organization",
@@ -299,10 +336,21 @@ const app = {
           },
         },
       },
+      transferOwnership: {
+        title: "Transfer Ownership",
+        description:
+          "Transfer ownership of this organization to another member.",
+        actionLabel: "Transfer",
+        destructiveAction: {
+          title: "Transfer Ownership",
+          description: "Are you sure you want to transfer ownership?",
+          actionLabel: "Transfer",
+        },
+      },
       deleteOrganization: {
         title: "Delete Organization",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
+          "The organization will be permanently deleted, including its projects, posts and comments.",
         actionLabel: "Delete",
         destruciveAction: {
           title: "Delete Organization",
@@ -314,7 +362,7 @@ const app = {
       leaveOrganization: {
         title: "Leave Organization",
         description:
-          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
+          "You will no longer have access to this organization and its projects.",
         actionLabel: "Leave",
         destruciveAction: {
           title: "Leave Organization",

@@ -3854,6 +3854,8 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
+
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
@@ -3888,6 +3890,21 @@ export type CreateMemberMutationVariables = Exact<{
 
 
 export type CreateMemberMutation = { __typename?: 'Mutation', createMember?: { __typename?: 'CreateMemberPayload', clientMutationId?: string | null } | null };
+
+export type RemoveMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type RemoveMemberMutation = { __typename?: 'Mutation', deleteMember?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', userId: string, organizationId: string } | null } | null };
+
+export type UpdateMemberMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: MemberPatch;
+}>;
+
+
+export type UpdateMemberMutation = { __typename?: 'Mutation', updateMember?: { __typename?: 'UpdateMemberPayload', clientMutationId?: string | null } | null };
 
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
@@ -4000,6 +4017,16 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+
+export type MembersQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+  roles?: InputMaybe<Array<Role> | Role>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  excludeRoles?: InputMaybe<Array<Role> | Role>;
+}>;
+
+
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', totalCount: number, nodes: Array<{ __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4149,6 +4176,19 @@ export const FeedbackFragmentDoc = `
   }
 }
     `;
+export const MemberFragmentDoc = `
+    fragment Member on Member {
+  rowId
+  organizationId
+  userId
+  role
+  user {
+    firstName
+    lastName
+    username
+  }
+}
+    `;
 export const CreateCommentDocument = `
     mutation CreateComment($input: CreateCommentInput!) {
   createComment(input: $input) {
@@ -4278,6 +4318,61 @@ useCreateMemberMutation.getKey = () => ['CreateMember'];
 
 
 useCreateMemberMutation.fetcher = (variables: CreateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateMemberMutation, CreateMemberMutationVariables>(CreateMemberDocument, variables, options);
+
+export const RemoveMemberDocument = `
+    mutation RemoveMember($rowId: UUID!) {
+  deleteMember(input: {rowId: $rowId}) {
+    member {
+      userId
+      organizationId
+    }
+  }
+}
+    `;
+
+export const useRemoveMemberMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RemoveMemberMutation, TError, RemoveMemberMutationVariables, TContext>) => {
+    
+    return useMutation<RemoveMemberMutation, TError, RemoveMemberMutationVariables, TContext>(
+      {
+    mutationKey: ['RemoveMember'],
+    mutationFn: (variables?: RemoveMemberMutationVariables) => graphqlFetch<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, variables)(),
+    ...options
+  }
+    )};
+
+useRemoveMemberMutation.getKey = () => ['RemoveMember'];
+
+
+useRemoveMemberMutation.fetcher = (variables: RemoveMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, variables, options);
+
+export const UpdateMemberDocument = `
+    mutation UpdateMember($rowId: UUID!, $patch: MemberPatch!) {
+  updateMember(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateMemberMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateMember'],
+    mutationFn: (variables?: UpdateMemberMutationVariables) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateMemberMutation.getKey = () => ['UpdateMember'];
+
+
+useUpdateMemberMutation.fetcher = (variables: UpdateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables, options);
 
 export const CreateOrganizationDocument = `
     mutation CreateOrganization($input: CreateOrganizationInput!) {
@@ -4806,6 +4901,63 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 
 
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
+
+export const MembersDocument = `
+    query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
+  members(
+    orderBy: ROLE_ASC
+    condition: {organizationId: $organizationId}
+    filter: {role: {in: $roles, notIn: $excludeRoles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
+  ) {
+    totalCount
+    nodes {
+      ...Member
+    }
+  }
+}
+    ${MemberFragmentDoc}`;
+
+export const useMembersQuery = <
+      TData = MembersQuery,
+      TError = unknown
+    >(
+      variables: MembersQueryVariables,
+      options?: Omit<UseQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MembersQuery, TError, TData>(
+      {
+    queryKey: ['Members', variables],
+    queryFn: graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables),
+    ...options
+  }
+    )};
+
+useMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members', variables];
+
+export const useInfiniteMembersQuery = <
+      TData = InfiniteData<MembersQuery>,
+      TError = unknown
+    >(
+      variables: MembersQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<MembersQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Members.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members.infinite', variables];
+
+
+useMembersQuery.fetcher = (variables: MembersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables, options);
 
 export const OrganizationDocument = `
     query Organization($slug: String!) {
