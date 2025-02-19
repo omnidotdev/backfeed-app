@@ -116,6 +116,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         >
           {debouncedIsOpen ? organization?.name : organization?.name?.[0]}
         </OverflowText>
+
         {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
           <Button
             key={label}
@@ -132,10 +133,12 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             aria-label={label}
           >
             <Icon src={icon} h={5} w={5} />
+
             {debouncedIsOpen && <Text>{label}</Text>}
           </Button>
         ))}
       </Stack>
+
       <Stack w="full" mt={2} placeSelf="flex-start" px={4}>
         <HStack ml={{ base: 0, lg: -4 }} minH={10}>
           <Button
@@ -152,6 +155,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
               w={5}
             />
           </Button>
+
           <Breadcrumb breadcrumbs={breadcrumbs} />
         </HStack>
         {children}

@@ -30,6 +30,7 @@ const columns = [
         <Text fontSize="lg" fontWeight="medium">
           {row.original.user?.firstName} {row.original.user?.lastName}
         </Text>
+
         <Text color="foreground.subtle" fontWeight="medium">
           {row.original.user?.username}
         </Text>

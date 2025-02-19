@@ -80,6 +80,7 @@ const MembershipMenu = ({
       trigger={
         <Button size="sm" variant="outline">
           {`${selectedRows.length} Selected`}
+
           <Icon src={LuChevronDown} />
         </Button>
       }
@@ -94,6 +95,7 @@ const MembershipMenu = ({
         >
           {app.organizationMembersPage.membersMenu.admin}
         </MenuItem>
+
         <MenuItem
           value={MenuAction.Remove}
           color="red"
