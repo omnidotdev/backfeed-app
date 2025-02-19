@@ -68,14 +68,14 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
-      label: app.organizationSettingsPage.breadcrumb,
-      icon: LuSettings,
-      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
-    },
-    {
       label: "Members",
       icon: HiOutlineUserGroup,
       onClick: () => router.push(`/organizations/${organizationSlug}/members`),
+    },
+    {
+      label: app.organizationSettingsPage.breadcrumb,
+      icon: LuSettings,
+      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
     },
   ];
 
