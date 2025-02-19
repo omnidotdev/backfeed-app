@@ -104,7 +104,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       <Stack
         position="relative"
         h="full"
-        w={isOpen ? "xs" : 20}
+        w={isOpen ? "xs" : 14}
         borderRightWidth="1px"
         borderColor="border.subtle"
         transition="all 200ms ease-in-out"
