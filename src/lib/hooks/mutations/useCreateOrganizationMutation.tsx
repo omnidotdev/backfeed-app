@@ -35,7 +35,11 @@ const useCreateOrganizationMutation = (
       const { createOrganization: createOrganizationResponse } =
         await createOrganization(variables);
 
-      await createMember({
+      if (!createOrganizationResponse?.organization) {
+        throw new Error("Failed to create organization");
+      }
+
+      const { createMember: createMemberResponse } = await createMember({
         input: {
           member: {
             userId: user?.rowId!,
@@ -44,6 +48,10 @@ const useCreateOrganizationMutation = (
           },
         },
       });
+
+      if (!createMemberResponse) {
+        throw new Error("Failed to add member to organization");
+      }
 
       return Promise.resolve(
         createOrganizationResponse as CreateOrganizationPayload
