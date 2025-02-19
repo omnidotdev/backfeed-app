@@ -88,31 +88,37 @@ const AddOwner = ({ organizationId }: Props) => {
       <sigil.form
         display="flex"
         flexDirection="column"
-        gap={4}
+        alignItems="center"
+        gap={8}
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
           await handleSubmit();
         }}
       >
-        <Field name="rowId">
-          {({ handleChange, state }) => (
-            <Combobox
-              label={{ id: "member", singular: "Member", plural: "Members" }}
-              collection={createListCollection({ items: members ?? [] })}
-              placeholder={addOwnerDetails.form.rowId.placeholder}
-              clearTriggerProps={{
-                display: state.value.length ? "block" : "none",
-              }}
-              value={[state.value]}
-              onValueChange={({ value }) => {
-                value.length ? handleChange(value[0]) : handleChange("");
-              }}
-            />
-          )}
-        </Field>
+        {members?.length ? (
+          <Field name="rowId">
+            {({ handleChange, state }) => (
+              <Combobox
+                label={{ id: "member", singular: "Member", plural: "Members" }}
+                collection={createListCollection({ items: members ?? [] })}
+                placeholder={addOwnerDetails.form.rowId.placeholder}
+                clearTriggerProps={{
+                  display: state.value.length ? "block" : "none",
+                }}
+                value={[state.value]}
+                onValueChange={({ value }) => {
+                  value.length ? handleChange(value[0]) : handleChange("");
+                }}
+              />
+            )}
+          </Field>
+        ) : (
+          // TODO: discuss refactoring this when organization invites are implemented. We could implement a way to invite a new member as an owner.
+          "No members found"
+        )}
 
-        <HStack>
+        <HStack w="full">
           <Subscribe
             selector={(state) => [
               state.canSubmit,
@@ -124,7 +130,9 @@ const AddOwner = ({ organizationId }: Props) => {
               <Button
                 type="submit"
                 flex={1}
-                disabled={!canSubmit || !isDirty || isSubmitting}
+                disabled={
+                  !canSubmit || !isDirty || isSubmitting || !members?.length
+                }
               >
                 {isSubmitting
                   ? addOwnerDetails.form.pending
