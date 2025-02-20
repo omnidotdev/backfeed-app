@@ -1,7 +1,6 @@
 "use client";
 
 import { HStack, Icon, Tooltip } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
@@ -11,10 +10,6 @@ import {
 
 import { FeedbackCard } from "components/feedback";
 import {
-  useCreateDownvoteMutation,
-  useCreateUpvoteMutation,
-  useDeleteDownvoteMutation,
-  useDeleteUpvoteMutation,
   useDownvoteQuery,
   useFeedbackByIdQuery,
   useUpvoteQuery,
@@ -27,8 +22,11 @@ import type {
   TooltipTriggerProps,
   VstackProps,
 } from "@omnidev/sigil";
-import type { InvalidateOptions } from "@tanstack/react-query";
 import type { Post } from "generated/graphql";
+import {
+  useHandleDownvoteMutation,
+  useHandleUpvoteMutation,
+} from "lib/hooks/mutations";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -51,6 +49,8 @@ interface Props extends HstackProps {
  * Feedback details section.
  */
 const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
+  const { user } = useAuth();
+
   const { data: feedback } = useFeedbackByIdQuery(
     {
       rowId: feedbackId,
@@ -60,14 +60,10 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     }
   );
 
-  const queryClient = useQueryClient();
-
-  const { user } = useAuth();
-
   const { data: hasUpvoted } = useUpvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId: feedback?.rowId!,
+      feedbackId,
     },
     {
       enabled: !!user?.rowId,
@@ -78,7 +74,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
   const { data: hasDownvoted } = useDownvoteQuery(
     {
       userId: user?.rowId!,
-      feedbackId: feedback?.rowId!,
+      feedbackId,
     },
     {
       enabled: !!user?.rowId,
@@ -86,129 +82,38 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     }
   );
 
-  const onSuccess = () => {
-    // NB: Since our global callback has already invalidated everything, we just use `invalidateQueries` to "pick up" the already in flight Promises and return them. See: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations#to-await-or-not-to-await
-    const invalidationOptions: InvalidateOptions = {
-      cancelRefetch: false,
-    };
+  const { mutate: handleUpvote } = useHandleUpvoteMutation({
+    feedbackId,
+    upvote: hasUpvoted,
+    downvote: hasDownvoted,
+  });
 
-    return Promise.all([
-      queryClient.invalidateQueries(
-        {
-          queryKey: useUpvoteQuery.getKey({
-            feedbackId: feedback?.rowId!,
-            userId: user?.rowId!,
-          }),
-        },
-        invalidationOptions
-      ),
-      queryClient.invalidateQueries(
-        {
-          queryKey: useDownvoteQuery.getKey({
-            feedbackId: feedback?.rowId!,
-            userId: user?.rowId!,
-          }),
-        },
-        invalidationOptions
-      ),
-      queryClient.invalidateQueries(
-        {
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback?.rowId! }),
-        },
-        invalidationOptions
-      ),
-    ]);
-  };
+  const { mutate: handleDownvote } = useHandleDownvoteMutation({
+    feedbackId,
+    upvote: hasUpvoted,
+    downvote: hasDownvoted,
+  });
 
-  const { mutate: upvote, isPending: isUpvotePending } =
-    useCreateUpvoteMutation({
-      onSuccess,
-    });
-  const { mutate: downvote, isPending: isDownvotePending } =
-    useCreateDownvoteMutation({
-      onSuccess,
-    });
-  const { mutate: deleteUpvote, isPending: isDeleteUpvotePending } =
-    useDeleteUpvoteMutation({
-      onSuccess,
-    });
-  const { mutate: deleteDownvote, isPending: isDeleteDownvotePending } =
-    useDeleteDownvoteMutation({
-      onSuccess,
-    });
+  const totalUpvotes = feedback?.upvotes?.totalCount ?? 0;
 
-  const totalUpvotes =
-    (feedback?.upvotes?.totalCount ?? 0) +
-    (isUpvotePending ? 1 : isDeleteUpvotePending ? -1 : 0);
-
-  const totalDownvotes =
-    (feedback?.downvotes?.totalCount ?? 0) +
-    (isDownvotePending ? 1 : isDeleteDownvotePending ? -1 : 0);
+  const totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
       id: "upvote",
       votes: totalUpvotes,
       tooltip: app.feedbackPage.details.upvote,
-      icon:
-        !isDownvotePending && (hasUpvoted || isUpvotePending)
-          ? PiArrowFatLineUpFill
-          : PiArrowFatLineUp,
+      icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
-      onClick: () => {
-        if (hasDownvoted) {
-          deleteDownvote({
-            rowId: hasDownvoted.rowId,
-          });
-        }
-
-        if (hasUpvoted) {
-          deleteUpvote({
-            rowId: hasUpvoted.rowId,
-          });
-        } else {
-          upvote({
-            input: {
-              upvote: {
-                postId: feedback?.rowId!,
-                userId: user?.rowId!,
-              },
-            },
-          });
-        }
-      },
+      onClick: () => handleUpvote(),
     },
     {
       id: "downvote",
       votes: totalDownvotes,
       tooltip: app.feedbackPage.details.downvote,
-      icon:
-        !isUpvotePending && (hasDownvoted || isDownvotePending)
-          ? PiArrowFatLineDownFill
-          : PiArrowFatLineDown,
+      icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
-      onClick: () => {
-        if (hasUpvoted) {
-          deleteUpvote({
-            rowId: hasUpvoted.rowId,
-          });
-        }
-
-        if (hasDownvoted) {
-          deleteDownvote({
-            rowId: hasDownvoted.rowId,
-          });
-        } else {
-          downvote({
-            input: {
-              downvote: {
-                postId: feedback?.rowId!,
-                userId: user?.rowId!,
-              },
-            },
-          });
-        }
-      },
+      onClick: () => handleDownvote(),
     },
   ];
 

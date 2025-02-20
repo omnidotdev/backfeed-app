@@ -69,7 +69,7 @@ const CommentCard = ({
 
   const { mutate: deleteComment, isPending: isDeletePending } =
     useDeleteCommentMutation({
-      onSuccess: () =>
+      onSettled: () =>
         queryClient.invalidateQueries({
           queryKey: useInfiniteCommentsQuery.getKey({
             pageSize: 5,

@@ -16,15 +16,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { FormFieldError } from "components/core";
-import {
-  Role,
-  useCreateMemberMutation,
-  useCreateOrganizationMutation,
-} from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
+import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -104,27 +100,17 @@ const CreateOrganization = () => {
     [user, isOpen, isCreateProjectDialogOpen]
   );
 
-  const {
-    data,
-    mutateAsync: createOrganization,
-    isPending: isCreatingOrganization,
-  } = useCreateOrganizationMutation();
+  const { mutateAsync: createOrganization, isPending } =
+    useCreateOrganizationMutation({
+      onSuccess: (data) => {
+        router.push(
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
+        );
 
-  const {
-    mutateAsync: addMemberToOrganization,
-    isPending: isAddingMemberToOrganization,
-  } = useCreateMemberMutation({
-    onSuccess: () => {
-      router.push(
-        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
-      );
-
-      setIsOpen(false);
-      reset();
-    },
-  });
-
-  const isPending = isCreatingOrganization || isAddingMemberToOrganization;
+        setIsOpen(false);
+        reset();
+      },
+    });
 
   const { handleSubmit, Field, Subscribe, reset } = useForm({
     defaultValues: {
@@ -139,28 +125,14 @@ const CreateOrganization = () => {
     },
     onSubmit: async ({ value }) =>
       toaster.promise(
-        async () => {
-          const { createOrganization: createOrganizationResponse } =
-            await createOrganization({
-              input: {
-                organization: {
-                  name: value.name,
-                  slug: value.slug,
-                },
-              },
-            });
-
-          await addMemberToOrganization({
-            input: {
-              member: {
-                userId: user?.rowId!,
-                organizationId:
-                  createOrganizationResponse?.organization?.rowId!,
-                role: Role.Owner,
-              },
+        createOrganization({
+          input: {
+            organization: {
+              name: value.name,
+              slug: value.slug,
             },
-          });
-        },
+          },
+        }),
         {
           loading: {
             title: app.dashboardPage.cta.newOrganization.action.pending,
