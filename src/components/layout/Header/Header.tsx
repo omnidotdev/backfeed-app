@@ -2,9 +2,8 @@
 
 import { Flex, HStack, Icon, Text, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
-import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { Link } from "components/core";
+import { Image, Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -32,15 +31,15 @@ const Header = () => {
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">
           <Link href="/">
             <HStack gap={2} alignItems="center">
-              <Icon src={LuMessageSquarePlus} w={6} h={6} />
-
-              <Text
-                fontWeight="bold"
-                fontSize="lg"
-                display={{ base: "none", md: "block" }}
-              >
-                {app.name}
-              </Text>
+              <Image
+                src="/img/logo.png"
+                alt={`${app.name} logo`}
+                width={48}
+                height={48}
+                // adjust color based on color theme
+                mixBlendMode="difference"
+                filter="brightness(0) invert(1)"
+              />
             </HStack>
           </Link>
 
