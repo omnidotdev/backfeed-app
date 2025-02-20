@@ -1,13 +1,17 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
+import {
+  Role,
+  useMembersQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
-import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -22,7 +26,7 @@ export const generateMetadata = async ({
   });
 
   return {
-    title: `${organization?.name} | ${app.name}`,
+    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb} | ${app.name}`,
   };
 };
 
@@ -45,41 +49,43 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
-    },
-    {
-      label: organization.name ?? organization.slug!,
-      href: `/organizations/${organization.slug}`,
-    },
-    {
-      label: app.organizationSettingsPage.breadcrumb,
-    },
-  ];
-
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationQuery.getKey({
-      slug: organizationSlug,
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
     }),
-    queryFn: useOrganizationQuery.fetcher({
-      slug: organizationSlug,
+    queryClient.prefetchQuery({
+      queryKey: useMembersQuery.getKey({
+        organizationId: organization.rowId,
+        roles: [Role.Owner],
+      }),
+      queryFn: useMembersQuery.fetcher({
+        organizationId: organization.rowId,
+        roles: [Role.Owner],
+      }),
     }),
-  });
+  ]);
 
   return (
-    <Page
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
-        description: app.organizationSettingsPage.description,
-      }}
-    >
-      <OrganizationSettings />
-    </Page>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        pt={0}
+        header={{
+          title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
+          description: app.organizationSettingsPage.description,
+        }}
+      >
+        <OrganizationSettings />
+      </Page>
+    </HydrationBoundary>
   );
 };
 

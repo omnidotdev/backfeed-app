@@ -32,8 +32,9 @@ const PinnedOrganizations = () => {
     {
       pageSize: 3,
       offset: 0,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       userId: user?.rowId!,
+      isMember: true,
     },
     {
       enabled: !!user?.rowId,
@@ -71,13 +72,11 @@ const PinnedOrganizations = () => {
           </Text>
         </Stack>
 
-        <Link href="/organizations" disabled={!pinnedOrganizations?.length}>
+        <Link href="/organizations">
           <Button
             variant="outline"
             color="brand.primary"
             borderColor="brand.primary"
-            opacity={{ base: 1, _disabled: 0.5 }}
-            disabled={!pinnedOrganizations?.length}
           >
             {app.dashboardPage.cta.viewOrganizations.label}
           </Button>

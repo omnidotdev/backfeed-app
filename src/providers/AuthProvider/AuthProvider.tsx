@@ -1,12 +1,12 @@
 import { SessionProvider as AuthSessionProvider } from "next-auth/react";
 
-import type { PropsWithChildren } from "react";
+import type { SessionProviderProps } from "next-auth/react";
 
 /**
  * Auth session provider.
  */
-const AuthProvider = ({ children }: PropsWithChildren) => (
-  <AuthSessionProvider>{children}</AuthSessionProvider>
+const AuthProvider = ({ children, ...rest }: SessionProviderProps) => (
+  <AuthSessionProvider {...rest}>{children}</AuthSessionProvider>
 );
 
 export default AuthProvider;

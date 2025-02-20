@@ -9,7 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
+import { useDebounceValue, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -24,8 +24,6 @@ const OrganizationList = ({ ...props }: StackProps) => {
 
   const [debouncedSearch] = useDebounceValue({ value: search });
 
-  const { user, isLoading: isAuthLoading } = useAuth();
-
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -34,12 +32,11 @@ const OrganizationList = ({ ...props }: StackProps) => {
     {
       pageSize,
       offset: (page - 1) * pageSize,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.rowId!,
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       search: debouncedSearch,
+      isMember: false,
     },
     {
-      enabled: !!user?.rowId,
       placeholderData: keepPreviousData,
       select: (data) => ({
         totalCount: data?.organizations?.totalCount,
@@ -49,8 +46,6 @@ const OrganizationList = ({ ...props }: StackProps) => {
   );
 
   const organizations = data?.organizations;
-
-  if (isAuthLoading) return null;
 
   if (isError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;

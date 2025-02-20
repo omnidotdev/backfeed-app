@@ -1,14 +1,16 @@
 "use client";
 
-import { Center, Flex, Grid, sigil, useIsClient } from "@omnidev/sigil";
+import { Center, Flex, Grid, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
+import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
 import { app } from "lib/config";
+import { toaster } from "lib/constants";
 
 import type { ReactNode } from "react";
 
@@ -42,12 +44,15 @@ const Layout = ({ children }: Props) => {
       gap={0}
     >
       <Flex direction="column" position="sticky" top={0} zIndex="sticky">
+        {/* TODO: when removed, update `top` position for ManagementSidebar on the `sticky` positioned element */}
         <Flex
           p={4}
+          align="center"
           justify="center"
           bgColor="brand.primary.500"
           color="white"
           fontWeight="semibold"
+          h={20}
         >
           ⚠️ {app.name} is early alpha software.
         </Flex>
@@ -62,6 +67,9 @@ const Layout = ({ children }: Props) => {
       {/* dialogs */}
       <CreateProject organizationSlug={organizationSlug} />
       <CreateOrganization />
+
+      {/* toaster */}
+      <Toaster toaster={toaster} />
     </Grid>
   );
 };
