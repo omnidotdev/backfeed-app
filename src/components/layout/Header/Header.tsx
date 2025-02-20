@@ -39,20 +39,12 @@ const Header = () => {
               <Image
                 src="/img/logo.png"
                 alt={`${app.name} logo`}
-                width={56}
-                height={56}
+                width={48}
+                height={48}
                 // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
               />
-
-              <Text
-                fontWeight="bold"
-                fontSize="lg"
-                display={{ base: "none", md: "block" }}
-              >
-                {app.name}
-              </Text>
             </HStack>
           </Link>
 
