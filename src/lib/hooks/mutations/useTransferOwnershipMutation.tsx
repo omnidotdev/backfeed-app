@@ -25,6 +25,9 @@ interface Options {
   >;
 }
 
+/**
+ * Transfer ownership of an organization to another member.
+ */
 const useTransferOwnershipMutation = ({
   organizationId,
   mutationOptions,

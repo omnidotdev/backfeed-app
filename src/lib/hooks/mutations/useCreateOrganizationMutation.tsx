@@ -13,6 +13,9 @@ import type {
   CreateOrganizationPayload,
 } from "generated/graphql";
 
+/**
+ * Create a new organization.
+ */
 const useCreateOrganizationMutation = (
   options?: UseMutationOptions<
     CreateOrganizationPayload,
