@@ -49,9 +49,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     true
   );
 
-  const onToggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const onToggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const {
     isOpen: isDrawerOpen,
