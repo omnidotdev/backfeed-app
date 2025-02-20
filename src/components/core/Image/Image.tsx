@@ -1,3 +1,5 @@
+"use client";
+
 import { sigil } from "@omnidev/sigil";
 import NextImage from "next/image";
 
