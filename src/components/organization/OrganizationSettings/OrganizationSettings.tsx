@@ -18,12 +18,12 @@ import {
   useMembersQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
-  useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
+import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -105,8 +105,11 @@ const OrganizationSettings = () => {
       useLeaveOrganizationMutation({
         onSuccess,
       }),
-    { mutateAsync: updateMembership } = useUpdateMemberMutation({
-      onSuccess,
+    { mutate: transferOwnership } = useTransferOwnershipMutation({
+      organizationId: organization?.rowId,
+      mutationOptions: {
+        onSuccess,
+      },
     }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
       useCreateMemberMutation({
@@ -154,21 +157,13 @@ const OrganizationSettings = () => {
     action: {
       label: transferOwnershipDetails.actionLabel,
       disabled: !newOwnerMembershipId.length,
-      onClick: async () => {
-        await updateMembership({
+      onClick: () =>
+        transferOwnership({
           rowId: newOwnerMembershipId,
           patch: {
             role: Role.Owner,
           },
-        });
-
-        await updateMembership({
-          rowId: membershipId!,
-          patch: {
-            role: Role.Member,
-          },
-        });
-      },
+        }),
     },
     children: (
       <Combobox
