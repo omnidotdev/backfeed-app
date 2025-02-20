@@ -116,9 +116,11 @@ const DestructiveAction = ({
         >
           <Icon src={icon} h={5} w={5} {...iconProps} />
 
-          <Text display={{ base: "none", sm: "inline-flex" }}>
-            {triggerLabel}
-          </Text>
+          {triggerLabel && (
+            <Text display={{ base: "none", sm: "inline-flex" }}>
+              {triggerLabel}
+            </Text>
+          )}
         </Button>
       }
       triggerProps={triggerProps}
