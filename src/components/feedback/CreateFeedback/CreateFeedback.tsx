@@ -79,18 +79,15 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
   );
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
-    onSuccess: () => {
+    onSettled: () => {
       reset();
 
-      return queryClient.invalidateQueries(
-        {
-          queryKey: useInfinitePostsQuery.getKey({
-            pageSize: 5,
-            projectId: projectId!,
-          }),
-        },
-        { cancelRefetch: false }
-      );
+      return queryClient.invalidateQueries({
+        queryKey: useInfinitePostsQuery.getKey({
+          pageSize: 5,
+          projectId: projectId!,
+        }),
+      });
     },
   });
 

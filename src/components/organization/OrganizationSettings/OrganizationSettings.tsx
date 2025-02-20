@@ -87,33 +87,27 @@ const OrganizationSettings = () => {
     organizationId: organization?.rowId,
   });
 
-  const onSuccess = () =>
-    queryClient.invalidateQueries(
-      {
-        queryKey: useOrganizationRoleQuery.getKey({
-          userId: user?.rowId!,
-          organizationId: organization?.rowId!,
-        }),
-      },
-      { cancelRefetch: false }
-    );
+  const onSettled = () =>
+    queryClient.invalidateQueries({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: user?.rowId!,
+        organizationId: organization?.rowId!,
+      }),
+    });
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
     { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
       useLeaveOrganizationMutation({
-        onSuccess,
+        onSettled,
       }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId: organization?.rowId,
-      mutationOptions: {
-        onSuccess,
-      },
     }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
       useCreateMemberMutation({
-        onSuccess,
+        onSettled,
       });
 
   const isCurrentMember =

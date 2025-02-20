@@ -52,18 +52,15 @@ const CreateComment = ({ totalCount }: Props) => {
   });
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
-    onSuccess: () => {
+    onSettled: () => {
       reset();
 
-      return queryClient.invalidateQueries(
-        {
-          queryKey: useInfiniteCommentsQuery.getKey({
-            pageSize: 5,
-            feedbackId,
-          }),
-        },
-        { cancelRefetch: false }
-      );
+      return queryClient.invalidateQueries({
+        queryKey: useInfiniteCommentsQuery.getKey({
+          pageSize: 5,
+          feedbackId,
+        }),
+      });
     },
   });
 
