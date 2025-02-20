@@ -7,33 +7,19 @@ import {
 } from "@omnidev/sigil";
 import { match } from "ts-pattern";
 
-import type {
-  ProgressCircleProps,
-  ProgressProps,
-  TextProps,
-} from "@omnidev/sigil";
+import type { ProgressProps } from "@omnidev/sigil";
 
 interface CharacterLimitProps extends ProgressProps {
   /** current character count */
   value: number;
   /** maximum character count */
   max: number;
-  /** props to pass to the ProgressCircle subcomponent */
-  progressCircleProps?: ProgressCircleProps;
-  /** Label props to pass to the Text subcomponent */
-  labelProps?: TextProps;
 }
 
 /**
  * Character limit component that displays a circular progress bar with a text label indicating the current character count and maximum character count.
  */
-const CharacterLimit = ({
-  value,
-  max,
-  progressCircleProps,
-  labelProps,
-  ...rest
-}: CharacterLimitProps) => {
+const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
   const characterLimitColor = match(value / max)
     .when(
       (value) => value >= 0.9,
@@ -62,7 +48,6 @@ const CharacterLimit = ({
           "--size": "sizes.4",
           "--thickness": "sizes.0.5",
         }}
-        {...progressCircleProps}
       >
         <ProgressCircleTrack />
         <ProgressCircleRange
@@ -73,11 +58,7 @@ const CharacterLimit = ({
         />
       </ProgressCircle>
 
-      <Text
-        fontSize="sm"
-        color={characterLimitColor ?? "foreground.muted"}
-        {...labelProps}
-      >
+      <Text fontSize="sm" color={characterLimitColor ?? "foreground.muted"}>
         {`${value} / ${max}`}
       </Text>
     </ProgressRoot>
