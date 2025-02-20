@@ -10,7 +10,6 @@ import {
 } from "@omnidev/sigil";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { useEffect } from "react";
-import { FiX } from "react-icons/fi";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage, useMediaQuery } from "usehooks-ts";
 
@@ -117,10 +116,15 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           onOpenChange={onToggleDrawer}
           bodyProps={{
             p: 0,
+            pb: 6,
             borderLeftRadius: "full",
             alignItems: "center",
+            justifyContent: "space-between",
             overflow: "hidden",
             gap: 6,
+          }}
+          positionerProps={{
+            width: { base: "80%", sm: "sm" },
           }}
         >
           <ManagementNavigation
@@ -132,14 +136,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             w="full"
           />
 
-          <Button
-            onClick={onCloseDrawer}
-            variant="ghost"
-            w="fit"
-            aria-label="Close Drawer"
-          >
-            <Icon src={FiX} />
-          </Button>
+          <Stack w="full" px={6}>
+            <Button variant="ghost" onClick={onCloseDrawer}>
+              Close
+            </Button>
+          </Stack>
         </Drawer>
       )}
 
