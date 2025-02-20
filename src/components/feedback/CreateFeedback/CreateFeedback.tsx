@@ -1,21 +1,12 @@
 "use client";
 
-import {
-  Button,
-  Input,
-  Label,
-  Skeleton,
-  Stack,
-  Text,
-  Textarea,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Button, Input, Label, Stack, Textarea, sigil } from "@omnidev/sigil";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
+import { CharacterLimit, FormFieldError } from "components/core";
 import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
@@ -24,6 +15,8 @@ import {
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
+
+const MAX_DESCRIPTION_LENGTH = 240;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -45,19 +38,10 @@ const createFeedbackSchema = z.object({
     .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
 });
 
-interface Props {
-  /** Loading state for current feedback. */
-  isLoading: boolean;
-  /** Error state for current feedback. */
-  isError: boolean;
-  /** Total feedback for the project. */
-  totalCount: number;
-}
-
 /**
  * Create feedback form.
  */
-const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
+const CreateFeedback = () => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -91,7 +75,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
     defaultValues: {
       projectId: projectId ?? "",
       userId: user?.rowId ?? "",
@@ -134,13 +118,18 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       ),
   });
 
+  const descriptionLength = useStore(
+    store,
+    (store) => store.values.description.length
+  );
+
   const isFormDisabled = isProjectLoading || isAuthLoading;
 
   return (
     <sigil.form
       display="flex"
       flexDirection="column"
-      gap={4}
+      gap={2}
       onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -191,6 +180,7 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
               disabled={isFormDisabled}
+              maxLength={MAX_DESCRIPTION_LENGTH}
             />
 
             <FormFieldError
@@ -202,12 +192,11 @@ const CreateFeedback = ({ isLoading, isError, totalCount }: Props) => {
       </Field>
 
       <Stack justify="space-between" direction="row">
-        <Skeleton isLoaded={!isLoading} h="fit-content">
-          <Text
-            fontSize="sm"
-            color="foreground.muted"
-          >{`${isError ? 0 : totalCount} ${app.projectPage.projectFeedback.totalResponses}`}</Text>
-        </Skeleton>
+        <CharacterLimit
+          value={descriptionLength}
+          max={MAX_DESCRIPTION_LENGTH}
+          placeSelf="flex-start"
+        />
 
         <Subscribe
           selector={(state) => [

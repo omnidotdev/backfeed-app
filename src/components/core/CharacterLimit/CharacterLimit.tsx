@@ -1,0 +1,87 @@
+import {
+  ProgressCircle,
+  ProgressCircleRange,
+  ProgressCircleTrack,
+  ProgressRoot,
+  Text,
+} from "@omnidev/sigil";
+import { match } from "ts-pattern";
+
+import type {
+  ProgressCircleProps,
+  ProgressProps,
+  TextProps,
+} from "@omnidev/sigil";
+
+interface CharacterLimitProps extends ProgressProps {
+  /** current character count */
+  value: number;
+  /** maximum character count */
+  max: number;
+  /** props to pass to the ProgressCircle subcomponent */
+  progressCircleProps?: ProgressCircleProps;
+  /** Label props to pass to the Text subcomponent */
+  labelProps?: TextProps;
+}
+
+/**
+ * Character limit component that displays a circular progress bar with a text label indicating the current character count and maximum character count.
+ */
+const CharacterLimit = ({
+  value,
+  max,
+  progressCircleProps,
+  labelProps,
+  ...rest
+}: CharacterLimitProps) => {
+  const characterLimitColor = match(value / max)
+    .when(
+      (value) => value >= 0.9,
+      () => "red"
+    )
+    .when(
+      (value) => value >= 0.7,
+      () => "yellow"
+    )
+    .otherwise(() => undefined);
+
+  return (
+    <ProgressRoot
+      type="circular"
+      value={value}
+      min={0}
+      max={max}
+      flexDirection="row"
+      w="fit"
+      gap={2}
+      {...rest}
+    >
+      {/* @ts-ignore TODO: look into prop merging issues that are causing a type error */}
+      <ProgressCircle
+        css={{
+          "--size": "sizes.4",
+          "--thickness": "sizes.0.5",
+        }}
+        {...progressCircleProps}
+      >
+        <ProgressCircleTrack />
+        <ProgressCircleRange
+          transitionProperty="none"
+          style={{
+            stroke: characterLimitColor,
+          }}
+        />
+      </ProgressCircle>
+
+      <Text
+        fontSize="sm"
+        color={characterLimitColor ?? "foreground.muted"}
+        {...labelProps}
+      >
+        {`${value} / ${max}`}
+      </Text>
+    </ProgressRoot>
+  );
+};
+
+export default CharacterLimit;
