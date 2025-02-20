@@ -14,8 +14,6 @@ import {
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
-import { useMemo } from "react";
-import { match } from "ts-pattern";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -100,21 +98,6 @@ const CreateComment = () => {
   });
 
   const messageLength = useStore(store, (store) => store.values.message.length);
-
-  const characterLimitColor = useMemo(
-    () =>
-      match(messageLength / MAX_COMMENT_LENGTH)
-        .when(
-          (value) => value > 0.9,
-          () => "red"
-        )
-        .when(
-          (value) => value > 0.7,
-          () => "yellow"
-        )
-        .otherwise(() => "foreground.muted"),
-    [messageLength]
-  );
 
   return (
     <sigil.form
