@@ -1,13 +1,19 @@
 "use client";
 
 import { Flex, HStack, Icon, Text, css, sigil } from "@omnidev/sigil";
+import NextImage from "next/image";
 import { usePathname } from "next/navigation";
-import { LuMessageSquarePlus } from "react-icons/lu";
 
 import { Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
+
+const Image = sigil(
+  NextImage,
+  {},
+  { shouldForwardProp: (prop) => ["width", "height"].includes(prop) },
+);
 
 /**
  * Layout header.
@@ -37,7 +43,15 @@ const Header = () => {
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">
           <Link href="/">
             <HStack gap={2} alignItems="center">
-              <Icon src={LuMessageSquarePlus} w={6} h={6} />
+              <Image
+                src="/img/logo.png"
+                alt={`${app.name} logo`}
+                width={56}
+                height={56}
+                mixBlendMode="difference"
+                filter="brightness(0) invert(1)"
+                color="var(--colors-foreground-default)"
+              />
 
               <Text
                 fontWeight="bold"
