@@ -48,9 +48,9 @@ const Header = () => {
                 alt={`${app.name} logo`}
                 width={56}
                 height={56}
+                // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
-                color="var(--colors-foreground-default)"
               />
 
               <Text
