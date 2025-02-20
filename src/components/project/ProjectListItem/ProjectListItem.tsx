@@ -93,7 +93,8 @@ const ProjectListItem = ({
               }}
               triggerProps={{
                 "aria-label": `${deleteProjectDetails.action.label} organization`,
-                colorPalette: "omni.ruby",
+                color: "omni.ruby",
+                backgroundColor: "transparent",
                 px: "2",
               }}
             />

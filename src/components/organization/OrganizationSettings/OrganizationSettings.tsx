@@ -18,12 +18,12 @@ import {
   useMembersQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
-  useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
+import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -87,30 +87,27 @@ const OrganizationSettings = () => {
     organizationId: organization?.rowId,
   });
 
-  const onSuccess = () =>
-    queryClient.invalidateQueries(
-      {
-        queryKey: useOrganizationRoleQuery.getKey({
-          userId: user?.rowId!,
-          organizationId: organization?.rowId!,
-        }),
-      },
-      { cancelRefetch: false }
-    );
+  const onSettled = () =>
+    queryClient.invalidateQueries({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: user?.rowId!,
+        organizationId: organization?.rowId!,
+      }),
+    });
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
     { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
       useLeaveOrganizationMutation({
-        onSuccess,
+        onSettled,
       }),
-    { mutateAsync: updateMembership } = useUpdateMemberMutation({
-      onSuccess,
+    { mutate: transferOwnership } = useTransferOwnershipMutation({
+      organizationId: organization?.rowId,
     }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
       useCreateMemberMutation({
-        onSuccess,
+        onSettled,
       });
 
   const isCurrentMember =
@@ -154,21 +151,13 @@ const OrganizationSettings = () => {
     action: {
       label: transferOwnershipDetails.actionLabel,
       disabled: !newOwnerMembershipId.length,
-      onClick: async () => {
-        await updateMembership({
+      onClick: () =>
+        transferOwnership({
           rowId: newOwnerMembershipId,
           patch: {
             role: Role.Owner,
           },
-        });
-
-        await updateMembership({
-          rowId: membershipId!,
-          patch: {
-            role: Role.Member,
-          },
-        });
-      },
+        }),
     },
     children: (
       <Combobox
