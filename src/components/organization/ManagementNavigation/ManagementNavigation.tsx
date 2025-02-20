@@ -85,7 +85,13 @@ const ManagementNavigation = ({
           alignItems="center"
           textWrap="nowrap"
           py={6}
-          bgColor={{ _active: "neutral.100a" }}
+          bgColor={{
+            _active: { base: "neutral.300a", _dark: "neutral.100a" },
+            _hover: {
+              base: "neutral.200a",
+              _active: { base: "neutral.300a", _dark: "neutral.100a" },
+            },
+          }}
           onClick={onClick}
           // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
           data-active={label.toLowerCase() === segment || undefined}
