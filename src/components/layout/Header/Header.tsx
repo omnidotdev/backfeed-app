@@ -1,19 +1,12 @@
 "use client";
 
 import { Flex, HStack, Icon, Text, css, sigil } from "@omnidev/sigil";
-import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 
-import { Link } from "components/core";
+import { Image, Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
-
-const Image = sigil(
-  NextImage,
-  {},
-  { shouldForwardProp: (prop) => ["width", "height"].includes(prop) },
-);
 
 /**
  * Layout header.
