@@ -12,7 +12,7 @@ import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useMediaQuery } from "usehooks-ts";
+import { useLocalStorage, useMediaQuery } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ManagementNavigation } from "components/organization";
@@ -44,9 +44,14 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     }
   );
 
-  const { isOpen: isSidebarOpen, onToggle: onToggleSidebar } = useDisclosure({
-    defaultIsOpen: true,
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
+    "organization-management-sidebar",
+    true
+  );
+
+  const onToggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const {
     isOpen: isDrawerOpen,
