@@ -37,24 +37,8 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getAuthSession();
 
   return (
-    // !!NB: suppressHydrationWarning is required for next-themes to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use for more details
+    // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/img/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/img/favicon-16x16.png"
-        />
-        <link rel="shortcut icon" href="/favicon.ico" />
-      </head>
-
       <body>
         <Providers session={session}>
           <Layout>{children}</Layout>
