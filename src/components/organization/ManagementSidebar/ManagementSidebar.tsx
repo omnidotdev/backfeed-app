@@ -9,7 +9,6 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
-import { useEffect } from "react";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage, useMediaQuery } from "usehooks-ts";
 
@@ -79,16 +78,15 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   const isOpen = isLargeDisplay ? isSidebarOpen : isDrawerOpen;
 
-  useEffect(() => {
-    if (isLargeDisplay && isDrawerOpen) {
-      onCloseDrawer();
-    }
-  }, [isLargeDisplay, isDrawerOpen, onCloseDrawer]);
-
   return (
     <>
       {isLargeDisplay ? (
         <Stack
+          ref={() => {
+            if (isDrawerOpen) {
+              onCloseDrawer();
+            }
+          }}
           position="relative"
           h="full"
           w={isSidebarOpen ? "xs" : 14}
