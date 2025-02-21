@@ -17,7 +17,7 @@ import { z } from "zod";
 
 import { FormFieldError } from "components/core";
 import { app } from "lib/config";
-import { standardSchemaValidator, toaster } from "lib/constants";
+import { toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
@@ -118,7 +118,6 @@ const CreateOrganization = () => {
       slug: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
@@ -189,7 +188,7 @@ const CreateOrganization = () => {
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -221,7 +220,7 @@ const CreateOrganization = () => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>

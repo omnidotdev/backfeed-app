@@ -13,7 +13,7 @@ import {
   useProjectQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator, toaster } from "lib/constants";
+import { toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 const MAX_DESCRIPTION_LENGTH = 240;
@@ -83,7 +83,6 @@ const CreateFeedback = () => {
       description: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: createFeedbackSchema,
       onSubmitAsync: createFeedbackSchema,
@@ -152,7 +151,7 @@ const CreateFeedback = () => {
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onSubmit}
+              errors={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>
@@ -180,7 +179,7 @@ const CreateFeedback = () => {
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onSubmit}
+              errors={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>

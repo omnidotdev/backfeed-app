@@ -11,7 +11,6 @@ import {
   useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -61,7 +60,6 @@ const AddOwner = ({ organizationId }: Props) => {
       rowId: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: baseSchema,
     },
