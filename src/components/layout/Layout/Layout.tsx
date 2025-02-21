@@ -1,6 +1,6 @@
 "use client";
 
-import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
+import { Center, Flex, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
@@ -9,6 +9,7 @@ import { useIsClient } from "usehooks-ts";
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
+import { css } from "generated/panda/css";
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
 
@@ -38,13 +39,12 @@ const Layout = ({ children }: Props) => {
   ) : (
     <>
       {/* NB: needs to be outside of main container in order to stay fixed to top of page, See: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
-      <Flex position="fixed" top={0} zIndex="sticky" h={20} w="full">
+      <Flex position="fixed" top={0} zIndex="sticky" h="header" w="full">
         <Header />
       </Flex>
 
       <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
-        {/* `mt` needs to match the height of the header */}
-        <sigil.main w="full" flex={1} className={css({ mt: 20 })}>
+        <sigil.main w="full" flex={1} className={css({ mt: "header" })}>
           {children}
         </sigil.main>
 

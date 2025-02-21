@@ -37,6 +37,10 @@ const pandaConfig = defineConfig({
       tokens: {
         sizes: {
           18: { value: "4.5rem" },
+          header: { value: "5rem" },
+        },
+        spacing: {
+          header: { value: "{sizes.header}" },
         },
         colors: {
           destructive: {
