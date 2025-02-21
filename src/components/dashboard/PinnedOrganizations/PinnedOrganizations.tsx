@@ -77,6 +77,9 @@ const PinnedOrganizations = () => {
             variant="outline"
             color="brand.primary"
             borderColor="brand.primary"
+            bgColor={{
+              _hover: { base: "brand.primary.50", _dark: "neutral.900" },
+            }}
           >
             {app.dashboardPage.cta.viewOrganizations.label}
           </Button>

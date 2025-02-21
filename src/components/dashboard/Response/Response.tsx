@@ -3,11 +3,12 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 
+import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
 
 type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
 
-interface Props {
+interface Props extends FlexProps {
   /** Feedback details. */
   feedback: Partial<Post>;
   /** Feedback type. */
@@ -18,17 +19,11 @@ interface Props {
 /**
  * Recent feedback response.
  */
-const Response = ({ feedback, type }: Props) => {
+const Response = ({ feedback, type, ...rest }: Props) => {
   const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
-    <Flex
-      direction="column"
-      gap={4}
-      py={3}
-      w="100%"
-      borderBottomWidth={{ base: "1px", _last: 0 }}
-    >
+    <Flex direction="column" gap={4} py={3} w="100%" {...rest}>
       <Flex direction="column">
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
