@@ -1,3 +1,5 @@
+import { Assistant } from "next/font/google";
+
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
@@ -9,6 +11,11 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
+
+const assistant = Assistant({
+  subsets: ["latin"],
+  variable: "--font-fallback",
+});
 
 // set up mock service worker (MSW) fixtures if enabled
 if (ENABLE_MSW) {
@@ -38,7 +45,8 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
 
   return (
     // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-    <html lang="en" suppressHydrationWarning>
+    // TODO: remove explicit fallback font when issue is sorted out. Currently it is used to prevent FOUT (flash of unstyled text) during initial renders
+    <html lang="en" suppressHydrationWarning className={assistant.variable}>
       <body>
         <Providers session={session}>
           <Layout>{children}</Layout>
