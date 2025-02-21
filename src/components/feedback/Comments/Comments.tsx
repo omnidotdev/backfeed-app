@@ -104,7 +104,7 @@ const Comments = ({ feedbackId }: Props) => {
       icon={LuMessageSquare}
     >
       <Stack>
-        <CreateComment totalCount={totalCount} />
+        <CreateComment />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" />

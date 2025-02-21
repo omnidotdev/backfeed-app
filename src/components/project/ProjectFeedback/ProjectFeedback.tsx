@@ -114,11 +114,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       icon={HiOutlineFolder}
     >
       <Stack>
-        <CreateFeedback
-          isLoading={isLoading}
-          isError={isError}
-          totalCount={totalCount}
-        />
+        <CreateFeedback />
 
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
