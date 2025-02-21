@@ -1,6 +1,6 @@
 "use client";
 
-import { Center, Flex, Grid, Toaster, sigil } from "@omnidev/sigil";
+import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
@@ -36,41 +36,28 @@ const Layout = ({ children }: Props) => {
       Coming soon
     </Center>
   ) : (
-    <Grid
-      position="relative"
-      gridTemplateRows="auto 1fr auto"
-      w="100%"
-      h="100dvh"
-      gap={0}
-    >
-      <Flex direction="column" position="sticky" top={0} zIndex="sticky">
-        {/* TODO: when removed, update `top` position for ManagementSidebar on the `sticky` positioned element */}
-        <Flex
-          p={4}
-          align="center"
-          justify="center"
-          bgColor="brand.primary.500"
-          color="white"
-          fontWeight="semibold"
-          h={20}
-        >
-          ⚠️ {app.name} is early alpha software.
-        </Flex>
-
+    <>
+      {/* NB: needs to be outside of main container in order to stay fixed to top of page, See: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
+      <Flex position="fixed" top={0} zIndex="sticky" h={20} w="full">
         <Header />
       </Flex>
 
-      <sigil.main>{children}</sigil.main>
+      <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
+        {/* `mt` needs to match the height of the header */}
+        <sigil.main w="full" flex={1} className={css({ mt: 20 })}>
+          {children}
+        </sigil.main>
 
-      <Footer />
+        <Footer />
 
-      {/* dialogs */}
-      <CreateProject organizationSlug={organizationSlug} />
-      <CreateOrganization />
+        {/* dialogs */}
+        <CreateProject organizationSlug={organizationSlug} />
+        <CreateOrganization />
 
-      {/* toaster */}
-      <Toaster toaster={toaster} />
-    </Grid>
+        {/* toaster */}
+        <Toaster toaster={toaster} />
+      </Flex>
+    </>
   );
 };
 

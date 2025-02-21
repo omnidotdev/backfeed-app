@@ -95,11 +95,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           transition="all 200ms ease-in-out"
           gap={0}
         >
-          {/* TODO: update `top` position for ManagementSidebar on the `sticky` positioned element when banner is removed */}
           <ManagementNavigation
             position="sticky"
             gap={0}
-            top={40}
+            // NB: should match the height of the `Header`
+            top={20}
             zIndex="sticky"
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}
@@ -148,10 +148,10 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         placeSelf="flex-start"
         px={{ base: 0, lg: 4 }}
       >
-        {/* TODO: update `top` position for ManagementSidebar on the `sticky` positioned element when banner is removed */}
         <HStack
           position="sticky"
-          top={40}
+          // NB: should match the height of the `Header`
+          top={20}
           zIndex="sticky"
           py={2}
           ml={{ base: 0, lg: -4 }}
