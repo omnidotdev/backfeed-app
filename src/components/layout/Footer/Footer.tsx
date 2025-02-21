@@ -10,7 +10,6 @@ import { app } from "lib/config";
 const Footer = () => (
   <sigil.footer
     display="flex"
-    pos="fixed"
     justifyContent="center"
     alignItems="center"
     p={4}

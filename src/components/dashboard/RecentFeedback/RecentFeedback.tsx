@@ -53,6 +53,8 @@ const RecentFeedback = () => {
                 key={feedback?.rowId}
                 feedback={feedback as Partial<Post>}
                 type="Neutral"
+                borderBottomWidth={{ base: "1px", _last: 0 }}
+                pb={{ _last: 12 }}
               />
             ))
           ) : (
