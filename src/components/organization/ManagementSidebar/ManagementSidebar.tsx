@@ -149,8 +149,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       >
         <HStack
           position="sticky"
-          // NB: should match the height of the `Header`
-          top={20}
+          top="header"
           zIndex="sticky"
           py={2}
           ml={{ base: 0, lg: -4 }}
