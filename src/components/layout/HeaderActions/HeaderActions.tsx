@@ -51,22 +51,12 @@ const HeaderActions = () => {
               shift: 32,
             }}
           >
-            <MenuItemGroup minW={40}>
-              <MenuItem
-                value="signIn"
-                onClick={() => signIn("omni")}
-                justifyContent="center"
-                asChild
-              >
+            <MenuItemGroup minW={32}>
+              <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
                 <Button variant="outline">{app.auth.signIn.label}</Button>
               </MenuItem>
 
-              <MenuItem
-                value="signUp"
-                onClick={handleSignUp}
-                justifyContent="center"
-                asChild
-              >
+              <MenuItem value="signUp" onClick={handleSignUp} asChild>
                 <Button>{app.auth.signUp.label}</Button>
               </MenuItem>
             </MenuItemGroup>
