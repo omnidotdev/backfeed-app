@@ -1,20 +1,21 @@
 "use client";
 
-import { Button, Stack, Text, Textarea, sigil } from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
-import { useIsMutating, useQueryClient } from "@tanstack/react-query";
+import { Button, Stack, Textarea, sigil } from "@omnidev/sigil";
+import { useForm, useStore } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
+import { CharacterLimit, FormFieldError } from "components/core";
 import {
   useCreateCommentMutation,
-  useDeleteCommentMutation,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { standardSchemaValidator, toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
+
+const MAX_COMMENT_LENGTH = 500;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -32,24 +33,15 @@ const createCommentSchema = z.object({
     .min(10, app.feedbackPage.comments.createComment.errors.message),
 });
 
-interface Props {
-  /** Total number of comments. */
-  totalCount: number;
-}
-
 /**
  * Create comment form.
  */
-const CreateComment = ({ totalCount }: Props) => {
+const CreateComment = () => {
   const queryClient = useQueryClient();
 
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
-
-  const pendingDeletedComments = useIsMutating({
-    mutationKey: useDeleteCommentMutation.getKey(),
-  });
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
     onSettled: () => {
@@ -64,7 +56,7 @@ const CreateComment = ({ totalCount }: Props) => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
     defaultValues: {
       postId: feedbackId,
       userId: user?.rowId ?? "",
@@ -105,8 +97,7 @@ const CreateComment = ({ totalCount }: Props) => {
       ),
   });
 
-  const totalComments =
-    totalCount - pendingDeletedComments + (isPending ? 1 : 0);
+  const messageLength = useStore(store, (store) => store.values.message.length);
 
   return (
     <sigil.form
@@ -130,6 +121,7 @@ const CreateComment = ({ totalCount }: Props) => {
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
               disabled={isAuthLoading}
+              maxLength={MAX_COMMENT_LENGTH}
             />
 
             <FormFieldError
@@ -142,9 +134,11 @@ const CreateComment = ({ totalCount }: Props) => {
       </Field>
 
       <Stack justify="space-between" direction="row">
-        <Text fontSize="sm" color="foreground.muted">
-          {`${totalComments} ${app.feedbackPage.comments.totalComments}`}
-        </Text>
+        <CharacterLimit
+          value={messageLength}
+          max={MAX_COMMENT_LENGTH}
+          placeSelf="flex-start"
+        />
 
         <Subscribe
           selector={(state) => [
