@@ -98,8 +98,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           <ManagementNavigation
             position="sticky"
             gap={0}
-            // NB: should match the height of the `Header`
-            top={20}
+            top="header"
             zIndex="sticky"
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}
