@@ -25,7 +25,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator, toaster } from "lib/constants";
+import { toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -158,7 +158,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
       slug: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: createProjectSchema,
@@ -241,7 +240,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -265,7 +264,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -292,7 +291,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
               />
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>
@@ -323,7 +322,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
               </HStack>
 
               <FormFieldError
-                error={state.meta.errorMap.onSubmit}
+                errors={state.meta.errorMap.onSubmit}
                 isDirty={state.meta.isDirty}
               />
             </Stack>

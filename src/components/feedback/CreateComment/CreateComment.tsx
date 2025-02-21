@@ -12,7 +12,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator, toaster } from "lib/constants";
+import { toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 const MAX_COMMENT_LENGTH = 500;
@@ -63,7 +63,6 @@ const CreateComment = () => {
       message: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: createCommentSchema,
       onSubmitAsync: createCommentSchema,
@@ -125,7 +124,7 @@ const CreateComment = () => {
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onSubmit}
+              errors={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
               top={-6}
             />

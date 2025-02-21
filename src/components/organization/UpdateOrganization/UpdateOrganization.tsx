@@ -21,7 +21,6 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
@@ -105,7 +104,6 @@ const UpdateOrganization = () => {
       slug: organization?.slug ?? "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: updateOrganizationSchema,
@@ -168,7 +166,7 @@ const UpdateOrganization = () => {
                 />
 
                 <FormFieldError
-                  error={state.meta.errorMap.onSubmit}
+                  errors={state.meta.errorMap.onSubmit}
                   isDirty={state.meta.isDirty}
                 />
               </Stack>
@@ -190,7 +188,7 @@ const UpdateOrganization = () => {
                 />
 
                 <FormFieldError
-                  error={state.meta.errorMap.onSubmit}
+                  errors={state.meta.errorMap.onSubmit}
                   isDirty={state.meta.isDirty}
                 />
               </Stack>
