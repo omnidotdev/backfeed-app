@@ -1,8 +1,17 @@
 "use client";
 
-import { Button, Flex, HStack } from "@omnidev/sigil";
+import {
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+} from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { RiMenu3Fill } from "react-icons/ri";
 
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
@@ -31,13 +40,50 @@ const HeaderActions = () => {
       {isAuthenticated ? (
         <AccountInformation />
       ) : (
-        <HStack>
-          <Button onClick={() => signIn("omni")} variant="outline">
-            {app.auth.signIn.label}
-          </Button>
+        <>
+          <Menu
+            trigger={
+              <Button variant="icon" display={{ base: "flex", sm: "none" }}>
+                <Icon src={RiMenu3Fill} />
+              </Button>
+            }
+            positioning={{
+              shift: 32,
+            }}
+          >
+            <MenuItemGroup minW={40}>
+              {/* <MenuItemGroupLabel>Welcome!</MenuItemGroupLabel>
 
-          <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-        </HStack>
+              <MenuSeparator /> */}
+
+              <MenuItem
+                value="signIn"
+                onClick={() => signIn("omni")}
+                justifyContent="center"
+                asChild
+              >
+                <Button variant="outline">{app.auth.signIn.label}</Button>
+              </MenuItem>
+
+              <MenuItem
+                value="signUp"
+                onClick={handleSignUp}
+                justifyContent="center"
+                asChild
+              >
+                <Button>{app.auth.signUp.label}</Button>
+              </MenuItem>
+            </MenuItemGroup>
+          </Menu>
+
+          <HStack display={{ base: "none", sm: "flex" }}>
+            <Button onClick={() => signIn("omni")} variant="outline">
+              {app.auth.signIn.label}
+            </Button>
+
+            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+          </HStack>
+        </>
       )}
     </Flex>
   );
