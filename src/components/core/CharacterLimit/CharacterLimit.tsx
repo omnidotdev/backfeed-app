@@ -12,7 +12,7 @@ import type { ProgressProps } from "@omnidev/sigil";
 interface CharacterLimitProps extends ProgressProps {
   /** current character count */
   value: number;
-  /** maximum character count */
+  /** Maximum character count. This is an override for the default Sigil `Progress` `max` prop. */
   max: number;
 }
 
