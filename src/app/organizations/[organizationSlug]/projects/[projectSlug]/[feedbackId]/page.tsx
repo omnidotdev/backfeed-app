@@ -5,8 +5,10 @@ import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
   useCommentsQuery,
+  useDownvoteQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
+  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -69,6 +71,26 @@ const FeedbackPage = async ({ params }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useDownvoteQuery.getKey({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+      queryFn: useDownvoteQuery.fetcher({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUpvoteQuery.getKey({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+      queryFn: useUpvoteQuery.fetcher({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),

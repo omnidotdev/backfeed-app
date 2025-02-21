@@ -1,8 +1,6 @@
-mutation LeaveOrganization($userId: UUID!, $organizationId: UUID!) {
-  deleteUserOrganizationByUserIdAndOrganizationId(
-    input: { userId: $userId, organizationId: $organizationId }
-  ) {
-    userOrganization {
+mutation LeaveOrganization($rowId: UUID!) {
+  deleteMember(input: { rowId: $rowId }) {
+    member {
       userId
       organizationId
     }

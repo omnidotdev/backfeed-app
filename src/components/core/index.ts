@@ -6,11 +6,13 @@ export {
   default as CallToAction,
   type ActionButton,
 } from "./CallToAction/CallToAction";
+export { default as CharacterLimit } from "./CharacterLimit/CharacterLimit";
 export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
 } from "./DestructiveAction/DestructiveAction";
 export { default as FormFieldError } from "./FormFieldError/FormFieldError";
+export { default as Image } from "./Image/Image";
 export { default as Link } from "./Link/Link";
 export { default as OverflowText } from "./OverflowText/OverflowText";
 export { default as SkeletonArray } from "./SkeletonArray/SkeletonArray";

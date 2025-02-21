@@ -62,7 +62,7 @@ const AccountInformation = () => {
         rounded: "full",
       }}
       positioning={{
-        shift: 12,
+        shift: 20,
       }}
     >
       <MenuItemGroup>
@@ -70,7 +70,15 @@ const AccountInformation = () => {
 
         <MenuSeparator />
 
-        <MenuItem disabled value="profile" onClick={handleProfileClick}>
+        <MenuItem
+          value="profile"
+          onClick={handleProfileClick}
+          // TODO: remove all styles below once enabled
+          disabled
+          backgroundColor={{ _disabled: "inherit" }}
+          opacity={0.5}
+          cursor="not-allowed"
+        >
           <HStack gap={2} color="foreground.subtle">
             <Icon src={FiUser} size="sm" color="foreground.subtle" />
             {app.auth.profile.label}

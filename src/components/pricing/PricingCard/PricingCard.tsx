@@ -9,6 +9,7 @@ import {
   Icon,
   Stack,
   Text,
+  css,
   sigil,
 } from "@omnidev/sigil";
 import { app } from "lib/config";
@@ -88,10 +89,11 @@ const PricingCard = ({
       <Divider my={4} />
 
       <sigil.ul
-        style={{
+        // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
+        className={css({
           listStyle: "disc",
           marginLeft: 2,
-        }}
+        })}
       >
         {tier.features.map((feature) => (
           <sigil.li key={feature}>{feature}</sigil.li>

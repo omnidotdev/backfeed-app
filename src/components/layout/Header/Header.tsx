@@ -1,12 +1,10 @@
 "use client";
 
-import { Flex, HStack, Icon, Text, sigil } from "@omnidev/sigil";
+import { Badge, Flex, HStack, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
-import { LuMessageSquarePlus } from "react-icons/lu";
 
-import { Link } from "components/core";
+import { Image, Link } from "components/core";
 import { HeaderActions } from "components/layout";
-import { token } from "generated/panda/tokens";
 import { app, navigationRoutes } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -25,28 +23,39 @@ const Header = () => {
   return (
     <sigil.header
       display="flex"
-      h={20}
+      w="full"
+      h="full"
       p={2}
-      // TODO: discuss why this style prop is necessary
-      style={{
+      // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
+      className={css({
         borderBottom: "1px solid",
-        borderColor: token("colors.border.subtle"),
-        backgroundColor: token("colors.background.default"),
-      }}
+        borderColor: "border.subtle",
+        backgroundColor: "background.default",
+      })}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">
           <Link href="/">
             <HStack gap={2} alignItems="center">
-              <Icon src={LuMessageSquarePlus} w={6} h={6} />
-
-              <Text
-                fontWeight="bold"
-                fontSize="lg"
-                display={{ base: "none", md: "block" }}
+              <Image
+                src="/img/logo.png"
+                alt={`${app.name} logo`}
+                width={48}
+                height={48}
+                // adjust color based on color theme
+                mixBlendMode="difference"
+                filter="brightness(0) invert(1)"
+              />
+              <Badge
+                size="sm"
+                fontSize="xs"
+                variant="outline"
+                color="brand.primary"
+                borderColor="brand.primary"
+                px={2}
               >
-                {app.name}
-              </Text>
+                Beta
+              </Badge>
             </HStack>
           </Link>
 

@@ -58,7 +58,7 @@ const Comments = ({ feedbackId }: Props) => {
       }
     );
 
-  const pendingComments = useMutationState<Partial<CommentFragment>>({
+  const pendingComments = useMutationState<CommentFragment>({
     filters: {
       mutationKey: useCreateCommentMutation.getKey(),
       status: "pending",
@@ -68,6 +68,7 @@ const Comments = ({ feedbackId }: Props) => {
         .variables as CreateCommentMutationVariables;
 
       return {
+        rowId: "pending",
         message: input.comment.message,
         user: {
           rowId: user?.rowId!,
@@ -79,9 +80,12 @@ const Comments = ({ feedbackId }: Props) => {
 
   // These are not defined within the `select` function in order to preserve type safety.
   const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
-  const comments = data?.pages?.flatMap((page) =>
-    page?.comments?.edges?.map((edge) => edge?.node)
-  );
+  const comments =
+    data?.pages?.flatMap((page) =>
+      page?.comments?.edges?.map((edge) => edge?.node)
+    ) ?? [];
+
+  const allComments = [...pendingComments, ...comments];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -100,7 +104,7 @@ const Comments = ({ feedbackId }: Props) => {
       icon={LuMessageSquare}
     >
       <Stack>
-        <CreateComment totalCount={totalCount} />
+        <CreateComment />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" />
@@ -109,33 +113,25 @@ const Comments = ({ feedbackId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
-            ) : comments?.length || pendingComments.length ? (
+            ) : allComments?.length ? (
               <VStack>
-                {!!pendingComments.length && (
-                  <CommentCard
-                    commentId="pending"
-                    senderName={pendingComments[0].user?.username}
-                    message={pendingComments[0].message}
-                    createdAt={new Date()}
-                    isSender
-                    isPending
-                    w="full"
-                    minH={21}
-                  />
-                )}
+                {allComments?.map((comment) => {
+                  const isPending = comment?.rowId === "pending";
 
-                {comments?.map((comment) => (
-                  <CommentCard
-                    key={comment?.rowId}
-                    commentId={comment?.rowId!}
-                    senderName={comment?.user?.username}
-                    message={comment?.message}
-                    createdAt={comment?.createdAt}
-                    isSender={comment?.user?.rowId === user?.rowId}
-                    w="full"
-                    minH={21}
-                  />
-                ))}
+                  return (
+                    <CommentCard
+                      key={comment?.rowId}
+                      commentId={comment?.rowId!}
+                      senderName={comment?.user?.username}
+                      message={comment?.message}
+                      createdAt={comment?.createdAt ?? new Date()}
+                      isSender={comment?.user?.rowId === user?.rowId}
+                      isPending={isPending}
+                      w="full"
+                      minH={21}
+                    />
+                  );
+                })}
 
                 {hasNextPage && <Spinner ref={loaderRef} />}
               </VStack>

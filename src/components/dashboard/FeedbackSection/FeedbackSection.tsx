@@ -5,16 +5,16 @@ import { Flex, Text } from "@omnidev/sigil";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
-  /** Card title. */
+  /** Section title. */
   title: string;
   /** Props to pass to the main content container. */
   contentProps?: FlexProps;
 }
 
 /**
- * Feedback card.
+ * Feedback section.
  */
-const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
+const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
   <Flex
     position="relative"
     direction="column"
@@ -34,7 +34,7 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
       fontSize="2xl"
       fontWeight="semibold"
       boxShadow="xs"
-      lineHeight={1.2}
+      lineHeight={0.7}
       p={6}
     >
       {title}
@@ -52,4 +52,4 @@ const FeedbackCard = ({ title, children, contentProps, ...rest }: Props) => (
   </Flex>
 );
 
-export default FeedbackCard;
+export default FeedbackSection;

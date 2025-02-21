@@ -6,9 +6,7 @@ query WeeklyFeedback(
   posts(
     filter: {
       project: {
-        organization: {
-          userOrganizations: { some: { userId: { equalTo: $userId } } }
-        }
+        organization: { members: { some: { userId: { equalTo: $userId } } } }
       }
       createdAt: { greaterThanOrEqualTo: $startDate, lessThan: $endDate }
     }

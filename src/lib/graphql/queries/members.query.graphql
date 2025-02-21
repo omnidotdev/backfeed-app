@@ -1,0 +1,26 @@
+query Members(
+  $organizationId: UUID!
+  $roles: [Role!]
+  $search: String
+  $excludeRoles: [Role!]
+) {
+  members(
+    orderBy: ROLE_ASC
+    condition: { organizationId: $organizationId }
+    filter: {
+      role: { in: $roles, notIn: $excludeRoles }
+      user: {
+        or: [
+          { firstName: { includesInsensitive: $search } }
+          { lastName: { includesInsensitive: $search } }
+          { username: { includesInsensitive: $search } }
+        ]
+      }
+    }
+  ) {
+    totalCount
+    nodes {
+      ...Member
+    }
+  }
+}

@@ -1,14 +1,17 @@
 "use client";
 
-import { Center, Flex, Grid, sigil, useIsClient } from "@omnidev/sigil";
+import { Center, Flex, Toaster, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
+import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
+import { css } from "generated/panda/css";
 import { app } from "lib/config";
+import { toaster } from "lib/constants";
 
 import type { ReactNode } from "react";
 
@@ -34,35 +37,27 @@ const Layout = ({ children }: Props) => {
       Coming soon
     </Center>
   ) : (
-    <Grid
-      position="relative"
-      gridTemplateRows="auto 1fr auto"
-      w="100%"
-      h="100dvh"
-      gap={0}
-    >
-      <Flex direction="column" position="sticky" top={0} zIndex="sticky">
-        <Flex
-          p={4}
-          justify="center"
-          bgColor="brand.primary.500"
-          color="white"
-          fontWeight="semibold"
-        >
-          ⚠️ {app.name} is early alpha software.
-        </Flex>
-
+    <>
+      {/* NB: needs to be outside of main container in order to stay fixed to top of page, see: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
+      <Flex position="fixed" top={0} zIndex="sticky" h="header" w="full">
         <Header />
       </Flex>
 
-      <sigil.main>{children}</sigil.main>
+      <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
+        <sigil.main w="full" flex={1} className={css({ mt: "header" })}>
+          {children}
+        </sigil.main>
 
-      <Footer />
+        <Footer />
 
-      {/* dialogs */}
-      <CreateProject organizationSlug={organizationSlug} />
-      <CreateOrganization />
-    </Grid>
+        {/* dialogs */}
+        <CreateProject organizationSlug={organizationSlug} />
+        <CreateOrganization />
+
+        {/* toaster */}
+        <Toaster toaster={toaster} />
+      </Flex>
+    </>
   );
 };
 

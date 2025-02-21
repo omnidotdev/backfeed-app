@@ -9,8 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { OrganizationsFilter } from "lib/constants/searchParams";
-import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
+import { useDebounceValue, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -21,36 +20,23 @@ import type { Organization } from "generated/graphql";
  * Organization list.
  */
 const OrganizationList = ({ ...props }: StackProps) => {
-  const [{ page, pageSize, search, organizationsFilter }, setSearchParams] =
-    useSearchParams();
+  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const [debouncedSearch] = useDebounceValue({ value: search });
-
-  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
 
-  const isActiveFilter = organizationsFilter === OrganizationsFilter.Active;
-  const isFiltered = organizationsFilter !== OrganizationsFilter.All;
-
   const { data, isLoading, isError } = useOrganizationsQuery(
     {
       pageSize,
       offset: (page - 1) * pageSize,
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       search: debouncedSearch,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: isFiltered ? user?.rowId : undefined,
-      userOrganizationsExist: isFiltered ? true : undefined,
-      projectsExist: isActiveFilter || undefined,
-      postsExist: isActiveFilter || undefined,
-      commentsExist: isActiveFilter || undefined,
-      upvotesExist: isActiveFilter || undefined,
-      downvotesExist: isActiveFilter || undefined,
+      isMember: false,
     },
     {
-      enabled: !!user?.rowId,
       placeholderData: keepPreviousData,
       select: (data) => ({
         totalCount: data?.organizations?.totalCount,
@@ -60,8 +46,6 @@ const OrganizationList = ({ ...props }: StackProps) => {
   );
 
   const organizations = data?.organizations;
-
-  if (isAuthLoading) return null;
 
   if (isError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;

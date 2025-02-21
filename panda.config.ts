@@ -8,12 +8,14 @@ const pandaConfig = defineConfig({
   include: ["src/**/*.{ts,tsx}"],
   outdir: "src/generated/panda",
   staticCss: {
+    recipes: {
+      toast: ["*"],
+    },
     css: [
       {
         properties: {
           color: ["*"],
           backgroundColor: ["*"],
-          // NB: added to render dynamic border colors in `Response` component. Without this, the border color is static (pulled from recipe) unless i.e. `borderColor="blue"` is explciitly used elsewhere in the app.
           borderColor: ["*"],
         },
       },
@@ -33,6 +35,13 @@ const pandaConfig = defineConfig({
   theme: {
     extend: {
       tokens: {
+        sizes: {
+          18: { value: "4.5rem" },
+          header: { value: "5rem" },
+        },
+        spacing: {
+          header: { value: "{sizes.header}" },
+        },
         colors: {
           destructive: {
             hover: {

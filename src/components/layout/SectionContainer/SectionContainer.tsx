@@ -46,9 +46,11 @@ const SectionContainer = ({
         </Text>
       </Flex>
 
-      <Text color="foreground.subtle" fontSize={{ base: "xs", lg: "sm" }}>
-        {description}
-      </Text>
+      {description && (
+        <Text color="foreground.subtle" fontSize={{ base: "xs", lg: "sm" }}>
+          {description}
+        </Text>
+      )}
     </Stack>
 
     {children}

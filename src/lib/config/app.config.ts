@@ -115,6 +115,14 @@ const app = {
         action: {
           submit: "Create Organization",
           pending: "Creating Organization...",
+          success: {
+            title: "Success!",
+            description: "Your organization has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your organization.",
+          },
         },
         label: "New Organization",
         description: "Create a new organization by submitting the form below.",
@@ -138,6 +146,14 @@ const app = {
         action: {
           submit: "Create Project",
           pending: "Creating Project...",
+          success: {
+            title: "Success!",
+            description: "Your project has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your project.",
+          },
         },
         label: "New Project",
         description: "Create a new project by submitting the form below.",
@@ -252,16 +268,48 @@ const app = {
     },
     actions: {
       title: "Quick Actions",
-      description: "Common organization tasks",
+      description: "Common organization details and actions",
       cta: {
         createProject: {
           label: "Create New Project",
         },
         manageTeam: {
-          label: "Manage Team",
+          label: "Members",
         },
         settings: {
-          label: "Organization Settings",
+          label: "Settings",
+        },
+      },
+    },
+  },
+  organizationMembersPage: {
+    breadcrumb: "Members",
+    description: "Manage the members and their roles within your organization.",
+    filters: {
+      search: {
+        placeholder: "Search all organization members...",
+      },
+      role: {
+        placeholder: "Select Roles",
+      },
+    },
+    membersMenu: {
+      makeAdmin: "Give administrative privileges",
+      removeAdmin: "Remove administrative privileges",
+      removeMember: "Remove from organization",
+    },
+    cta: {
+      addOwner: {
+        title: "Add Owner",
+        description: "Add a new owner to your organization.",
+        label: "New Owner",
+        noMembersFound: "No members found",
+        form: {
+          rowId: {
+            placeholder: "Search for or select a member...",
+          },
+          pending: "Adding Owner...",
+          cancel: "Cancel",
         },
       },
     },
@@ -269,6 +317,11 @@ const app = {
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
     cta: {
       updateOrganization: {
         title: "Update Organization",
@@ -297,10 +350,21 @@ const app = {
           },
         },
       },
+      transferOwnership: {
+        title: "Transfer Ownership",
+        description:
+          "Transfer ownership of this organization to another member.",
+        actionLabel: "Transfer",
+        destructiveAction: {
+          title: "Transfer Ownership",
+          description: "Are you sure you want to transfer ownership?",
+          actionLabel: "Transfer",
+        },
+      },
       deleteOrganization: {
         title: "Delete Organization",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
+          "The organization will be permanently deleted, including its projects, posts and comments.",
         actionLabel: "Delete",
         destruciveAction: {
           title: "Delete Organization",
@@ -312,13 +376,19 @@ const app = {
       leaveOrganization: {
         title: "Leave Organization",
         description:
-          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
+          "You will no longer have access to this organization and its projects.",
         actionLabel: "Leave",
         destruciveAction: {
           title: "Leave Organization",
           description: "Are you sure you want to leave this organization?",
           actionLabel: "Leave",
         },
+      },
+      joinOrganization: {
+        title: "Join Organization",
+        description:
+          "You will be able to collaborate with other members of this organization.",
+        actionLabel: "Join",
       },
     },
   },
@@ -489,7 +559,15 @@ const app = {
       },
       action: {
         pending: "Submitting...",
-        submit: "Create",
+        submit: "Submit",
+        success: {
+          title: "Success!",
+          description: "Your feedback has been successfully submitted.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while submitting your feedback.",
+        },
       },
       totalResponses: "Total Responses",
       details: {
@@ -529,6 +607,15 @@ const app = {
     },
     comments: {
       createComment: {
+        pending: "Adding comment...",
+        success: {
+          title: "Success!",
+          description: "Your comment has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your comment.",
+        },
         errors: {
           invalid: "Invalid format",
           message: "Must be at least 10 characters.",
