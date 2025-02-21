@@ -52,10 +52,6 @@ const HeaderActions = () => {
             }}
           >
             <MenuItemGroup minW={40}>
-              {/* <MenuItemGroupLabel>Welcome!</MenuItemGroupLabel>
-
-              <MenuSeparator /> */}
-
               <MenuItem
                 value="signIn"
                 onClick={() => signIn("omni")}
