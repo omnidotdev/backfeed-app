@@ -22,12 +22,7 @@ import { match } from "ts-pattern";
 
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
-import {
-  useAuth,
-  useDebounceValue,
-  useOrganizationMembership,
-  useSearchParams,
-} from "lib/hooks";
+import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
@@ -52,13 +47,11 @@ const Members = ({ organizationId }: Props) => {
 
   const [{ roles, search }] = useSearchParams();
 
-  const [debouncedSearch] = useDebounceValue({ value: search });
-
   const { data: members } = useMembersQuery(
     {
       organizationId,
       roles: roles ?? undefined,
-      search: debouncedSearch,
+      search,
       excludeRoles: [Role.Owner],
     },
     {

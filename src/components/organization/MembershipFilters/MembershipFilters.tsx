@@ -5,7 +5,7 @@ import { Grid, GridItem, Input, Select } from "@omnidev/sigil";
 
 import { Role } from "generated/graphql";
 import { app } from "lib/config";
-import { useSearchParams } from "lib/hooks";
+import { useHandleSearch, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 /**
@@ -14,6 +14,8 @@ import { capitalizeFirstLetter } from "lib/util";
 const MembershipFilters = () => {
   const [{ search, roles }, setSearchParams] = useSearchParams();
 
+  const onSearchChange = useHandleSearch();
+
   return (
     <Grid columns={{ base: 1, lg: 5 }} w="full">
       <GridItem colSpan={{ base: 1, lg: 4 }}>
@@ -21,11 +23,7 @@ const MembershipFilters = () => {
           borderColor="border.subtle"
           placeholder={app.organizationMembersPage.filters.search.placeholder}
           defaultValue={search}
-          onChange={(e) =>
-            setSearchParams({
-              search: e.target.value.length ? e.target.value.toLowerCase() : "",
-            })
-          }
+          onChange={onSearchChange}
         />
       </GridItem>
 
