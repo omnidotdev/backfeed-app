@@ -22,6 +22,7 @@ import { useAuth } from "lib/hooks";
  * Header actions.
  */
 const HeaderActions = () => {
+  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
   const isSmallViewport = useMediaQuery("(min-width: 40em)");
 
   const router = useRouter(),
