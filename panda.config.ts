@@ -22,9 +22,17 @@ const pandaConfig = defineConfig({
     ],
   },
   globalCss: {
-    html: {
-      margin: 0,
-      backgroundColor: "var(--colors-background-default)",
+    extend: {
+      html: {
+        margin: 0,
+        backgroundColor: "var(--colors-background-default)",
+        // NB: prevents overscroll bouncing. Helps `sticky` elements not to bounce unexpectedly, and provides a more uniform UX across browsers.
+        // On `html` for Firefox and Safari, on `body` for Chrome
+        overscrollBehaviorY: "none",
+      },
+      body: {
+        overscrollBehaviorY: "none",
+      },
     },
   },
   conditions: {

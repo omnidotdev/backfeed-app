@@ -14,39 +14,15 @@ import { HiOutlineSlash } from "react-icons/hi2";
 import { useIsClient, useToggle } from "usehooks-ts";
 
 import { app } from "lib/config";
-import { useSearchParams } from "lib/hooks";
-
-import type { OrganizationsFilter } from "lib/constants/searchParams";
-
-interface OrganizationFilterOption {
-  /** Label for the filter segment option. */
-  label: string;
-  /** Value for the filter segment option. */
-  value: string;
-}
-
-const organizationFilterOptions: OrganizationFilterOption[] =
-  app.organizationsPage.filters.organizationFilterOptions;
+import { useHandleSearch, useSearchParams } from "lib/hooks";
 
 /**
  * Organization filters.
  */
 const OrganizationFilters = () => {
-  const [{ search, organizationsFilter }, setSearchParams] = useSearchParams(),
-    [inputFocused, _, setInputFocus] = useToggle(),
-    isClient = useIsClient();
+  const [{ search }] = useSearchParams();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useHotkeys(
-    "/",
-    () => inputRef.current?.focus(),
-    {
-      enabled: isClient,
-      preventDefault: true,
-    },
-    [isClient]
-  );
+  const onSearchChange = useHandleSearch();
 
   return (
     <Grid columns={1} gap={4} w="full">
@@ -78,13 +54,7 @@ const OrganizationFilters = () => {
           borderColor="border.subtle"
           placeholder={app.organizationsPage.filters.search.placeholder}
           defaultValue={search}
-          onBlur={() => setInputFocus(false)}
-          onFocus={() => setInputFocus(true)}
-          onChange={(e) =>
-            setSearchParams({
-              search: e.target.value.length ? e.target.value.toLowerCase() : "",
-            })
-          }
+          onChange={onSearchChange}
         />
 
         {!inputFocused && (

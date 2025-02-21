@@ -49,9 +49,9 @@ const CreateFeedback = () => {
     projectSlug: string;
   }>();
 
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
 
-  const { data: projectId, isLoading: isProjectLoading } = useProjectQuery(
+  const { data: projectId } = useProjectQuery(
     {
       projectSlug,
       organizationSlug,
@@ -123,8 +123,6 @@ const CreateFeedback = () => {
     (store) => store.values.description.length
   );
 
-  const isFormDisabled = isProjectLoading || isAuthLoading;
-
   return (
     <sigil.form
       display="flex"
@@ -151,7 +149,6 @@ const CreateFeedback = () => {
               borderColor="border.subtle"
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              disabled={isFormDisabled}
             />
 
             <FormFieldError
@@ -179,7 +176,6 @@ const CreateFeedback = () => {
               minH={32}
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              disabled={isFormDisabled}
               maxLength={MAX_DESCRIPTION_LENGTH}
             />
 

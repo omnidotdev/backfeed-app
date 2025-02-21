@@ -9,7 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDebounceValue, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -22,8 +22,6 @@ import type { Organization } from "generated/graphql";
 const OrganizationList = ({ ...props }: StackProps) => {
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
-  const [debouncedSearch] = useDebounceValue({ value: search });
-
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -33,7 +31,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
       pageSize,
       offset: (page - 1) * pageSize,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
-      search: debouncedSearch,
+      search,
       isMember: false,
     },
     {
