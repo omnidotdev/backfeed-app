@@ -9,7 +9,7 @@ import NextImage from "next/image";
 const Image = sigil(
   NextImage,
   {},
-  { shouldForwardProp: (prop) => ["width", "height"].includes(prop) },
+  { shouldForwardProp: (prop) => ["width", "height"].includes(prop) }
 );
 
 export default Image;
