@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, HStack, Icon, Text, css, sigil } from "@omnidev/sigil";
+import { Badge, Flex, HStack, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
 import { Image, Link } from "components/core";
@@ -23,7 +23,8 @@ const Header = () => {
   return (
     <sigil.header
       display="flex"
-      h={20}
+      w="full"
+      h="full"
       p={2}
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
       className={css({
@@ -45,6 +46,16 @@ const Header = () => {
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
               />
+              <Badge
+                size="sm"
+                fontSize="xs"
+                variant="outline"
+                color="brand.primary"
+                borderColor="brand.primary"
+                px={2}
+              >
+                Beta
+              </Badge>
             </HStack>
           </Link>
 
