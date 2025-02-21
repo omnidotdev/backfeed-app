@@ -59,9 +59,9 @@ const app = {
         "Our comprehensive platform provides all the tools you need to collect, analyze, and act on user feedback.",
       pinned: {
         collection: {
-          title: "Real-time Feedback Collection",
+          title: "Feedback Collection",
           description:
-            "Gather user feedback instantly with customizable forms and widgets that seamlessly integrate into your product.",
+            "Gather and colocate user feedback across multiple projects, products, and services.",
         },
         analytics: {
           title: "Advanced Analytics",

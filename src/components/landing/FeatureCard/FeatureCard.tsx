@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { Flex, Icon, Text } from "@omnidev/sigil";
 
 import type { IconType } from "react-icons";
 
@@ -19,35 +19,31 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
   <Flex
     aspectRatio={1}
     maxH="xs"
+    direction="column"
+    align="center"
+    textAlign="center"
+    justify="center"
     bgColor="background.default"
     borderRadius="md"
     boxShadow="lg"
     p={{ base: 4, sm: 6 }}
+    gap={4}
   >
-    <Stack align="center" h="full" textAlign="center" gap={{ base: 2, sm: 6 }}>
-      <Icon
-        src={featureIcon}
-        w={{ base: 6, sm: 10 }}
-        h={{ base: 6, sm: 10 }}
-        color="brand.primary"
-      />
+    <Icon src={featureIcon} w={10} h={10} color="brand.primary" />
 
-      <Stack>
-        <Text fontSize={{ sm: "lg" }} fontWeight="bold" mt={2}>
-          {title}
-        </Text>
+    <Text fontSize="lg" fontWeight="bold" mt={2}>
+      {title}
+    </Text>
 
-        <Text
-          fontSize={{ base: "sm", sm: "md" }}
-          color="foreground.subtle"
-          fontWeight="medium"
-          textWrap="pretty"
-          mb={4}
-        >
-          {description}
-        </Text>
-      </Stack>
-    </Stack>
+    <Text
+      // fontSize={{ base: "sm", sm: "md" }}
+      color="foreground.subtle"
+      fontWeight="medium"
+      textWrap="balance"
+      px={2}
+    >
+      {description}
+    </Text>
   </Flex>
 );
 export default FeatureCard;
