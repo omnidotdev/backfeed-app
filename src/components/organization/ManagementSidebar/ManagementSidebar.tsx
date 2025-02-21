@@ -27,7 +27,7 @@ import type { PropsWithChildren } from "react";
  */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
   // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the open state of the sidebar
-  const isLargeDisplay = useMediaQuery("(min-width: 1025px)");
+  const isLargeViewport = useMediaQuery("(min-width: 64em)");
 
   const segment = useSelectedLayoutSegment();
 
@@ -76,11 +76,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     },
   ];
 
-  const isOpen = isLargeDisplay ? isSidebarOpen : isDrawerOpen;
+  const isOpen = isLargeViewport ? isSidebarOpen : isDrawerOpen;
 
   return (
     <>
-      {isLargeDisplay ? (
+      {isLargeViewport ? (
         <Stack
           ref={() => {
             if (isDrawerOpen) {
@@ -162,7 +162,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
             aria-label="Toggle Sidebar"
-            onClick={isLargeDisplay ? onToggleSidebar : onToggleDrawer}
+            onClick={isLargeViewport ? onToggleSidebar : onToggleDrawer}
             ml={2}
           >
             <Icon

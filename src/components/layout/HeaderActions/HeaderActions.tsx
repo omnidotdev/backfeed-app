@@ -12,6 +12,7 @@ import {
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { RiMenu3Fill } from "react-icons/ri";
+import { useMediaQuery } from "usehooks-ts";
 
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
@@ -21,6 +22,8 @@ import { useAuth } from "lib/hooks";
  * Header actions.
  */
 const HeaderActions = () => {
+  const isSmallViewport = useMediaQuery("(min-width: 40em)");
+
   const router = useRouter(),
     { isAuthenticated, isLoading } = useAuth();
 
@@ -39,37 +42,36 @@ const HeaderActions = () => {
 
       {isAuthenticated ? (
         <AccountInformation />
+      ) : isSmallViewport ? (
+        <HStack>
+          <Button onClick={() => signIn("omni")} variant="outline">
+            {app.auth.signIn.label}
+          </Button>
+
+          <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+        </HStack>
       ) : (
-        <>
-          <Menu
-            trigger={
-              <Button variant="icon" display={{ base: "flex", sm: "none" }}>
-                <Icon src={RiMenu3Fill} />
-              </Button>
-            }
-            positioning={{
-              shift: 32,
-            }}
-          >
-            <MenuItemGroup minW={32}>
-              <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
-                <Button variant="outline">{app.auth.signIn.label}</Button>
-              </MenuItem>
-
-              <MenuItem value="signUp" onClick={handleSignUp} asChild>
-                <Button>{app.auth.signUp.label}</Button>
-              </MenuItem>
-            </MenuItemGroup>
-          </Menu>
-
-          <HStack display={{ base: "none", sm: "flex" }}>
-            <Button onClick={() => signIn("omni")} variant="outline">
-              {app.auth.signIn.label}
+        <Menu
+          unmountOnExit
+          trigger={
+            <Button variant="icon">
+              <Icon src={RiMenu3Fill} />
             </Button>
+          }
+          positioning={{
+            shift: 32,
+          }}
+        >
+          <MenuItemGroup minW={32}>
+            <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
+              <Button variant="outline">{app.auth.signIn.label}</Button>
+            </MenuItem>
 
-            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-          </HStack>
-        </>
+            <MenuItem value="signUp" onClick={handleSignUp} asChild>
+              <Button>{app.auth.signUp.label}</Button>
+            </MenuItem>
+          </MenuItemGroup>
+        </Menu>
       )}
     </Flex>
   );
