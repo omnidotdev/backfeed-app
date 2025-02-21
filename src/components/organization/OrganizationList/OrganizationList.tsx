@@ -85,7 +85,6 @@ const OrganizationList = ({ ...props }: StackProps) => {
       </Stack>
 
       <Pagination
-        siblingCount={0}
         // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
         ellipsisProps={{
           display: { base: "none", sm: "flex" },

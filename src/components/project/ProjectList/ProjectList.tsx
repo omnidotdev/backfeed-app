@@ -107,6 +107,14 @@ const ProjectList = () => {
       </Stack>
 
       <Pagination
+        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
+        ellipsisProps={{
+          display: { base: "none", sm: "flex" },
+        }}
+        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
+        itemProps={{
+          display: { base: "none", sm: "flex" },
+        }}
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}
