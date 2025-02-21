@@ -10,12 +10,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
 import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  useAuth,
-  useDebounceValue,
-  useOrganizationMembership,
-  useSearchParams,
-} from "lib/hooks";
+import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -45,8 +40,6 @@ const ProjectList = () => {
 
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
-  const [debouncedSearch] = useDebounceValue({ value: search });
-
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -56,7 +49,7 @@ const ProjectList = () => {
       pageSize,
       offset: (page - 1) * pageSize,
       organizationSlug,
-      search: debouncedSearch,
+      search,
     },
     {
       placeholderData: keepPreviousData,

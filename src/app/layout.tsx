@@ -3,7 +3,7 @@ import { Assistant } from "next/font/google";
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
-import { ENABLE_MSW, NEXT_RUNTIME, app } from "lib/config";
+import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
 import { getAuthSession } from "lib/util";
 import { mswNodeServer } from "test/e2e/util";
 
@@ -47,6 +47,12 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
     // TODO: remove explicit fallback font when issue is sorted out. Currently it is used to prevent FOUT (flash of unstyled text) during initial renders
     <html lang="en" suppressHydrationWarning className={assistant.variable}>
+      <head>
+        {isDevEnv && (
+          <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+        )}
+      </head>
+
       <body>
         <Providers session={session}>
           <Layout>{children}</Layout>
