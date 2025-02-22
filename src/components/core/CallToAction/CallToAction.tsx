@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Text } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 import { useDialogStore } from "lib/hooks/store";
 
@@ -29,7 +29,7 @@ interface Props {
  * Call to action button component.
  */
 const CallToAction = ({ action }: Props) => {
-  const router = useRouter();
+  const router = useTransitionRouter();
 
   const { label, icon, href, dialogType, ...buttonProps } = action;
 

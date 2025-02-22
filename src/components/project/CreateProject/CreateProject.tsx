@@ -14,7 +14,7 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
@@ -83,7 +83,7 @@ interface Props {
  * Dialog for creating a new project.
  */
 const CreateProject = ({ organizationSlug }: Props) => {
-  const router = useRouter();
+  const router = useTransitionRouter();
 
   const { user } = useAuth();
 

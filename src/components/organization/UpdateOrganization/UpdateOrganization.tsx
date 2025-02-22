@@ -10,7 +10,8 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useForm, useStore } from "@tanstack/react-form";
-import { useParams, useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
+import { useParams } from "next/navigation";
 import { LuSave } from "react-icons/lu";
 import { z } from "zod";
 
@@ -71,7 +72,7 @@ const updateOrganizationSchema = baseSchema.superRefine(
  */
 const UpdateOrganization = () => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const router = useRouter();
+  const router = useTransitionRouter();
 
   const { user } = useAuth();
 
