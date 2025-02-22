@@ -20,7 +20,7 @@ const LandingPage = () => (
     <Flex
       w="full"
       h="full"
-      bgColor="background.muted"
+      bgColor={{ base: "neutral.100", _dark: "black/80" }}
       align="center"
       justify="center"
     >

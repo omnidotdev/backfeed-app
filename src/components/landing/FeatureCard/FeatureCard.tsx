@@ -17,32 +17,44 @@ interface Props {
  */
 const FeatureCard = ({ title, description, featureIcon }: Props) => (
   <Flex
+    position="relative"
     aspectRatio={1}
-    maxH="xs"
+    maxH={{ base: 64, sm: "xs" }}
     direction="column"
     align="center"
     textAlign="center"
     justify="center"
-    bgColor="background.default"
+    bgColor={{ base: "neutral.50", _dark: "neutral.950" }}
     borderRadius="md"
     boxShadow="lg"
     p={{ base: 4, sm: 6 }}
     gap={4}
   >
-    <Icon src={featureIcon} w={10} h={10} color="brand.primary" />
-
-    <Text fontSize="lg" fontWeight="bold" mt={2}>
+    <Text fontSize={{ base: "lg", sm: "2xl" }} fontWeight="bold" mt={2}>
       {title}
     </Text>
 
     <Text
-      color="foreground.subtle"
+      fontSize={{ sm: "xl" }}
+      color="foreground.muted"
       fontWeight="medium"
       textWrap="balance"
       px={2}
     >
       {description}
     </Text>
+
+    <Icon
+      src={featureIcon}
+      w="70%"
+      h="70%"
+      color="brand.primary"
+      position="absolute"
+      top="50%"
+      left="50%"
+      transform="translate(-50%, -50%)"
+      opacity={0.05}
+    />
   </Flex>
 );
 export default FeatureCard;
