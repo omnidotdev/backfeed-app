@@ -30,20 +30,6 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
     p={{ base: 4, sm: 6 }}
     gap={4}
   >
-    <Text fontSize={{ base: "lg", sm: "2xl" }} fontWeight="bold" mt={2}>
-      {title}
-    </Text>
-
-    <Text
-      fontSize={{ sm: "xl" }}
-      color="foreground.muted"
-      fontWeight="medium"
-      textWrap="balance"
-      px={2}
-    >
-      {description}
-    </Text>
-
     <Icon
       src={featureIcon}
       w="70%"
@@ -55,6 +41,26 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
       transform="translate(-50%, -50%)"
       opacity={0.05}
     />
+
+    <Text
+      fontSize={{ base: "lg", sm: "2xl" }}
+      fontWeight="bold"
+      mt={2}
+      zIndex="foreground"
+    >
+      {title}
+    </Text>
+
+    <Text
+      fontSize={{ sm: "xl" }}
+      color="foreground.muted"
+      fontWeight="medium"
+      textWrap="balance"
+      px={2}
+      zIndex="foreground"
+    >
+      {description}
+    </Text>
   </Flex>
 );
 export default FeatureCard;
