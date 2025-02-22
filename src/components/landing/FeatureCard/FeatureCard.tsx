@@ -36,7 +36,6 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
     </Text>
 
     <Text
-      // fontSize={{ base: "sm", sm: "md" }}
       color="foreground.subtle"
       fontWeight="medium"
       textWrap="balance"
