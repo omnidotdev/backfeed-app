@@ -104,12 +104,17 @@ const PinnedOrganizations = () => {
             <SkeletonArray count={3} h={48} />
           ) : pinnedOrganizations?.length ? (
             pinnedOrganizations?.map((organization) => (
-              <OrganizationCard
+              <Link
                 key={organization?.rowId}
-                organization={organization as Partial<Organization>}
-                // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
-                h={48}
-              />
+                href={`/organizations/${organization?.slug}`}
+                role="group"
+              >
+                <OrganizationCard
+                  organization={organization as Partial<Organization>}
+                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                  h={48}
+                />
+              </Link>
             ))
           ) : (
             <EmptyState
