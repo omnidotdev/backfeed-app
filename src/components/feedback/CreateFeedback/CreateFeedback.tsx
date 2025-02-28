@@ -13,7 +13,7 @@ import {
   useProjectQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator, toaster } from "lib/constants";
+import { toaster } from "lib/constants";
 import { useAuth } from "lib/hooks";
 
 const MAX_DESCRIPTION_LENGTH = 240;
@@ -49,9 +49,9 @@ const CreateFeedback = () => {
     projectSlug: string;
   }>();
 
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
 
-  const { data: projectId, isLoading: isProjectLoading } = useProjectQuery(
+  const { data: projectId } = useProjectQuery(
     {
       projectSlug,
       organizationSlug,
@@ -83,7 +83,6 @@ const CreateFeedback = () => {
       description: "",
     },
     asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
     validators: {
       onChange: createFeedbackSchema,
       onSubmitAsync: createFeedbackSchema,
@@ -123,8 +122,6 @@ const CreateFeedback = () => {
     (store) => store.values.description.length
   );
 
-  const isFormDisabled = isProjectLoading || isAuthLoading;
-
   return (
     <sigil.form
       display="flex"
@@ -151,11 +148,10 @@ const CreateFeedback = () => {
               borderColor="border.subtle"
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              disabled={isFormDisabled}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onSubmit}
+              errors={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>
@@ -179,12 +175,11 @@ const CreateFeedback = () => {
               minH={32}
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
-              disabled={isFormDisabled}
               maxLength={MAX_DESCRIPTION_LENGTH}
             />
 
             <FormFieldError
-              error={state.meta.errorMap.onSubmit}
+              errors={state.meta.errorMap.onSubmit}
               isDirty={state.meta.isDirty}
             />
           </Stack>
