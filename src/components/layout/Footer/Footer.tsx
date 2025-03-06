@@ -16,10 +16,10 @@ const Footer = () => (
     bottom={0}
     w="100%"
     // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-    className={css({
+    css={{
       borderTop: "1px solid",
       borderColor: "border.subtle",
-    })}
+    }}
   >
     &copy; {new Date().getFullYear()} {app.organization}
   </sigil.footer>

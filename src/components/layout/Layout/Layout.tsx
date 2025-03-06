@@ -44,7 +44,7 @@ const Layout = ({ children }: Props) => {
       </Flex>
 
       <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
-        <sigil.main w="full" flex={1} className={css({ mt: "header" })}>
+        <sigil.main w="full" flex={1} css={{ mt: "header" }}>
           {children}
         </sigil.main>
 
