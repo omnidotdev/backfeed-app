@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Flex, HStack, css, sigil } from "@omnidev/sigil";
+import { Badge, Flex, HStack, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
 import { Image, Link } from "components/core";

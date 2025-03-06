@@ -1,6 +1,6 @@
 "use client";
 
-import { css, sigil } from "@omnidev/sigil";
+import { sigil } from "@omnidev/sigil";
 
 import { app } from "lib/config";
 

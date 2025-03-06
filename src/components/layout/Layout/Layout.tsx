@@ -9,7 +9,6 @@ import { useIsClient } from "usehooks-ts";
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
-import { css } from "generated/panda/css";
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
 
