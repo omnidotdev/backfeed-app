@@ -1,6 +1,6 @@
 import { Input, Label, Stack } from "@omnidev/sigil";
 
-import { FormFieldError } from "components/core";
+import { FormFieldError } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
 import type { InputProps } from "@omnidev/sigil";

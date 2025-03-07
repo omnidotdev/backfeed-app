@@ -14,7 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import { LuSave } from "react-icons/lu";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
+import { FormFieldError } from "components/form";
 import { SectionContainer } from "components/layout";
 import {
   useOrganizationQuery,

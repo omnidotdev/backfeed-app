@@ -1,10 +1,10 @@
 import { Label, Stack, Textarea } from "@omnidev/sigil";
 
-import { FormFieldError } from "components/core";
+import { FormFieldError } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
 import type { TextareaProps } from "@omnidev/sigil";
-import type { FormFieldErrorProps } from "components/core";
+import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends TextareaProps {
   /** Label for the textarea field. */
