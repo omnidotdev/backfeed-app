@@ -1,19 +1,19 @@
 "use client";
 
-import { Button, Stack, Textarea, sigil } from "@omnidev/sigil";
-import { useForm, useStore } from "@tanstack/react-form";
+import { Stack, sigil } from "@omnidev/sigil";
+import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
-import { CharacterLimit, FormFieldError } from "components/core";
+import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
-import { useAuth } from "lib/hooks";
+import { useAuth, useForm } from "lib/hooks";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -56,7 +56,14 @@ const CreateComment = () => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
+  const {
+    handleSubmit,
+    AppField: Field,
+    AppForm,
+    SubmitForm,
+    reset,
+    store,
+  } = useForm({
     defaultValues: {
       postId: feedbackId,
       userId: user?.rowId ?? "",
@@ -110,25 +117,17 @@ const CreateComment = () => {
       }}
     >
       <Field name="message">
-        {({ handleChange, state }) => (
-          <Stack position="relative" gap={1.5}>
-            <Textarea
-              placeholder={app.feedbackPage.comments.textAreaPlaceholder}
-              borderColor="border.subtle"
-              fontSize="sm"
-              minH={16}
-              value={state.value}
-              onChange={(e) => handleChange(e.target.value)}
-              disabled={isAuthLoading}
-              maxLength={MAX_COMMENT_LENGTH}
-            />
-
-            <FormFieldError
-              errors={state.meta.errorMap.onSubmit}
-              isDirty={state.meta.isDirty}
-              top={-6}
-            />
-          </Stack>
+        {({ TextareaField }) => (
+          <TextareaField
+            placeholder={app.feedbackPage.comments.textAreaPlaceholder}
+            fontSize="sm"
+            minH={16}
+            disabled={isAuthLoading}
+            maxLength={MAX_COMMENT_LENGTH}
+            errorProps={{
+              top: -6,
+            }}
+          />
         )}
       </Field>
 
@@ -139,23 +138,12 @@ const CreateComment = () => {
           placeSelf="flex-start"
         />
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              w="fit-content"
-              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
-            >
-              {app.feedbackPage.comments.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.feedbackPage.comments.action}
+            isPending={isPending}
+          />
+        </AppForm>
       </Stack>
     </sigil.form>
   );

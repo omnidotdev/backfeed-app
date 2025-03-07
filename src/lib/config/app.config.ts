@@ -610,7 +610,10 @@ const app = {
       title: "Comments",
       description: "View all feedback comments.",
       textAreaPlaceholder: "I agree! This sounds like a great idea.",
-      submit: "Add Comment",
+      action: {
+        pending: "Adding Comment...",
+        submit: "Add Comment",
+      },
       totalComments: "total comments",
       emptyState: {
         message: "No comments found. Add a comment to start the conversation.",
