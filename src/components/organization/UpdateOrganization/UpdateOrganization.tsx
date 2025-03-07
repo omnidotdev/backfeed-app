@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  Button,
-  Divider,
-  Icon,
-  Input,
-  Label,
-  Stack,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm, useStore } from "@tanstack/react-form";
+import { Divider, Stack, sigil } from "@omnidev/sigil";
+import { useStore } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { LuSave } from "react-icons/lu";
 import { z } from "zod";
 
-import { FormFieldError } from "components/form";
 import { SectionContainer } from "components/layout";
 import {
   useOrganizationQuery,
@@ -22,7 +13,7 @@ import {
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -46,31 +37,34 @@ const baseSchema = z.object({
     ),
 });
 
-/** Schema for validation of the update organization form. */
-const updateOrganizationSchema = baseSchema.superRefine(
-  async ({ slug }, ctx) => {
-    if (!slug?.length) return z.NEVER;
-
-    const sdk = await getSdk();
-
-    const { organizationBySlug } = await sdk.Organization({ slug });
-
-    if (organizationBySlug) {
-      ctx.addIssue({
-        code: "custom",
-        message:
-          updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
-        path: ["slug"],
-      });
-    }
-  }
-);
-
 /**
  * Form for updating organization details.
  */
 const UpdateOrganization = () => {
+  const queryClient = useQueryClient();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
+
+  /** Schema for validation of the update organization form. */
+  const updateOrganizationSchema = baseSchema.superRefine(
+    async ({ slug }, ctx) => {
+      if (!slug?.length || slug === organizationSlug) return z.NEVER;
+
+      const sdk = await getSdk();
+
+      const { organizationBySlug } = await sdk.Organization({ slug });
+
+      if (organizationBySlug) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
+          path: ["slug"],
+        });
+      }
+    }
+  );
+
   const router = useRouter();
 
   const { user } = useAuth();
@@ -90,15 +84,29 @@ const UpdateOrganization = () => {
   });
 
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: useOrganizationQuery.getKey({
+          slug: organizationSlug,
+        }),
+      });
+
       router.replace(
         `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
       );
+
       reset();
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
+  const {
+    handleSubmit,
+    AppField: Field,
+    AppForm,
+    SubmitForm,
+    reset,
+    store,
+  } = useForm({
     defaultValues: {
       name: organization?.name ?? "",
       slug: organization?.slug ?? "",
@@ -152,78 +160,31 @@ const UpdateOrganization = () => {
       >
         <Stack gap={4} maxW="lg">
           <Field name="name">
-            {({ handleChange, state, name }) => (
-              <Stack position="relative" gap={1.5}>
-                <Label htmlFor={name} fontWeight="semibold">
-                  {updateOrganizationDetails.fields.organizationName.label}
-                </Label>
-
-                <Input
-                  id={name}
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isAdmin}
-                />
-
-                <FormFieldError
-                  errors={state.meta.errorMap.onSubmit}
-                  isDirty={state.meta.isDirty}
-                />
-              </Stack>
+            {({ TextField }) => (
+              <TextField
+                label={updateOrganizationDetails.fields.organizationName.label}
+                disabled={!isAdmin}
+              />
             )}
           </Field>
 
           <Field name="slug">
-            {({ handleChange, state, name }) => (
-              <Stack position="relative" gap={1.5}>
-                <Label htmlFor={name} fontWeight="semibold">
-                  {updateOrganizationDetails.fields.organizationSlug.label}
-                </Label>
-
-                <Input
-                  id={name}
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                  disabled={!isAdmin}
-                />
-
-                <FormFieldError
-                  errors={state.meta.errorMap.onSubmit}
-                  isDirty={state.meta.isDirty}
-                />
-              </Stack>
+            {({ TextField }) => (
+              <TextField
+                label={updateOrganizationDetails.fields.organizationSlug.label}
+                disabled={!isAdmin}
+              />
             )}
           </Field>
         </Stack>
 
-        <Subscribe
-          selector={(state) => ({
-            canSubmit: state.canSubmit,
-            isSubmitting: state.isSubmitting,
-            isDirty: state.isDirty,
-          })}
-        >
-          {({ canSubmit, isSubmitting, isDirty }) => (
-            <Button
-              type="submit"
-              width={48}
-              disabled={
-                isDefaultForm ||
-                isSubmitting ||
-                !canSubmit ||
-                !isDirty ||
-                !isAdmin
-              }
-              mt={4}
-            >
-              {!isSubmitting && <Icon src={LuSave} h={4} w={4} />}
-
-              {isSubmitting
-                ? updateOrganizationDetails.statuses.pending
-                : updateOrganizationDetails.actions.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={updateOrganizationDetails.action}
+            disabled={!isAdmin || isDefaultForm}
+            mt={4}
+          />
+        </AppForm>
       </sigil.form>
     </SectionContainer>
   );

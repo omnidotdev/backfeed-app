@@ -312,10 +312,8 @@ const app = {
       updateOrganization: {
         title: "Update Organization",
         memberTitle: "Organization Details",
-        actions: {
+        action: {
           submit: "Update Organization",
-        },
-        statuses: {
           pending: "Updating Organization...",
         },
         fields: {
