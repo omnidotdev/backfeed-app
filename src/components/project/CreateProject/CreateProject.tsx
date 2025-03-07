@@ -1,24 +1,10 @@
 "use client";
 
-import { createListCollection } from "@ark-ui/react";
-import {
-  Button,
-  Dialog,
-  HStack,
-  Input,
-  Label,
-  Select,
-  Stack,
-  Text,
-  Textarea,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Dialog, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
 import {
   Role,
   useCreateProjectMutation,
@@ -27,7 +13,7 @@ import {
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -150,7 +136,13 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const {
+    handleSubmit,
+    AppField: Field,
+    AppForm,
+    SubmitForm,
+    reset,
+  } = useForm({
     defaultValues: {
       organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
@@ -213,141 +205,58 @@ const CreateProject = ({ organizationSlug }: Props) => {
         }}
       >
         <Field name="organizationId">
-          {({ handleChange, state }) => (
-            <Stack position="relative">
-              <Select
-                label={
-                  app.dashboardPage.cta.newProject.selectOrganization.label
-                }
-                collection={createListCollection({
-                  items: organizations ?? [],
-                })}
-                displayGroupLabel={false}
-                clearTriggerProps={{
-                  display: organizationSlug ? "none" : undefined,
-                }}
-                disabled={!!organizationSlug}
-                valueTextProps={{
-                  placeholder: "Select an organization",
-                }}
-                triggerProps={{
-                  borderColor: "border.subtle",
-                }}
-                value={state.value?.length ? [state.value] : []}
-                onValueChange={({ value }) =>
-                  handleChange(value.length ? value[0] : "")
-                }
-              />
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+          {({ SingularSelectField }) => (
+            <SingularSelectField
+              label={app.dashboardPage.cta.newProject.selectOrganization.label}
+              placeholder="Select an organization"
+              items={organizations ?? []}
+              clearTriggerProps={{
+                display: organizationSlug ? "none" : undefined,
+              }}
+              disabled={!!organizationSlug}
+            />
           )}
         </Field>
 
         <Field name="name">
-          {({ handleChange, state, name }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={name}>
-                {app.dashboardPage.cta.newProject.projectName.id}
-              </Label>
-
-              <Input
-                id={name}
-                placeholder={
-                  app.dashboardPage.cta.newProject.projectName.placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+          {({ TextField }) => (
+            <TextField
+              label={app.dashboardPage.cta.newProject.projectName.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectName.placeholder
+              }
+            />
           )}
         </Field>
 
         <Field name="description">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
-              >
-                {app.dashboardPage.cta.newProject.projectDescription.id}
-              </Label>
-
-              <Textarea
-                id={app.dashboardPage.cta.newProject.projectDescription.id}
-                placeholder={
-                  app.dashboardPage.cta.newProject.projectDescription
-                    .placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+          {({ TextField }) => (
+            <TextField
+              label={app.dashboardPage.cta.newProject.projectDescription.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectDescription.placeholder
+              }
+            />
           )}
         </Field>
 
         <Field name="slug">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
-                {app.dashboardPage.cta.newProject.projectSlug.id}
-              </Label>
-
-              <HStack>
-                <Text
-                  whiteSpace="nowrap"
-                  fontSize="lg"
-                >{`.../${app.projectsPage.breadcrumb.toLowerCase()}/`}</Text>
-
-                <Input
-                  id={app.dashboardPage.cta.newProject.projectSlug.id}
-                  placeholder={
-                    app.dashboardPage.cta.newProject.projectSlug.placeholder
-                  }
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                />
-              </HStack>
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+          {({ TextField }) => (
+            <TextField
+              label={app.dashboardPage.cta.newProject.projectSlug.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectSlug.placeholder
+              }
+            />
           )}
         </Field>
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
-              mt={4}
-            >
-              {isSubmitting || isPending
-                ? app.dashboardPage.cta.newProject.action.pending
-                : app.dashboardPage.cta.newProject.action.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.dashboardPage.cta.newProject.action}
+            isPending={isPending}
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );

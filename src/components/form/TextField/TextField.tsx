@@ -6,9 +6,13 @@ import { useFieldContext } from "lib/hooks";
 import type { InputProps } from "@omnidev/sigil";
 
 interface Props extends InputProps {
+  /** Label for the text field. */
   label: string;
 }
 
+/**
+ * Text field component for form inputs.
+ */
 const TextField = ({ label, ...rest }: Props) => {
   const { handleChange, state, name } = useFieldContext<string>();
 

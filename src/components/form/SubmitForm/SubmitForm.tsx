@@ -13,6 +13,9 @@ interface Props extends ButtonProps {
   isPending?: boolean;
 }
 
+/**
+ * Component for submitting forms.
+ */
 const SubmitForm = ({
   action,
   isPending = false,
