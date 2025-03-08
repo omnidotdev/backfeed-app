@@ -294,6 +294,7 @@ const app = {
           rowId: {
             placeholder: "Search for or select a member...",
           },
+          submit: "Add Owner",
           pending: "Adding Owner...",
           cancel: "Cancel",
         },
