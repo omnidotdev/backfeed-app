@@ -9,9 +9,9 @@ import type { SelectProps } from "@omnidev/sigil";
 import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends Omit<SelectProps, "collection"> {
-  /** The items available for selection */
+  /** The items available for selection. */
   items: CollectionItem[];
-  /** The placeholder text to display when no item is selected */
+  /** The placeholder text to display when no item is selected. */
   placeholder?: string;
   /** Additional props for the error component. */
   errorProps?: Partial<FormFieldErrorProps>;

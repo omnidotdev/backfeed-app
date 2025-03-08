@@ -27,7 +27,7 @@ const TextareaField = ({ label, errorProps, ...rest }: Props) => {
         id={name}
         borderColor="border.subtle"
         value={state.value}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(evt) => handleChange(evt.target.value)}
         {...rest}
       />
     </Field>

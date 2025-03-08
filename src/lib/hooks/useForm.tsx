@@ -10,7 +10,7 @@ import {
   TextareaField,
 } from "components/form";
 
-/** @knipignore -  `useFieldContext` and `useFormContext` are used outside of this file, but others are not. This simplifies the export though. */
+/** @knipignore - `useFieldContext` and `useFormContext` are used outside of this file, but others are not. This simplifies the export though. */
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
 

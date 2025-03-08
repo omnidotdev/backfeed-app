@@ -6,12 +6,12 @@ import { useFormContext } from "lib/hooks";
 import type { ButtonProps } from "@omnidev/sigil";
 
 interface Props extends ButtonProps {
-  /** Action labels for submit and pending states */
+  /** Action labels for submit button states. */
   action: {
     submit: string;
     pending: string;
   };
-  /** Boolean indicating if the mutation is pending */
+  /** Whether the mutation is pending. */
   isPending?: boolean;
 }
 

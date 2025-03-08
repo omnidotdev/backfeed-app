@@ -26,7 +26,7 @@ const InputField = ({ label, errorProps, ...rest }: Props) => {
       <Input
         id={name}
         value={state.value}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(evt) => handleChange(evt.target.value)}
         {...rest}
       />
     </Field>

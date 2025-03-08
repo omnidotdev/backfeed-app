@@ -7,7 +7,7 @@ import type { StackProps } from "@omnidev/sigil";
 import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends StackProps {
-  /** Props to be passed to the underlying FormFieldError component */
+  /** Props for the form field error container. */
   errorProps?: Partial<FormFieldErrorProps>;
 }
 

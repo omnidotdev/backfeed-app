@@ -9,7 +9,7 @@ import type { ComboboxProps } from "@omnidev/sigil";
 import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends Omit<ComboboxProps, "collection"> {
-  /** The items available for selection */
+  /** The items available for selection. */
   items: CollectionItem[];
   /** Additional props for the error component. */
   errorProps?: Partial<FormFieldErrorProps>;
