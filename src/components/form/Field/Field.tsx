@@ -11,6 +11,9 @@ interface Props extends StackProps {
   errorProps?: Partial<FormFieldErrorProps>;
 }
 
+/**
+ * Generalized form `Field` component.
+ */
 const Field = ({ errorProps, children, ...rest }: Props) => {
   const { state } = useFieldContext<string>();
 
