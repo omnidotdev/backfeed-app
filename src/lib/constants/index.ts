@@ -1,2 +1,2 @@
-export { default as searchParams } from "./searchParams";
-export { default as toaster } from "./toaster";
+export { default as searchParams } from "./searchParams.constant";
+export { default as toaster } from "./toaster.constant";
