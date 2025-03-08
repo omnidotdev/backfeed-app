@@ -101,13 +101,7 @@ const CreateOrganization = () => {
       },
     });
 
-  const {
-    handleSubmit,
-    AppField: Field,
-    AppForm,
-    SubmitForm,
-    reset,
-  } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: "",
       slug: "",
@@ -165,9 +159,9 @@ const CreateOrganization = () => {
           await handleSubmit();
         }}
       >
-        <Field name="name">
-          {({ TextField }) => (
-            <TextField
+        <AppField name="name">
+          {({ InputField }) => (
+            <InputField
               label={app.dashboardPage.cta.newOrganization.organizationName.id}
               placeholder={
                 app.dashboardPage.cta.newOrganization.organizationName
@@ -175,11 +169,11 @@ const CreateOrganization = () => {
               }
             />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="slug">
-          {({ TextField }) => (
-            <TextField
+        <AppField name="slug">
+          {({ InputField }) => (
+            <InputField
               label={app.dashboardPage.cta.newOrganization.organizationSlug.id}
               placeholder={
                 app.dashboardPage.cta.newOrganization.organizationSlug
@@ -187,7 +181,7 @@ const CreateOrganization = () => {
               }
             />
           )}
-        </Field>
+        </AppField>
 
         <AppForm>
           <SubmitForm

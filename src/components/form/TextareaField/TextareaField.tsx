@@ -1,6 +1,6 @@
-import { Label, Stack, Textarea } from "@omnidev/sigil";
+import { Label, Textarea } from "@omnidev/sigil";
 
-import { FormFieldError } from "components/form";
+import { Field } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
 import type { TextareaProps } from "@omnidev/sigil";
@@ -10,17 +10,17 @@ interface Props extends TextareaProps {
   /** Label for the textarea field. */
   label?: string;
   /** Additional props for the error component. */
-  errorProps?: Omit<FormFieldErrorProps, "errors" | "isDirty">;
+  errorProps?: Partial<FormFieldErrorProps>;
 }
 
-/**
+/*s
  * Textarea field component for form inputs.
  */
 const TextareaField = ({ label, errorProps, ...rest }: Props) => {
   const { handleChange, state, name } = useFieldContext<string>();
 
   return (
-    <Stack position="relative" gap={1.5}>
+    <Field errorProps={errorProps}>
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <Textarea
@@ -30,13 +30,7 @@ const TextareaField = ({ label, errorProps, ...rest }: Props) => {
         onChange={(e) => handleChange(e.target.value)}
         {...rest}
       />
-
-      <FormFieldError
-        errors={state.meta.errorMap.onSubmit}
-        isDirty={state.meta.isDirty}
-        {...errorProps}
-      />
-    </Stack>
+    </Field>
   );
 };
 

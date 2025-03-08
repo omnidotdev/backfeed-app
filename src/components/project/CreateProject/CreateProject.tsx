@@ -136,13 +136,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
   });
 
-  const {
-    handleSubmit,
-    AppField: Field,
-    AppForm,
-    SubmitForm,
-    reset,
-  } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
@@ -204,7 +198,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
           await handleSubmit();
         }}
       >
-        <Field name="organizationId">
+        <AppField name="organizationId">
           {({ SingularSelectField }) => (
             <SingularSelectField
               label={app.dashboardPage.cta.newProject.selectOrganization.label}
@@ -216,40 +210,40 @@ const CreateProject = ({ organizationSlug }: Props) => {
               disabled={!!organizationSlug}
             />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="name">
-          {({ TextField }) => (
-            <TextField
+        <AppField name="name">
+          {({ InputField }) => (
+            <InputField
               label={app.dashboardPage.cta.newProject.projectName.id}
               placeholder={
                 app.dashboardPage.cta.newProject.projectName.placeholder
               }
             />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="description">
-          {({ TextField }) => (
-            <TextField
+        <AppField name="description">
+          {({ InputField }) => (
+            <InputField
               label={app.dashboardPage.cta.newProject.projectDescription.id}
               placeholder={
                 app.dashboardPage.cta.newProject.projectDescription.placeholder
               }
             />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="slug">
-          {({ TextField }) => (
-            <TextField
+        <AppField name="slug">
+          {({ InputField }) => (
+            <InputField
               label={app.dashboardPage.cta.newProject.projectSlug.id}
               placeholder={
                 app.dashboardPage.cta.newProject.projectSlug.placeholder
               }
             />
           )}
-        </Field>
+        </AppField>
 
         <AppForm>
           <SubmitForm

@@ -75,54 +75,49 @@ const CreateFeedback = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    AppField: Field,
-    AppForm,
-    SubmitForm,
-    reset,
-    store,
-  } = useForm({
-    defaultValues: {
-      projectId: projectId ?? "",
-      userId: user?.rowId ?? "",
-      title: "",
-      description: "",
-    },
-    asyncDebounceMs: 300,
-    validators: {
-      onChange: createFeedbackSchema,
-      onSubmitAsync: createFeedbackSchema,
-    },
-    onSubmit: async ({ value }) =>
-      toaster.promise(
-        createFeedback({
-          input: {
-            post: {
-              projectId: value.projectId,
-              userId: value.userId,
-              title: value.title.trim(),
-              description: value.description.trim(),
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
+    {
+      defaultValues: {
+        projectId: projectId ?? "",
+        userId: user?.rowId ?? "",
+        title: "",
+        description: "",
+      },
+      asyncDebounceMs: 300,
+      validators: {
+        onChange: createFeedbackSchema,
+        onSubmitAsync: createFeedbackSchema,
+      },
+      onSubmit: async ({ value }) =>
+        toaster.promise(
+          createFeedback({
+            input: {
+              post: {
+                projectId: value.projectId,
+                userId: value.userId,
+                title: value.title.trim(),
+                description: value.description.trim(),
+              },
             },
-          },
-        }),
-        {
-          loading: {
-            title: app.projectPage.projectFeedback.action.pending,
-          },
-          success: {
-            title: app.projectPage.projectFeedback.action.success.title,
-            description:
-              app.projectPage.projectFeedback.action.success.description,
-          },
-          error: {
-            title: app.projectPage.projectFeedback.action.error.title,
-            description:
-              app.projectPage.projectFeedback.action.error.description,
-          },
-        }
-      ),
-  });
+          }),
+          {
+            loading: {
+              title: app.projectPage.projectFeedback.action.pending,
+            },
+            success: {
+              title: app.projectPage.projectFeedback.action.success.title,
+              description:
+                app.projectPage.projectFeedback.action.success.description,
+            },
+            error: {
+              title: app.projectPage.projectFeedback.action.error.title,
+              description:
+                app.projectPage.projectFeedback.action.error.description,
+            },
+          }
+        ),
+    }
+  );
 
   const descriptionLength = useStore(
     store,
@@ -140,18 +135,18 @@ const CreateFeedback = () => {
         await handleSubmit();
       }}
     >
-      <Field name="title">
-        {({ TextField }) => (
-          <TextField
+      <AppField name="title">
+        {({ InputField }) => (
+          <InputField
             label={app.projectPage.projectFeedback.feedbackTitle.label}
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
           />
         )}
-      </Field>
+      </AppField>
 
-      <Field name="description">
+      <AppField name="description">
         {({ TextareaField }) => (
           <TextareaField
             label={app.projectPage.projectFeedback.feedbackDescription.label}
@@ -163,7 +158,7 @@ const CreateFeedback = () => {
             maxLength={MAX_DESCRIPTION_LENGTH}
           />
         )}
-      </Field>
+      </AppField>
 
       <Stack justify="space-between" direction="row">
         <CharacterLimit

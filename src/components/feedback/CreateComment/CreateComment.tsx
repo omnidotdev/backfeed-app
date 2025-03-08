@@ -56,52 +56,47 @@ const CreateComment = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    AppField: Field,
-    AppForm,
-    SubmitForm,
-    reset,
-    store,
-  } = useForm({
-    defaultValues: {
-      postId: feedbackId,
-      userId: user?.rowId ?? "",
-      message: "",
-    },
-    asyncDebounceMs: 300,
-    validators: {
-      onChange: createCommentSchema,
-      onSubmitAsync: createCommentSchema,
-    },
-    onSubmit: async ({ value }) =>
-      toaster.promise(
-        createComment({
-          input: {
-            comment: {
-              postId: value.postId,
-              userId: value.userId,
-              message: value.message.trim(),
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
+    {
+      defaultValues: {
+        postId: feedbackId,
+        userId: user?.rowId ?? "",
+        message: "",
+      },
+      asyncDebounceMs: 300,
+      validators: {
+        onChange: createCommentSchema,
+        onSubmitAsync: createCommentSchema,
+      },
+      onSubmit: async ({ value }) =>
+        toaster.promise(
+          createComment({
+            input: {
+              comment: {
+                postId: value.postId,
+                userId: value.userId,
+                message: value.message.trim(),
+              },
             },
-          },
-        }),
-        {
-          loading: {
-            title: app.feedbackPage.comments.createComment.pending,
-          },
-          success: {
-            title: app.feedbackPage.comments.createComment.success.title,
-            description:
-              app.feedbackPage.comments.createComment.success.description,
-          },
-          error: {
-            title: app.feedbackPage.comments.createComment.error.title,
-            description:
-              app.feedbackPage.comments.createComment.error.description,
-          },
-        }
-      ),
-  });
+          }),
+          {
+            loading: {
+              title: app.feedbackPage.comments.createComment.pending,
+            },
+            success: {
+              title: app.feedbackPage.comments.createComment.success.title,
+              description:
+                app.feedbackPage.comments.createComment.success.description,
+            },
+            error: {
+              title: app.feedbackPage.comments.createComment.error.title,
+              description:
+                app.feedbackPage.comments.createComment.error.description,
+            },
+          }
+        ),
+    }
+  );
 
   const messageLength = useStore(store, (store) => store.values.message.length);
 
@@ -116,7 +111,7 @@ const CreateComment = () => {
         await handleSubmit();
       }}
     >
-      <Field name="message">
+      <AppField name="message">
         {({ TextareaField }) => (
           <TextareaField
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
@@ -129,7 +124,7 @@ const CreateComment = () => {
             }}
           />
         )}
-      </Field>
+      </AppField>
 
       <Stack justify="space-between" direction="row">
         <CharacterLimit

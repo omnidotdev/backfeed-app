@@ -98,14 +98,7 @@ const UpdateOrganization = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    AppField: Field,
-    AppForm,
-    SubmitForm,
-    reset,
-    store,
-  } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: organization?.name ?? "",
       slug: organization?.slug ?? "",
@@ -151,23 +144,23 @@ const UpdateOrganization = () => {
         }}
       >
         <Stack gap={4} maxW="lg">
-          <Field name="name">
-            {({ TextField }) => (
-              <TextField
+          <AppField name="name">
+            {({ InputField }) => (
+              <InputField
                 label={updateOrganizationDetails.fields.organizationName.label}
                 disabled={!isAdmin}
               />
             )}
-          </Field>
+          </AppField>
 
-          <Field name="slug">
-            {({ TextField }) => (
-              <TextField
+          <AppField name="slug">
+            {({ InputField }) => (
+              <InputField
                 label={updateOrganizationDetails.fields.organizationSlug.label}
                 disabled={!isAdmin}
               />
             )}
-          </Field>
+          </AppField>
         </Stack>
 
         <AppForm>

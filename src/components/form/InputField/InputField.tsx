@@ -1,23 +1,26 @@
-import { Input, Label, Stack } from "@omnidev/sigil";
+import { Input, Label } from "@omnidev/sigil";
 
-import { FormFieldError } from "components/form";
+import { Field } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
 import type { InputProps } from "@omnidev/sigil";
+import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends InputProps {
   /** Label for the text field. */
   label: string;
+  /** Additional props for the error component. */
+  errorProps?: Partial<FormFieldErrorProps>;
 }
 
 /**
  * Text field component for form inputs.
  */
-const TextField = ({ label, ...rest }: Props) => {
+const InputField = ({ label, errorProps, ...rest }: Props) => {
   const { handleChange, state, name } = useFieldContext<string>();
 
   return (
-    <Stack position="relative" gap={1.5}>
+    <Field errorProps={errorProps}>
       <Label htmlFor={name}>{label}</Label>
 
       <Input
@@ -26,13 +29,8 @@ const TextField = ({ label, ...rest }: Props) => {
         onChange={(e) => handleChange(e.target.value)}
         {...rest}
       />
-
-      <FormFieldError
-        errors={state.meta.errorMap.onSubmit}
-        isDirty={state.meta.isDirty}
-      />
-    </Stack>
+    </Field>
   );
 };
 
-export default TextField;
+export default InputField;
