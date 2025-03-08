@@ -13,7 +13,7 @@ interface Props extends TextareaProps {
   errorProps?: Partial<FormFieldErrorProps>;
 }
 
-/*s
+/**
  * Textarea field component for form inputs.
  */
 const TextareaField = ({ label, errorProps, ...rest }: Props) => {
