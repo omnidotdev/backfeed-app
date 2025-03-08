@@ -11,7 +11,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { DEBOUNCE_TIME, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -143,7 +143,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       description: "",
       slug: "",
     },
-    asyncDebounceMs: 300,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: createProjectSchema,

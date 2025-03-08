@@ -13,6 +13,7 @@ import {
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import { DEBOUNCE_TIME } from "lib/constants";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -103,7 +104,7 @@ const UpdateOrganization = () => {
       name: organization?.name ?? "",
       slug: organization?.slug ?? "",
     },
-    asyncDebounceMs: 300,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: updateOrganizationSchema,

@@ -6,7 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { DEBOUNCE_TIME, toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
@@ -106,7 +106,7 @@ const CreateOrganization = () => {
       name: "",
       slug: "",
     },
-    asyncDebounceMs: 300,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
