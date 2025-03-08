@@ -49,7 +49,7 @@ const productData = [
 ] as const;
 
 const allFeatures = Array.from(
-  new Set(productData.flatMap(({ features }) => Object.keys(features))),
+  new Set(productData.flatMap(({ features }) => Object.keys(features)))
 );
 
 const headerProps = {
