@@ -86,7 +86,7 @@ const UpdateOrganization = () => {
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
         queryKey: useOrganizationQuery.getKey({
-          slug: organizationSlug,
+          slug: data?.updateOrganization?.organization?.slug!,
         }),
       });
 
