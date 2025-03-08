@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Flex, HStack, sigil } from "@omnidev/sigil";
+import { Badge, css, Flex, HStack, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
 import { Image, Link } from "components/core";
@@ -27,11 +27,11 @@ const Header = () => {
       h="full"
       p={2}
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-      css={{
+      css={css.raw({
         borderBottom: "1px solid",
         borderColor: "border.subtle",
         backgroundColor: "background.default",
-      }}
+      })}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">
