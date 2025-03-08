@@ -1,25 +1,14 @@
 "use client";
 
-import {
-  Button,
-  Dialog,
-  HStack,
-  Input,
-  Label,
-  Stack,
-  Text,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Dialog, sigil } from "@omnidev/sigil";
 import { useTransitionRouter } from "next-view-transitions";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth } from "lib/hooks";
+import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -112,7 +101,7 @@ const CreateOrganization = () => {
       },
     });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: "",
       slug: "",
@@ -170,82 +159,36 @@ const CreateOrganization = () => {
           await handleSubmit();
         }}
       >
-        <Field name="name">
-          {({ handleChange, state, name }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={name}>
-                {app.dashboardPage.cta.newOrganization.organizationName.id}
-              </Label>
-
-              <Input
-                id={name}
-                placeholder={
-                  app.dashboardPage.cta.newOrganization.organizationName
-                    .placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="name">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newOrganization.organizationName.id}
+              placeholder={
+                app.dashboardPage.cta.newOrganization.organizationName
+                  .placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="slug">
-          {({ handleChange, state, name }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={name}>
-                {app.dashboardPage.cta.newOrganization.organizationSlug.id}
-              </Label>
-
-              <HStack>
-                <Text
-                  whiteSpace="nowrap"
-                  fontSize="lg"
-                >{`/${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
-
-                <Input
-                  id={name}
-                  placeholder={
-                    app.dashboardPage.cta.newOrganization.organizationSlug
-                      .placeholder
-                  }
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                />
-              </HStack>
-
-              <FormFieldError
-                errors={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="slug">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newOrganization.organizationSlug.id}
+              placeholder={
+                app.dashboardPage.cta.newOrganization.organizationSlug
+                  .placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting || isPending}
-              mt={4}
-            >
-              {isSubmitting || isPending
-                ? app.dashboardPage.cta.newOrganization.action.pending
-                : app.dashboardPage.cta.newOrganization.action.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.dashboardPage.cta.newOrganization.action}
+            isPending={isPending}
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );

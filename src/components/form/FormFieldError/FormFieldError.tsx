@@ -6,7 +6,7 @@ import type { TagVariants, TextProps } from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 
 // NB: Omitting `as` and reapplying it to the `Text` component is to avoid ts errors as `TextProps` is not statically typed.
-interface Props extends Omit<TextProps, "as"> {
+export interface Props extends Omit<TextProps, "as"> {
   /** Error messages. */
   errors: StandardSchemaV1Issue[] | undefined;
   /** Dirty state of the form field. */

@@ -1,12 +1,12 @@
 "use client";
 
-import { Button, Input, Label, Stack, Textarea, sigil } from "@omnidev/sigil";
-import { useForm, useStore } from "@tanstack/react-form";
+import { Stack, sigil } from "@omnidev/sigil";
+import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
-import { CharacterLimit, FormFieldError } from "components/core";
+import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
@@ -14,7 +14,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { toaster } from "lib/constants";
-import { useAuth } from "lib/hooks";
+import { useAuth, useForm } from "lib/hooks";
 
 const MAX_DESCRIPTION_LENGTH = 240;
 
@@ -75,47 +75,49 @@ const CreateFeedback = () => {
     },
   });
 
-  const { handleSubmit, Field, Subscribe, reset, store } = useForm({
-    defaultValues: {
-      projectId: projectId ?? "",
-      userId: user?.rowId ?? "",
-      title: "",
-      description: "",
-    },
-    asyncDebounceMs: 300,
-    validators: {
-      onChange: createFeedbackSchema,
-      onSubmitAsync: createFeedbackSchema,
-    },
-    onSubmit: async ({ value }) =>
-      toaster.promise(
-        createFeedback({
-          input: {
-            post: {
-              projectId: value.projectId,
-              userId: value.userId,
-              title: value.title.trim(),
-              description: value.description.trim(),
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
+    {
+      defaultValues: {
+        projectId: projectId ?? "",
+        userId: user?.rowId ?? "",
+        title: "",
+        description: "",
+      },
+      asyncDebounceMs: 300,
+      validators: {
+        onChange: createFeedbackSchema,
+        onSubmitAsync: createFeedbackSchema,
+      },
+      onSubmit: async ({ value }) =>
+        toaster.promise(
+          createFeedback({
+            input: {
+              post: {
+                projectId: value.projectId,
+                userId: value.userId,
+                title: value.title.trim(),
+                description: value.description.trim(),
+              },
             },
-          },
-        }),
-        {
-          loading: {
-            title: app.projectPage.projectFeedback.action.pending,
-          },
-          success: {
-            title: app.projectPage.projectFeedback.action.success.title,
-            description:
-              app.projectPage.projectFeedback.action.success.description,
-          },
-          error: {
-            title: app.projectPage.projectFeedback.action.error.title,
-            description:
-              app.projectPage.projectFeedback.action.error.description,
-          },
-        }
-      ),
-  });
+          }),
+          {
+            loading: {
+              title: app.projectPage.projectFeedback.action.pending,
+            },
+            success: {
+              title: app.projectPage.projectFeedback.action.success.title,
+              description:
+                app.projectPage.projectFeedback.action.success.description,
+            },
+            error: {
+              title: app.projectPage.projectFeedback.action.error.title,
+              description:
+                app.projectPage.projectFeedback.action.error.description,
+            },
+          }
+        ),
+    }
+  );
 
   const descriptionLength = useStore(
     store,
@@ -133,58 +135,30 @@ const CreateFeedback = () => {
         await handleSubmit();
       }}
     >
-      <Field name="title">
-        {({ handleChange, state, name }) => (
-          <Stack position="relative" gap={1.5}>
-            <Label htmlFor={name}>
-              {app.projectPage.projectFeedback.feedbackTitle.label}
-            </Label>
-
-            <Input
-              id={name}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackTitle.placeholder
-              }
-              borderColor="border.subtle"
-              value={state.value}
-              onChange={(e) => handleChange(e.target.value)}
-            />
-
-            <FormFieldError
-              errors={state.meta.errorMap.onSubmit}
-              isDirty={state.meta.isDirty}
-            />
-          </Stack>
+      <AppField name="title">
+        {({ InputField }) => (
+          <InputField
+            label={app.projectPage.projectFeedback.feedbackTitle.label}
+            placeholder={
+              app.projectPage.projectFeedback.feedbackTitle.placeholder
+            }
+          />
         )}
-      </Field>
+      </AppField>
 
-      <Field name="description">
-        {({ handleChange, state, name }) => (
-          <Stack position="relative" gap={1.5}>
-            <Label htmlFor={name}>
-              {app.projectPage.projectFeedback.feedbackDescription.label}
-            </Label>
-
-            <Textarea
-              id={name}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackDescription.placeholder
-              }
-              borderColor="border.subtle"
-              rows={5}
-              minH={32}
-              value={state.value}
-              onChange={(e) => handleChange(e.target.value)}
-              maxLength={MAX_DESCRIPTION_LENGTH}
-            />
-
-            <FormFieldError
-              errors={state.meta.errorMap.onSubmit}
-              isDirty={state.meta.isDirty}
-            />
-          </Stack>
+      <AppField name="description">
+        {({ TextareaField }) => (
+          <TextareaField
+            label={app.projectPage.projectFeedback.feedbackDescription.label}
+            placeholder={
+              app.projectPage.projectFeedback.feedbackDescription.placeholder
+            }
+            rows={5}
+            minH={32}
+            maxLength={MAX_DESCRIPTION_LENGTH}
+          />
         )}
-      </Field>
+      </AppField>
 
       <Stack justify="space-between" direction="row">
         <CharacterLimit
@@ -193,26 +167,14 @@ const CreateFeedback = () => {
           placeSelf="flex-start"
         />
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              w="fit-content"
-              placeSelf="flex-end"
-              disabled={!canSubmit || !isDirty || isPending}
-            >
-              {isSubmitting || isPending
-                ? app.projectPage.projectFeedback.action.pending
-                : app.projectPage.projectFeedback.action.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.projectPage.projectFeedback.action}
+            isPending={isPending}
+            w="fit-content"
+            placeSelf="flex-end"
+          />
+        </AppForm>
       </Stack>
     </sigil.form>
   );
