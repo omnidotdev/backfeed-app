@@ -14,6 +14,9 @@ import {
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
 
+/**
+ * Custom hook to manage form state, validation, and submission.
+ */
 const { useAppForm: useForm } = createFormHook({
   fieldContext,
   formContext,
