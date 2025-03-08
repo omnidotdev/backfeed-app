@@ -72,7 +72,6 @@ const AddOwner = ({ organizationId }: Props) => {
     }
   );
 
-  // TODO: refactor to use custom `useForm` hook
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       rowId: "",
