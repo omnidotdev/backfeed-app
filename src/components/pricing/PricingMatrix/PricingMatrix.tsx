@@ -1,4 +1,5 @@
 import {
+  Badge,
   Icon,
   Table,
   TableCell,
@@ -11,6 +12,7 @@ import { FaCheck, FaX } from "react-icons/fa6";
 const COMMON_FEATURES = {
   gdpr: { label: "GDPR Compliance", value: true },
   communitySupport: { label: "Community Support", value: true },
+  unlimitedFeedback: { label: "Unlimited Feedback Items", value: true },
 };
 
 const productData = [
@@ -23,12 +25,14 @@ const productData = [
     },
   },
   {
-    id: "professional",
-    name: "Professional",
+    id: "team",
+    name: "Team",
     features: {
       ...COMMON_FEATURES,
-      webhooks: { label: "Webhooks", value: true },
-      apiAccess: { label: "API Access", value: true },
+      webhooks: { label: "Webhooks", value: true, comingSoon: true },
+      apiAccess: { label: "API Access", value: true, comingSoon: true },
+      unlimitedOrgs: { label: "Unlimited Organizations", value: true },
+      unlimitedProjects: { label: "Unlimited Projects", value: true },
     },
   },
   {
@@ -36,8 +40,10 @@ const productData = [
     name: "Enterprise",
     features: {
       ...COMMON_FEATURES,
-      webhooks: { label: "Webhooks", value: true },
-      apiAccess: { label: "API Access", value: true },
+      webhooks: { label: "Webhooks", value: true, comingSoon: true },
+      apiAccess: { label: "API Access", value: true, comingSoon: true },
+      unlimitedOrgs: { label: "Unlimited Organizations", value: true },
+      unlimitedProjects: { label: "Unlimited Projects", value: true },
     },
   },
 ] as const;
@@ -75,10 +81,23 @@ const PricingMatrix = (props: TableProps) => {
     >
       {allFeatures.map((feature) => (
         <TableRow key={feature}>
-          <TableCell textAlign="center" fontWeight="semibold" fontSize="xl">
+          <TableCell
+            textAlign="center"
+            fontWeight="semibold"
+            fontSize="xl"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+          >
             {/* @ts-ignore TODO */}
             {productData.find((p) => p.features[feature])?.features[feature]
               ?.label || feature}
+
+            {/* TODO condense with above */}
+            {/* @ts-ignore TODO */}
+            {productData.find((p) => p.features[feature])?.features[feature]
+              ?.comingSoon && <Badge>Coming Soon</Badge>}
           </TableCell>
 
           {productData.map(({ id, features }) => (
