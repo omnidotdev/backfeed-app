@@ -1,16 +1,16 @@
 "use client";
 
-import { createListCollection } from "@ark-ui/react";
-import { Button, Combobox, Dialog, HStack, sigil } from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Button, Dialog, HStack, sigil } from "@omnidev/sigil";
 import { z } from "zod";
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Role,
   useMembersQuery,
   useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { useForm } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -30,12 +30,29 @@ interface Props {
  * Dialog for adding an owner to an organization.
  */
 const AddOwner = ({ organizationId }: Props) => {
+  const queryClient = useQueryClient();
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.AddOwner,
   });
 
-  const { mutateAsync: addOwner } = useUpdateMemberMutation({
-    onSuccess: () => {
+  const { mutateAsync: addOwner, isPending } = useUpdateMemberMutation({
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useMembersQuery.getKey({
+            organizationId,
+            excludeRoles: [Role.Owner],
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: useMembersQuery.getKey({
+            organizationId,
+            roles: [Role.Owner],
+          }),
+        }),
+      ]);
+
       setIsOpen(false);
       reset();
     },
@@ -55,7 +72,7 @@ const AddOwner = ({ organizationId }: Props) => {
     }
   );
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       rowId: "",
     },
@@ -95,47 +112,28 @@ const AddOwner = ({ organizationId }: Props) => {
         }}
       >
         {members?.length ? (
-          <Field name="rowId">
-            {({ handleChange, state }) => (
-              <Combobox
+          <AppField name="rowId">
+            {({ SingularComboboxField }) => (
+              <SingularComboboxField
                 label={{ id: "member", singular: "Member", plural: "Members" }}
-                collection={createListCollection({ items: members ?? [] })}
+                items={members ?? []}
                 placeholder={addOwnerDetails.form.rowId.placeholder}
-                clearTriggerProps={{
-                  display: state.value.length ? "block" : "none",
-                }}
-                value={[state.value]}
-                onValueChange={({ value }) => {
-                  value.length ? handleChange(value[0]) : handleChange("");
-                }}
               />
             )}
-          </Field>
+          </AppField>
         ) : (
           // TODO: discuss refactoring this when organization invites are implemented. We could implement a way to invite a new member as an owner.
           addOwnerDetails.noMembersFound
         )}
 
         <HStack w="full">
-          <Subscribe
-            selector={(state) => [
-              state.canSubmit,
-              state.isSubmitting,
-              state.isDirty,
-            ]}
-          >
-            {([canSubmit, isSubmitting, isDirty]) => (
-              <Button
-                type="submit"
-                flex={1}
-                disabled={!canSubmit || !isDirty || isSubmitting}
-              >
-                {isSubmitting
-                  ? addOwnerDetails.form.pending
-                  : addOwnerDetails.title}
-              </Button>
-            )}
-          </Subscribe>
+          <AppForm>
+            <SubmitForm
+              action={addOwnerDetails.form}
+              isPending={isPending}
+              flex={1}
+            />
+          </AppForm>
 
           <Button
             variant="outline"
