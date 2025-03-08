@@ -2,6 +2,8 @@
 
 import { createToaster } from "@omnidev/sigil";
 
+// TODO move out of constants
+
 /**
  * Helper function to create a toaster instance.
  */

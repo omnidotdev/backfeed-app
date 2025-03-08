@@ -13,8 +13,9 @@ import {
   useProjectQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, toaster } from "lib/constants";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { toaster } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 240;
 

@@ -10,7 +10,7 @@ import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { toaster } from "lib/util";
 
 import type { ReactNode } from "react";
 

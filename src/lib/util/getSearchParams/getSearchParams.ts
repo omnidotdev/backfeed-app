@@ -1,6 +1,6 @@
 import { createSearchParamsCache } from "nuqs/server";
 
-import { searchParams } from "lib/constants";
+import { searchParams } from "lib/util";
 
 /**
  * Access search paramaters from the server.
