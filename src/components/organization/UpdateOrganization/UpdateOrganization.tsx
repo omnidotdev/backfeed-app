@@ -1,7 +1,6 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
@@ -134,13 +133,6 @@ const UpdateOrganization = () => {
     },
   });
 
-  const isDefaultForm = useStore(store, ({ values }) =>
-    Object.entries(values).every(
-      // @ts-ignore this works as long as the key of the form does in fact match the key on the organization object. If that changes, this will break.
-      ([key, value]) => value === organization?.[key]
-    )
-  );
-
   return (
     <SectionContainer
       title={
@@ -181,7 +173,7 @@ const UpdateOrganization = () => {
         <AppForm>
           <SubmitForm
             action={updateOrganizationDetails.action}
-            disabled={!isAdmin || isDefaultForm}
+            disabled={!isAdmin}
             mt={4}
           />
         </AppForm>

@@ -1,4 +1,6 @@
 import { Button } from "@omnidev/sigil";
+import { useStore } from "@tanstack/react-form";
+
 import { useFormContext } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -22,13 +24,21 @@ const SubmitForm = ({
   disabled,
   ...rest
 }: Props) => {
-  const { Subscribe } = useFormContext();
+  const {
+    Subscribe,
+    options: { defaultValues },
+    store,
+  } = useFormContext();
+
+  // NB: This works fine for simple objects without circular references and consistent key orders. If forms are ever built recursively or dynamically, we may have to revisit this approach.
+  const isDirty = useStore(
+    store,
+    ({ values }) => JSON.stringify(values) !== JSON.stringify(defaultValues)
+  );
 
   return (
-    <Subscribe
-      selector={(state) => [state.canSubmit, state.isSubmitting, state.isDirty]}
-    >
-      {([canSubmit, isSubmitting, isDirty]) => (
+    <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+      {([canSubmit, isSubmitting]) => (
         <Button
           type="submit"
           disabled={
