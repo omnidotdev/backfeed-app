@@ -17,6 +17,7 @@ export type PricingModel = "monthly" | "annual";
  * Pricing overview section.
  */
 const PricingOverview = () => {
+  // TODO move to URL state (https://github.com/omnidotdev/backfeed-app/pull/69#discussion_r1986197545)
   const [pricingModel, setPricingModel] = useState<PricingModel>("monthly");
 
   return (
