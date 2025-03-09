@@ -389,6 +389,7 @@ const app = {
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
       monthly: "Monthly",
       annual: "Annual",
+      savings: "save 10%",
     },
     pricingCard: {
       user: "user",
@@ -422,7 +423,7 @@ const app = {
           title: "Team",
           price: {
             monthly: 12,
-            annual: 110,
+            annual: 108,
           },
           description: "Everything you need for a growing business",
           features: [

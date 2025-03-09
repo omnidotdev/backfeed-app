@@ -1,6 +1,12 @@
 "use client";
 
-import { HStack, Stack, ToggleGroup, ToggleGroupItem } from "@omnidev/sigil";
+import {
+  Badge,
+  HStack,
+  Stack,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@omnidev/sigil";
 
 import {
   PricingCard,
@@ -35,7 +41,8 @@ const PricingOverview = () => {
       >
         <ToggleGroupItem
           value="monthly"
-          p={4}
+          px={6}
+          py={4}
           w="50%"
           _on={{
             bgColor: "brand.primary",
@@ -47,14 +54,16 @@ const PricingOverview = () => {
 
         <ToggleGroupItem
           value="annual"
-          p={4}
+          px={6}
+          py={4}
           w="50%"
           _on={{
             bgColor: "brand.primary",
             color: "background.default",
           }}
         >
-          {app.pricingPage.pricingHeader.annual}
+          {app.pricingPage.pricingHeader.annual} (
+          {app.pricingPage.pricingHeader.savings})
         </ToggleGroupItem>
       </ToggleGroup>
 
