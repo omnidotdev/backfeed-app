@@ -1,10 +1,10 @@
 import { createSearchParamsCache } from "nuqs/server";
-
-import { searchParams } from "lib/util";
+// NB: relative import prevents circular dependency
+import searchParams from "../searchParams";
 
 /**
  * Access search paramaters from the server.
- * NB: the cache is used rather than the loader for future proofing purposes. It allows access to the search params from deeply nested RSCs. See: https://nuqs.47ng.com/docs/server-side#cache
+ * NB: the cache is used rather than the loader for futureproofing. It allows access to the search params from deeply nested RSCs. See https://nuqs.47ng.com/docs/server-side#cache
  */
 const getSearchParams = createSearchParamsCache(searchParams);
 
