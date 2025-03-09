@@ -99,7 +99,7 @@ const PricingMatrix = (props: TableProps) => (
   >
     {allFeatures.map((feature) => {
       const featureInfo = tiers.find(
-        (p) => p.features[feature as keyof typeof p.features],
+        (tier) => tier.features[feature as keyof typeof p.features],
       )?.features[feature as keyof typeof COMMON_FEATURES];
 
       return (
