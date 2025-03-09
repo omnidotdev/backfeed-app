@@ -62,14 +62,7 @@ const PricingOverview = () => {
         </ToggleGroupItem>
       </ToggleGroup>
 
-      <HStack
-        flexWrap="wrap"
-        flexDirection={{ base: "column", lg: "row" }}
-        justifyContent="center"
-        gap={4}
-        w="100%"
-        mx="auto"
-      >
+      <HStack flexWrap="wrap" justify="center" gap={4}>
         {app.pricingPage.pricingTiers.tiers.map((tier) => {
           const isTeamTier = tier.title.includes("Team");
           const isEnterpriseTier = tier.title.includes("Enterprise");
@@ -78,11 +71,11 @@ const PricingOverview = () => {
             <PricingCard
               key={tier.title}
               tier={tier}
-              borderWidth={isTeamTier ? 2 : 1}
-              borderColor={isTeamTier ? "brand.primary" : "none"}
               isRecommendedTier={isTeamTier}
               isDisabled={isEnterpriseTier}
               pricingModel={pricingModel}
+              borderWidth={isTeamTier ? 2 : 1}
+              borderColor={isTeamTier ? "brand.primary" : "none"}
             />
           );
         })}

@@ -1,5 +1,6 @@
 import {
   Badge,
+  Flex,
   Icon,
   Table,
   TableCell,
@@ -134,57 +135,72 @@ const headerProps = {
  * Pricing feature matrix.
  */
 const PricingMatrix = (props: TableProps) => (
-  <Table
-    headerContent={
-      <TableRow>
-        <TableHeader {...headerProps}>
-          {app.pricingPage.pricingMatrix.feature}
-        </TableHeader>
+  <Flex w="100%" overflowX="auto" justify={{ lg: "center" }}>
+    <Table
+      headerContent={
+        <TableRow>
+          <TableHeader {...headerProps}>
+            {app.pricingPage.pricingMatrix.feature}
+          </TableHeader>
 
-        {tiers
-          .filter(({ name }) => name)
-          .map(({ name }) => (
-            <TableHeader key={name} {...headerProps}>
-              {name}
-            </TableHeader>
-          ))}
-      </TableRow>
-    }
-    {...props}
-  >
-    {allFeatures.map((feature) => {
-      const featureInfo = tiers.find((tier) => tier.features[feature])
-        ?.features[feature];
+          {tiers
+            .filter(({ name }) => name)
+            .map(({ name }) => (
+              <TableHeader key={name} {...headerProps}>
+                {name}
+              </TableHeader>
+            ))}
+        </TableRow>
+      }
+      css={{
+        baseToLg: {
+          // make first column sticky
+          "& th:first-child, td:first-child": {
+            position: "sticky",
+            left: 0,
+            bgColor: "brand.primary.50",
+            borderRight: "1px solid {colors.border.subtle}",
+          },
+        },
+      }}
+      {...props}
+    >
+      {allFeatures.map((feature) => {
+        const featureInfo = tiers.find((tier) => tier.features[feature])
+          ?.features[feature];
 
-      return (
-        <TableRow key={feature} _odd={{ bgColor: "background.subtle" }}>
-          <TableCell
-            textAlign="center"
-            fontWeight="semibold"
-            fontSize="xl"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            gap={2}
-          >
-            {featureInfo?.label || feature}
+        return (
+          <TableRow key={feature} _odd={{ bgColor: "background.subtle" }}>
+            <TableCell
+              textAlign="center"
+              fontWeight="semibold"
+              fontSize="xl"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+            >
+              {featureInfo?.label || feature}
 
-            {featureInfo?.comingSoon && <Badge>Coming Soon</Badge>}
-          </TableCell>
-
-          {tiers.map(({ id, features }) => (
-            <TableCell key={id} textAlign="center">
-              {features[feature]?.value ? (
-                <Icon src={FaCheck} color="green.500" />
-              ) : (
-                <Icon src={FaX} color="red.500" />
+              {featureInfo?.comingSoon && (
+                <Badge>{app.info.comingSoon.label}</Badge>
               )}
             </TableCell>
-          ))}
-        </TableRow>
-      );
-    })}
-  </Table>
+
+            {tiers.map(({ id, features }) => (
+              <TableCell key={id} textAlign="center">
+                {features[feature]?.value ? (
+                  <Icon src={FaCheck} color="green.500" />
+                ) : (
+                  <Icon src={FaX} color="red.500" />
+                )}
+              </TableCell>
+            ))}
+          </TableRow>
+        );
+      })}
+    </Table>
+  </Flex>
 );
 
 export default PricingMatrix;
