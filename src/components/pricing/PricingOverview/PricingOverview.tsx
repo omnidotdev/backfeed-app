@@ -24,6 +24,7 @@ const PricingOverview = () => {
     <Stack px={{ base: 6, md: 2, lg: 0 }} align="center">
       <PricingHeader />
 
+      {/* pricing model toggle */}
       <ToggleGroup
         borderRadius="full"
         mb={2}
@@ -87,7 +88,7 @@ const PricingOverview = () => {
         })}
       </HStack>
 
-      <PricingMatrix maxW="5xl" alignSelf="center" mt={6} />
+      <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
 
       <PricingFAQ w="100%" maxW="5xl" alignSelf="center" />
     </Stack>
