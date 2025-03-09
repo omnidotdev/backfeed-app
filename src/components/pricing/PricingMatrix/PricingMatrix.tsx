@@ -9,10 +9,19 @@ import {
 } from "@omnidev/sigil";
 import { FaCheck, FaX } from "react-icons/fa6";
 
+interface Feature {
+  /** Human-readable label. */
+  label: string;
+  /** Value. */
+  value: boolean;
+  /** Whether the feature is coming soon. */
+  comingSoon?: boolean;
+}
+
 /**
  * Features common to all tiers.
  */
-const COMMON_FEATURES = {
+const COMMON_FEATURES: Record<string, Feature> = {
   gdpr: { label: "GDPR Compliance", value: true },
   communitySupport: { label: "Community Support", value: true },
   unlimitedFeedback: { label: "Unlimited Feedback Items", value: true },
@@ -21,7 +30,14 @@ const COMMON_FEATURES = {
 /**
  * Per-tier product information.
  */
-const tiers = [
+const tiers: {
+  /** ID. */
+  id: string;
+  /** Human-readable name. */
+  name?: string;
+  /** Features. */
+  features: Record<string, Feature>;
+}[] = [
   {
     id: "basic",
     name: "Basic",
@@ -81,39 +97,39 @@ const PricingMatrix = (props: TableProps) => (
     }
     {...props}
   >
-    {allFeatures.map((feature) => (
-      <TableRow key={feature}>
-        <TableCell
-          textAlign="center"
-          fontWeight="semibold"
-          fontSize="xl"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={2}
-        >
-          {/* @ts-ignore TODO */}
-          {tiers.find((p) => p.features[feature])?.features[feature]?.label ||
-            feature}
+    {allFeatures.map((feature) => {
+      const featureInfo = tiers.find(
+        (p) => p.features[feature as keyof typeof p.features],
+      )?.features[feature as keyof typeof COMMON_FEATURES];
 
-          {/* TODO condense with above */}
-          {/* @ts-ignore TODO */}
-          {tiers.find((p) => p.features[feature])?.features[feature]
-            ?.comingSoon && <Badge>Coming Soon</Badge>}
-        </TableCell>
+      return (
+        <TableRow key={feature}>
+          <TableCell
+            textAlign="center"
+            fontWeight="semibold"
+            fontSize="xl"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+          >
+            {featureInfo?.label || feature}
 
-        {tiers.map(({ id, features }) => (
-          <TableCell key={id} textAlign="center">
-            {/* @ts-ignore TODO */}
-            {features[feature]?.value ? (
-              <Icon src={FaCheck} color="green.500" />
-            ) : (
-              <Icon src={FaX} color="red.500" />
-            )}
+            {featureInfo?.comingSoon && <Badge>Coming Soon</Badge>}
           </TableCell>
-        ))}
-      </TableRow>
-    ))}
+
+          {tiers.map(({ id, features }) => (
+            <TableCell key={id} textAlign="center">
+              {features[feature as keyof typeof features]?.value ? (
+                <Icon src={FaCheck} color="green.500" />
+              ) : (
+                <Icon src={FaX} color="red.500" />
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      );
+    })}
   </Table>
 );
 
