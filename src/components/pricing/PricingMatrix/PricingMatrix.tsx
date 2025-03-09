@@ -9,13 +9,19 @@ import {
 } from "@omnidev/sigil";
 import { FaCheck, FaX } from "react-icons/fa6";
 
+/**
+ * Features common to all tiers.
+ */
 const COMMON_FEATURES = {
   gdpr: { label: "GDPR Compliance", value: true },
   communitySupport: { label: "Community Support", value: true },
   unlimitedFeedback: { label: "Unlimited Feedback Items", value: true },
 };
 
-const productData = [
+/**
+ * Per-tier product information.
+ */
+const tiers = [
   {
     id: "basic",
     name: "Basic",
@@ -46,7 +52,7 @@ const productData = [
 ] as const;
 
 const allFeatures = Array.from(
-  new Set(productData.flatMap(({ features }) => Object.keys(features))),
+  new Set(tiers.flatMap(({ features }) => Object.keys(features))),
 );
 
 const headerProps = {
@@ -65,7 +71,7 @@ const PricingMatrix = (props: TableProps) => {
         <TableRow>
           <TableHeader {...headerProps}>Feature</TableHeader>
 
-          {productData
+          {tiers
             .filter(({ name }) => name)
             .map(({ name }) => (
               <TableHeader key={name} {...headerProps}>
@@ -88,16 +94,16 @@ const PricingMatrix = (props: TableProps) => {
             gap={2}
           >
             {/* @ts-ignore TODO */}
-            {productData.find((p) => p.features[feature])?.features[feature]
-              ?.label || feature}
+            {tiers.find((p) => p.features[feature])?.features[feature]?.label ||
+              feature}
 
             {/* TODO condense with above */}
             {/* @ts-ignore TODO */}
-            {productData.find((p) => p.features[feature])?.features[feature]
+            {tiers.find((p) => p.features[feature])?.features[feature]
               ?.comingSoon && <Badge>Coming Soon</Badge>}
           </TableCell>
 
-          {productData.map(({ id, features }) => (
+          {tiers.map(({ id, features }) => (
             <TableCell key={id} textAlign="center">
               {/* @ts-ignore TODO */}
               {features[feature]?.value ? (
