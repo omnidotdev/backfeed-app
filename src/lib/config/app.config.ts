@@ -389,7 +389,7 @@ const app = {
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
       monthly: "Monthly",
       annual: "Annual",
-      savings: "save 10%",
+      savings: "save 25%",
     },
     pricingCard: {
       user: "user",
@@ -399,6 +399,21 @@ const app = {
     },
     pricingMatrix: {
       feature: "Feature",
+      features: {
+        gdpr: "GDPR Compliance",
+        communitySupport: "Community Support",
+        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedOrgs: "Unlimited Organizations",
+        unlimitedProjects: "Unlimited Projects",
+        webhooks: "Webhooks",
+        apiAccess: "API Access",
+        customTags: "Custom Tags",
+        customCategories: "Custom Categories",
+        customAnalytics: "Custom Analytics",
+        internalCollaborationTools: "Internal Collaboration Tools",
+        customBranding: "Custom Branding",
+        thirdPartyIntegrations: "Third-Party Integrations",
+      },
     },
     pricingTiers: {
       recommended: "Recommended",

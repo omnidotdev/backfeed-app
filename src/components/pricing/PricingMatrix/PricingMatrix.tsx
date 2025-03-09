@@ -23,9 +23,67 @@ interface Feature {
  * Features common to all tiers.
  */
 const COMMON_FEATURES: Record<string, Feature> = {
-  gdpr: { label: "GDPR Compliance", value: true },
-  communitySupport: { label: "Community Support", value: true },
-  unlimitedFeedback: { label: "Unlimited Feedback Items", value: true },
+  gdpr: { label: app.pricingPage.pricingMatrix.features.gdpr, value: true },
+  communitySupport: {
+    label: app.pricingPage.pricingMatrix.features.communitySupport,
+    value: true,
+  },
+  unlimitedFeedback: {
+    label: app.pricingPage.pricingMatrix.features.unlimitedFeedback,
+    value: true,
+  },
+};
+
+const TEAM_FEATURES: Record<string, Feature> = {
+  ...COMMON_FEATURES,
+  unlimitedOrgs: {
+    label: app.pricingPage.pricingMatrix.features.unlimitedOrgs,
+    value: true,
+  },
+  unlimitedProjects: {
+    label: app.pricingPage.pricingMatrix.features.unlimitedProjects,
+    value: true,
+  },
+  webhooks: {
+    label: app.pricingPage.pricingMatrix.features.webhooks,
+    value: true,
+    comingSoon: true,
+  },
+  apiAccess: {
+    label: app.pricingPage.pricingMatrix.features.apiAccess,
+    value: true,
+    comingSoon: true,
+  },
+  customTags: {
+    label: app.pricingPage.pricingMatrix.features.customTags,
+    value: true,
+    comingSoon: true,
+  },
+  customCategories: {
+    label: app.pricingPage.pricingMatrix.features.customCategories,
+    value: true,
+    comingSoon: true,
+  },
+  customAnalytics: {
+    label: app.pricingPage.pricingMatrix.features.customAnalytics,
+    value: true,
+    comingSoon: true,
+  },
+  internalCollaborationTools: {
+    label: app.pricingPage.pricingMatrix.features.internalCollaborationTools,
+    value: true,
+    comingSoon: true,
+  },
+  customBranding: {
+    label: app.pricingPage.pricingMatrix.features.customBranding,
+    value: true,
+    comingSoon: true,
+  },
+  thirdPartyIntegrations: {
+    label: app.pricingPage.pricingMatrix.features.thirdPartyIntegrations,
+    value: true,
+    comingSoon: true,
+  },
 };
 
 /**
@@ -49,10 +107,7 @@ const tiers: {
     name: "Team",
     features: {
       ...COMMON_FEATURES,
-      webhooks: { label: "Webhooks", value: true, comingSoon: true },
-      apiAccess: { label: "API Access", value: true, comingSoon: true },
-      unlimitedOrgs: { label: "Unlimited Organizations", value: true },
-      unlimitedProjects: { label: "Unlimited Projects", value: true },
+      ...TEAM_FEATURES,
     },
   },
   {
@@ -60,10 +115,7 @@ const tiers: {
     name: "Enterprise",
     features: {
       ...COMMON_FEATURES,
-      webhooks: { label: "Webhooks", value: true, comingSoon: true },
-      apiAccess: { label: "API Access", value: true, comingSoon: true },
-      unlimitedOrgs: { label: "Unlimited Organizations", value: true },
-      unlimitedProjects: { label: "Unlimited Projects", value: true },
+      ...TEAM_FEATURES,
     },
   },
 ] as const;
