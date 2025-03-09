@@ -5,8 +5,6 @@ import {
   parseAsStringEnum,
 } from "nuqs/server";
 
-// TODO move out of constants
-
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
