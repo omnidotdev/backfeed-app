@@ -20,8 +20,15 @@ import type { PricingType } from "components/pricing";
 
 type Price = string | { monthly: number; annual: number };
 
+/**
+ * Get a human-readable price.
+ * @param price tier cost
+ * @param isPerMonthPricing whether pricing is monthly
+ * @returns a human-readable price
+ */
 const getPrice = (price: Price, isPerMonthPricing: boolean): string => {
   if (typeof price === "string") return price;
+
   return `$${isPerMonthPricing ? price.monthly : price.annual}`;
 };
 
