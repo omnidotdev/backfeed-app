@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Badge,
-  HStack,
-  Stack,
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@omnidev/sigil";
+import { HStack, Stack, ToggleGroup, ToggleGroupItem } from "@omnidev/sigil";
 
 import {
   PricingCard,

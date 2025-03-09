@@ -105,7 +105,7 @@ const PricingMatrix = (props: TableProps) => (
         ?.features[feature];
 
       return (
-        <TableRow key={feature}>
+        <TableRow key={feature} _odd={{ bgColor: "background.subtle" }}>
           <TableCell
             textAlign="center"
             fontWeight="semibold"
