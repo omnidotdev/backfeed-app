@@ -19,10 +19,7 @@ const productData = [
   {
     id: "basic",
     name: "Basic",
-    features: {
-      ...COMMON_FEATURES,
-      // webhooks: { label: "Webhooks", value: false },
-    },
+    features: COMMON_FEATURES,
   },
   {
     id: "team",
@@ -49,7 +46,7 @@ const productData = [
 ] as const;
 
 const allFeatures = Array.from(
-  new Set(productData.flatMap(({ features }) => Object.keys(features)))
+  new Set(productData.flatMap(({ features }) => Object.keys(features))),
 );
 
 const headerProps = {
