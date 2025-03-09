@@ -387,6 +387,8 @@ const app = {
       title: "Simple, transparent pricing",
       description:
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+      monthly: "Monthly",
+      annual: "Annual",
     },
     pricingCard: {
       user: "user",
@@ -451,7 +453,7 @@ const app = {
         },
       ],
     },
-    pricingFAQ: {
+    pricingFaq: {
       FAQ: "Frequently Asked Questions",
       items: [
         {

@@ -41,7 +41,7 @@ const PricingOverview = () => {
             color: "background.default",
           }}
         >
-          Monthly
+          {app.pricingPage.pricingHeader.monthly}
         </ToggleGroupItem>
 
         <ToggleGroupItem
@@ -53,7 +53,7 @@ const PricingOverview = () => {
             color: "background.default",
           }}
         >
-          Annual
+          {app.pricingPage.pricingHeader.annual}
         </ToggleGroupItem>
       </ToggleGroup>
 

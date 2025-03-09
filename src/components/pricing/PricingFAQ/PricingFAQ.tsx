@@ -9,10 +9,10 @@ import { app } from "lib/config";
 const PricingFAQ = (props: StackProps) => (
   <Stack {...props}>
     <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center" mb={4}>
-      {app.pricingPage.pricingFAQ.FAQ}
+      {app.pricingPage.pricingFaq.FAQ}
     </Text>
 
-    <Accordion items={app.pricingPage.pricingFAQ.items} />
+    <Accordion items={app.pricingPage.pricingFaq.items} />
   </Stack>
 );
 
