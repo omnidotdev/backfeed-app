@@ -4,5 +4,5 @@ export { default as PricingHeader } from "./PricingHeader/PricingHeader";
 export { default as PricingMatrix } from "./PricingMatrix/PricingMatrix";
 export {
   default as PricingOverview,
-  type PricingType,
+  type PricingModel,
 } from "./PricingOverview/PricingOverview";

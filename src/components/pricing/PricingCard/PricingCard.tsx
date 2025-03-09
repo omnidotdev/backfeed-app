@@ -16,7 +16,7 @@ import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
-import type { PricingType } from "components/pricing";
+import type { PricingModel } from "components/pricing";
 
 type Price = string | { monthly: number; annual: number };
 
@@ -49,7 +49,7 @@ interface Props extends CardProps {
   /** Whether the tier is disabled. */
   isDisabled?: boolean;
   /** Pricing model (e.g. monthly or annual). */
-  pricingModel?: PricingType;
+  pricingModel?: PricingModel;
   /** CTA button properties. */
   ctaProps?: ButtonProps;
 }
@@ -61,11 +61,11 @@ const PricingCard = ({
   tier,
   isRecommendedTier = false,
   isDisabled = false,
-  pricingModel: pricingType,
+  pricingModel,
   ctaProps,
   ...rest
 }: Props) => {
-  const isPerMonthPricing = pricingType === "monthly";
+  const isPerMonthPricing = pricingModel === "monthly";
   const isPriceAString = typeof tier.price === "string";
 
   return (

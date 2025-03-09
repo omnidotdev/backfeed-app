@@ -11,13 +11,13 @@ import {
 import { app } from "lib/config";
 import { useState } from "react";
 
-export type PricingType = "monthly" | "annual";
+export type PricingModel = "monthly" | "annual";
 
 /**
  * Pricing overview section.
  */
 const PricingOverview = () => {
-  const [pricingModel, setPricingType] = useState<PricingType>("monthly");
+  const [pricingModel, setPricingModel] = useState<PricingModel>("monthly");
 
   return (
     <Stack px={{ base: 6, md: 2, lg: 0 }} align="center">
@@ -29,7 +29,7 @@ const PricingOverview = () => {
         value={[pricingModel]}
         onValueChange={({ value }) =>
           // NB: length check prevents deselecting a selected value
-          value.length && setPricingType(value[0] as PricingType)
+          value.length && setPricingModel(value[0] as PricingModel)
         }
       >
         <ToggleGroupItem
