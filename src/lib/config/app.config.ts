@@ -383,11 +383,19 @@ const app = {
   // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
     title: "Pricing",
+    pricingHeader: {
+      title: "Simple, transparent pricing",
+      description:
+        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+    },
     pricingCard: {
       user: "user",
       month: "month",
       year: "year",
       getStarted: "Get Started",
+    },
+    pricingMatrix: {
+      feature: "Feature",
     },
     pricingTiers: {
       recommended: "Recommended",
@@ -470,11 +478,6 @@ const app = {
           body: "Yes! Backfeed is open source software. Instructions for self-hosting will be available soon.",
         },
       ],
-    },
-    pricingHeader: {
-      title: "Simple, transparent pricing",
-      description:
-        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
     },
   },
   projectsPage: {

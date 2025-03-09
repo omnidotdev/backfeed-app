@@ -7,6 +7,7 @@ import {
   type TableProps,
   TableRow,
 } from "@omnidev/sigil";
+import { app } from "lib/config";
 import { FaCheck, FaX } from "react-icons/fa6";
 
 interface Feature {
@@ -84,7 +85,9 @@ const PricingMatrix = (props: TableProps) => (
   <Table
     headerContent={
       <TableRow>
-        <TableHeader {...headerProps}>Feature</TableHeader>
+        <TableHeader {...headerProps}>
+          {app.pricingPage.pricingMatrix.feature}
+        </TableHeader>
 
         {tiers
           .filter(({ name }) => name)
