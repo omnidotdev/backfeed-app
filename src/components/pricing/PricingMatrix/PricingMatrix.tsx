@@ -1,15 +1,19 @@
 import {
-  Badge,
   Flex,
   Icon,
   Table,
   TableCell,
   TableHeader,
-  type TableProps,
   TableRow,
+  // Tooltip,
 } from "@omnidev/sigil";
-import { app } from "lib/config";
 import { FaCheck, FaX } from "react-icons/fa6";
+import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+
+import { Tooltip } from "components/core";
+import { app } from "lib/config";
+
+import type { TableProps } from "@omnidev/sigil";
 
 interface Feature {
   /** Human-readable label. */
@@ -197,20 +201,39 @@ const PricingMatrix = (props: TableProps) => (
           ?.features[feature];
 
         return (
-          <TableRow key={feature} _odd={{ bgColor: "background.subtle" }}>
+          <TableRow
+            key={feature}
+            bgColor={{
+              base: {
+                base: "background.default",
+                _hover: "background.default",
+              },
+              _odd: { base: "background.subtle", _hover: "background.subtle" },
+            }}
+          >
             <TableCell
               textAlign="center"
               fontWeight="semibold"
-              fontSize="xl"
+              fontSize={{ base: "sm", md: "lg" }}
               display="flex"
               alignItems="center"
               justifyContent="center"
-              gap={2}
+              textWrap="nowrap"
             >
               {featureInfo?.label || feature}
 
               {featureInfo?.comingSoon && (
-                <Badge>{app.info.comingSoon.label}</Badge>
+                <Tooltip
+                  positioning={{ placement: "top" }}
+                  trigger={<Icon src={HiOutlineWrenchScrewdriver} />}
+                  triggerProps={{
+                    variant: "ghost",
+                    bgColor: "transparent",
+                    "aria-label": app.info.comingSoon.label,
+                  }}
+                >
+                  {app.info.comingSoon.label}
+                </Tooltip>
               )}
             </TableCell>
 

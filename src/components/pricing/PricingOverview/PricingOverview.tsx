@@ -1,6 +1,13 @@
 "use client";
 
-import { HStack, Stack, ToggleGroup, ToggleGroupItem } from "@omnidev/sigil";
+import {
+  Flex,
+  HStack,
+  Stack,
+  Text,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@omnidev/sigil";
 
 import {
   PricingCard,
@@ -21,48 +28,66 @@ const PricingOverview = () => {
   const [pricingModel, setPricingModel] = useState<PricingModel>("monthly");
 
   return (
-    <Stack px={{ base: 6, md: 2, lg: 0 }} align="center">
+    <Stack px={0} align="center">
       <PricingHeader />
 
       {/* pricing model toggle */}
-      <ToggleGroup
-        borderRadius="full"
-        mb={2}
-        value={[pricingModel]}
-        onValueChange={({ value }) =>
-          // NB: length check prevents deselecting a selected value
-          value.length && setPricingModel(value[0] as PricingModel)
-        }
-      >
-        <ToggleGroupItem
-          value="monthly"
-          px={6}
-          py={4}
-          w="50%"
-          _on={{
-            bgColor: "brand.primary",
-            color: "background.default",
-          }}
+      <Flex position="relative">
+        <ToggleGroup
+          borderRadius="full"
+          position="relative"
+          mb={2}
+          value={[pricingModel]}
+          onValueChange={({ value }) =>
+            // NB: length check prevents deselecting a selected value
+            value.length && setPricingModel(value[0] as PricingModel)
+          }
         >
-          {app.pricingPage.pricingHeader.monthly}
-        </ToggleGroupItem>
+          <ToggleGroupItem
+            value="monthly"
+            px={6}
+            py={4}
+            w="50%"
+            _on={{
+              bgColor: "brand.primary",
+              color: "background.default",
+            }}
+          >
+            {app.pricingPage.pricingHeader.monthly}
+          </ToggleGroupItem>
 
-        <ToggleGroupItem
-          value="annual"
-          px={6}
-          py={4}
-          w="50%"
-          _on={{
-            bgColor: "brand.primary",
-            color: "background.default",
-          }}
+          <ToggleGroupItem
+            value="annual"
+            px={6}
+            py={4}
+            w="50%"
+            _on={{
+              bgColor: "brand.primary",
+              color: "background.default",
+            }}
+          >
+            {app.pricingPage.pricingHeader.annual}
+          </ToggleGroupItem>
+        </ToggleGroup>
+
+        <Text
+          position="absolute"
+          right={-2}
+          top={-2}
+          rotate="10deg"
+          fontSize="xs"
+          fontWeight="semibold"
+          bgColor="brand.tertiary"
+          color="background.default"
+          px={2}
+          borderRadius="sm"
+          boxShadow="sm"
         >
-          {app.pricingPage.pricingHeader.annual} (
-          {app.pricingPage.pricingHeader.savings})
-        </ToggleGroupItem>
-      </ToggleGroup>
+          {app.pricingPage.pricingHeader.savings}
+        </Text>
+      </Flex>
 
-      <HStack flexWrap="wrap" justify="center" gap={4}>
+      <HStack flexWrap="wrap" justify="center" gap={4} px={4}>
         {app.pricingPage.pricingTiers.tiers.map((tier) => {
           const isTeamTier = tier.title.includes("Team");
           const isEnterpriseTier = tier.title.includes("Enterprise");
@@ -83,7 +108,7 @@ const PricingOverview = () => {
 
       <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
 
-      <PricingFAQ w="100%" maxW="5xl" alignSelf="center" mb={6} />
+      <PricingFAQ w="100%" maxW="5xl" alignSelf="center" mb={6} px={4} />
     </Stack>
   );
 };

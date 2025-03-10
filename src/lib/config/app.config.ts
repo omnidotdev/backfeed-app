@@ -425,6 +425,7 @@ const app = {
     },
     pricingTiers: {
       recommended: "Recommended",
+      comingSoon: "Coming Soon",
       tiers: [
         {
           title: "Basic",
@@ -461,11 +462,11 @@ const app = {
           ],
         },
         {
-          title: "Enterprise (Coming Soon)",
+          title: "Enterprise",
           price: "Contact Us",
           description: "Advanced features for large organizations",
           features: [
-            "Everything in Growth plan",
+            "Everything in Team plan",
             "Custom SSO (SAML, OpenID Connect)",
             "Custom data retention policies",
             "Custom onboarding & training",

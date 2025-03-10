@@ -12,8 +12,9 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { app } from "lib/config";
 import { FaArrowRight } from "react-icons/fa6";
+
+import { app } from "lib/config";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
 import type { PricingModel } from "components/pricing";
@@ -94,6 +95,21 @@ const PricingCard = ({
         </Stack>
       )}
 
+      {isDisabled && (
+        <Stack
+          position="absolute"
+          top={1}
+          left="50%"
+          transform="translateX(-50%)"
+          p={2}
+          borderRadius={1}
+        >
+          <Badge height={8} borderRadius={4}>
+            {app.pricingPage.pricingTiers.comingSoon}
+          </Badge>
+        </Stack>
+      )}
+
       <Stack
         display="flex"
         flexDirection="column"
@@ -135,8 +151,10 @@ const PricingCard = ({
           <sigil.ul
             // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
             css={css.raw({
+              w: "full",
               listStyle: "disc",
-              ml: 2,
+              ml: 8,
+              px: 2,
             })}
           >
             {tier.features.map((feature) => (

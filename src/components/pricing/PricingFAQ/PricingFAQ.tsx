@@ -1,7 +1,10 @@
 "use client";
 
-import { Accordion, Stack, type StackProps, Text } from "@omnidev/sigil";
+import { Accordion, Stack, Text } from "@omnidev/sigil";
+
 import { app } from "lib/config";
+
+import type { StackProps } from "@omnidev/sigil";
 
 /**
  * Frequently asked questions about pricing.
