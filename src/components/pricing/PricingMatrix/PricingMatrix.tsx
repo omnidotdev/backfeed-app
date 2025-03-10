@@ -152,17 +152,6 @@ const PricingMatrix = (props: TableProps) => (
             ))}
         </TableRow>
       }
-      css={{
-        baseToLg: {
-          // make first column sticky
-          "& th:first-child, td:first-child": {
-            position: "sticky",
-            left: 0,
-            bgColor: "brand.primary.50",
-            borderRight: "1px solid {colors.border.subtle}",
-          },
-        },
-      }}
       {...props}
     >
       {allFeatures.map((feature) => {
