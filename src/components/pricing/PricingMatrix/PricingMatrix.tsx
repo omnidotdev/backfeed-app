@@ -65,18 +65,8 @@ const TEAM_FEATURES: Record<string, Feature> = {
     value: true,
     comingSoon: true,
   },
-  customAnalytics: {
-    label: app.pricingPage.pricingMatrix.features.customAnalytics,
-    value: true,
-    comingSoon: true,
-  },
   internalCollaborationTools: {
     label: app.pricingPage.pricingMatrix.features.internalCollaborationTools,
-    value: true,
-    comingSoon: true,
-  },
-  customBranding: {
-    label: app.pricingPage.pricingMatrix.features.customBranding,
     value: true,
     comingSoon: true,
   },
@@ -117,6 +107,54 @@ const tiers: {
     features: {
       ...COMMON_FEATURES,
       ...TEAM_FEATURES,
+      customAnalytics: {
+        label: app.pricingPage.pricingMatrix.features.customAnalytics,
+        value: true,
+        comingSoon: true,
+      },
+      customBranding: {
+        label: app.pricingPage.pricingMatrix.features.customBranding,
+        value: true,
+        comingSoon: true,
+      },
+      customSso: {
+        label: app.pricingPage.pricingMatrix.features.customSso,
+        value: true,
+        comingSoon: true,
+      },
+      customDataRetentionPolicies: {
+        label: app.pricingPage.pricingMatrix.features.customData,
+        value: true,
+        comingSoon: true,
+      },
+      customOnboardingTraining: {
+        label: app.pricingPage.pricingMatrix.features.customOnboardingTraining,
+        value: true,
+        comingSoon: true,
+      },
+      slaBackedSupport: {
+        label: app.pricingPage.pricingMatrix.features.slaBackedSupport,
+        value: true,
+        comingSoon: true,
+      },
+      selfHostingAssistance: {
+        label: app.pricingPage.pricingMatrix.features.selfHostingAssistance,
+        value: true,
+        comingSoon: true,
+      },
+      integrationSupportForInternalTools: {
+        label:
+          app.pricingPage.pricingMatrix.features
+            .integrationSupportForInternalTools,
+        value: true,
+        comingSoon: true,
+      },
+      customAiBasedFeedbackAnalysis: {
+        label:
+          app.pricingPage.pricingMatrix.features.customAiBasedFeedbackAnalysis,
+        value: true,
+        comingSoon: true,
+      },
     },
   },
 ] as const;

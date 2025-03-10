@@ -413,6 +413,14 @@ const app = {
         internalCollaborationTools: "Internal Collaboration Tools",
         customBranding: "Custom Branding",
         thirdPartyIntegrations: "Third-Party Integrations",
+        customSso: "Custom SSO (SAML, OpenID Connect)",
+        customData: "Data Retention Policies",
+        customOnboardingTraining: "Custom Onboarding & Training",
+        slaBackedSupport: "SLA-backed Support",
+        selfHostingAssistance: "Self-hosting Assistance",
+        integrationSupportForInternalTools:
+          "Integration Support for Internal Tools",
+        customAiBasedFeedbackAnalysis: "Custom AI-based Feedback Analysis",
       },
     },
     pricingTiers: {
@@ -458,7 +466,7 @@ const app = {
           description: "Advanced features for large organizations",
           features: [
             "Everything in Growth plan",
-            "Enterprise SSO (SAML, OpenID Connect)",
+            "Custom SSO (SAML, OpenID Connect)",
             "Custom data retention policies",
             "Custom onboarding & training",
             "SLA-backed support",
