@@ -83,7 +83,7 @@ const PricingOverview = () => {
 
       <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
 
-      <PricingFAQ w="100%" maxW="5xl" alignSelf="center" />
+      <PricingFAQ w="100%" maxW="5xl" alignSelf="center" mb={6} />
     </Stack>
   );
 };
