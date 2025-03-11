@@ -7,12 +7,12 @@ query Organizations(
   $search: String
   $slug: String
   $userId: UUID
-  $userOrganizationsExist: Boolean
-  $projectsExist: Boolean = false
-  $postsExist: Boolean = false
-  $commentsExist: Boolean = false
-  $upvotesExist: Boolean = false
-  $downvotesExist: Boolean = false
+  # $userOrganizationsExist: Boolean
+  # $projectsExist: Boolean = false
+  # $postsExist: Boolean = false
+  # $commentsExist: Boolean = false
+  # $upvotesExist: Boolean = false
+  # $downvotesExist: Boolean = false
 ) {
   organizations(
     first: $pageSize

@@ -9,7 +9,8 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useSearchParams } from "lib/hooks";
+import { OrganizationsFilter } from "lib/constants/searchParams";
+import { useAuth, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -20,7 +21,10 @@ import type { Organization } from "generated/graphql";
  * Organization list.
  */
 const OrganizationList = ({ ...props }: StackProps) => {
-  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
+  const [{ page, pageSize, search, organizationsFilter }, setSearchParams] =
+    useSearchParams();
+
+  const { user } = useAuth();
 
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
@@ -32,7 +36,11 @@ const OrganizationList = ({ ...props }: StackProps) => {
       offset: (page - 1) * pageSize,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
       search,
-      isMember: false,
+      isMember: organizationsFilter !== OrganizationsFilter.All,
+      userId:
+        organizationsFilter !== OrganizationsFilter.All
+          ? user?.rowId
+          : undefined,
     },
     {
       placeholderData: keepPreviousData,

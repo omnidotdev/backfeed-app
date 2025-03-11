@@ -4059,12 +4059,6 @@ export type OrganizationsQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
-  userOrganizationsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  postsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  commentsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  upvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
-  downvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -5145,7 +5139,7 @@ useInfiniteOrganizationRoleQuery.getKey = (variables: OrganizationRoleQueryVaria
 useOrganizationRoleQuery.fetcher = (variables: OrganizationRoleQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationRoleQuery, OrganizationRoleQueryVariables>(OrganizationRoleDocument, variables, options);
 
 export const OrganizationsDocument = `
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $isMember: Boolean, $excludeRoles: [Role!], $search: String, $slug: String, $userId: UUID, $userOrganizationsExist: Boolean, $projectsExist: Boolean = false, $postsExist: Boolean = false, $commentsExist: Boolean = false, $upvotesExist: Boolean = false, $downvotesExist: Boolean = false) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $isMember: Boolean, $excludeRoles: [Role!], $search: String, $slug: String, $userId: UUID) {
   organizations(
     first: $pageSize
     offset: $offset

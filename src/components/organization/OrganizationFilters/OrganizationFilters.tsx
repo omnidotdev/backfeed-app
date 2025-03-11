@@ -8,21 +8,47 @@ import {
   Input,
   SegmentGroup,
 } from "@omnidev/sigil";
-import { useRef } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { HiOutlineSlash } from "react-icons/hi2";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient, useToggle } from "usehooks-ts";
-
+import { useRef } from "react";
 import { app } from "lib/config";
 import { useHandleSearch, useSearchParams } from "lib/hooks";
+
+import type { OrganizationsFilter } from "lib/constants/searchParams";
+
+interface OrganizationFilterOption {
+  /** Label for the filter segment option. */
+  label: string;
+  /** Value for the filter segment option. */
+  value: string;
+}
+
+const organizationFilterOptions: OrganizationFilterOption[] =
+  app.organizationsPage.filters.organizationFilterOptions;
 
 /**
  * Organization filters.
  */
 const OrganizationFilters = () => {
-  const [{ search }] = useSearchParams();
+  const [{ search, organizationsFilter }, setSearchParams] = useSearchParams();
 
   const onSearchChange = useHandleSearch();
+
+  const [inputFocused, toggleInputFocus] = useToggle(),
+    isClient = useIsClient();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useHotkeys(
+    "/",
+    () => inputRef.current?.focus(),
+    {
+      enabled: isClient,
+      preventDefault: true,
+    },
+    [isClient]
+  );
 
   return (
     <Grid columns={1} gap={4} w="full">
