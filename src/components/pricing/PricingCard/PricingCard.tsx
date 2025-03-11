@@ -12,12 +12,12 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
+import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { FaArrowRight } from "react-icons/fa6";
 
 import { app } from "lib/config";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
-import type { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 
 type Price = string | { monthly: number; annual: number };
 
@@ -66,7 +66,8 @@ const PricingCard = ({
   ctaProps,
   ...rest
 }: Props) => {
-  const isPerMonthPricing = pricingModel === "month";
+  const isPerMonthPricing =
+    pricingModel === SubscriptionRecurringInterval.Month;
   const isPriceAString = typeof tier.price === "string";
 
   return (
