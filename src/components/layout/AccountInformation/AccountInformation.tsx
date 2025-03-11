@@ -2,7 +2,6 @@
 
 import {
   Avatar,
-  Badge,
   Button,
   HStack,
   Icon,
@@ -13,7 +12,7 @@ import {
   MenuSeparator,
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
 
 import { app, isDevEnv } from "lib/config";
@@ -23,16 +22,11 @@ import { useAuth } from "lib/hooks";
  * User account information.
  */
 const AccountInformation = () => {
+  const router = useRouter();
+
   const { user } = useAuth();
 
-  const handleProfileClick = () => {
-    // TODO fix upstream, then enable here (https://linear.app/omnidev/issue/OMNI-117/enable-client-redirects-in-user-account-management-page)
-    // router.push(
-    //   `${process.env.AUTH_KEYCLOAK_ISSUER}/account?referrer=backfeed-app&referrer_uri=${window.location.origin}`,
-    // );
-    //
-    // TODO refresh updated profile claims (https://linear.app/omnidev/issue/OMNI-119/refresh-updated-profile-claims)
-  };
+  const handleProfileClick = () => router.push(`/profile/${user?.rowId}`);
 
   const handleLogout = async () => {
     try {
@@ -70,20 +64,10 @@ const AccountInformation = () => {
 
         <MenuSeparator />
 
-        <MenuItem
-          value="profile"
-          onClick={handleProfileClick}
-          // TODO: remove all styles below once enabled
-          disabled
-          backgroundColor={{ _disabled: "inherit" }}
-          opacity={0.5}
-          cursor="not-allowed"
-        >
+        <MenuItem value="profile" onClick={handleProfileClick}>
           <HStack gap={2} color="foreground.subtle">
             <Icon src={FiUser} size="sm" color="foreground.subtle" />
             {app.auth.profile.label}
-
-            <Badge color="foreground.subtle">{app.info.comingSoon.label}</Badge>
           </HStack>
         </MenuItem>
 
