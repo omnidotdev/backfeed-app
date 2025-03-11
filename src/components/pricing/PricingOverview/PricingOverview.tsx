@@ -10,6 +10,7 @@ import {
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 import {
@@ -19,9 +20,19 @@ import {
   PricingMatrix,
 } from "components/pricing";
 import { app } from "lib/config";
-import { useSearchParams } from "lib/hooks";
+import { useAuth, useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
+
+const orderedTiers = app.pricingPage.pricingTiers.tiers.map(
+  (tier) => tier.title
+);
+
+const sortByTier = (a: Product, b: Product) => {
+  const indexA = orderedTiers.indexOf(a.name);
+  const indexB = orderedTiers.indexOf(b.name);
+  return indexA - indexB;
+};
 
 interface Props {
   products: Product[];
@@ -31,12 +42,18 @@ interface Props {
  * Pricing overview section.
  */
 const PricingOverview = ({ products }: Props) => {
+  const router = useRouter();
+
   const [{ pricingModel }, setSearchParams] = useSearchParams();
+
+  const { isAuthenticated, user } = useAuth();
 
   // TODO: use `filteredProducts` to populate the pricing cards (and pricing matrix?)
   const filteredProducts = useMemo(
     () =>
-      products.filter((product) => product.recurringInterval === pricingModel),
+      products
+        .filter((product) => product.recurringInterval === pricingModel)
+        .sort(sortByTier),
     [products, pricingModel]
   );
 
@@ -102,22 +119,30 @@ const PricingOverview = ({ products }: Props) => {
       </Flex>
 
       <HStack flexWrap="wrap" justify="center" gap={4} px={4}>
-        {app.pricingPage.pricingTiers.tiers.map((tier) => {
-          const isTeamTier = tier.title.includes("Team");
-          const isEnterpriseTier = tier.title.includes("Enterprise");
+        {filteredProducts.map((product) => {
+          const tier = app.pricingPage.pricingTiers.tiers.find(
+            (tier) => tier.title === product.name
+          );
+
+          const isTeamTier = tier?.title.includes("Team");
+          const isEnterpriseTier = tier?.title.includes("Enterprise");
 
           return (
             <PricingCard
-              key={tier.title}
-              tier={tier}
+              key={product.name}
+              tier={tier!}
               isRecommendedTier={isTeamTier}
               isDisabled={isEnterpriseTier}
               pricingModel={pricingModel}
               borderWidth={isTeamTier ? 2 : 1}
               borderColor={isTeamTier ? "brand.primary" : "none"}
               ctaProps={{
-                // TODO: update. Remove callbackUrl so it routes back to pricing after redirect on pricing page is removed and "Get Started" functionality is implemented
-                onClick: () => signIn("omni", { callbackUrl: "/" }),
+                onClick: () =>
+                  isAuthenticated
+                    ? router.push(
+                        `/api/payment/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                      )
+                    : signIn("omni"),
               }}
             />
           );

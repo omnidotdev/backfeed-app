@@ -1,5 +1,7 @@
+import { Center } from "@omnidev/sigil";
+
 const ProfilePage = () => {
-  return <div>User Profile</div>;
+  return <Center mt={12}>User Profile</Center>;
 };
 
 export default ProfilePage;

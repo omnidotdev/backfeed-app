@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
@@ -26,7 +24,7 @@ const PricingPage = async () => {
   ]);
 
   // TODO: update redirect to only redirect away from pricing page if a signed in user does not have a subscription
-  if (session) redirect("/");
+  // if (session) redirect("/");
 
   // TODO: integrate products into PricingOverview component
   return <PricingOverview products={products} />;
