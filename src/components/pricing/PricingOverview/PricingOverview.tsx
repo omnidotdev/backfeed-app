@@ -8,8 +8,9 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@omnidev/sigil";
+import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useMemo } from "react";
 
 import {
   PricingCard,
@@ -18,15 +19,26 @@ import {
   PricingMatrix,
 } from "components/pricing";
 import { app } from "lib/config";
+import { useSearchParams } from "lib/hooks";
 
-export type PricingModel = "monthly" | "annual";
+import type { Product } from "@polar-sh/sdk/models/components/product";
+
+interface Props {
+  products: Product[];
+}
 
 /**
  * Pricing overview section.
  */
-const PricingOverview = () => {
-  // TODO move to URL state (https://github.com/omnidotdev/backfeed-app/pull/69#discussion_r1986197545)
-  const [pricingModel, setPricingModel] = useState<PricingModel>("monthly");
+const PricingOverview = ({ products }: Props) => {
+  const [{ pricingModel }, setSearchParams] = useSearchParams();
+
+  // TODO: use `filteredProducts` to populate the pricing cards (and pricing matrix?)
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((product) => product.recurringInterval === pricingModel),
+    [products, pricingModel]
+  );
 
   return (
     <Stack px={0} align="center">
@@ -40,12 +52,13 @@ const PricingOverview = () => {
           mb={2}
           value={[pricingModel]}
           onValueChange={({ value }) =>
-            // NB: length check prevents deselecting a selected value
-            value.length && setPricingModel(value[0] as PricingModel)
+            setSearchParams({
+              pricingModel: (value[0] as SubscriptionRecurringInterval) ?? null,
+            })
           }
         >
           <ToggleGroupItem
-            value="monthly"
+            value={SubscriptionRecurringInterval.Month}
             px={6}
             py={4}
             w="50%"
@@ -58,7 +71,7 @@ const PricingOverview = () => {
           </ToggleGroupItem>
 
           <ToggleGroupItem
-            value="annual"
+            value={SubscriptionRecurringInterval.Year}
             px={6}
             py={4}
             w="50%"

@@ -29,7 +29,7 @@ const PricingPage = async () => {
   if (session) redirect("/");
 
   // TODO: integrate products into PricingOverview component
-  return <PricingOverview />;
+  return <PricingOverview products={products} />;
 };
 
 export default PricingPage;

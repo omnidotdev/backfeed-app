@@ -17,7 +17,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import { app } from "lib/config";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
-import type { PricingModel } from "components/pricing";
+import type { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 
 type Price = string | { monthly: number; annual: number };
 
@@ -50,7 +50,7 @@ interface Props extends CardProps {
   /** Whether the tier is disabled. */
   isDisabled?: boolean;
   /** Pricing model (e.g. monthly or annual). */
-  pricingModel?: PricingModel;
+  pricingModel?: SubscriptionRecurringInterval;
   /** CTA button properties. */
   ctaProps?: ButtonProps;
 }
@@ -66,7 +66,7 @@ const PricingCard = ({
   ctaProps,
   ...rest
 }: Props) => {
-  const isPerMonthPricing = pricingModel === "monthly";
+  const isPerMonthPricing = pricingModel === "month";
   const isPriceAString = typeof tier.price === "string";
 
   return (
