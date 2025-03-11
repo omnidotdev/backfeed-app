@@ -7,6 +7,7 @@
         "@ark-ui/react": "^4.8.1",
         "@omnidev/sigil": "^0.13.0",
         "@polar-sh/nextjs": "^0.3.22",
+        "@polar-sh/sdk": "^0.30.0",
         "@tanstack/react-form": "^1.0.5",
         "@tanstack/react-query": "^5.67.2",
         "@tanstack/react-query-devtools": "^5.67.2",
@@ -490,7 +491,7 @@
 
     "@polar-sh/nextjs": ["@polar-sh/nextjs@0.3.22", "", { "dependencies": { "@polar-sh/adapter-utils": "0.1.14", "@polar-sh/sdk": "^0.29.3" }, "peerDependencies": { "next": "^15.0.0 || ^15.2.0-canary.*" } }, "sha512-JgJx5pLVtmjzAWUaT8IAYtt0ZjFgG6F7yTpKZoCjVxTfDe56EC5Dtlr1ufXPJuo6wPrGVnnO0qhdPZ16tJbjHg=="],
 
-    "@polar-sh/sdk": ["@polar-sh/sdk@0.29.3", "", { "dependencies": { "standardwebhooks": "^1.0.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.5.0", "zod": ">= 3" }, "optionalPeers": ["@modelcontextprotocol/sdk"], "bin": { "mcp": "bin/mcp-server.js" } }, "sha512-Tia7lAvp/8iULspCmO8ZzjbJlb06X3FAjk+fNp/fqRSmgrH1BC0Cy5q6qsEOX9lhsGZy0b+5AFJRUbYz4m1y3g=="],
+    "@polar-sh/sdk": ["@polar-sh/sdk@0.30.0", "", { "dependencies": { "standardwebhooks": "^1.0.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.5.0", "zod": ">= 3" }, "optionalPeers": ["@modelcontextprotocol/sdk"], "bin": { "mcp": "bin/mcp-server.js" } }, "sha512-dA63dYpoMCeK8QdglG1RNg7KRmRnErNzCuKtFbup/5GuSHR2JirN5UpTms0r0Qxr9+omkvyUsY8ESAJrASs4GA=="],
 
     "@remix-run/node": ["@remix-run/node@2.16.0", "", { "dependencies": { "@remix-run/server-runtime": "2.16.0", "@remix-run/web-fetch": "^4.4.2", "@web3-storage/multipart-parser": "^1.0.0", "cookie-signature": "^1.1.0", "source-map-support": "^0.5.21", "stream-slice": "^0.1.2", "undici": "^6.11.1" }, "peerDependencies": { "typescript": "^5.1.0" }, "optionalPeers": ["typescript"] }, "sha512-9yYBYCHYO1+bIScGAtOy5/r4BoTS8E5lpQmjWP99UxSCSiKHPEO76V9Z8mmmarTNis/FPN+sUwfmbQWNHLA2vw=="],
 
@@ -1831,6 +1832,10 @@
     "@pandacss/postcss/postcss": ["postcss@8.4.49", "", { "dependencies": { "nanoid": "^3.3.7", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA=="],
 
     "@pandacss/token-dictionary/ts-pattern": ["ts-pattern@5.0.8", "", {}, "sha512-aafbuAQOTEeWmA7wtcL94w6I89EgLD7F+IlWkr596wYxeb0oveWDO5dQpv85YP0CGbxXT/qXBIeV6IYLcoZ2uA=="],
+
+    "@polar-sh/adapter-utils/@polar-sh/sdk": ["@polar-sh/sdk@0.29.3", "", { "dependencies": { "standardwebhooks": "^1.0.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.5.0", "zod": ">= 3" }, "optionalPeers": ["@modelcontextprotocol/sdk"], "bin": { "mcp": "bin/mcp-server.js" } }, "sha512-Tia7lAvp/8iULspCmO8ZzjbJlb06X3FAjk+fNp/fqRSmgrH1BC0Cy5q6qsEOX9lhsGZy0b+5AFJRUbYz4m1y3g=="],
+
+    "@polar-sh/nextjs/@polar-sh/sdk": ["@polar-sh/sdk@0.29.3", "", { "dependencies": { "standardwebhooks": "^1.0.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.5.0", "zod": ">= 3" }, "optionalPeers": ["@modelcontextprotocol/sdk"], "bin": { "mcp": "bin/mcp-server.js" } }, "sha512-Tia7lAvp/8iULspCmO8ZzjbJlb06X3FAjk+fNp/fqRSmgrH1BC0Cy5q6qsEOX9lhsGZy0b+5AFJRUbYz4m1y3g=="],
 
     "@remix-run/server-runtime/cookie": ["cookie@0.6.0", "", {}, "sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw=="],
 
