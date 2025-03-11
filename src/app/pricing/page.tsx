@@ -13,16 +13,20 @@ export const metadata = {
  * Pricing page.
  */
 const PricingPage = async () => {
-  const session = await getAuthSession();
+  const [
+    session,
+    {
+      result: { items: products },
+    },
+  ] = await Promise.all([
+    getAuthSession(),
+    polar.products.list({
+      isArchived: false,
+    }),
+  ]);
 
   // TODO: update redirect to only redirect away from pricing page if a signed in user does not have a subscription
   if (session) redirect("/");
-
-  const {
-    result: { items: products },
-  } = await polar.products.list({
-    isArchived: false,
-  });
 
   // TODO: integrate products into PricingOverview component
   return <PricingOverview />;
