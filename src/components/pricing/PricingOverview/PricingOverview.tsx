@@ -8,6 +8,8 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@omnidev/sigil";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 import {
   PricingCard,
@@ -16,7 +18,6 @@ import {
   PricingMatrix,
 } from "components/pricing";
 import { app } from "lib/config";
-import { useState } from "react";
 
 export type PricingModel = "monthly" | "annual";
 
@@ -101,6 +102,10 @@ const PricingOverview = () => {
               pricingModel={pricingModel}
               borderWidth={isTeamTier ? 2 : 1}
               borderColor={isTeamTier ? "brand.primary" : "none"}
+              ctaProps={{
+                // TODO: update. Remove callbackUrl so it routes back to pricing after redirect on pricing page is removed and "Get Started" functionality is implemented
+                onClick: () => signIn("omni", { callbackUrl: "/" }),
+              }}
             />
           );
         })}
