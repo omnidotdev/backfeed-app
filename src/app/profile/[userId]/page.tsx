@@ -1,8 +1,14 @@
 import { Center } from "@omnidev/sigil";
 import { redirect } from "next/navigation";
 
+import { app } from "lib/config";
 import { polar } from "lib/polar";
 import { getAuthSession } from "lib/util";
+
+export const metadata = {
+  // TODO: extract `Profile` to app.config
+  title: `Profile | ${app.name}`,
+};
 
 interface Props {
   /** Params for the profile page. */
@@ -15,13 +21,15 @@ interface Props {
 const ProfilePage = async ({ params }: Props) => {
   const { userId } = await params;
 
-  const [session] = await Promise.all([getAuthSession()]);
+  // TODO: determine if `allSettled` is needed to handle errors gracefully
+  const [session, result] = await Promise.all([
+    getAuthSession(),
+    polar.customers.getStateExternal({
+      externalId: userId,
+    }),
+  ]);
 
   if (!session) redirect("/");
-
-  const result = await polar.customers.getStateExternal({
-    externalId: userId,
-  });
 
   // TODO: populate the profile page with customer data / handlers
   return <Center mt={12}>User Profile</Center>;
