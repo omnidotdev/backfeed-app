@@ -5,6 +5,7 @@ import { polar } from "lib/polar";
 import { getAuthSession } from "lib/util";
 
 interface Props {
+  /** Params for the profile page. */
   params: Promise<{ userId: string }>;
 }
 

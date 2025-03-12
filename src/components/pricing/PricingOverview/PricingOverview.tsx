@@ -35,6 +35,7 @@ const sortByTier = (a: Product, b: Product) => {
 };
 
 interface Props {
+  /** The products available for pricing tiers. */
   products: Product[];
 }
 
