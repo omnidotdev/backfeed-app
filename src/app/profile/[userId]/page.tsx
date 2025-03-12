@@ -21,8 +21,7 @@ interface Props {
 const ProfilePage = async ({ params }: Props) => {
   const { userId } = await params;
 
-  // TODO: determine if `allSettled` is needed to handle errors gracefully
-  const [session, customer] = await Promise.all([
+  const [session, customer] = await Promise.allSettled([
     getAuthSession(),
     polar.customers.getStateExternal({
       externalId: userId,
@@ -31,11 +30,14 @@ const ProfilePage = async ({ params }: Props) => {
 
   if (!session) redirect("/");
 
+  // TODO: handle case where customer is not found (no subscription)
+  if (customer.status === "rejected") return "TODO";
+
   // TODO: populate the profile page with customer data / handlers
   return (
     <Center mt={12} display="flex" flexDirection="column" gap={2}>
       User Profile
-      <CustomerPortal customer={customer} />
+      <CustomerPortal customer={customer.value} />
     </Center>
   );
 };
