@@ -48,7 +48,6 @@ const PricingOverview = ({ products }: Props) => {
 
   const { isAuthenticated, user } = useAuth();
 
-  // TODO: use `filteredProducts` to populate the pricing cards (and pricing matrix?)
   const filteredProducts = useMemo(
     () =>
       products
