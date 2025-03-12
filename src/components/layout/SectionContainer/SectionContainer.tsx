@@ -12,6 +12,8 @@ interface Props extends FlexProps {
   description?: string;
   /** Visual icon */
   icon?: IconType;
+  /** Additional props for the title container. */
+  titleProps?: FlexProps;
 }
 
 /**
@@ -22,6 +24,7 @@ const SectionContainer = ({
   description,
   children,
   icon,
+  titleProps,
   ...rest
 }: Props) => (
   <Stack
@@ -34,7 +37,7 @@ const SectionContainer = ({
     {...rest}
   >
     <Stack>
-      <Flex align="center" gap={2}>
+      <Flex align="center" gap={2} {...titleProps}>
         {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
 
         <Text

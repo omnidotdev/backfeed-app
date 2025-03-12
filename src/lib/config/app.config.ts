@@ -211,6 +211,11 @@ const app = {
           label: "Manage Subscription",
         },
       },
+      headers: {
+        productName: "Product Name",
+        status: "Status",
+        amount: "Amount",
+      },
     },
   },
   organizationsPage: {

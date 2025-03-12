@@ -3,13 +3,14 @@
 import {
   Button,
   Flex,
+  Icon,
   Link as SigilLink,
   Table,
   TableCell,
-  TableHeader,
   TableRow,
 } from "@omnidev/sigil";
 import Link from "next/link";
+import { LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -44,20 +45,30 @@ const Subscription = ({ customer }: Props) => {
     );
   }
 
-  // TODO: improve responsive design, add loading states
+  // TODO: add loading states
   return (
-    <SectionContainer title={app.profilePage.subscription.title}>
+    <SectionContainer
+      title={app.profilePage.subscription.title}
+      p={0}
+      titleProps={{
+        px: 4,
+        pt: 4,
+      }}
+    >
       <Table
         headerContent={
-          <TableRow>
-            <TableHeader fontWeight="bold">Product Name</TableHeader>
-            <TableHeader fontWeight="bold">Status</TableHeader>
-            <TableHeader fontWeight="bold">Amount</TableHeader>
-            <TableHeader />
+          <TableRow bgColor="transparent">
+            {Object.values(app.profilePage.subscription.headers).map(
+              (header) => (
+                <TableCell key={header} fontWeight="bold">
+                  {header}
+                </TableCell>
+              )
+            )}
           </TableRow>
         }
       >
-        <TableRow fontSize={{ base: "sm", md: "lg" }}>
+        <TableRow fontSize={{ base: "sm", md: "lg" }} bgColor="transparent">
           <TableCell>{subscription?.product.name}</TableCell>
           <TableCell display="flex" alignItems="center" gap={2}>
             <Flex h={2} w={2} borderRadius="full" bgColor="brand.tertiary" />
@@ -72,7 +83,9 @@ const Subscription = ({ customer }: Props) => {
             <SigilLink
               href={`/api/customer/portal?customerId=${customer.value.id}`}
             >
-              <Button size={{ base: "sm", md: "md" }}>Manage</Button>
+              <Button variant="icon" aria-label="Manage Subscription">
+                <Icon src={LuSettings} />
+              </Button>
             </SigilLink>
           </TableCell>
         </TableRow>
