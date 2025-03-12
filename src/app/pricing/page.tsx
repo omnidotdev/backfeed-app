@@ -33,7 +33,10 @@ const PricingPage = async () => {
       }),
     ]);
 
-    if (customer.status !== "rejected")
+    if (
+      customer.status !== "rejected" &&
+      customer.value.activeSubscriptions.length
+    )
       redirect(`/profile/${session.user.rowId}`);
   }
 

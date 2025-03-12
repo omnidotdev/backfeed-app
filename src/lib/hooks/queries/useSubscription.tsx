@@ -18,6 +18,7 @@ const useSubscription = ({ enabled = true }: Options = {}) => {
     queryKey: ["Subscription", user?.rowId],
     queryFn: async () => await getSubscription(user?.rowId!),
     enabled: enabled && !!user?.rowId,
+    retry: false,
   });
 };
 
