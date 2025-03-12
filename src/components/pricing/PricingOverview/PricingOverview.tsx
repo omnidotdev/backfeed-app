@@ -24,10 +24,14 @@ import { useAuth, useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
 
+// ! NB: Ordered tiers for sorting products. If the order is adjusted in the config, this must be updated.
 const orderedTiers = app.pricingPage.pricingTiers.tiers.map(
   (tier) => tier.title
 );
 
+/**
+ * Custom sorting function for products based on their tier.
+ */
 const sortByTier = (a: Product, b: Product) => {
   const indexA = orderedTiers.indexOf(a.name);
   const indexB = orderedTiers.indexOf(b.name);

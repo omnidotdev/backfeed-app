@@ -36,7 +36,7 @@ const ProfilePage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  // If the customer exists (i.e. has an active subscription *or* has subscribed before), prefetch the subscription data.
+  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
   if (customer.status !== "rejected") {
     await queryClient.prefetchQuery({
       queryKey: ["Subscription", userId],

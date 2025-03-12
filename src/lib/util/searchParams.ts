@@ -26,7 +26,7 @@ const searchParams = {
   pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
   pricingModel: parseAsStringEnum<SubscriptionRecurringInterval>(
     Object.values(SubscriptionRecurringInterval)
-  ).withDefault("month"),
+  ).withDefault(SubscriptionRecurringInterval.Month),
 };
 
 export default searchParams;
