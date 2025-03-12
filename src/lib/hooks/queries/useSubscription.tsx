@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getCustomer, getProduct } from "lib/actions";
+import { getSubscription } from "lib/actions";
 import { useAuth } from "lib/hooks";
 
 interface Options {
@@ -16,19 +16,7 @@ const useSubscription = ({ enabled = true }: Options = {}) => {
 
   return useQuery({
     queryKey: ["Subscription", user?.rowId],
-    queryFn: async () => {
-      const customer = await getCustomer(user?.rowId!);
-      const product = await getProduct(
-        customer.activeSubscriptions[0].productId
-      );
-
-      const { productId, ...rest } = customer.activeSubscriptions[0];
-
-      return {
-        ...rest,
-        product,
-      };
-    },
+    queryFn: async () => await getSubscription(user?.rowId!),
     enabled: enabled && !!user?.rowId,
   });
 };

@@ -45,7 +45,6 @@ const Subscription = ({ customer }: Props) => {
     );
   }
 
-  // TODO: add loading states
   return (
     <SectionContainer
       title={app.profilePage.subscription.title}
@@ -70,14 +69,17 @@ const Subscription = ({ customer }: Props) => {
       >
         <TableRow fontSize={{ base: "sm", md: "lg" }} bgColor="transparent">
           <TableCell>{subscription?.product.name}</TableCell>
+
           <TableCell display="flex" alignItems="center" gap={2}>
             <Flex h={2} w={2} borderRadius="full" bgColor="brand.tertiary" />
             {capitalizeFirstLetter(subscription?.status)}
           </TableCell>
+
           <TableCell>
             ${(subscription?.amount ?? 0) / 100}/
             {subscription?.recurringInterval}
           </TableCell>
+
           <TableCell display="flex" justifyContent="flex-end">
             {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
             <SigilLink

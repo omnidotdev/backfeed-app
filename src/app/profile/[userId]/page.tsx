@@ -1,10 +1,12 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
+import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 export const metadata = {
   title: `${app.profilePage.breadcrumb} | ${app.name}`,
@@ -31,16 +33,24 @@ const ProfilePage = async ({ params }: Props) => {
   // TODO: redirect if userId from `params` does not match session (left unhandled for testing purposes)
   if (!session) redirect("/");
 
-  // TODO: populate the profile page with customer data / handlers
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["Subscription", userId],
+    queryFn: async () => await getSubscription(userId),
+  });
+
   return (
-    <Page
-      header={{
-        title: app.profilePage.header.title,
-        description: app.profilePage.header.description,
-      }}
-    >
-      <Subscription customer={customer} />
-    </Page>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        header={{
+          title: app.profilePage.header.title,
+          description: app.profilePage.header.description,
+        }}
+      >
+        <Subscription customer={customer} />
+      </Page>
+    </HydrationBoundary>
   );
 };
 
