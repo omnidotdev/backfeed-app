@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { Page } from "components/layout";
-import { CustomerPortal } from "components/profile";
+import { Subscription } from "components/profile";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
 import { getAuthSession } from "lib/util";
@@ -39,7 +39,7 @@ const ProfilePage = async ({ params }: Props) => {
         description: app.profilePage.header.description,
       }}
     >
-      <CustomerPortal customer={customer} />
+      <Subscription customer={customer} />
     </Page>
   );
 };

@@ -1,1 +1,1 @@
-export { default as CustomerPortal } from "./CustomerPortal/CustomerPortal";
+export { default as Subscription } from "./Subscription/Subscription";

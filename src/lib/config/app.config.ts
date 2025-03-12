@@ -201,7 +201,8 @@ const app = {
       title: "User Profile",
       description: "View and manage your account information.",
     },
-    portal: {
+    subscription: {
+      title: "Subscription",
       actions: {
         subscribe: {
           label: "Subscribe",

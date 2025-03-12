@@ -1,0 +1,2 @@
+export { default as getCustomer } from "./getCustomer";
+export { default as getProduct } from "./getProduct";

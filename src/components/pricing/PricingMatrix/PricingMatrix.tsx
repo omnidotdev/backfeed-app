@@ -5,7 +5,6 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-  // Tooltip,
 } from "@omnidev/sigil";
 import { FaCheck, FaX } from "react-icons/fa6";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
