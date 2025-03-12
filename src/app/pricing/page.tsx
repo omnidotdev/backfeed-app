@@ -37,7 +37,6 @@ const PricingPage = async () => {
       redirect(`/profile/${session.user.rowId}`);
   }
 
-  // TODO: integrate products into PricingOverview component
   return <PricingOverview products={products} />;
 };
 
