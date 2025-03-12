@@ -195,6 +195,9 @@ const app = {
       },
     },
   },
+  profilePage: {
+    breadcrumb: "Profile",
+  },
   organizationsPage: {
     breadcrumb: "Organizations",
     header: {

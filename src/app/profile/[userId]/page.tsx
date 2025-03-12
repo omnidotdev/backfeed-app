@@ -7,8 +7,7 @@ import { polar } from "lib/polar";
 import { getAuthSession } from "lib/util";
 
 export const metadata = {
-  // TODO: extract `Profile` to app.config
-  title: `Profile | ${app.name}`,
+  title: `${app.profilePage.breadcrumb} | ${app.name}`,
 };
 
 interface Props {
