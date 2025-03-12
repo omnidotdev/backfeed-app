@@ -1,5 +1,5 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
@@ -30,15 +30,19 @@ const ProfilePage = async ({ params }: Props) => {
     }),
   ]);
 
-  // TODO: redirect if userId from `params` does not match session (left unhandled for testing purposes)
-  if (!session) redirect("/");
+  if (session.status === "rejected") redirect("/");
+
+  if (session.value?.user?.rowId !== userId) notFound();
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["Subscription", userId],
-    queryFn: async () => await getSubscription(userId),
-  });
+  // If the customer exists (i.e. has an active subscription *or* has subscribed before), prefetch the subscription data.
+  if (customer.status !== "rejected") {
+    await queryClient.prefetchQuery({
+      queryKey: ["Subscription", userId],
+      queryFn: async () => await getSubscription(userId),
+    });
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

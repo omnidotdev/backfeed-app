@@ -34,6 +34,8 @@ const Subscription = ({ customer }: Props) => {
   const {
     data: subscription,
     error,
+    // NB: although the query is prefetched, if the customer exists but their subscription is not `active`, and error will be thrown. This puts the query into a loading state initially.
+    // The above does not effect the rendering when a user does have an active subscription, in that case the data should be instantly available upon render, and `isLoading` should be `false`.
     isLoading,
   } = useSubscription({
     enabled: customer.status !== "rejected",
