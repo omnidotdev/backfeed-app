@@ -3,6 +3,7 @@
 import { Button } from "@omnidev/sigil";
 
 import { Link } from "components/core";
+import { app } from "lib/config";
 
 import type { CustomerState } from "@polar-sh/sdk/models/components/customerstate";
 
@@ -18,14 +19,14 @@ const CustomerPortal = ({ customer }: Props) => {
   if (customer.status === "rejected") {
     return (
       <Link href="/pricing">
-        <Button>Subscribe</Button>
+        <Button>{app.profilePage.portal.actions.subscribe.label}</Button>
       </Link>
     );
   }
 
   return (
     <Link href={`/api/customer/portal?customerId=${customer.value.id}`}>
-      <Button>Manage Subscriptions</Button>
+      <Button>{app.profilePage.portal.actions.manageSubscription.label}</Button>
     </Link>
   );
 };

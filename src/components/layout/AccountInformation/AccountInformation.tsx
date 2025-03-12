@@ -56,10 +56,10 @@ const AccountInformation = () => {
         rounded: "full",
       }}
       positioning={{
-        shift: 20,
+        shift: 32,
       }}
     >
-      <MenuItemGroup>
+      <MenuItemGroup minW={32}>
         <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>
 
         <MenuSeparator />

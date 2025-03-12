@@ -197,6 +197,20 @@ const app = {
   },
   profilePage: {
     breadcrumb: "Profile",
+    header: {
+      title: "User Profile",
+      description: "View and manage your account information.",
+    },
+    portal: {
+      actions: {
+        subscribe: {
+          label: "Subscribe",
+        },
+        manageSubscription: {
+          label: "Manage Subscription",
+        },
+      },
+    },
   },
   organizationsPage: {
     breadcrumb: "Organizations",

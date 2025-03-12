@@ -1,6 +1,6 @@
-import { Center } from "@omnidev/sigil";
 import { redirect } from "next/navigation";
 
+import { Page } from "components/layout";
 import { CustomerPortal } from "components/profile";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
@@ -33,10 +33,14 @@ const ProfilePage = async ({ params }: Props) => {
 
   // TODO: populate the profile page with customer data / handlers
   return (
-    <Center mt={12} display="flex" flexDirection="column" gap={2}>
-      User Profile
+    <Page
+      header={{
+        title: app.profilePage.header.title,
+        description: app.profilePage.header.description,
+      }}
+    >
       <CustomerPortal customer={customer} />
-    </Center>
+    </Page>
   );
 };
 
