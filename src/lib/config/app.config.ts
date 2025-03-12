@@ -203,6 +203,7 @@ const app = {
     },
     subscription: {
       title: "Subscription",
+      description: "Manage your subscription plan and billing information.",
       actions: {
         subscribe: {
           label: "Subscribe",

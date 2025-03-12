@@ -2,7 +2,7 @@
 
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { FlexProps, TextProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface Props extends FlexProps {
@@ -14,6 +14,8 @@ interface Props extends FlexProps {
   icon?: IconType;
   /** Additional props for the title container. */
   titleProps?: FlexProps;
+  /** Additional props for the description container. */
+  descriptionProps?: TextProps;
 }
 
 /**
@@ -25,6 +27,7 @@ const SectionContainer = ({
   children,
   icon,
   titleProps,
+  descriptionProps,
   ...rest
 }: Props) => (
   <Stack
@@ -50,7 +53,11 @@ const SectionContainer = ({
       </Flex>
 
       {description && (
-        <Text color="foreground.subtle" fontSize={{ base: "xs", lg: "sm" }}>
+        <Text
+          color="foreground.subtle"
+          fontSize={{ base: "xs", lg: "sm" }}
+          {...descriptionProps}
+        >
           {description}
         </Text>
       )}

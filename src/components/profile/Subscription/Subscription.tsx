@@ -35,7 +35,10 @@ const Subscription = ({ customer }: Props) => {
 
   if (customer.status === "rejected") {
     return (
-      <SectionContainer title={app.profilePage.subscription.title}>
+      <SectionContainer
+        title={app.profilePage.subscription.title}
+        description={app.profilePage.subscription.description}
+      >
         <Link href="/pricing">
           <Button>
             {app.profilePage.subscription.actions.subscribe.label}
@@ -48,10 +51,14 @@ const Subscription = ({ customer }: Props) => {
   return (
     <SectionContainer
       title={app.profilePage.subscription.title}
+      description={app.profilePage.subscription.description}
       p={0}
       titleProps={{
         px: 4,
         pt: 4,
+      }}
+      descriptionProps={{
+        px: 4,
       }}
     >
       <Table
