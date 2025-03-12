@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, css, Flex, HStack, sigil } from "@omnidev/sigil";
+import { Badge, Flex, HStack, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
 import { Image, Link } from "components/core";
@@ -41,7 +41,8 @@ const Header = () => {
                 src="/img/logo.png"
                 alt={`${app.name} logo`}
                 width={48}
-                height={48}
+                height={24}
+                priority
                 // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"

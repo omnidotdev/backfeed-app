@@ -11,9 +11,9 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
-import { DEBOUNCE_TIME } from "lib/constants";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
