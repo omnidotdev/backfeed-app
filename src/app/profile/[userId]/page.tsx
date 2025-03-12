@@ -28,16 +28,14 @@ const ProfilePage = async ({ params }: Props) => {
     }),
   ]);
 
+  // TODO: redirect if userId from `params` does not match session (left unhandled for testing purposes)
   if (!session) redirect("/");
-
-  // TODO: handle case where customer is not found (no subscription)
-  if (customer.status === "rejected") return "TODO";
 
   // TODO: populate the profile page with customer data / handlers
   return (
     <Center mt={12} display="flex" flexDirection="column" gap={2}>
       User Profile
-      <CustomerPortal customer={customer.value} />
+      <CustomerPortal customer={customer} />
     </Center>
   );
 };
