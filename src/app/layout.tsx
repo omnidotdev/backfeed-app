@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
+import Script from "next/script";
 
 // set up mock service worker (MSW) fixtures if enabled
 if (ENABLE_MSW) {
@@ -39,13 +40,11 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   return (
     // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {isDevEnv && (
-          <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
-        )}
-      </head>
-
       <body>
+        {isDevEnv && (
+          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+        )}
+
         <Providers session={session}>
           <Layout>{children}</Layout>
         </Providers>

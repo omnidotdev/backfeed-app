@@ -12,8 +12,9 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { toaster } from "lib/util";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -63,7 +64,7 @@ const CreateComment = () => {
         userId: user?.rowId ?? "",
         message: "",
       },
-      asyncDebounceMs: 300,
+      asyncDebounceMs: DEBOUNCE_TIME,
       validators: {
         onChange: createCommentSchema,
         onSubmitAsync: createCommentSchema,
