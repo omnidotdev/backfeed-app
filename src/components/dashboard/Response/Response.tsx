@@ -17,26 +17,26 @@ interface Props extends FlexProps {
  * Recent feedback response.
  */
 const Response = ({ feedback, ...rest }: Props) => {
-  const date = dayjs(feedback?.createdAt).fromNow();
+  const createdAt = dayjs(feedback.createdAt).fromNow();
 
   return (
     <Flex direction="column" gap={4} py={3} w="100%" {...rest}>
       <Flex direction="column">
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
-            {feedback?.user?.username}
+            {feedback.user?.username}
           </Text>
 
           <Badge>{convertFromSnakeCase(feedback.status!)}</Badge>
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {feedback?.description}
+          {feedback.description}
         </Text>
       </Flex>
 
       <Text fontSize="xs" color="foreground.muted">
-        {date}
+        {createdAt}
       </Text>
     </Flex>
   );
