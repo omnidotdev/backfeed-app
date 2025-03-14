@@ -45,6 +45,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         {isDevEnv && (
           <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
         )}
+
         <Providers session={session}>
           <Layout>{children}</Layout>
         </Providers>
