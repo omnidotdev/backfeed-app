@@ -32,16 +32,15 @@ const StatusBreakdown = ({ projectId }: Props) => {
     }
   );
 
-  // TODO: determine if this is fine with the prefetch from the server
   if (!breakdown) return null;
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {Object.entries(breakdown).map(([key, value]) => (
-        <Flex key={key} justifyContent="space-between" align="center">
-          <Badge>{convertFromSnakeCase(key)}</Badge>
+      {Object.entries(breakdown).map(([status, count]) => (
+        <Flex key={status} justifyContent="space-between" align="center">
+          <Badge>{convertFromSnakeCase(status)}</Badge>
 
-          <Text>{value}</Text>
+          <Text>{count}</Text>
         </Flex>
       ))}
     </SectionContainer>
