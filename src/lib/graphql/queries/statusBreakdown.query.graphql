@@ -1,19 +1,10 @@
 query StatusBreakdown($projectId: UUID!) {
-  new: posts(condition: { projectId: $projectId, status: new }) {
-    totalCount
-  }
-  closed: posts(condition: { projectId: $projectId, status: closed }) {
-    totalCount
-  }
-  planned: posts(condition: { projectId: $projectId, status: planned }) {
-    totalCount
-  }
-  in_progress: posts(
-    condition: { projectId: $projectId, status: in_progress }
-  ) {
-    totalCount
-  }
-  completed: posts(condition: { projectId: $projectId, status: completed }) {
-    totalCount
+  posts(condition: { projectId: $projectId }) {
+    groupedAggregates(groupBy: STATUS) {
+      keys
+      distinctCount {
+        rowId
+      }
+    }
   }
 }

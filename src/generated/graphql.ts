@@ -4198,7 +4198,7 @@ export type StatusBreakdownQueryVariables = Exact<{
 }>;
 
 
-export type StatusBreakdownQuery = { __typename?: 'Query', new?: { __typename?: 'PostConnection', totalCount: number } | null, closed?: { __typename?: 'PostConnection', totalCount: number } | null, planned?: { __typename?: 'PostConnection', totalCount: number } | null, in_progress?: { __typename?: 'PostConnection', totalCount: number } | null, completed?: { __typename?: 'PostConnection', totalCount: number } | null };
+export type StatusBreakdownQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type UpvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5671,20 +5671,13 @@ useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, optio
 
 export const StatusBreakdownDocument = `
     query StatusBreakdown($projectId: UUID!) {
-  new: posts(condition: {projectId: $projectId, status: new}) {
-    totalCount
-  }
-  closed: posts(condition: {projectId: $projectId, status: closed}) {
-    totalCount
-  }
-  planned: posts(condition: {projectId: $projectId, status: planned}) {
-    totalCount
-  }
-  in_progress: posts(condition: {projectId: $projectId, status: in_progress}) {
-    totalCount
-  }
-  completed: posts(condition: {projectId: $projectId, status: completed}) {
-    totalCount
+  posts(condition: {projectId: $projectId}) {
+    groupedAggregates(groupBy: STATUS) {
+      keys
+      distinctCount {
+        rowId
+      }
+    }
   }
 }
     `;

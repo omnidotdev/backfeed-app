@@ -22,25 +22,25 @@ const StatusBreakdown = ({ projectId }: Props) => {
       projectId,
     },
     {
-      select: (data) => ({
-        new: data?.new?.totalCount ?? 0,
-        planned: data?.planned?.totalCount ?? 0,
-        in_progress: data?.in_progress?.totalCount ?? 0,
-        completed: data?.completed?.totalCount ?? 0,
-        closed: data?.closed?.totalCount ?? 0,
-      }),
+      select: (data) =>
+        data?.posts?.groupedAggregates?.map((aggregate) => ({
+          status: aggregate.keys?.[0],
+          count: aggregate.distinctCount?.rowId,
+        })),
     }
   );
 
-  if (!breakdown) return null;
-
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {Object.entries(breakdown).map(([status, count]) => (
-        <Flex key={status} justifyContent="space-between" align="center">
-          <Badge>{convertFromSnakeCase(status)}</Badge>
+      {breakdown?.map((aggregate) => (
+        <Flex
+          key={aggregate.status}
+          justifyContent="space-between"
+          align="center"
+        >
+          <Badge>{convertFromSnakeCase(aggregate.status!)}</Badge>
 
-          <Text>{count}</Text>
+          <Text>{aggregate.count}</Text>
         </Flex>
       ))}
     </SectionContainer>
