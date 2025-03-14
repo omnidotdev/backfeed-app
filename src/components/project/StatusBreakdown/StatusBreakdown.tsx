@@ -32,15 +32,11 @@ const StatusBreakdown = ({ projectId }: Props) => {
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {breakdown?.map((aggregate) => (
-        <Flex
-          key={aggregate.status}
-          justifyContent="space-between"
-          align="center"
-        >
-          <Badge>{convertFromSnakeCase(aggregate.status!)}</Badge>
+      {breakdown?.map(({ status, count }) => (
+        <Flex key={status} justifyContent="space-between" align="center">
+          <Badge>{convertFromSnakeCase(status!)}</Badge>
 
-          <Text>{aggregate.count}</Text>
+          <Text>{count}</Text>
         </Flex>
       ))}
     </SectionContainer>
