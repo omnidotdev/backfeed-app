@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, sigil } from "@omnidev/sigil";
-import { useTransitionRouter } from "next-view-transitions";
+import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
@@ -11,8 +11,8 @@ import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
-import { DialogType } from "store";
 import { toaster } from "lib/util";
+import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -64,7 +64,7 @@ const createOrganizationSchema = baseSchema.superRefine(
  * Dialog for creating a new organization.
  */
 const CreateOrganization = () => {
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   const { user } = useAuth();
 

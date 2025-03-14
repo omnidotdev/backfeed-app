@@ -10,7 +10,7 @@ import {
   MenuItemGroup,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import { useTransitionRouter } from "next-view-transitions";
+import { useRouter } from "next/navigation";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useMediaQuery } from "usehooks-ts";
 
@@ -25,7 +25,7 @@ const HeaderActions = () => {
   // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
   const isSmallViewport = useMediaQuery("(min-width: 40em)");
 
-  const router = useTransitionRouter(),
+  const router = useRouter(),
     { isAuthenticated, isLoading } = useAuth();
 
   const handleSignUp = () => {

@@ -3,8 +3,7 @@
 import { createListCollection } from "@ark-ui/react";
 import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTransitionRouter } from "next-view-transitions";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
@@ -44,7 +43,7 @@ const OrganizationSettings = () => {
   const queryClient = useQueryClient();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   const { user } = useAuth();
 

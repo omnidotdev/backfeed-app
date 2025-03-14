@@ -2,8 +2,7 @@
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTransitionRouter } from "next-view-transitions";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
@@ -12,9 +11,9 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
-import { DEBOUNCE_TIME } from "lib/constants";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -43,7 +42,7 @@ const baseSchema = z.object({
  */
 const UpdateOrganization = () => {
   const queryClient = useQueryClient();
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 

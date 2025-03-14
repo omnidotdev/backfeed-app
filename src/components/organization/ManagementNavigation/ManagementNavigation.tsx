@@ -1,8 +1,7 @@
 "use client";
 
 import { Button, Icon, Stack, Text } from "@omnidev/sigil";
-import { useTransitionRouter } from "next-view-transitions";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
@@ -43,7 +42,7 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const router = useTransitionRouter(),
+  const router = useRouter(),
     segment = useSelectedLayoutSegment();
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [

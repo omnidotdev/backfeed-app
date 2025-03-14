@@ -1,8 +1,7 @@
 "use client";
 
 import { Button, Grid, Icon } from "@omnidev/sigil";
-import { useTransitionRouter } from "next-view-transitions";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
 
@@ -32,7 +31,7 @@ interface Props {
  */
 const OrganizationActions = ({ organizationId }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   const { user } = useAuth();
 

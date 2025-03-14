@@ -10,10 +10,10 @@ import {
   useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
-import { DEBOUNCE_TIME } from "lib/constants";
 
 const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 
