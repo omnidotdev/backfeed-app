@@ -4,7 +4,7 @@ import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { match } from "ts-pattern";
 
-import { convertFromSnakeCase } from "lib/util";
+import { convertFromSnakeCase, getStatusColor } from "lib/util";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
@@ -70,8 +70,8 @@ const FeedbackCard = ({
             <HStack>
               <Badge
                 variant="outline"
-                color="brand.secondary"
-                borderColor="brand.secondary"
+                color={getStatusColor(feedback.status!)}
+                borderColor={getStatusColor(feedback.status!)}
               >
                 {convertFromSnakeCase(feedback.status!)}
               </Badge>

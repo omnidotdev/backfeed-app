@@ -2848,10 +2848,10 @@ export type RoleFilter = {
 
 export enum Status {
   Closed = 'closed',
-  Completed = 'completed',
   InProgress = 'in_progress',
-  New = 'new',
-  Planned = 'planned'
+  Open = 'open',
+  Planned = 'planned',
+  Resolved = 'resolved'
 }
 
 /** A filter to be used against Status fields. All fields are combined with a logical ‘and.’ */

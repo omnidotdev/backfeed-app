@@ -3,7 +3,7 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 
-import { convertFromSnakeCase } from "lib/util";
+import { convertFromSnakeCase, getStatusColor } from "lib/util";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
@@ -27,7 +27,13 @@ const Response = ({ feedback, ...rest }: Props) => {
             {feedback.user?.username}
           </Text>
 
-          <Badge>{convertFromSnakeCase(feedback.status!)}</Badge>
+          <Badge
+            variant="outline"
+            color={getStatusColor(feedback.status!)}
+            borderColor={getStatusColor(feedback.status!)}
+          >
+            {convertFromSnakeCase(feedback.status!)}
+          </Badge>
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">
