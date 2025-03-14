@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
@@ -32,16 +34,16 @@ export const metadata: Metadata = {
 
 /**
  * Root layout.
- * ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
  */
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getAuthSession();
 
   return (
+    // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
     <html lang="en" suppressHydrationWarning>
       <body>
         {isDevEnv && (
-          <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
         )}
         <Providers session={session}>
           <Layout>{children}</Layout>
