@@ -3,40 +3,45 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
+import { useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { convertFromSnakeCase } from "lib/util";
 
-// TODO: Discuss status breakdown and how it should be implemented.
+import type { Post } from "generated/graphql";
+
+interface Props {
+  projectId: Post["projectId"];
+}
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = () => {
-  const breakdown = [
+const StatusBreakdown = ({ projectId }: Props) => {
+  const { data: breakdown } = useStatusBreakdownQuery(
     {
-      status: app.projectPage.statusBreakdown.status.new,
-      count: 69,
+      projectId,
     },
     {
-      status: app.projectPage.statusBreakdown.status.planned,
-      count: 69,
-    },
-    {
-      status: app.projectPage.statusBreakdown.status.inProgress,
-      count: 69,
-    },
-    {
-      status: app.projectPage.statusBreakdown.status.completed,
-      count: 69,
-    },
-  ];
+      select: (data) => ({
+        new: data?.new?.totalCount ?? 0,
+        planned: data?.planned?.totalCount ?? 0,
+        in_progress: data?.in_progress?.totalCount ?? 0,
+        completed: data?.completed?.totalCount ?? 0,
+        closed: data?.closed?.totalCount ?? 0,
+      }),
+    }
+  );
+
+  // TODO: determine if this is fine with the prefetch from the server
+  if (!breakdown) return null;
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {breakdown.map(({ status, count }) => (
-        <Flex key={status} justifyContent="space-between" align="center">
-          <Badge>{status}</Badge>
+      {Object.entries(breakdown).map(([key, value]) => (
+        <Flex key={key} justifyContent="space-between" align="center">
+          <Badge>{convertFromSnakeCase(key)}</Badge>
 
-          <Text>{count}</Text>
+          <Text>{value}</Text>
         </Flex>
       ))}
     </SectionContainer>
