@@ -13,6 +13,7 @@ import { app } from "lib/config";
 import { useForm } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
+import { DEBOUNCE_TIME } from "lib/constants";
 
 const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 
@@ -76,7 +77,7 @@ const AddOwner = ({ organizationId }: Props) => {
     defaultValues: {
       rowId: "",
     },
-    asyncDebounceMs: 300,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onChange: baseSchema,
     },

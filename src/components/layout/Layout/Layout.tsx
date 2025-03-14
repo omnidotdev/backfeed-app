@@ -1,6 +1,6 @@
 "use client";
 
-import { Center, Flex, Toaster, sigil } from "@omnidev/sigil";
+import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useParams } from "next/navigation";
@@ -9,9 +9,8 @@ import { useIsClient } from "usehooks-ts";
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
-import { css } from "generated/panda/css";
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { toaster } from "lib/util";
 
 import type { ReactNode } from "react";
 
@@ -44,7 +43,8 @@ const Layout = ({ children }: Props) => {
       </Flex>
 
       <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
-        <sigil.main w="full" flex={1} className={css({ mt: "header" })}>
+        {/* TODO fix styles not appropriately being applied (https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues) */}
+        <sigil.main w="full" flex={1} css={css.raw({ mt: "header" })}>
           {children}
         </sigil.main>
 

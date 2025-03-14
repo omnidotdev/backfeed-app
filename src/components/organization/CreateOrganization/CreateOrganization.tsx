@@ -6,12 +6,13 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { app } from "lib/config";
-import { toaster } from "lib/constants";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
+import { toaster } from "lib/util";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -106,7 +107,7 @@ const CreateOrganization = () => {
       name: "",
       slug: "",
     },
-    asyncDebounceMs: 300,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,

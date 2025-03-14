@@ -1,4 +1,5 @@
 import { ViewTransitions } from "next-view-transitions";
+import Script from "next/script";
 
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
@@ -42,13 +43,11 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     <ViewTransitions>
       {/* ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app */}
       <html lang="en" suppressHydrationWarning>
-        <head>
-          {isDevEnv && (
-            <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
-          )}
-        </head>
-
         <body>
+        {isDevEnv && (
+            <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+          )}
+          
           <Providers session={session}>
             <Layout>{children}</Layout>
           </Providers>

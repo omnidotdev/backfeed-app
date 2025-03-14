@@ -106,7 +106,7 @@ const playwrightConfig = defineConfig({
   },
   use: {
     headless: true,
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "https://localhost:3000",
     // retry a test with tracing if it is failing (allows analysis of DOM, console logs, network traffic, etc.)
     trace: "retry-with-trace",
   },

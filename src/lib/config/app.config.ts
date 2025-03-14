@@ -167,17 +167,20 @@ const app = {
         },
         projectName: {
           id: "Project Name",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "Backfeed",
           error: "Must be at least 3 characters.",
         },
         projectDescription: {
           id: "Project Description",
           placeholder:
+            // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
             "Backfeed is an open-source feedback reporting platform.",
           error: "Must be at least 10 characters.",
         },
         projectSlug: {
           id: "Project Slug",
+          // TODO extract to `omni-${app.name}` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "omni-backfeed",
           error: {
             invalidFormat: "Invalid slug format.",
@@ -380,37 +383,82 @@ const app = {
   // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
     title: "Pricing",
+    pricingHeader: {
+      title: "Simple, transparent pricing",
+      description:
+        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+      monthly: "Monthly",
+      annual: "Annual",
+      savings: "save 25%",
+    },
     pricingCard: {
-      perMonth: "/month",
+      user: "user",
+      month: "month",
+      year: "year",
       getStarted: "Get Started",
+    },
+    pricingMatrix: {
+      feature: "Feature",
+      features: {
+        gdpr: "GDPR Compliance",
+        communitySupport: "Community Support",
+        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedOrgs: "Unlimited Organizations",
+        unlimitedProjects: "Unlimited Projects",
+        webhooks: "Webhooks",
+        apiAccess: "API Access",
+        customTags: "Custom Tags",
+        customCategories: "Custom Categories",
+        customAnalytics: "Custom Analytics",
+        internalCollaborationTools: "Internal Collaboration Tools",
+        customBranding: "Custom Branding",
+        thirdPartyIntegrations: "Third-Party Integrations",
+        customSso: "Custom SSO (SAML, OpenID Connect)",
+        customData: "Data Retention Policies",
+        customOnboardingTraining: "Custom Onboarding & Training",
+        slaBackedSupport: "SLA-backed Support",
+        selfHostingAssistance: "Self-hosting Assistance",
+        integrationSupportForInternalTools:
+          "Integration Support for Internal Tools",
+        customAiBasedFeedbackAnalysis: "Custom AI-based Feedback Analysis",
+      },
     },
     pricingTiers: {
       recommended: "Recommended",
+      comingSoon: "Coming Soon",
       tiers: [
         {
           title: "Basic",
-          price: "$29",
+          price: {
+            monthly: 5,
+            annual: 45,
+          },
           description: "Perfect for small teams just getting started",
           features: [
-            "Up to 1,000 responses per month",
-            "Basic analytics dashboard",
-            "Email support",
-            "1 project",
-            "Basic integrations",
+            "1 organization",
+            "Up to 3 projects",
+            "Unlimited feedback items",
+            "Basic prioritization tools",
+            "Community voting & discussions",
+            "Community support",
           ],
         },
         {
-          title: "Professional",
-          price: "$79",
+          title: "Team",
+          price: {
+            monthly: 12,
+            annual: 108,
+          },
           description: "Everything you need for a growing business",
           features: [
-            "Up to 10,000 responses per month",
-            "Advanced analytics & reporting",
-            "Priority email & chat support",
+            "Everything in Basic plan",
+            "Unlimited organizations",
             "Unlimited projects",
-            "Advanced integrations",
-            "Custom branding",
-            "Team collaboration",
+            "Advanced feedback management (custom tags, categories, and analytics) (coming soon)",
+            "Internal team comments & collaboration tools (coming soon)",
+            "Custom branding (white labeling) (coming soon)",
+            "API access (coming soon)",
+            "Third-party integrations (GitHub Issues, Jira, Linear) (coming soon)",
           ],
         },
         {
@@ -418,52 +466,45 @@ const app = {
           price: "Contact Us",
           description: "Advanced features for large organizations",
           features: [
-            "Unlimited responses",
-            "Custom analytics solutions",
-            "24/7 phone & email support",
-            "Dedicated account manager",
-            "Custom integrations",
-            "SLA guarantee",
-            "Advanced security features",
-            "On-premise deployment option",
+            "Everything in Team plan",
+            "Custom SSO (SAML, OpenID Connect)",
+            "Custom data retention policies",
+            "Custom onboarding & training",
+            "SLA-backed support",
+            "Self-hosting assistance",
+            "Integration support for internal tools",
+            "Custom AI-based feedback analysis",
           ],
         },
       ],
     },
-    pricingFAQ: {
+    pricingFaq: {
       FAQ: "Frequently Asked Questions",
       items: [
         {
           title: "How does the 14-day trial work?",
-          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe or your account will automatically switch to the free plan.",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
+          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe to continue using Backfeed.",
         },
         {
           title: "Can I switch plans later?",
+          // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)
           body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
         },
         {
           title: "What payment methods do you accept?",
-          body: "We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. For Enterprise plans, we also support wire transfers and purchase orders.",
-        },
-        {
-          title:
-            "Do you offer discounts for non-profits or educational institutions?",
-          body: "Yes, we offer special pricing for non-profits, educational institutions, and open-source projects. Please contact our sales team for more information.",
+          body: "We accept a wide variety of payment methods, including all major credit card providers and PayPal.",
         },
         {
           title: "What happens to my data if I cancel?",
-          body: "You'll have 30 days to export your data after cancellation. After that period, your data will be permanently deleted from our servers.",
+          body: "If you cancel your subscription, your data will be safe on our servers unless you explicitly reach out to us to permanently delete it, or we contact you to warn about deletion. We will never delete your data without your explicit consent or without fair warning from us.",
         },
         {
           title: "Can I self-host this software?",
-          body: "Yes! We offer open access to our API free of charge so you can build your own feedback provider around our infrastructure.",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
+          body: "Yes! Backfeed is open source software. Instructions for self-hosting will be available soon.",
         },
       ],
-    },
-    pricingHeader: {
-      title: "Simple, transparent pricing",
-      description:
-        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
     },
   },
   projectsPage: {
