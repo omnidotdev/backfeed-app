@@ -10,6 +10,7 @@ import { convertFromSnakeCase, getStatusColor } from "lib/util";
 import type { Post, Status } from "generated/graphql";
 
 interface Props {
+  /** Project ID. */
   projectId: Post["projectId"];
 }
 
