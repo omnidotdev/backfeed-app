@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Grid, Stack, VStack } from "@omnidev/sigil";
+import { Button, Flex, Grid, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -9,6 +9,7 @@ import { Link, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
+  Status,
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
   useUserQuery,
@@ -73,6 +74,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       return {
         rowId: "pending",
         title: input.post.title,
+        status: Status.Open,
         description: input.post.description,
         project: {
           rowId: input.post.projectId,
@@ -137,14 +139,19 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       w="full"
                       minH={21}
                     >
-                      <Link
-                        href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
-                        disabled={isPending}
-                      >
-                        <Button disabled={isPending}>
-                          {app.projectPage.projectFeedback.details.feedbackLink}
-                        </Button>
-                      </Link>
+                      <Flex justify="flex-end">
+                        <Link
+                          href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
+                          disabled={isPending}
+                        >
+                          <Button disabled={isPending}>
+                            {
+                              app.projectPage.projectFeedback.details
+                                .feedbackLink
+                            }
+                          </Button>
+                        </Link>
+                      </Flex>
                     </FeedbackCard>
                   );
                 })}

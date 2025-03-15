@@ -1,9 +1,11 @@
 fragment Feedback on Post {
   rowId
   title
+  status
   description
   createdAt
   updatedAt
+  statusUpdatedAt
   project {
     rowId
     name
