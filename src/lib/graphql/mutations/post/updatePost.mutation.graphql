@@ -1,0 +1,7 @@
+mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
+  updatePost(input: { rowId: $rowId, patch: $patch }) {
+    post {
+      status
+    }
+  }
+}

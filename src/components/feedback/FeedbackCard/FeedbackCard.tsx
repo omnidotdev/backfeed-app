@@ -115,9 +115,7 @@ const FeedbackCard = ({
             </Text>
           </Stack>
 
-          <HStack fontSize="sm" placeSelf="flex-end" gap={1}>
-            {children}
-          </HStack>
+          {children}
         </Stack>
       </Stack>
     </HStack>

@@ -4029,6 +4029,14 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type UpdatePostMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: PostPatch;
+}>;
+
+
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'UpdatePostPayload', post?: { __typename?: 'Post', status: Status } | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4378,6 +4386,15 @@ export const DeletePostDocument = gql`
     mutation DeletePost($postId: UUID!) {
   deletePost(input: {rowId: $postId}) {
     clientMutationId
+  }
+}
+    `;
+export const UpdatePostDocument = gql`
+    mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
+  updatePost(input: {rowId: $rowId, patch: $patch}) {
+    post {
+      status
+    }
   }
 }
     `;
@@ -4772,6 +4789,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeletePost(variables: DeletePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeletePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeletePost', 'mutation', variables);
+    },
+    UpdatePost(variables: UpdatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdatePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePostMutation>(UpdatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePost', 'mutation', variables);
     },
     CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>(CreateProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateProject', 'mutation', variables);
