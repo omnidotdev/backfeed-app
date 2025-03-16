@@ -1,6 +1,6 @@
 "use client";
 
-import { createToaster } from "@omnidev/sigil";
+import { createToaster } from "@ark-ui/react";
 
 /**
  * Helper function to create a toaster instance.
