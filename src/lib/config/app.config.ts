@@ -33,6 +33,13 @@ const app = {
       label: "Coming Soon",
     },
   },
+  header: {
+    routes: {
+      pricing: {
+        label: "Pricing",
+      },
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",

@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Divider,
   Flex,
   HStack,
   Icon,
@@ -52,6 +53,7 @@ const HeaderActions = () => {
           <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
         </HStack>
       ) : (
+        // TODO: convert this to a drawer upon discussion.
         <Menu
           unmountOnExit
           trigger={
@@ -64,6 +66,21 @@ const HeaderActions = () => {
           }}
         >
           <MenuItemGroup minW={32}>
+            {!isLoading && !isAuthenticated && (
+              <>
+                <MenuItem value="pricing" asChild>
+                  <Button
+                    onClick={() => router.push("/pricing")}
+                    variant="ghost"
+                  >
+                    {app.header.routes.pricing.label}
+                  </Button>
+                </MenuItem>
+
+                <Divider my={1} />
+              </>
+            )}
+
             <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
               <Button variant="outline">{app.auth.signIn.label}</Button>
             </MenuItem>
