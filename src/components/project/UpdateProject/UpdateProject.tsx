@@ -81,7 +81,7 @@ const UpdateProject = () => {
     }
   );
 
-  // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed
+  // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
     onMutate: (variables) => {
       const { name, description, slug } = variables.patch;
@@ -92,9 +92,8 @@ const UpdateProject = () => {
 
       const project = snapshot.projects?.nodes?.[0];
 
-      // NB: if the project slug has changed, we need to optimistically update the cache for that entry as it is not set yet.
       queryClient.setQueryData(
-        useProjectQuery.getKey({ projectSlug: slug!, organizationSlug }),
+        useProjectQuery.getKey({ projectSlug, organizationSlug }),
         {
           projects: {
             ...snapshot.projects,
@@ -109,15 +108,31 @@ const UpdateProject = () => {
           },
         }
       );
+
+      // ! NB: if the slug has been updated, optimistically update the query data for that slug
+      if (slug !== projectSlug) {
+        queryClient.setQueryData(
+          useProjectQuery.getKey({ projectSlug: slug!, organizationSlug }),
+          {
+            projects: {
+              ...snapshot.projects,
+              nodes: [
+                {
+                  ...project,
+                  name,
+                  description,
+                  slug,
+                },
+              ],
+            },
+          }
+        );
+      }
     },
     onSettled: (data) => {
       const updatedSlug = data?.updateProject?.project?.slug;
 
       if (updatedSlug) {
-        router.replace(
-          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`
-        );
-
         queryClient.invalidateQueries({
           queryKey: useProjectQuery.getKey({
             projectSlug: updatedSlug,
@@ -134,6 +149,10 @@ const UpdateProject = () => {
             }),
           });
         }
+
+        router.replace(
+          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`
+        );
 
         reset();
       }
