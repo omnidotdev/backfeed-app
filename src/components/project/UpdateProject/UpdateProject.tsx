@@ -111,6 +111,7 @@ const UpdateProject = () => {
           rowId: project?.rowId!,
           patch: {
             name: value.name,
+            description: value.description,
             slug: value.slug,
             updatedAt: new Date(),
           },
