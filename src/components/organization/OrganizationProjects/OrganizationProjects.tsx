@@ -78,7 +78,7 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
               >
                 <ProjectCard
                   project={project as Partial<Project>}
-                  // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
                   h={48}
                 />
               </Link>
