@@ -2,12 +2,12 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import { Role } from "generated/graphql";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
