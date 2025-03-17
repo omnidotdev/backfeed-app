@@ -7,3 +7,4 @@ export { default as ProjectList } from "./ProjectList/ProjectList";
 export { default as ProjectListItem } from "./ProjectListItem/ProjectListItem";
 export { default as ProjectOverview } from "./ProjectOverview/ProjectOverview";
 export { default as StatusBreakdown } from "./StatusBreakdown/StatusBreakdown";
+export { default as UpdateProject } from "./UpdateProject/UpdateProject";

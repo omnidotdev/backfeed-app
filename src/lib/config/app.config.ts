@@ -554,6 +554,61 @@ const app = {
       },
     },
   },
+  projectSettingsPage: {
+    breadcrumb: "Settings",
+    description:
+      "Manage your project settings and handle feedback for your project.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
+    cta: {
+      updateProject: {
+        title: "Update Project",
+        memberTitle: "Project Details",
+        action: {
+          submit: "Update Project",
+          pending: "Updating Project...",
+        },
+        fields: {
+          projectName: {
+            label: "Project Name",
+            errors: {
+              minLength: "Must be at least 3 characters.",
+            },
+          },
+          projectDescription: {
+            label: "Project Description",
+            errors: {
+              minLength: "Must be at least 10 characters.",
+            },
+          },
+          projectSlug: {
+            label: "Project Slug",
+            errors: {
+              invalidFormat: "Invalid slug format.",
+              minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 50 characters.",
+              duplicate: "Project slug already exists.",
+            },
+          },
+        },
+      },
+      deleteProject: {
+        title: "Delete Project",
+        description:
+          "The project will be permanently deleted, including its posts and comments.",
+        actionLabel: "Delete",
+        destructiveAction: {
+          title: "Delete Project",
+          description: "Are you sure you want to delete this project?",
+          actionLabel: "Delete",
+          prompt: "Permanently delete project",
+        },
+      },
+    },
+  },
   projectPage: {
     header: {
       cta: {

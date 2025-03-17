@@ -4043,6 +4043,14 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'DeleteProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
+export type UpdateProjectMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectPatch;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', slug: string } | null } | null };
+
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -4160,7 +4168,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4393,6 +4401,15 @@ export const DeleteProjectDocument = gql`
   }
 }
     `;
+export const UpdateProjectDocument = gql`
+    mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
+  updateProject(input: {rowId: $rowId, patch: $patch}) {
+    project {
+      slug
+    }
+  }
+}
+    `;
 export const CreateUpvoteDocument = gql`
     mutation CreateUpvote($input: CreateUpvoteInput!) {
   createUpvote(input: $input) {
@@ -4587,6 +4604,7 @@ export const ProjectDocument = gql`
       rowId
       name
       description
+      slug
       organization {
         rowId
         name
@@ -4757,6 +4775,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeleteProject(variables: DeleteProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteProjectMutation>(DeleteProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteProject', 'mutation', variables);
+    },
+    UpdateProject(variables: UpdateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateProjectMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectMutation>(UpdateProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateProject', 'mutation', variables);
     },
     CreateUpvote(variables: CreateUpvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUpvoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUpvoteMutation>(CreateUpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUpvote', 'mutation', variables);

@@ -2,12 +2,13 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
-import { Role } from "generated/graphql";
+import { Role, useProjectQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import { UpdateProject } from "components/project";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -82,6 +83,11 @@ const ProjectSettingsPage = async ({ params }: Props) => {
     },
   ];
 
+  await queryClient.prefetchQuery({
+    queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
+    queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
+  });
+
   return (
     <Page
       breadcrumbs={breadcrumbs}
@@ -92,7 +98,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
       }}
     >
       <HydrationBoundary state={dehydrate(queryClient)}>
-        Settings
+        <UpdateProject />
       </HydrationBoundary>
     </Page>
   );

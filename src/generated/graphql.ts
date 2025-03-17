@@ -4042,6 +4042,14 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'DeleteProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
+export type UpdateProjectMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectPatch;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', slug: string } | null } | null };
+
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -4159,7 +4167,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4677,6 +4685,34 @@ useDeleteProjectMutation.getKey = () => ['DeleteProject'];
 
 
 useDeleteProjectMutation.fetcher = (variables: DeleteProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables, options);
+
+export const UpdateProjectDocument = `
+    mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
+  updateProject(input: {rowId: $rowId, patch: $patch}) {
+    project {
+      slug
+    }
+  }
+}
+    `;
+
+export const useUpdateProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateProjectMutation, TError, UpdateProjectMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateProjectMutation, TError, UpdateProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateProject'],
+    mutationFn: (variables?: UpdateProjectMutationVariables) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateProjectMutation.getKey = () => ['UpdateProject'];
+
+
+useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
 
 export const CreateUpvoteDocument = `
     mutation CreateUpvote($input: CreateUpvoteInput!) {
@@ -5359,6 +5395,7 @@ export const ProjectDocument = `
       rowId
       name
       description
+      slug
       organization {
         rowId
         name
