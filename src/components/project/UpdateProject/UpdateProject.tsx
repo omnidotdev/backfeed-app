@@ -1,12 +1,16 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
-import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
+import {
+  type ProjectQuery,
+  useProjectQuery,
+  useUpdateProjectMutation,
+} from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -72,25 +76,67 @@ const UpdateProject = () => {
       organizationSlug,
     },
     {
+      placeholderData: keepPreviousData,
       select: (data) => data.projects?.nodes?.[0],
     }
   );
 
+  // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
-    onSuccess: async (data) => {
-      router.replace(
-        `/organizations/${organizationSlug}/projects/${data?.updateProject?.project?.slug}/settings`
+    onMutate: (variables) => {
+      const { name, description, slug } = variables.patch;
+
+      const snapshot = queryClient.getQueryData(
+        useProjectQuery.getKey({ projectSlug, organizationSlug })
+      ) as ProjectQuery;
+
+      const project = snapshot.projects?.nodes?.[0];
+
+      // NB: if the project slug has changed, we need to optimistically update the cache for that entry as it is not set yet.
+      queryClient.setQueryData(
+        useProjectQuery.getKey({ projectSlug: slug!, organizationSlug }),
+        {
+          projects: {
+            ...snapshot.projects,
+            nodes: [
+              {
+                ...project,
+                name,
+                description,
+                slug,
+              },
+            ],
+          },
+        }
       );
+    },
+    onSettled: (data) => {
+      const updatedSlug = data?.updateProject?.project?.slug;
 
-      await queryClient.invalidateQueries({
-        queryKey: useProjectQuery.getKey({
-          projectSlug: data?.updateProject?.project?.slug!,
-          organizationSlug,
-        }),
-      });
+      if (updatedSlug) {
+        router.replace(
+          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`
+        );
 
-      // TODO: handle reset better. If slug is updated, you get a flicker of the old slug due to the router.replace (hasn't routed yet)
-      reset();
+        queryClient.invalidateQueries({
+          queryKey: useProjectQuery.getKey({
+            projectSlug: updatedSlug,
+            organizationSlug,
+          }),
+        });
+
+        // NB: If the project slug was updated, we need to invalidate the query for the old slug due to the optimistic updates from `onMutate`
+        if (updatedSlug !== projectSlug) {
+          queryClient.invalidateQueries({
+            queryKey: useProjectQuery.getKey({
+              projectSlug,
+              organizationSlug,
+            }),
+          });
+        }
+
+        reset();
+      }
     },
   });
 
