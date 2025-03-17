@@ -11,9 +11,9 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
-import { DEBOUNCE_TIME } from "lib/constants";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -42,6 +42,7 @@ const baseSchema = z.object({
  */
 const UpdateOrganization = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
@@ -64,8 +65,6 @@ const UpdateOrganization = () => {
       }
     }
   );
-
-  const router = useRouter();
 
   const { user } = useAuth();
 

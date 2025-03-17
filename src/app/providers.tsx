@@ -19,7 +19,7 @@ interface Props extends PropsWithChildren {
  */
 const Providers = ({ session, children }: Props) => (
   // NB: key is used to force a re-mount when session changes, See: https://github.com/nextauthjs/next-auth/issues/9504#issuecomment-2326123445
-  <AuthProvider key={session?.user?.id} session={session}>
+  <AuthProvider key={session?.user?.rowId} session={session}>
     <ThemeProvider>
       <SearchParamsProvider>
         <QueryProvider>{children}</QueryProvider>

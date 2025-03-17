@@ -4,7 +4,7 @@ import { Grid } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
-import { SkeletonArray } from "components/core";
+import { Link, SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
@@ -71,12 +71,17 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
             <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
           ) : projects?.length ? (
             projects?.map((project) => (
-              <ProjectCard
+              <Link
                 key={project?.rowId}
-                project={project as Partial<Project>}
-                // !!NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
-                h={48}
-              />
+                href={`/organizations/${organizationSlug}/projects/${project?.slug}`}
+                role="group"
+              >
+                <ProjectCard
+                  project={project as Partial<Project>}
+                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                  h={48}
+                />
+              </Link>
             ))
           ) : (
             <EmptyState

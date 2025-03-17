@@ -35,7 +35,13 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
       return (
         // biome-ignore lint/suspicious/noArrayIndexKey: index used in the key in case an organization and project have the same label
         <Flex key={`${label}-${index}`} align="center">
-          <Icon src={LuChevronRight} color="foreground.subtle" mx={2} />
+          <Icon
+            src={LuChevronRight}
+            color="foreground.subtle"
+            h={4}
+            w={4}
+            mx={1.5}
+          />
 
           {href ? (
             <Link href={href}>
