@@ -73,10 +73,16 @@ const PricingCard = ({
     <Card
       gap={4}
       w={{ base: "100%", sm: "sm", lg: "xs" }}
-      h="2xl"
+      minH="2xl"
       display="flex"
       position="relative"
       color={isDisabled ? "foreground.subtle" : undefined}
+      footer={
+        <Button w="100%" fontSize="lg" disabled={isDisabled} {...ctaProps}>
+          {app.pricingPage.pricingCard.getStarted}{" "}
+          <Icon src={FaArrowRight} w={4} />
+        </Button>
+      }
       {...rest}
     >
       {isRecommendedTier && (
@@ -115,9 +121,9 @@ const PricingCard = ({
         flexDirection="column"
         align="center"
         justify="space-between"
-        h="100%"
+        h="full"
       >
-        <Stack align="center">
+        <Stack align="center" w="full">
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
             {tier.title}
           </Text>
@@ -162,11 +168,6 @@ const PricingCard = ({
             ))}
           </sigil.ul>
         </Stack>
-
-        <Button w="100%" fontSize="lg" disabled={isDisabled} {...ctaProps}>
-          {app.pricingPage.pricingCard.getStarted}{" "}
-          <Icon src={FaArrowRight} w={4} />
-        </Button>
       </Stack>
     </Card>
   );

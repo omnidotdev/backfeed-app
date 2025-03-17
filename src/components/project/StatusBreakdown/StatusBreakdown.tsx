@@ -8,7 +8,7 @@ import { app } from "lib/config";
 // TODO: Discuss status breakdown and how it should be implemented.
 
 /**
- * Status breakdown for a project.
+ * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
 const StatusBreakdown = () => {
   const breakdown = [
