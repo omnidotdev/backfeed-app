@@ -59,7 +59,7 @@ const ProjectOverview = ({ projectId }: Props) => {
             isError={isError}
           />
 
-          <StatusBreakdown projectId={projectId} />
+          <StatusBreakdown />
         </Stack>
       </GridItem>
     </Grid>

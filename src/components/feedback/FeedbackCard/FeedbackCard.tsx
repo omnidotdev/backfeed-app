@@ -4,8 +4,6 @@ import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { match } from "ts-pattern";
 
-import { convertFromSnakeCase, getStatusColor } from "lib/util";
-
 import type { HstackProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
 
@@ -70,14 +68,16 @@ const FeedbackCard = ({
             <HStack>
               <Badge
                 variant="outline"
-                color={getStatusColor(feedback.status!)}
-                borderColor={getStatusColor(feedback.status!)}
+                color="brand.secondary"
+                borderColor="brand.secondary"
               >
-                {convertFromSnakeCase(feedback.status!)}
+                {/* TODO: update status when added to db schema */}
+                Planned
               </Badge>
 
               <Text fontSize="sm" color="foreground.subtle">
-                {`Updated: ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+                {/* TODO: change to statusUpdatedAt when db schema is updated */}
+                {`Updated: ${dayjs(isPending ? new Date() : feedback.updatedAt).fromNow()}`}
               </Text>
             </HStack>
           </Stack>
@@ -115,7 +115,9 @@ const FeedbackCard = ({
             </Text>
           </Stack>
 
-          {children}
+          <HStack fontSize="sm" placeSelf="flex-end" gap={1}>
+            {children}
+          </HStack>
         </Stack>
       </Stack>
     </HStack>

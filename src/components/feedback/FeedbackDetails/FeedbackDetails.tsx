@@ -1,8 +1,6 @@
 "use client";
 
-import { createListCollection } from "@ark-ui/react";
-import { HStack, Icon, Select, Tooltip } from "@omnidev/sigil";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import { HStack, Icon, Tooltip } from "@omnidev/sigil";
 import {
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
@@ -12,26 +10,23 @@ import {
 
 import { FeedbackCard } from "components/feedback";
 import {
-  Status,
   useDownvoteQuery,
   useFeedbackByIdQuery,
-  useUpdatePostMutation,
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
-import {
-  useHandleDownvoteMutation,
-  useHandleUpvoteMutation,
-} from "lib/hooks/mutations";
-import { convertFromSnakeCase } from "lib/util";
+import { useAuth } from "lib/hooks";
 
 import type {
   HstackProps,
   TooltipTriggerProps,
   VstackProps,
 } from "@omnidev/sigil";
-import type { FeedbackByIdQuery, Post } from "generated/graphql";
+import type { Post } from "generated/graphql";
+import {
+  useHandleDownvoteMutation,
+  useHandleUpvoteMutation,
+} from "lib/hooks/mutations";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -54,8 +49,6 @@ interface Props extends HstackProps {
  * Feedback details section.
  */
 const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
-  const queryClient = useQueryClient();
-
   const { user } = useAuth();
 
   const { data: feedback } = useFeedbackByIdQuery(
@@ -63,15 +56,9 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       rowId: feedbackId,
     },
     {
-      placeholderData: keepPreviousData,
       select: (data) => data?.post,
     }
   );
-
-  const { isAdmin } = useOrganizationMembership({
-    userId: user?.rowId,
-    organizationId: feedback?.project?.organization?.rowId,
-  });
 
   const { data: hasUpvoted } = useUpvoteQuery(
     {
@@ -94,30 +81,6 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       select: (data) => data?.downvoteByPostIdAndUserId,
     }
   );
-
-  const { mutate: handleStatusChange } = useUpdatePostMutation({
-    onMutate: (variables) => {
-      const snapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId })
-      ) as FeedbackByIdQuery;
-
-      queryClient.setQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-        {
-          post: {
-            ...snapshot?.post,
-            status: variables.patch.status,
-            statusUpdatedAt: variables.patch.statusUpdatedAt,
-          },
-        }
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      });
-    },
-  });
 
   const { mutate: handleUpvote } = useHandleUpvoteMutation({
     feedbackId,
@@ -161,63 +124,31 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       totalDownvotes={totalDownvotes}
       {...rest}
     >
-      <HStack justify="flex-end">
-        {isAdmin && (
-          <Select
-            label={{ id: "status", singular: "Status", plural: "Statuses" }}
-            collection={createListCollection({
-              items: Object.values(Status).map((status) => ({
-                label: convertFromSnakeCase(status),
-                value: status,
-              })),
-            })}
-            w={40}
-            clearTriggerProps={{ display: "none" }}
-            size="sm"
-            displayFieldLabel={false}
-            defaultValue={[feedback?.status!]}
-            onValueChange={({ value }) =>
-              value.length
-                ? handleStatusChange({
-                    rowId: feedbackId,
-                    patch: {
-                      status: value[0] as Status,
-                      statusUpdatedAt: new Date(),
-                    },
-                  })
-                : undefined
-            }
-          />
-        )}
-
-        <HStack>
-          {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-            <Tooltip
-              key={id}
-              positioning={{ placement: "top" }}
-              trigger={
-                <HStack gap={2} py={1} fontVariant="tabular-nums">
-                  <Icon src={icon} w={5} h={5} />
-                  {votes}
-                </HStack>
-              }
-              triggerProps={{
-                variant: "ghost",
-                w: "full",
-                bgColor: "transparent",
-                opacity: {
-                  base: 1,
-                  _disabled: 0.3,
-                  _hover: { base: 0.8, _disabled: 0.3 },
-                },
-                ...rest,
-              }}
-            >
-              {tooltip}
-            </Tooltip>
-          ))}
-        </HStack>
-      </HStack>
+      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+        <Tooltip
+          key={id}
+          positioning={{ placement: "top" }}
+          trigger={
+            <HStack gap={2} py={1} fontVariant="tabular-nums">
+              <Icon src={icon} w={5} h={5} />
+              {votes}
+            </HStack>
+          }
+          triggerProps={{
+            variant: "ghost",
+            w: "full",
+            bgColor: "transparent",
+            opacity: {
+              base: 1,
+              _disabled: 0.3,
+              _hover: { base: 0.8, _disabled: 0.3 },
+            },
+            ...rest,
+          }}
+        >
+          {tooltip}
+        </Tooltip>
+      ))}
     </FeedbackCard>
   );
 };

@@ -9,7 +9,6 @@ import {
   useInfinitePostsQuery,
   usePostsQuery,
   useProjectMetricsQuery,
-  useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -90,10 +89,6 @@ const ProjectPage = async ({ params }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
       queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useStatusBreakdownQuery.getKey({ projectId: project.rowId }),
-      queryFn: useStatusBreakdownQuery.fetcher({ projectId: project.rowId }),
     }),
   ]);
 

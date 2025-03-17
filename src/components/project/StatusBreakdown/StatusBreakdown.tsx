@@ -3,45 +3,38 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
-import { useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { convertFromSnakeCase, getStatusColor } from "lib/util";
 
-import type { Post, Status } from "generated/graphql";
-
-interface Props {
-  /** Project ID. */
-  projectId: Post["projectId"];
-}
+// TODO: Discuss status breakdown and how it should be implemented.
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = ({ projectId }: Props) => {
-  const { data: breakdown } = useStatusBreakdownQuery(
+const StatusBreakdown = () => {
+  const breakdown = [
     {
-      projectId,
+      status: app.projectPage.statusBreakdown.status.new,
+      count: 69,
     },
     {
-      select: (data) =>
-        data?.posts?.groupedAggregates?.map((aggregate) => ({
-          status: aggregate.keys?.[0] as Status,
-          count: aggregate.distinctCount?.rowId,
-        })),
-    }
-  );
+      status: app.projectPage.statusBreakdown.status.planned,
+      count: 69,
+    },
+    {
+      status: app.projectPage.statusBreakdown.status.inProgress,
+      count: 69,
+    },
+    {
+      status: app.projectPage.statusBreakdown.status.completed,
+      count: 69,
+    },
+  ];
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {breakdown?.map(({ status, count }) => (
+      {breakdown.map(({ status, count }) => (
         <Flex key={status} justifyContent="space-between" align="center">
-          <Badge
-            variant="outline"
-            borderColor={getStatusColor(status!)}
-            color={getStatusColor(status!)}
-          >
-            {convertFromSnakeCase(status!)}
-          </Badge>
+          <Badge>{status}</Badge>
 
           <Text>{count}</Text>
         </Flex>

@@ -1814,8 +1814,6 @@ export type Post = {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
-  status: Status;
-  statusUpdatedAt?: Maybe<Scalars['Datetime']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -1886,10 +1884,6 @@ export type PostCondition = {
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: InputMaybe<Status>;
-  /** Checks for equality with the object’s `statusUpdatedAt` field. */
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1927,8 +1921,6 @@ export type PostDistinctCountAggregateFilter = {
   description?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
-  status?: InputMaybe<BigIntFilter>;
-  statusUpdatedAt?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -1944,10 +1936,6 @@ export type PostDistinctCountAggregates = {
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of status across the matching connection */
-  status?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of statusUpdatedAt across the matching connection */
-  statusUpdatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of title across the matching connection */
   title?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -1991,10 +1979,6 @@ export type PostFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `status` field. */
-  status?: InputMaybe<StatusFilter>;
-  /** Filter by the object’s `statusUpdatedAt` field. */
-  statusUpdatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `title` field. */
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -2016,10 +2000,6 @@ export enum PostGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   ProjectId = 'PROJECT_ID',
-  Status = 'STATUS',
-  StatusUpdatedAt = 'STATUS_UPDATED_AT',
-  StatusUpdatedAtTruncatedToDay = 'STATUS_UPDATED_AT_TRUNCATED_TO_DAY',
-  StatusUpdatedAtTruncatedToHour = 'STATUS_UPDATED_AT_TRUNCATED_TO_HOUR',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -2029,13 +2009,11 @@ export enum PostGroupBy {
 
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2056,43 +2034,36 @@ export type PostHavingInput = {
 
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2102,8 +2073,6 @@ export type PostInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  status?: InputMaybe<Status>;
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -2148,10 +2117,6 @@ export enum PostOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  StatusUpdatedAtAsc = 'STATUS_UPDATED_AT_ASC',
-  StatusUpdatedAtDesc = 'STATUS_UPDATED_AT_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -2178,8 +2143,6 @@ export type PostPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  status?: InputMaybe<Status>;
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2489,10 +2452,6 @@ export enum ProjectOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
-  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
-  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
-  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
-  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -2843,40 +2802,6 @@ export type RoleFilter = {
   notEqualTo?: InputMaybe<Role>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Role>>;
-};
-
-export enum Status {
-  Closed = 'closed',
-  InProgress = 'in_progress',
-  Open = 'open',
-  Planned = 'planned',
-  Resolved = 'resolved'
-}
-
-/** A filter to be used against Status fields. All fields are combined with a logical ‘and.’ */
-export type StatusFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Status>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Status>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Status>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Status>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Status>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Status>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Status>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Status>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Status>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Status>>;
 };
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -3826,10 +3751,6 @@ export enum UserOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
-  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
-  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
-  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
-  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -3931,7 +3852,7 @@ export type UserToManyUpvoteFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, status: Status, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, statusUpdatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
@@ -4028,14 +3949,6 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
-export type UpdatePostMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-  patch: PostPatch;
-}>;
-
-
-export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'UpdatePostPayload', post?: { __typename?: 'Post', status: Status } | null } | null };
-
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4103,7 +4016,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, status: Status, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, statusUpdatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4159,7 +4072,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, status: Status, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, statusUpdatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4199,14 +4112,7 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, status: Status, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
-
-export type StatusBreakdownQueryVariables = Exact<{
-  projectId: Scalars['UUID']['input'];
-}>;
-
-
-export type StatusBreakdownQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
 
 export type UpvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4248,11 +4154,9 @@ export const FeedbackFragmentDoc = `
     fragment Feedback on Post {
   rowId
   title
-  status
   description
   createdAt
   updatedAt
-  statusUpdatedAt
   project {
     rowId
     name
@@ -4635,34 +4539,6 @@ useDeletePostMutation.getKey = () => ['DeletePost'];
 
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
-
-export const UpdatePostDocument = `
-    mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
-  updatePost(input: {rowId: $rowId, patch: $patch}) {
-    post {
-      status
-    }
-  }
-}
-    `;
-
-export const useUpdatePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>) => {
-    
-    return useMutation<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdatePost'],
-    mutationFn: (variables?: UpdatePostMutationVariables) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdatePostMutation.getKey = () => ['UpdatePost'];
-
-
-useUpdatePostMutation.fetcher = (variables: UpdatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables, options);
 
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
@@ -5653,7 +5529,6 @@ export const RecentFeedbackDocument = `
       createdAt
       title
       description
-      status
       user {
         rowId
         username
@@ -5704,61 +5579,6 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 
 
 useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
-
-export const StatusBreakdownDocument = `
-    query StatusBreakdown($projectId: UUID!) {
-  posts(condition: {projectId: $projectId}) {
-    groupedAggregates(groupBy: STATUS) {
-      keys
-      distinctCount {
-        rowId
-      }
-    }
-  }
-}
-    `;
-
-export const useStatusBreakdownQuery = <
-      TData = StatusBreakdownQuery,
-      TError = unknown
-    >(
-      variables: StatusBreakdownQueryVariables,
-      options?: Omit<UseQueryOptions<StatusBreakdownQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<StatusBreakdownQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<StatusBreakdownQuery, TError, TData>(
-      {
-    queryKey: ['StatusBreakdown', variables],
-    queryFn: graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables),
-    ...options
-  }
-    )};
-
-useStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariables) => ['StatusBreakdown', variables];
-
-export const useInfiniteStatusBreakdownQuery = <
-      TData = InfiniteData<StatusBreakdownQuery>,
-      TError = unknown
-    >(
-      variables: StatusBreakdownQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<StatusBreakdownQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<StatusBreakdownQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<StatusBreakdownQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['StatusBreakdown.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariables) => ['StatusBreakdown.infinite', variables];
-
-
-useStatusBreakdownQuery.fetcher = (variables: StatusBreakdownQueryVariables, options?: RequestInit['headers']) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables, options);
 
 export const UpvoteDocument = `
     query Upvote($userId: UUID!, $feedbackId: UUID!) {
