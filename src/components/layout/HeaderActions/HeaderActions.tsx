@@ -53,7 +53,7 @@ const HeaderActions = () => {
           <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
         </HStack>
       ) : (
-        // TODO: convert this to a drawer upon discussion.
+        // TODO: convert this to a drawer https://linear.app/omnidev/issue/OMNI-238/convert-menu-in-headeractions-to-a-drawer-for-mobile-navigation
         <Menu
           unmountOnExit
           trigger={
