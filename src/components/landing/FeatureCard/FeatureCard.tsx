@@ -39,7 +39,7 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
       top="50%"
       left="50%"
       transform="translate(-50%, -50%)"
-      opacity={0.05}
+      opacity={0.1}
     />
 
     <Text
