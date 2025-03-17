@@ -82,7 +82,11 @@ const FeedbackCard = ({
             </HStack>
           </Stack>
 
-          <Text color={netVotesColor} whiteSpace="nowrap">
+          <Text
+            color={netVotesColor}
+            whiteSpace="nowrap"
+            placeSelf="flex-start"
+          >
             {`${netVotesSign}${netTotalVotes}`}
           </Text>
         </HStack>

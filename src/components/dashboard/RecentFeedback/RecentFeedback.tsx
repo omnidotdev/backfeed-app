@@ -40,6 +40,7 @@ const RecentFeedback = () => {
       {isError ? (
         <ErrorBoundary
           message="Error fetching recent feedback"
+          minH={40}
           h="full"
           w="full"
         />
@@ -60,6 +61,7 @@ const RecentFeedback = () => {
           ) : (
             <EmptyState
               message={app.dashboardPage.recentFeedback.emptyState.message}
+              minH={40}
               h="full"
               w="full"
             />

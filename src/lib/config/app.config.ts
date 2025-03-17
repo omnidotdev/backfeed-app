@@ -33,6 +33,13 @@ const app = {
       label: "Coming Soon",
     },
   },
+  header: {
+    routes: {
+      pricing: {
+        label: "Pricing",
+      },
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -59,9 +66,9 @@ const app = {
         "Our comprehensive platform provides all the tools you need to collect, analyze, and act on user feedback.",
       pinned: {
         collection: {
-          title: "Real-time Feedback Collection",
+          title: "Feedback Collection",
           description:
-            "Gather user feedback instantly with customizable forms and widgets that seamlessly integrate into your product.",
+            "Gather and colocate user feedback across multiple projects, products, and services.",
         },
         analytics: {
           title: "Advanced Analytics",
@@ -404,7 +411,6 @@ const app = {
       },
     },
   },
-  // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
     title: "Pricing",
     pricingHeader: {

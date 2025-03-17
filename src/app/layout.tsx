@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
@@ -9,7 +11,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
-import Script from "next/script";
 
 // set up mock service worker (MSW) fixtures if enabled
 if (ENABLE_MSW) {

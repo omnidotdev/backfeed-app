@@ -42,6 +42,7 @@ const baseSchema = z.object({
  */
 const UpdateOrganization = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
@@ -64,8 +65,6 @@ const UpdateOrganization = () => {
       }
     }
   );
-
-  const router = useRouter();
 
   const { user } = useAuth();
 
