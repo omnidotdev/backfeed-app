@@ -143,11 +143,12 @@ const PricingOverview = ({ products }: Props) => {
               borderWidth={isTeamTier ? 2 : 1}
               borderColor={isTeamTier ? "brand.primary" : "none"}
               ctaProps={{
+                variant: isTeamTier ? "solid" : "outline",
                 onClick: () =>
                   isAuthenticated
                     ? router.push(
-                        `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
-                      )
+                      `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                    )
                     : signIn("omni"),
               }}
             />

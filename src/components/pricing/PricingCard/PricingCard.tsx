@@ -165,7 +165,7 @@ const PricingCard = ({
             })}
           >
             {tier.features.map((feature) => (
-              <sigil.li key={feature}>{feature}</sigil.li>
+              <sigil.li key={feature} fontSize="sm">{feature}</sigil.li>
             ))}
           </sigil.ul>
         </Stack>
