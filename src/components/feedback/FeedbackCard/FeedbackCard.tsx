@@ -34,7 +34,7 @@ interface Props extends HstackProps {
   totalDownvotes: number | undefined;
   /** Whether the feedback is pending. */
   isPending?: boolean;
-  /** Whether the feedback status can be managed. */
+  /** Project status options. */
   projectStatuses?: ProjectStatus[];
 }
 
