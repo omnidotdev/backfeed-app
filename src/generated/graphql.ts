@@ -4633,7 +4633,7 @@ export type StatusBreakdownQueryVariables = Exact<{
 }>;
 
 
-export type StatusBreakdownQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', groupedAggregates?: Array<{ __typename?: 'PostStatusAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostStatusDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
+export type StatusBreakdownQuery = { __typename?: 'Query', project?: { __typename?: 'Project', posts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', status?: { __typename?: 'PostStatus', status: string } | null } | null> }, postStatuses: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', status: string } | null> } } | null };
 
 export type UpvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -6168,11 +6168,17 @@ useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, optio
 
 export const StatusBreakdownDocument = `
     query StatusBreakdown($projectId: UUID!) {
-  postStatuses(condition: {projectId: $projectId}) {
-    groupedAggregates(groupBy: STATUS) {
-      keys
-      distinctCount {
-        rowId
+  project(rowId: $projectId) {
+    posts {
+      nodes {
+        status {
+          status
+        }
+      }
+    }
+    postStatuses {
+      nodes {
+        status
       }
     }
   }

@@ -17,16 +17,23 @@ interface Props {
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
+  // TODO: discuss scalability of this. If a project has a large number of posts, this query may become slow.
   const { data: breakdown } = useStatusBreakdownQuery(
     {
       projectId,
     },
     {
       select: (data) =>
-        data?.postStatuses?.groupedAggregates?.map((aggregate) => ({
-          status: aggregate.keys?.[0],
-          count: aggregate.distinctCount?.rowId,
-        })),
+        data?.project?.postStatuses?.nodes?.map((status) => {
+          const numberOfPosts = data?.project?.posts?.nodes?.filter(
+            (post) => post?.status?.status === status?.status
+          ).length;
+
+          return {
+            status: status?.status,
+            count: numberOfPosts,
+          };
+        }),
     }
   );
 
