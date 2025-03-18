@@ -13,17 +13,26 @@ interface Props extends BadgeProps {
 /*
  * Badge representing the status for a feedback item.
  */
-const StatusBadge = ({ status, children, ...rest }: Props) => {
-  // TODO: handle validating color from database
-  const color = status.color ?? getDefaultStatusColor(status.status!);
+const StatusBadge = ({ status, children, ...rest }: Props) => (
+  <Badge
+    variant="outline"
+    color={getDefaultStatusColor(status.status!)}
+    borderColor={getDefaultStatusColor(status.status!)}
+    // NB: Overrides for when a status color is present in the database. Needs to be analyzed at runtime.
+    style={
+      status.color
+        ? {
+            color: status.color,
+            borderColor: status.color,
+          }
+        : undefined
+    }
+    {...rest}
+  >
+    {status.status}
 
-  return (
-    <Badge variant="outline" color={color} borderColor={color} {...rest}>
-      {status.status}
-
-      {children}
-    </Badge>
-  );
-};
+    {children}
+  </Badge>
+);
 
 export default StatusBadge;

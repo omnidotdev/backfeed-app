@@ -4,6 +4,7 @@ query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
       rowId
       status
       color
+      isDefault
     }
   }
 }

@@ -86,10 +86,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
         rowId: "pending",
         title: input.post.title,
         description: input.post.description,
-        status: {
-          rowId: defaultStatus?.rowId!,
-          status: defaultStatus?.status ?? "pending",
-        },
+        status: defaultStatus!,
         project: {
           rowId: input.post.projectId,
           slug: "pending",

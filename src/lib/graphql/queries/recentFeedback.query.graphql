@@ -14,7 +14,9 @@ query RecentFeedback($userId: UUID!) {
       title
       description
       status {
+        rowId
         status
+        color
       }
       user {
         rowId

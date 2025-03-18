@@ -4711,7 +4711,7 @@ export type ProjectStatusesQueryVariables = Exact<{
 }>;
 
 
-export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null> } | null };
+export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string, color?: string | null, isDefault: boolean } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -4728,7 +4728,7 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, status?: { __typename?: 'PostStatus', status: string } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
 
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -6166,6 +6166,7 @@ export const ProjectStatusesDocument = `
       rowId
       status
       color
+      isDefault
     }
   }
 }
@@ -6299,7 +6300,9 @@ export const RecentFeedbackDocument = `
       title
       description
       status {
+        rowId
         status
+        color
       }
       user {
         rowId
