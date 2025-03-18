@@ -157,7 +157,10 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
         <Stack
           w="full"
           h="full"
-          bgColor={{ base: "background.subtle", _dark: "brand.primary.950/10" }}
+          bgColor={{
+            base: "background.subtle/70",
+            _dark: "brand.primary.950/10",
+          }}
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, md: 3, lg: 1 }}>
