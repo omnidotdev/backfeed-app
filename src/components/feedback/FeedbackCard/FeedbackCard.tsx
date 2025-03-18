@@ -16,7 +16,7 @@ import { match } from "ts-pattern";
 
 import { StatusBadge } from "components/core";
 
-import type { HstackProps } from "@omnidev/sigil";
+import type { HstackProps, StackProps } from "@omnidev/sigil";
 import type { FeedbackFragment, PostStatus } from "generated/graphql";
 
 interface ProjectStatus {
@@ -37,6 +37,8 @@ interface Props extends HstackProps {
   isPending?: boolean;
   /** Project status options. */
   projectStatuses?: ProjectStatus[];
+  /** Additional props to pass to the container. */
+  containerProps?: StackProps;
 }
 
 /**
@@ -48,6 +50,7 @@ const FeedbackCard = ({
   totalDownvotes = 0,
   isPending = false,
   projectStatuses,
+  containerProps,
   children,
   ...rest
 }: Props) => {
@@ -84,7 +87,12 @@ const FeedbackCard = ({
     >
       <Stack w="full">
         <HStack justify="space-between">
-          <Stack direction={{ base: "column", sm: "row" }} gap={4}>
+          {/* TODO: use container queries to apply direction. Currently experiencing issues. */}
+          <Stack
+            direction={{ base: "column", lg: "row" }}
+            gap={4}
+            {...containerProps}
+          >
             <Text fontWeight="semibold" fontSize="2xl">
               {feedback.title}
             </Text>
@@ -128,7 +136,9 @@ const FeedbackCard = ({
           </Text>
         </HStack>
 
-        <Text color="foreground.muted">{feedback.description}</Text>
+        <Text color="foreground.muted" mt={4}>
+          {feedback.description}
+        </Text>
 
         <Stack justify="space-between" gap={4} mt={2}>
           <Stack

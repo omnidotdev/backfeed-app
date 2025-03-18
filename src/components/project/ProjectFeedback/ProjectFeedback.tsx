@@ -135,6 +135,9 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       isPending={isPending}
                       w="full"
                       minH={21}
+                      containerProps={{
+                        direction: "column",
+                      }}
                     >
                       <Link
                         href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
