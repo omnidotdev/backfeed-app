@@ -15,8 +15,9 @@ import dayjs from "dayjs";
 import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { StatusBadge, getStatusColor } from "components/core";
+import { StatusBadge } from "components/core";
 import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
+import { getDefaultStatusColor } from "lib/util";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type {
@@ -30,6 +31,8 @@ interface ProjectStatus {
   rowId: PostStatus["rowId"] | undefined;
   /** Post status. */
   status: PostStatus["status"] | undefined;
+  /** Post status color. */
+  color: PostStatus["color"];
 }
 
 interface Props extends HstackProps {
@@ -149,7 +152,9 @@ const FeedbackCard = ({
                     <MenuItem
                       key={status.rowId}
                       value={status.rowId!}
-                      color={getStatusColor(status.status!)}
+                      color={
+                        status.color ?? getDefaultStatusColor(status.status!)
+                      }
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"

@@ -3,6 +3,7 @@ query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
     nodes {
       rowId
       status
+      color
     }
   }
 }

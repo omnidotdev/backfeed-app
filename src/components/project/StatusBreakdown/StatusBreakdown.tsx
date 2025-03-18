@@ -30,6 +30,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
         data?.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
           status: status?.status,
+          color: status?.color,
         })),
     }
   );
