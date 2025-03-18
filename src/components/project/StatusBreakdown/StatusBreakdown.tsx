@@ -45,7 +45,7 @@ const StatusBreakdown = ({
       projectId,
     },
     {
-      enabled: !!projectStatuses,
+      enabled: !!projectStatuses?.length,
       select: (data) =>
         projectStatuses?.map((status) => {
           const count =
