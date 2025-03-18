@@ -94,6 +94,8 @@ const CreateFeedback = () => {
           createFeedback({
             input: {
               post: {
+                // TODO: figure out how to handle default status
+                statusId: "TODO",
                 projectId: value.projectId,
                 userId: value.userId,
                 title: value.title.trim(),

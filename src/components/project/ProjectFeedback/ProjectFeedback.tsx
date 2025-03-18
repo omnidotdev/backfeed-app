@@ -2,6 +2,7 @@
 
 import { Button, Grid, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -21,7 +22,6 @@ import type {
   FeedbackFragment,
   Project,
 } from "generated/graphql";
-import { useParams } from "next/navigation";
 
 interface Props {
   /** Project ID. */
@@ -76,6 +76,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
         description: input.post.description,
         project: {
           rowId: input.post.projectId,
+          slug: "pending",
         },
         user: {
           username,
@@ -90,8 +91,6 @@ const ProjectFeedback = ({ projectId }: Props) => {
     },
   });
 
-  const totalCount =
-    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
   const posts =
     data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
     [];

@@ -1,11 +1,22 @@
 "use client";
 
-import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import {
+  Badge,
+  Flex,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  Stack,
+  Text,
+} from "@omnidev/sigil";
 import dayjs from "dayjs";
+import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import type { HstackProps } from "@omnidev/sigil";
-import type { FeedbackFragment } from "generated/graphql";
+import { type FeedbackFragment, useProjectQuery } from "generated/graphql";
 
 interface Props extends HstackProps {
   /** Feedback details. */
@@ -16,6 +27,8 @@ interface Props extends HstackProps {
   totalDownvotes: number | undefined;
   /** Whether the feedback is pending. */
   isPending?: boolean;
+  /** Whether the feedback status can be managed. */
+  canManageStatus?: boolean;
 }
 
 /**
@@ -26,9 +39,25 @@ const FeedbackCard = ({
   totalUpvotes = 0,
   totalDownvotes = 0,
   isPending = false,
+  canManageStatus = false,
   children,
   ...rest
 }: Props) => {
+  const { data: projectStatuses } = useProjectQuery(
+    {
+      projectSlug: feedback?.project?.slug!,
+      organizationSlug: feedback?.project?.organization?.slug!,
+    },
+    {
+      enabled: canManageStatus,
+      select: (data) =>
+        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+        })),
+    }
+  );
+
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
   const netVotesColor = match(netTotalVotes)
@@ -66,14 +95,32 @@ const FeedbackCard = ({
             </Text>
 
             <HStack>
-              {/* TODO handle status color */}
-              <Badge
-                variant="outline"
-                color="brand.secondary"
-                borderColor="brand.secondary"
+              <Menu
+                trigger={
+                  <Badge
+                    variant="outline"
+                    color="brand.secondary"
+                    borderColor="brand.secondary"
+                    cursor={canManageStatus ? "pointer" : "default"}
+                  >
+                    {feedback.status?.status}
+
+                    {canManageStatus && <Icon src={LuChevronDown} />}
+                  </Badge>
+                }
+                triggerProps={{
+                  disabled: !canManageStatus,
+                }}
               >
-                {feedback.status?.status}
-              </Badge>
+                {/* TODO: handle status mutations */}
+                <MenuItemGroup>
+                  {projectStatuses?.map((status) => (
+                    <MenuItem key={status.rowId} value={status.rowId!}>
+                      {status.status}
+                    </MenuItem>
+                  ))}
+                </MenuItemGroup>
+              </Menu>
 
               <Text fontSize="sm" color="foreground.subtle">
                 {/* TODO: change to statusUpdatedAt when db schema is updated */}

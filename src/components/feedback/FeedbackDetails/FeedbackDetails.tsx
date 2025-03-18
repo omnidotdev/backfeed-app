@@ -15,7 +15,7 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type {
   HstackProps,
@@ -59,6 +59,11 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       select: (data) => data?.post,
     }
   );
+
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: feedback?.project?.organization?.rowId,
+  });
 
   const { data: hasUpvoted } = useUpvoteQuery(
     {
@@ -122,6 +127,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
+      canManageStatus={isAdmin}
       {...rest}
     >
       {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
