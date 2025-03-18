@@ -122,7 +122,7 @@ const PricingOverview = ({ products }: Props) => {
           // ! NB: these metadata properties are typically optional and must be present for the corresponding product
           const isRecommended = !!product.metadata.isRecommended;
           const isDisabled = !!product.metadata.isDisabled;
-          const isEnterprise = !!product.metadata.enterprise;
+          const isEnterprise = !!product.metadata.isEnterprise;
 
           return (
             <PricingCard
