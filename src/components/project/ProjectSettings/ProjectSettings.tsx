@@ -22,7 +22,7 @@ interface Props {
 }
 
 /**
- * Destructive actions for projects.
+ * Project settings.
  */
 const ProjectSettings = ({ projectId, organizationSlug }: Props) => {
   const router = useRouter();
