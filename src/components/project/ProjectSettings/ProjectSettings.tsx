@@ -1,6 +1,7 @@
 "use client";
 
 import { Divider, Stack } from "@omnidev/sigil";
+import { useRouter } from "next/navigation";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
@@ -10,7 +11,6 @@ import { app } from "lib/config";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization, Project } from "generated/graphql";
-import { useRouter } from "next/navigation";
 
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
