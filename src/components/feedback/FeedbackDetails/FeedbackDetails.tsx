@@ -12,6 +12,7 @@ import { FeedbackCard } from "components/feedback";
 import {
   useDownvoteQuery,
   useFeedbackByIdQuery,
+  useProjectQuery,
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -64,6 +65,21 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     userId: user?.rowId,
     organizationId: feedback?.project?.organization?.rowId,
   });
+
+  const { data: projectStatuses } = useProjectQuery(
+    {
+      projectSlug: feedback?.project?.slug!,
+      organizationSlug: feedback?.project?.organization?.slug!,
+    },
+    {
+      enabled: isAdmin,
+      select: (data) =>
+        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+        })),
+    }
+  );
 
   const { data: hasUpvoted } = useUpvoteQuery(
     {
@@ -127,7 +143,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
-      canManageStatus={isAdmin}
+      projectStatuses={isAdmin ? projectStatuses : undefined}
       {...rest}
     >
       {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (

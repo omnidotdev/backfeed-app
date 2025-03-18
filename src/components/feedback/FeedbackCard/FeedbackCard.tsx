@@ -16,7 +16,14 @@ import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import type { HstackProps } from "@omnidev/sigil";
-import { type FeedbackFragment, useProjectQuery } from "generated/graphql";
+import type { FeedbackFragment, PostStatus } from "generated/graphql";
+
+interface ProjectStatus {
+  /** Post status row ID. */
+  rowId: PostStatus["rowId"] | undefined;
+  /** Post status. */
+  status: PostStatus["status"] | undefined;
+}
 
 interface Props extends HstackProps {
   /** Feedback details. */
@@ -28,7 +35,7 @@ interface Props extends HstackProps {
   /** Whether the feedback is pending. */
   isPending?: boolean;
   /** Whether the feedback status can be managed. */
-  canManageStatus?: boolean;
+  projectStatuses?: ProjectStatus[];
 }
 
 /**
@@ -39,24 +46,11 @@ const FeedbackCard = ({
   totalUpvotes = 0,
   totalDownvotes = 0,
   isPending = false,
-  canManageStatus = false,
+  projectStatuses,
   children,
   ...rest
 }: Props) => {
-  const { data: projectStatuses } = useProjectQuery(
-    {
-      projectSlug: feedback?.project?.slug!,
-      organizationSlug: feedback?.project?.organization?.slug!,
-    },
-    {
-      enabled: canManageStatus,
-      select: (data) =>
-        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
-          rowId: status?.rowId,
-          status: status?.status,
-        })),
-    }
-  );
+  const canManageStatus = projectStatuses != null;
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
