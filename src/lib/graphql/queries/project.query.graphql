@@ -9,7 +9,6 @@ query Project($projectSlug: String!, $organizationSlug: String!) {
       name
       description
       slug
-      organizationId
       organization {
         rowId
         name

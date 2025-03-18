@@ -12,7 +12,7 @@ import { FeedbackCard } from "components/feedback";
 import {
   useDownvoteQuery,
   useFeedbackByIdQuery,
-  useProjectQuery,
+  useProjectStatusesQuery,
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -66,15 +66,14 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     organizationId: feedback?.project?.organization?.rowId,
   });
 
-  const { data: projectStatuses } = useProjectQuery(
+  const { data: projectStatuses } = useProjectStatusesQuery(
     {
-      projectSlug: feedback?.project?.slug!,
-      organizationSlug: feedback?.project?.organization?.slug!,
+      projectId: feedback?.project?.rowId!,
     },
     {
       enabled: isAdmin,
       select: (data) =>
-        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
+        data?.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
           status: status?.status,
         })),
