@@ -44,7 +44,7 @@ interface Props extends CardProps {
 }
 
 /**
- * Pricing card. Provides pricing information for a product.
+ * Pricing card. Provides pricing information and benefits attached to a product.
  */
 const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
   const router = useRouter();
