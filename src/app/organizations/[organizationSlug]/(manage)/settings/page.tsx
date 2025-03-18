@@ -36,7 +36,9 @@ interface Props {
   params: Promise<{ organizationSlug: string }>;
 }
 
-/** Organization settings page. */
+/**
+ * Organization settings page.
+ */
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
