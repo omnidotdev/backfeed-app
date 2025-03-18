@@ -2,7 +2,6 @@
 
 import {
   Flex,
-  HStack,
   Stack,
   Text,
   ToggleGroup,
@@ -111,7 +110,13 @@ const PricingOverview = ({ products }: Props) => {
         </Text>
       </Flex>
 
-      <HStack flexWrap="wrap" justify="center" gap={4} px={4}>
+      <Flex
+        w="full"
+        direction={{ base: "column", lg: "row" }}
+        justify="center"
+        gap={4}
+        px={4}
+      >
         {filteredProducts.map((product) => (
           <PricingCard
             key={product.id}
@@ -119,7 +124,7 @@ const PricingOverview = ({ products }: Props) => {
             pricingModel={pricingModel}
           />
         ))}
-      </HStack>
+      </Flex>
 
       <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
 

@@ -2,9 +2,12 @@
 
 import {
   Badge,
+  Box,
   Button,
   Card,
   Divider,
+  Grid,
+  GridItem,
   HStack,
   Icon,
   Stack,
@@ -62,31 +65,14 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
   return (
     <Card
       gap={4}
-      w={{ base: "100%", sm: "sm", lg: "xs" }}
-      minH="2xl"
+      w="full"
+      maxW={{ lg: "xs" }}
+      h={{ lg: "2xl" }}
       display="flex"
       position="relative"
       color={isDisabled ? "foreground.subtle" : undefined}
       borderWidth={isRecommendedTier ? 2 : 1}
       borderColor={isRecommendedTier ? "brand.primary" : "none"}
-      footer={
-        <Button
-          w="100%"
-          fontSize="lg"
-          disabled={isDisabled}
-          variant={isRecommendedTier ? "solid" : "outline"}
-          onClick={() =>
-            isAuthenticated
-              ? router.push(
-                  `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
-                )
-              : signIn("omni")
-          }
-        >
-          {app.pricingPage.pricingCard.getStarted}{" "}
-          <Icon src={FaArrowRight} w={4} />
-        </Button>
-      }
       {...rest}
     >
       {isRecommendedTier && (
@@ -126,6 +112,7 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
         align="center"
         justify="space-between"
         h="full"
+        w="full"
       >
         <Stack align="center" w="full">
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
@@ -156,23 +143,46 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
             )}
           </HStack>
 
+          <Button
+            w="100%"
+            fontSize="lg"
+            disabled={isDisabled}
+            variant={isRecommendedTier ? "solid" : "outline"}
+            onClick={() =>
+              isAuthenticated
+                ? router.push(
+                    `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                  )
+                : signIn("omni")
+            }
+          >
+            {app.pricingPage.pricingCard.getStarted}{" "}
+            <Icon src={FaArrowRight} w={3.5} h={3.5} />
+          </Button>
+
           <Divider my={2} />
 
-          <sigil.ul
-            // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-            css={css.raw({
-              w: "full",
-              listStyle: "disc",
-              ml: 8,
-              px: 2,
-            })}
-          >
+          <Grid w="full" columns={{ base: 1, sm: 2, md: 3, lg: 1 }}>
             {product.benefits.map((feature) => (
-              <sigil.li key={feature.id} fontSize="sm">
+              <GridItem
+                key={feature.id}
+                fontSize="sm"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <Box
+                  h={2}
+                  w={2}
+                  borderRadius="full"
+                  bgColor={
+                    isRecommendedTier ? "brand.primary" : "foreground.subtle"
+                  }
+                />
                 {feature.description}
-              </sigil.li>
+              </GridItem>
             ))}
-          </sigil.ul>
+          </Grid>
         </Stack>
       </Stack>
     </Card>
