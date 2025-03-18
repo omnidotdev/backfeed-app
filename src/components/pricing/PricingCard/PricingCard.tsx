@@ -159,7 +159,7 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
           h="full"
           bgColor={{
             base: "background.subtle/70",
-            _dark: "brand.primary.950/10",
+            _dark: "background.subtle/20",
           }}
           p={6}
         >
