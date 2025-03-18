@@ -11,7 +11,9 @@ import {
   useCreateFeedbackMutation,
   useDefaultStatusQuery,
   useInfinitePostsQuery,
+  useProjectMetricsQuery,
   useProjectQuery,
+  useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
@@ -78,9 +80,21 @@ const CreateFeedback = () => {
     onSettled: () => {
       reset();
 
-      return queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: useInfinitePostsQuery.getKey({
           pageSize: 5,
+          projectId: projectId!,
+        }),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: useStatusBreakdownQuery.getKey({
+          projectId: projectId!,
+        }),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: useProjectMetricsQuery.getKey({
           projectId: projectId!,
         }),
       });
