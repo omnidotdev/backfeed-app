@@ -14,9 +14,10 @@ import dayjs from "dayjs";
 import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
+import { StatusBadge } from "components/core";
+
 import type { HstackProps } from "@omnidev/sigil";
 import type { FeedbackFragment, PostStatus } from "generated/graphql";
-import { StatusBadge } from "components/core";
 
 interface ProjectStatus {
   /** Post status row ID. */

@@ -2,12 +2,12 @@
 
 import { Flex, Text } from "@omnidev/sigil";
 
+import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
 import { useProjectQuery, useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { Organization, Project } from "generated/graphql";
-import { StatusBadge } from "components/core";
 
 interface Props {
   /** Project ID. */
