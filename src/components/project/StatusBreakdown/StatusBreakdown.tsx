@@ -3,39 +3,65 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
-import { useStatusBreakdownQuery } from "generated/graphql";
+import { useProjectQuery, useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
 
-import type { Post } from "generated/graphql";
+import type { Organization, Project } from "generated/graphql";
+import { useEffect } from "react";
 
 interface Props {
   /** Project ID. */
-  projectId: Post["projectId"];
+  projectId: Project["rowId"];
+  /** Project slug. */
+  projectSlug: Project["slug"];
+  /** Organization slug. */
+  organizationSlug: Organization["slug"];
 }
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = ({ projectId }: Props) => {
-  // TODO: discuss scalability of this. If a project has a large number of posts, this query may become slow.
+const StatusBreakdown = ({
+  projectId,
+  projectSlug,
+  organizationSlug,
+}: Props) => {
+  const { data: projectStatuses } = useProjectQuery(
+    {
+      projectSlug,
+      organizationSlug,
+    },
+    {
+      select: (data) =>
+        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+        })),
+    }
+  );
+
   const { data: breakdown } = useStatusBreakdownQuery(
     {
       projectId,
     },
     {
+      enabled: !!projectStatuses,
       select: (data) =>
-        data?.project?.postStatuses?.nodes?.map((status) => {
-          const numberOfPosts = data?.project?.posts?.nodes?.filter(
-            (post) => post?.status?.status === status?.status
-          ).length;
+        projectStatuses?.map((status) => {
+          const count =
+            data?.posts?.groupedAggregates?.find(
+              ({ keys }) => keys?.[0] === status?.rowId
+            )?.distinctCount?.rowId ?? 0;
 
           return {
             status: status?.status,
-            count: numberOfPosts,
+            count,
           };
         }),
     }
   );
+
+  useEffect(() => console.log(breakdown), [breakdown]);
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>

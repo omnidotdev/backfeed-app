@@ -1,15 +1,9 @@
 query StatusBreakdown($projectId: UUID!) {
-  project(rowId: $projectId) {
-    posts {
-      nodes {
-        status {
-          status
-        }
-      }
-    }
-    postStatuses {
-      nodes {
-        status
+  posts(condition: { projectId: $projectId }) {
+    groupedAggregates(groupBy: STATUS_ID) {
+      keys
+      distinctCount {
+        rowId
       }
     }
   }

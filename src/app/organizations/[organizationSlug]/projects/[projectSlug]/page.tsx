@@ -10,6 +10,7 @@ import {
   useInfinitePostsQuery,
   usePostsQuery,
   useProjectMetricsQuery,
+  useProjectQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -82,6 +83,16 @@ const ProjectPage = async ({ params }: Props) => {
   ];
 
   await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useProjectQuery.getKey({
+        projectSlug,
+        organizationSlug,
+      }),
+      queryFn: useProjectQuery.fetcher({
+        projectSlug,
+        organizationSlug,
+      }),
+    }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         pageSize: 5,
@@ -130,7 +141,11 @@ const ProjectPage = async ({ params }: Props) => {
       }}
     >
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectOverview projectId={project.rowId} />
+        <ProjectOverview
+          projectId={project.rowId}
+          projectSlug={projectSlug}
+          organizationSlug={organizationSlug}
+        />
       </HydrationBoundary>
     </Page>
   );
