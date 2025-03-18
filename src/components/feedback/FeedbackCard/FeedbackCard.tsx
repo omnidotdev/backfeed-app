@@ -144,7 +144,6 @@ const FeedbackCard = ({
                   disabled: !canManageStatus || isUpdateStatusPending,
                 }}
               >
-                {/* TODO: handle status mutations */}
                 <MenuItemGroup>
                   {projectStatuses?.map((status) => (
                     <MenuItem
