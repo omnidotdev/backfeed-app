@@ -7,7 +7,6 @@ import { useProjectQuery, useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { Organization, Project } from "generated/graphql";
-import { useEffect } from "react";
 
 interface Props {
   /** Project ID. */
@@ -60,8 +59,6 @@ const StatusBreakdown = ({
         }),
     }
   );
-
-  useEffect(() => console.log(breakdown), [breakdown]);
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
