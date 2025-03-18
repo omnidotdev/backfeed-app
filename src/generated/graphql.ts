@@ -453,6 +453,39 @@ export type CreatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the create `PostStatus` mutation. */
+export type CreatePostStatusInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `PostStatus` to be created by this mutation. */
+  postStatus: PostStatusInput;
+};
+
+/** The output of our create `PostStatus` mutation. */
+export type CreatePostStatusPayload = {
+  __typename?: 'CreatePostStatusPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostStatus` that was created by this mutation. */
+  postStatus?: Maybe<PostStatus>;
+  /** An edge for our `PostStatus`. May be used by Relay 1. */
+  postStatusEdge?: Maybe<PostStatusEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `PostStatus` mutation. */
+export type CreatePostStatusPayloadPostStatusEdgeArgs = {
+  orderBy?: Array<PostStatusOrderBy>;
+};
+
 /** All input for the create `Project` mutation. */
 export type CreateProjectInput = {
   /**
@@ -736,6 +769,38 @@ export type DeletePostPayload = {
 /** The output of our delete `Post` mutation. */
 export type DeletePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
+};
+
+/** All input for the `deletePostStatus` mutation. */
+export type DeletePostStatusInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `PostStatus` mutation. */
+export type DeletePostStatusPayload = {
+  __typename?: 'DeletePostStatusPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostStatus` that was deleted by this mutation. */
+  postStatus?: Maybe<PostStatus>;
+  /** An edge for our `PostStatus`. May be used by Relay 1. */
+  postStatusEdge?: Maybe<PostStatusEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `PostStatus` mutation. */
+export type DeletePostStatusPayloadPostStatusEdgeArgs = {
+  orderBy?: Array<PostStatusOrderBy>;
 };
 
 /** All input for the `deleteProject` mutation. */
@@ -1304,6 +1369,8 @@ export type Mutation = {
   createOrganization?: Maybe<CreateOrganizationPayload>;
   /** Creates a single `Post`. */
   createPost?: Maybe<CreatePostPayload>;
+  /** Creates a single `PostStatus`. */
+  createPostStatus?: Maybe<CreatePostStatusPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
   /** Creates a single `Upvote`. */
@@ -1320,6 +1387,8 @@ export type Mutation = {
   deleteOrganization?: Maybe<DeleteOrganizationPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
+  /** Deletes a single `PostStatus` using a unique key. */
+  deletePostStatus?: Maybe<DeletePostStatusPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProject?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Upvote` using a unique key. */
@@ -1336,6 +1405,8 @@ export type Mutation = {
   updateOrganization?: Maybe<UpdateOrganizationPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
+  /** Updates a single `PostStatus` using a unique key and a patch. */
+  updatePostStatus?: Maybe<UpdatePostStatusPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProject?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Upvote` using a unique key and a patch. */
@@ -1372,6 +1443,12 @@ export type MutationCreateOrganizationArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreatePostArgs = {
   input: CreatePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreatePostStatusArgs = {
+  input: CreatePostStatusInput;
 };
 
 
@@ -1424,6 +1501,12 @@ export type MutationDeletePostArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeletePostStatusArgs = {
+  input: DeletePostStatusInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteProjectArgs = {
   input: DeleteProjectInput;
 };
@@ -1468,6 +1551,12 @@ export type MutationUpdateOrganizationArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePostArgs = {
   input: UpdatePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdatePostStatusArgs = {
+  input: UpdatePostStatusInput;
 };
 
 
@@ -1814,8 +1903,9 @@ export type Post = {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
-  status: Status;
-  statusUpdatedAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads a single `PostStatus` that is related to this `Post`. */
+  status?: Maybe<PostStatus>;
+  statusId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -1886,10 +1976,8 @@ export type PostCondition = {
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: InputMaybe<Status>;
-  /** Checks for equality with the object’s `statusUpdatedAt` field. */
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `statusId` field. */
+  statusId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1927,8 +2015,7 @@ export type PostDistinctCountAggregateFilter = {
   description?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
-  status?: InputMaybe<BigIntFilter>;
-  statusUpdatedAt?: InputMaybe<BigIntFilter>;
+  statusId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -1944,10 +2031,8 @@ export type PostDistinctCountAggregates = {
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of status across the matching connection */
-  status?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of statusUpdatedAt across the matching connection */
-  statusUpdatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of statusId across the matching connection */
+  statusId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of title across the matching connection */
   title?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -1991,10 +2076,10 @@ export type PostFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `status` field. */
-  status?: InputMaybe<StatusFilter>;
-  /** Filter by the object’s `statusUpdatedAt` field. */
-  statusUpdatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `status` relation. */
+  status?: InputMaybe<PostStatusFilter>;
+  /** Filter by the object’s `statusId` field. */
+  statusId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `title` field. */
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -2016,10 +2101,7 @@ export enum PostGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   ProjectId = 'PROJECT_ID',
-  Status = 'STATUS',
-  StatusUpdatedAt = 'STATUS_UPDATED_AT',
-  StatusUpdatedAtTruncatedToDay = 'STATUS_UPDATED_AT_TRUNCATED_TO_DAY',
-  StatusUpdatedAtTruncatedToHour = 'STATUS_UPDATED_AT_TRUNCATED_TO_HOUR',
+  StatusId = 'STATUS_ID',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -2029,13 +2111,11 @@ export enum PostGroupBy {
 
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2056,43 +2136,36 @@ export type PostHavingInput = {
 
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2102,8 +2175,7 @@ export type PostInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  status?: InputMaybe<Status>;
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  statusId: Scalars['UUID']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -2148,10 +2220,8 @@ export enum PostOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  StatusUpdatedAtAsc = 'STATUS_UPDATED_AT_ASC',
-  StatusUpdatedAtDesc = 'STATUS_UPDATED_AT_DESC',
+  StatusIdAsc = 'STATUS_ID_ASC',
+  StatusIdDesc = 'STATUS_ID_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -2178,11 +2248,298 @@ export type PostPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  status?: InputMaybe<Status>;
-  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  statusId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type PostStatus = {
+  __typename?: 'PostStatus';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  /** Reads and enables pagination through a set of `Post`. */
+  postsByStatusId: PostConnection;
+  /** Reads a single `Project` that is related to this `PostStatus`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  status: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+
+export type PostStatusPostsByStatusIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+export type PostStatusAggregates = {
+  __typename?: 'PostStatusAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<PostStatusDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `PostStatus` object types. */
+export type PostStatusAggregatesFilter = {
+  /** Distinct count aggregate over matching `PostStatus` objects. */
+  distinctCount?: InputMaybe<PostStatusDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `PostStatus` object to be included within the aggregate. */
+  filter?: InputMaybe<PostStatusFilter>;
+};
+
+/**
+ * A condition to be used against `PostStatus` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type PostStatusCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `PostStatus` values. */
+export type PostStatusConnection = {
+  __typename?: 'PostStatusConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<PostStatusAggregates>;
+  /** A list of edges which contains the `PostStatus` and cursor to aid in pagination. */
+  edges: Array<Maybe<PostStatusEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<PostStatusAggregates>>;
+  /** A list of `PostStatus` objects. */
+  nodes: Array<Maybe<PostStatus>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostStatus` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `PostStatus` values. */
+export type PostStatusConnectionGroupedAggregatesArgs = {
+  groupBy: Array<PostStatusGroupBy>;
+  having?: InputMaybe<PostStatusHavingInput>;
+};
+
+export type PostStatusDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  description?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type PostStatusDistinctCountAggregates = {
+  __typename?: 'PostStatusDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `PostStatus` edge in the connection. */
+export type PostStatusEdge = {
+  __typename?: 'PostStatusEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `PostStatus` at the end of the edge. */
+  node?: Maybe<PostStatus>;
+};
+
+/** A filter to be used against `PostStatus` object types. All fields are combined with a logical ‘and.’ */
+export type PostStatusFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PostStatusFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `description` field. */
+  description?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PostStatusFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PostStatusFilter>>;
+  /** Filter by the object’s `postsByStatusId` relation. */
+  postsByStatusId?: InputMaybe<PostStatusToManyPostFilter>;
+  /** Some related `postsByStatusId` exist. */
+  postsByStatusIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `PostStatus` for usage during aggregation. */
+export enum PostStatusGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Description = 'DESCRIPTION',
+  ProjectId = 'PROJECT_ID',
+  Status = 'STATUS',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type PostStatusHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `PostStatus` aggregates. */
+export type PostStatusHavingInput = {
+  AND?: InputMaybe<Array<PostStatusHavingInput>>;
+  OR?: InputMaybe<Array<PostStatusHavingInput>>;
+  average?: InputMaybe<PostStatusHavingAverageInput>;
+  distinctCount?: InputMaybe<PostStatusHavingDistinctCountInput>;
+  max?: InputMaybe<PostStatusHavingMaxInput>;
+  min?: InputMaybe<PostStatusHavingMinInput>;
+  stddevPopulation?: InputMaybe<PostStatusHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<PostStatusHavingStddevSampleInput>;
+  sum?: InputMaybe<PostStatusHavingSumInput>;
+  variancePopulation?: InputMaybe<PostStatusHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<PostStatusHavingVarianceSampleInput>;
+};
+
+export type PostStatusHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `PostStatus` */
+export type PostStatusInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `PostStatus`. */
+export enum PostStatusOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  Natural = 'NATURAL',
+  PostsByStatusIdCountAsc = 'POSTS_BY_STATUS_ID_COUNT_ASC',
+  PostsByStatusIdCountDesc = 'POSTS_BY_STATUS_ID_COUNT_DESC',
+  PostsByStatusIdDistinctCountCreatedAtAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostsByStatusIdDistinctCountCreatedAtDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostsByStatusIdDistinctCountDescriptionAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostsByStatusIdDistinctCountDescriptionDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsByStatusIdDistinctCountProjectIdAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostsByStatusIdDistinctCountProjectIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostsByStatusIdDistinctCountRowIdAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostsByStatusIdDistinctCountRowIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsByStatusIdDistinctCountStatusIdAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_ID_ASC',
+  PostsByStatusIdDistinctCountStatusIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_ID_DESC',
+  PostsByStatusIdDistinctCountTitleAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_TITLE_ASC',
+  PostsByStatusIdDistinctCountTitleDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_TITLE_DESC',
+  PostsByStatusIdDistinctCountUpdatedAtAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostsByStatusIdDistinctCountUpdatedAtDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  PostsByStatusIdDistinctCountUserIdAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_USER_ID_ASC',
+  PostsByStatusIdDistinctCountUserIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_USER_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `PostStatus`. Fields that are set will be updated. */
+export type PostStatusPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type PostStatusToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
 };
 
 /** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
@@ -2230,11 +2587,25 @@ export type Project = {
   /** Reads a single `Organization` that is related to this `Project`. */
   organization?: Maybe<Organization>;
   organizationId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `PostStatus`. */
+  postStatuses: PostStatusConnection;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+
+export type ProjectPostStatusesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusCondition>;
+  filter?: InputMaybe<PostStatusFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusOrderBy>>;
 };
 
 
@@ -2368,6 +2739,10 @@ export type ProjectFilter = {
   organization?: InputMaybe<OrganizationFilter>;
   /** Filter by the object’s `organizationId` field. */
   organizationId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `postStatuses` relation. */
+  postStatuses?: InputMaybe<ProjectToManyPostStatusFilter>;
+  /** Some related `postStatuses` exist. */
+  postStatusesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<ProjectToManyPostFilter>;
   /** Some related `posts` exist. */
@@ -2489,16 +2864,28 @@ export enum ProjectOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
-  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
-  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
-  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
-  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
+  PostsDistinctCountStatusIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_ID_ASC',
+  PostsDistinctCountStatusIdDesc = 'POSTS_DISTINCT_COUNT_STATUS_ID_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
+  PostStatusesCountAsc = 'POST_STATUSES_COUNT_ASC',
+  PostStatusesCountDesc = 'POST_STATUSES_COUNT_DESC',
+  PostStatusesDistinctCountCreatedAtAsc = 'POST_STATUSES_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostStatusesDistinctCountCreatedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusesDistinctCountDescriptionAsc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostStatusesDistinctCountDescriptionDesc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostStatusesDistinctCountProjectIdAsc = 'POST_STATUSES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostStatusesDistinctCountProjectIdDesc = 'POST_STATUSES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostStatusesDistinctCountRowIdAsc = 'POST_STATUSES_DISTINCT_COUNT_ROW_ID_ASC',
+  PostStatusesDistinctCountRowIdDesc = 'POST_STATUSES_DISTINCT_COUNT_ROW_ID_DESC',
+  PostStatusesDistinctCountStatusAsc = 'POST_STATUSES_DISTINCT_COUNT_STATUS_ASC',
+  PostStatusesDistinctCountStatusDesc = 'POST_STATUSES_DISTINCT_COUNT_STATUS_DESC',
+  PostStatusesDistinctCountUpdatedAtAsc = 'POST_STATUSES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostStatusesDistinctCountUpdatedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_UPDATED_AT_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -2531,6 +2918,18 @@ export type ProjectToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `PostStatus` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyPostStatusFilter = {
+  /** Aggregates across related `PostStatus` match the filter criteria. */
+  aggregates?: InputMaybe<PostStatusAggregatesFilter>;
+  /** Every related `PostStatus` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostStatusFilter>;
+  /** No related `PostStatus` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostStatusFilter>;
+  /** Some related `PostStatus` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostStatusFilter>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -2566,6 +2965,10 @@ export type Query = Node & {
   organizations?: Maybe<OrganizationConnection>;
   /** Get a single `Post`. */
   post?: Maybe<Post>;
+  /** Get a single `PostStatus`. */
+  postStatus?: Maybe<PostStatus>;
+  /** Reads and enables pagination through a set of `PostStatus`. */
+  postStatuses?: Maybe<PostStatusConnection>;
   /** Reads and enables pagination through a set of `Post`. */
   posts?: Maybe<PostConnection>;
   /** Get a single `Project`. */
@@ -2713,6 +3116,25 @@ export type QueryPostArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryPostStatusArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostStatusesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusCondition>;
+  filter?: InputMaybe<PostStatusFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2843,40 +3265,6 @@ export type RoleFilter = {
   notEqualTo?: InputMaybe<Role>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Role>>;
-};
-
-export enum Status {
-  Closed = 'closed',
-  InProgress = 'in_progress',
-  Open = 'open',
-  Planned = 'planned',
-  Resolved = 'resolved'
-}
-
-/** A filter to be used against Status fields. All fields are combined with a logical ‘and.’ */
-export type StatusFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Status>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Status>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Status>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Status>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Status>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Status>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Status>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Status>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Status>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Status>>;
 };
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -3151,6 +3539,40 @@ export type UpdatePostPayload = {
 /** The output of our update `Post` mutation. */
 export type UpdatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
+};
+
+/** All input for the `updatePostStatus` mutation. */
+export type UpdatePostStatusInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `PostStatus` being updated. */
+  patch: PostStatusPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `PostStatus` mutation. */
+export type UpdatePostStatusPayload = {
+  __typename?: 'UpdatePostStatusPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostStatus` that was updated by this mutation. */
+  postStatus?: Maybe<PostStatus>;
+  /** An edge for our `PostStatus`. May be used by Relay 1. */
+  postStatusEdge?: Maybe<PostStatusEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `PostStatus` mutation. */
+export type UpdatePostStatusPayloadPostStatusEdgeArgs = {
+  orderBy?: Array<PostStatusOrderBy>;
 };
 
 /** All input for the `updateProject` mutation. */
@@ -3826,10 +4248,8 @@ export enum UserOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
-  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
-  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
-  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
-  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
+  PostsDistinctCountStatusIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_ID_ASC',
+  PostsDistinctCountStatusIdDesc = 'POSTS_DISTINCT_COUNT_STATUS_ID_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -3931,7 +4351,7 @@ export type UserToManyUpvoteFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
@@ -4103,7 +4523,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4159,7 +4579,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4199,7 +4619,14 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, status?: { __typename?: 'PostStatus', status: string } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+
+export type StatusBreakdownQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type StatusBreakdownQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', groupedAggregates?: Array<{ __typename?: 'PostStatusAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostStatusDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type UpvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -4251,6 +4678,11 @@ export const FeedbackFragmentDoc = `
       rowId
       name
     }
+  }
+  status {
+    status
+    description
+    updatedAt
   }
   user {
     username
@@ -5646,6 +6078,9 @@ export const RecentFeedbackDocument = `
       createdAt
       title
       description
+      status {
+        status
+      }
       user {
         rowId
         username
@@ -5696,6 +6131,61 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 
 
 useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
+
+export const StatusBreakdownDocument = `
+    query StatusBreakdown($projectId: UUID!) {
+  postStatuses(condition: {projectId: $projectId}) {
+    groupedAggregates(groupBy: STATUS) {
+      keys
+      distinctCount {
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useStatusBreakdownQuery = <
+      TData = StatusBreakdownQuery,
+      TError = unknown
+    >(
+      variables: StatusBreakdownQueryVariables,
+      options?: Omit<UseQueryOptions<StatusBreakdownQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<StatusBreakdownQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<StatusBreakdownQuery, TError, TData>(
+      {
+    queryKey: ['StatusBreakdown', variables],
+    queryFn: graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables),
+    ...options
+  }
+    )};
+
+useStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariables) => ['StatusBreakdown', variables];
+
+export const useInfiniteStatusBreakdownQuery = <
+      TData = InfiniteData<StatusBreakdownQuery>,
+      TError = unknown
+    >(
+      variables: StatusBreakdownQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<StatusBreakdownQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<StatusBreakdownQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<StatusBreakdownQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['StatusBreakdown.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariables) => ['StatusBreakdown.infinite', variables];
+
+
+useStatusBreakdownQuery.fetcher = (variables: StatusBreakdownQueryVariables, options?: RequestInit['headers']) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables, options);
 
 export const UpvoteDocument = `
     query Upvote($userId: UUID!, $feedbackId: UUID!) {

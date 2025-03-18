@@ -3,36 +3,36 @@
 import { Badge, Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
+import { useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
 
-// TODO: Discuss status breakdown and how it should be implemented.
+import type { Post } from "generated/graphql";
+
+interface Props {
+  /** Project ID. */
+  projectId: Post["projectId"];
+}
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = () => {
-  const breakdown = [
+const StatusBreakdown = ({ projectId }: Props) => {
+  const { data: breakdown } = useStatusBreakdownQuery(
     {
-      status: app.projectPage.statusBreakdown.status.new,
-      count: 69,
+      projectId,
     },
     {
-      status: app.projectPage.statusBreakdown.status.planned,
-      count: 69,
-    },
-    {
-      status: app.projectPage.statusBreakdown.status.inProgress,
-      count: 69,
-    },
-    {
-      status: app.projectPage.statusBreakdown.status.completed,
-      count: 69,
-    },
-  ];
+      select: (data) =>
+        data?.postStatuses?.groupedAggregates?.map((aggregate) => ({
+          status: aggregate.keys?.[0],
+          count: aggregate.distinctCount?.rowId,
+        })),
+    }
+  );
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {breakdown.map(({ status, count }) => (
+      {breakdown?.map(({ status, count }) => (
         <Flex key={status} justifyContent="space-between" align="center">
           <Badge>{status}</Badge>
 

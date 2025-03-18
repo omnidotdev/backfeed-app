@@ -12,6 +12,11 @@ fragment Feedback on Post {
       name
     }
   }
+  status {
+    status
+    description
+    updatedAt
+  }
   user {
     username
   }

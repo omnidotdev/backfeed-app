@@ -6,20 +6,15 @@ import dayjs from "dayjs";
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
 
-type ResponseType = "Neutral" | "Positive" | "Bug" | "Feature";
-
 interface Props extends FlexProps {
   /** Feedback details. */
   feedback: Partial<Post>;
-  /** Feedback type. */
-  // TODO: remove and capture from `feedback` prop once discussed / db schema is updated
-  type: ResponseType;
 }
 
 /**
  * Recent feedback response.
  */
-const Response = ({ feedback, type, ...rest }: Props) => {
+const Response = ({ feedback, ...rest }: Props) => {
   const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
@@ -30,7 +25,8 @@ const Response = ({ feedback, type, ...rest }: Props) => {
             {feedback?.user?.username}
           </Text>
 
-          <Badge>{type}</Badge>
+          {/* TODO: handle status color */}
+          <Badge>{feedback?.status?.status}</Badge>
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">

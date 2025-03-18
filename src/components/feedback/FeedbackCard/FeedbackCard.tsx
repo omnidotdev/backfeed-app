@@ -66,18 +66,18 @@ const FeedbackCard = ({
             </Text>
 
             <HStack>
+              {/* TODO handle status color */}
               <Badge
                 variant="outline"
                 color="brand.secondary"
                 borderColor="brand.secondary"
               >
-                {/* TODO: update status when added to db schema */}
-                Planned
+                {feedback.status?.status}
               </Badge>
 
               <Text fontSize="sm" color="foreground.subtle">
                 {/* TODO: change to statusUpdatedAt when db schema is updated */}
-                {`Updated: ${dayjs(isPending ? new Date() : feedback.updatedAt).fromNow()}`}
+                {`Updated: ${dayjs(isPending ? new Date() : feedback.status?.updatedAt).fromNow()}`}
               </Text>
             </HStack>
           </Stack>

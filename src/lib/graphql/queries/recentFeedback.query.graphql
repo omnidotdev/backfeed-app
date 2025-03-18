@@ -13,6 +13,9 @@ query RecentFeedback($userId: UUID!) {
       createdAt
       title
       description
+      status {
+        status
+      }
       user {
         rowId
         username
