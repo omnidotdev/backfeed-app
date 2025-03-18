@@ -73,6 +73,8 @@ const PricingOverview = ({ products }: Props) => {
           mb={2}
           value={[pricingModel]}
           onValueChange={({ value }) =>
+            // NB: length check prevents deselecting a selected value
+            value.length &&
             setSearchParams({
               pricingModel: (value[0] as SubscriptionRecurringInterval) ?? null,
             })
