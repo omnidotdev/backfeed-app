@@ -19,6 +19,7 @@ fragment Feedback on Post {
     rowId
     status
     description
+    color
   }
   user {
     username

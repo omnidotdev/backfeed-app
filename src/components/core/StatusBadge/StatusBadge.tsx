@@ -4,8 +4,6 @@ import { match } from "ts-pattern";
 import type { BadgeProps } from "@omnidev/sigil";
 import type { PostStatus } from "generated/graphql";
 
-// TODO: remove `getStatusColor` when logic for handling status is customizable / fully stored in the database.
-
 /**
  * Returns the color for the given status (based on default status options).
  */
@@ -20,23 +18,23 @@ export const getStatusColor = (status: string) =>
 
 interface Props extends BadgeProps {
   /** The status of the post. */
-  status: PostStatus["status"];
+  status: Partial<PostStatus>;
 }
 
 /*
  * Badge representing the status for a feedback item.
  */
-const StatusBadge = ({ status, children, ...rest }: Props) => (
-  <Badge
-    variant="outline"
-    color={getStatusColor(status)}
-    borderColor={getStatusColor(status)}
-    {...rest}
-  >
-    {status}
+const StatusBadge = ({ status, children, ...rest }: Props) => {
+  // TODO: handle validating color from database
+  const color = status.color ?? getStatusColor(status.status!);
 
-    {children}
-  </Badge>
-);
+  return (
+    <Badge variant="outline" color={color} borderColor={color} {...rest}>
+      {status.status}
+
+      {children}
+    </Badge>
+  );
+};
 
 export default StatusBadge;

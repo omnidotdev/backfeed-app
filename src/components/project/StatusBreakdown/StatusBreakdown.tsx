@@ -48,7 +48,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
             )?.distinctCount?.rowId ?? 0;
 
           return {
-            status: status?.status,
+            status: status,
             count,
           };
         }),
@@ -58,7 +58,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
       {breakdown?.map(({ status, count }) => (
-        <Flex key={status} justifyContent="space-between" align="center">
+        <Flex key={status?.rowId} justifyContent="space-between" align="center">
           <StatusBadge status={status!} />
 
           <Text>{count}</Text>

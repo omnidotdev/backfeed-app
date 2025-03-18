@@ -134,7 +134,7 @@ const FeedbackCard = ({
               <Menu
                 trigger={
                   <StatusBadge
-                    status={feedback.status?.status!}
+                    status={feedback.status!}
                     cursor={canManageStatus ? "pointer" : "default"}
                   >
                     {canManageStatus && <Icon src={LuChevronDown} />}
