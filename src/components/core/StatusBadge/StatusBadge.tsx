@@ -19,6 +19,7 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
     color={getDefaultStatusColor(status.status!)}
     borderColor={getDefaultStatusColor(status.status!)}
     // NB: Overrides for when a status color is present in the database. Needs to be analyzed at runtime.
+    // TODO: Implement check to validate that the status color is a valid color
     style={
       status.color
         ? {
