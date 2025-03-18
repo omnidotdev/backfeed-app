@@ -4673,7 +4673,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organizationId: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null, postStatuses: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name?: string | null, description?: string | null, slug: string, organizationId: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null } | null } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -5982,12 +5982,6 @@ export const ProjectDocument = `
       organization {
         rowId
         name
-      }
-      postStatuses {
-        nodes {
-          rowId
-          status
-        }
       }
     }
   }

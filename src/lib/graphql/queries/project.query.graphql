@@ -14,12 +14,6 @@ query Project($projectSlug: String!, $organizationSlug: String!) {
         rowId
         name
       }
-      postStatuses {
-        nodes {
-          rowId
-          status
-        }
-      }
     }
   }
 }
