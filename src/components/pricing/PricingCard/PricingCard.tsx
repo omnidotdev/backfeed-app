@@ -18,39 +18,33 @@ import { FaArrowRight } from "react-icons/fa6";
 import { app } from "lib/config";
 
 import type { ButtonProps, CardProps } from "@omnidev/sigil";
-
-type Price = string | { monthly: number; annual: number };
+import type { Product } from "@polar-sh/sdk/models/components/product";
+import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
 
 /**
  * Get a human-readable price.
- * @param price tier cost
- * @param isPerMonthPricing whether pricing is monthly
- * @returns a human-readable price
+ * @param price Fixed price details. Derived from product.
+ * @param pricingModel Pricing model (e.g. monthly or annual), if provided.
+ * @returns A human-readable price.
  */
-const getPrice = (price: Price, isPerMonthPricing: boolean): string => {
-  if (typeof price === "string") return price;
+const getPrice = (
+  price: ProductPrice,
+  pricingModel: SubscriptionRecurringInterval | undefined
+) => {
+  if (price.amountType !== "fixed" || !pricingModel) return "Contact us";
 
-  return `$${isPerMonthPricing ? price.monthly : price.annual}`;
+  return `$${price.priceAmount / 100}`;
 };
 
 interface Props extends CardProps {
-  /** Pricing tier information. */
-  tier: {
-    /** Tier title. */
-    title: string;
-    /** Tier description. */
-    description: string;
-    /** Tier price. */
-    price: Price;
-    /** Tier features. */
-    features: string[];
-  };
+  /** Product information. */
+  product: Product;
   /** Whether the tier is recommended. */
   isRecommendedTier?: boolean;
   /** Whether the tier is disabled. */
   isDisabled?: boolean;
   /** Pricing model (e.g. monthly or annual). */
-  pricingModel?: SubscriptionRecurringInterval;
+  pricingModel?: SubscriptionRecurringInterval | undefined;
   /** CTA button properties. */
   ctaProps?: ButtonProps;
 }
@@ -59,7 +53,7 @@ interface Props extends CardProps {
  * Pricing tier information.
  */
 const PricingCard = ({
-  tier,
+  product,
   isRecommendedTier = false,
   isDisabled = false,
   pricingModel,
@@ -68,7 +62,6 @@ const PricingCard = ({
 }: Props) => {
   const isPerMonthPricing =
     pricingModel === SubscriptionRecurringInterval.Month;
-  const isPriceAString = typeof tier.price === "string";
 
   return (
     <Card
@@ -126,19 +119,19 @@ const PricingCard = ({
       >
         <Stack align="center" w="full">
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {tier.title}
+            {product.name}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {tier.description}
+            {product.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
-              {getPrice(tier.price, isPerMonthPricing)}
+              {getPrice(product.prices[0] as ProductPrice, pricingModel)}
             </Text>
 
-            {!isPriceAString && (
+            {pricingModel && (
               <sigil.span
                 fontSize="lg"
                 mt={2}
@@ -164,9 +157,9 @@ const PricingCard = ({
               px: 2,
             })}
           >
-            {tier.features.map((feature) => (
-              <sigil.li key={feature} fontSize="sm">
-                {feature}
+            {product.benefits.map((feature) => (
+              <sigil.li key={feature.id} fontSize="sm">
+                {feature.description}
               </sigil.li>
             ))}
           </sigil.ul>

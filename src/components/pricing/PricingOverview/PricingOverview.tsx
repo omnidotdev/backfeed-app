@@ -23,20 +23,7 @@ import { app } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
-
-// ! NB: Ordered tiers for sorting products. If the order is adjusted in the config, this must be updated.
-const orderedTiers = app.pricingPage.pricingTiers.tiers.map(
-  (tier) => tier.title
-);
-
-/**
- * Custom sorting function for products based on their tier.
- */
-const sortByTier = (a: Product, b: Product) => {
-  const indexA = orderedTiers.indexOf(a.name);
-  const indexB = orderedTiers.indexOf(b.name);
-  return indexA - indexB;
-};
+import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed";
 
 interface Props {
   /** The products available for pricing tiers. */
@@ -56,8 +43,14 @@ const PricingOverview = ({ products }: Props) => {
   const filteredProducts = useMemo(
     () =>
       products
+        // TODO: discuss case where there are products beyond Backfeed within the organization
         .filter((product) => product.recurringInterval === pricingModel)
-        .sort(sortByTier),
+        // ! NB: this sort function is limited. Prices must fall in the `fixed` price type. May need to adjust accordingly in the future.
+        .sort(
+          (a, b) =>
+            (a.prices[0] as ProductPriceFixed).priceAmount -
+            (b.prices[0] as ProductPriceFixed).priceAmount
+        ),
     [products, pricingModel]
   );
 
@@ -126,24 +119,22 @@ const PricingOverview = ({ products }: Props) => {
 
       <HStack flexWrap="wrap" justify="center" gap={4} px={4}>
         {filteredProducts.map((product) => {
-          const tier = app.pricingPage.pricingTiers.tiers.find(
-            (tier) => tier.title === product.name
-          );
-
-          const isTeamTier = tier?.title.includes("Team");
-          const isEnterpriseTier = tier?.title.includes("Enterprise");
+          // ! NB: these metadata properties are typically optional and must be present for the corresponding product
+          const isRecommended = !!product.metadata.isRecommended;
+          const isDisabled = !!product.metadata.isDisabled;
+          const isEnterprise = !!product.metadata.enterprise;
 
           return (
             <PricingCard
               key={product.id}
-              tier={tier!}
-              isRecommendedTier={isTeamTier}
-              isDisabled={isEnterpriseTier}
-              pricingModel={pricingModel}
-              borderWidth={isTeamTier ? 2 : 1}
-              borderColor={isTeamTier ? "brand.primary" : "none"}
+              product={product}
+              isRecommendedTier={isRecommended}
+              isDisabled={isDisabled}
+              pricingModel={!isEnterprise ? pricingModel : undefined}
+              borderWidth={isRecommended ? 2 : 1}
+              borderColor={isRecommended ? "brand.primary" : "none"}
               ctaProps={{
-                variant: isTeamTier ? "solid" : "outline",
+                variant: isRecommended ? "solid" : "outline",
                 onClick: () =>
                   isAuthenticated
                     ? router.push(

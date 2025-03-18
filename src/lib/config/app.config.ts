@@ -456,57 +456,6 @@ const app = {
     pricingTiers: {
       recommended: "Recommended",
       comingSoon: "Coming Soon",
-      tiers: [
-        {
-          title: "Basic",
-          price: {
-            monthly: 5,
-            annual: 45,
-          },
-          description: "Perfect for small teams just getting started",
-          features: [
-            "1 organization",
-            "Up to 3 projects",
-            "Unlimited feedback items",
-            "Basic prioritization tools",
-            "Community voting & discussions",
-            "Community support",
-          ],
-        },
-        {
-          title: "Team",
-          price: {
-            monthly: 12,
-            annual: 108,
-          },
-          description: "Everything you need for a growing business",
-          features: [
-            "Everything in Basic plan",
-            "Unlimited organizations",
-            "Unlimited projects",
-            "Advanced feedback management (custom tags, categories, and analytics) (coming soon)",
-            "Internal team comments & collaboration tools (coming soon)",
-            "Custom branding (white labeling) (coming soon)",
-            "API access (coming soon)",
-            "Third-party integrations (GitHub Issues, Jira, Linear) (coming soon)",
-          ],
-        },
-        {
-          title: "Enterprise",
-          price: "Contact Us",
-          description: "Advanced features for large organizations",
-          features: [
-            "Everything in Team plan",
-            "Custom SSO (SAML, OpenID Connect)",
-            "Custom data retention policies",
-            "Custom onboarding & training",
-            "SLA-backed support",
-            "Self-hosting assistance",
-            "Integration support for internal tools",
-            "Custom AI-based feedback analysis",
-          ],
-        },
-      ],
     },
     pricingFaq: {
       FAQ: "Frequently Asked Questions",
