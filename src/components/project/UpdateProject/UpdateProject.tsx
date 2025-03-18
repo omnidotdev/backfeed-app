@@ -6,15 +6,13 @@ import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
-import {
-  type ProjectQuery,
-  useProjectQuery,
-  useUpdateProjectMutation,
-} from "generated/graphql";
+import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
+
+import type { ProjectQuery } from "generated/graphql";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
