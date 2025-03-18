@@ -123,7 +123,6 @@ const FeedbackCard = ({
               </Menu>
 
               <Text fontSize="sm" color="foreground.subtle">
-                {/* TODO: change to statusUpdatedAt when db schema is updated */}
                 {`Updated: ${dayjs(isPending ? new Date() : feedback.status?.updatedAt).fromNow()}`}
               </Text>
             </HStack>
