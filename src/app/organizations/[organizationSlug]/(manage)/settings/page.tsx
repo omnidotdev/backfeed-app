@@ -9,10 +9,10 @@ import {
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
-import { isDevelopment } from "lib/flags";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
