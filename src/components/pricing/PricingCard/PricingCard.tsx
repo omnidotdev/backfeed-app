@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Card,
-  Divider,
   Grid,
   GridItem,
   HStack,
@@ -68,11 +67,12 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
       w="full"
       maxW={{ lg: "xs" }}
       h={{ lg: "2xl" }}
-      display="flex"
-      position="relative"
       color={isDisabled ? "foreground.subtle" : undefined}
       borderWidth={isRecommendedTier ? 2 : 1}
       borderColor={isRecommendedTier ? "brand.primary" : "none"}
+      bodyProps={{
+        p: 0,
+      }}
       {...rest}
     >
       {isRecommendedTier && (
@@ -106,15 +106,8 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
         </Stack>
       )}
 
-      <Stack
-        display="flex"
-        flexDirection="column"
-        align="center"
-        justify="space-between"
-        h="full"
-        w="full"
-      >
-        <Stack align="center" w="full">
+      <Stack align="center" h="full" w="full">
+        <Stack align="center" w="full" px={6}>
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
             {product.name}
           </Text>
@@ -159,9 +152,14 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
             {app.pricingPage.pricingCard.getStarted}{" "}
             <Icon src={FaArrowRight} w={3.5} h={3.5} />
           </Button>
+        </Stack>
 
-          <Divider my={2} />
-
+        <Stack
+          w="full"
+          h="full"
+          bgColor={{ base: "background.subtle", _dark: "brand.primary.950/10" }}
+          p={6}
+        >
           <Grid w="full" columns={{ base: 1, sm: 2, md: 3, lg: 1 }}>
             {product.benefits.map((feature) => (
               <GridItem
