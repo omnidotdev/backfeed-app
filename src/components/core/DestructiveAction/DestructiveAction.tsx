@@ -33,6 +33,11 @@ const destructiveButtonStyles: JsxStyleProps = {
     _active: "destructive.active",
     _focus: "destructive.focus",
   },
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "destructive.focus",
+    outlineOffset: "2px",
+  },
   opacity: {
     _disabled: 0.5,
   },
