@@ -19,6 +19,7 @@ import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
 
+// TODO: extract. Add in status descriptions.
 const DEFAULT_POST_STATUSES = [
   "open",
   "planned",
@@ -172,6 +173,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
                   postStatus: {
                     projectId: projectData.project?.rowId!,
                     status: status,
+                    // TODO: add status description
                   },
                 },
               });
