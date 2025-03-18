@@ -4519,6 +4519,14 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type UpdatePostMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: PostPatch;
+}>;
+
+
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'UpdatePostPayload', clientMutationId?: string | null } | null };
+
 export type CreatePostStatusMutationVariables = Exact<{
   input: CreatePostStatusInput;
 }>;
@@ -5146,6 +5154,32 @@ useDeletePostMutation.getKey = () => ['DeletePost'];
 
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
+
+export const UpdatePostDocument = `
+    mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
+  updatePost(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>) => {
+    
+    return useMutation<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdatePost'],
+    mutationFn: (variables?: UpdatePostMutationVariables) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdatePostMutation.getKey = () => ['UpdatePost'];
+
+
+useUpdatePostMutation.fetcher = (variables: UpdatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables, options);
 
 export const CreatePostStatusDocument = `
     mutation CreatePostStatus($input: CreatePostStatusInput!) {

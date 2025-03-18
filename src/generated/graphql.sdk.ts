@@ -4520,6 +4520,14 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type UpdatePostMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: PostPatch;
+}>;
+
+
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'UpdatePostPayload', clientMutationId?: string | null } | null };
+
 export type CreatePostStatusMutationVariables = Exact<{
   input: CreatePostStatusInput;
 }>;
@@ -4896,6 +4904,13 @@ export const CreateFeedbackDocument = gql`
 export const DeletePostDocument = gql`
     mutation DeletePost($postId: UUID!) {
   deletePost(input: {rowId: $postId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdatePostDocument = gql`
+    mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
+  updatePost(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
   }
 }
@@ -5329,6 +5344,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeletePost(variables: DeletePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeletePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeletePost', 'mutation', variables);
+    },
+    UpdatePost(variables: UpdatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdatePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePostMutation>(UpdatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePost', 'mutation', variables);
     },
     CreatePostStatus(variables: CreatePostStatusMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostStatusMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostStatusMutation>(CreatePostStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePostStatus', 'mutation', variables);

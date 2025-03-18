@@ -10,14 +10,20 @@ import {
   Stack,
   Text,
 } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { StatusBadge, getStatusColor } from "components/core";
+import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
 
 import type { HstackProps, StackProps } from "@omnidev/sigil";
-import type { FeedbackFragment, PostStatus } from "generated/graphql";
+import type {
+  FeedbackByIdQuery,
+  FeedbackFragment,
+  PostStatus,
+} from "generated/graphql";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -54,7 +60,42 @@ const FeedbackCard = ({
   children,
   ...rest
 }: Props) => {
+  const queryClient = useQueryClient();
+
   const canManageStatus = projectStatuses != null;
+
+  const { mutate: updateStatus, isPending: isUpdateStatusPending } =
+    useUpdatePostMutation({
+      onMutate: (variables) => {
+        const snapshot = queryClient.getQueryData(
+          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! })
+        ) as FeedbackByIdQuery;
+
+        const updatedStatus = projectStatuses?.find(
+          (status) => status.rowId === variables.patch.statusId
+        );
+
+        queryClient.setQueryData(
+          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          {
+            post: {
+              ...snapshot?.post,
+              statusId: variables.patch.statusId,
+              statusUpdatedAt: variables.patch.statusUpdatedAt,
+              status: {
+                ...snapshot.post?.status,
+                status: updatedStatus?.status,
+              },
+            },
+          }
+        );
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+        });
+      },
+    });
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
@@ -108,7 +149,7 @@ const FeedbackCard = ({
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageStatus,
+                  disabled: !canManageStatus || isUpdateStatusPending,
                 }}
               >
                 {/* TODO: handle status mutations */}
@@ -121,6 +162,15 @@ const FeedbackCard = ({
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
+                      onClick={() =>
+                        updateStatus({
+                          rowId: feedback.rowId!,
+                          patch: {
+                            statusId: status.rowId!,
+                            statusUpdatedAt: new Date(),
+                          },
+                        })
+                      }
                     >
                       {status.status}
 
