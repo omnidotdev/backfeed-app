@@ -8,8 +8,9 @@ import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
+import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import { DangerZoneAction, UpdateOrganization } from "components/organization";
+import { UpdateOrganization } from "components/organization";
 import {
   Role,
   useCreateMemberMutation,
@@ -21,9 +22,9 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
-import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;

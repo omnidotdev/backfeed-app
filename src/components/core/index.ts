@@ -7,6 +7,7 @@ export {
   type ActionButton,
 } from "./CallToAction/CallToAction";
 export { default as CharacterLimit } from "./CharacterLimit/CharacterLimit";
+export { default as DangerZoneAction } from "./DangerZoneAction/DangerZoneAction";
 export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
