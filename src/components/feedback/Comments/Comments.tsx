@@ -133,7 +133,7 @@ const Comments = ({ feedbackId }: Props) => {
                   );
                 })}
 
-                {hasNextPage && <Spinner ref={loaderRef} />}
+                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
               </VStack>
             ) : (
               <EmptyState
