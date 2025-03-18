@@ -13,25 +13,25 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FaArrowRight } from "react-icons/fa6";
 
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
-import type { ButtonProps, CardProps } from "@omnidev/sigil";
+import type { CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
 
 /**
  * Get a human-readable price.
  * @param price Fixed price details. Derived from product.
- * @param pricingModel Pricing model (e.g. monthly or annual), if provided.
+ * @param isEnterprise Whether the product is enterprise tier.
  * @returns A human-readable price.
  */
-const getPrice = (
-  price: ProductPrice,
-  pricingModel: SubscriptionRecurringInterval | undefined
-) => {
-  if (price.amountType !== "fixed" || !pricingModel) return "Contact us";
+const getPrice = (price: ProductPrice, isEnterprise: boolean) => {
+  if (price.amountType !== "fixed" || isEnterprise) return "Contact us";
 
   return `$${price.priceAmount / 100}`;
 };
@@ -39,29 +39,25 @@ const getPrice = (
 interface Props extends CardProps {
   /** Product information. */
   product: Product;
-  /** Whether the tier is recommended. */
-  isRecommendedTier?: boolean;
-  /** Whether the tier is disabled. */
-  isDisabled?: boolean;
   /** Pricing model (e.g. monthly or annual). */
-  pricingModel?: SubscriptionRecurringInterval | undefined;
-  /** CTA button properties. */
-  ctaProps?: ButtonProps;
+  pricingModel: SubscriptionRecurringInterval;
 }
 
 /**
  * Pricing tier information.
  */
-const PricingCard = ({
-  product,
-  isRecommendedTier = false,
-  isDisabled = false,
-  pricingModel,
-  ctaProps,
-  ...rest
-}: Props) => {
+const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
+  const router = useRouter();
+
+  const { isAuthenticated, user } = useAuth();
+
   const isPerMonthPricing =
     pricingModel === SubscriptionRecurringInterval.Month;
+
+  // ! NB: these metadata properties are typically optional and must be present for the corresponding product
+  const isRecommendedTier = !!product.metadata.isRecommended;
+  const isDisabled = !!product.metadata.isDisabled;
+  const isEnterprise = !!product.metadata.isEnterprise;
 
   return (
     <Card
@@ -71,8 +67,22 @@ const PricingCard = ({
       display="flex"
       position="relative"
       color={isDisabled ? "foreground.subtle" : undefined}
+      borderWidth={isRecommendedTier ? 2 : 1}
+      borderColor={isRecommendedTier ? "brand.primary" : "none"}
       footer={
-        <Button w="100%" fontSize="lg" disabled={isDisabled} {...ctaProps}>
+        <Button
+          w="100%"
+          fontSize="lg"
+          disabled={isDisabled}
+          variant={isRecommendedTier ? "solid" : "outline"}
+          onClick={() =>
+            isAuthenticated
+              ? router.push(
+                  `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                )
+              : signIn("omni")
+          }
+        >
           {app.pricingPage.pricingCard.getStarted}{" "}
           <Icon src={FaArrowRight} w={4} />
         </Button>
@@ -128,10 +138,10 @@ const PricingCard = ({
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
-              {getPrice(product.prices[0] as ProductPrice, pricingModel)}
+              {getPrice(product.prices[0] as ProductPrice, isEnterprise)}
             </Text>
 
-            {pricingModel && (
+            {!isEnterprise && (
               <sigil.span
                 fontSize="lg"
                 mt={2}

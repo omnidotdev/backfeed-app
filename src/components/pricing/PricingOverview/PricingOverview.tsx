@@ -9,8 +9,6 @@ import {
   ToggleGroupItem,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 import {
@@ -20,7 +18,7 @@ import {
   PricingMatrix,
 } from "components/pricing";
 import { app } from "lib/config";
-import { useAuth, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed";
@@ -34,11 +32,7 @@ interface Props {
  * Pricing overview section.
  */
 const PricingOverview = ({ products }: Props) => {
-  const router = useRouter();
-
   const [{ pricingModel }, setSearchParams] = useSearchParams();
-
-  const { isAuthenticated, user } = useAuth();
 
   const filteredProducts = useMemo(
     () =>
@@ -118,33 +112,13 @@ const PricingOverview = ({ products }: Props) => {
       </Flex>
 
       <HStack flexWrap="wrap" justify="center" gap={4} px={4}>
-        {filteredProducts.map((product) => {
-          // ! NB: these metadata properties are typically optional and must be present for the corresponding product
-          const isRecommended = !!product.metadata.isRecommended;
-          const isDisabled = !!product.metadata.isDisabled;
-          const isEnterprise = !!product.metadata.isEnterprise;
-
-          return (
-            <PricingCard
-              key={product.id}
-              product={product}
-              isRecommendedTier={isRecommended}
-              isDisabled={isDisabled}
-              pricingModel={!isEnterprise ? pricingModel : undefined}
-              borderWidth={isRecommended ? 2 : 1}
-              borderColor={isRecommended ? "brand.primary" : "none"}
-              ctaProps={{
-                variant: isRecommended ? "solid" : "outline",
-                onClick: () =>
-                  isAuthenticated
-                    ? router.push(
-                        `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
-                      )
-                    : signIn("omni"),
-              }}
-            />
-          );
-        })}
+        {filteredProducts.map((product) => (
+          <PricingCard
+            key={product.id}
+            product={product}
+            pricingModel={pricingModel}
+          />
+        ))}
       </HStack>
 
       <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
