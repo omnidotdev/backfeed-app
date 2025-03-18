@@ -1,23 +1,21 @@
 import { Badge } from "@omnidev/sigil";
 import { match } from "ts-pattern";
 
-import { capitalizeFirstLetter } from "lib/util";
-
 import type { BadgeProps } from "@omnidev/sigil";
 import type { PostStatus } from "generated/graphql";
 
 // TODO: remove `getStatusColor` when logic for handling status is customizable / fully stored in the database.
 
 /**
- * Returns the color for the given status.
+ * Returns the color for the given status (based on default status options).
  */
 const getStatusColor = (status: string) =>
   match(status)
-    .with("open", () => "blue")
-    .with("planned", () => "purple")
-    .with("in_progress", () => "yellow")
-    .with("closed", () => "red")
-    .with("resolved", () => "green")
+    .with("Open", () => "blue")
+    .with("Planned", () => "purple")
+    .with("In Progress", () => "yellow")
+    .with("Closed", () => "red")
+    .with("Resolved", () => "green")
     .otherwise(() => undefined);
 
 interface Props extends BadgeProps {
@@ -35,7 +33,7 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
     borderColor={getStatusColor(status)}
     {...rest}
   >
-    {capitalizeFirstLetter(status)}
+    {status}
 
     {children}
   </Badge>

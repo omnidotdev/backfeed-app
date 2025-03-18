@@ -21,11 +21,11 @@ import { DialogType } from "store";
 
 // TODO: update when custom statuses are implemented
 const DEFAULT_POST_STATUSES = [
-  { status: "open", description: "Newly created", isDefault: true },
-  { status: "planned", description: "Planned for future" },
-  { status: "in_progress", description: "Currently in progress" },
-  { status: "closed", description: "Completed" },
-  { status: "resolved", description: "Resolved" },
+  { status: "Open", description: "Newly created", isDefault: true },
+  { status: "Planned", description: "Planned for future" },
+  { status: "In Progress", description: "Currently in progress" },
+  { status: "Closed", description: "Not currently planned" },
+  { status: "Resolved", description: "Resolved request" },
 ];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
