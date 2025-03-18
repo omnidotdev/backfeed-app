@@ -36,7 +36,7 @@ const Header = () => {
                 src="/img/logo.png"
                 alt={`${app.name} logo`}
                 width={48}
-                height={48}
+                height={24}
                 // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
