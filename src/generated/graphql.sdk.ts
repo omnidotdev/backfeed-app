@@ -4449,12 +4449,19 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type CreatePostStatusMutationVariables = Exact<{
+  input: CreatePostStatusInput;
+}>;
+
+
+export type CreatePostStatusMutation = { __typename?: 'Mutation', createPostStatus?: { __typename?: 'CreatePostStatusPayload', clientMutationId?: string | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4812,10 +4819,18 @@ export const DeletePostDocument = gql`
   }
 }
     `;
+export const CreatePostStatusDocument = gql`
+    mutation CreatePostStatus($input: CreatePostStatusInput!) {
+  createPostStatus(input: $input) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
     project {
+      rowId
       slug
       organization {
         slug
@@ -5216,6 +5231,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeletePost(variables: DeletePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeletePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeletePost', 'mutation', variables);
+    },
+    CreatePostStatus(variables: CreatePostStatusMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostStatusMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostStatusMutation>(CreatePostStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePostStatus', 'mutation', variables);
     },
     CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>(CreateProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateProject', 'mutation', variables);

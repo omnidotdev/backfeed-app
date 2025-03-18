@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import {
   Role,
+  useCreatePostStatusMutation,
   useCreateProjectMutation,
   useOrganizationsQuery,
 } from "generated/graphql";
@@ -17,6 +18,14 @@ import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
+
+const DEFAULT_POST_STATUSES = [
+  "open",
+  "planned",
+  "in_progress",
+  "closed",
+  "resolved",
+];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -126,16 +135,9 @@ const CreateProject = ({ organizationSlug }: Props) => {
     [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
   );
 
-  const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
-    onSuccess: (data) => {
-      router.push(
-        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
-      );
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
 
-      setIsOpen(false);
-      reset();
-    },
-  });
+  const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
@@ -151,16 +153,38 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
     onSubmit: async ({ value }) =>
       toaster.promise(
-        createProject({
-          input: {
-            project: {
-              name: value.name,
-              description: value.description,
-              slug: value.slug,
-              organizationId: value.organizationId,
+        async () => {
+          const { createProject: projectData } = await createProject({
+            input: {
+              project: {
+                name: value.name,
+                description: value.description,
+                slug: value.slug,
+                organizationId: value.organizationId,
+              },
             },
-          },
-        }),
+          });
+
+          if (projectData) {
+            for (const status of DEFAULT_POST_STATUSES) {
+              await createPostStatus({
+                input: {
+                  postStatus: {
+                    projectId: projectData.project?.rowId!,
+                    status: status,
+                  },
+                },
+              });
+            }
+
+            router.push(
+              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
+            );
+
+            setIsOpen(false);
+            reset();
+          }
+        },
         {
           loading: {
             title: app.dashboardPage.cta.newProject.action.pending,

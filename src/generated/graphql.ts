@@ -4448,12 +4448,19 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost?: { __typename?: 'DeletePostPayload', clientMutationId?: string | null } | null };
 
+export type CreatePostStatusMutationVariables = Exact<{
+  input: CreatePostStatusInput;
+}>;
+
+
+export type CreatePostStatusMutation = { __typename?: 'Mutation', createPostStatus?: { __typename?: 'CreatePostStatusPayload', clientMutationId?: string | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -5059,10 +5066,37 @@ useDeletePostMutation.getKey = () => ['DeletePost'];
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
 
+export const CreatePostStatusDocument = `
+    mutation CreatePostStatus($input: CreatePostStatusInput!) {
+  createPostStatus(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useCreatePostStatusMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreatePostStatusMutation, TError, CreatePostStatusMutationVariables, TContext>) => {
+    
+    return useMutation<CreatePostStatusMutation, TError, CreatePostStatusMutationVariables, TContext>(
+      {
+    mutationKey: ['CreatePostStatus'],
+    mutationFn: (variables?: CreatePostStatusMutationVariables) => graphqlFetch<CreatePostStatusMutation, CreatePostStatusMutationVariables>(CreatePostStatusDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreatePostStatusMutation.getKey = () => ['CreatePostStatus'];
+
+
+useCreatePostStatusMutation.fetcher = (variables: CreatePostStatusMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostStatusMutation, CreatePostStatusMutationVariables>(CreatePostStatusDocument, variables, options);
+
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
     project {
+      rowId
       slug
       organization {
         slug
