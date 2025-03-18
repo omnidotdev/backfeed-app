@@ -9,6 +9,7 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
+  useDefaultStatusQuery,
   useInfinitePostsQuery,
   useProjectQuery,
 } from "generated/graphql";
@@ -63,6 +64,16 @@ const CreateFeedback = () => {
     }
   );
 
+  const { data: defaultStatusId } = useDefaultStatusQuery(
+    {
+      projectId: projectId!,
+    },
+    {
+      enabled: !!projectId,
+      select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
+    }
+  );
+
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
     onSettled: () => {
       reset();
@@ -94,8 +105,7 @@ const CreateFeedback = () => {
           createFeedback({
             input: {
               post: {
-                // TODO: figure out how to handle default status
-                statusId: "TODO",
+                statusId: defaultStatusId!,
                 projectId: value.projectId,
                 userId: value.userId,
                 title: value.title.trim(),

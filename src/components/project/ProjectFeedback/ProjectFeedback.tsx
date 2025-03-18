@@ -11,6 +11,7 @@ import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateFeedbackMutation,
+  useDefaultStatusQuery,
   useInfinitePostsQuery,
   useUserQuery,
 } from "generated/graphql";
@@ -46,6 +47,16 @@ const ProjectFeedback = ({ projectId }: Props) => {
     }
   );
 
+  const { data: defaultStatus } = useDefaultStatusQuery(
+    {
+      projectId,
+    },
+    {
+      enabled: !!projectId,
+      select: (data) => data?.postStatuses?.nodes?.[0],
+    }
+  );
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
@@ -74,6 +85,9 @@ const ProjectFeedback = ({ projectId }: Props) => {
         rowId: "pending",
         title: input.post.title,
         description: input.post.description,
+        status: {
+          status: defaultStatus?.status ?? "pending",
+        },
         project: {
           rowId: input.post.projectId,
           slug: "pending",

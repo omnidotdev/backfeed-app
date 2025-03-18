@@ -48,6 +48,32 @@ export type BigIntFilter = {
   notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
+/** A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’ */
+export type BooleanFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+};
+
 export type Comment = {
   __typename?: 'Comment';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
@@ -2259,6 +2285,7 @@ export type PostStatus = {
   __typename?: 'PostStatus';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  isDefault: Scalars['Boolean']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   postsByStatusId: PostConnection;
   /** Reads a single `Project` that is related to this `PostStatus`. */
@@ -2305,6 +2332,8 @@ export type PostStatusCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `isDefault` field. */
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -2342,6 +2371,7 @@ export type PostStatusConnectionGroupedAggregatesArgs = {
 export type PostStatusDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  isDefault?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   status?: InputMaybe<BigIntFilter>;
@@ -2354,6 +2384,8 @@ export type PostStatusDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of isDefault across the matching connection */
+  isDefault?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -2381,6 +2413,8 @@ export type PostStatusFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `isDefault` field. */
+  isDefault?: InputMaybe<BooleanFilter>;
   /** Negates the expression. */
   not?: InputMaybe<PostStatusFilter>;
   /** Checks for any expressions in this list. */
@@ -2407,6 +2441,7 @@ export enum PostStatusGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  IsDefault = 'IS_DEFAULT',
   ProjectId = 'PROJECT_ID',
   Status = 'STATUS',
   UpdatedAt = 'UPDATED_AT',
@@ -2478,6 +2513,7 @@ export type PostStatusHavingVarianceSampleInput = {
 export type PostStatusInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
@@ -2490,6 +2526,8 @@ export enum PostStatusOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  IsDefaultAsc = 'IS_DEFAULT_ASC',
+  IsDefaultDesc = 'IS_DEFAULT_DESC',
   Natural = 'NATURAL',
   PostsByStatusIdCountAsc = 'POSTS_BY_STATUS_ID_COUNT_ASC',
   PostsByStatusIdCountDesc = 'POSTS_BY_STATUS_ID_COUNT_DESC',
@@ -2525,6 +2563,7 @@ export enum PostStatusOrderBy {
 export type PostStatusPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
@@ -2879,6 +2918,8 @@ export enum ProjectOrderBy {
   PostStatusesDistinctCountCreatedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_CREATED_AT_DESC',
   PostStatusesDistinctCountDescriptionAsc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostStatusesDistinctCountDescriptionDesc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostStatusesDistinctCountIsDefaultAsc = 'POST_STATUSES_DISTINCT_COUNT_IS_DEFAULT_ASC',
+  PostStatusesDistinctCountIsDefaultDesc = 'POST_STATUSES_DISTINCT_COUNT_IS_DEFAULT_DESC',
   PostStatusesDistinctCountProjectIdAsc = 'POST_STATUSES_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostStatusesDistinctCountProjectIdDesc = 'POST_STATUSES_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostStatusesDistinctCountRowIdAsc = 'POST_STATUSES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -4518,6 +4559,13 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
+export type DefaultStatusQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type DefaultStatusQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } | null };
+
 export type DownvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   feedbackId: Scalars['UUID']['input'];
@@ -4919,6 +4967,16 @@ export const DashboardAggregatesDocument = gql`
   }
 }
     `;
+export const DefaultStatusDocument = gql`
+    query DefaultStatus($projectId: UUID!) {
+  postStatuses(condition: {projectId: $projectId, isDefault: true}) {
+    nodes {
+      rowId
+      status
+    }
+  }
+}
+    `;
 export const DownvoteDocument = gql`
     query Downvote($userId: UUID!, $feedbackId: UUID!) {
   downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
@@ -5267,6 +5325,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
+    },
+    DefaultStatus(variables: DefaultStatusQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DefaultStatusQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DefaultStatusQuery>(DefaultStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DefaultStatus', 'query', variables);
     },
     Downvote(variables: DownvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DownvoteQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DownvoteQuery>(DownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Downvote', 'query', variables);
