@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Badge,
   Flex,
   HStack,
   Icon,
@@ -17,6 +16,7 @@ import { match } from "ts-pattern";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type { FeedbackFragment, PostStatus } from "generated/graphql";
+import { StatusBadge } from "components/core";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -91,16 +91,12 @@ const FeedbackCard = ({
             <HStack>
               <Menu
                 trigger={
-                  <Badge
-                    variant="outline"
-                    color="brand.secondary"
-                    borderColor="brand.secondary"
+                  <StatusBadge
+                    status={feedback.status?.status!}
                     cursor={canManageStatus ? "pointer" : "default"}
                   >
-                    {feedback.status?.status}
-
                     {canManageStatus && <Icon src={LuChevronDown} />}
-                  </Badge>
+                  </StatusBadge>
                 }
                 triggerProps={{
                   disabled: !canManageStatus,

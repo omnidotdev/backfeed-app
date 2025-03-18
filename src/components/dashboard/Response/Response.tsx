@@ -1,7 +1,9 @@
 "use client";
 
-import { Badge, Flex, Text } from "@omnidev/sigil";
+import { Flex, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
+
+import { StatusBadge } from "components/core";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
@@ -25,8 +27,7 @@ const Response = ({ feedback, ...rest }: Props) => {
             {feedback?.user?.username}
           </Text>
 
-          {/* TODO: handle status color */}
-          <Badge>{feedback?.status?.status}</Badge>
+          <StatusBadge status={feedback?.status?.status!} />
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">

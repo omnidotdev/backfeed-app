@@ -1,12 +1,13 @@
 "use client";
 
-import { Badge, Flex, Text } from "@omnidev/sigil";
+import { Flex, Text } from "@omnidev/sigil";
 
 import { SectionContainer } from "components/layout";
 import { useProjectQuery, useStatusBreakdownQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { Organization, Project } from "generated/graphql";
+import { StatusBadge } from "components/core";
 
 interface Props {
   /** Project ID. */
@@ -64,7 +65,7 @@ const StatusBreakdown = ({
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
       {breakdown?.map(({ status, count }) => (
         <Flex key={status} justifyContent="space-between" align="center">
-          <Badge>{status}</Badge>
+          <StatusBadge status={status!} />
 
           <Text>{count}</Text>
         </Flex>
