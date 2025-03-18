@@ -9,7 +9,7 @@ import type { PostStatus } from "generated/graphql";
 /**
  * Returns the color for the given status (based on default status options).
  */
-const getStatusColor = (status: string) =>
+export const getStatusColor = (status: string) =>
   match(status)
     .with("Open", () => "blue")
     .with("Planned", () => "purple")

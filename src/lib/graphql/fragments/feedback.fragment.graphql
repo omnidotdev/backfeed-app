@@ -16,6 +16,7 @@ fragment Feedback on Post {
     }
   }
   status {
+    rowId
     status
     description
   }

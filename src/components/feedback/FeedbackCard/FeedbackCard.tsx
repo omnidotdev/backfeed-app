@@ -11,10 +11,10 @@ import {
   Text,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { LuChevronDown } from "react-icons/lu";
+import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { StatusBadge } from "components/core";
+import { StatusBadge, getStatusColor } from "components/core";
 
 import type { HstackProps, StackProps } from "@omnidev/sigil";
 import type { FeedbackFragment, PostStatus } from "generated/graphql";
@@ -114,8 +114,19 @@ const FeedbackCard = ({
                 {/* TODO: handle status mutations */}
                 <MenuItemGroup>
                   {projectStatuses?.map((status) => (
-                    <MenuItem key={status.rowId} value={status.rowId!}>
+                    <MenuItem
+                      key={status.rowId}
+                      value={status.rowId!}
+                      color={getStatusColor(status.status!)}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
                       {status.status}
+
+                      {status.rowId === feedback.status?.rowId && (
+                        <Icon src={LuCheck} h={4} w={4} color="green.500" />
+                      )}
                     </MenuItem>
                   ))}
                 </MenuItemGroup>
