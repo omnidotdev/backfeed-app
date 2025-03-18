@@ -1,6 +1,8 @@
 import { Badge } from "@omnidev/sigil";
 import { match } from "ts-pattern";
 
+import { capitalizeFirstLetter } from "lib/util";
+
 import type { BadgeProps } from "@omnidev/sigil";
 import type { PostStatus } from "generated/graphql";
 
@@ -33,7 +35,7 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
     borderColor={getStatusColor(status)}
     {...rest}
   >
-    {status}
+    {capitalizeFirstLetter(status)}
 
     {children}
   </Badge>

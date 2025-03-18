@@ -26,6 +26,9 @@ const MAX_DESCRIPTION_LENGTH = 240;
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
+  statusId: z
+    .string()
+    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
   projectId: z
     .string()
     .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
@@ -77,24 +80,26 @@ const CreateFeedback = () => {
   );
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
-    onSettled: () => {
+    onSettled: async () => {
       reset();
 
-      queryClient.invalidateQueries({
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useStatusBreakdownQuery.getKey({
+            projectId: projectId!,
+          }),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: useProjectMetricsQuery.getKey({
+            projectId: projectId!,
+          }),
+        }),
+      ]);
+
+      return queryClient.invalidateQueries({
         queryKey: useInfinitePostsQuery.getKey({
           pageSize: 5,
-          projectId: projectId!,
-        }),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: useStatusBreakdownQuery.getKey({
-          projectId: projectId!,
-        }),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: useProjectMetricsQuery.getKey({
           projectId: projectId!,
         }),
       });
@@ -104,6 +109,7 @@ const CreateFeedback = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
       defaultValues: {
+        statusId: defaultStatusId ?? "",
         projectId: projectId ?? "",
         userId: user?.rowId ?? "",
         title: "",
@@ -119,7 +125,7 @@ const CreateFeedback = () => {
           createFeedback({
             input: {
               post: {
-                statusId: defaultStatusId!,
+                statusId: value.statusId,
                 projectId: value.projectId,
                 userId: value.userId,
                 title: value.title.trim(),

@@ -122,7 +122,7 @@ const FeedbackCard = ({
               </Menu>
 
               <Text fontSize="sm" color="foreground.subtle">
-                {`Updated: ${dayjs(isPending ? new Date() : feedback.status?.updatedAt).fromNow()}`}
+                {`Updated: ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
               </Text>
             </HStack>
           </Stack>

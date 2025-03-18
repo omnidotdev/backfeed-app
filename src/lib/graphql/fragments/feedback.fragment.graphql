@@ -2,6 +2,7 @@ fragment Feedback on Post {
   rowId
   title
   description
+  statusUpdatedAt
   createdAt
   updatedAt
   project {
@@ -17,7 +18,6 @@ fragment Feedback on Post {
   status {
     status
     description
-    updatedAt
   }
   user {
     username

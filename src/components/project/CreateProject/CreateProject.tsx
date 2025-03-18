@@ -19,13 +19,13 @@ import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
 
-// TODO: extract. Add in status descriptions.
+// TODO: update when custom statuses are implemented
 const DEFAULT_POST_STATUSES = [
-  "open",
-  "planned",
-  "in_progress",
-  "closed",
-  "resolved",
+  { status: "open", description: "Newly created", isDefault: true },
+  { status: "planned", description: "Planned for future" },
+  { status: "in_progress", description: "Currently in progress" },
+  { status: "closed", description: "Completed" },
+  { status: "resolved", description: "Resolved" },
 ];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -172,8 +172,9 @@ const CreateProject = ({ organizationSlug }: Props) => {
                 input: {
                   postStatus: {
                     projectId: projectData.project?.rowId!,
-                    status: status,
-                    // TODO: add status description
+                    status: status.status,
+                    description: status.description,
+                    isDefault: status.isDefault,
                   },
                 },
               });

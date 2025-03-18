@@ -1932,6 +1932,7 @@ export type Post = {
   /** Reads a single `PostStatus` that is related to this `Post`. */
   status?: Maybe<PostStatus>;
   statusId: Scalars['UUID']['output'];
+  statusUpdatedAt?: Maybe<Scalars['Datetime']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -2004,6 +2005,8 @@ export type PostCondition = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `statusId` field. */
   statusId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `statusUpdatedAt` field. */
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -2042,6 +2045,7 @@ export type PostDistinctCountAggregateFilter = {
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   statusId?: InputMaybe<BigIntFilter>;
+  statusUpdatedAt?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -2059,6 +2063,8 @@ export type PostDistinctCountAggregates = {
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of statusId across the matching connection */
   statusId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of statusUpdatedAt across the matching connection */
+  statusUpdatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of title across the matching connection */
   title?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -2106,6 +2112,8 @@ export type PostFilter = {
   status?: InputMaybe<PostStatusFilter>;
   /** Filter by the object’s `statusId` field. */
   statusId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `statusUpdatedAt` field. */
+  statusUpdatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `title` field. */
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -2128,6 +2136,9 @@ export enum PostGroupBy {
   Description = 'DESCRIPTION',
   ProjectId = 'PROJECT_ID',
   StatusId = 'STATUS_ID',
+  StatusUpdatedAt = 'STATUS_UPDATED_AT',
+  StatusUpdatedAtTruncatedToDay = 'STATUS_UPDATED_AT_TRUNCATED_TO_DAY',
+  StatusUpdatedAtTruncatedToHour = 'STATUS_UPDATED_AT_TRUNCATED_TO_HOUR',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -2137,11 +2148,13 @@ export enum PostGroupBy {
 
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2162,36 +2175,43 @@ export type PostHavingInput = {
 
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2202,6 +2222,7 @@ export type PostInput = {
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   statusId: Scalars['UUID']['input'];
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -2248,6 +2269,8 @@ export enum PostOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   StatusIdAsc = 'STATUS_ID_ASC',
   StatusIdDesc = 'STATUS_ID_DESC',
+  StatusUpdatedAtAsc = 'STATUS_UPDATED_AT_ASC',
+  StatusUpdatedAtDesc = 'STATUS_UPDATED_AT_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -2275,6 +2298,7 @@ export type PostPatch = {
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   statusId?: InputMaybe<Scalars['UUID']['input']>;
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2540,6 +2564,8 @@ export enum PostStatusOrderBy {
   PostsByStatusIdDistinctCountRowIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_ROW_ID_DESC',
   PostsByStatusIdDistinctCountStatusIdAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_ID_ASC',
   PostsByStatusIdDistinctCountStatusIdDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_ID_DESC',
+  PostsByStatusIdDistinctCountStatusUpdatedAtAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsByStatusIdDistinctCountStatusUpdatedAtDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsByStatusIdDistinctCountTitleAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_TITLE_ASC',
   PostsByStatusIdDistinctCountTitleDesc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_TITLE_DESC',
   PostsByStatusIdDistinctCountUpdatedAtAsc = 'POSTS_BY_STATUS_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -2905,6 +2931,8 @@ export enum ProjectOrderBy {
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   PostsDistinctCountStatusIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_ID_ASC',
   PostsDistinctCountStatusIdDesc = 'POSTS_DISTINCT_COUNT_STATUS_ID_DESC',
+  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -4291,6 +4319,8 @@ export enum UserOrderBy {
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   PostsDistinctCountStatusIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_ID_ASC',
   PostsDistinctCountStatusIdDesc = 'POSTS_DISTINCT_COUNT_STATUS_ID_DESC',
+  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -4392,7 +4422,7 @@ export type UserToManyUpvoteFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
@@ -4578,7 +4608,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4634,7 +4664,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null, updatedAt?: Date | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', status: string, description?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4724,6 +4754,7 @@ export const FeedbackFragmentDoc = `
   rowId
   title
   description
+  statusUpdatedAt
   createdAt
   updatedAt
   project {
@@ -4739,7 +4770,6 @@ export const FeedbackFragmentDoc = `
   status {
     status
     description
-    updatedAt
   }
   user {
     username
