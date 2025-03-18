@@ -4596,13 +4596,6 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
-export type DefaultStatusQueryVariables = Exact<{
-  projectId: Scalars['UUID']['input'];
-}>;
-
-
-export type DefaultStatusQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } | null };
-
 export type DownvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   feedbackId: Scalars['UUID']['input'];
@@ -4696,6 +4689,14 @@ export type ProjectMetricsQueryVariables = Exact<{
 
 
 export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null, downvotes?: { __typename?: 'DownvoteConnection', totalCount: number } | null };
+
+export type ProjectStatusesQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -5498,59 +5499,6 @@ useInfiniteDashboardAggregatesQuery.getKey = (variables: DashboardAggregatesQuer
 
 useDashboardAggregatesQuery.fetcher = (variables: DashboardAggregatesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables, options);
 
-export const DefaultStatusDocument = `
-    query DefaultStatus($projectId: UUID!) {
-  postStatuses(condition: {projectId: $projectId, isDefault: true}) {
-    nodes {
-      rowId
-      status
-    }
-  }
-}
-    `;
-
-export const useDefaultStatusQuery = <
-      TData = DefaultStatusQuery,
-      TError = unknown
-    >(
-      variables: DefaultStatusQueryVariables,
-      options?: Omit<UseQueryOptions<DefaultStatusQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DefaultStatusQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<DefaultStatusQuery, TError, TData>(
-      {
-    queryKey: ['DefaultStatus', variables],
-    queryFn: graphqlFetch<DefaultStatusQuery, DefaultStatusQueryVariables>(DefaultStatusDocument, variables),
-    ...options
-  }
-    )};
-
-useDefaultStatusQuery.getKey = (variables: DefaultStatusQueryVariables) => ['DefaultStatus', variables];
-
-export const useInfiniteDefaultStatusQuery = <
-      TData = InfiniteData<DefaultStatusQuery>,
-      TError = unknown
-    >(
-      variables: DefaultStatusQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<DefaultStatusQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DefaultStatusQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<DefaultStatusQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['DefaultStatus.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<DefaultStatusQuery, DefaultStatusQueryVariables>(DefaultStatusDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteDefaultStatusQuery.getKey = (variables: DefaultStatusQueryVariables) => ['DefaultStatus.infinite', variables];
-
-
-useDefaultStatusQuery.fetcher = (variables: DefaultStatusQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DefaultStatusQuery, DefaultStatusQueryVariables>(DefaultStatusDocument, variables, options);
-
 export const DownvoteDocument = `
     query Downvote($userId: UUID!, $feedbackId: UUID!) {
   downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
@@ -6201,6 +6149,59 @@ useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables
 
 
 useProjectMetricsQuery.fetcher = (variables: ProjectMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument, variables, options);
+
+export const ProjectStatusesDocument = `
+    query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
+  postStatuses(condition: {projectId: $projectId, isDefault: $isDefault}) {
+    nodes {
+      rowId
+      status
+    }
+  }
+}
+    `;
+
+export const useProjectStatusesQuery = <
+      TData = ProjectStatusesQuery,
+      TError = unknown
+    >(
+      variables: ProjectStatusesQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectStatusesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectStatusesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectStatusesQuery, TError, TData>(
+      {
+    queryKey: ['ProjectStatuses', variables],
+    queryFn: graphqlFetch<ProjectStatusesQuery, ProjectStatusesQueryVariables>(ProjectStatusesDocument, variables),
+    ...options
+  }
+    )};
+
+useProjectStatusesQuery.getKey = (variables: ProjectStatusesQueryVariables) => ['ProjectStatuses', variables];
+
+export const useInfiniteProjectStatusesQuery = <
+      TData = InfiniteData<ProjectStatusesQuery>,
+      TError = unknown
+    >(
+      variables: ProjectStatusesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectStatusesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectStatusesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ProjectStatusesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectStatuses.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectStatusesQuery, ProjectStatusesQueryVariables>(ProjectStatusesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectStatusesQuery.getKey = (variables: ProjectStatusesQueryVariables) => ['ProjectStatuses.infinite', variables];
+
+
+useProjectStatusesQuery.fetcher = (variables: ProjectStatusesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectStatusesQuery, ProjectStatusesQueryVariables>(ProjectStatusesDocument, variables, options);
 
 export const ProjectsDocument = `
     query Projects($pageSize: Int!, $offset: Int!, $organizationSlug: String!, $search: String) {

@@ -4,36 +4,30 @@ import { Flex, Text } from "@omnidev/sigil";
 
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
-import { useProjectQuery, useStatusBreakdownQuery } from "generated/graphql";
+import {
+  useProjectStatusesQuery,
+  useStatusBreakdownQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 
-import type { Organization, Project } from "generated/graphql";
+import type { Project } from "generated/graphql";
 
 interface Props {
   /** Project ID. */
   projectId: Project["rowId"];
-  /** Project slug. */
-  projectSlug: Project["slug"];
-  /** Organization slug. */
-  organizationSlug: Organization["slug"];
 }
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = ({
-  projectId,
-  projectSlug,
-  organizationSlug,
-}: Props) => {
-  const { data: projectStatuses } = useProjectQuery(
+const StatusBreakdown = ({ projectId }: Props) => {
+  const { data: projectStatuses } = useProjectStatusesQuery(
     {
-      projectSlug,
-      organizationSlug,
+      projectId,
     },
     {
       select: (data) =>
-        data?.projects?.nodes?.[0]?.postStatuses?.nodes?.map((status) => ({
+        data?.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
           status: status?.status,
         })),

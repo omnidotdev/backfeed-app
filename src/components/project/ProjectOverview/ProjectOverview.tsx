@@ -11,22 +11,14 @@ import {
 } from "components/project";
 import { useProjectMetricsQuery } from "generated/graphql";
 
-import type { Organization, Project } from "generated/graphql";
+import type { Project } from "generated/graphql";
 
 interface Props {
   /** Project ID. */
   projectId: Project["rowId"];
-  /** Project slug. */
-  projectSlug: Project["slug"];
-  /** Organization slug. */
-  organizationSlug: Organization["slug"];
 }
 
-const ProjectOverview = ({
-  projectId,
-  projectSlug,
-  organizationSlug,
-}: Props) => {
+const ProjectOverview = ({ projectId }: Props) => {
   // TODO: look into optimistic updates. Unnecessary for now, but would be nice for synchronous feedback with the details component. See: https://github.com/omnidotdev/backfeed-app/pull/58#issuecomment-2593070248 for more context.
   const { data, isLoading, isError } = useProjectMetricsQuery(
     {
@@ -67,11 +59,7 @@ const ProjectOverview = ({
             isError={isError}
           />
 
-          <StatusBreakdown
-            projectId={projectId}
-            projectSlug={projectSlug}
-            organizationSlug={organizationSlug}
-          />
+          <StatusBreakdown projectId={projectId} />
         </Stack>
       </GridItem>
     </Grid>

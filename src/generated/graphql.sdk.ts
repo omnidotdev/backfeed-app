@@ -4597,13 +4597,6 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
-export type DefaultStatusQueryVariables = Exact<{
-  projectId: Scalars['UUID']['input'];
-}>;
-
-
-export type DefaultStatusQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } | null };
-
 export type DownvoteQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   feedbackId: Scalars['UUID']['input'];
@@ -4697,6 +4690,14 @@ export type ProjectMetricsQueryVariables = Exact<{
 
 
 export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt?: Date | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'UpvoteConnection', totalCount: number } | null, downvotes?: { __typename?: 'DownvoteConnection', totalCount: number } | null };
+
+export type ProjectStatusesQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -5013,16 +5014,6 @@ export const DashboardAggregatesDocument = gql`
   }
 }
     `;
-export const DefaultStatusDocument = gql`
-    query DefaultStatus($projectId: UUID!) {
-  postStatuses(condition: {projectId: $projectId, isDefault: true}) {
-    nodes {
-      rowId
-      status
-    }
-  }
-}
-    `;
 export const DownvoteDocument = gql`
     query Downvote($userId: UUID!, $feedbackId: UUID!) {
   downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
@@ -5201,6 +5192,16 @@ export const ProjectMetricsDocument = gql`
   }
 }
     `;
+export const ProjectStatusesDocument = gql`
+    query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
+  postStatuses(condition: {projectId: $projectId, isDefault: $isDefault}) {
+    nodes {
+      rowId
+      status
+    }
+  }
+}
+    `;
 export const ProjectsDocument = gql`
     query Projects($pageSize: Int!, $offset: Int!, $organizationSlug: String!, $search: String) {
   projects(
@@ -5375,9 +5376,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
     },
-    DefaultStatus(variables: DefaultStatusQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DefaultStatusQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DefaultStatusQuery>(DefaultStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DefaultStatus', 'query', variables);
-    },
     Downvote(variables: DownvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DownvoteQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DownvoteQuery>(DownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Downvote', 'query', variables);
     },
@@ -5410,6 +5408,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     ProjectMetrics(variables: ProjectMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectMetricsQuery>(ProjectMetricsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ProjectMetrics', 'query', variables);
+    },
+    ProjectStatuses(variables: ProjectStatusesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectStatusesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectStatusesQuery>(ProjectStatusesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ProjectStatuses', 'query', variables);
     },
     Projects(variables: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>(ProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Projects', 'query', variables);

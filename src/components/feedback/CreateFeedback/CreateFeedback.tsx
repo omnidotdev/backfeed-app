@@ -9,10 +9,10 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
-  useDefaultStatusQuery,
   useInfinitePostsQuery,
   useProjectMetricsQuery,
   useProjectQuery,
+  useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -69,9 +69,10 @@ const CreateFeedback = () => {
     }
   );
 
-  const { data: defaultStatusId } = useDefaultStatusQuery(
+  const { data: defaultStatusId } = useProjectStatusesQuery(
     {
       projectId: projectId!,
+      isDefault: true,
     },
     {
       enabled: !!projectId,

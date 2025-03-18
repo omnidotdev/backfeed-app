@@ -1,0 +1,8 @@
+query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
+  postStatuses(condition: { projectId: $projectId, isDefault: $isDefault }) {
+    nodes {
+      rowId
+      status
+    }
+  }
+}

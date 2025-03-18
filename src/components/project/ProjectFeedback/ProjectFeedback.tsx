@@ -11,8 +11,8 @@ import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateFeedbackMutation,
-  useDefaultStatusQuery,
   useInfinitePostsQuery,
+  useProjectStatusesQuery,
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -47,9 +47,10 @@ const ProjectFeedback = ({ projectId }: Props) => {
     }
   );
 
-  const { data: defaultStatus } = useDefaultStatusQuery(
+  const { data: defaultStatus } = useProjectStatusesQuery(
     {
       projectId,
+      isDefault: true,
     },
     {
       enabled: !!projectId,

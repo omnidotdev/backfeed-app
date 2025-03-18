@@ -11,6 +11,7 @@ import {
   usePostsQuery,
   useProjectMetricsQuery,
   useProjectQuery,
+  useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -109,6 +110,10 @@ const ProjectPage = async ({ params }: Props) => {
       queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
     }),
     queryClient.prefetchQuery({
+      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
+      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
+    }),
+    queryClient.prefetchQuery({
       queryKey: useStatusBreakdownQuery.getKey({ projectId: project.rowId }),
       queryFn: useStatusBreakdownQuery.fetcher({ projectId: project.rowId }),
     }),
@@ -141,11 +146,7 @@ const ProjectPage = async ({ params }: Props) => {
       }}
     >
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectOverview
-          projectId={project.rowId}
-          projectSlug={projectSlug}
-          organizationSlug={organizationSlug}
-        />
+        <ProjectOverview projectId={project.rowId} />
       </HydrationBoundary>
     </Page>
   );
