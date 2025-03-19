@@ -60,8 +60,13 @@ const PricingCard = ({ product, ...rest }: Props) => {
   const isPerMonthPricing =
     pricingModel === SubscriptionRecurringInterval.Month;
 
-  const { isRecommendedTier, isEnterpriseTier, isDisabled, actionIcon } =
-    useProductMetadata({ product });
+  const {
+    productTitle,
+    isRecommendedTier,
+    isEnterpriseTier,
+    isDisabled,
+    actionIcon,
+  } = useProductMetadata({ product });
 
   return (
     <Card
@@ -113,7 +118,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
         <Stack align="center" w="full" px={6}>
           {/* ! NB: important to add a `title` key to product metadata */}
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {product.metadata.title}
+            {productTitle}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">

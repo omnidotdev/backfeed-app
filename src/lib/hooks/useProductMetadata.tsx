@@ -1,6 +1,8 @@
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { P, match } from "ts-pattern";
 
+import { capitalizeFirstLetter } from "lib/util";
+
 import type { Product } from "@polar-sh/sdk/models/components/product";
 
 interface Options {
@@ -31,11 +33,14 @@ const useProductMetadata = ({ product }: Options) => {
     .with({ isEnterprise: P.nonNullable }, () => undefined)
     .otherwise(() => HiLockOpen);
 
+  const productTitle = capitalizeFirstLetter(metadata.title as string);
+
   return {
     isRecommendedTier,
     isEnterpriseTier,
     isDisabled,
     actionIcon,
+    productTitle,
   };
 };
 
