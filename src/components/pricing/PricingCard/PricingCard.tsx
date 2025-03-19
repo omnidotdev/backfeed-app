@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { FaArrowRight } from "react-icons/fa6";
 
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Product } from "@polar-sh/sdk/models/components/product";
@@ -41,17 +41,17 @@ const getPrice = (price: ProductPrice, isEnterprise: boolean) => {
 interface Props extends CardProps {
   /** Product information. */
   product: Product;
-  /** Pricing model (e.g. monthly or annual). */
-  pricingModel: SubscriptionRecurringInterval;
 }
 
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
+const PricingCard = ({ product, ...rest }: Props) => {
   const router = useRouter();
 
   const { isAuthenticated, user } = useAuth();
+
+  const [{ pricingModel }] = useSearchParams();
 
   const isPerMonthPricing =
     pricingModel === SubscriptionRecurringInterval.Month;
@@ -68,8 +68,9 @@ const PricingCard = ({ product, pricingModel, ...rest }: Props) => {
       maxW={{ lg: "xs" }}
       h={{ lg: "2xl" }}
       color={isDisabled ? "foreground.subtle" : undefined}
-      borderWidth={isRecommendedTier ? 2 : 1}
-      borderColor={isRecommendedTier ? "brand.primary" : "none"}
+      outline={isRecommendedTier ? "solid 2px" : undefined}
+      outlineColor={isRecommendedTier ? "brand.primary" : "none"}
+      outlineOffset={1}
       bodyProps={{
         p: 0,
       }}

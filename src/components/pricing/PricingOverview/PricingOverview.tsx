@@ -118,11 +118,7 @@ const PricingOverview = ({ products }: Props) => {
         px={4}
       >
         {filteredProducts.map((product) => (
-          <PricingCard
-            key={product.id}
-            product={product}
-            pricingModel={pricingModel}
-          />
+          <PricingCard key={product.id} product={product} />
         ))}
       </Flex>
 
