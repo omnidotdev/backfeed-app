@@ -20,6 +20,7 @@ const PricingPage = async () => {
     },
   ] = await Promise.all([
     getAuthSession(),
+    // TODO: determine query to filter products for pricing page
     polar.products.list({
       isArchived: false,
     }),
