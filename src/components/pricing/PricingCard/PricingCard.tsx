@@ -71,7 +71,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
     <Card
       gap={4}
       w="full"
-      maxW={{ lg: "xs" }}
+      maxW={{ base: "xl", lg: "xs" }}
       h={{ lg: "2xl" }}
       outline={isRecommendedTier ? "solid 2px" : undefined}
       outlineColor="brand.primary"
@@ -174,7 +174,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
           }}
           p={6}
         >
-          <Grid w="full" columns={{ base: 1, sm: 2, md: 3, lg: 1 }}>
+          <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }}>
             {product.benefits.map((feature) => (
               <GridItem
                 key={feature.id}
