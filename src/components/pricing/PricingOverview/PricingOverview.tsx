@@ -71,6 +71,7 @@ const PricingOverview = ({ products }: Props) => {
             px={6}
             py={4}
             w="50%"
+            transition="none"
             _on={{
               bgColor: "brand.primary",
               color: "background.default",
@@ -84,6 +85,7 @@ const PricingOverview = ({ products }: Props) => {
             px={6}
             py={4}
             w="50%"
+            transition="none"
             _on={{
               bgColor: "brand.primary",
               color: "background.default",
