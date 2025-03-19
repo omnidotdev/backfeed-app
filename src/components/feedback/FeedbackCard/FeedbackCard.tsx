@@ -121,7 +121,6 @@ const FeedbackCard = ({
       gap={8}
       bgColor="background.default"
       borderRadius="lg"
-      boxShadow="lg"
       p={{ base: 4, sm: 6 }}
       opacity={isPending ? 0.5 : 1}
       {...rest}

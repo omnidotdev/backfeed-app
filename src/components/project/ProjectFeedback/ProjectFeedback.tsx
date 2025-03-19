@@ -148,6 +148,8 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       isPending={isPending}
                       w="full"
                       minH={21}
+                      borderRadius="sm"
+                      bgColor="card-item"
                     >
                       <Link
                         href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
