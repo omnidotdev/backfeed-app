@@ -16,12 +16,11 @@ import {
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
-import { P, match } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { app } from "lib/config";
-import { useAuth, useSearchParams } from "lib/hooks";
+import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
@@ -33,11 +32,11 @@ const COMING_SOON = "coming soon";
 /**
  * Get a human-readable price.
  * @param price Fixed price details. Derived from product.
- * @param isEnterprise Whether the product is enterprise tier.
+ * @param isEnterpriseTier Whether the product is enterprise tier.
  * @returns A human-readable price.
  */
-const getPrice = (price: ProductPrice, isEnterprise: boolean) => {
-  if (price.amountType !== "fixed" || isEnterprise)
+const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
+  if (price.amountType !== "fixed" || isEnterpriseTier)
     return app.pricingPage.pricingCard.customPricing;
 
   return price.priceAmount / 100;
@@ -61,15 +60,8 @@ const PricingCard = ({ product, ...rest }: Props) => {
   const isPerMonthPricing =
     pricingModel === SubscriptionRecurringInterval.Month;
 
-  // ! NB: these metadata properties are typically optional and must be present for the corresponding product
-  const isRecommendedTier = !!product.metadata.isRecommended;
-  const isDisabled = !!product.metadata.isDisabled;
-  const isEnterprise = !!product.metadata.isEnterprise;
-
-  const actionIcon = match(product.metadata)
-    .with({ isRecommended: P.nonNullable }, () => HiSparkles)
-    .with({ isEnterprise: P.nonNullable }, () => undefined)
-    .otherwise(() => HiLockOpen);
+  const { isRecommendedTier, isEnterpriseTier, isDisabled, actionIcon } =
+    useProductMetadata({ product });
 
   return (
     <Card
@@ -130,11 +122,11 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
-              {!isEnterprise && <sigil.sup fontSize="lg">$</sigil.sup>}
-              {getPrice(product.prices[0] as ProductPrice, isEnterprise)}
+              {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
+              {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
             </Text>
 
-            {!isEnterprise && (
+            {!isEnterpriseTier && (
               <sigil.span
                 fontSize="lg"
                 mt={2}
@@ -164,7 +156,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
           >
             {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 
-            {isEnterprise
+            {isEnterpriseTier
               ? app.pricingPage.pricingCard.enterprise
               : app.pricingPage.pricingCard.getStarted}
           </Button>
