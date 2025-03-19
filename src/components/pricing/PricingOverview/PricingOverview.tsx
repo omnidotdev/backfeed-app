@@ -69,7 +69,7 @@ const PricingOverview = ({ products }: Props) => {
             value={SubscriptionRecurringInterval.Month}
             px={6}
             py={4}
-            w="50%"
+            flex={1}
             transition="none"
             _on={{
               bgColor: "brand.primary",
@@ -83,7 +83,7 @@ const PricingOverview = ({ products }: Props) => {
             value={SubscriptionRecurringInterval.Year}
             px={6}
             py={4}
-            w="50%"
+            flex={1}
             transition="none"
             _on={{
               bgColor: "brand.primary",

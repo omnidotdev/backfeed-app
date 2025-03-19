@@ -123,6 +123,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
+
               {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
             </Text>
 
@@ -197,7 +198,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                       h={4}
                       w={4}
                       color={color}
-                    />{" "}
+                    />
                   </sigil.span>
 
                   {feature.description}
