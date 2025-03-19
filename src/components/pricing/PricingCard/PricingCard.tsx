@@ -184,8 +184,8 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 gap={2}
               >
                 <Box
-                  h={2}
-                  w={2}
+                  h={1}
+                  w={1}
                   borderRadius="full"
                   bgColor={
                     isRecommendedTier ? "brand.primary" : "foreground.subtle"
