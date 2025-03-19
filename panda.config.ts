@@ -46,7 +46,7 @@ const pandaConfig = defineConfig({
         colors: {
           "card-item": {
             value: {
-              base: "{colors.background.subtle/60}",
+              base: "{colors.background.subtle/70}",
               _dark: "{colors.background.subtle/20}",
             },
           },
