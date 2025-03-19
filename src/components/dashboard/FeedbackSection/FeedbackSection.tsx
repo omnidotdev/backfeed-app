@@ -22,7 +22,7 @@ const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
     h="100%"
     bgColor="background.default"
     borderRadius="lg"
-    boxShadow="lg"
+    boxShadow="card"
     overflow="auto"
     {...rest}
   >

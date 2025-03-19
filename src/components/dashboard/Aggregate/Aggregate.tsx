@@ -34,7 +34,7 @@ const Aggregate = ({
     p={6}
     bgColor="background.default"
     borderRadius="lg"
-    boxShadow="lg"
+    boxShadow="card"
   >
     <Flex align="center" justify="space-between" gap={2}>
       <Text color="foreground.subtle" fontSize="sm" fontWeight="medium">

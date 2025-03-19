@@ -34,7 +34,7 @@ const SectionContainer = ({
     position="relative"
     bgColor="background.default"
     borderRadius="lg"
-    boxShadow="lg"
+    boxShadow="card"
     p={{ base: 4, sm: 6 }}
     gap={6}
     {...rest}
