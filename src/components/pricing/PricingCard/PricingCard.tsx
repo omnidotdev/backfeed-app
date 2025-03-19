@@ -119,9 +119,9 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
       <Stack align="center" h="full" w="full">
         <Stack align="center" w="full" px={6}>
-          {/* TODO: adjust to stable reference (metadata) if product name is used for filtering */}
+          {/* ! NB: important to add a `title` key to product metadata */}
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {product.name}
+            {product.metadata.title}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
