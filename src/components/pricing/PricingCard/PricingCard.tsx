@@ -69,10 +69,15 @@ const PricingCard = ({ product, ...rest }: Props) => {
       h={{ lg: "2xl" }}
       color={isDisabled ? "foreground.subtle" : undefined}
       outline={isRecommendedTier ? "solid 2px" : undefined}
-      outlineColor={isRecommendedTier ? "brand.primary" : "none"}
-      outlineOffset={1}
+      outlineColor="brand.primary"
+      outlineOffset={1.5}
       bodyProps={{
         p: 0,
+      }}
+      boxShadow={{
+        base: "0px 2px 4px {colors.neutral.400a}, 0px 0px 1px {colors.neutral.800a}",
+        _dark:
+          "0px 2px 4px {colors.black.800a}, 0px 0px 1px inset {colors.neutral.500a}",
       }}
       {...rest}
     >
