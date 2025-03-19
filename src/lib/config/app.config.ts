@@ -425,7 +425,8 @@ const app = {
       user: "user",
       month: "month",
       year: "year",
-      getStarted: "Get Started",
+      getStarted: "Get started",
+      enterprise: "Contact sales",
     },
     pricingMatrix: {
       feature: "Feature",
