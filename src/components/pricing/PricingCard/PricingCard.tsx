@@ -179,10 +179,11 @@ const PricingCard = ({ product, ...rest }: Props) => {
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
             {product.benefits.map((feature) => {
-              const isComingSoon =
-                (
-                  feature.properties as BenefitCustomProperties
-                ).note?.toLowerCase() === COMING_SOON;
+              const isComingSoon = (
+                feature.properties as BenefitCustomProperties
+              ).note
+                ?.toLowerCase()
+                .includes(COMING_SOON);
 
               const color = match({
                 isDisabled,
