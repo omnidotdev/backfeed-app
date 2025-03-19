@@ -36,7 +36,6 @@ const PricingOverview = ({ products }: Props) => {
   const filteredProducts = useMemo(
     () =>
       products
-        // TODO: discuss case where there are products beyond Backfeed within the organization
         .filter((product) => product.recurringInterval === pricingModel)
         // ! NB: this sort function is limited. Prices must fall in the `fixed` price type. May need to adjust accordingly in the future.
         .sort(
