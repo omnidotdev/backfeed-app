@@ -145,6 +145,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       totalDownvotes={totalDownvotes}
       // NB: validating `isAdmin` is crucial here even though the query above has an `enabled` flag. This is because the query is prefetched on the server, so we need to add this extra validation before passing the results of the query.
       projectStatuses={isAdmin ? projectStatuses : undefined}
+      boxShadow="card"
       {...rest}
     >
       {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (

@@ -35,7 +35,7 @@ const RecentFeedback = () => {
     <FeedbackSection
       title="Recent Feedback"
       maxH="xl"
-      contentProps={{ overflow: "auto" }}
+      contentProps={{ overflow: "auto", p: 6 }}
     >
       {isError ? (
         <ErrorBoundary
@@ -54,7 +54,8 @@ const RecentFeedback = () => {
                 key={feedback?.rowId}
                 feedback={feedback as Partial<Post>}
                 borderBottomWidth={{ base: "1px", _last: 0 }}
-                pb={{ _last: 12 }}
+                pt={{ base: 3, _first: 0 }}
+                pb={{ base: 3, _last: 6 }}
               />
             ))
           ) : (

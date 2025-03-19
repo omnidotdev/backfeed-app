@@ -200,8 +200,8 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
               ? app.organizationSettingsPage.dangerZone.description
               : joinOrganizationDetails.description
           }
-          border="1px solid"
-          borderColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
+          outline="1px solid"
+          outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
         >
           <Divider />
 

@@ -4,7 +4,8 @@ import {
   Badge,
   Button,
   Card,
-  Divider,
+  Grid,
+  GridItem,
   HStack,
   Icon,
   Stack,
@@ -12,77 +13,74 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { FaArrowRight } from "react-icons/fa6";
+import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
+import { match } from "ts-pattern";
 
 import { app } from "lib/config";
+import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
 
-import type { ButtonProps, CardProps } from "@omnidev/sigil";
-import type { PricingModel } from "components/pricing";
+import type { CardProps } from "@omnidev/sigil";
+import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
+import type { Product } from "@polar-sh/sdk/models/components/product";
+import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
 
-type Price = string | { monthly: number; annual: number };
+const COMING_SOON = "coming soon";
 
 /**
  * Get a human-readable price.
- * @param price tier cost
- * @param isPerMonthPricing whether pricing is monthly
- * @returns a human-readable price
+ * @param price Fixed price details. Derived from product.
+ * @param isEnterpriseTier Whether the product is enterprise tier.
+ * @returns A human-readable price.
  */
-const getPrice = (price: Price, isPerMonthPricing: boolean): string => {
-  if (typeof price === "string") return price;
+const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
+  if (price.amountType !== "fixed" || isEnterpriseTier)
+    return app.pricingPage.pricingCard.customPricing;
 
-  return `$${isPerMonthPricing ? price.monthly : price.annual}`;
+  return price.priceAmount / 100;
 };
 
 interface Props extends CardProps {
-  /** Pricing tier information. */
-  tier: {
-    /** Tier title. */
-    title: string;
-    /** Tier description. */
-    description: string;
-    /** Tier price. */
-    price: Price;
-    /** Tier features. */
-    features: string[];
-  };
-  /** Whether the tier is recommended. */
-  isRecommendedTier?: boolean;
-  /** Whether the tier is disabled. */
-  isDisabled?: boolean;
-  /** Pricing model (e.g. monthly or annual). */
-  pricingModel?: PricingModel;
-  /** CTA button properties. */
-  ctaProps?: ButtonProps;
+  /** Product information. */
+  product: Product;
 }
 
 /**
- * Pricing tier information.
+ * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({
-  tier,
-  isRecommendedTier = false,
-  isDisabled = false,
-  pricingModel,
-  ctaProps,
-  ...rest
-}: Props) => {
-  const isPerMonthPricing = pricingModel === "monthly";
-  const isPriceAString = typeof tier.price === "string";
+const PricingCard = ({ product, ...rest }: Props) => {
+  const router = useRouter();
+
+  const { isAuthenticated, user } = useAuth();
+
+  const [{ pricingModel }] = useSearchParams();
+
+  const isPerMonthPricing =
+    pricingModel === SubscriptionRecurringInterval.Month;
+
+  const {
+    productTitle,
+    isRecommendedTier,
+    isEnterpriseTier,
+    isDisabled,
+    actionIcon,
+  } = useProductMetadata({ product });
 
   return (
     <Card
       gap={4}
-      w={{ base: "100%", sm: "sm", lg: "xs" }}
-      minH="2xl"
-      display="flex"
-      position="relative"
-      color={isDisabled ? "foreground.subtle" : undefined}
-      footer={
-        <Button w="100%" fontSize="lg" disabled={isDisabled} {...ctaProps}>
-          {app.pricingPage.pricingCard.getStarted}{" "}
-          <Icon src={FaArrowRight} w={4} />
-        </Button>
-      }
+      w="full"
+      maxW={{ base: "2xl", lg: "xs" }}
+      h={{ lg: "2xl" }}
+      outline={isRecommendedTier ? "solid 2px" : undefined}
+      outlineColor="brand.primary"
+      outlineOffset={1.5}
+      bodyProps={{
+        p: 0,
+      }}
+      boxShadow="card"
       {...rest}
     >
       {isRecommendedTier && (
@@ -116,28 +114,25 @@ const PricingCard = ({
         </Stack>
       )}
 
-      <Stack
-        display="flex"
-        flexDirection="column"
-        align="center"
-        justify="space-between"
-        h="full"
-      >
-        <Stack align="center" w="full">
+      <Stack align="center" h="full" w="full">
+        <Stack align="center" w="full" px={6}>
+          {/* ! NB: important to add a `title` key to product metadata */}
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {tier.title}
+            {productTitle}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {tier.description}
+            {product.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
-              {getPrice(tier.price, isPerMonthPricing)}
+              {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
+
+              {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
             </Text>
 
-            {!isPriceAString && (
+            {!isEnterpriseTier && (
               <sigil.span
                 fontSize="lg"
                 mt={2}
@@ -152,21 +147,71 @@ const PricingCard = ({
             )}
           </HStack>
 
-          <Divider my={2} />
-
-          <sigil.ul
-            // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-            css={css.raw({
-              w: "full",
-              listStyle: "disc",
-              ml: 8,
-              px: 2,
-            })}
+          <Button
+            w="100%"
+            fontSize="lg"
+            disabled={isDisabled}
+            variant={isRecommendedTier ? "solid" : "outline"}
+            onClick={() =>
+              isAuthenticated
+                ? router.push(
+                    `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                  )
+                : signIn("omni")
+            }
           >
-            {tier.features.map((feature) => (
-              <sigil.li key={feature}>{feature}</sigil.li>
-            ))}
-          </sigil.ul>
+            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+
+            {isEnterpriseTier
+              ? app.pricingPage.pricingCard.enterprise
+              : app.pricingPage.pricingCard.getStarted}
+          </Button>
+        </Stack>
+
+        <Stack
+          w="full"
+          h="full"
+          bgColor={{
+            base: "background.subtle",
+            _dark: "background.subtle/25",
+          }}
+          p={6}
+        >
+          <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
+            {product.benefits.map((feature) => {
+              const isComingSoon = (
+                feature.properties as BenefitCustomProperties
+              ).note
+                ?.toLowerCase()
+                .includes(COMING_SOON);
+
+              const color = match({
+                isDisabled,
+                isRecommendedTier,
+                isComingSoon,
+              })
+                .with({ isDisabled: true }, () => "foreground.subtle")
+                .with({ isComingSoon: true }, () => "yellow")
+                .with({ isRecommendedTier: true }, () => "brand.primary")
+                .otherwise(() => "foreground.subtle");
+
+              return (
+                <GridItem key={feature.id} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                      color={color}
+                    />
+                  </sigil.span>
+
+                  {feature.description}
+                </GridItem>
+              );
+            })}
+          </Grid>
         </Stack>
       </Stack>
     </Card>
