@@ -99,20 +99,23 @@ const Subscription = ({ customer }: Props) => {
                 {subscription?.recurringInterval}
               </TableCell>
 
-              <TableCell display="flex" justifyContent="flex-end">
-                {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
-                <SigilLink
-                  href={`/api/customer/portal?customerId=${customer.value.id}`}
-                >
-                  <Button>
-                    <Icon src={LuSettings} h={4} w={4} />
+              <TableCell>
+                <Flex justify="flex-end">
+                  {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
+                  <SigilLink
+                    href={`/api/customer/portal?customerId=${customer.value.id}`}
+                    textDecoration="none"
+                  >
+                    <Button>
+                      <Icon src={LuSettings} h={4} w={4} />
 
-                    {
-                      app.profilePage.subscription.actions.manageSubscription
-                        .label
-                    }
-                  </Button>
-                </SigilLink>
+                      {
+                        app.profilePage.subscription.actions.manageSubscription
+                          .label
+                      }
+                    </Button>
+                  </SigilLink>
+                </Flex>
               </TableCell>
             </TableRow>
           </Table>
