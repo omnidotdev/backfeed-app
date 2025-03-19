@@ -35,8 +35,6 @@ const transferOwnershipDetails =
 const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
-// TODO: refactor join organization functionality. This should be invite only. This may also require additional adjustments, i.e. locking down organization settings route.
-
 interface Props {
   developmentFlag: boolean;
 }
