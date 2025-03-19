@@ -74,11 +74,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
       bodyProps={{
         p: 0,
       }}
-      boxShadow={{
-        base: "0px 2px 4px {colors.neutral.400a}, 0px 0px 1px {colors.neutral.800a}",
-        _dark:
-          "0px 2px 4px {colors.black.800a}, 0px 0px 1px inset {colors.neutral.500a}",
-      }}
+      boxShadow="card"
       {...rest}
     >
       {isRecommendedTier && (
