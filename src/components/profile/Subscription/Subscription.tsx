@@ -3,6 +3,7 @@
 import {
   Button,
   Circle,
+  Flex,
   HStack,
   Icon,
   Link as SigilLink,
@@ -67,47 +68,55 @@ const Subscription = ({ customer }: Props) => {
           </Link>
         </Stack>
       ) : (
-        <Table
-          headerContent={
-            <TableRow bgColor="transparent">
-              {Object.values(app.profilePage.subscription.headers).map(
-                (header) => (
-                  <TableCell key={header} fontWeight="bold">
-                    {header}
-                  </TableCell>
-                )
-              )}
+        <Flex w="100%" overflowX="auto">
+          <Table
+            headerContent={
+              <TableRow bgColor="transparent">
+                {Object.values(app.profilePage.subscription.headers).map(
+                  (header) => (
+                    <TableCell key={header} fontWeight="bold">
+                      {header}
+                    </TableCell>
+                  )
+                )}
+              </TableRow>
+            }
+            textWrap="nowrap"
+          >
+            <TableRow fontSize={{ base: "sm", md: "lg" }} bgColor="transparent">
+              <TableCell>{subscription?.product.name}</TableCell>
+
+              <TableCell>
+                <HStack>
+                  <Circle size={2} bgColor="brand.tertiary" />
+
+                  {capitalizeFirstLetter(subscription?.status)}
+                </HStack>
+              </TableCell>
+
+              <TableCell>
+                ${(subscription?.amount ?? 0) / 100}/
+                {subscription?.recurringInterval}
+              </TableCell>
+
+              <TableCell display="flex" justifyContent="flex-end">
+                {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
+                <SigilLink
+                  href={`/api/customer/portal?customerId=${customer.value.id}`}
+                >
+                  <Button>
+                    <Icon src={LuSettings} h={4} w={4} />
+
+                    {
+                      app.profilePage.subscription.actions.manageSubscription
+                        .label
+                    }
+                  </Button>
+                </SigilLink>
+              </TableCell>
             </TableRow>
-          }
-        >
-          <TableRow fontSize={{ base: "sm", md: "lg" }} bgColor="transparent">
-            <TableCell>{subscription?.product.name}</TableCell>
-
-            <TableCell>
-              <HStack>
-                <Circle size={2} bgColor="brand.tertiary" />
-
-                {capitalizeFirstLetter(subscription?.status)}
-              </HStack>
-            </TableCell>
-
-            <TableCell>
-              ${(subscription?.amount ?? 0) / 100}/
-              {subscription?.recurringInterval}
-            </TableCell>
-
-            <TableCell display="flex" justifyContent="flex-end">
-              {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
-              <SigilLink
-                href={`/api/customer/portal?customerId=${customer.value.id}`}
-              >
-                <Button variant="icon" aria-label="Manage Subscription">
-                  <Icon src={LuSettings} />
-                </Button>
-              </SigilLink>
-            </TableCell>
-          </TableRow>
-        </Table>
+          </Table>
+        </Flex>
       )}
     </SectionContainer>
   );

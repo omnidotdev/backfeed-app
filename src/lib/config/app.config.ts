@@ -210,13 +210,14 @@ const app = {
     },
     subscription: {
       title: "Subscription",
+      // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
       description: "Manage your subscription plan and billing information.",
       actions: {
         subscribe: {
           label: "Subscribe",
         },
         manageSubscription: {
-          label: "Manage Subscription",
+          label: "Manage",
         },
       },
       headers: {

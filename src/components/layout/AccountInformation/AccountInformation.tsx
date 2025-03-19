@@ -65,8 +65,9 @@ const AccountInformation = () => {
         <MenuSeparator />
 
         <MenuItem value="profile" onClick={handleProfileClick}>
-          <HStack gap={2} color="foreground.subtle">
-            <Icon src={FiUser} size="sm" color="foreground.subtle" />
+          <HStack gap={2}>
+            <Icon src={FiUser} size="sm" />
+
             {app.auth.profile.label}
           </HStack>
         </MenuItem>
@@ -76,6 +77,7 @@ const AccountInformation = () => {
         <MenuItem value="logout" onClick={handleLogout}>
           <HStack gap={2} color="red">
             <Icon src={FiLogOut} size="sm" color="red" />
+
             {app.auth.signOut.label}
           </HStack>
         </MenuItem>
