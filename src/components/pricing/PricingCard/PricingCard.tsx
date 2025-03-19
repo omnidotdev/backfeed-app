@@ -36,7 +36,7 @@ import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice"
 const getPrice = (price: ProductPrice, isEnterprise: boolean) => {
   if (price.amountType !== "fixed" || isEnterprise) return "Custom";
 
-  return `$${price.priceAmount / 100}`;
+  return price.priceAmount / 100;
 };
 
 interface Props extends CardProps {
@@ -73,7 +73,6 @@ const PricingCard = ({ product, ...rest }: Props) => {
       w="full"
       maxW={{ lg: "xs" }}
       h={{ lg: "2xl" }}
-      color={isDisabled ? "foreground.subtle" : undefined}
       outline={isRecommendedTier ? "solid 2px" : undefined}
       outlineColor="brand.primary"
       outlineOffset={1.5}
@@ -126,6 +125,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
+              {!isEnterprise && <sigil.sup fontSize="lg">$</sigil.sup>}
               {getPrice(product.prices[0] as ProductPrice, isEnterprise)}
             </Text>
 
