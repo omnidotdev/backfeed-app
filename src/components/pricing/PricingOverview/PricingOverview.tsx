@@ -52,7 +52,7 @@ const PricingOverview = ({ products }: Props) => {
       <PricingHeader />
 
       {/* pricing model toggle */}
-      <Flex position="relative">
+      <Flex position="relative" mb={4}>
         <ToggleGroup
           borderRadius="full"
           position="relative"

@@ -2,7 +2,6 @@
 
 import {
   Badge,
-  Box,
   Button,
   Card,
   Grid,
@@ -18,14 +17,18 @@ import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/s
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { P, match } from "ts-pattern";
 
 import { app } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
+import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+
+const COMING_SOON = "coming soon";
 
 /**
  * Get a human-readable price.
@@ -72,7 +75,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
     <Card
       gap={4}
       w="full"
-      maxW={{ base: "xl", lg: "xs" }}
+      maxW={{ base: "2xl", lg: "xs" }}
       h={{ lg: "2xl" }}
       outline={isRecommendedTier ? "solid 2px" : undefined}
       outlineColor="brand.primary"
@@ -175,26 +178,39 @@ const PricingCard = ({ product, ...rest }: Props) => {
           }}
           p={6}
         >
-          <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }}>
-            {product.benefits.map((feature) => (
-              <GridItem
-                key={feature.id}
-                fontSize="sm"
-                display="flex"
-                alignItems="center"
-                gap={2}
-              >
-                <Box
-                  h={1}
-                  w={1}
-                  borderRadius="full"
-                  bgColor={
-                    isRecommendedTier ? "brand.primary" : "foreground.subtle"
-                  }
-                />
-                {feature.description}
-              </GridItem>
-            ))}
+          <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
+            {product.benefits.map((feature) => {
+              const isComingSoon =
+                (
+                  feature.properties as BenefitCustomProperties
+                ).note?.toLowerCase() === COMING_SOON;
+
+              const color = match({
+                isDisabled,
+                isRecommendedTier,
+                isComingSoon,
+              })
+                .with({ isDisabled: true }, () => "foreground.subtle")
+                .with({ isComingSoon: true }, () => "yellow")
+                .with({ isRecommendedTier: true }, () => "brand.primary")
+                .otherwise(() => "foreground.subtle");
+
+              return (
+                <GridItem key={feature.id} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                      color={color}
+                    />{" "}
+                  </sigil.span>
+
+                  {feature.description}
+                </GridItem>
+              );
+            })}
           </Grid>
         </Stack>
       </Stack>
