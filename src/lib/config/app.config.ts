@@ -427,6 +427,7 @@ const app = {
       year: "year",
       getStarted: "Get started",
       enterprise: "Contact sales",
+      customPricing: "Custom",
     },
     pricingMatrix: {
       feature: "Feature",

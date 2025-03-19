@@ -18,7 +18,7 @@ import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/s
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
-import { match } from "ts-pattern";
+import { P, match } from "ts-pattern";
 
 import { app } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
@@ -34,7 +34,8 @@ import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice"
  * @returns A human-readable price.
  */
 const getPrice = (price: ProductPrice, isEnterprise: boolean) => {
-  if (price.amountType !== "fixed" || isEnterprise) return "Custom";
+  if (price.amountType !== "fixed" || isEnterprise)
+    return app.pricingPage.pricingCard.customPricing;
 
   return price.priceAmount / 100;
 };
@@ -62,9 +63,9 @@ const PricingCard = ({ product, ...rest }: Props) => {
   const isDisabled = !!product.metadata.isDisabled;
   const isEnterprise = !!product.metadata.isEnterprise;
 
-  const icon = match(product.metadata)
-    .with({ isRecommended: "true" }, () => HiSparkles)
-    .with({ isEnterprise: "true" }, () => undefined)
+  const actionIcon = match(product.metadata)
+    .with({ isRecommended: P.nonNullable }, () => HiSparkles)
+    .with({ isEnterprise: P.nonNullable }, () => undefined)
     .otherwise(() => HiLockOpen);
 
   return (
@@ -157,7 +158,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 : signIn("omni")
             }
           >
-            {icon && <Icon src={icon} h={4} w={4} />}
+            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 
             {isEnterprise
               ? app.pricingPage.pricingCard.enterprise
