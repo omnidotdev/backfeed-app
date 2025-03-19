@@ -122,6 +122,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
+      boxShadow="card"
       {...rest}
     >
       {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (

@@ -42,7 +42,6 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
       gap={2}
       {...rest}
     >
-      {/* @ts-ignore TODO: look into prop merging issues that are causing a type error */}
       <ProgressCircle
         css={{
           "--size": "sizes.4",

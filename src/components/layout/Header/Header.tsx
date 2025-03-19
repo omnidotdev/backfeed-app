@@ -29,14 +29,15 @@ const Header = () => {
       })}
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
-        <Flex gap={{ base: 2, md: 4 }} alignItems="center">
+        <Flex gap={4} alignItems="center">
           <Link href="/">
             <HStack gap={2} alignItems="center">
               <Image
                 src="/img/logo.png"
                 alt={`${app.name} logo`}
                 width={48}
-                height={48}
+                height={24}
+                priority
                 // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
