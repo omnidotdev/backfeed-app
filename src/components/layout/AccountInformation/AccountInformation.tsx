@@ -18,10 +18,10 @@ import {
 import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
+import { useMediaQuery } from "usehooks-ts";
 
 import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { useMediaQuery } from "usehooks-ts";
 
 /**
  * User account information.

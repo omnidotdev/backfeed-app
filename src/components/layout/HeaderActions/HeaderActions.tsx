@@ -11,6 +11,7 @@ import {
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useMediaQuery } from "usehooks-ts";
@@ -20,17 +21,6 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
-
-import type { CSSProperties } from "react";
-
-const sharedStyles: CSSProperties = {
-  all: "unset",
-  top: 80,
-  left: 0,
-  position: "fixed",
-  width: "100%",
-  height: "calc(100vh - 80px)",
-};
 
 /**
  * Header actions.
@@ -52,6 +42,12 @@ const HeaderActions = () => {
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.MobileSidebar,
   });
+
+  useEffect(() => {
+    if (isSmallViewport && isOpen) {
+      setIsOpen(false);
+    }
+  }, [isSmallViewport, isOpen, setIsOpen]);
 
   if (isLoading) return null;
 
@@ -85,8 +81,8 @@ const HeaderActions = () => {
             onOpenChange={({ open }) => {
               setIsOpen(open);
             }}
-            backdropProps={{ style: sharedStyles }}
-            positionerProps={{ style: sharedStyles }}
+            backdropProps={{ top: 20 }}
+            positionerProps={{ top: 20 }}
           >
             <Stack p={0} h="full" flex={1}>
               {!isLoading && !isAuthenticated && (
