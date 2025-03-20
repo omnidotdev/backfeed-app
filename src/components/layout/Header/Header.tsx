@@ -36,7 +36,7 @@ const Header = () => {
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={4} alignItems="center">
-          <Link href="/" onClick={isOpen ? () => setIsOpen(false) : undefined}>
+          <Link href="/" onClick={() => setIsOpen(false)}>
             <HStack gap={2} alignItems="center">
               <Image
                 src="/img/logo.png"
