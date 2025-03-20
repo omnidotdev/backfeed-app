@@ -26,7 +26,7 @@ const FeatureCard = ({ title, description, featureIcon }: Props) => (
     justify="center"
     bgColor={{ base: "neutral.50", _dark: "neutral.950" }}
     borderRadius="md"
-    boxShadow="lg"
+    boxShadow="card"
     p={{ base: 4, sm: 6 }}
     gap={4}
   >

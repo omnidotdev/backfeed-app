@@ -71,6 +71,13 @@ export const middleware = auth(async (request) => {
     return await signOut(request);
   }
 
+  // Redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
+  if (request.nextUrl.pathname.startsWith("/confirmation")) {
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth.user?.rowId}`
+    );
+  }
+
   // If the access token is not expired and there was no error refreshing the token, return the response
   return NextResponse.next();
 });

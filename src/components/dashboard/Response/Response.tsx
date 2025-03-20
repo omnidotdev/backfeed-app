@@ -23,7 +23,7 @@ const Response = ({ feedback, type, ...rest }: Props) => {
   const date = dayjs(feedback?.createdAt).fromNow();
 
   return (
-    <Flex direction="column" gap={4} py={3} w="100%" {...rest}>
+    <Flex direction="column" gap={4} w="100%" {...rest}>
       <Flex direction="column" gap={2}>
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>

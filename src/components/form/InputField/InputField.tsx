@@ -27,6 +27,7 @@ const InputField = ({ label, errorProps, ...rest }: Props) => {
         id={name}
         value={state.value}
         onChange={(evt) => handleChange(evt.target.value)}
+        borderColor="border.subtle"
         {...rest}
       />
     </Field>

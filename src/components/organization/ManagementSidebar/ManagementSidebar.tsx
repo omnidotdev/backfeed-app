@@ -72,7 +72,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       href: `/organizations/${organizationSlug}`,
     },
     {
-      label: capitalizeFirstLetter(segment!),
+      label: capitalizeFirstLetter(segment)!,
     },
   ];
 
