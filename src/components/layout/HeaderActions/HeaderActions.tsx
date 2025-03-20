@@ -15,6 +15,13 @@ import { useAuth, useIsSmallViewport } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
+import type { CSSProperties } from "react";
+
+const drawerStyles: CSSProperties = {
+  top: 80,
+  height: "calc(100vh - 80px)",
+};
+
 /**
  * Header actions.
  */
@@ -79,18 +86,8 @@ const HeaderActions = () => {
                 <Icon src={isMobileSidebarOpen ? FiX : RiMenu3Fill} />
               </Button>
             }
-            backdropProps={{
-              style: {
-                top: 80,
-                height: "calc(100vh - 80px)",
-              },
-            }}
-            positionerProps={{
-              style: {
-                top: 80,
-                height: "calc(100vh - 80px)",
-              },
-            }}
+            backdropProps={{ style: drawerStyles }}
+            positionerProps={{ style: drawerStyles }}
           >
             <Stack h="full" flex={1}>
               {!isLoading && !isAuthenticated && (
