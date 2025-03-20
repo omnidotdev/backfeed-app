@@ -21,6 +21,8 @@ import { useMediaQuery } from "usehooks-ts";
 
 import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 /**
  * User account information.
@@ -29,11 +31,16 @@ const AccountInformation = () => {
   // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
   const isSmallViewport = useMediaQuery("(min-width: 40em)");
 
-  const router = useRouter();
+  const router = useRouter(),
+    { user } = useAuth(),
+    { setIsOpen } = useDialogStore({
+      type: DialogType.MobileSidebar,
+    });
 
-  const { user } = useAuth();
-
-  const handleProfileClick = () => router.push(`/profile/${user?.rowId}`);
+  const handleProfileClick = () => {
+    setIsOpen(false);
+    router.push(`/profile/${user?.rowId}`);
+  };
 
   const handleLogout = async () => {
     try {
