@@ -7,8 +7,6 @@ import { Image, Link } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { useDialogStore } from "lib/hooks/store";
-import { DialogType } from "store";
 
 /**
  * Layout header.
@@ -16,10 +14,6 @@ import { DialogType } from "store";
 const Header = () => {
   const pathname = usePathname(),
     { isAuthenticated, isLoading } = useAuth();
-
-  const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.MobileSidebar,
-  });
 
   return (
     <sigil.header
@@ -36,7 +30,7 @@ const Header = () => {
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={4} alignItems="center">
-          <Link href="/" onClick={isOpen ? () => setIsOpen(false) : undefined}>
+          <Link href="/">
             <HStack gap={2} alignItems="center">
               <Image
                 src="/img/logo.png"
