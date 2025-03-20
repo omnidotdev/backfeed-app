@@ -46,10 +46,10 @@ const HeaderActions = () => {
   };
 
   useEffect(() => {
-    if (isSmallViewport && isOpen) {
+    if (isSmallViewport) {
       setIsOpen(false);
     }
-  }, [isSmallViewport, isOpen, setIsOpen]);
+  }, [isSmallViewport, setIsOpen]);
 
   if (isLoading) return null;
 
