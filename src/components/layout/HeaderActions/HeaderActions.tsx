@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Drawer, Flex, HStack, Icon, Stack } from "@omnidev/sigil";
+import {
+  Button,
+  Divider,
+  Drawer,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+} from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -14,13 +22,6 @@ import { app } from "lib/config";
 import { useAuth, useIsSmallViewport } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
-
-import type { CSSProperties } from "react";
-
-const drawerStyles: CSSProperties = {
-  top: 80,
-  height: "calc(100vh - 80px)",
-};
 
 /**
  * Header actions.
@@ -86,10 +87,10 @@ const HeaderActions = () => {
                 <Icon src={isMobileSidebarOpen ? FiX : RiMenu3Fill} />
               </Button>
             }
-            backdropProps={{ style: drawerStyles }}
-            positionerProps={{ style: drawerStyles }}
+            backdropProps={{ style: { top: 80 } }}
+            positionerProps={{ style: { top: 80 } }}
           >
-            <Stack h="full" flex={1}>
+            <Stack p={0} h="full" flex={1}>
               {!isLoading && !isAuthenticated && (
                 <Stack>
                   <Link
@@ -109,14 +110,14 @@ const HeaderActions = () => {
                     </Button>
                   </Link>
 
-                  {/* <Divider my={1} /> */}
+                  <Divider my={1} />
                 </Stack>
               )}
 
               {isAuthenticated ? (
                 <AccountInformation />
               ) : (
-                <Stack justify="flex-end">
+                <Stack>
                   <Button variant="outline" onClick={() => signIn("omni")}>
                     {app.auth.signIn.label}
                   </Button>

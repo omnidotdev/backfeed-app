@@ -57,44 +57,46 @@ const AccountInformation = () => {
   };
 
   if (isSmallViewport) {
-    <Menu
-      trigger={
-        <Button variant="ghost">
-          <Avatar name={user?.name} />
-        </Button>
-      }
-      triggerProps={{
-        px: 0,
-        rounded: "full",
-      }}
-      positioning={{
-        shift: 32,
-      }}
-    >
-      <MenuItemGroup minW={32}>
-        <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>
+    return (
+      <Menu
+        trigger={
+          <Button variant="ghost">
+            <Avatar name={user?.name} />
+          </Button>
+        }
+        triggerProps={{
+          px: 0,
+          rounded: "full",
+        }}
+        positioning={{
+          shift: 32,
+        }}
+      >
+        <MenuItemGroup minW={32}>
+          <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>
 
-        <MenuSeparator />
+          <MenuSeparator />
 
-        <MenuItem value="profile" onClick={handleProfileClick}>
-          <HStack gap={2}>
-            <Icon src={FiUser} size="sm" />
+          <MenuItem value="profile" onClick={handleProfileClick}>
+            <HStack gap={2}>
+              <Icon src={FiUser} size="sm" />
 
-            {app.auth.profile.label}
-          </HStack>
-        </MenuItem>
+              {app.auth.profile.label}
+            </HStack>
+          </MenuItem>
 
-        <MenuSeparator />
+          <MenuSeparator />
 
-        <MenuItem value="logout" onClick={handleLogout}>
-          <HStack gap={2} color="red">
-            <Icon src={FiLogOut} size="sm" color="red" />
+          <MenuItem value="logout" onClick={handleLogout}>
+            <HStack gap={2} color="red">
+              <Icon src={FiLogOut} size="sm" color="red" />
 
-            {app.auth.signOut.label}
-          </HStack>
-        </MenuItem>
-      </MenuItemGroup>
-    </Menu>;
+              {app.auth.signOut.label}
+            </HStack>
+          </MenuItem>
+        </MenuItemGroup>
+      </Menu>
+    );
   }
 
   return (
