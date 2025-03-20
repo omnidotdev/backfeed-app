@@ -50,8 +50,8 @@ const ProjectSettings = ({ projectId, organizationSlug }: Props) => {
       <SectionContainer
         title={app.projectSettingsPage.dangerZone.title}
         description={app.projectSettingsPage.dangerZone.description}
-        border="1px solid"
-        borderColor="omni.ruby"
+        outline="1px solid"
+        outlineColor="omni.ruby"
       >
         <Divider />
 

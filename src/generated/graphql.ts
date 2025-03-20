@@ -4711,7 +4711,7 @@ export type ProjectStatusesQueryVariables = Exact<{
 }>;
 
 
-export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string, color?: string | null, isDefault: boolean } | null> } | null };
+export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null, isDefault: boolean } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -6165,6 +6165,7 @@ export const ProjectStatusesDocument = `
     nodes {
       rowId
       status
+      description
       color
       isDefault
     }

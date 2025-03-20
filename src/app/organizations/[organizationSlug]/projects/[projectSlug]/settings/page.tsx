@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
-import { Role, useProjectQuery } from "generated/graphql";
+import {
+  Role,
+  useProjectQuery,
+  useProjectStatusesQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -83,10 +87,16 @@ const ProjectSettingsPage = async ({ params }: Props) => {
     },
   ];
 
-  await queryClient.prefetchQuery({
-    queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
-    queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
+      queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
+      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
+    }),
+  ]);
 
   return (
     <Page

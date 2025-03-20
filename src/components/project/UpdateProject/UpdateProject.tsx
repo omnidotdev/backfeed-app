@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
+import { UpdateStatuses } from "components/project";
 import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
@@ -223,6 +224,8 @@ const UpdateProject = () => {
             )}
           </AppField>
         </Stack>
+
+        <UpdateStatuses projectId={project?.rowId!} />
 
         <AppForm>
           <SubmitForm

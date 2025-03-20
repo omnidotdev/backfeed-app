@@ -54,6 +54,7 @@ const PricingOverview = ({ products }: Props) => {
       <Flex position="relative" mb={4}>
         <ToggleGroup
           borderRadius="full"
+          borderColor="border.default"
           position="relative"
           mb={2}
           value={[pricingModel]}
@@ -67,6 +68,7 @@ const PricingOverview = ({ products }: Props) => {
         >
           <ToggleGroupItem
             value={SubscriptionRecurringInterval.Month}
+            color="foreground.default"
             px={6}
             py={4}
             flex={1}
@@ -81,6 +83,7 @@ const PricingOverview = ({ products }: Props) => {
 
           <ToggleGroupItem
             value={SubscriptionRecurringInterval.Year}
+            color="foreground.default"
             px={6}
             py={4}
             flex={1}
