@@ -17,7 +17,7 @@ const Header = () => {
   const pathname = usePathname(),
     { isAuthenticated, isLoading } = useAuth();
 
-  const { isOpen, setIsOpen } = useDialogStore({
+  const { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
     type: DialogType.MobileSidebar,
   });
 
@@ -36,7 +36,7 @@ const Header = () => {
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={4} alignItems="center">
-          <Link href="/" onClick={() => setIsOpen(false)}>
+          <Link href="/" onClick={() => setIsMobileSidebarOpen(false)}>
             <HStack gap={2} alignItems="center">
               <Image
                 src="/img/logo.png"

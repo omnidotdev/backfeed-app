@@ -1,26 +1,17 @@
 "use client";
 
-import {
-  Button,
-  Divider,
-  Drawer,
-  Flex,
-  HStack,
-  Icon,
-  Stack,
-} from "@omnidev/sigil";
+import { Button, Drawer, Flex, HStack, Icon, Stack } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 import { match } from "ts-pattern";
-import { useMediaQuery } from "usehooks-ts";
 
 import { Link } from "components/core";
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useIsSmallViewport } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -28,15 +19,15 @@ import { DialogType } from "store";
  * Header actions.
  */
 const HeaderActions = () => {
-  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
-  const isSmallViewport = useMediaQuery("(min-width: 40em)");
+  const isSmallViewport = useIsSmallViewport();
 
   const router = useRouter(),
     pathname = usePathname(),
     { isAuthenticated, isLoading } = useAuth(),
-    { isOpen, setIsOpen } = useDialogStore({
-      type: DialogType.MobileSidebar,
-    });
+    { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =
+      useDialogStore({
+        type: DialogType.MobileSidebar,
+      });
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -47,9 +38,9 @@ const HeaderActions = () => {
 
   useEffect(() => {
     if (isSmallViewport) {
-      setIsOpen(false);
+      setIsMobileSidebarOpen(false);
     }
-  }, [isSmallViewport, setIsOpen]);
+  }, [isSmallViewport, setIsMobileSidebarOpen]);
 
   if (isLoading) return null;
 
@@ -76,25 +67,38 @@ const HeaderActions = () => {
             unmountOnExit
             modal={false}
             closeOnInteractOutside={false}
-            open={isOpen}
+            open={isMobileSidebarOpen}
             onOpenChange={({ open }) => {
-              setIsOpen(open);
+              setIsMobileSidebarOpen(open);
             }}
             trigger={
-              <Button variant="icon" onClick={() => setIsOpen(!isOpen)}>
-                <Icon src={isOpen ? FiX : RiMenu3Fill} />
+              <Button
+                variant="icon"
+                onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+              >
+                <Icon src={isMobileSidebarOpen ? FiX : RiMenu3Fill} />
               </Button>
             }
-            backdropProps={{ style: { top: 80 } }}
-            positionerProps={{ style: { top: 80 } }}
+            backdropProps={{
+              style: {
+                top: 80,
+                height: "calc(100vh - 80px)",
+              },
+            }}
+            positionerProps={{
+              style: {
+                top: 80,
+                height: "calc(100vh - 80px)",
+              },
+            }}
           >
-            <Stack p={0} h="full" flex={1}>
+            <Stack h="full" flex={1}>
               {!isLoading && !isAuthenticated && (
                 <Stack>
                   <Link
                     href="/pricing"
                     role="group"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setIsMobileSidebarOpen(false)}
                   >
                     <Button
                       variant="ghost"
@@ -108,14 +112,14 @@ const HeaderActions = () => {
                     </Button>
                   </Link>
 
-                  <Divider my={1} />
+                  {/* <Divider my={1} /> */}
                 </Stack>
               )}
 
               {isAuthenticated ? (
                 <AccountInformation />
               ) : (
-                <Stack>
+                <Stack justify="flex-end">
                   <Button variant="outline" onClick={() => signIn("omni")}>
                     {app.auth.signIn.label}
                   </Button>
