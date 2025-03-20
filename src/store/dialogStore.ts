@@ -7,7 +7,7 @@ export enum DialogType {
   CreateProject = "createProject",
   /** Dialog for adding an owner to an organization. */
   AddOwner = "addOwner",
-  /** Dialog for managing the mobile sideabr navigation and actions. */
+  /** Dialog for managing the mobile sidebar navigation and actions. */
   MobileSidebar = "mobileSidebar",
 }
 
