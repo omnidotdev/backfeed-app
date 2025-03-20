@@ -116,7 +116,14 @@ const AccountInformation = () => {
 
       <Divider my={1} />
 
-      <Button disabled opacity={0.5} cursor="not-allowed">
+      <Button
+        onClick={handleProfileClick}
+        // TODO: remove all styles below once enabled
+        disabled
+        backgroundColor={{ _disabled: "inherit" }}
+        opacity={0.5}
+        cursor="not-allowed"
+      >
         <HStack gap={2} color="foreground.subtle">
           <Icon src={FiUser} size="sm" color="foreground.subtle" />
 

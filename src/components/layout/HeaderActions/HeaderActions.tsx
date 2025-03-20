@@ -10,12 +10,14 @@ import {
   Stack,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
+import { match } from "ts-pattern";
 import { useMediaQuery } from "usehooks-ts";
 
+import { Link } from "components/core";
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -30,7 +32,11 @@ const HeaderActions = () => {
   const isSmallViewport = useMediaQuery("(min-width: 40em)");
 
   const router = useRouter(),
-    { isAuthenticated, isLoading } = useAuth();
+    pathname = usePathname(),
+    { isAuthenticated, isLoading } = useAuth(),
+    { isOpen, setIsOpen } = useDialogStore({
+      type: DialogType.MobileSidebar,
+    });
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -38,10 +44,6 @@ const HeaderActions = () => {
 
     router.push(signUpUrl);
   };
-
-  const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.MobileSidebar,
-  });
 
   useEffect(() => {
     if (isSmallViewport && isOpen) {
@@ -55,24 +57,21 @@ const HeaderActions = () => {
     <Flex alignItems="center" gap={4}>
       <ThemeToggle />
 
-      {isSmallViewport ? (
-        isAuthenticated ? (
-          <AccountInformation />
-        ) : (
-          <HStack>
-            <Button onClick={() => signIn("omni")} variant="outline">
-              {app.auth.signIn.label}
-            </Button>
+      {match(isSmallViewport)
+        .with(true, () =>
+          isAuthenticated ? (
+            <AccountInformation />
+          ) : (
+            <HStack>
+              <Button variant="outline" onClick={() => signIn("omni")}>
+                {app.auth.signIn.label}
+              </Button>
 
-            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-          </HStack>
+              <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+            </HStack>
+          )
         )
-      ) : (
-        <>
-          <Button variant="icon" onClick={() => setIsOpen(!isOpen)}>
-            <Icon src={isOpen ? FiX : RiMenu3Fill} />
-          </Button>
-
+        .with(false, () => (
           <Drawer
             unmountOnExit
             modal={false}
@@ -81,21 +80,33 @@ const HeaderActions = () => {
             onOpenChange={({ open }) => {
               setIsOpen(open);
             }}
-            backdropProps={{ top: 20 }}
-            positionerProps={{ top: 20 }}
+            trigger={
+              <Button variant="icon" onClick={() => setIsOpen(!isOpen)}>
+                <Icon src={isOpen ? FiX : RiMenu3Fill} />
+              </Button>
+            }
+            backdropProps={{ style: { top: 80 } }}
+            positionerProps={{ style: { top: 80 } }}
           >
             <Stack p={0} h="full" flex={1}>
               {!isLoading && !isAuthenticated && (
                 <Stack>
-                  <Button
-                    onClick={() => {
-                      setIsOpen(!isOpen);
-                      router.push("/pricing");
-                    }}
-                    variant="ghost"
+                  <Link
+                    href="/pricing"
+                    role="group"
+                    onClick={() => setIsOpen(false)}
                   >
-                    {app.header.routes.pricing.label}
-                  </Button>
+                    <Button
+                      variant="ghost"
+                      w="full"
+                      tabIndex={-1}
+                      color={
+                        pathname === "/pricing" ? "brand.primary" : "inherit"
+                      }
+                    >
+                      {app.header.routes.pricing.label}
+                    </Button>
+                  </Link>
 
                   <Divider my={1} />
                 </Stack>
@@ -116,8 +127,8 @@ const HeaderActions = () => {
               )}
             </Stack>
           </Drawer>
-        </>
-      )}
+        ))
+        .exhaustive()}
     </Flex>
   );
 };

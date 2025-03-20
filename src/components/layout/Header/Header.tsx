@@ -17,7 +17,7 @@ const Header = () => {
   const pathname = usePathname(),
     { isAuthenticated, isLoading } = useAuth();
 
-  const { setIsOpen } = useDialogStore({
+  const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.MobileSidebar,
   });
 
@@ -36,7 +36,7 @@ const Header = () => {
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={{ base: 2, md: 4 }} alignItems="center">
-          <Link href="/" onClick={() => setIsOpen(false)}>
+          <Link href="/" onClick={isOpen ? () => setIsOpen(false) : undefined}>
             <HStack gap={2} alignItems="center">
               <Image
                 src="/img/logo.png"
@@ -46,6 +46,7 @@ const Header = () => {
                 // adjust color based on color theme
                 mixBlendMode="difference"
                 filter="brightness(0) invert(1)"
+                priority={true}
               />
               <Badge
                 size="sm"
