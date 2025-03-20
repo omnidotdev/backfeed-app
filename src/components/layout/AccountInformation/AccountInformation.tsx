@@ -4,6 +4,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Divider,
   HStack,
   Icon,
   Menu,
@@ -11,6 +12,8 @@ import {
   MenuItemGroup,
   MenuItemGroupLabel,
   MenuSeparator,
+  Text,
+  Stack,
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
@@ -18,11 +21,15 @@ import { FiLogOut, FiUser } from "react-icons/fi";
 
 import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useMediaQuery } from "usehooks-ts";
 
 /**
  * User account information.
  */
 const AccountInformation = () => {
+  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
+  const isSmallViewport = useMediaQuery("(min-width: 40em)");
+
   const { user } = useAuth();
 
   const handleProfileClick = () => {
@@ -50,7 +57,7 @@ const AccountInformation = () => {
     }
   };
 
-  return (
+  return isSmallViewport ? (
     <Menu
       trigger={
         <Button variant="ghost">
@@ -81,6 +88,7 @@ const AccountInformation = () => {
         >
           <HStack gap={2} color="foreground.subtle">
             <Icon src={FiUser} size="sm" color="foreground.subtle" />
+
             {app.auth.profile.label}
 
             <Badge color="foreground.subtle">{app.info.comingSoon.label}</Badge>
@@ -92,11 +100,40 @@ const AccountInformation = () => {
         <MenuItem value="logout" onClick={handleLogout}>
           <HStack gap={2} color="red">
             <Icon src={FiLogOut} size="sm" color="red" />
+
             {app.auth.signOut.label}
           </HStack>
         </MenuItem>
       </MenuItemGroup>
     </Menu>
+  ) : (
+    <Stack>
+      <HStack gap={4} justify="center">
+        <Avatar name={user?.name} />
+
+        <Text>{user?.name}</Text>
+      </HStack>
+
+      <Divider my={1} />
+
+      <Button disabled opacity={0.5} cursor="not-allowed">
+        <HStack gap={2} color="foreground.subtle">
+          <Icon src={FiUser} size="sm" color="foreground.subtle" />
+
+          {app.auth.profile.label}
+
+          <Badge color="foreground.subtle">{app.info.comingSoon.label}</Badge>
+        </HStack>
+      </Button>
+
+      <Button variant="outline" onClick={handleLogout}>
+        <HStack gap={2} color="red">
+          <Icon src={FiLogOut} size="sm" color="red" />
+
+          {app.auth.signOut.label}
+        </HStack>
+      </Button>
+    </Stack>
   );
 };
 

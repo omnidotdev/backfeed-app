@@ -3,21 +3,34 @@
 import {
   Button,
   Divider,
+  Drawer,
   Flex,
   HStack,
   Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
+  Stack,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useMediaQuery } from "usehooks-ts";
 
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
+
+import type { CSSProperties } from "react";
+
+const sharedStyles: CSSProperties = {
+  all: "unset",
+  top: 80,
+  left: 0,
+  position: "fixed",
+  width: "100%",
+  height: "calc(100vh - 80px)",
+};
 
 /**
  * Header actions.
@@ -36,60 +49,78 @@ const HeaderActions = () => {
     router.push(signUpUrl);
   };
 
+  const { isOpen, setIsOpen } = useDialogStore({
+    type: DialogType.MobileSidebar,
+  });
+
   if (isLoading) return null;
 
   return (
     <Flex alignItems="center" gap={4}>
       <ThemeToggle />
 
-      {isAuthenticated ? (
-        <AccountInformation />
-      ) : isSmallViewport ? (
-        <HStack>
-          <Button onClick={() => signIn("omni")} variant="outline">
-            {app.auth.signIn.label}
+      {isSmallViewport ? (
+        isAuthenticated ? (
+          <AccountInformation />
+        ) : (
+          <HStack>
+            <Button onClick={() => signIn("omni")} variant="outline">
+              {app.auth.signIn.label}
+            </Button>
+
+            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+          </HStack>
+        )
+      ) : (
+        <>
+          <Button variant="icon" onClick={() => setIsOpen(!isOpen)}>
+            <Icon src={isOpen ? FiX : RiMenu3Fill} />
           </Button>
 
-          <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-        </HStack>
-      ) : (
-        // TODO: convert this to a drawer https://linear.app/omnidev/issue/OMNI-238/convert-menu-in-headeractions-to-a-drawer-for-mobile-navigation
-        <Menu
-          unmountOnExit
-          trigger={
-            <Button variant="icon">
-              <Icon src={RiMenu3Fill} />
-            </Button>
-          }
-          positioning={{
-            shift: 32,
-          }}
-        >
-          <MenuItemGroup minW={32}>
-            {!isLoading && !isAuthenticated && (
-              <>
-                <MenuItem value="pricing" asChild>
+          <Drawer
+            unmountOnExit
+            modal={false}
+            closeOnInteractOutside={false}
+            open={isOpen}
+            onOpenChange={({ open }) => {
+              setIsOpen(open);
+            }}
+            backdropProps={{ style: sharedStyles }}
+            positionerProps={{ style: sharedStyles }}
+          >
+            <Stack p={0} h="full" flex={1}>
+              {!isLoading && !isAuthenticated && (
+                <Stack>
                   <Button
-                    onClick={() => router.push("/pricing")}
+                    onClick={() => {
+                      setIsOpen(!isOpen);
+                      router.push("/pricing");
+                    }}
                     variant="ghost"
                   >
                     {app.header.routes.pricing.label}
                   </Button>
-                </MenuItem>
 
-                <Divider my={1} />
-              </>
-            )}
+                  <Divider my={1} />
+                </Stack>
+              )}
 
-            <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
-              <Button variant="outline">{app.auth.signIn.label}</Button>
-            </MenuItem>
+              {isAuthenticated ? (
+                <AccountInformation />
+              ) : (
+                <Stack>
+                  <Button variant="outline" onClick={() => signIn("omni")}>
+                    {app.auth.signIn.label}
+                  </Button>
 
-            <MenuItem value="signUp" onClick={handleSignUp} asChild>
-              <Button>{app.auth.signUp.label}</Button>
-            </MenuItem>
-          </MenuItemGroup>
-        </Menu>
+                  <Button onClick={handleSignUp}>
+                    {app.auth.signUp.label}
+                  </Button>
+                </Stack>
+              )}
+            </Stack>
+          </Drawer>
+        </>
       )}
     </Flex>
   );

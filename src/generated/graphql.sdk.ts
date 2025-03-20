@@ -1815,6 +1815,8 @@ export type Post = {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  status: Status;
+  statusUpdatedAt?: Maybe<Scalars['Datetime']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
@@ -1885,6 +1887,10 @@ export type PostCondition = {
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Status>;
+  /** Checks for equality with the object’s `statusUpdatedAt` field. */
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1922,6 +1928,8 @@ export type PostDistinctCountAggregateFilter = {
   description?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  statusUpdatedAt?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -1937,6 +1945,10 @@ export type PostDistinctCountAggregates = {
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of statusUpdatedAt across the matching connection */
+  statusUpdatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of title across the matching connection */
   title?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -1980,6 +1992,10 @@ export type PostFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StatusFilter>;
+  /** Filter by the object’s `statusUpdatedAt` field. */
+  statusUpdatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `title` field. */
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -2001,6 +2017,10 @@ export enum PostGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   ProjectId = 'PROJECT_ID',
+  Status = 'STATUS',
+  StatusUpdatedAt = 'STATUS_UPDATED_AT',
+  StatusUpdatedAtTruncatedToDay = 'STATUS_UPDATED_AT_TRUNCATED_TO_DAY',
+  StatusUpdatedAtTruncatedToHour = 'STATUS_UPDATED_AT_TRUNCATED_TO_HOUR',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -2010,11 +2030,13 @@ export enum PostGroupBy {
 
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2035,36 +2057,43 @@ export type PostHavingInput = {
 
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2074,6 +2103,8 @@ export type PostInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Status>;
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -2118,6 +2149,10 @@ export enum PostOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  StatusUpdatedAtAsc = 'STATUS_UPDATED_AT_ASC',
+  StatusUpdatedAtDesc = 'STATUS_UPDATED_AT_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -2144,6 +2179,8 @@ export type PostPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Status>;
+  statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2453,6 +2490,10 @@ export enum ProjectOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
+  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
+  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -2803,6 +2844,40 @@ export type RoleFilter = {
   notEqualTo?: InputMaybe<Role>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Role>>;
+};
+
+export enum Status {
+  Closed = 'closed',
+  InProgress = 'in_progress',
+  Open = 'open',
+  Planned = 'planned',
+  Resolved = 'resolved'
+}
+
+/** A filter to be used against Status fields. All fields are combined with a logical ‘and.’ */
+export type StatusFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Status>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Status>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Status>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Status>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Status>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Status>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Status>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Status>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Status>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Status>>;
 };
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -3752,6 +3827,10 @@ export enum UserOrderBy {
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsDistinctCountStatusAsc = 'POSTS_DISTINCT_COUNT_STATUS_ASC',
+  PostsDistinctCountStatusDesc = 'POSTS_DISTINCT_COUNT_STATUS_DESC',
+  PostsDistinctCountStatusUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsDistinctCountStatusUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
   PostsDistinctCountTitleAsc = 'POSTS_DISTINCT_COUNT_TITLE_ASC',
   PostsDistinctCountTitleDesc = 'POSTS_DISTINCT_COUNT_TITLE_DESC',
   PostsDistinctCountUpdatedAtAsc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
