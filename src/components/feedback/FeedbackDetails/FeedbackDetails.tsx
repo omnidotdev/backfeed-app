@@ -148,31 +148,36 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       boxShadow="card"
       {...rest}
     >
-      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-        <Tooltip
-          key={id}
-          positioning={{ placement: "top" }}
-          trigger={
-            <HStack gap={2} py={1} fontVariant="tabular-nums">
-              <Icon src={icon} w={5} h={5} />
-              {votes}
-            </HStack>
-          }
-          triggerProps={{
-            variant: "ghost",
-            w: "full",
-            bgColor: "transparent",
-            opacity: {
-              base: 1,
-              _disabled: 0.3,
-              _hover: { base: 0.8, _disabled: 0.3 },
-            },
-            ...rest,
-          }}
-        >
-          {tooltip}
-        </Tooltip>
-      ))}
+      <HStack
+        position="absolute"
+        top={{ base: 1.5, sm: 3.5 }}
+        right={{ base: 4, sm: 6 }}
+      >
+        {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+          <Tooltip
+            key={id}
+            positioning={{ placement: "top" }}
+            trigger={
+              <HStack gap={2} py={1} fontVariant="tabular-nums">
+                <Icon src={icon} w={5} h={5} />
+                {votes}
+              </HStack>
+            }
+            triggerProps={{
+              variant: "icon",
+              bgColor: "transparent",
+              opacity: {
+                base: 1,
+                _disabled: 0.3,
+                _hover: { base: 0.8, _disabled: 0.3 },
+              },
+              ...rest,
+            }}
+          >
+            {tooltip}
+          </Tooltip>
+        ))}
+      </HStack>
     </FeedbackCard>
   );
 };

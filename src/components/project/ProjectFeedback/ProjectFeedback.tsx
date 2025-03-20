@@ -1,12 +1,13 @@
 "use client";
 
-import { Button, Grid, Stack, VStack } from "@omnidev/sigil";
+import { Button, Grid, Icon, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { Link, SkeletonArray, Spinner } from "components/core";
+import { SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -33,6 +34,8 @@ interface Props {
  * Project feedback.
  */
 const ProjectFeedback = ({ projectId }: Props) => {
+  const router = useRouter();
+
   const { user } = useAuth();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
@@ -115,8 +118,6 @@ const ProjectFeedback = ({ projectId }: Props) => {
     hasNextPage: hasNextPage,
     onLoadMore: fetchNextPage,
     disabled: isError,
-    // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
-    rootMargin: "0px 0px 400px 0px",
   });
 
   return (
@@ -148,17 +149,32 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       isPending={isPending}
                       w="full"
                       minH={21}
-                      borderRadius="sm"
+                      borderRadius="md"
                       bgColor="card-item"
+                      cursor={isPending ? "not-allowed" : "pointer"}
+                      role="group"
+                      onClick={() =>
+                        !isPending
+                          ? router.push(
+                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
+                            )
+                          : undefined
+                      }
                     >
-                      <Link
-                        href={`/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`}
-                        disabled={isPending}
+                      <Button
+                        position="absolute"
+                        top={1}
+                        right={1}
+                        p={2}
+                        variant="icon"
+                        color={{
+                          base: "foreground.muted",
+                          _groupHover: "brand.primary",
+                        }}
+                        bgColor="transparent"
                       >
-                        <Button disabled={isPending}>
-                          {app.projectPage.projectFeedback.details.feedbackLink}
-                        </Button>
-                      </Link>
+                        <Icon src={FiArrowUpRight} w={5} h={5} />
+                      </Button>
                     </FeedbackCard>
                   );
                 })}

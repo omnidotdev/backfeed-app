@@ -38,12 +38,12 @@ const ProjectOverview = ({ projectId }: Props) => {
   );
 
   return (
-    <Grid h="100%" columns={{ lg: 3 }} gap={6}>
-      <GridItem h="100%" colSpan={{ lg: 2 }}>
+    <Grid columns={{ lg: 3 }} gap={6}>
+      <GridItem colSpan={{ lg: 2 }}>
         <ProjectFeedback projectId={projectId} />
       </GridItem>
 
-      <GridItem h="100%">
+      <GridItem>
         <Stack gap={6}>
           <ProjectInformation
             createdAt={data?.createdAt}

@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Flex,
+  Circle,
   HStack,
   Icon,
   Menu,
@@ -127,11 +127,29 @@ const FeedbackCard = ({
     >
       <Stack w="full">
         <HStack justify="space-between">
-          <Stack gap={4}>
-            <Text fontWeight="semibold" fontSize="2xl">
+          <Stack gap={0.5}>
+            <Text fontWeight="semibold" fontSize="xl" lineHeight={1}>
               {feedback.title}
             </Text>
 
+            <HStack fontSize="sm" gap={{ base: 1, sm: 2 }}>
+              <Text color="foreground.subtle">{feedback.user?.username}</Text>
+
+              <Circle size={1} bgColor="foreground.subtle" placeSelf="center" />
+
+              <Text color="foreground.subtle">
+                {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
+              </Text>
+            </HStack>
+          </Stack>
+
+          {children}
+        </HStack>
+
+        <Text color="foreground.muted">{feedback.description}</Text>
+
+        <Stack justify="space-between" gap={4} mt={2}>
+          <HStack justify="space-between">
             <HStack>
               <Menu
                 trigger={
@@ -178,49 +196,22 @@ const FeedbackCard = ({
                 </MenuItemGroup>
               </Menu>
 
-              <Text fontSize="sm" color="foreground.subtle">
+              <Text
+                display={{ base: "none", sm: "inline-flex" }}
+                fontSize="sm"
+                color="foreground.subtle"
+              >
                 {`Updated: ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
               </Text>
             </HStack>
-          </Stack>
 
-          <Text
-            color={netVotesColor}
-            whiteSpace="nowrap"
-            placeSelf="flex-start"
-          >
-            {`${netVotesSign}${netTotalVotes}`}
-          </Text>
-        </HStack>
-
-        <Text color="foreground.muted" mt={4}>
-          {feedback.description}
-        </Text>
-
-        <Stack justify="space-between" gap={4} mt={2}>
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            fontSize="sm"
-            gap={{ base: 1, sm: 2 }}
-          >
-            <Text color="foreground.subtle">{feedback.user?.username}</Text>
-
-            <Flex
-              borderRadius="full"
-              h={1}
-              w={1}
-              bgColor="foreground.subtle"
-              display={{ base: "none", sm: "flex" }}
-              placeSelf="center"
-            />
-
-            <Text color="foreground.subtle">
-              {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
+            <Text
+              color={netVotesColor}
+              whiteSpace="nowrap"
+              placeSelf="flex-start"
+            >
+              {`${netVotesSign}${netTotalVotes}`}
             </Text>
-          </Stack>
-
-          <HStack fontSize="sm" placeSelf="flex-end" gap={1}>
-            {children}
           </HStack>
         </Stack>
       </Stack>
