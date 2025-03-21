@@ -84,12 +84,15 @@ const HeaderActions = () => {
         trigger={
           <Button
             variant="ghost"
-            minWidth={0}
-            p={1}
+            bgColor={{
+              base: "background.subtle",
+              _hover: "background.muted/80",
+            }}
+            p={0}
             ml={2}
             onClick={() => setIsMobileSidebarOpen(true)}
           >
-            <Icon src={RiMenu3Fill} />
+            <Icon src={RiMenu3Fill} h={5} w={5} />
           </Button>
         }
         positionerProps={{
