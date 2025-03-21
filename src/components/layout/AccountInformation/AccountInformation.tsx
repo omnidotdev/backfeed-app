@@ -111,7 +111,7 @@ const AccountInformation = () => {
 
       <Button onClick={handleProfileClick}>
         <HStack gap={2}>
-          <Icon src={FiUser} size="sm" />
+          <Icon src={FiUser} />
 
           {app.auth.profile.label}
         </HStack>

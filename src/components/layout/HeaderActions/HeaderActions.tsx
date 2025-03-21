@@ -82,7 +82,13 @@ const HeaderActions = () => {
           setIsMobileSidebarOpen(open);
         }}
         trigger={
-          <Button variant="icon" onClick={() => setIsMobileSidebarOpen(true)}>
+          <Button
+            variant="ghost"
+            minWidth={0}
+            p={1}
+            ml={2}
+            onClick={() => setIsMobileSidebarOpen(true)}
+          >
             <Icon src={RiMenu3Fill} />
           </Button>
         }
@@ -90,20 +96,25 @@ const HeaderActions = () => {
           width: "80%",
         }}
       >
-        <DrawerCloseTrigger asChild position="absolute" top={3} right={4}>
-          <Button variant="icon" aria-label="Close Mobile Sidebar">
+        <DrawerCloseTrigger asChild position="absolute" top={3} right={3}>
+          <Button
+            variant="ghost"
+            bgColor="background.muted"
+            p={1}
+            aria-label="Close Mobile Sidebar"
+          >
             <Icon src={FiX} />
           </Button>
         </DrawerCloseTrigger>
 
         <Stack p={0} h="full" flex={1} justify="space-between">
           <Stack mt={24} gap={8} align="center">
-            <Stack gap={2} alignItems="center">
+            <Stack gap={3} alignItems="center">
               <Image
                 src="/img/logo.png"
                 alt={`${app.name} logo`}
-                width={160}
-                height={80}
+                width={120}
+                height={60}
                 priority
                 // adjust color based on color theme
                 mixBlendMode="difference"
