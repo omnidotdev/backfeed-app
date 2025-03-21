@@ -97,6 +97,7 @@ const HeaderActions = () => {
         positionerProps={{
           width: "80%",
         }}
+        contentProps={{ boxShadow: "card" }}
       >
         <DrawerCloseTrigger asChild position="absolute" top={3} right={3}>
           <Button
