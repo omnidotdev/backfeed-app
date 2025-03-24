@@ -287,7 +287,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                     }}
                     action={{
                       label: "Remove Status",
-                      // TODO: test this
                       onClick: () =>
                         deleteStatus({
                           rowId: status.rowId!,
