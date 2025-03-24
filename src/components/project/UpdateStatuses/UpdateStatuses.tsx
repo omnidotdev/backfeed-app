@@ -212,7 +212,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                           label="Status"
                           placeholder="Enter status name"
                           borderColor="border.subtle"
-                          size="sm"
                         />
                       </Stack>
                     )}
@@ -224,7 +223,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         label="Description"
                         placeholder="Set a description for the status"
                         borderColor="border.subtle"
-                        size="sm"
                       />
                     )}
                   </AppField>
@@ -247,14 +245,10 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                           // TODO: Omit upstream, or make it optional
                           channel: "hex",
                           borderColor: "border.subtle",
-                          // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Input` due to the `asChild` prop. Works at runtime.
-                          size: "sm",
                         }}
                         triggerProps={{
                           borderColor: "transparent",
                           p: 0,
-                          // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Button` due to the `asChild` prop. Works at runtime.
-                          size: "sm",
                         }}
                         // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
                         swatchProps={{
