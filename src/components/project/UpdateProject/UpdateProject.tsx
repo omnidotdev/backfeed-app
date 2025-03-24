@@ -194,9 +194,10 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
   });
 
   return (
-    <SectionContainer title={updateProjectDetails.title}>
-      <Divider />
-
+    <SectionContainer
+      title={updateProjectDetails.title}
+      description={updateProjectDetails.description}
+    >
       <sigil.form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -230,8 +231,6 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
           </AppField>
         </Stack>
 
-        <UpdateStatuses projectId={project?.rowId!} canEdit={canEditStatuses} />
-
         <AppForm>
           <SubmitForm
             action={updateProjectDetails.action}
@@ -240,6 +239,10 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
           />
         </AppForm>
       </sigil.form>
+
+      <Divider display={canEditStatuses ? "inline" : "none"} />
+
+      <UpdateStatuses projectId={project?.rowId!} canEdit={canEditStatuses} />
     </SectionContainer>
   );
 };

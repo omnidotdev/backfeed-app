@@ -33,6 +33,8 @@ const COLOR_PRESETS = [
   "hsl(350, 81%, 59%)",
 ];
 
+// TODO: implement functionality of form
+
 interface Props {
   /* Project ID. */
   projectId: Project["rowId"];
@@ -70,7 +72,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     <SectionContainer
       title="Project Statuses"
       description="Customize statuses that are used to track progress on feedback items."
-      mt={8}
       p={0}
       boxShadow="none"
     >
