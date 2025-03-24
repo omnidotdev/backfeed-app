@@ -7,22 +7,24 @@ import {
   Grid,
   HStack,
   Icon,
-  Input,
-  Label,
   Stack,
   Switch,
+  sigil,
 } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { HiOutlineEyeDropper, HiPlus } from "react-icons/hi2";
+import { z } from "zod";
 
+import { DestructiveAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import {
   useProjectStatusesQuery,
   useUpdatePostStatusMutation,
 } from "generated/graphql";
+import { DEBOUNCE_TIME } from "lib/constants";
+import { useForm } from "lib/hooks";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { DestructiveAction } from "components/core";
 import type { Project } from "generated/graphql";
 
 const COLOR_PRESETS = [
@@ -38,7 +40,17 @@ const COLOR_PRESETS = [
   "hsl(350, 81%, 59%)",
 ];
 
-// TODO: implement functionality of form
+const statusSchema = z.object({
+  rowId: z.string().uuid(),
+  status: z.string().min(1).max(100),
+  description: z.string().min(1).max(255),
+  color: z.string().startsWith("#").length(7),
+  isDefault: z.boolean(),
+});
+
+const updateStatusesSchema = z.object({
+  projectStatuses: z.array(statusSchema),
+});
 
 interface Props {
   /* Project ID. */
@@ -59,13 +71,32 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     },
     {
       select: (data) =>
-        data.postStatuses?.nodes.map((status) => ({
-          rowId: status?.rowId,
-          status: status?.status,
-          description: status?.description,
-          color: status?.color,
-          isDefault: status?.isDefault,
-        })),
+        data.postStatuses?.nodes
+          .sort((a, b) => {
+            const aValue = a?.isDefault ? 1 : 0;
+            const bValue = b?.isDefault ? 1 : 0;
+
+            return bValue - aValue;
+          })
+          .map((status) => ({
+            rowId: status?.rowId,
+            status: status?.status,
+            description: status?.description,
+            color: status?.color,
+            isDefault: status?.isDefault,
+          })),
+    }
+  );
+
+  const { handleSubmit, AppForm, AppField, Field, SubmitForm, reset } = useForm(
+    {
+      defaultValues: {
+        projectStatuses: statuses ?? [],
+      },
+      asyncDebounceMs: DEBOUNCE_TIME,
+      validators: {
+        onSubmitAsync: updateStatusesSchema,
+      },
     }
   );
 
@@ -89,130 +120,166 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       p={0}
       boxShadow="none"
     >
-      <Grid columns={{ base: 1, md: 2, xl: 3 }} gap="1px">
-        {statuses
-          ?.sort((a, b) => {
-            const aValue = a.isDefault ? 1 : 0;
-            const bValue = b.isDefault ? 1 : 0;
+      <sigil.form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await handleSubmit();
+        }}
+      >
+        <Field name="projectStatuses" mode="array">
+          {({ state }) => (
+            <Grid columns={{ base: 1, md: 2, xl: 3 }} gap="1px">
+              {state.value.map((status, i) => {
+                const isDefaultStatus = status.rowId === defaultStatusId;
 
-            return bValue - aValue;
-          })
-          .map((status) => {
-            const isDefaultStatus = status.rowId === defaultStatusId;
+                return (
+                  <Stack
+                    key={status.rowId}
+                    outline="1px solid"
+                    outlineColor="background.muted"
+                    p={4}
+                  >
+                    <AppField name={`projectStatuses[${i}].status`}>
+                      {({ InputField }) => (
+                        <Stack gap={0.5}>
+                          <HStack placeSelf="flex-end">
+                            <Field name={`projectStatuses[${i}].isDefault`}>
+                              {({ state, handleChange }) => (
+                                <Switch
+                                  checked={state.value && isDefaultStatus}
+                                  onCheckedChange={({ checked }) => {
+                                    if (checked) {
+                                      setDefaultStatusId(status.rowId);
+                                      handleChange(true);
+                                    }
 
-            return (
-              <Stack
-                key={status.rowId}
-                outline="1px solid"
-                outlineColor="background.muted"
-                p={4}
-              >
-                <Stack gap={0.5}>
-                  <HStack justify="space-between">
-                    <Label htmlFor={`status-${status.rowId}`}>Status</Label>
+                                    if (!checked && !isDefaultStatus) {
+                                      handleChange(false);
+                                    }
+                                  }}
+                                  label={
+                                    isDefaultStatus ? "Default" : undefined
+                                  }
+                                  size="sm"
+                                  flexDirection="row-reverse"
+                                  labelProps={{
+                                    fontSize: "xs",
+                                  }}
+                                  h={5}
+                                />
+                              )}
+                            </Field>
+                          </HStack>
 
-                    <Switch
-                      checked={isDefaultStatus}
-                      onCheckedChange={({ checked }) =>
-                        checked ? setDefaultStatusId(status.rowId) : undefined
-                      }
-                      label={isDefaultStatus ? "Default" : undefined}
-                      size="sm"
-                      flexDirection="row-reverse"
-                      labelProps={{
-                        fontSize: "xs",
+                          <InputField
+                            label="Status"
+                            placeholder="Enter status name"
+                            borderColor="border.subtle"
+                            size="sm"
+                          />
+                        </Stack>
+                      )}
+                    </AppField>
+
+                    <AppField name={`projectStatuses[${i}].description`}>
+                      {({ InputField }) => (
+                        <InputField
+                          label="Description"
+                          placeholder="Set a description for the status"
+                          borderColor="border.subtle"
+                          size="sm"
+                        />
+                      )}
+                    </AppField>
+
+                    <Field name={`projectStatuses[${i}].color`}>
+                      {({ state, handleChange }) => (
+                        <ColorPicker
+                          label="Color"
+                          presets={COLOR_PRESETS}
+                          value={
+                            state.value
+                              ? parseColor(state.value)
+                              : parseColor("#000000")
+                          }
+                          onValueChange={({ valueAsString }) =>
+                            handleChange(valueAsString)
+                          }
+                          gap={0.5}
+                          channelInputProps={{
+                            // TODO: Omit upstream, or make it optional
+                            channel: "hex",
+                            borderColor: "border.subtle",
+                            // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Input` due to the `asChild` prop. Works at runtime.
+                            size: "sm",
+                          }}
+                          triggerProps={{
+                            borderColor: "transparent",
+                            p: 0,
+                            // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Button` due to the `asChild` prop. Works at runtime.
+                            size: "sm",
+                          }}
+                          // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
+                          swatchProps={{
+                            h: "full",
+                            w: "full",
+                            borderRadius: "sm",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            children: (
+                              <Icon
+                                src={HiOutlineEyeDropper}
+                                color="background.default"
+                                h={5}
+                                w={5}
+                              />
+                            ),
+                          }}
+                        />
+                      )}
+                    </Field>
+
+                    <DestructiveAction
+                      title="Delete"
+                      description={`Are you sure you want to remove the ${status.status} status?`}
+                      triggerLabel="Delete"
+                      triggerProps={{
+                        disabled: isDefaultStatus,
+                        "aria-label": `Remove ${status.status} Status`,
+                      }}
+                      action={{
+                        label: "Remove Status",
+                        // TODO: test this
+                        onClick: () =>
+                          deleteStatus({
+                            rowId: status.rowId!,
+                            patch: {
+                              deletedAt: new Date(),
+                            },
+                          }),
                       }}
                     />
-                  </HStack>
-
-                  <Input
-                    id={`status-${status.rowId}`}
-                    defaultValue={status.status}
-                    borderColor="border.subtle"
-                    size="sm"
-                  />
-                </Stack>
-
-                <Stack gap={0.5}>
-                  <Label htmlFor={`description-${status.rowId}`}>
-                    Description
-                  </Label>
-                  <Input
-                    id={`description-${status.rowId}`}
-                    defaultValue={status.description ?? ""}
-                    placeholder="Set a description for the status"
-                    borderColor="border.subtle"
-                    size="sm"
-                  />
-                </Stack>
-
-                <ColorPicker
-                  label="Color"
-                  presets={COLOR_PRESETS}
-                  defaultValue={
-                    status.color ? parseColor(status.color) : undefined
-                  }
-                  gap={0.5}
-                  channelInputProps={{
-                    // TODO: Omit upstream, or make it optional
-                    channel: "hex",
-                    borderColor: "border.subtle",
-                    // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Input` due to the `asChild` prop. Works at runtime.
-                    size: "sm",
-                  }}
-                  triggerProps={{
-                    borderColor: "transparent",
-                    p: 0,
-                    // @ts-ignore TODO: fix type error upstream. This `size` prop should be derived from `Button` due to the `asChild` prop. Works at runtime.
-                    size: "sm",
-                  }}
-                  // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
-                  swatchProps={{
-                    h: "full",
-                    w: "full",
-                    borderRadius: "sm",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    children: (
-                      <Icon
-                        src={HiOutlineEyeDropper}
-                        color="background.default"
-                        h={5}
-                        w={5}
-                      />
-                    ),
-                  }}
-                />
-
-                <DestructiveAction
-                  title="Delete"
-                  description={`Are you sure you want to remove the ${status.status} status?`}
-                  triggerLabel="Delete"
-                  triggerProps={{
-                    disabled: isDefaultStatus,
-                    "aria-label": `Remove ${status.status} Status`,
-                  }}
-                  action={{
-                    label: "Remove Status",
-                    // TODO: test this
-                    onClick: () =>
-                      deleteStatus({
-                        rowId: status.rowId!,
-                        patch: {
-                          deletedAt: new Date(),
-                        },
-                      }),
-                  }}
-                />
-              </Stack>
-            );
-          })}
-      </Grid>
+                  </Stack>
+                );
+              })}
+            </Grid>
+          )}
+        </Field>
+      </sigil.form>
 
       <HStack>
-        {/* TODO: replace with `SubmitForm` */}
-        <Button disabled>Update Statuses</Button>
+        <AppForm>
+          <SubmitForm
+            action={{
+              submit: "Update Statuses",
+              pending: "Updating Statuses...",
+            }}
+            // TODO: update when mutation is ready
+            isPending={false}
+          />
+        </AppForm>
 
         {/* TODO: make this a dialog when status component is extracted */}
         <Button variant="outline">
