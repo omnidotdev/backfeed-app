@@ -9,11 +9,11 @@ import {
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import { hasTeamSubscription } from "lib/flags";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
