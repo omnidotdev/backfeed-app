@@ -36,10 +36,15 @@ const baseSchema = z.object({
     .max(50, updateProjectDetails.fields.projectSlug.errors.maxLength),
 });
 
+interface Props {
+  /** If the user has permission to edit the project statuses. */
+  canEditStatuses: boolean;
+}
+
 /**
  * Form for updating project details.
  */
-const UpdateProject = () => {
+const UpdateProject = ({ canEditStatuses }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -225,7 +230,7 @@ const UpdateProject = () => {
           </AppField>
         </Stack>
 
-        <UpdateStatuses projectId={project?.rowId!} />
+        <UpdateStatuses projectId={project?.rowId!} canEdit={canEditStatuses} />
 
         <AppForm>
           <SubmitForm

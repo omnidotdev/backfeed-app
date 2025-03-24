@@ -13,6 +13,7 @@ import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import { hasTeamSubscription } from "lib/flags";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -63,6 +64,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   )
     notFound();
 
+  // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
+  const canEditStatuses = await hasTeamSubscription();
+
   const queryClient = getQueryClient();
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -111,6 +115,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
         <ProjectSettings
           projectId={project.rowId}
           organizationSlug={organizationSlug}
+          canEditStatuses={canEditStatuses}
         />
       </HydrationBoundary>
     </Page>

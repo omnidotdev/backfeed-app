@@ -36,12 +36,14 @@ const COLOR_PRESETS = [
 interface Props {
   /* Project ID. */
   projectId: Project["rowId"];
+  /** If the user has permissions to edit project statuses. */
+  canEdit: boolean;
 }
 
 /**
  * Form to update project statuses.
  */
-const UpdateStatuses = ({ projectId }: Props) => {
+const UpdateStatuses = ({ projectId, canEdit }: Props) => {
   const { data: statuses } = useProjectStatusesQuery(
     {
       projectId,
@@ -61,6 +63,8 @@ const UpdateStatuses = ({ projectId }: Props) => {
   const [defaultStatusId, setDefaultStatusId] = useState(
     statuses?.find((status) => status?.isDefault)?.rowId
   );
+
+  if (!canEdit) return null;
 
   return (
     <SectionContainer
