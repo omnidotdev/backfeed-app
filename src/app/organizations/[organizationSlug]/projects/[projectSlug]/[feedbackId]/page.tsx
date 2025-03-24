@@ -14,7 +14,6 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -56,8 +55,6 @@ const FeedbackPage = async ({ params }: Props) => {
     memberByUserIdAndOrganizationId?.role === Role.Admin ||
     memberByUserIdAndOrganizationId?.role === Role.Owner;
 
-  const canEditStatuses = isAdmin && (await hasTeamSubscription());
-
   const queryClient = getQueryClient();
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -87,8 +84,8 @@ const FeedbackPage = async ({ params }: Props) => {
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
     }),
-    // ! NB: only prefetch the project statuses if the user can edit statuses
-    ...(canEditStatuses
+    // ! NB: only prefetch the project statuses if the user is an admin
+    ...(isAdmin
       ? [
           queryClient.prefetchQuery({
             queryKey: useProjectStatusesQuery.getKey({

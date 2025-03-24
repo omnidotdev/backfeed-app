@@ -143,7 +143,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
-      projectStatuses={projectStatuses}
+      projectStatuses={isAdmin ? projectStatuses : undefined}
       boxShadow="card"
       {...rest}
     >

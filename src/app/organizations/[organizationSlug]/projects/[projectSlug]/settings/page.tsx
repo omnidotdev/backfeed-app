@@ -65,7 +65,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   if (!isAdmin) notFound();
 
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
-  const canEditStatuses = isAdmin && (await hasTeamSubscription());
+  const canEditStatuses = await hasTeamSubscription();
 
   const queryClient = getQueryClient();
 
