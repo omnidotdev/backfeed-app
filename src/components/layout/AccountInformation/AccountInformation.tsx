@@ -26,7 +26,7 @@ const AccountInformation = () => {
 
   const { user } = useAuth();
 
-  const handleProfileClick = () => router.push(`/profile/${user?.rowId}`);
+  const handleProfileClick = () => router.push(`/profile/${user?.hidraId}`);
 
   const handleLogout = async () => {
     try {

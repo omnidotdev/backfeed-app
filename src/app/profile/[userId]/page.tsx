@@ -32,7 +32,7 @@ const ProfilePage = async ({ params }: Props) => {
 
   if (session.status === "rejected") redirect("/");
 
-  if (session.value?.user?.rowId !== userId) notFound();
+  if (session.value?.user?.hidraId !== userId) notFound();
 
   const queryClient = getQueryClient();
 

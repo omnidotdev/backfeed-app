@@ -155,7 +155,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
             onClick={() =>
               isAuthenticated
                 ? router.push(
-                    `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.rowId}`
+                    `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.hidraId}`
                   )
                 : signIn("omni")
             }

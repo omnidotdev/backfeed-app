@@ -15,9 +15,9 @@ const useSubscription = ({ enabled = true }: Options = {}) => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["Subscription", user?.rowId],
-    queryFn: async () => await getSubscription(user?.rowId!),
-    enabled: enabled && !!user?.rowId,
+    queryKey: ["Subscription", user?.hidraId],
+    queryFn: async () => await getSubscription(user?.hidraId!),
+    enabled: enabled && !!user?.hidraId,
     retry: false,
   });
 };
