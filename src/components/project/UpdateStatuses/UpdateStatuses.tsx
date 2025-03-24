@@ -2,7 +2,7 @@
 
 import { parseColor } from "@ark-ui/react";
 import {
-  Box,
+  Button,
   ColorPicker,
   Grid,
   HStack,
@@ -13,7 +13,7 @@ import {
   Switch,
 } from "@omnidev/sigil";
 import { useState } from "react";
-import { HiOutlineEyeDropper } from "react-icons/hi2";
+import { HiOutlineEyeDropper, HiPlus } from "react-icons/hi2";
 
 import { SectionContainer } from "components/layout";
 import {
@@ -89,11 +89,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       p={0}
       boxShadow="none"
     >
-      <Grid
-        columns={{ base: 1, md: 2, xl: 3 }}
-        bgColor="background.muted"
-        gap="1px"
-      >
+      <Grid columns={{ base: 1, md: 2, xl: 3 }} gap="1px">
         {statuses
           ?.sort((a, b) => {
             const aValue = a.isDefault ? 1 : 0;
@@ -105,7 +101,12 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
             const isDefaultStatus = status.rowId === defaultStatusId;
 
             return (
-              <Stack key={status.rowId} bgColor="background.default" p={4}>
+              <Stack
+                key={status.rowId}
+                outline="1px solid"
+                outlineColor="background.muted"
+                p={4}
+              >
                 <Stack gap={0.5}>
                   <HStack justify="space-between">
                     <Label htmlFor={`status-${status.rowId}`}>Status</Label>
@@ -207,13 +208,18 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
               </Stack>
             );
           })}
-
-        {/* TODO: figure out if this needs to be dynamic. Used as placeholder to fill the grid */}
-        <Box
-          display={{ base: "none", md: "block" }}
-          bgColor="background.default"
-        />
       </Grid>
+
+      <HStack>
+        {/* TODO: replace with `SubmitForm` */}
+        <Button disabled>Update Statuses</Button>
+
+        {/* TODO: make this a dialog when status component is extracted */}
+        <Button variant="outline">
+          <Icon src={HiPlus} />
+          Add New Status
+        </Button>
+      </HStack>
     </SectionContainer>
   );
 };
