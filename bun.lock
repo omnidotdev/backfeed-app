@@ -5,7 +5,7 @@
       "name": "backfeed",
       "dependencies": {
         "@ark-ui/react": "^5.0.1",
-        "@omnidev/sigil": "^0.14.1",
+        "@omnidev/sigil": "^0.15.0",
         "@polar-sh/nextjs": "^0.3.22",
         "@polar-sh/sdk": "^0.31.0",
         "@tanstack/react-form": "^1.0.5",
@@ -454,7 +454,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@3.0.1", "", { "dependencies": { "@nodelib/fs.scandir": "4.0.1", "fastq": "^1.15.0" } }, "sha512-nIh/M6Kh3ZtOmlY00DaUYB4xeeV6F3/ts1l29iwl3/cfyY/OuCfUx+v08zgx8TKPTifXRcjjqVQ4KB2zOYSbyw=="],
 
-    "@omnidev/sigil": ["@omnidev/sigil@0.14.1", "", { "peerDependencies": { "@pandacss/dev": "^0.51.0", "@pandacss/types": "^0.51.0", "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-905rJeMmJeY+p+RJj537l6MBaLKKOqFAyLT/nFmE1fmhxT+y67ioh4FK5dpJkERguL4SjeboZeJkg4VbX8S2lQ=="],
+    "@omnidev/sigil": ["@omnidev/sigil@0.15.0", "", { "peerDependencies": { "@pandacss/dev": "^0.51.0", "@pandacss/types": "^0.51.0", "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-EOTtpfj0+cH/Z58JG3Fg9u2ZytoFfKKyXYDiw57rqGH1RyTzKHZfx+0ffrn0KsJv0ee4P8sUaRbXq7yrWo8VJA=="],
 
     "@open-draft/deferred-promise": ["@open-draft/deferred-promise@2.2.0", "", {}, "sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA=="],
 
