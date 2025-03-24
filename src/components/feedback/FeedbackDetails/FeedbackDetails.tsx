@@ -73,18 +73,11 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     {
       enabled: isAdmin,
       select: (data) =>
-        data?.postStatuses?.nodes
-          ?.sort((a, b) => {
-            const aValue = a?.isDefault ? 1 : 0;
-            const bValue = b?.isDefault ? 1 : 0;
-
-            return bValue - aValue;
-          })
-          .map((status) => ({
-            rowId: status?.rowId,
-            status: status?.status,
-            color: status?.color,
-          })),
+        data?.postStatuses?.nodes.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+          color: status?.color,
+        })),
     }
   );
 

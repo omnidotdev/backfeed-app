@@ -6223,6 +6223,7 @@ export const ProjectStatusesDocument = `
     query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
   postStatuses(
     condition: {projectId: $projectId, isDefault: $isDefault, deletedAt: null}
+    orderBy: IS_DEFAULT_DESC
   ) {
     nodes {
       rowId
