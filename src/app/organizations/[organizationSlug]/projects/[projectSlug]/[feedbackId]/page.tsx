@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
+  Role,
   useCommentsQuery,
   useDownvoteQuery,
   useFeedbackByIdQuery,
@@ -13,6 +14,7 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -45,6 +47,17 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!feedback) notFound();
 
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user?.rowId!,
+    organizationId: feedback.project?.organization?.rowId!,
+  });
+
+  const isAdmin =
+    memberByUserIdAndOrganizationId?.role === Role.Admin ||
+    memberByUserIdAndOrganizationId?.role === Role.Owner;
+
+  const canEditStatuses = isAdmin && (await hasTeamSubscription());
+
   const queryClient = getQueryClient();
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -74,14 +87,19 @@ const FeedbackPage = async ({ params }: Props) => {
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectStatusesQuery.getKey({
-        projectId: feedback.project?.rowId!,
-      }),
-      queryFn: useProjectStatusesQuery.fetcher({
-        projectId: feedback.project?.rowId!,
-      }),
-    }),
+    // ! NB: only prefetch the project statuses if the user can edit statuses
+    ...(canEditStatuses
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useProjectStatusesQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
+            queryFn: useProjectStatusesQuery.fetcher({
+              projectId: feedback.project?.rowId!,
+            }),
+          }),
+        ]
+      : []),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,

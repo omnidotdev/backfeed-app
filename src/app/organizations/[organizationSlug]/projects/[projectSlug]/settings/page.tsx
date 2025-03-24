@@ -58,14 +58,14 @@ const ProjectSettingsPage = async ({ params }: Props) => {
     organizationId: project.organization?.rowId!,
   });
 
-  if (
-    !memberByUserIdAndOrganizationId ||
-    memberByUserIdAndOrganizationId.role === Role.Member
-  )
-    notFound();
+  const isAdmin =
+    memberByUserIdAndOrganizationId?.role === Role.Admin ||
+    memberByUserIdAndOrganizationId?.role === Role.Owner;
+
+  if (!isAdmin) notFound();
 
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
-  const canEditStatuses = await hasTeamSubscription();
+  const canEditStatuses = isAdmin && (await hasTeamSubscription());
 
   const queryClient = getQueryClient();
 
@@ -96,10 +96,19 @@ const ProjectSettingsPage = async ({ params }: Props) => {
       queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
       queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
-      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
-    }),
+    // ! NB: only prefetch the project statuses if the user can edit statuses
+    ...(canEditStatuses
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useProjectStatusesQuery.getKey({
+              projectId: project.rowId,
+            }),
+            queryFn: useProjectStatusesQuery.fetcher({
+              projectId: project.rowId,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
