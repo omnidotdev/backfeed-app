@@ -184,12 +184,14 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                                     const indexOfStatus =
                                       arrayState.value.indexOf(status);
 
+                                    // Change the default status of all other statuses to false
                                     if (i !== indexOfStatus) {
                                       setFieldValue(
                                         `projectStatuses[${indexOfStatus}].isDefault`,
                                         false
                                       );
                                     } else {
+                                      // This essentially disables unchecking the default status
                                       if (checked) {
                                         handleChange(true);
                                       }
@@ -237,8 +239,8 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                             ? parseColor(state.value)
                             : parseColor("#000000")
                         }
-                        onValueChange={({ valueAsString }) =>
-                          handleChange(valueAsString)
+                        onValueChange={({ value }) =>
+                          handleChange(value.toString("hex"))
                         }
                         gap={0.5}
                         channelInputProps={{
