@@ -1,5 +1,7 @@
 query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
-  postStatuses(condition: { projectId: $projectId, isDefault: $isDefault }) {
+  postStatuses(
+    condition: { projectId: $projectId, isDefault: $isDefault, deletedAt: null }
+  ) {
     nodes {
       rowId
       status

@@ -2309,6 +2309,7 @@ export type PostStatus = {
   __typename?: 'PostStatus';
   color?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
+  deletedAt?: Maybe<Scalars['Datetime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   isDefault: Scalars['Boolean']['output'];
   /** Reads and enables pagination through a set of `Post`. */
@@ -2357,6 +2358,8 @@ export type PostStatusCondition = {
   color?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `deletedAt` field. */
+  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `isDefault` field. */
@@ -2398,6 +2401,7 @@ export type PostStatusConnectionGroupedAggregatesArgs = {
 export type PostStatusDistinctCountAggregateFilter = {
   color?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
+  deletedAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
   isDefault?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
@@ -2412,6 +2416,8 @@ export type PostStatusDistinctCountAggregates = {
   color?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of deletedAt across the matching connection */
+  deletedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of isDefault across the matching connection */
@@ -2443,6 +2449,8 @@ export type PostStatusFilter = {
   color?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `deletedAt` field. */
+  deletedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `isDefault` field. */
@@ -2473,6 +2481,9 @@ export enum PostStatusGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  DeletedAt = 'DELETED_AT',
+  DeletedAtTruncatedToDay = 'DELETED_AT_TRUNCATED_TO_DAY',
+  DeletedAtTruncatedToHour = 'DELETED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   IsDefault = 'IS_DEFAULT',
   ProjectId = 'PROJECT_ID',
@@ -2484,11 +2495,13 @@ export enum PostStatusGroupBy {
 
 export type PostStatusHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2509,36 +2522,43 @@ export type PostStatusHavingInput = {
 
 export type PostStatusHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostStatusHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  deletedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -2546,6 +2566,7 @@ export type PostStatusHavingVarianceSampleInput = {
 export type PostStatusInput = {
   color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isDefault?: InputMaybe<Scalars['Boolean']['input']>;
   projectId: Scalars['UUID']['input'];
@@ -2560,6 +2581,8 @@ export enum PostStatusOrderBy {
   ColorDesc = 'COLOR_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  DeletedAtAsc = 'DELETED_AT_ASC',
+  DeletedAtDesc = 'DELETED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
   IsDefaultAsc = 'IS_DEFAULT_ASC',
@@ -2601,6 +2624,7 @@ export enum PostStatusOrderBy {
 export type PostStatusPatch = {
   color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isDefault?: InputMaybe<Scalars['Boolean']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2959,6 +2983,8 @@ export enum ProjectOrderBy {
   PostStatusesDistinctCountColorDesc = 'POST_STATUSES_DISTINCT_COUNT_COLOR_DESC',
   PostStatusesDistinctCountCreatedAtAsc = 'POST_STATUSES_DISTINCT_COUNT_CREATED_AT_ASC',
   PostStatusesDistinctCountCreatedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusesDistinctCountDeletedAtAsc = 'POST_STATUSES_DISTINCT_COUNT_DELETED_AT_ASC',
+  PostStatusesDistinctCountDeletedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_DELETED_AT_DESC',
   PostStatusesDistinctCountDescriptionAsc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostStatusesDistinctCountDescriptionDesc = 'POST_STATUSES_DISTINCT_COUNT_DESCRIPTION_DESC',
   PostStatusesDistinctCountIsDefaultAsc = 'POST_STATUSES_DISTINCT_COUNT_IS_DEFAULT_ASC',
@@ -4550,6 +4576,14 @@ export type CreatePostStatusMutationVariables = Exact<{
 
 export type CreatePostStatusMutation = { __typename?: 'Mutation', createPostStatus?: { __typename?: 'CreatePostStatusPayload', clientMutationId?: string | null } | null };
 
+export type UpdatePostStatusMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: PostStatusPatch;
+}>;
+
+
+export type UpdatePostStatusMutation = { __typename?: 'Mutation', updatePostStatus?: { __typename?: 'UpdatePostStatusPayload', clientMutationId?: string | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4939,6 +4973,13 @@ export const CreatePostStatusDocument = gql`
   }
 }
     `;
+export const UpdatePostStatusDocument = gql`
+    mutation UpdatePostStatus($rowId: UUID!, $patch: PostStatusPatch!) {
+  updatePostStatus(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
@@ -5203,7 +5244,9 @@ export const ProjectMetricsDocument = gql`
     `;
 export const ProjectStatusesDocument = gql`
     query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
-  postStatuses(condition: {projectId: $projectId, isDefault: $isDefault}) {
+  postStatuses(
+    condition: {projectId: $projectId, isDefault: $isDefault, deletedAt: null}
+  ) {
     nodes {
       rowId
       status
@@ -5365,6 +5408,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreatePostStatus(variables: CreatePostStatusMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreatePostStatusMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostStatusMutation>(CreatePostStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePostStatus', 'mutation', variables);
+    },
+    UpdatePostStatus(variables: UpdatePostStatusMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdatePostStatusMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePostStatusMutation>(UpdatePostStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePostStatus', 'mutation', variables);
     },
     CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>(CreateProjectDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateProject', 'mutation', variables);

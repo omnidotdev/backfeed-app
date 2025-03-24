@@ -16,8 +16,13 @@ import { useState } from "react";
 import { HiOutlineEyeDropper } from "react-icons/hi2";
 
 import { SectionContainer } from "components/layout";
-import { useProjectStatusesQuery } from "generated/graphql";
+import {
+  useProjectStatusesQuery,
+  useUpdatePostStatusMutation,
+} from "generated/graphql";
 
+import { useQueryClient } from "@tanstack/react-query";
+import { DestructiveAction } from "components/core";
 import type { Project } from "generated/graphql";
 
 const COLOR_PRESETS = [
@@ -46,6 +51,8 @@ interface Props {
  * Form to update project statuses.
  */
 const UpdateStatuses = ({ projectId, canEdit }: Props) => {
+  const queryClient = useQueryClient();
+
   const { data: statuses } = useProjectStatusesQuery(
     {
       projectId,
@@ -65,6 +72,13 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
   const [defaultStatusId, setDefaultStatusId] = useState(
     statuses?.find((status) => status?.isDefault)?.rowId
   );
+
+  const { mutate: deleteStatus } = useUpdatePostStatusMutation({
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: useProjectStatusesQuery.getKey({ projectId }),
+      }),
+  });
 
   if (!canEdit) return null;
 
@@ -167,6 +181,27 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         w={5}
                       />
                     ),
+                  }}
+                />
+
+                <DestructiveAction
+                  title="Delete"
+                  description={`Are you sure you want to remove the ${status.status} status?`}
+                  triggerLabel="Delete"
+                  triggerProps={{
+                    disabled: isDefaultStatus,
+                    "aria-label": `Remove ${status.status} Status`,
+                  }}
+                  action={{
+                    label: "Remove Status",
+                    // TODO: test this
+                    onClick: () =>
+                      deleteStatus({
+                        rowId: status.rowId!,
+                        patch: {
+                          deletedAt: new Date(),
+                        },
+                      }),
                   }}
                 />
               </Stack>
