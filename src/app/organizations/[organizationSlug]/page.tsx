@@ -15,6 +15,7 @@ import {
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
+import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
@@ -124,7 +125,8 @@ const OrganizationPage = async ({ params }: Props) => {
           <OrganizationActions
             organizationId={organization.rowId}
             canCreateProjects={
-              isTeamTier || organization.projects.nodes.length < 3
+              isTeamTier ||
+              organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS
             }
           />
         </Grid>

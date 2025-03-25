@@ -13,7 +13,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -144,7 +144,8 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
   });
 
   const canCreateProject =
-    isTeamTier || (firstOrganization && firstOrganization.numberOfProjects < 3);
+    isTeamTier ||
+    (firstOrganization?.numberOfProjects ?? 0) < MAX_NUMBER_OF_PROJECTS;
 
   useHotkeys(
     "mod+p",

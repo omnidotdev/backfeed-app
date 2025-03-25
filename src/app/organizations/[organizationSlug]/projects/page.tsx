@@ -11,6 +11,7 @@ import {
   useProjectsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
@@ -62,7 +63,8 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const isTeamTier = await hasTeamSubscription();
 
-  const canCreateProject = isTeamTier || organization.projects.nodes.length < 3;
+  const canCreateProject =
+    isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS;
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
