@@ -1,5 +1,6 @@
-import { Button } from "@omnidev/sigil";
+import { Alert, Button, HStack, Icon } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
+import { IoWarningOutline } from "react-icons/io5";
 
 import { useFormContext } from "lib/hooks";
 
@@ -13,6 +14,8 @@ interface Props extends ButtonProps {
   };
   /** Whether the mutation is pending. */
   isPending?: boolean;
+  /** Whether to inform the user of unsaved changes. */
+  showAlert?: boolean;
 }
 
 /**
@@ -22,6 +25,7 @@ const SubmitForm = ({
   action,
   isPending = false,
   disabled,
+  showAlert = false,
   ...rest
 }: Props) => {
   const {
@@ -39,15 +43,32 @@ const SubmitForm = ({
   return (
     <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
       {([canSubmit, isSubmitting]) => (
-        <Button
-          type="submit"
-          disabled={
-            !canSubmit || !isDirty || isSubmitting || isPending || disabled
-          }
-          {...rest}
-        >
-          {isSubmitting || isPending ? action.pending : action.submit}
-        </Button>
+        <HStack w="full">
+          <Button
+            type="submit"
+            disabled={
+              !canSubmit || !isDirty || isSubmitting || isPending || disabled
+            }
+            {...rest}
+          >
+            {isSubmitting || isPending ? action.pending : action.submit}
+          </Button>
+
+          {isDirty && showAlert && (
+            <Alert
+              variant="warning"
+              description="You have unsaved changes."
+              icon={<Icon src={IoWarningOutline} h={4} w={4} />}
+              w="fit"
+              borderRadius="sm"
+              borderWidth={0}
+              px={3}
+              py={2}
+              alignItems="center"
+              gap={1}
+            />
+          )}
+        </HStack>
       )}
     </Subscribe>
   );
