@@ -28,7 +28,6 @@ const InputField = ({ label, errorProps, ...rest }: Props) => {
         value={state.value}
         onChange={(evt) => handleChange(evt.target.value)}
         borderColor="border.subtle"
-        minW={40}
         {...rest}
       />
     </Field>

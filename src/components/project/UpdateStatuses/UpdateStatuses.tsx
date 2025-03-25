@@ -270,7 +270,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                             placeholder={
                               updateProjectStatuses.fields.status.placeholder
                             }
-                            borderColor="border.subtle"
+                            minW={40}
                             errorProps={{
                               top: -5,
                             }}
@@ -287,7 +287,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                               updateProjectStatuses.fields.description
                                 .placeholder
                             }
-                            borderColor="border.subtle"
+                            minW={40}
                             errorProps={{
                               top: -5,
                             }}
