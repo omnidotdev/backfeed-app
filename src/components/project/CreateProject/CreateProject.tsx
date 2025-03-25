@@ -19,7 +19,6 @@ import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
 
-// TODO: update when custom statuses are implemented
 // NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
 const DEFAULT_POST_STATUSES = [
   {
