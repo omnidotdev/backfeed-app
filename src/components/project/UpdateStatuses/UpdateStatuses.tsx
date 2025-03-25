@@ -143,39 +143,42 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
 
         if (removedStatuses?.length) {
           await Promise.all(
-            removedStatuses.map((status) =>
-              deleteStatus({
-                statusId: status.rowId!,
-              })
+            removedStatuses.map(
+              async (status) =>
+                await deleteStatus({
+                  statusId: status.rowId!,
+                })
             )
           );
         }
 
-        for (const status of currentStatuses) {
-          if (status.rowId === "pending") {
-            await createStatus({
-              input: {
-                postStatus: {
-                  projectId,
-                  status: status.status!,
+        await Promise.all(
+          currentStatuses.map(async (status) => {
+            if (status.rowId === "pending") {
+              await createStatus({
+                input: {
+                  postStatus: {
+                    projectId,
+                    status: status.status!,
+                    description: status.description,
+                    color: status.color,
+                    isDefault: status.isDefault,
+                  },
+                },
+              });
+            } else {
+              await updateStatus({
+                rowId: status.rowId!,
+                patch: {
+                  status: status.status,
                   description: status.description,
                   color: status.color,
                   isDefault: status.isDefault,
                 },
-              },
-            });
-          } else {
-            await updateStatus({
-              rowId: status.rowId!,
-              patch: {
-                status: status.status,
-                description: status.description,
-                color: status.color,
-                isDefault: status.isDefault,
-              },
-            });
-          }
-        }
+              });
+            }
+          })
+        );
 
         await queryClient.invalidateQueries({
           queryKey: useProjectStatusesQuery.getKey({ projectId }),
