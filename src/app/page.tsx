@@ -12,10 +12,10 @@ import {
   useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
+import { hasTeamSubscription } from "lib/flags";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
-import { hasTeamSubscription } from "lib/flags";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
