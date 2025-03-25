@@ -49,7 +49,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
             )?.distinctCount?.rowId ?? 0;
 
           return {
-            status: status,
+            status,
             count,
           };
         }),
