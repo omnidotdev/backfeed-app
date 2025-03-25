@@ -11,6 +11,7 @@ import {
   useProjectsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -58,6 +59,10 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   });
 
   if (!organization) notFound();
+
+  const isTeamTier = await hasTeamSubscription();
+
+  const canCreateProject = isTeamTier || organization.projects.nodes.length < 3;
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -122,7 +127,8 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
             label: app.projectsPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
-            disabled: !member || member.role === Role.Member,
+            disabled:
+              !member || member.role === Role.Member || !canCreateProject,
             dialogType: DialogType.CreateProject,
           },
         ],

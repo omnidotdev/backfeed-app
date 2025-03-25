@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, sigil } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
@@ -93,6 +94,8 @@ const createProjectSchema = baseSchema.superRefine(
 );
 
 interface Props {
+  /** Whether the user has a team tier subscription. */
+  isTeamTier: boolean;
   /** Slug of the organization to create the project under. */
   organizationSlug?: string;
 }
@@ -100,7 +103,9 @@ interface Props {
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ organizationSlug }: Props) => {
+const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
+  const queryClient = useQueryClient();
+
   const router = useRouter();
 
   const { user } = useAuth();
@@ -126,6 +131,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
         data?.organizations?.nodes?.map((organization) => ({
           label: organization?.name,
           value: organization?.rowId,
+          numberOfProjects: organization?.projects?.totalCount ?? 0,
         })),
     }
   );
@@ -137,6 +143,9 @@ const CreateProject = ({ organizationSlug }: Props) => {
     userId: user?.rowId,
   });
 
+  const canCreateProject =
+    isTeamTier || (firstOrganization && firstOrganization.numberOfProjects < 3);
+
   useHotkeys(
     "mod+p",
     () => {
@@ -147,17 +156,37 @@ const CreateProject = ({ organizationSlug }: Props) => {
       enabled:
         !!user &&
         !isCreateOrganizationDialogOpen &&
-        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin
-        (organizationSlug ? isAdmin : true),
+        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin and have the necessary permissions based on their subscription tier
+        // TODO: handle case where project is *not* scoped to an organization
+        (organizationSlug ? isAdmin && canCreateProject : true),
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
+    [
+      user,
+      isOpen,
+      isCreateOrganizationDialogOpen,
+      organizationSlug,
+      isAdmin,
+      canCreateProject,
+    ]
   );
 
-  const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
+    onSettled: () => {
+      // ! NB: needed to invalidate the number of projects for an organization
+      queryClient.invalidateQueries({
+        queryKey: useOrganizationsQuery.getKey({
+          userId: user?.rowId!,
+          isMember: true,
+          slug: organizationSlug,
+          excludeRoles: [Role.Member],
+        }),
+      });
+    },
+  });
 
   const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
 

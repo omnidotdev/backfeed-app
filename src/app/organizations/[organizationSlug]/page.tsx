@@ -15,6 +15,7 @@ import {
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -57,6 +58,8 @@ const OrganizationPage = async ({ params }: Props) => {
   });
 
   if (!organization) notFound();
+
+  const isTeamTier = await hasTeamSubscription();
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -108,7 +111,7 @@ const OrganizationPage = async ({ params }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               href: `/organizations/${organizationSlug}/projects`,
-              disabled: !organization.projects?.nodes.length,
+              disabled: !organization.projects.nodes.length,
             },
           ],
         }}
@@ -118,7 +121,12 @@ const OrganizationPage = async ({ params }: Props) => {
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
 
-          <OrganizationActions organizationId={organization.rowId} />
+          <OrganizationActions
+            organizationId={organization.rowId}
+            canCreateProjects={
+              isTeamTier || organization.projects.nodes.length < 3
+            }
+          />
         </Grid>
       </Page>
     </HydrationBoundary>

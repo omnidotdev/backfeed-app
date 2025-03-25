@@ -24,12 +24,14 @@ interface Action extends ButtonProps {
 interface Props {
   /** Organization ID. */
   organizationId: string;
+  /** Whether the user has necessary subscription permissions to create projects. */
+  canCreateProjects: boolean;
 }
 
 /**
  * Organization actions.
  */
-const OrganizationActions = ({ organizationId }: Props) => {
+const OrganizationActions = ({ organizationId, canCreateProjects }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
@@ -59,7 +61,7 @@ const OrganizationActions = ({ organizationId }: Props) => {
       label: app.organizationPage.actions.cta.createProject.label,
       icon: LuCirclePlus,
       onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: !isAdmin,
+      disabled: !isAdmin || !canCreateProjects,
     },
   ];
 

@@ -70,7 +70,11 @@ const Layout = ({ isTeamTier, children }: Props) => {
         <Footer />
 
         {/* dialogs */}
-        <CreateProject organizationSlug={organizationSlug} />
+        <CreateProject
+          organizationSlug={organizationSlug}
+          isTeamTier={isTeamTier}
+        />
+
         <CreateOrganization
           canCreateOrganization={isTeamTier || !numberOfOrganizations}
         />

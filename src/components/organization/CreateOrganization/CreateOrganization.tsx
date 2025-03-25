@@ -92,7 +92,7 @@ const CreateOrganization = ({ canCreateOrganization }: Props) => {
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen]
+    [user, isOpen, isCreateProjectDialogOpen, canCreateOrganization]
   );
 
   const { mutateAsync: createOrganization, isPending } =
