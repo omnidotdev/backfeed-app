@@ -2,6 +2,7 @@ import { Alert, Button, HStack, Icon } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { IoWarningOutline } from "react-icons/io5";
 
+import { app } from "lib/config";
 import { useFormContext } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -57,8 +58,8 @@ const SubmitForm = ({
           {isDirty && showAlert && (
             <Alert
               variant="warning"
-              description="You have unsaved changes."
-              icon={<Icon src={IoWarningOutline} h={4} w={4} />}
+              description={app.unsavedChanges.description}
+              icon={<Icon src={IoWarningOutline} h={4} w={4} mt={1} />}
               w="fit"
               borderRadius="sm"
               borderWidth={0}

@@ -4,6 +4,9 @@ const app = {
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
   breadcrumb: "Home",
+  unsavedChanges: {
+    description: "You have unsaved changes.",
+  },
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
