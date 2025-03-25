@@ -8,7 +8,7 @@ import type { FormFieldErrorProps } from "components/form";
 
 interface Props extends InputProps {
   /** Label for the text field. */
-  label: string;
+  label?: string;
   /** Additional props for the error component. */
   errorProps?: Partial<FormFieldErrorProps>;
 }
@@ -21,13 +21,14 @@ const InputField = ({ label, errorProps, ...rest }: Props) => {
 
   return (
     <Field errorProps={errorProps}>
-      <Label htmlFor={name}>{label}</Label>
+      {label && <Label htmlFor={name}>{label}</Label>}
 
       <Input
         id={name}
         value={state.value}
         onChange={(evt) => handleChange(evt.target.value)}
         borderColor="border.subtle"
+        minW={40}
         {...rest}
       />
     </Field>

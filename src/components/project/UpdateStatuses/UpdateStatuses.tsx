@@ -4,11 +4,13 @@ import { parseColor } from "@ark-ui/react";
 import {
   Button,
   ColorPicker,
-  Grid,
+  Flex,
   HStack,
   Icon,
-  Stack,
   Switch,
+  Table,
+  TableCell,
+  TableRow,
   sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
@@ -163,138 +165,163 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       >
         <Field name="projectStatuses" mode="array">
           {({ state: arrayState }) => (
-            <Grid columns={{ base: 1, md: 2, xl: 3 }} gap="1px">
-              {arrayState.value.map((status, i) => (
-                <Stack
-                  key={status.rowId}
-                  outline="1px solid"
-                  outlineColor="background.muted"
-                  p={4}
-                >
-                  <AppField name={`projectStatuses[${i}].status`}>
-                    {({ InputField }) => (
-                      <Stack gap={0.5}>
-                        <HStack placeSelf="flex-end">
-                          <Field name={`projectStatuses[${i}].isDefault`}>
-                            {({ state, handleChange }) => (
-                              <Switch
-                                checked={state.value}
-                                onCheckedChange={({ checked }) => {
-                                  for (const status of arrayState.value) {
-                                    const indexOfStatus =
-                                      arrayState.value.indexOf(status);
+            <Flex w="100%" overflowX="auto">
+              <Table
+                headerContent={
+                  <TableRow bgColor="background.muted">
+                    {[
+                      "Default",
+                      "Status",
+                      "Description",
+                      "Color",
+                      "Remove",
+                    ].map((header) => (
+                      <TableCell
+                        key={header}
+                        textAlign={{ _last: "right" }}
+                        fontWeight="bold"
+                      >
+                        {header}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                }
+              >
+                {arrayState.value.map((status, i) => (
+                  <TableRow key={status.rowId} bgColor="transparent">
+                    <TableCell>
+                      <Field name={`projectStatuses[${i}].isDefault`}>
+                        {({ state, handleChange }) => (
+                          <Switch
+                            checked={state.value}
+                            onCheckedChange={({ checked }) => {
+                              for (const status of arrayState.value) {
+                                const indexOfStatus =
+                                  arrayState.value.indexOf(status);
 
-                                    // Change the default status of all other statuses to false
-                                    if (i !== indexOfStatus) {
-                                      setFieldValue(
-                                        `projectStatuses[${indexOfStatus}].isDefault`,
-                                        false
-                                      );
-                                    } else {
-                                      // This essentially disables unchecking the default status
-                                      if (checked) {
-                                        handleChange(true);
-                                      }
-                                    }
+                                // Change the default status of all other statuses to false
+                                if (i !== indexOfStatus) {
+                                  setFieldValue(
+                                    `projectStatuses[${indexOfStatus}].isDefault`,
+                                    false
+                                  );
+                                } else {
+                                  // This essentially disables unchecking the default status
+                                  if (checked) {
+                                    handleChange(true);
                                   }
-                                }}
-                                label={state.value ? "Default" : undefined}
-                                size="sm"
-                                flexDirection="row-reverse"
-                                labelProps={{
-                                  fontSize: "xs",
-                                }}
-                                h={5}
-                              />
-                            )}
-                          </Field>
-                        </HStack>
+                                }
+                              }
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TableCell>
 
-                        <InputField
-                          label="Status"
-                          placeholder="Enter status name"
-                          borderColor="border.subtle"
+                    <TableCell py={5}>
+                      <AppField name={`projectStatuses[${i}].status`}>
+                        {({ InputField }) => (
+                          <InputField
+                            placeholder="Enter status name"
+                            borderColor="border.subtle"
+                            errorProps={{
+                              top: -5,
+                            }}
+                          />
+                        )}
+                      </AppField>
+                    </TableCell>
+
+                    <TableCell>
+                      <AppField name={`projectStatuses[${i}].description`}>
+                        {({ InputField }) => (
+                          <InputField
+                            placeholder="Set a description for the status"
+                            borderColor="border.subtle"
+                            errorProps={{
+                              top: -5,
+                            }}
+                          />
+                        )}
+                      </AppField>
+                    </TableCell>
+
+                    <TableCell>
+                      {/* TODO: handle errors */}
+                      <Field name={`projectStatuses[${i}].color`}>
+                        {({ state, handleChange }) => (
+                          <ColorPicker
+                            label={null}
+                            presets={COLOR_PRESETS}
+                            value={
+                              state.value
+                                ? parseColor(state.value)
+                                : parseColor("#000000")
+                            }
+                            onValueChange={({ value }) =>
+                              handleChange(value.toString("hex"))
+                            }
+                            gap={0.5}
+                            channelInputProps={{
+                              // TODO: Omit upstream, or make it optional
+                              channel: "hex",
+                              borderColor: "border.subtle",
+                              minW: 40,
+                            }}
+                            triggerProps={{
+                              borderColor: "transparent",
+                              p: 0,
+                            }}
+                            // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
+                            swatchProps={{
+                              h: "full",
+                              w: "full",
+                              borderRadius: "sm",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              children: (
+                                <Icon
+                                  src={HiOutlineEyeDropper}
+                                  color="background.default"
+                                  h={5}
+                                  w={5}
+                                />
+                              ),
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TableCell>
+
+                    <TableCell px={3}>
+                      <Flex w="full" justify="flex-end">
+                        <DestructiveAction
+                          title="Delete"
+                          description={`Are you sure you want to remove the ${status.status} status?`}
+                          triggerProps={{
+                            disabled: status.isDefault,
+                            "aria-label": `Remove ${status.status} Status`,
+                            // @ts-ignore TODO: fix upstream. Should inherit from `Button` props. Works at runtime.
+                            variant: "icon",
+                          }}
+                          action={{
+                            label: "Remove Status",
+                            onClick: () =>
+                              deleteStatus({
+                                rowId: status.rowId!,
+                                patch: {
+                                  deletedAt: new Date(),
+                                },
+                              }),
+                          }}
                         />
-                      </Stack>
-                    )}
-                  </AppField>
-
-                  <AppField name={`projectStatuses[${i}].description`}>
-                    {({ InputField }) => (
-                      <InputField
-                        label="Description"
-                        placeholder="Set a description for the status"
-                        borderColor="border.subtle"
-                      />
-                    )}
-                  </AppField>
-
-                  <Field name={`projectStatuses[${i}].color`}>
-                    {({ state, handleChange }) => (
-                      <ColorPicker
-                        label="Color"
-                        presets={COLOR_PRESETS}
-                        value={
-                          state.value
-                            ? parseColor(state.value)
-                            : parseColor("#000000")
-                        }
-                        onValueChange={({ value }) =>
-                          handleChange(value.toString("hex"))
-                        }
-                        gap={0.5}
-                        channelInputProps={{
-                          // TODO: Omit upstream, or make it optional
-                          channel: "hex",
-                          borderColor: "border.subtle",
-                        }}
-                        triggerProps={{
-                          borderColor: "transparent",
-                          p: 0,
-                        }}
-                        // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
-                        swatchProps={{
-                          h: "full",
-                          w: "full",
-                          borderRadius: "sm",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          children: (
-                            <Icon
-                              src={HiOutlineEyeDropper}
-                              color="background.default"
-                              h={5}
-                              w={5}
-                            />
-                          ),
-                        }}
-                      />
-                    )}
-                  </Field>
-
-                  <DestructiveAction
-                    title="Delete"
-                    description={`Are you sure you want to remove the ${status.status} status?`}
-                    triggerLabel="Delete"
-                    triggerProps={{
-                      disabled: status.isDefault,
-                      "aria-label": `Remove ${status.status} Status`,
-                    }}
-                    action={{
-                      label: "Remove Status",
-                      onClick: () =>
-                        deleteStatus({
-                          rowId: status.rowId!,
-                          patch: {
-                            deletedAt: new Date(),
-                          },
-                        }),
-                    }}
-                  />
-                </Stack>
-              ))}
-            </Grid>
+                      </Flex>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+            </Flex>
           )}
         </Field>
 

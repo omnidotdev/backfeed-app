@@ -147,8 +147,17 @@ const DestructiveAction = ({
       )}
 
       <HStack>
-        {actions.map(({ label, ...rest }) => (
-          <Button key={label} flex={1} {...rest}>
+        {actions.map(({ label, onClick, ...rest }) => (
+          <Button
+            key={label}
+            flex={1}
+            onClick={(e) => {
+              // ! NB: this will prevent actions from triggering other events (i.e. form submissions)
+              e.preventDefault();
+              onClick?.(e);
+            }}
+            {...rest}
+          >
             {label}
           </Button>
         ))}
