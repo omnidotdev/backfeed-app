@@ -19,10 +19,15 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+interface Props {
+  /** If the user has a team tier subscription. */
+  isTeamTier: boolean;
+}
+
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = () => {
+const DashboardPage = ({ isTeamTier }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const { data: firstName } = useUserQuery(
@@ -91,6 +96,7 @@ const DashboardPage = () => {
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             variant: "outline",
+            disabled: !isTeamTier && !!numberOfOrganizations,
           },
           {
             label: app.dashboardPage.cta.newProject.label,

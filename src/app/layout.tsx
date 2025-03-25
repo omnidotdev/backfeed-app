@@ -4,6 +4,7 @@ import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
 import { getAuthSession } from "lib/util";
 import { mswNodeServer } from "test/e2e/util";
 
@@ -38,6 +39,8 @@ export const metadata: Metadata = {
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getAuthSession();
 
+  const isTeamTier = await hasTeamSubscription();
+
   return (
     // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
     <html lang="en" suppressHydrationWarning>
@@ -47,7 +50,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         )}
 
         <Providers session={session}>
-          <Layout>{children}</Layout>
+          <Layout isTeamTier={isTeamTier}>{children}</Layout>
         </Providers>
       </body>
     </html>

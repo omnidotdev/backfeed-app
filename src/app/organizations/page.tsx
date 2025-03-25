@@ -5,8 +5,14 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import {
+  OrganizationOrderBy,
+  Role,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
+import { hasTeamSubscription } from "lib/flags";
+import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
@@ -27,9 +33,18 @@ interface Props {
  * Organizations overview page.
  */
 const OrganizationsPage = async ({ searchParams }: Props) => {
-  const session = await getAuthSession();
+  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
-  if (!session) notFound();
+  if (!session || !sdk) notFound();
+
+  const [isTeamTier, { organizations }] = await Promise.all([
+    hasTeamSubscription(),
+    sdk.Organizations({
+      userId: session?.user.rowId!,
+      isMember: true,
+      excludeRoles: [Role.Member],
+    }),
+  ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -67,6 +82,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
+              disabled: !isTeamTier && !!organizations?.totalCount,
             },
           ],
         }}

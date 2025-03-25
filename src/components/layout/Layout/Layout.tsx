@@ -9,7 +9,9 @@ import { useIsClient } from "usehooks-ts";
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
+import { Role, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { ReactNode } from "react";
@@ -17,13 +19,30 @@ import type { ReactNode } from "react";
 dayjs.extend(relativeTime);
 
 interface Props {
+  /** If the user has a team tier subscription. */
+  isTeamTier: boolean;
+  /** The main content of the layout. */
   children: ReactNode;
 }
 
 /**
  * Core application layout.
  */
-const Layout = ({ children }: Props) => {
+const Layout = ({ isTeamTier, children }: Props) => {
+  const { user } = useAuth();
+
+  const { data: numberOfOrganizations } = useOrganizationsQuery(
+    {
+      userId: user?.rowId!,
+      isMember: true,
+      excludeRoles: [Role.Member],
+    },
+    {
+      enabled: !!user?.rowId,
+      select: (data) => data?.organizations?.totalCount,
+    }
+  );
+
   const isClient = useIsClient();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();
@@ -52,7 +71,9 @@ const Layout = ({ children }: Props) => {
 
         {/* dialogs */}
         <CreateProject organizationSlug={organizationSlug} />
-        <CreateOrganization />
+        <CreateOrganization
+          canCreateOrganization={isTeamTier || !numberOfOrganizations}
+        />
 
         {/* toaster */}
         <Toaster toaster={toaster} />

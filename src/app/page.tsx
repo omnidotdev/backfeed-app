@@ -15,6 +15,7 @@ import {
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
+import { hasTeamSubscription } from "lib/flags";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
@@ -26,6 +27,8 @@ const HomePage = async () => {
   const session = await getAuthSession();
 
   if (!session) return <LandingPage />;
+
+  const isTeamTier = await hasTeamSubscription();
 
   const queryClient = getQueryClient();
 
@@ -86,7 +89,7 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage />
+      <DashboardPage isTeamTier={isTeamTier} />
     </HydrationBoundary>
   );
 };

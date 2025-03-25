@@ -60,10 +60,15 @@ const createOrganizationSchema = baseSchema.superRefine(
   }
 );
 
+interface Props {
+  /** Whether the user can create an organization. */
+  canCreateOrganization: boolean;
+}
+
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = () => {
+const CreateOrganization = ({ canCreateOrganization }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
@@ -83,7 +88,7 @@ const CreateOrganization = () => {
       reset();
     },
     {
-      enabled: !!user && !isCreateProjectDialogOpen,
+      enabled: !!user && !isCreateProjectDialogOpen && canCreateOrganization,
       enableOnFormTags: true,
       preventDefault: true,
     },
