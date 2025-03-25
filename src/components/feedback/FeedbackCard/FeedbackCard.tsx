@@ -84,6 +84,7 @@ const FeedbackCard = ({
               status: {
                 ...snapshot.post?.status,
                 status: updatedStatus?.status,
+                color: updatedStatus?.color,
               },
             },
           }
