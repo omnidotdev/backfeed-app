@@ -297,7 +297,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                     </TableCell>
 
                     <TableCell>
-                      {/* TODO: handle errors */}
                       <Field name={`projectStatuses[${i}].color`}>
                         {({ state, handleChange }) => (
                           <ColorPicker
