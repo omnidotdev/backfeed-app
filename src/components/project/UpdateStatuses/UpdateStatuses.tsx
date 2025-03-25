@@ -181,7 +181,8 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
           queryKey: useProjectStatusesQuery.getKey({ projectId }),
         });
 
-        formApi.reset();
+        // NB: Passing a value here resets the default state to said value. We want to make sure that the default state is in sync with the query that was invalidated above.
+        formApi.reset({ projectStatuses: currentStatuses });
       }, updateProjectStatuses.actions.update.toast),
   });
 

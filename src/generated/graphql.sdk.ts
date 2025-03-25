@@ -5236,7 +5236,7 @@ export const ProjectStatusesDocument = gql`
     query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
   postStatuses(
     condition: {projectId: $projectId, isDefault: $isDefault}
-    orderBy: IS_DEFAULT_DESC
+    orderBy: [IS_DEFAULT_DESC, CREATED_AT_ASC]
   ) {
     nodes {
       rowId
