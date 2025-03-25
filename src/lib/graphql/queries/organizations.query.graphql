@@ -7,12 +7,14 @@ query Organizations(
   $excludeRoles: [Role!]
   $search: String
   $slug: String
+  $organizationId: UUID
 ) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
     filter: {
+      rowId: { equalTo: $organizationId }
       name: { includesInsensitive: $search }
       slug: { equalTo: $slug }
       or: [

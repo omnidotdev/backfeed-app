@@ -54,6 +54,7 @@ const DEFAULT_POST_STATUSES = [
 
 /** Schema for defining the shape of the create project form fields. */
 const baseSchema = z.object({
+  isTeamTier: z.boolean(),
   organizationId: z
     .string()
     .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
@@ -73,15 +74,32 @@ const baseSchema = z.object({
 
 /** Schema for validation of the create project form. */
 const createProjectSchema = baseSchema.superRefine(
-  async ({ organizationId, slug }, ctx) => {
+  async ({ isTeamTier, organizationId, slug }, ctx) => {
     if (!organizationId.length || !slug.length) return z.NEVER;
 
     const sdk = await getSdk();
 
-    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
-      organizationId,
-      slug,
-    });
+    const [{ organizations }, { projectBySlugAndOrganizationId }] =
+      await Promise.all([
+        sdk.Organizations({
+          organizationId,
+        }),
+        sdk.ProjectBySlug({
+          organizationId,
+          slug,
+        }),
+      ]);
+
+    const numberOfProjects =
+      organizations?.nodes?.[0]?.projects?.totalCount ?? 0;
+
+    if (!isTeamTier && numberOfProjects >= MAX_NUMBER_OF_PROJECTS) {
+      ctx.addIssue({
+        code: "custom",
+        message: app.dashboardPage.cta.newProject.organizationId.error.max,
+        path: ["organizationId"],
+      });
+    }
 
     if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
@@ -157,8 +175,7 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
       enabled:
         !!user &&
         !isCreateOrganizationDialogOpen &&
-        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin and have the necessary permissions based on their subscription tier
-        // TODO: handle case where project is *not* scoped to an organization
+        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin and have the necessary permissions based on their subscription tier (if it is not scoped to an organization, it is handled in the async validation)
         (organizationSlug ? isAdmin && canCreateProject : true),
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
@@ -193,6 +210,7 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
+      isTeamTier,
       organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
       description: "",

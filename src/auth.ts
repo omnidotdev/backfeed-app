@@ -72,6 +72,11 @@ declare module "next-auth" {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
+  // TODO: determine if this helps with the flaky refresh token error issue
+  session: {
+    maxAge: 60 * 30, // 30 minutes,
+    updateAge: 60 * 5, // 5 minutes
+  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,

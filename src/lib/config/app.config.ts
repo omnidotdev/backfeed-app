@@ -175,6 +175,11 @@ const app = {
           },
           error: "Please select an organization.",
         },
+        organizationId: {
+          error: {
+            max: "Maximum number of projects reached.",
+          },
+        },
         projectName: {
           id: "Project Name",
           // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
