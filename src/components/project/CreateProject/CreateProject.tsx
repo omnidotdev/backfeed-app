@@ -189,19 +189,21 @@ const CreateProject = ({ organizationSlug }: Props) => {
           });
 
           if (projectData) {
-            for (const status of DEFAULT_POST_STATUSES) {
-              await createPostStatus({
-                input: {
-                  postStatus: {
-                    projectId: projectData.project?.rowId!,
-                    status: status.status,
-                    description: status.description,
-                    color: status.color,
-                    isDefault: status.isDefault,
+            await Promise.all(
+              DEFAULT_POST_STATUSES.map((status) =>
+                createPostStatus({
+                  input: {
+                    postStatus: {
+                      projectId: projectData.project?.rowId!,
+                      status: status.status,
+                      description: status.description,
+                      color: status.color,
+                      isDefault: status.isDefault,
+                    },
                   },
-                },
-              });
-            }
+                })
+              )
+            );
 
             router.push(
               `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
