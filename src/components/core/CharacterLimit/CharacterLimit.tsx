@@ -47,8 +47,8 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
     >
       <ProgressCircle
         css={{
-          "--size": "{sizes.4}",
-          "--thickness": "{sizes.0.5}",
+          "--size": "sizes.4",
+          "--thickness": "sizes.0.5",
         }}
       >
         <ProgressCircleTrack stroke="background.emphasized" />
