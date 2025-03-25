@@ -1,7 +1,7 @@
 import { flag } from "flags/next";
 
 import { getSubscription } from "lib/actions";
-// import { isDevEnv } from "lib/config";
+import { isDevEnv } from "lib/config";
 import { getAuthSession } from "lib/util";
 
 /**
@@ -20,8 +20,8 @@ const hasTeamSubscription = flag({
     }
   },
   decide: ({ entities }) => {
-    // If we are in a development environment, always return true
-    // if (isDevEnv) return true;
+    // If we are in a development environment, always return true. This can be toggled in development to test feature flag behaviors.
+    if (isDevEnv) return true;
 
     if (!entities) return false;
 
