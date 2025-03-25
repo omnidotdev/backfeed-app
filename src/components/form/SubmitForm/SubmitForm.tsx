@@ -22,9 +22,9 @@ interface Props extends ButtonProps {
  * Component for submitting forms.
  */
 const SubmitForm = ({
+  disabled,
   action,
   isPending = false,
-  disabled,
   showAlert = false,
   ...rest
 }: Props) => {
