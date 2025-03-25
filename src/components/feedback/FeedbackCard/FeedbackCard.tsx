@@ -17,7 +17,6 @@ import { match } from "ts-pattern";
 
 import { StatusBadge } from "components/core";
 import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
-import { getDefaultStatusColor } from "lib/util";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type {
@@ -169,11 +168,10 @@ const FeedbackCard = ({
                     <MenuItem
                       key={status.rowId}
                       value={status.rowId!}
-                      color={getDefaultStatusColor(status.status!)}
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
-                      // NB: Overrides for when a status color is present in the database. Needs to be analyzed at runtime.
+                      // NB: Needs to be analyzed at runtime.
                       // TODO: Implement check to validate that the status color is a valid color
                       style={status.color ? { color: status.color } : undefined}
                       onClick={() =>

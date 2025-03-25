@@ -1,7 +1,5 @@
 import { Badge } from "@omnidev/sigil";
 
-import { getDefaultStatusColor } from "lib/util";
-
 import type { BadgeProps } from "@omnidev/sigil";
 import type { PostStatus } from "generated/graphql";
 
@@ -16,9 +14,7 @@ interface Props extends BadgeProps {
 const StatusBadge = ({ status, children, ...rest }: Props) => (
   <Badge
     variant="outline"
-    color={getDefaultStatusColor(status?.status)}
-    borderColor={getDefaultStatusColor(status?.status)}
-    // NB: Overrides for when a status color is present in the database. Needs to be analyzed at runtime.
+    // NB: Needs to be analyzed at runtime.
     // TODO: Implement check to validate that the status color is a valid color
     style={
       status?.color
