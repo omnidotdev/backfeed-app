@@ -22,6 +22,7 @@ import { z } from "zod";
 import { SectionContainer } from "components/layout";
 import {
   useCreatePostStatusMutation,
+  useDeletePostStatusMutation,
   useProjectStatusesQuery,
   useUpdatePostStatusMutation,
 } from "generated/graphql";
@@ -108,7 +109,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     }
   );
 
-  const { mutate: deleteStatus } = useUpdatePostStatusMutation(),
+  const { mutateAsync: deleteStatus } = useDeletePostStatusMutation(),
     { mutateAsync: updateStatus } = useUpdatePostStatusMutation(),
     { mutateAsync: createStatus } = useCreatePostStatusMutation();
 
@@ -144,10 +145,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
           await Promise.all(
             removedStatuses.map((status) =>
               deleteStatus({
-                rowId: status.rowId!,
-                patch: {
-                  deletedAt: new Date(),
-                },
+                statusId: status.rowId!,
               })
             )
           );
@@ -159,7 +157,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
               input: {
                 postStatus: {
                   projectId,
-                  status: status.status,
+                  status: status.status!,
                   description: status.description,
                   color: status.color,
                   isDefault: status.isDefault,
