@@ -16,6 +16,7 @@ import {
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { HiOutlineEyeDropper, HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import { LuUndo2 } from "react-icons/lu";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
@@ -108,7 +109,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       onChange: updateStatusesSchema,
       onSubmitAsync: updateStatusesSchema,
     },
-    onSubmit: async ({ value }) =>
+    onSubmit: async ({ formApi, value }) =>
       toaster.promise(
         async () => {
           const currentStatuses = value.projectStatuses;
@@ -163,7 +164,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
             queryKey: useProjectStatusesQuery.getKey({ projectId }),
           });
 
-          reset();
+          formApi.reset();
         },
         {
           loading: {
@@ -190,6 +191,20 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       p={0}
       boxShadow="none"
     >
+      <Button
+        variant="ghost"
+        bgColor={{
+          base: "background.subtle",
+          _hover: { base: "background.muted", _dark: "background.subtle/80" },
+        }}
+        position={{ sm: "absolute" }}
+        right={{ sm: 0 }}
+        top={{ sm: 3 }}
+        onClick={() => reset()}
+      >
+        Reset
+        <Icon src={LuUndo2} />
+      </Button>
       <sigil.form
         onSubmit={async (e) => {
           e.preventDefault();
