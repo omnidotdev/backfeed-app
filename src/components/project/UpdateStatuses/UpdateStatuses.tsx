@@ -143,19 +143,18 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
 
         if (removedStatuses?.length) {
           await Promise.all(
-            removedStatuses.map(
-              async (status) =>
-                await deleteStatus({
-                  statusId: status.rowId!,
-                })
+            removedStatuses.map((status) =>
+              deleteStatus({
+                statusId: status.rowId!,
+              })
             )
           );
         }
 
         await Promise.all(
-          currentStatuses.map(async (status) => {
+          currentStatuses.map((status) => {
             if (status.rowId === "pending") {
-              await createStatus({
+              createStatus({
                 input: {
                   postStatus: {
                     projectId,
@@ -167,7 +166,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                 },
               });
             } else {
-              await updateStatus({
+              updateStatus({
                 rowId: status.rowId!,
                 patch: {
                   status: status.status,
