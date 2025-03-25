@@ -579,6 +579,73 @@ const app = {
           },
         },
       },
+      updateProjectStatuses: {
+        title: "Project Statuses",
+        description:
+          "Customize statuses that are used to track progress on feedback items.",
+        actions: {
+          reset: {
+            label: "Reset",
+          },
+          remove: {
+            label: "Remove status",
+          },
+          add: {
+            label: "Add Status",
+          },
+          // NB: these labels are the same due to the nature of the form. When adding or removing rows, the `onSubmit` errors are re-mapped, causing state to be updated for `isSubmitting`. This PR hopefully resolves this issue: https://github.com/TanStack/form/pull/1324
+          update: {
+            submit: "Update Statuses",
+            pending: "Update Statuses",
+            toast: {
+              loading: {
+                title: "Updating project statuses...",
+              },
+              success: {
+                title: "Success!",
+                description: "Statuses updated successfully",
+              },
+              error: {
+                title: "Error",
+                description:
+                  "An error occurred while updating project statuses.",
+              },
+            },
+          },
+        },
+        // ! NB: Important to keep the order of these fields intact, and each one must include a label. They are used to define the header of the update project statuses form table.
+        fields: {
+          isDefault: {
+            label: "Default",
+          },
+          status: {
+            label: "Status",
+            placeholder: "New",
+            errors: {
+              minLength: "Status must be at least 3 characters.",
+              maxLength: "Status must be at most 20 characters.",
+            },
+          },
+          description: {
+            label: "Description",
+            placeholder: "Newly created",
+            errors: {
+              minLength: "Description must be at least 10 characters.",
+              maxLength: "Description must be at most 40 characters.",
+            },
+          },
+          color: {
+            label: "Color",
+            errors: {
+              startsWith: "Invalid color format.",
+              length: "Invalid color format.",
+            },
+          },
+          remove: {
+            label: "Remove",
+          },
+        },
+      },
       deleteProject: {
         title: "Delete Project",
         description:

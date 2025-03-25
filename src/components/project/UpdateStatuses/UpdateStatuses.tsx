@@ -15,7 +15,7 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { HiOutlineEyeDropper, HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
 import { LuUndo2 } from "react-icons/lu";
 import { z } from "zod";
 
@@ -25,11 +25,14 @@ import {
   useProjectStatusesQuery,
   useUpdatePostStatusMutation,
 } from "generated/graphql";
+import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { Project } from "generated/graphql";
+
+const updateProjectStatuses = app.projectSettingsPage.cta.updateProjectStatuses;
 
 const COLOR_PRESETS = [
   "hsl(10, 81%, 59%)",
@@ -46,9 +49,18 @@ const COLOR_PRESETS = [
 
 const statusSchema = z.object({
   rowId: z.string().uuid().or(z.literal("pending")),
-  status: z.string().min(1).max(100),
-  description: z.string().min(1).max(255),
-  color: z.string().startsWith("#").length(7),
+  status: z
+    .string()
+    .min(3, updateProjectStatuses.fields.status.errors.minLength)
+    .max(20, updateProjectStatuses.fields.status.errors.maxLength),
+  description: z
+    .string()
+    .min(10, updateProjectStatuses.fields.description.errors.minLength)
+    .max(40, updateProjectStatuses.fields.description.errors.maxLength),
+  color: z
+    .string()
+    .startsWith("#", updateProjectStatuses.fields.color.errors.startsWith)
+    .length(7, updateProjectStatuses.fields.color.errors.length),
   isDefault: z.boolean(),
 });
 
@@ -110,86 +122,72 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       onSubmitAsync: updateStatusesSchema,
     },
     onSubmit: async ({ formApi, value }) =>
-      toaster.promise(
-        async () => {
-          const currentStatuses = value.projectStatuses;
+      toaster.promise(async () => {
+        const currentStatuses = value.projectStatuses;
 
-          const removedStatuses = statuses?.filter(
-            (status) =>
-              !currentStatuses.some(
-                (currentStatus) => currentStatus.rowId === status.rowId
-              )
-          );
+        const removedStatuses = statuses?.filter(
+          (status) =>
+            !currentStatuses.some(
+              (currentStatus) => currentStatus.rowId === status.rowId
+            )
+        );
 
-          if (removedStatuses?.length) {
-            await Promise.all(
-              removedStatuses.map((status) =>
-                deleteStatus({
-                  rowId: status.rowId!,
-                  patch: {
-                    deletedAt: new Date(),
-                  },
-                })
-              )
-            );
-          }
-
-          for (const status of currentStatuses) {
-            if (status.rowId === "pending") {
-              await createStatus({
-                input: {
-                  postStatus: {
-                    projectId,
-                    status: status.status,
-                    description: status.description,
-                    color: status.color,
-                    isDefault: status.isDefault,
-                  },
-                },
-              });
-            } else {
-              await updateStatus({
+        if (removedStatuses?.length) {
+          await Promise.all(
+            removedStatuses.map((status) =>
+              deleteStatus({
                 rowId: status.rowId!,
                 patch: {
+                  deletedAt: new Date(),
+                },
+              })
+            )
+          );
+        }
+
+        for (const status of currentStatuses) {
+          if (status.rowId === "pending") {
+            await createStatus({
+              input: {
+                postStatus: {
+                  projectId,
                   status: status.status,
                   description: status.description,
                   color: status.color,
                   isDefault: status.isDefault,
                 },
-              });
-            }
+              },
+            });
+          } else {
+            await updateStatus({
+              rowId: status.rowId!,
+              patch: {
+                status: status.status,
+                description: status.description,
+                color: status.color,
+                isDefault: status.isDefault,
+              },
+            });
           }
-
-          await queryClient.invalidateQueries({
-            queryKey: useProjectStatusesQuery.getKey({ projectId }),
-          });
-
-          formApi.reset();
-        },
-        {
-          loading: {
-            title: "Updating project statuses...",
-          },
-          success: {
-            title: "Success!",
-            description: "Statuses updated successfully",
-          },
-          error: {
-            title: "Error",
-            description: "An error occurred while updating project statuses.",
-          },
         }
-      ),
+
+        await queryClient.invalidateQueries({
+          queryKey: useProjectStatusesQuery.getKey({ projectId }),
+        });
+
+        formApi.reset();
+      }, updateProjectStatuses.actions.update.toast),
   });
 
   if (!canEdit) return null;
 
   return (
     <SectionContainer
-      title="Project Statuses"
-      description="Customize statuses that are used to track progress on feedback items."
+      title={updateProjectStatuses.title}
+      description={updateProjectStatuses.description}
       p={0}
       boxShadow="none"
+      overflow="hidden"
     >
       <Button
         variant="ghost"
@@ -202,9 +200,11 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
         top={{ sm: 3 }}
         onClick={() => reset()}
       >
-        Reset
+        {updateProjectStatuses.actions.reset.label}
+
         <Icon src={LuUndo2} />
       </Button>
+
       <sigil.form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -218,21 +218,17 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
               <Table
                 headerContent={
                   <TableRow bgColor="background.muted">
-                    {[
-                      "Default",
-                      "Status",
-                      "Description",
-                      "Color",
-                      "Remove",
-                    ].map((header) => (
-                      <TableCell
-                        key={header}
-                        textAlign={{ _last: "right" }}
-                        fontWeight="bold"
-                      >
-                        {header}
-                      </TableCell>
-                    ))}
+                    {Object.values(updateProjectStatuses.fields).map(
+                      ({ label }) => (
+                        <TableCell
+                          key={label}
+                          textAlign={{ _last: "right" }}
+                          fontWeight="bold"
+                        >
+                          {label}
+                        </TableCell>
+                      )
+                    )}
                   </TableRow>
                 }
               >
@@ -271,7 +267,9 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                       <AppField name={`projectStatuses[${i}].status`}>
                         {({ InputField }) => (
                           <InputField
-                            placeholder="Enter status name"
+                            placeholder={
+                              updateProjectStatuses.fields.status.placeholder
+                            }
                             borderColor="border.subtle"
                             errorProps={{
                               top: -5,
@@ -285,7 +283,10 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                       <AppField name={`projectStatuses[${i}].description`}>
                         {({ InputField }) => (
                           <InputField
-                            placeholder="Set a description for the status"
+                            placeholder={
+                              updateProjectStatuses.fields.description
+                                .placeholder
+                            }
                             borderColor="border.subtle"
                             errorProps={{
                               top: -5,
@@ -311,32 +312,26 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                               handleChange(value.toString("hex"))
                             }
                             gap={0.5}
-                            channelInputProps={{
-                              // TODO: Omit upstream, or make it optional
-                              channel: "hex",
-                              borderColor: "border.subtle",
+                            controlProps={{
                               minW: 40,
+                            }}
+                            // @ts-ignore Omit `channel` from upstream types. It is defined internally.
+                            channelInputProps={{
+                              borderColor: "border.subtle",
                             }}
                             triggerProps={{
                               borderColor: "transparent",
                               p: 0,
                             }}
-                            // @ts-ignore TODO: omit `value` upstream. The value is derived internally.
+                            // @ts-ignore TODO: omit `value` upstream. It is defined internally.
                             swatchProps={{
                               h: "full",
                               w: "full",
+                              aspectRatio: 1,
                               borderRadius: "sm",
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
-                              children: (
-                                <Icon
-                                  src={HiOutlineEyeDropper}
-                                  color="white"
-                                  h={5}
-                                  w={5}
-                                />
-                              ),
                             }}
                           />
                         )}
@@ -360,7 +355,9 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                               }}
                               opacity={{ _disabled: 0.3 }}
                               onClick={() => removeValue(i)}
-                              aria-label="Remove status"
+                              aria-label={
+                                updateProjectStatuses.actions.remove.label
+                              }
                             >
                               <Icon src={HiOutlineTrash} />
                             </Button>
@@ -384,8 +381,9 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                   })
                 }
               >
-                <Icon src={HiPlus} />
-                Add New Status
+                <Icon src={HiPlus} h={4} w={4} />
+
+                {updateProjectStatuses.actions.add.label}
               </Button>
             </Stack>
           )}
@@ -394,10 +392,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
         <HStack mt={6}>
           <AppForm>
             <SubmitForm
-              action={{
-                submit: "Update Statuses",
-                pending: "Update Statuses",
-              }}
+              action={updateProjectStatuses.actions.update}
               showAlert
             />
           </AppForm>

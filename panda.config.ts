@@ -21,6 +21,7 @@ const pandaConfig = defineConfig({
           bottom: ["*"],
           right: ["*"],
           left: ["*"],
+          minW: ["*"],
         },
       },
     ],
