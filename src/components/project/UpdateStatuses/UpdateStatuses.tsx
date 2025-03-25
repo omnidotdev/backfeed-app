@@ -34,6 +34,14 @@ import type { Project } from "generated/graphql";
 
 const updateProjectStatuses = app.projectSettingsPage.cta.updateProjectStatuses;
 
+const DEFAULT_PENDING_STATUS = {
+  rowId: "pending",
+  isDefault: false,
+  status: "",
+  description: "",
+  color: "#000000",
+} as const;
+
 const COLOR_PRESETS = [
   "hsl(10, 81%, 59%)",
   "hsl(60, 81%, 59%)",
@@ -370,15 +378,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
 
               <Button
                 variant="outline"
-                onClick={() =>
-                  pushValue({
-                    rowId: "pending",
-                    isDefault: false,
-                    status: "",
-                    description: "",
-                    color: "#000000",
-                  })
-                }
+                onClick={() => pushValue(DEFAULT_PENDING_STATUS)}
               >
                 <Icon src={HiPlus} h={4} w={4} />
 
