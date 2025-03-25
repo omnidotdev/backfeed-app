@@ -3,7 +3,7 @@ import { match } from "ts-pattern";
 /**
  * Returns the color for the given status (based on default status options).
  */
-const getDefaultStatusColor = (status: string) =>
+const getDefaultStatusColor = (status: string | undefined) =>
   match(status)
     .with("Open", () => "blue")
     .with("Planned", () => "purple")

@@ -7,7 +7,7 @@ import type { PostStatus } from "generated/graphql";
 
 interface Props extends BadgeProps {
   /** The status of the post. */
-  status: Partial<PostStatus>;
+  status: Partial<PostStatus> | null;
 }
 
 /*
@@ -16,12 +16,12 @@ interface Props extends BadgeProps {
 const StatusBadge = ({ status, children, ...rest }: Props) => (
   <Badge
     variant="outline"
-    color={getDefaultStatusColor(status.status!)}
-    borderColor={getDefaultStatusColor(status.status!)}
+    color={getDefaultStatusColor(status?.status)}
+    borderColor={getDefaultStatusColor(status?.status)}
     // NB: Overrides for when a status color is present in the database. Needs to be analyzed at runtime.
     // TODO: Implement check to validate that the status color is a valid color
     style={
-      status.color
+      status?.color
         ? {
             color: status.color,
             borderColor: status.color,
@@ -30,7 +30,7 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
     }
     {...rest}
   >
-    {status.status}
+    {status?.status ?? "Unknown"}
 
     {children}
   </Badge>
