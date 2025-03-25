@@ -28,7 +28,7 @@ export const generateMetadata = async ({
   const project = projects?.nodes?.[0];
 
   return {
-    title: `${project?.name} Settings | ${app.name}`,
+    title: `${project?.name} ${app.projectSettingsPage.breadcrumb} | ${app.name}`,
   };
 };
 
@@ -90,7 +90,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
       href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
     },
     {
-      label: "Settings",
+      label: app.projectSettingsPage.breadcrumb,
     },
   ];
 
