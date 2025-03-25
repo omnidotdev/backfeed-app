@@ -15,6 +15,9 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
+import { HiOutlineEyeDropper, HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import { z } from "zod";
+
 import { SectionContainer } from "components/layout";
 import {
   useCreatePostStatusMutation,
@@ -24,8 +27,6 @@ import {
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
-import { HiOutlineEyeDropper, HiOutlineTrash, HiPlus } from "react-icons/hi2";
-import { z } from "zod";
 
 import type { Project } from "generated/graphql";
 
@@ -50,9 +51,10 @@ const statusSchema = z.object({
   isDefault: z.boolean(),
 });
 
-// TODO: add check that at least one status is default
 const updateStatusesSchema = z.object({
-  projectStatuses: z.array(statusSchema),
+  projectStatuses: z
+    .array(statusSchema)
+    .refine((statuses) => statuses.some((status) => status.isDefault)),
 });
 
 interface Props {
@@ -73,6 +75,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       projectId,
     },
     {
+      enabled: canEdit,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
@@ -84,16 +87,9 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     }
   );
 
-  const { mutate: deleteStatus } = useUpdatePostStatusMutation({
-    onSettled: () =>
-      queryClient.invalidateQueries({
-        queryKey: useProjectStatusesQuery.getKey({ projectId }),
-      }),
-  });
-
-  const { mutateAsync: updateStatus } = useUpdatePostStatusMutation();
-
-  const { mutateAsync: createStatus } = useCreatePostStatusMutation();
+  const { mutate: deleteStatus } = useUpdatePostStatusMutation(),
+    { mutateAsync: updateStatus } = useUpdatePostStatusMutation(),
+    { mutateAsync: createStatus } = useCreatePostStatusMutation();
 
   const {
     handleSubmit,
@@ -109,6 +105,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
+      onChange: updateStatusesSchema,
       onSubmitAsync: updateStatusesSchema,
     },
     onSubmit: async ({ value }) =>
@@ -230,8 +227,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                       <Field name={`projectStatuses[${i}].isDefault`}>
                         {({ state, handleChange }) => (
                           <Switch
-                            // TODO: remove this, allow for pending statuses to become the default
-                            disabled={status.rowId === "pending"}
                             checked={state.value}
                             onCheckedChange={({ checked }) => {
                               for (const status of arrayState.value) {
@@ -334,26 +329,29 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                     </TableCell>
 
                     <TableCell px={3}>
-                      {/* TODO: moved to `Field` and track changes for `isDefault` to determine disabled state */}
-                      <Flex w="full" justify="flex-end">
-                        <Button
-                          disabled={status.isDefault}
-                          variant="icon"
-                          bgColor="transparent"
-                          color={{
-                            base: "red",
-                            _hover: {
-                              base: "destructive.hover",
-                              _disabled: "red",
-                            },
-                          }}
-                          opacity={{ _disabled: 0.3 }}
-                          onClick={() => removeValue(i)}
-                          aria-label="Remove status"
-                        >
-                          <Icon src={HiOutlineTrash} />
-                        </Button>
-                      </Flex>
+                      <Field name={`projectStatuses[${i}].isDefault`}>
+                        {({ state }) => (
+                          <Flex w="full" justify="flex-end">
+                            <Button
+                              disabled={state.value}
+                              variant="icon"
+                              bgColor="transparent"
+                              color={{
+                                base: "red",
+                                _hover: {
+                                  base: "destructive.hover",
+                                  _disabled: "red",
+                                },
+                              }}
+                              opacity={{ _disabled: 0.3 }}
+                              onClick={() => removeValue(i)}
+                              aria-label="Remove status"
+                            >
+                              <Icon src={HiOutlineTrash} />
+                            </Button>
+                          </Flex>
+                        )}
+                      </Field>
                     </TableCell>
                   </TableRow>
                 ))}
