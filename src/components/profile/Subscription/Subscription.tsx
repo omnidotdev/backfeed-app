@@ -50,7 +50,7 @@ const Subscription = ({ customer }: Props) => {
       p={0}
       titleProps={{
         px: 4,
-        pt: 4,
+        mt: 4,
       }}
       descriptionProps={{
         px: 4,
