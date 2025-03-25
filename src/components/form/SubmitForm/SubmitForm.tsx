@@ -44,7 +44,7 @@ const SubmitForm = ({
   return (
     <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
       {([canSubmit, isSubmitting]) => (
-        <HStack w="full">
+        <HStack>
           <Button
             type="submit"
             disabled={
