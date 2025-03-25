@@ -19,7 +19,7 @@ import type { ReactNode } from "react";
 dayjs.extend(relativeTime);
 
 interface Props {
-  /** If the user has a team tier subscription. */
+  /** Whether the user has a team tier subscription. */
   isTeamTier: boolean;
   /** The main content of the layout. */
   children: ReactNode;

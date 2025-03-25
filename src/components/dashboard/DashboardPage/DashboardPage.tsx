@@ -20,7 +20,7 @@ import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
 interface Props {
-  /** If the user has a team tier subscription. */
+  /** Whether the user has a team tier subscription. */
   isTeamTier: boolean;
 }
 
