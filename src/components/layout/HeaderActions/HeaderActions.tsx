@@ -11,7 +11,7 @@ import {
   Stack,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
@@ -19,7 +19,7 @@ import { RiMenu3Fill } from "react-icons/ri";
 import { Image, Link } from "components/core";
 import { AccountInformation, ThemeToggle } from "components/layout";
 import { app } from "lib/config";
-import { useAuth, useViewportSize } from "lib/hooks";
+import { useAuth, useRoutes, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -30,12 +30,13 @@ const HeaderActions = () => {
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const router = useRouter(),
-    pathname = usePathname(),
     { isAuthenticated, isLoading } = useAuth(),
     { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =
       useDialogStore({
         type: DialogType.MobileSidebar,
       });
+
+  const routes = useRoutes();
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -136,29 +137,31 @@ const HeaderActions = () => {
               </Badge>
             </Stack>
 
-            {!isLoading && !isAuthenticated && (
-              // NB: `Flex` needed to provide anchor for `Link` to be full width
-              <Flex direction="column" w="full">
-                <Link
-                  href="/pricing"
-                  role="group"
-                  onClick={() => setIsMobileSidebarOpen(false)}
-                >
-                  <Button
-                    variant="ghost"
-                    bgColor={{
-                      base: "background.subtle",
-                      _hover: "background.muted",
-                    }}
-                    w="full"
-                    tabIndex={-1}
-                    color={
-                      pathname === "/pricing" ? "brand.primary" : "inherit"
-                    }
+            {!isLoading && (
+              <Flex direction="column" w="full" gap={4}>
+                {routes.map(({ href, label, isActive }) => (
+                  <Link
+                    key={href}
+                    disabled={isActive}
+                    href={href}
+                    role="group"
+                    onClick={() => setIsMobileSidebarOpen(false)}
                   >
-                    {app.header.routes.pricing.label}
-                  </Button>
-                </Link>
+                    <Button
+                      disabled={isActive}
+                      variant="ghost"
+                      bgColor={{
+                        base: "background.subtle",
+                        _hover: "background.muted",
+                      }}
+                      w="full"
+                      tabIndex={-1}
+                      color={isActive ? "brand.primary" : "inherit"}
+                    >
+                      {label}
+                    </Button>
+                  </Link>
+                ))}
               </Flex>
             )}
 
