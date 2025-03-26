@@ -625,6 +625,7 @@ const app = {
         fields: {
           isDefault: {
             label: "Default",
+            info: "Indicates whether this will be the default status for newly created feedback.",
           },
           status: {
             label: "Status",
