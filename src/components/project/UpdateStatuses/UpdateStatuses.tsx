@@ -319,6 +319,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                             <ColorPicker
                               label={null}
                               presets={COLOR_PRESETS}
+                              positioning={{ strategy: "fixed" }}
                               value={
                                 state.value
                                   ? parseColor(state.value)
