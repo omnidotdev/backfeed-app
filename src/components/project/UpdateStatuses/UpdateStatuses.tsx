@@ -197,6 +197,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       p={0}
       boxShadow="none"
       overflow="hidden"
+      rounded="none"
     >
       <Button
         variant="ghost"
