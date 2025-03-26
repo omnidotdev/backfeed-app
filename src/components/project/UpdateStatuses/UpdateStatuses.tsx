@@ -40,7 +40,7 @@ const DEFAULT_PENDING_STATUS = {
   isDefault: false,
   status: "",
   description: "",
-  color: "#000000",
+  color: "#00a3a2",
 } as const;
 
 const COLOR_PRESETS = [
