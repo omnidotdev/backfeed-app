@@ -7,15 +7,21 @@ import {
   Flex,
   HStack,
   Icon,
+  Popover,
   Stack,
   Switch,
   Table,
   TableCell,
   TableRow,
+  Text,
   sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import {
+  HiOutlineInformationCircle,
+  HiOutlineTrash,
+  HiPlus,
+} from "react-icons/hi2";
 import { LuUndo2 } from "react-icons/lu";
 import { z } from "zod";
 
@@ -32,6 +38,10 @@ import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { Project } from "generated/graphql";
+
+interface FieldInfo {
+  info?: string;
+}
 
 const updateProjectStatuses = app.projectSettingsPage.cta.updateProjectStatuses;
 
@@ -233,13 +243,34 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                   headerContent={
                     <TableRow bgColor="background.muted">
                       {Object.values(updateProjectStatuses.fields).map(
-                        ({ label }) => (
+                        (field) => (
                           <TableCell
-                            key={label}
+                            key={field.label}
                             textAlign={{ _last: "right" }}
                             fontWeight="bold"
                           >
-                            {label}
+                            {field.label}
+
+                            {(field as FieldInfo).info ? (
+                              <Popover
+                                trigger={
+                                  <Icon src={HiOutlineInformationCircle} />
+                                }
+                                closeTrigger={null}
+                                positioning={{
+                                  placement: "top-start",
+                                  strategy: "fixed",
+                                  gutter: -4,
+                                }}
+                                triggerProps={{ cursor: "pointer", p: 2 }}
+                                titleProps={{ display: "none" }}
+                                descriptionProps={{ display: "none" }}
+                              >
+                                <Text fontWeight="normal" mt={-2}>
+                                  {(field as FieldInfo).info}
+                                </Text>
+                              </Popover>
+                            ) : null}
                           </TableCell>
                         )
                       )}
