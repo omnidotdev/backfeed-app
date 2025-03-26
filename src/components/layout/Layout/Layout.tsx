@@ -9,9 +9,7 @@ import { useIsClient } from "usehooks-ts";
 import { Footer, Header } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
-import { Role, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { ReactNode } from "react";
@@ -29,20 +27,6 @@ interface Props {
  * Core application layout.
  */
 const Layout = ({ isTeamTier, children }: Props) => {
-  const { user } = useAuth();
-
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
-    {
-      userId: user?.rowId!,
-      isMember: true,
-      excludeRoles: [Role.Member],
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
-    }
-  );
-
   const isClient = useIsClient();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();
@@ -75,9 +59,7 @@ const Layout = ({ isTeamTier, children }: Props) => {
           isTeamTier={isTeamTier}
         />
 
-        <CreateOrganization
-          canCreateOrganization={isTeamTier || !numberOfOrganizations}
-        />
+        <CreateOrganization isTeamTier={isTeamTier} />
 
         {/* toaster */}
         <Toaster toaster={toaster} />

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
+import { Role, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -61,17 +62,29 @@ const createOrganizationSchema = baseSchema.superRefine(
 );
 
 interface Props {
-  /** Whether the user can create an organization. */
-  canCreateOrganization: boolean;
+  /** Whether the user has a team tier subscription. */
+  isTeamTier: boolean;
 }
 
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = ({ canCreateOrganization }: Props) => {
+const CreateOrganization = ({ isTeamTier }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
+
+  const { data: numberOfOrganizations } = useOrganizationsQuery(
+    {
+      userId: user?.rowId!,
+      isMember: true,
+      excludeRoles: [Role.Member],
+    },
+    {
+      enabled: !!user?.rowId,
+      select: (data) => data?.organizations?.totalCount,
+    }
+  );
 
   const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -81,6 +94,10 @@ const CreateOrganization = ({ canCreateOrganization }: Props) => {
     type: DialogType.CreateOrganization,
   });
 
+  // Validate user, and validate that the user has a team tier subscription *or* that they are not an admin/owner of another organization
+  const canCreateOrganization =
+    !!user && (isTeamTier || !numberOfOrganizations);
+
   useHotkeys(
     "mod+o",
     () => {
@@ -88,11 +105,11 @@ const CreateOrganization = ({ canCreateOrganization }: Props) => {
       reset();
     },
     {
-      enabled: !!user && !isCreateProjectDialogOpen && canCreateOrganization,
+      enabled: !isCreateProjectDialogOpen && canCreateOrganization,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen, canCreateOrganization]
+    [isOpen, isCreateProjectDialogOpen, canCreateOrganization]
   );
 
   const { mutateAsync: createOrganization, isPending } =

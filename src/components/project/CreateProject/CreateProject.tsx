@@ -161,9 +161,14 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
     userId: user?.rowId,
   });
 
-  const canCreateProject =
-    isTeamTier ||
-    (firstOrganization?.numberOfProjects ?? 0) < MAX_NUMBER_OF_PROJECTS;
+  // If the user has admin privileges, validate that they can create more projects based on their current subscription tier
+  const canCreateMoreProjects =
+    isAdmin &&
+    (isTeamTier ||
+      (firstOrganization?.numberOfProjects ?? 0) < MAX_NUMBER_OF_PROJECTS);
+
+  // If the dialog is not scoped to a specific organization, allow the user to open the dialog. The validation is handled by the async form validation
+  const isCreateProjectEnabled = canCreateMoreProjects || !organizationSlug;
 
   useHotkeys(
     "mod+p",
@@ -172,24 +177,13 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
       reset();
     },
     {
-      enabled:
-        !!user &&
-        !isCreateOrganizationDialogOpen &&
-        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin and have the necessary permissions based on their subscription tier (if it is not scoped to an organization, it is handled in the async validation)
-        (organizationSlug ? isAdmin && canCreateProject : true),
+      enabled: !isCreateOrganizationDialogOpen && isCreateProjectEnabled,
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [
-      user,
-      isOpen,
-      isCreateOrganizationDialogOpen,
-      organizationSlug,
-      isAdmin,
-      canCreateProject,
-    ]
+    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled]
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
