@@ -246,31 +246,33 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         (field) => (
                           <TableCell
                             key={field.label}
-                            textAlign={{ _last: "right" }}
                             fontWeight="bold"
+                            justifyContent={{ _last: "right" }}
                           >
-                            {field.label}
+                            <Flex align="center" justify="inherit">
+                              {field.label}
 
-                            {(field as FieldInfo).info ? (
-                              <Popover
-                                trigger={
-                                  <Icon src={HiOutlineInformationCircle} />
-                                }
-                                closeTrigger={null}
-                                positioning={{
-                                  placement: "top-start",
-                                  strategy: "fixed",
-                                  gutter: -4,
-                                }}
-                                triggerProps={{ cursor: "pointer", p: 2 }}
-                                titleProps={{ display: "none" }}
-                                descriptionProps={{ display: "none" }}
-                              >
-                                <Text fontWeight="normal" mt={-2}>
-                                  {(field as FieldInfo).info}
-                                </Text>
-                              </Popover>
-                            ) : null}
+                              {(field as FieldInfo).info ? (
+                                <Popover
+                                  trigger={
+                                    <Icon src={HiOutlineInformationCircle} />
+                                  }
+                                  closeTrigger={null}
+                                  positioning={{
+                                    placement: "top-start",
+                                    strategy: "fixed",
+                                    gutter: -4,
+                                  }}
+                                  triggerProps={{ cursor: "pointer", p: 2 }}
+                                  titleProps={{ display: "none" }}
+                                  descriptionProps={{ display: "none" }}
+                                >
+                                  <Text fontWeight="normal" mt={-2}>
+                                    {(field as FieldInfo).info}
+                                  </Text>
+                                </Popover>
+                              ) : null}
+                            </Flex>
                           </TableCell>
                         )
                       )}
