@@ -11,8 +11,7 @@ const hasBasicTierPrivileges = flag({
   identify: dedupeSubscription,
   decide: ({ entities }) => {
     // If we are in a development environment, always return true. Comment out this line to test feature flag behaviors in development.
-    // TODO: taggle this to true for development
-    if (isDevEnv) return false;
+    if (isDevEnv) return true;
 
     // NB: If `entities` exist, the user has a subscription, and therefore has basic tier privileges.
     return !!entities;
