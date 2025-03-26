@@ -21,6 +21,8 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
         ? {
             color: status.color,
             borderColor: status.color,
+            // TODO: Implement when `status.color` is validated first (breaks if not a valid color, i.e. seeded data)
+            // backgroundColor: parseColor(status.color).decrementChannel("alpha", 0.95).toString("rgba"),
           }
         : undefined
     }
