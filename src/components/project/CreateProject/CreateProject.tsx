@@ -112,9 +112,9 @@ const createProjectSchema = baseSchema.superRefine(
 );
 
 interface Props {
-  /** Whether the user has a basic tier subscription. */
+  /** Whether the user has basic tier subscription permissions. */
   isBasicTier: boolean;
-  /** Whether the user has a team tier subscription. */
+  /** Whether the user has team tier subscription permissions. */
   isTeamTier: boolean;
   /** Slug of the organization to create the project under. */
   organizationSlug?: string;
