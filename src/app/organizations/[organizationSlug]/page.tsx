@@ -16,7 +16,7 @@ import {
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasTeamTierPrivileges } from "lib/flags";
+import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -60,7 +60,10 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
-  const isTeamTier = await hasTeamTierPrivileges();
+  const [isBasicTier, isTeamTier] = await Promise.all([
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
+  ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -125,8 +128,9 @@ const OrganizationPage = async ({ params }: Props) => {
           <OrganizationActions
             organizationId={organization.rowId}
             canCreateProjects={
-              isTeamTier ||
-              organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS
+              isBasicTier &&
+              (isTeamTier ||
+                organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS)
             }
           />
         </Grid>

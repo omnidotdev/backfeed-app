@@ -112,6 +112,8 @@ const createProjectSchema = baseSchema.superRefine(
 );
 
 interface Props {
+  /** Whether the user has a basic tier subscription. */
+  isBasicTier: boolean;
   /** Whether the user has a team tier subscription. */
   isTeamTier: boolean;
   /** Slug of the organization to create the project under. */
@@ -121,7 +123,11 @@ interface Props {
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
+const CreateProject = ({
+  isBasicTier,
+  isTeamTier,
+  organizationSlug,
+}: Props) => {
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -177,13 +183,21 @@ const CreateProject = ({ isTeamTier, organizationSlug }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateOrganizationDialogOpen && isCreateProjectEnabled,
+      enabled:
+        isBasicTier &&
+        !isCreateOrganizationDialogOpen &&
+        isCreateProjectEnabled,
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled]
+    [
+      isOpen,
+      isBasicTier,
+      isCreateOrganizationDialogOpen,
+      isCreateProjectEnabled,
+    ]
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({

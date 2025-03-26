@@ -12,7 +12,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasTeamTierPrivileges } from "lib/flags";
+import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -61,10 +61,14 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!organization) notFound();
 
-  const isTeamTier = await hasTeamTierPrivileges();
+  const [isBasicTier, isTeamTier] = await Promise.all([
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
+  ]);
 
   const canCreateProject =
-    isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS;
+    isBasicTier &&
+    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({

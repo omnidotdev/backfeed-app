@@ -17,6 +17,8 @@ import type { ReactNode } from "react";
 dayjs.extend(relativeTime);
 
 interface Props {
+  /** Whether the user has a basic tier subscription. */
+  isBasicTier: boolean;
   /** Whether the user has a team tier subscription. */
   isTeamTier: boolean;
   /** The main content of the layout. */
@@ -26,7 +28,7 @@ interface Props {
 /**
  * Core application layout.
  */
-const Layout = ({ isTeamTier, children }: Props) => {
+const Layout = ({ isBasicTier, isTeamTier, children }: Props) => {
   const isClient = useIsClient();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();
@@ -56,10 +58,11 @@ const Layout = ({ isTeamTier, children }: Props) => {
         {/* dialogs */}
         <CreateProject
           organizationSlug={organizationSlug}
+          isBasicTier={isBasicTier}
           isTeamTier={isTeamTier}
         />
 
-        <CreateOrganization isTeamTier={isTeamTier} />
+        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
 
         {/* toaster */}
         <Toaster toaster={toaster} />

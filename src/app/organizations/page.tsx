@@ -11,7 +11,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { hasTeamTierPrivileges } from "lib/flags";
+import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -37,7 +37,8 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   if (!session || !sdk) notFound();
 
-  const [isTeamTier, { organizations }] = await Promise.all([
+  const [isBasicTier, isTeamTier, { organizations }] = await Promise.all([
+    hasBasicTierPrivileges(),
     hasTeamTierPrivileges(),
     sdk.Organizations({
       userId: session?.user.rowId!,
@@ -82,7 +83,8 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
-              disabled: !isTeamTier && !!organizations?.totalCount,
+              disabled:
+                !isBasicTier || (!isTeamTier && !!organizations?.totalCount),
             },
           ],
         }}

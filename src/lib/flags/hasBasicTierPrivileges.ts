@@ -14,10 +14,8 @@ const hasBasicTierPrivileges = flag({
     // TODO: taggle this to true for development
     if (isDevEnv) return false;
 
-    if (!entities) return false;
-
     // NB: If `entities` exist, the user has a subscription, and therefore has basic tier privileges.
-    return true;
+    return !!entities;
   },
 });
 

@@ -62,6 +62,8 @@ const createOrganizationSchema = baseSchema.superRefine(
 );
 
 interface Props {
+  /** Whether the user has a basic tier subscription. */
+  isBasicTier: boolean;
   /** Whether the user has a team tier subscription. */
   isTeamTier: boolean;
 }
@@ -69,7 +71,7 @@ interface Props {
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = ({ isTeamTier }: Props) => {
+const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
   const router = useRouter();
 
   const { user } = useAuth();
@@ -105,11 +107,12 @@ const CreateOrganization = ({ isTeamTier }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateProjectDialogOpen && canCreateOrganization,
+      enabled:
+        isBasicTier && !isCreateProjectDialogOpen && canCreateOrganization,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [isOpen, isCreateProjectDialogOpen, canCreateOrganization]
+    [isOpen, isBasicTier, isCreateProjectDialogOpen, canCreateOrganization]
   );
 
   const { mutateAsync: createOrganization, isPending } =

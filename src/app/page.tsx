@@ -28,8 +28,10 @@ const HomePage = async () => {
 
   if (!session) return <LandingPage />;
 
-  const isBasicTier = await hasBasicTierPrivileges();
-  const isTeamTier = await hasTeamTierPrivileges();
+  const [isBasicTier, isTeamTier] = await Promise.all([
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
+  ]);
 
   const queryClient = getQueryClient();
 
