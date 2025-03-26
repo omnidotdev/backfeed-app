@@ -31,7 +31,7 @@ const PricingPage = async () => {
     // NB: `allSettled` is used to handle API errors, but take action on the results (i.e. replaces try/catch)
     const [customer] = await Promise.allSettled([
       polar.customers.getStateExternal({
-        externalId: session.user.rowId!,
+        externalId: session.user.hidraId!,
       }),
     ]);
 
@@ -39,7 +39,7 @@ const PricingPage = async () => {
       customer.status !== "rejected" &&
       customer.value.activeSubscriptions.length
     )
-      redirect(`/profile/${session.user.rowId}`);
+      redirect(`/profile/${session.user.hidraId}`);
   }
 
   return <PricingOverview products={products} />;

@@ -1,0 +1,7 @@
+mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
+  updateProject(input: { rowId: $rowId, patch: $patch }) {
+    project {
+      slug
+    }
+  }
+}

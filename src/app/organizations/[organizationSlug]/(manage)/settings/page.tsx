@@ -9,6 +9,7 @@ import {
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -35,9 +36,13 @@ interface Props {
   params: Promise<{ organizationSlug: string }>;
 }
 
-/** Organization settings page. */
+/**
+ * Organization settings page.
+ */
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
+
+  const developmentFlag = await isDevelopment();
 
   const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
 
@@ -83,7 +88,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
           description: app.organizationSettingsPage.description,
         }}
       >
-        <OrganizationSettings />
+        <OrganizationSettings developmentFlag={developmentFlag} />
       </Page>
     </HydrationBoundary>
   );

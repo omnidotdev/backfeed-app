@@ -1,0 +1,5 @@
+mutation UpdatePostStatus($rowId: UUID!, $patch: PostStatusPatch!) {
+  updatePostStatus(input: { rowId: $rowId, patch: $patch }) {
+    clientMutationId
+  }
+}

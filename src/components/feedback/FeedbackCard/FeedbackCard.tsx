@@ -1,11 +1,38 @@
 "use client";
 
-import { Badge, Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import {
+  Circle,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  Stack,
+  Text,
+} from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
+import { StatusBadge } from "components/core";
+import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
+
 import type { HstackProps } from "@omnidev/sigil";
-import type { FeedbackFragment } from "generated/graphql";
+import type {
+  FeedbackByIdQuery,
+  FeedbackFragment,
+  PostStatus,
+} from "generated/graphql";
+
+interface ProjectStatus {
+  /** Post status row ID. */
+  rowId: PostStatus["rowId"] | undefined;
+  /** Post status. */
+  status: PostStatus["status"] | undefined;
+  /** Post status color. */
+  color: PostStatus["color"];
+}
 
 interface Props extends HstackProps {
   /** Feedback details. */
@@ -16,6 +43,8 @@ interface Props extends HstackProps {
   totalDownvotes: number | undefined;
   /** Whether the feedback is pending. */
   isPending?: boolean;
+  /** Project status options. */
+  projectStatuses?: ProjectStatus[];
 }
 
 /**
@@ -26,9 +55,48 @@ const FeedbackCard = ({
   totalUpvotes = 0,
   totalDownvotes = 0,
   isPending = false,
+  projectStatuses,
   children,
   ...rest
 }: Props) => {
+  const queryClient = useQueryClient();
+
+  const canManageStatus = projectStatuses != null;
+
+  const { mutate: updateStatus, isPending: isUpdateStatusPending } =
+    useUpdatePostMutation({
+      onMutate: (variables) => {
+        const snapshot = queryClient.getQueryData(
+          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! })
+        ) as FeedbackByIdQuery;
+
+        const updatedStatus = projectStatuses?.find(
+          (status) => status.rowId === variables.patch.statusId
+        );
+
+        queryClient.setQueryData(
+          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          {
+            post: {
+              ...snapshot?.post,
+              statusId: variables.patch.statusId,
+              statusUpdatedAt: variables.patch.statusUpdatedAt,
+              status: {
+                ...snapshot.post?.status,
+                status: updatedStatus?.status,
+                color: updatedStatus?.color,
+              },
+            },
+          }
+        );
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+        });
+      },
+    });
+
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
   const netVotesColor = match(netTotalVotes)
@@ -53,70 +121,96 @@ const FeedbackCard = ({
       gap={8}
       bgColor="background.default"
       borderRadius="lg"
-      boxShadow="lg"
       p={{ base: 4, sm: 6 }}
       opacity={isPending ? 0.5 : 1}
       {...rest}
     >
       <Stack w="full">
         <HStack justify="space-between">
-          <Stack direction={{ base: "column", sm: "row" }} gap={4}>
-            <Text fontWeight="semibold" fontSize="2xl">
+          <Stack gap={0.5}>
+            <Text fontWeight="semibold" fontSize="xl" lineHeight={1}>
               {feedback.title}
             </Text>
 
-            <HStack>
-              <Badge
-                variant="outline"
-                color="brand.secondary"
-                borderColor="brand.secondary"
-              >
-                {/* TODO: update status when added to db schema */}
-                Planned
-              </Badge>
+            <HStack fontSize="sm" gap={{ base: 1, sm: 2 }}>
+              <Text color="foreground.subtle">{feedback.user?.username}</Text>
 
-              <Text fontSize="sm" color="foreground.subtle">
-                {/* TODO: change to statusUpdatedAt when db schema is updated */}
-                {`Updated: ${dayjs(isPending ? new Date() : feedback.updatedAt).fromNow()}`}
+              <Circle size={1} bgColor="foreground.subtle" placeSelf="center" />
+
+              <Text color="foreground.subtle">
+                {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
               </Text>
             </HStack>
           </Stack>
 
-          <Text
-            color={netVotesColor}
-            whiteSpace="nowrap"
-            placeSelf="flex-start"
-          >
-            {`${netVotesSign}${netTotalVotes}`}
-          </Text>
+          {children}
         </HStack>
 
         <Text color="foreground.muted">{feedback.description}</Text>
 
         <Stack justify="space-between" gap={4} mt={2}>
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            fontSize="sm"
-            gap={{ base: 1, sm: 2 }}
-          >
-            <Text color="foreground.subtle">{feedback.user?.username}</Text>
+          <HStack justify="space-between">
+            <HStack>
+              <Menu
+                trigger={
+                  <StatusBadge
+                    status={feedback.status!}
+                    cursor={canManageStatus ? "pointer" : "default"}
+                  >
+                    {canManageStatus && <Icon src={LuChevronDown} />}
+                  </StatusBadge>
+                }
+                triggerProps={{
+                  disabled: !canManageStatus || isUpdateStatusPending,
+                }}
+              >
+                <MenuItemGroup>
+                  {projectStatuses?.map((status) => (
+                    <MenuItem
+                      key={status.rowId}
+                      value={status.rowId!}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      // NB: Needs to be analyzed at runtime.
+                      // TODO: Implement check to validate that the status color is a valid color
+                      style={status.color ? { color: status.color } : undefined}
+                      onClick={() =>
+                        updateStatus({
+                          rowId: feedback.rowId!,
+                          patch: {
+                            statusId: status.rowId!,
+                            statusUpdatedAt: new Date(),
+                          },
+                        })
+                      }
+                    >
+                      {status.status}
 
-            <Flex
-              borderRadius="full"
-              h={1}
-              w={1}
-              bgColor="foreground.subtle"
-              display={{ base: "none", sm: "flex" }}
-              placeSelf="center"
-            />
+                      {status.rowId === feedback.status?.rowId && (
+                        <Icon src={LuCheck} h={4} w={4} color="green.500" />
+                      )}
+                    </MenuItem>
+                  ))}
+                </MenuItemGroup>
+              </Menu>
 
-            <Text color="foreground.subtle">
-              {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
+              <Text
+                display={{ base: "none", sm: "inline-flex" }}
+                fontSize="sm"
+                color="foreground.subtle"
+              >
+                {`Updated: ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+              </Text>
+            </HStack>
+
+            <Text
+              color={netVotesColor}
+              whiteSpace="nowrap"
+              placeSelf="flex-start"
+            >
+              {`${netVotesSign}${netTotalVotes}`}
             </Text>
-          </Stack>
-
-          <HStack fontSize="sm" placeSelf="flex-end" gap={1}>
-            {children}
           </HStack>
         </Stack>
       </Stack>

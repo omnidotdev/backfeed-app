@@ -8,8 +8,9 @@ import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
+import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import { DangerZoneAction, UpdateOrganization } from "components/organization";
+import { UpdateOrganization } from "components/organization";
 import {
   Role,
   useCreateMemberMutation,
@@ -21,9 +22,9 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
-import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -34,10 +35,12 @@ const transferOwnershipDetails =
 const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
-// TODO: refactor join organization functionality. This should be invite only. This may also require additional adjustments, i.e. locking down organization settings route.
+interface Props {
+  developmentFlag: boolean;
+}
 
 /** Organization settings. */
-const OrganizationSettings = () => {
+const OrganizationSettings = ({ developmentFlag }: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
@@ -182,73 +185,76 @@ const OrganizationSettings = () => {
     <Stack gap={6}>
       <UpdateOrganization />
 
-      <SectionContainer
-        title={
-          isCurrentMember
-            ? app.organizationSettingsPage.dangerZone.title
-            : joinOrganizationDetails.title
-        }
-        description={
-          isCurrentMember
-            ? app.organizationSettingsPage.dangerZone.description
-            : joinOrganizationDetails.description
-        }
-        outline="1px solid"
-        outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
-      >
-        <Divider />
+      {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
+      {(isCurrentMember || developmentFlag) && (
+        <SectionContainer
+          title={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.title
+              : joinOrganizationDetails.title
+          }
+          description={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.description
+              : joinOrganizationDetails.description
+          }
+          outline="1px solid"
+          outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
+        >
+          <Divider />
 
-        {isCurrentMember && !isOnlyOwner && (
-          <DangerZoneAction
-            title={leaveOrganizationDetails.title}
-            description={leaveOrganizationDetails.description}
-            actionProps={LEAVE_ORGANIZATION}
-          />
-        )}
-
-        {isOwner && (
-          <Stack gap={6}>
-            {isOnlyOwner && (
-              <DangerZoneAction
-                title={transferOwnershipDetails.title}
-                description={transferOwnershipDetails.description}
-                actionProps={TRANSFER_OWNERSHIP}
-              />
-            )}
-
+          {isCurrentMember && !isOnlyOwner && (
             <DangerZoneAction
-              title={deleteOrganizationDetails.title}
-              description={deleteOrganizationDetails.description}
-              actionProps={DELETE_ORGANIZATION}
+              title={leaveOrganizationDetails.title}
+              description={leaveOrganizationDetails.description}
+              actionProps={LEAVE_ORGANIZATION}
             />
-          </Stack>
-        )}
+          )}
 
-        {!isCurrentMember && (
-          <Button
-            fontSize="md"
-            colorPalette="green"
-            color="white"
-            w="fit"
-            placeSelf="flex-end"
-            disabled={isLeaveOrganizationPending}
-            onClick={() =>
-              joinOrganization({
-                input: {
-                  member: {
-                    userId: user?.rowId!,
-                    organizationId: organization?.rowId!,
-                    role: Role.Member,
+          {isOwner && (
+            <Stack gap={6}>
+              {isOnlyOwner && (
+                <DangerZoneAction
+                  title={transferOwnershipDetails.title}
+                  description={transferOwnershipDetails.description}
+                  actionProps={TRANSFER_OWNERSHIP}
+                />
+              )}
+
+              <DangerZoneAction
+                title={deleteOrganizationDetails.title}
+                description={deleteOrganizationDetails.description}
+                actionProps={DELETE_ORGANIZATION}
+              />
+            </Stack>
+          )}
+
+          {!isCurrentMember && (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              color="white"
+              w="fit"
+              placeSelf="flex-end"
+              disabled={isLeaveOrganizationPending}
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    member: {
+                      userId: user?.rowId!,
+                      organizationId: organization?.rowId!,
+                      role: Role.Member,
+                    },
                   },
-                },
-              })
-            }
-          >
-            <Icon src={RiUserAddLine} />
-            {joinOrganizationDetails.actionLabel}
-          </Button>
-        )}
-      </SectionContainer>
+                })
+              }
+            >
+              <Icon src={RiUserAddLine} />
+              {joinOrganizationDetails.actionLabel}
+            </Button>
+          )}
+        </SectionContainer>
+      )}
     </Stack>
   );
 };

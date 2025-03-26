@@ -92,8 +92,6 @@ const Comments = ({ feedbackId }: Props) => {
     hasNextPage: hasNextPage,
     onLoadMore: fetchNextPage,
     disabled: isError,
-    // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
-    rootMargin: "0px 0px 400px 0px",
   });
 
   return (
@@ -133,7 +131,7 @@ const Comments = ({ feedbackId }: Props) => {
                   );
                 })}
 
-                {hasNextPage && <Spinner ref={loaderRef} />}
+                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
               </VStack>
             ) : (
               <EmptyState

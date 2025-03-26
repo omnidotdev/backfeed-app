@@ -4,6 +4,9 @@ const app = {
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
   breadcrumb: "Home",
+  unsavedChanges: {
+    description: "You have unsaved changes.",
+  },
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
@@ -390,7 +393,7 @@ const app = {
           title: "Delete Organization",
           description: "Are you sure you want to delete this organization?",
           actionLabel: "Delete",
-          prompt: "Permanently delete organization",
+          prompt: "permanently delete organization",
         },
       },
       leaveOrganization: {
@@ -531,7 +534,132 @@ const app = {
           label: "Delete",
         },
         destructiveInput: {
-          prompt: "Permanently delete project",
+          prompt: "permanently delete project",
+        },
+      },
+    },
+  },
+  projectSettingsPage: {
+    breadcrumb: "Settings",
+    description:
+      "Manage your project settings and handle feedback for your project.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
+    cta: {
+      updateProject: {
+        title: "Update Project",
+        description:
+          "Edit core details and project information (i.e. name, description, slug).",
+        memberTitle: "Project Details",
+        action: {
+          submit: "Update Project",
+          pending: "Updating Project...",
+        },
+        fields: {
+          projectName: {
+            label: "Project Name",
+            errors: {
+              minLength: "Must be at least 3 characters.",
+            },
+          },
+          projectDescription: {
+            label: "Project Description",
+            errors: {
+              minLength: "Must be at least 10 characters.",
+            },
+          },
+          projectSlug: {
+            label: "Project Slug",
+            errors: {
+              invalidFormat: "Invalid slug format.",
+              minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 50 characters.",
+              duplicate: "Project slug already exists.",
+            },
+          },
+        },
+      },
+      updateProjectStatuses: {
+        title: "Project Statuses",
+        description:
+          "Customize statuses that are used to track progress on feedback items.",
+        actions: {
+          reset: {
+            label: "Reset",
+          },
+          remove: {
+            label: "Remove status",
+          },
+          add: {
+            label: "Add Status",
+          },
+          // NB: these labels are the same due to the nature of the form. When adding or removing rows, the `onSubmit` errors are re-mapped, causing state to be updated for `isSubmitting`. This PR hopefully resolves this issue: https://github.com/TanStack/form/pull/1324
+          update: {
+            submit: "Update Statuses",
+            pending: "Update Statuses",
+            toast: {
+              loading: {
+                title: "Updating project statuses...",
+              },
+              success: {
+                title: "Success!",
+                description: "Statuses updated successfully",
+              },
+              error: {
+                title: "Error",
+                description:
+                  "An error occurred while updating project statuses.",
+              },
+            },
+          },
+        },
+        // ! NB: Important to keep the order of these fields intact, and each one must include a label. They are used to define the header of the update project statuses form table.
+        fields: {
+          isDefault: {
+            label: "Default",
+            info: "Indicates whether this will be the default status for newly created feedback.",
+          },
+          status: {
+            label: "Status",
+            placeholder: "New",
+            errors: {
+              minLength: "Status must be at least 3 characters.",
+              maxLength: "Status must be at most 20 characters.",
+            },
+          },
+          description: {
+            label: "Description",
+            placeholder: "Newly created",
+            errors: {
+              minLength: "Description must be at least 10 characters.",
+              maxLength: "Description must be at most 40 characters.",
+            },
+          },
+          color: {
+            label: "Color",
+            errors: {
+              startsWith: "Invalid color format.",
+              length: "Invalid color format.",
+            },
+          },
+          remove: {
+            label: "Remove",
+          },
+        },
+      },
+      deleteProject: {
+        title: "Delete Project",
+        description:
+          "The project will be permanently deleted, including its posts and comments.",
+        actionLabel: "Delete",
+        destructiveAction: {
+          title: "Delete Project",
+          description: "Are you sure you want to delete this project?",
+          actionLabel: "Delete",
+          prompt: "permanently delete project",
         },
       },
     },

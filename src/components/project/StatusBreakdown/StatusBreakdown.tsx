@@ -1,40 +1,66 @@
 "use client";
 
-import { Badge, Flex, Text } from "@omnidev/sigil";
+import { Flex, Text } from "@omnidev/sigil";
 
+import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
+import {
+  useProjectStatusesQuery,
+  useStatusBreakdownQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 
-// TODO: Discuss status breakdown and how it should be implemented.
+import type { Project } from "generated/graphql";
+
+interface Props {
+  /** Project ID. */
+  projectId: Project["rowId"];
+}
 
 /**
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
-const StatusBreakdown = () => {
-  const breakdown = [
+const StatusBreakdown = ({ projectId }: Props) => {
+  const { data: projectStatuses } = useProjectStatusesQuery(
     {
-      status: app.projectPage.statusBreakdown.status.new,
-      count: 69,
+      projectId,
     },
     {
-      status: app.projectPage.statusBreakdown.status.planned,
-      count: 69,
+      select: (data) =>
+        data?.postStatuses?.nodes?.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+          color: status?.color,
+        })),
+    }
+  );
+
+  const { data: breakdown } = useStatusBreakdownQuery(
+    {
+      projectId,
     },
     {
-      status: app.projectPage.statusBreakdown.status.inProgress,
-      count: 69,
-    },
-    {
-      status: app.projectPage.statusBreakdown.status.completed,
-      count: 69,
-    },
-  ];
+      enabled: !!projectStatuses?.length,
+      select: (data) =>
+        projectStatuses?.map((status) => {
+          const count =
+            data?.posts?.groupedAggregates?.find(
+              ({ keys }) => keys?.[0] === status?.rowId
+            )?.distinctCount?.rowId ?? 0;
+
+          return {
+            status,
+            count,
+          };
+        }),
+    }
+  );
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>
-      {breakdown.map(({ status, count }) => (
-        <Flex key={status} justifyContent="space-between" align="center">
-          <Badge>{status}</Badge>
+      {breakdown?.map(({ status, count }) => (
+        <Flex key={status?.rowId} justifyContent="space-between" align="center">
+          <StatusBadge status={status!} />
 
           <Text>{count}</Text>
         </Flex>

@@ -10,7 +10,7 @@ const CheckoutConfirmationPage = async () => {
 
   if (!session) redirect("/");
 
-  redirect(`/profile/${session.user?.rowId}`);
+  redirect(`/profile/${session.user?.hidraId}`);
 };
 
 export default CheckoutConfirmationPage;

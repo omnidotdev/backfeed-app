@@ -7,6 +7,8 @@ import {
 } from "@omnidev/sigil";
 import { match } from "ts-pattern";
 
+import { token } from "generated/panda/tokens";
+
 import type { ProgressProps } from "@omnidev/sigil";
 
 interface CharacterLimitProps extends ProgressProps {
@@ -29,7 +31,7 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
       (value) => value >= 0.7,
       () => "yellow"
     )
-    .otherwise(() => undefined);
+    .otherwise(() => token("colors.brand.primary"));
 
   return (
     <ProgressRoot
@@ -37,7 +39,8 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
       value={value}
       min={0}
       max={max}
-      flexDirection="row"
+      display="flex"
+      alignItems="center"
       w="fit"
       gap={2}
       {...rest}
@@ -48,7 +51,7 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
           "--thickness": "sizes.0.5",
         }}
       >
-        <ProgressCircleTrack />
+        <ProgressCircleTrack stroke="background.emphasized" />
         <ProgressCircleRange
           transitionProperty="none"
           style={{
