@@ -1,24 +1,14 @@
 import { flag } from "flags/next";
 
-import { getSubscription } from "lib/actions";
 import { isDevEnv } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { dedupeSubscription } from "lib/flags/identity";
 
 /**
  * Checks if the user has a team subscription.
  */
 const hasTeamSubscription = flag({
   key: "team-subscription-flag",
-  identify: async () => {
-    try {
-      const session = await getAuthSession();
-      const subscription = await getSubscription(session?.user?.hidraId!);
-
-      return subscription;
-    } catch (error) {
-      return null;
-    }
-  },
+  identify: dedupeSubscription,
   decide: ({ entities }) => {
     // If we are in a development environment, always return true. Comment this line to test feature flag behaviors in development.
     if (isDevEnv) return true;
