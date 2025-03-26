@@ -199,7 +199,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       description={updateProjectStatuses.description}
       p={0}
       boxShadow="none"
-      overflow="hidden"
+      overflowX="hidden"
       rounded="none"
     >
       <Button
@@ -227,159 +227,164 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       >
         <Field name="projectStatuses" mode="array">
           {({ state: arrayState, pushValue, removeValue }) => (
-            <Stack w="100%" overflowX="auto">
-              <Table
-                headerContent={
-                  <TableRow bgColor="background.muted">
-                    {Object.values(updateProjectStatuses.fields).map(
-                      ({ label }) => (
-                        <TableCell
-                          key={label}
-                          textAlign={{ _last: "right" }}
-                          fontWeight="bold"
-                        >
-                          {label}
-                        </TableCell>
-                      )
-                    )}
-                  </TableRow>
-                }
-              >
-                {arrayState.value.map((status, i) => (
-                  <TableRow key={`${status.rowId}-${i}`} bgColor="transparent">
-                    <TableCell>
-                      <Field name={`projectStatuses[${i}].isDefault`}>
-                        {({ state, handleChange }) => (
-                          <Switch
-                            checked={state.value}
-                            onCheckedChange={({ checked }) => {
-                              for (const status of arrayState.value) {
-                                const indexOfStatus =
-                                  arrayState.value.indexOf(status);
+            <Stack>
+              <Flex w="full" overflowX="auto">
+                <Table
+                  headerContent={
+                    <TableRow bgColor="background.muted">
+                      {Object.values(updateProjectStatuses.fields).map(
+                        ({ label }) => (
+                          <TableCell
+                            key={label}
+                            textAlign={{ _last: "right" }}
+                            fontWeight="bold"
+                          >
+                            {label}
+                          </TableCell>
+                        )
+                      )}
+                    </TableRow>
+                  }
+                >
+                  {arrayState.value.map((status, i) => (
+                    <TableRow
+                      key={`${status.rowId}-${i}`}
+                      bgColor="transparent"
+                    >
+                      <TableCell>
+                        <Field name={`projectStatuses[${i}].isDefault`}>
+                          {({ state, handleChange }) => (
+                            <Switch
+                              checked={state.value}
+                              onCheckedChange={({ checked }) => {
+                                for (const status of arrayState.value) {
+                                  const indexOfStatus =
+                                    arrayState.value.indexOf(status);
 
-                                // Change the default status of all other statuses to false
-                                if (i !== indexOfStatus) {
-                                  setFieldValue(
-                                    `projectStatuses[${indexOfStatus}].isDefault`,
-                                    false
-                                  );
-                                } else {
-                                  // This essentially disables unchecking the default status
-                                  if (checked) {
-                                    handleChange(true);
+                                  // Change the default status of all other statuses to false
+                                  if (i !== indexOfStatus) {
+                                    setFieldValue(
+                                      `projectStatuses[${indexOfStatus}].isDefault`,
+                                      false
+                                    );
+                                  } else {
+                                    // This essentially disables unchecking the default status
+                                    if (checked) {
+                                      handleChange(true);
+                                    }
                                   }
                                 }
-                              }
-                            }}
-                          />
-                        )}
-                      </Field>
-                    </TableCell>
-
-                    <TableCell py={5}>
-                      <AppField name={`projectStatuses[${i}].status`}>
-                        {({ InputField }) => (
-                          <InputField
-                            placeholder={
-                              updateProjectStatuses.fields.status.placeholder
-                            }
-                            minW={40}
-                            errorProps={{
-                              top: -5,
-                            }}
-                          />
-                        )}
-                      </AppField>
-                    </TableCell>
-
-                    <TableCell>
-                      <AppField name={`projectStatuses[${i}].description`}>
-                        {({ InputField }) => (
-                          <InputField
-                            placeholder={
-                              updateProjectStatuses.fields.description
-                                .placeholder
-                            }
-                            minW={40}
-                            errorProps={{
-                              top: -5,
-                            }}
-                          />
-                        )}
-                      </AppField>
-                    </TableCell>
-
-                    <TableCell>
-                      <Field name={`projectStatuses[${i}].color`}>
-                        {({ state, handleChange }) => (
-                          <ColorPicker
-                            label={null}
-                            presets={COLOR_PRESETS}
-                            value={
-                              state.value
-                                ? parseColor(state.value)
-                                : parseColor("#000000")
-                            }
-                            onValueChange={({ value }) =>
-                              handleChange(value.toString("hex"))
-                            }
-                            gap={0.5}
-                            controlProps={{
-                              minW: 40,
-                            }}
-                            // @ts-ignore Omit `channel` from upstream types. It is defined internally.
-                            channelInputProps={{
-                              borderColor: "border.subtle",
-                            }}
-                            triggerProps={{
-                              borderColor: "transparent",
-                              p: 0,
-                            }}
-                            // @ts-ignore TODO: omit `value` upstream. It is defined internally.
-                            swatchProps={{
-                              h: "full",
-                              w: "full",
-                              aspectRatio: 1,
-                              borderRadius: "sm",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          />
-                        )}
-                      </Field>
-                    </TableCell>
-
-                    <TableCell px={3}>
-                      <Field name={`projectStatuses[${i}].isDefault`}>
-                        {({ state }) => (
-                          <Flex w="full" justify="flex-end">
-                            <Button
-                              disabled={state.value}
-                              variant="icon"
-                              bgColor="transparent"
-                              color={{
-                                base: "red",
-                                _hover: {
-                                  base: "destructive.hover",
-                                  _disabled: "red",
-                                },
                               }}
-                              opacity={{ _disabled: 0.3 }}
-                              onClick={() => removeValue(i)}
-                              aria-label={
-                                updateProjectStatuses.actions.remove.label
+                            />
+                          )}
+                        </Field>
+                      </TableCell>
+
+                      <TableCell py={5}>
+                        <AppField name={`projectStatuses[${i}].status`}>
+                          {({ InputField }) => (
+                            <InputField
+                              placeholder={
+                                updateProjectStatuses.fields.status.placeholder
                               }
-                            >
-                              <Icon src={HiOutlineTrash} />
-                            </Button>
-                          </Flex>
-                        )}
-                      </Field>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </Table>
+                              minW={40}
+                              errorProps={{
+                                top: -5,
+                              }}
+                            />
+                          )}
+                        </AppField>
+                      </TableCell>
+
+                      <TableCell>
+                        <AppField name={`projectStatuses[${i}].description`}>
+                          {({ InputField }) => (
+                            <InputField
+                              placeholder={
+                                updateProjectStatuses.fields.description
+                                  .placeholder
+                              }
+                              minW={40}
+                              errorProps={{
+                                top: -5,
+                              }}
+                            />
+                          )}
+                        </AppField>
+                      </TableCell>
+
+                      <TableCell>
+                        <Field name={`projectStatuses[${i}].color`}>
+                          {({ state, handleChange }) => (
+                            <ColorPicker
+                              label={null}
+                              presets={COLOR_PRESETS}
+                              value={
+                                state.value
+                                  ? parseColor(state.value)
+                                  : parseColor("#000000")
+                              }
+                              onValueChange={({ value }) =>
+                                handleChange(value.toString("hex"))
+                              }
+                              gap={0.5}
+                              controlProps={{
+                                minW: 40,
+                              }}
+                              // @ts-ignore Omit `channel` from upstream types. It is defined internally.
+                              channelInputProps={{
+                                borderColor: "border.subtle",
+                              }}
+                              triggerProps={{
+                                borderColor: "transparent",
+                                p: 0,
+                              }}
+                              // @ts-ignore TODO: omit `value` upstream. It is defined internally.
+                              swatchProps={{
+                                h: "full",
+                                w: "full",
+                                aspectRatio: 1,
+                                borderRadius: "sm",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            />
+                          )}
+                        </Field>
+                      </TableCell>
+
+                      <TableCell px={3}>
+                        <Field name={`projectStatuses[${i}].isDefault`}>
+                          {({ state }) => (
+                            <Flex w="full" justify="flex-end">
+                              <Button
+                                disabled={state.value}
+                                variant="icon"
+                                bgColor="transparent"
+                                color={{
+                                  base: "red",
+                                  _hover: {
+                                    base: "destructive.hover",
+                                    _disabled: "red",
+                                  },
+                                }}
+                                opacity={{ _disabled: 0.3 }}
+                                onClick={() => removeValue(i)}
+                                aria-label={
+                                  updateProjectStatuses.actions.remove.label
+                                }
+                              >
+                                <Icon src={HiOutlineTrash} />
+                              </Button>
+                            </Flex>
+                          )}
+                        </Field>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </Table>
+              </Flex>
 
               <Button
                 variant="outline"
