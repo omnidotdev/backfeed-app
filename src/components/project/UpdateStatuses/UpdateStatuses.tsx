@@ -76,7 +76,8 @@ const statusSchema = z.object({
 const updateStatusesSchema = z.object({
   projectStatuses: z
     .array(statusSchema)
-    .refine((statuses) => statuses.some((status) => status.isDefault)),
+    // Validate that there is exactly one default status
+    .refine((statuses) => statuses.filter((status) => status.isDefault).length === 1),
 });
 
 interface Props {
