@@ -31,7 +31,7 @@ const useRoutes = () => {
         slug: organizationSlug,
       },
       {
-        enabled: !!organizationSlug,
+        enabled: isAuthenticated && !!organizationSlug,
         select: (data) => data?.organizationBySlug,
       }
     ),
@@ -41,7 +41,7 @@ const useRoutes = () => {
         organizationId: organization?.rowId ?? "",
       },
       {
-        enabled: !!projectSlug,
+        enabled: isAuthenticated && !!projectSlug,
         select: (data) => data?.projectBySlugAndOrganizationId,
       }
     );
