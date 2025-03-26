@@ -393,7 +393,7 @@ const app = {
           title: "Delete Organization",
           description: "Are you sure you want to delete this organization?",
           actionLabel: "Delete",
-          prompt: "Permanently delete organization",
+          prompt: "permanently delete organization",
         },
       },
       leaveOrganization: {
@@ -534,7 +534,7 @@ const app = {
           label: "Delete",
         },
         destructiveInput: {
-          prompt: "Permanently delete project",
+          prompt: "permanently delete project",
         },
       },
     },
@@ -659,7 +659,7 @@ const app = {
           title: "Delete Project",
           description: "Are you sure you want to delete this project?",
           actionLabel: "Delete",
-          prompt: "Permanently delete project",
+          prompt: "permanently delete project",
         },
       },
     },
