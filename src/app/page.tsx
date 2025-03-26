@@ -12,7 +12,7 @@ import {
   useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import { hasTeamSubscription } from "lib/flags";
+import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
@@ -28,7 +28,8 @@ const HomePage = async () => {
 
   if (!session) return <LandingPage />;
 
-  const isTeamTier = await hasTeamSubscription();
+  const isBasicTier = await hasBasicTierPrivileges();
+  const isTeamTier = await hasTeamTierPrivileges();
 
   const queryClient = getQueryClient();
 
@@ -89,7 +90,7 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage isTeamTier={isTeamTier} />
+      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
     </HydrationBoundary>
   );
 };

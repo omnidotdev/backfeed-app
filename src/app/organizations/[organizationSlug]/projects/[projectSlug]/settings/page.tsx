@@ -9,7 +9,7 @@ import {
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { hasTeamSubscription, isDevelopment } from "lib/flags";
+import { hasTeamTierPrivileges, isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -68,7 +68,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
   // TODO: when ready to implement for production, remove the development check
-  const canEditStatuses = development && (await hasTeamSubscription());
+  const canEditStatuses = development && (await hasTeamTierPrivileges());
 
   const queryClient = getQueryClient();
 

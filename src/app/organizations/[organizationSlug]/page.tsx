@@ -16,7 +16,7 @@ import {
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasTeamSubscription } from "lib/flags";
+import { hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
@@ -60,7 +60,7 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
-  const isTeamTier = await hasTeamSubscription();
+  const isTeamTier = await hasTeamTierPrivileges();
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {

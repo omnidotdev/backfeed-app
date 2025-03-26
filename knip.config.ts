@@ -5,6 +5,9 @@ import type { KnipConfig } from "knip";
  * @see https://knip.dev/overview/configuration
  */
 const knipConfig: KnipConfig = {
+  rules: {
+    enumMembers: "warn",
+  },
   // NB: Modified from the default Next.js configuration, see: https://knip.dev/reference/plugins/next
   entry: [
     "next.config.ts",

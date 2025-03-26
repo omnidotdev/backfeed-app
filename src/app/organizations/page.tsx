@@ -11,7 +11,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { hasTeamSubscription } from "lib/flags";
+import { hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -38,7 +38,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
   if (!session || !sdk) notFound();
 
   const [isTeamTier, { organizations }] = await Promise.all([
-    hasTeamSubscription(),
+    hasTeamTierPrivileges(),
     sdk.Organizations({
       userId: session?.user.rowId!,
       isMember: true,
