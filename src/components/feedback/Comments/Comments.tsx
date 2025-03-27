@@ -81,7 +81,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
     },
   });
 
-  // This are not defined within the `select` function in order to preserve type safety.
+  // This is not defined within the `select` function in order to preserve type safety.
   const comments =
     data?.pages?.flatMap((page) =>
       page?.comments?.edges?.map((edge) => edge?.node)
