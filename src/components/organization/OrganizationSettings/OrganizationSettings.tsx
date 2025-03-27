@@ -3,7 +3,7 @@
 import { createListCollection } from "@ark-ui/react";
 import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
 import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
@@ -17,7 +17,6 @@ import {
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
-  useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -25,6 +24,7 @@ import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
+import type { Organization } from "generated/graphql";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -36,47 +36,38 @@ const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
 interface Props {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
+  /** Whether the application is currently running in a development environment. */
   developmentFlag: boolean;
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({ developmentFlag }: Props) => {
+const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
 
-  const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
   const { user } = useAuth();
 
-  const { data: organization } = useOrganizationQuery(
-    {
-      slug: organizationSlug,
-    },
-    {
-      select: (data) => data.organizationBySlug,
-    }
-  );
-
   const { data: numberOfOwners } = useMembersQuery(
     {
-      organizationId: organization?.rowId!,
+      organizationId,
       roles: [Role.Owner],
     },
     {
-      enabled: !!organization,
       select: (data) => data.members?.totalCount,
     }
   );
 
   const { data: members } = useMembersQuery(
     {
-      organizationId: organization?.rowId!,
+      organizationId,
       excludeRoles: [Role.Owner],
     },
     {
-      enabled: !!organization,
       select: (data) =>
         data.members?.nodes?.map((member) => ({
           label: `${member?.user?.firstName} ${member?.user?.lastName}`,
@@ -87,14 +78,14 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
 
   const { isOwner, isMember, membershipId } = useOrganizationMembership({
     userId: user?.rowId,
-    organizationId: organization?.rowId,
+    organizationId,
   });
 
   const onSettled = () =>
     queryClient.invalidateQueries({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: user?.rowId!,
-        organizationId: organization?.rowId!,
+        organizationId,
       }),
     });
 
@@ -106,7 +97,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
         onSettled,
       }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
-      organizationId: organization?.rowId,
+      organizationId,
     }),
     { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
       useCreateMemberMutation({
@@ -125,7 +116,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
+      onClick: () => deleteOrganization({ rowId: organizationId }),
     },
   };
 
@@ -242,7 +233,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
                   input: {
                     member: {
                       userId: user?.rowId!,
-                      organizationId: organization?.rowId!,
+                      organizationId,
                       role: Role.Member,
                     },
                   },

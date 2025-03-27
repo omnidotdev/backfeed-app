@@ -88,7 +88,10 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
           description: app.organizationSettingsPage.description,
         }}
       >
-        <OrganizationSettings developmentFlag={developmentFlag} />
+        <OrganizationSettings
+          organizationId={organization.rowId}
+          developmentFlag={developmentFlag}
+        />
       </Page>
     </HydrationBoundary>
   );

@@ -6,7 +6,6 @@ import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
 import {
   Role,
-  useOrganizationQuery,
   useOrganizationRoleQuery,
   useProjectsQuery,
 } from "generated/graphql";
@@ -96,10 +95,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       queryFn: useProjectsQuery.fetcher(variables),
     }),
     queryClient.prefetchQuery({
-      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-    }),
-    queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
         organizationId: organization.rowId,
@@ -131,7 +126,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       <ProjectFilters />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList />
+        <ProjectList organizationId={organization.rowId} />
       </HydrationBoundary>
     </Page>
   );
