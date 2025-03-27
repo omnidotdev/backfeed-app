@@ -34,7 +34,7 @@ const AccountInformation = () => {
 
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const router = useRouter(),
     { user } = useAuth(),
     { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
