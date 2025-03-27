@@ -13,24 +13,6 @@ import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getAuthSession, getQueryClient } from "lib/util";
 
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb} | ${app.name}`,
-  };
-};
-
 interface Props {
   /** Organization page params. */
   params: Promise<{ organizationSlug: string }>;
@@ -82,11 +64,14 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        pt={0}
+        metadata={{
+          title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb} | ${app.name}`,
+        }}
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
           description: app.organizationSettingsPage.description,
         }}
+        pt={0}
       >
         <OrganizationSettings
           organizationId={organization.rowId}

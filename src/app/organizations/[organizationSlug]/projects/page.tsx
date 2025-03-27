@@ -16,24 +16,7 @@ import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
-import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Projects page params. */
@@ -108,6 +91,9 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   return (
     <Page
+      metadata={{
+        title: `${organization.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
+      }}
       breadcrumbs={breadcrumbs}
       header={{
         title: app.projectsPage.header.title,
