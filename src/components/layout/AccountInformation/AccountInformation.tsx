@@ -30,23 +30,23 @@ import { DialogType } from "store";
  * User account information.
  */
 const AccountInformation = () => {
-  const userActions = useRef<HTMLDivElement>(null!);
-
+  const router = useRouter();
+  const { user } = useAuth();
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
-  const [isOpen, setIsOpen] = useState(false);
 
-  const router = useRouter(),
-    { user } = useAuth(),
-    { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
-      type: DialogType.MobileSidebar,
-    });
+  const userActions = useRef<HTMLDivElement>(null!);
+  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
+
+  const { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
+    type: DialogType.MobileSidebar,
+  });
 
   const handleProfileClick = () => {
     setIsMobileSidebarOpen(false);
     router.push(`/profile/${user?.hidraId}`);
   };
 
-  useOnClickOutside(userActions, () => setIsOpen(false));
+  useOnClickOutside(userActions, () => setIsMobileProfileOpen(false));
 
   const handleLogout = async () => {
     try {
@@ -109,7 +109,7 @@ const AccountInformation = () => {
 
   return (
     <Stack ref={userActions} justifyContent="end">
-      <Collapsible open={isOpen}>
+      <Collapsible open={isMobileProfileOpen}>
         <Stack>
           <Button onClick={handleProfileClick}>
             <HStack gap={2}>
@@ -134,7 +134,7 @@ const AccountInformation = () => {
         variant="ghost"
         w="full"
         size="xl"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
       >
         <HStack justifyContent="space-between" w="full">
           <HStack alignItems="center">

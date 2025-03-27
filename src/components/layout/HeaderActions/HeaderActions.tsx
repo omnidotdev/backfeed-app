@@ -102,7 +102,7 @@ const HeaderActions = () => {
         contentProps={{ boxShadow: "card" }}
       >
         <Flex justifyContent="space-between" px={2}>
-          <Flex>
+          <Flex bgColor="red">
             <ThemeToggle />
           </Flex>
 
