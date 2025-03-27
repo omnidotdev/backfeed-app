@@ -22,9 +22,8 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
   <Flex
     position="relative"
     direction="column"
-    bgColor="background.subtle"
+    bgColor="card-item"
     borderRadius="lg"
-    boxShadow="xs"
     p={8}
     {...rest}
   >

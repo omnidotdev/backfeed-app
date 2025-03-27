@@ -2,15 +2,24 @@ fragment Feedback on Post {
   rowId
   title
   description
+  statusUpdatedAt
   createdAt
   updatedAt
   project {
     rowId
     name
+    slug
     organization {
       rowId
       name
+      slug
     }
+  }
+  status {
+    rowId
+    status
+    description
+    color
   }
   user {
     username

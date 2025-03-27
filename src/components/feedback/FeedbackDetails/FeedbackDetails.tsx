@@ -12,10 +12,11 @@ import { FeedbackCard } from "components/feedback";
 import {
   useDownvoteQuery,
   useFeedbackByIdQuery,
+  useProjectStatusesQuery,
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type {
   HstackProps,
@@ -57,6 +58,26 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     },
     {
       select: (data) => data?.post,
+    }
+  );
+
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: feedback?.project?.organization?.rowId,
+  });
+
+  const { data: projectStatuses } = useProjectStatusesQuery(
+    {
+      projectId: feedback?.project?.rowId!,
+    },
+    {
+      enabled: isAdmin,
+      select: (data) =>
+        data?.postStatuses?.nodes.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+          color: status?.color,
+        })),
     }
   );
 
@@ -122,34 +143,40 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       feedback={feedback!}
       totalUpvotes={totalUpvotes}
       totalDownvotes={totalDownvotes}
+      projectStatuses={isAdmin ? projectStatuses : undefined}
       boxShadow="card"
       {...rest}
     >
-      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-        <Tooltip
-          key={id}
-          positioning={{ placement: "top" }}
-          trigger={
-            <HStack gap={2} py={1} fontVariant="tabular-nums">
-              <Icon src={icon} w={5} h={5} />
-              {votes}
-            </HStack>
-          }
-          triggerProps={{
-            variant: "ghost",
-            w: "full",
-            bgColor: "transparent",
-            opacity: {
-              base: 1,
-              _disabled: 0.3,
-              _hover: { base: 0.8, _disabled: 0.3 },
-            },
-            ...rest,
-          }}
-        >
-          {tooltip}
-        </Tooltip>
-      ))}
+      <HStack
+        position="absolute"
+        top={{ base: 1.5, sm: 3.5 }}
+        right={{ base: 4, sm: 6 }}
+      >
+        {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+          <Tooltip
+            key={id}
+            positioning={{ placement: "top" }}
+            trigger={
+              <HStack gap={2} py={1} fontVariant="tabular-nums">
+                <Icon src={icon} w={5} h={5} />
+                {votes}
+              </HStack>
+            }
+            triggerProps={{
+              variant: "icon",
+              bgColor: "transparent",
+              opacity: {
+                base: 1,
+                _disabled: 0.3,
+                _hover: { base: 0.8, _disabled: 0.3 },
+              },
+              ...rest,
+            }}
+          >
+            {tooltip}
+          </Tooltip>
+        ))}
+      </HStack>
     </FeedbackCard>
   );
 };

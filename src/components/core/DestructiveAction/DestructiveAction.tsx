@@ -33,6 +33,11 @@ const destructiveButtonStyles: JsxStyleProps = {
     _active: "destructive.active",
     _focus: "destructive.focus",
   },
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "destructive.focus",
+    outlineOffset: "2px",
+  },
   opacity: {
     _disabled: 0.5,
   },
@@ -142,8 +147,17 @@ const DestructiveAction = ({
       )}
 
       <HStack>
-        {actions.map(({ label, ...rest }) => (
-          <Button key={label} flex={1} {...rest}>
+        {actions.map(({ label, onClick, ...rest }) => (
+          <Button
+            key={label}
+            flex={1}
+            onClick={(e) => {
+              // ! NB: this will prevent actions from triggering other events (i.e. form submissions)
+              e.preventDefault();
+              onClick?.(e);
+            }}
+            {...rest}
+          >
             {label}
           </Button>
         ))}

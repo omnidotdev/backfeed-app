@@ -7,6 +7,7 @@ export {
   type ActionButton,
 } from "./CallToAction/CallToAction";
 export { default as CharacterLimit } from "./CharacterLimit/CharacterLimit";
+export { default as DangerZoneAction } from "./DangerZoneAction/DangerZoneAction";
 export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
@@ -17,4 +18,5 @@ export { default as Logo } from "./Logo/Logo";
 export { default as OverflowText } from "./OverflowText/OverflowText";
 export { default as SkeletonArray } from "./SkeletonArray/SkeletonArray";
 export { default as Spinner } from "./Spinner/Spinner";
+export { default as StatusBadge } from "./StatusBadge/StatusBadge";
 export { default as Tooltip } from "./Tooltip/Tooltip";

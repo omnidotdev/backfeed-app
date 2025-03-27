@@ -34,7 +34,7 @@ const AccountInformation = () => {
 
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const router = useRouter(),
     { user } = useAuth(),
     { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
@@ -43,7 +43,7 @@ const AccountInformation = () => {
 
   const handleProfileClick = () => {
     setIsMobileSidebarOpen(false);
-    router.push(`/profile/${user?.rowId}`);
+    router.push(`/profile/${user?.hidraId}`);
   };
 
   useOnClickOutside(userActions, () => setIsOpen(false));

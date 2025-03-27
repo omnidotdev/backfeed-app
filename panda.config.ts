@@ -17,6 +17,10 @@ const pandaConfig = defineConfig({
           color: ["*"],
           backgroundColor: ["*"],
           borderColor: ["*"],
+          top: ["*"],
+          bottom: ["*"],
+          right: ["*"],
+          left: ["*"],
         },
       },
     ],
@@ -43,6 +47,14 @@ const pandaConfig = defineConfig({
   theme: {
     extend: {
       semanticTokens: {
+        colors: {
+          "card-item": {
+            value: {
+              base: "{colors.background.subtle/70}",
+              _dark: "{colors.background.subtle/20}",
+            },
+          },
+        },
         shadows: {
           card: {
             value: {

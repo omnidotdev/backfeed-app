@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import {
   Role,
+  useCreatePostStatusMutation,
   useCreateProjectMutation,
   useOrganizationsQuery,
 } from "generated/graphql";
@@ -17,6 +18,36 @@ import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
+
+// NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
+const DEFAULT_POST_STATUSES = [
+  {
+    status: "Open",
+    description: "Newly created",
+    color: "#3b82f6",
+    isDefault: true,
+  },
+  {
+    status: "Planned",
+    description: "Planned for future",
+    color: "#a855f7",
+  },
+  {
+    status: "In Progress",
+    description: "Currently in progress",
+    color: "#eab308",
+  },
+  {
+    status: "Closed",
+    description: "Not currently planned",
+    color: "#ef4444",
+  },
+  {
+    status: "Resolved",
+    description: "Resolved request",
+    color: "#22c55e",
+  },
+];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -126,16 +157,9 @@ const CreateProject = ({ organizationSlug }: Props) => {
     [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
   );
 
-  const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
-    onSuccess: (data) => {
-      router.push(
-        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
-      );
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
 
-      setIsOpen(false);
-      reset();
-    },
-  });
+  const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
@@ -151,16 +175,43 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
     onSubmit: async ({ value }) =>
       toaster.promise(
-        createProject({
-          input: {
-            project: {
-              name: value.name,
-              description: value.description,
-              slug: value.slug,
-              organizationId: value.organizationId,
+        async () => {
+          const { createProject: projectData } = await createProject({
+            input: {
+              project: {
+                name: value.name,
+                description: value.description,
+                slug: value.slug,
+                organizationId: value.organizationId,
+              },
             },
-          },
-        }),
+          });
+
+          if (projectData) {
+            await Promise.all(
+              DEFAULT_POST_STATUSES.map((status) =>
+                createPostStatus({
+                  input: {
+                    postStatus: {
+                      projectId: projectData.project?.rowId!,
+                      status: status.status,
+                      description: status.description,
+                      color: status.color,
+                      isDefault: status.isDefault,
+                    },
+                  },
+                })
+              )
+            );
+
+            router.push(
+              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
+            );
+
+            setIsOpen(false);
+            reset();
+          }
+        },
         {
           loading: {
             title: app.dashboardPage.cta.newProject.action.pending,

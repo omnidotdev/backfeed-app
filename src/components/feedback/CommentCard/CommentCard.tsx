@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, Text, VStack } from "@omnidev/sigil";
+import { Circle, Stack, Text } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
@@ -84,24 +84,22 @@ const CommentCard = ({
     <Stack
       position="relative"
       direction="row"
-      boxShadow="xs"
+      bgColor="card-item"
       borderRadius="sm"
       gap={4}
       p={4}
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
-      <VStack
-        justify="center"
-        bgColor="background.subtle"
-        borderRadius="full"
-        p={2}
-        h={8}
-        w={8}
+      <Circle
         display={{ base: "none", sm: "flex" }}
+        size={8}
+        p={2}
+        bgColor="background.muted"
+        color="foreground.muted"
       >
-        <Text color="foreground.muted">{senderName?.[0]}</Text>
-      </VStack>
+        {senderName?.[0]}
+      </Circle>
 
       <Stack gap={1} flex={1} pb={8}>
         <Text fontWeight="semibold">{senderName}</Text>

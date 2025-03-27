@@ -10,7 +10,10 @@ import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
+  useProjectMetricsQuery,
   useProjectQuery,
+  useProjectStatusesQuery,
+  useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
@@ -23,6 +26,9 @@ const MAX_DESCRIPTION_LENGTH = 240;
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
+  statusId: z
+    .string()
+    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
   projectId: z
     .string()
     .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
@@ -63,9 +69,34 @@ const CreateFeedback = () => {
     }
   );
 
+  const { data: defaultStatusId } = useProjectStatusesQuery(
+    {
+      projectId: projectId!,
+      isDefault: true,
+    },
+    {
+      enabled: !!projectId,
+      select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
+    }
+  );
+
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
-    onSettled: () => {
+    onSettled: async () => {
       reset();
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useStatusBreakdownQuery.getKey({
+            projectId: projectId!,
+          }),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: useProjectMetricsQuery.getKey({
+            projectId: projectId!,
+          }),
+        }),
+      ]);
 
       return queryClient.invalidateQueries({
         queryKey: useInfinitePostsQuery.getKey({
@@ -79,6 +110,7 @@ const CreateFeedback = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
       defaultValues: {
+        statusId: defaultStatusId ?? "",
         projectId: projectId ?? "",
         userId: user?.rowId ?? "",
         title: "",
@@ -94,6 +126,7 @@ const CreateFeedback = () => {
           createFeedback({
             input: {
               post: {
+                statusId: value.statusId,
                 projectId: value.projectId,
                 userId: value.userId,
                 title: value.title.trim(),
