@@ -28,7 +28,10 @@ interface NavItem {
   icon?: IconType;
 }
 
-const useRoutes = () => {
+/**
+ * Custom hook to generate sidebar navigation items based on authentication state, current route, and available organization/project data.
+ */
+const useSidebarNavigationItems = () => {
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
   const { organizationSlug, projectSlug } = useParams<{
@@ -121,4 +124,4 @@ const useRoutes = () => {
   return routes.filter((route) => route.isVisible);
 };
 
-export default useRoutes;
+export default useSidebarNavigationItems;

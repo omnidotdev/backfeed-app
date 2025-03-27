@@ -14,13 +14,13 @@ import {
 import { FiChevronRight } from "react-icons/fi";
 
 import { Link } from "components/core";
-import { useRoutes } from "lib/hooks";
+import { useSidebarNavigationItems } from "lib/hooks";
 
 /**
  * Sidebar navigation.
  */
 const SidebarNavigation = () => {
-  const routes = useRoutes();
+  const routes = useSidebarNavigationItems();
 
   const {
     isOpen: isOrganizationContentOpen,
