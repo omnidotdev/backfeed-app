@@ -100,7 +100,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   return (
     <Page
       metadata={{
-        title: `${project?.name} ${app.projectSettingsPage.breadcrumb}`,
+        title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
       }}
       breadcrumbs={breadcrumbs}
       header={{

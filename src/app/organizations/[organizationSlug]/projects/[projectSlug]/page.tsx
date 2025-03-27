@@ -105,7 +105,7 @@ const ProjectPage = async ({ params }: Props) => {
   return (
     <Page
       metadata={{
-        title: project?.name!,
+        title: project.name!,
       }}
       breadcrumbs={breadcrumbs}
       header={{
