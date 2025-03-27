@@ -12,19 +12,19 @@ import { useAuth } from "lib/hooks";
 import type { IconType } from "react-icons";
 
 interface NavItem {
-  /** The route label. */
+  /** The navigation item label. */
   label: string;
-  /** Whether the route is visible. */
+  /** Whether the navigation item is visible. */
   isVisible: boolean;
-  /** The route href. */
+  /** The navigation item href. */
   href?: string;
-  /** Whether the route is active. */
+  /** Whether the navigation item is active. */
   isActive?: boolean;
-  /** Whether the route is collapsible. */
+  /** Whether the navigation item is collapsible. */
   isCollapsible?: boolean;
-  /** The route children. */
+  /** The navigation item children. */
   children?: NavItem[];
-  /** The route icon. */
+  /** The navigation item icon. */
   icon?: IconType;
 }
 
