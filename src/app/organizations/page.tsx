@@ -14,7 +14,7 @@ import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const metadata = {
-  title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
+  title: app.organizationsPage.breadcrumb,
 };
 
 interface Props {

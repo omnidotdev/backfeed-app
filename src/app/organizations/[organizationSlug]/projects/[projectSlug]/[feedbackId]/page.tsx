@@ -20,7 +20,7 @@ import { getAuthSession, getQueryClient } from "lib/util";
 import type { BreadcrumbRecord } from "components/core";
 
 export const metadata = {
-  title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
+  title: app.feedbackPage.breadcrumb,
 };
 
 interface Props {

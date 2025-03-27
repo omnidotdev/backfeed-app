@@ -9,7 +9,7 @@ import { polar } from "lib/polar";
 import { getAuthSession, getQueryClient } from "lib/util";
 
 export const metadata = {
-  title: `${app.profilePage.breadcrumb} | ${app.name}`,
+  title: app.profilePage.breadcrumb,
 };
 
 interface Props {

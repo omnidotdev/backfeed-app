@@ -92,7 +92,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   return (
     <Page
       metadata={{
-        title: `${organization.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
+        title: `${organization.name} ${app.projectsPage.breadcrumb}`,
       }}
       breadcrumbs={breadcrumbs}
       header={{

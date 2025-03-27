@@ -28,7 +28,10 @@ if (ENABLE_MSW) {
 }
 
 export const metadata: Metadata = {
-  title: app.name,
+  title: {
+    default: app.name,
+    template: `%s | ${app.name}`,
+  },
   description: app.description,
 };
 

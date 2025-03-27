@@ -6,7 +6,7 @@ import { polar } from "lib/polar";
 import { getAuthSession } from "lib/util";
 
 export const metadata = {
-  title: `${app.pricingPage.title} | ${app.name}`,
+  title: app.pricingPage.title,
 };
 
 /**

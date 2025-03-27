@@ -82,7 +82,7 @@ const OrganizationPage = async ({ params }: Props) => {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
         metadata={{
-          title: `${organization?.name} | ${app.name}`,
+          title: organization.name!,
         }}
         breadcrumbs={breadcrumbs}
         header={{
