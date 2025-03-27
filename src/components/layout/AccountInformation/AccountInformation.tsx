@@ -3,7 +3,7 @@
 import {
   Avatar,
   Button,
-  Divider,
+  Collapsible,
   HStack,
   Icon,
   Menu,
@@ -17,6 +17,9 @@ import {
 import { signOut } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
+import { HiChevronUpDown } from "react-icons/hi2";
+import { useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 
 import { app, isDevEnv } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
@@ -27,7 +30,10 @@ import { DialogType } from "store";
  * User account information.
  */
 const AccountInformation = () => {
+  const userActions = useRef<HTMLDivElement>(null!);
+
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
+  const [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter(),
     { user } = useAuth(),
@@ -39,6 +45,8 @@ const AccountInformation = () => {
     setIsMobileSidebarOpen(false);
     router.push(`/profile/${user?.rowId}`);
   };
+
+  useOnClickOutside(userActions, () => setIsOpen(false));
 
   const handleLogout = async () => {
     try {
@@ -100,28 +108,47 @@ const AccountInformation = () => {
   }
 
   return (
-    <Stack>
-      <Stack gap={4} align="center">
-        <Avatar name={user?.name} />
+    <Stack ref={userActions} justifyContent="end">
+      <Collapsible open={isOpen}>
+        <Stack>
+          <Button onClick={handleProfileClick}>
+            <HStack gap={2}>
+              <Icon src={FiUser} />
 
-        <Text>{user?.name}</Text>
-      </Stack>
+              {app.auth.profile.label}
+            </HStack>
+          </Button>
 
-      <Divider my={1} />
+          <Button variant="outline" onClick={handleLogout} borderColor="red">
+            <HStack gap={2} color="red">
+              <Icon src={FiLogOut} size="sm" color="red" />
 
-      <Button onClick={handleProfileClick}>
-        <HStack gap={2}>
-          <Icon src={FiUser} />
+              {app.auth.signOut.label}
+            </HStack>
+          </Button>
+        </Stack>
+      </Collapsible>
 
-          {app.auth.profile.label}
-        </HStack>
-      </Button>
+      <Button
+        justifyContent="space-between"
+        variant="ghost"
+        w="full"
+        size="xl"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <HStack justifyContent="space-between" w="full">
+          <HStack alignItems="center">
+            <Avatar name={user?.name} />
 
-      <Button variant="outline" onClick={handleLogout} borderColor="red">
-        <HStack gap={2} color="red">
-          <Icon src={FiLogOut} size="sm" color="red" />
+            <Stack gap={1} textAlign="left">
+              <Text lineHeight={1}>{user?.name}</Text>
+              <Text fontSize="xs" lineHeight={1} color="foreground.muted">
+                {user?.email}
+              </Text>
+            </Stack>
+          </HStack>
 
-          {app.auth.signOut.label}
+          <Icon src={HiChevronUpDown} size="xl" />
         </HStack>
       </Button>
     </Stack>

@@ -2,20 +2,30 @@
 
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
+import { LuBuilding2 } from "react-icons/lu";
+import { HiOutlineFolder } from "react-icons/hi2";
 
 import { useOrganizationQuery, useProjectBySlugQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
-interface Route {
-  /** The route href. */
-  href: string;
+import type { IconType } from "react-icons";
+
+interface NavItem {
   /** The route label. */
   label: string;
   /** Whether the route is visible. */
   isVisible: boolean;
+  /** The route href. */
+  href?: string;
   /** Whether the route is active. */
-  isActive: boolean;
+  isActive?: boolean;
+  /** Whether the route is collapsible. */
+  isCollapsible?: boolean;
+  /** The route children. */
+  children?: NavItem[];
+  /** The route icon. */
+  icon?: IconType;
 }
 
 const useRoutes = () => {
@@ -46,14 +56,8 @@ const useRoutes = () => {
       }
     );
 
-  const routes = useMemo<Route[]>(
+  const routes = useMemo<NavItem[]>(
     () => [
-      {
-        href: "/",
-        label: app.breadcrumb,
-        isVisible: pathname !== "/",
-        isActive: pathname === "/",
-      },
       {
         href: "/pricing",
         label: app.pricingPage.title,
@@ -61,30 +65,47 @@ const useRoutes = () => {
         isActive: pathname === "/pricing",
       },
       {
-        href: "/organizations",
         label: app.organizationsPage.breadcrumb,
+        icon: LuBuilding2,
+        isCollapsible: true,
         isVisible: isAuthenticated,
-        isActive: pathname === "/organizations",
-      },
-      {
-        href: `/organizations/${organizationSlug}`,
-        label: organization?.name ?? organizationSlug,
-        isVisible: isAuthenticated && !!organizationSlug,
-        isActive: pathname === `/organizations/${organizationSlug}`,
-      },
-      {
-        href: `/organizations/${organizationSlug}/projects`,
-        label: app.projectsPage.breadcrumb,
-        isVisible: isAuthenticated && !!organizationSlug,
-        isActive: pathname === `/organizations/${organizationSlug}/projects`,
-      },
-      {
-        href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
-        label: project?.name ?? projectSlug,
-        isVisible: isAuthenticated && !!organizationSlug && !!projectSlug,
-        isActive:
-          pathname ===
-          `/organizations/${organizationSlug}/projects/${projectSlug}`,
+        children: [
+          {
+            href: "/organizations",
+            label: app.dashboardPage.cta.viewOrganizations.label,
+            isVisible: true,
+            isActive: pathname === "/organizations",
+          },
+          {
+            href: `/organizations/${organizationSlug}`,
+            label: organization?.name ?? organizationSlug,
+            isVisible: !!organizationSlug,
+            isActive: pathname === `/organizations/${organizationSlug}`,
+          },
+          {
+            label: app.projectsPage.breadcrumb,
+            icon: HiOutlineFolder,
+            isCollapsible: true,
+            isVisible: isAuthenticated && !!organizationSlug,
+            children: [
+              {
+                href: `/organizations/${organizationSlug}/projects`,
+                label: app.organizationPage.header.cta.viewAllProjects.label,
+                isVisible: true,
+                isActive:
+                  pathname === `/organizations/${organizationSlug}/projects`,
+              },
+              {
+                href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+                label: project?.name ?? projectSlug,
+                isVisible: !!projectSlug,
+                isActive:
+                  pathname ===
+                  `/organizations/${organizationSlug}/projects/${projectSlug}`,
+              },
+            ],
+          },
+        ],
       },
     ],
     [

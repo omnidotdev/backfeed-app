@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Badge,
   Button,
   Drawer,
   DrawerCloseTrigger,
@@ -16,10 +15,14 @@ import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 
-import { Image, Link } from "components/core";
-import { AccountInformation, ThemeToggle } from "components/layout";
+import { Logo } from "components/core";
+import {
+  AccountInformation,
+  SidebarNavigation,
+  ThemeToggle,
+} from "components/layout";
 import { app } from "lib/config";
-import { useAuth, useRoutes, useViewportSize } from "lib/hooks";
+import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -35,8 +38,6 @@ const HeaderActions = () => {
       useDialogStore({
         type: DialogType.MobileSidebar,
       });
-
-  const routes = useRoutes();
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -100,72 +101,33 @@ const HeaderActions = () => {
         }}
         contentProps={{ boxShadow: "card" }}
       >
-        <DrawerCloseTrigger asChild position="absolute" top={5} right={6}>
-          <Button
-            variant="ghost"
-            bgColor="background.muted"
-            p={1}
-            aria-label="Close Mobile Sidebar"
-          >
-            <Icon src={FiX} />
-          </Button>
-        </DrawerCloseTrigger>
-
-        <Stack p={0} h="full" flex={1} justify="space-between">
-          <Stack mt={24} gap={8} align="center">
-            <Stack gap={3} alignItems="center">
-              <Image
-                src="/img/logo.png"
-                alt={`${app.name} logo`}
-                width={120}
-                height={60}
-                priority
-                // adjust color based on color theme
-                mixBlendMode="difference"
-                filter="brightness(0) invert(1)"
-              />
-
-              <Badge
-                size="sm"
-                fontSize="xs"
-                variant="outline"
-                color="brand.primary"
-                borderColor="brand.primary"
-                px={2}
-              >
-                Beta
-              </Badge>
-            </Stack>
-
-            {!isLoading && (
-              <Flex direction="column" w="full" gap={4}>
-                {routes.map(({ href, label, isActive }) => (
-                  <Link
-                    key={href}
-                    disabled={isActive}
-                    href={href}
-                    role="group"
-                    onClick={() => setIsMobileSidebarOpen(false)}
-                  >
-                    <Button
-                      disabled={isActive}
-                      variant="ghost"
-                      bgColor={{
-                        base: "background.subtle",
-                        _hover: "background.muted",
-                      }}
-                      w="full"
-                      tabIndex={-1}
-                      color={isActive ? "brand.primary" : "inherit"}
-                    >
-                      {label}
-                    </Button>
-                  </Link>
-                ))}
-              </Flex>
-            )}
-
+        <Flex justifyContent="space-between" px={2}>
+          <Flex>
             <ThemeToggle />
+          </Flex>
+
+          <DrawerCloseTrigger asChild>
+            <Button
+              variant="ghost"
+              bgColor="background.muted"
+              p={1}
+              aria-label="Close Mobile Sidebar"
+            >
+              <Icon src={FiX} />
+            </Button>
+          </DrawerCloseTrigger>
+        </Flex>
+
+        <Stack h="full" flex={1} justify="space-between">
+          <Stack mt={4} align="center">
+            <Logo
+              width={60}
+              height={30}
+              flexDirection="column"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            />
+
+            {!isLoading && <SidebarNavigation />}
           </Stack>
 
           {isAuthenticated ? (
