@@ -37,6 +37,7 @@ const ThemeToggle = () => {
       onToggle={toggleTheme}
       toggled={resolvedTheme === "light"}
       css={{
+        p: 2.5,
         "& svg": {
           w: 5,
           h: 5,
