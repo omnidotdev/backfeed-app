@@ -92,6 +92,7 @@ const SidebarNavigation = () => {
                             <Button
                               justifyContent="space-between"
                               variant="ghost"
+                              backgroundColor="background.subtle"
                               w="full"
                               color={isActive ? "brand.primary" : "inherit"}
                             >
