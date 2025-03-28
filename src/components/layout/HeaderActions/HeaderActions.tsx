@@ -101,7 +101,7 @@ const HeaderActions = () => {
         }}
         contentProps={{ boxShadow: "card" }}
       >
-        <Flex justifyContent="space-between" px={2}>
+        <Flex justifyContent="space-between">
           <ThemeToggle />
 
           <DrawerCloseTrigger asChild>
