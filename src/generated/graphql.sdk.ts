@@ -4715,7 +4715,7 @@ export type ProjectBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string } | null };
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name?: string | null } | null };
 
 export type ProjectMetricsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5209,6 +5209,7 @@ export const ProjectBySlugDocument = gql`
     query ProjectBySlug($slug: String!, $organizationId: UUID!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
+    name
   }
 }
     `;
