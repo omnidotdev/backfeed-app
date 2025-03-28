@@ -3,7 +3,7 @@
 import { Flex, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
-import { Link, Logo } from "components/core";
+import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -30,7 +30,7 @@ const Header = () => {
     >
       <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
         <Flex gap={4} alignItems="center">
-          <Logo width={48} height={24} />
+          <LogoLink width={48} />
 
           {!isLoading && !isAuthenticated && (
             <Flex display={{ base: "none", sm: "flex" }}>

@@ -6,13 +6,11 @@ import { app } from "lib/config";
 import type { FlexProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
-  /** Height of the image */
-  height: number;
   /** Width of the image */
   width: number;
 }
 
-const Logo = ({ height, width, ...rest }: Props) => {
+const LogoLink = ({ width, ...rest }: Props) => {
   return (
     <Link href="/">
       <Flex gap={2} alignItems="center" {...rest}>
@@ -20,7 +18,7 @@ const Logo = ({ height, width, ...rest }: Props) => {
           src="/img/logo.png"
           alt={`${app.name} logo`}
           width={width}
-          height={height}
+          height={width / 2}
           priority
           // adjust color based on color theme
           mixBlendMode="difference"
@@ -42,4 +40,4 @@ const Logo = ({ height, width, ...rest }: Props) => {
   );
 };
 
-export default Logo;
+export default LogoLink;

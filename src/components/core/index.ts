@@ -14,7 +14,7 @@ export {
 } from "./DestructiveAction/DestructiveAction";
 export { default as Image } from "./Image/Image";
 export { default as Link } from "./Link/Link";
-export { default as Logo } from "./Logo/Logo";
+export { default as LogoLink } from "./LogoLink/LogoLink";
 export { default as OverflowText } from "./OverflowText/OverflowText";
 export { default as SkeletonArray } from "./SkeletonArray/SkeletonArray";
 export { default as Spinner } from "./Spinner/Spinner";

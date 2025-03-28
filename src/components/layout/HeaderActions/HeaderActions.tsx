@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 
-import { Logo } from "components/core";
+import { LogoLink } from "components/core";
 import {
   AccountInformation,
   SidebarNavigation,
@@ -118,9 +118,8 @@ const HeaderActions = () => {
 
         <Stack h="full" flex={1} justify="space-between">
           <Stack mt={4} align="center">
-            <Logo
+            <LogoLink
               width={60}
-              height={30}
               flexDirection="column"
               onClick={() => setIsMobileSidebarOpen(false)}
             />

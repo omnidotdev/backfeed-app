@@ -26,6 +26,8 @@ import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
+import type { RefObject } from "react";
+
 /**
  * User account information.
  */
@@ -34,7 +36,7 @@ const AccountInformation = () => {
   const { user } = useAuth();
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
-  const userActions = useRef<HTMLDivElement>(null!);
+  const userActions = useRef<HTMLDivElement>(null);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
 
   const { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
@@ -46,7 +48,9 @@ const AccountInformation = () => {
     router.push(`/profile/${user?.hidraId}`);
   };
 
-  useOnClickOutside(userActions, () => setIsMobileProfileOpen(false));
+  useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
+    setIsMobileProfileOpen(false)
+  );
 
   const handleLogout = async () => {
     try {
