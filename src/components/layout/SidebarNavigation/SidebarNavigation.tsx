@@ -69,7 +69,7 @@ const SidebarNavigation = () => {
             <Flex w="full" gap={2}>
               <Divider orientation="vertical" w={7} h="auto" />
 
-              <Stack w="full" flex={1} p={2} pb={0}>
+              <Stack w="full" flex={1} py={2} pb={0}>
                 {children
                   ?.filter(({ isVisible }) => isVisible)
                   .map(
