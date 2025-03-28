@@ -15,17 +15,17 @@ import { FiChevronRight } from "react-icons/fi";
 
 import { Link } from "components/core";
 import { useSidebarNavigationItems } from "lib/hooks";
-
-interface Props {
-  /** Close the mobile sidebar when routing. */
-  setIsMobileSidebarOpen: (isOpen: boolean) => void;
-}
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 /**
  * Sidebar navigation.
  */
-const SidebarNavigation = ({ setIsMobileSidebarOpen }: Props) => {
+const SidebarNavigation = () => {
   const routes = useSidebarNavigationItems();
+  const { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
+    type: DialogType.MobileSidebar,
+  });
 
   const {
     isOpen: isOrganizationContentOpen,
