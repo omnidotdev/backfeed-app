@@ -10,6 +10,9 @@ interface Props extends FlexProps {
   width: number;
 }
 
+/**
+ * Navigation link that displays the Backfeed logo. Routes to the home page.
+ */
 const LogoLink = ({ width, ...rest }: Props) => {
   return (
     <Link href="/">
