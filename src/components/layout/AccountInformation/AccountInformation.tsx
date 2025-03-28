@@ -44,6 +44,7 @@ const AccountInformation = () => {
   });
 
   const handleProfileClick = () => {
+    setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
     router.push(`/profile/${user?.hidraId}`);
   };
