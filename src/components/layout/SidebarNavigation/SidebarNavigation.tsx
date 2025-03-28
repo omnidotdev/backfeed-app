@@ -24,10 +24,10 @@ const SidebarNavigation = () => {
 
   const {
     isOpen: isOrganizationContentOpen,
-    onToggle: toggleisOrganizationContent,
+    onToggle: toggleisOrganizationContentOpen,
   } = useDisclosure();
 
-  const { isOpen: isProjectContentOpen, onToggle: toggleisProjectContent } =
+  const { isOpen: isProjectContentOpen, onToggle: toggleisProjectContentOpen } =
     useDisclosure();
 
   return (
@@ -39,8 +39,8 @@ const SidebarNavigation = () => {
             unmountOnExit
             open={isOrganizationContentOpen}
             onOpenChange={() => {
-              toggleisOrganizationContent();
-              isProjectContentOpen && toggleisProjectContent();
+              toggleisOrganizationContentOpen();
+              isProjectContentOpen && toggleisProjectContentOpen();
             }}
             trigger={
               <Button
@@ -86,7 +86,7 @@ const SidebarNavigation = () => {
                           key={label}
                           unmountOnExit
                           open={isProjectContentOpen}
-                          onOpenChange={toggleisProjectContent}
+                          onOpenChange={toggleisProjectContentOpen}
                           trigger={
                             <Button
                               justifyContent="space-between"
