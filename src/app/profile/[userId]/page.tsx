@@ -1,12 +1,13 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
 import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 export const metadata = {
   title: `${app.profilePage.breadcrumb} | ${app.name}`,
@@ -24,7 +25,7 @@ const ProfilePage = async ({ params }: Props) => {
   const { userId } = await params;
 
   const [session, customer] = await Promise.allSettled([
-    getAuthSession(),
+    auth(),
     polar.customers.getStateExternal({
       externalId: userId,
     }),

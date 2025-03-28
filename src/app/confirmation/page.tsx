@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 
-import { getAuthSession } from "lib/util";
+import { auth } from "auth";
+
+export const dynamic = "force-dynamic";
 
 /**
  * Checkout confirmation page.
  */
 const CheckoutConfirmationPage = async () => {
-  const session = await getAuthSession();
+  const session = await auth();
 
   if (!session) redirect("/");
 
