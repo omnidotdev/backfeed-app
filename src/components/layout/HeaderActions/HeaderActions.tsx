@@ -124,7 +124,11 @@ const HeaderActions = () => {
               onClick={() => setIsMobileSidebarOpen(false)}
             />
 
-            {!isLoading && <SidebarNavigation />}
+            {!isLoading && (
+              <SidebarNavigation
+                setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+              />
+            )}
           </Stack>
 
           {isAuthenticated ? (

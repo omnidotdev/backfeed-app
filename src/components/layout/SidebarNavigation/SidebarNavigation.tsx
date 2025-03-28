@@ -16,10 +16,15 @@ import { FiChevronRight } from "react-icons/fi";
 import { Link } from "components/core";
 import { useSidebarNavigationItems } from "lib/hooks";
 
+interface Props {
+  /** Close the mobile sidebar when routing. */
+  setIsMobileSidebarOpen: (isOpen: boolean) => void;
+}
+
 /**
  * Sidebar navigation.
  */
-const SidebarNavigation = () => {
+const SidebarNavigation = ({ setIsMobileSidebarOpen }: Props) => {
   const routes = useSidebarNavigationItems();
 
   const {
@@ -68,7 +73,12 @@ const SidebarNavigation = () => {
             }
           >
             <Flex w="full" gap={2}>
-              <Divider orientation="vertical" paddingInline={2} ml={2.5} h="auto" />
+              <Divider
+                orientation="vertical"
+                paddingInline={2}
+                ml={2.5}
+                h="auto"
+              />
 
               <Stack w="full" flex={1} py={2} pb={0}>
                 {children
@@ -120,25 +130,31 @@ const SidebarNavigation = () => {
 
                             <Stack w="full" flex={1} p={2}>
                               {children
-                                ?.filter(({ isVisible, href }) => isVisible && !!href)
+                                ?.filter(
+                                  ({ isVisible, href }) => isVisible && !!href
+                                )
                                 .map(({ href, label, isActive }) => (
                                   <Flex key={label} display="block">
-                                      <Link key={label} href={href!}>
-                                        <Button
-                                          disabled={isActive}
-                                          variant="ghost"
-                                          tabIndex={-1}
-                                          w="full"
-                                          justifyContent="left"
-                                          color={
-                                            isActive
-                                              ? "brand.primary"
-                                              : "inherit"
-                                          }
-                                        >
-                                          {label}
-                                        </Button>
-                                      </Link>
+                                    <Link
+                                      key={label}
+                                      href={href!}
+                                      onClick={() =>
+                                        setIsMobileSidebarOpen(false)
+                                      }
+                                    >
+                                      <Button
+                                        disabled={isActive}
+                                        variant="ghost"
+                                        tabIndex={-1}
+                                        w="full"
+                                        justifyContent="left"
+                                        color={
+                                          isActive ? "brand.primary" : "inherit"
+                                        }
+                                      >
+                                        {label}
+                                      </Button>
+                                    </Link>
                                   </Flex>
                                 ))}
                             </Stack>
@@ -147,7 +163,10 @@ const SidebarNavigation = () => {
                       ) : (
                         <Flex key={label} display="block">
                           {href && (
-                            <Link href={href}>
+                            <Link
+                              href={href}
+                              onClick={() => setIsMobileSidebarOpen(false)}
+                            >
                               <Button
                                 disabled={isActive}
                                 variant="ghost"
@@ -167,7 +186,11 @@ const SidebarNavigation = () => {
             </Flex>
           </Collapsible>
         ) : (
-          <Flex key={label} display="block">
+          <Flex
+            key={label}
+            display="block"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          >
             {href && (
               <Link href={href}>
                 <Button
