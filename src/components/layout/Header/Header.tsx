@@ -20,7 +20,7 @@ const Header = () => {
       display="flex"
       w="full"
       h="full"
-      p={2}
+      py={2}
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
       css={css.raw({
         borderBottom: "1px solid",
