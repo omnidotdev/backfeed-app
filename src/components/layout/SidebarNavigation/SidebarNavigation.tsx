@@ -68,7 +68,7 @@ const SidebarNavigation = () => {
             }
           >
             <Flex w="full" gap={2}>
-              <Divider orientation="vertical" w={7} h="auto" />
+              <Divider orientation="vertical" paddingInline={2} ml={2.5} h="auto" />
 
               <Stack w="full" flex={1} py={2} pb={0}>
                 {children
