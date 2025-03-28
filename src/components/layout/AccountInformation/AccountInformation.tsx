@@ -137,7 +137,8 @@ const AccountInformation = () => {
       <Button
         justifyContent="space-between"
         variant="ghost"
-        w="full"
+        outline="1px solid"
+        outlineColor="background.subtle"
         size="xl"
         onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
       >
