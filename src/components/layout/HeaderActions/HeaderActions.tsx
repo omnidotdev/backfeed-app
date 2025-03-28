@@ -95,9 +95,6 @@ const HeaderActions = () => {
             <Icon src={RiMenu3Fill} h={5} w={5} />
           </Button>
         }
-        positionerProps={{
-          width: "80%",
-        }}
         contentProps={{ boxShadow: "card" }}
       >
         <Flex justifyContent="space-between">
