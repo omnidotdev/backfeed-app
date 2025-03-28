@@ -2,32 +2,42 @@
 
 import {
   Button,
-  Divider,
+  Drawer,
+  DrawerCloseTrigger,
   Flex,
   HStack,
   Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
+  Stack,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
-import { useMediaQuery } from "usehooks-ts";
 
-import { AccountInformation, ThemeToggle } from "components/layout";
+import { LogoLink } from "components/core";
+import {
+  AccountInformation,
+  SidebarNavigation,
+  ThemeToggle,
+} from "components/layout";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useViewportSize } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 /**
  * Header actions.
  */
 const HeaderActions = () => {
-  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the render state of the menu
-  const isSmallViewport = useMediaQuery("(min-width: 40em)");
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const router = useRouter(),
-    { isAuthenticated, isLoading } = useAuth();
+    { isAuthenticated, isLoading } = useAuth(),
+    { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =
+      useDialogStore({
+        type: DialogType.MobileSidebar,
+      });
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
@@ -36,61 +46,96 @@ const HeaderActions = () => {
     router.push(signUpUrl);
   };
 
+  useEffect(() => {
+    if (isSmallViewport) {
+      setIsMobileSidebarOpen(false);
+    }
+  }, [isSmallViewport, setIsMobileSidebarOpen]);
+
   if (isLoading) return null;
+
+  if (isSmallViewport) {
+    return (
+      <Flex alignItems="center" gap={4}>
+        <ThemeToggle />
+
+        {isAuthenticated ? (
+          <AccountInformation />
+        ) : (
+          <HStack>
+            <Button variant="outline" onClick={() => signIn("omni")}>
+              {app.auth.signIn.label}
+            </Button>
+
+            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+          </HStack>
+        )}
+      </Flex>
+    );
+  }
 
   return (
     <Flex alignItems="center" gap={4}>
       <ThemeToggle />
 
-      {isAuthenticated ? (
-        <AccountInformation />
-      ) : isSmallViewport ? (
-        <HStack>
-          <Button onClick={() => signIn("omni")} variant="outline">
-            {app.auth.signIn.label}
+      <Drawer
+        open={isMobileSidebarOpen}
+        onOpenChange={({ open }) => {
+          setIsMobileSidebarOpen(open);
+        }}
+        trigger={
+          <Button
+            variant="ghost"
+            bgColor={{
+              base: "background.subtle",
+              _hover: "background.muted/80",
+            }}
+            p={0}
+          >
+            <Icon src={RiMenu3Fill} h={5} w={5} />
           </Button>
+        }
+        contentProps={{ boxShadow: "card" }}
+      >
+        <Flex justifyContent="space-between">
+          <ThemeToggle />
 
-          <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-        </HStack>
-      ) : (
-        // TODO: convert this to a drawer https://linear.app/omnidev/issue/OMNI-238/convert-menu-in-headeractions-to-a-drawer-for-mobile-navigation
-        <Menu
-          unmountOnExit
-          trigger={
-            <Button variant="icon">
-              <Icon src={RiMenu3Fill} />
+          <DrawerCloseTrigger asChild>
+            <Button
+              variant="ghost"
+              bgColor="background.muted"
+              p={1}
+              aria-label="Close Mobile Sidebar"
+            >
+              <Icon src={FiX} />
             </Button>
-          }
-          positioning={{
-            shift: 32,
-          }}
-        >
-          <MenuItemGroup minW={32}>
-            {!isLoading && !isAuthenticated && (
-              <>
-                <MenuItem value="pricing" asChild>
-                  <Button
-                    onClick={() => router.push("/pricing")}
-                    variant="ghost"
-                  >
-                    {app.header.routes.pricing.label}
-                  </Button>
-                </MenuItem>
+          </DrawerCloseTrigger>
+        </Flex>
 
-                <Divider my={1} />
-              </>
-            )}
+        <Stack h="full" flex={1} justify="space-between">
+          <Stack mt={4} align="center">
+            <LogoLink
+              width={60}
+              flexDirection="column"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            />
 
-            <MenuItem value="signIn" onClick={() => signIn("omni")} asChild>
-              <Button variant="outline">{app.auth.signIn.label}</Button>
-            </MenuItem>
+            {!isLoading && <SidebarNavigation />}
+          </Stack>
 
-            <MenuItem value="signUp" onClick={handleSignUp} asChild>
-              <Button>{app.auth.signUp.label}</Button>
-            </MenuItem>
-          </MenuItemGroup>
-        </Menu>
-      )}
+          {isAuthenticated ? (
+            <AccountInformation />
+          ) : (
+            <Stack>
+              <Button variant="outline" onClick={() => signIn("omni")}>
+                {app.auth.signIn.label}
+              </Button>
+
+              <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+            </Stack>
+          )}
+        </Stack>
+      </Drawer>
     </Flex>
   );
 };
