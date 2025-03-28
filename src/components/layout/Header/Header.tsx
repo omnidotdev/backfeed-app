@@ -1,9 +1,9 @@
 "use client";
 
-import { Badge, Flex, HStack, css, sigil } from "@omnidev/sigil";
+import { Flex, css, sigil } from "@omnidev/sigil";
 import { usePathname } from "next/navigation";
 
-import { Image, Link } from "components/core";
+import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -28,32 +28,9 @@ const Header = () => {
         backgroundColor: "background.default",
       })}
     >
-      <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
+      <Flex align="center" justify="space-between" w="full" mx="auto" px={3}>
         <Flex gap={4} alignItems="center">
-          <Link href="/">
-            <HStack gap={2} alignItems="center">
-              <Image
-                src="/img/logo.png"
-                alt={`${app.name} logo`}
-                width={48}
-                height={24}
-                priority
-                // adjust color based on color theme
-                mixBlendMode="difference"
-                filter="brightness(0) invert(1)"
-              />
-              <Badge
-                size="sm"
-                fontSize="xs"
-                variant="outline"
-                color="brand.primary"
-                borderColor="brand.primary"
-                px={2}
-              >
-                Beta
-              </Badge>
-            </HStack>
-          </Link>
+          <LogoLink width={48} />
 
           {!isLoading && !isAuthenticated && (
             <Flex display={{ base: "none", sm: "flex" }}>

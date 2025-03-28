@@ -10,13 +10,13 @@ import {
 } from "@omnidev/sigil";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useLocalStorage, useMediaQuery } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ManagementNavigation } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDebounceValue } from "lib/hooks";
+import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -26,8 +26,7 @@ import type { PropsWithChildren } from "react";
  * Sidebar for organization management. Used for navigation between organization management pages.
  */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
-  // Used in favor of `useBreakpointValue` as the fallback to `base` breaks logic for initializing the open state of the sidebar
-  const isLargeViewport = useMediaQuery("(min-width: 64em)");
+  const isLargeViewport = useViewportSize({ minWidth: "64em" });
 
   const segment = useSelectedLayoutSegment();
 
@@ -80,6 +79,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   return (
     <>
+      {/* TODO: extract ternary part into a separate component. Use early returns there, and import above to separate logic from rendering. */}
       {isLargeViewport ? (
         <Stack
           ref={() => {
@@ -150,7 +150,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         <HStack
           position="sticky"
           top="header"
-          zIndex="sticky"
+          zIndex="foreground"
           py={2}
           ml={{ base: 0, lg: -4 }}
           minH={14}
