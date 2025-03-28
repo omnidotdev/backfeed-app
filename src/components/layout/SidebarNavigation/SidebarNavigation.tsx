@@ -41,6 +41,7 @@ const SidebarNavigation = () => {
         isCollapsible ? (
           <Collapsible
             key={label}
+            defaultOpen={true}
             unmountOnExit
             open={isOrganizationContentOpen}
             onOpenChange={() => {
@@ -94,6 +95,7 @@ const SidebarNavigation = () => {
                     }) =>
                       isCollapsible ? (
                         <Collapsible
+                          defaultOpen={true}
                           key={label}
                           unmountOnExit
                           open={isProjectContentOpen}
