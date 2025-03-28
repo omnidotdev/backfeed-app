@@ -91,7 +91,6 @@ const HeaderActions = () => {
               _hover: "background.muted/80",
             }}
             p={0}
-            onClick={() => setIsMobileSidebarOpen(true)}
           >
             <Icon src={RiMenu3Fill} h={5} w={5} />
           </Button>
