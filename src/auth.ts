@@ -72,37 +72,19 @@ declare module "next-auth" {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
-  trustHost: true,
   providers: [
     {
       client: {
         authorization_signed_response_alg: "HS256",
         id_token_signed_response_alg: "HS256",
       },
-      id: "omni", // signIn("my-provider") and will be part of the callback URL
-      name: "Omni", // optional, used on the default login page as the button text.
-      type: "oidc", // or "oauth" for OAuth 2 providers
-      // TODO fix, see if you can change in better auth, the actual endpoints are at /api/auth
-      issuer: "https://localhost:8000/api/auth", // to infer the .well-known/openid-configuration URL
-      clientId: "nkfoakxllyzfpzvomfvtffulupckzxvs", // from the provider's dashboard
-      clientSecret: "nuojwjeiknbmlolfgczetmbezwcnrbmn", // from the provider's dashboard
-      // authorization: { params: { scope: "openid profile email" } },
-      // authorization: {
-      //   url: "https://localhost:8000/api/auth/oauth2/authorize",
-      //   params: {
-      //     // ?
-      //     // redirect_uri: "https://localhost:3000/api/auth/callback/omni",
-      //     scope: "openid profile email",
-      //   },
-      // },
-      checks: ["none"],
-      // token: {
-      //   url: "https://localhost:8000/api/auth/oauth2/token",
-      // },
-      // userinfo: {
-      //   url: "https://localhost:8000/api/auth/oauth2/userinfo",
-      // },
-      // jwks_endpoint: "https://localhost:8000/api/auth/jwks",
+      id: "omni",
+      name: "Omni",
+      type: "oidc",
+      issuer: "https://localhost:8000/api/auth",
+      // TODO env vars
+      clientId: "SmYLkGpcMrCwPUBJTIBAQtvZIebwavsX",
+      clientSecret: "hjsQbmKsRVSNEenGbuQvmTpQTgvPOMCt",
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
@@ -110,47 +92,14 @@ export const { handlers, auth } = NextAuth({
         logo: "/img/omni-logo.png",
       },
     },
-    // Keycloak({
-    //   clientId: process.env.AUTH_KEYCLOAK_ID!,
-    //   clientSecret: process.env.AUTH_KEYCLOAK_SECRET!,
-    //   issuer: process.env.AUTH_KEYCLOAK_ISSUER!,
-    //   // id: "omni",
-    //   // name: "Omni",
-    //   id: "keycloak",
-    //   name: "Keycloak",
-    //   style: {
-    //     // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
-    //     brandColor: token("colors.brand.primary.500"),
-    //     // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
-    //     logo: "/img/omni-logo.png",
-    //   },
-    // }),
   ],
-  events: {
-    async signIn(message) {
-      console.log("Event: SignIn", message);
-    },
-  },
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
     // verify authentication within middleware
     authorized: async ({ auth }) => !!auth,
-    signIn: async ({ user, account, profile }) => {
-      console.log("SignIn Callback Triggered");
-      console.log("Account in signIn:", account);
-      return true; // Return true to allow sign-in
-    },
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      console.log("JWT Callback Triggered");
-      console.log("Account:", account);
-      if (account?.id_token) {
-        console.log("ID Token:", account.id_token);
-      } else {
-        console.log("No ID Token in account object");
-      }
-
-      // Account is present on fresh login. We can set additional claims on the token given this information.
+      // account is present on fresh login. We can set additional claims on the token given this information.
       if (account) {
         token.sub = profile?.sub!;
         token.preferred_username = profile?.preferred_username!;
