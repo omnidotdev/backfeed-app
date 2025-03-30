@@ -153,7 +153,7 @@ export const { handlers, auth } = NextAuth({
           expires_at: Math.floor(Date.now() / ms("1s") + newTokens.expires_in),
         };
       } catch (err) {
-        console.error(error);
+        console.error(err);
         token.error = "RefreshTokenError";
 
         return token;
