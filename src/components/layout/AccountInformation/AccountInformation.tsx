@@ -50,7 +50,7 @@ const AccountInformation = () => {
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
-    setIsMobileProfileOpen(false)
+    setIsMobileProfileOpen(false),
   );
 
   const handleLogout = async () => {
@@ -62,7 +62,7 @@ const AccountInformation = () => {
       await signOut();
 
       redirect("/");
-    } catch (error) {
+    } catch (err) {
       if (isDevEnv) {
         console.error(error);
       }
