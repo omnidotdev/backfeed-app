@@ -60,7 +60,7 @@ interface UpdatedTokens {
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   const graphqlClient = new GraphQLClient(
     process.env.NEXT_PUBLIC_API_BASE_URL!,
-    { headers }
+    { headers },
   );
 
   return getSdk(graphqlClient);
@@ -83,8 +83,8 @@ export const { handlers, auth } = NextAuth({
       type: "oidc",
       issuer: "https://localhost:8000/api/auth",
       // TODO env vars
-      clientId: "IdogojmVVBHkwVmqTvuXATWHHxQDTPlF",
-      clientSecret: "bUIyCKTiVTdFryBnWQhKjFGbniRrNbBl",
+      clientId: "eSphfHoVTrmRqwsBAttPHBtQsbFRhkwJ",
+      clientSecret: "oGhxkkvJCPjOmezpQVGvLJDBtPJRyQjb",
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
@@ -124,6 +124,7 @@ export const { handlers, auth } = NextAuth({
 
       try {
         const response = await fetch(
+          // TODO update, no longer using Keycloak
           `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
           {
             method: "POST",
@@ -136,7 +137,7 @@ export const { handlers, auth } = NextAuth({
               grant_type: "refresh_token",
               refresh_token: token.refresh_token,
             }),
-          }
+          },
         );
 
         const tokensOrError = await response.json();
