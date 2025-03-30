@@ -186,9 +186,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
           },
         });
       } catch (err) {
-        if (isDevEnv) {
-          console.error(error);
-        }
+        if (isDevEnv) console.error(err);
       }
     },
   });

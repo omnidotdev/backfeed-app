@@ -63,9 +63,7 @@ const AccountInformation = () => {
 
       redirect("/");
     } catch (err) {
-      if (isDevEnv) {
-        console.error(error);
-      }
+      if (isDevEnv) console.error(err);
     }
   };
 
