@@ -40,7 +40,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
         totalCount: data?.organizations?.totalCount,
         organizations: data?.organizations?.nodes,
       }),
-    }
+    },
   );
 
   const organizations = data?.organizations;

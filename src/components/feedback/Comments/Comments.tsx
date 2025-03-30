@@ -40,7 +40,7 @@ const Comments = ({ feedbackId }: Props) => {
     {
       enabled: !!user?.hidraId,
       select: (data) => data?.userByHidraId?.username,
-    }
+    },
   );
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
@@ -55,7 +55,7 @@ const Comments = ({ feedbackId }: Props) => {
           lastPage?.comments?.pageInfo?.hasNextPage
             ? { after: lastPage?.comments?.pageInfo?.endCursor }
             : undefined,
-      }
+      },
     );
 
   const pendingComments = useMutationState<CommentFragment>({
@@ -82,7 +82,7 @@ const Comments = ({ feedbackId }: Props) => {
   const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
   const comments =
     data?.pages?.flatMap((page) =>
-      page?.comments?.edges?.map((edge) => edge?.node)
+      page?.comments?.edges?.map((edge) => edge?.node),
     ) ?? [];
 
   const allComments = [...pendingComments, ...comments];

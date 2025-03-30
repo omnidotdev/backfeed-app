@@ -26,7 +26,7 @@ const ThemeToggle = () => {
     {
       enabled: isClient,
     },
-    [isClient, toggleTheme]
+    [isClient, toggleTheme],
   );
 
   if (!isClient) return null;

@@ -59,7 +59,7 @@ const CommentCard = ({
     },
     {
       select: (data) => data.organizationBySlug?.rowId,
-    }
+    },
   );
 
   const { isAdmin } = useOrganizationMembership({

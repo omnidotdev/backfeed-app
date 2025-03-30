@@ -94,9 +94,9 @@ const CreateComment = () => {
               description:
                 app.feedbackPage.comments.createComment.error.description,
             },
-          }
+          },
         ),
-    }
+    },
   );
 
   const messageLength = useStore(store, (store) => store.values.message.length);

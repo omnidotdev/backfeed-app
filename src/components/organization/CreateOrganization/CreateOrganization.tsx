@@ -25,15 +25,16 @@ const baseSchema = z.object({
     .string()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalidFormat
+      app.dashboardPage.cta.newOrganization.organizationSlug.error
+        .invalidFormat,
     )
     .min(
       3,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength,
     )
     .max(
       50,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength
+      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength,
     ),
 });
 
@@ -57,7 +58,7 @@ const createOrganizationSchema = baseSchema.superRefine(
         path: ["slug"],
       });
     }
-  }
+  },
 );
 
 /**
@@ -87,14 +88,14 @@ const CreateOrganization = () => {
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen]
+    [user, isOpen, isCreateProjectDialogOpen],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSuccess: (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
 
         setIsOpen(false);
@@ -136,7 +137,7 @@ const CreateOrganization = () => {
             description:
               app.dashboardPage.cta.newOrganization.action.error.description,
           },
-        }
+        },
       ),
   });
 

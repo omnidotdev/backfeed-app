@@ -46,7 +46,7 @@ const useSidebarNavigationItems = () => {
       {
         enabled: isAuthenticated && !!organizationSlug,
         select: (data) => data?.organizationBySlug,
-      }
+      },
     ),
     { data: project } = useProjectBySlugQuery(
       {
@@ -56,7 +56,7 @@ const useSidebarNavigationItems = () => {
       {
         enabled: isAuthenticated && !!projectSlug,
         select: (data) => data?.projectBySlugAndOrganizationId,
-      }
+      },
     );
 
   const routes = useMemo<NavItem[]>(
@@ -118,7 +118,7 @@ const useSidebarNavigationItems = () => {
       pathname,
       project,
       projectSlug,
-    ]
+    ],
   );
 
   return routes.filter((route) => route.isVisible);

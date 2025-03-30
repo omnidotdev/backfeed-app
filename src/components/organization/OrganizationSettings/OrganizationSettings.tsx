@@ -56,7 +56,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
     },
     {
       select: (data) => data.organizationBySlug,
-    }
+    },
   );
 
   const { data: numberOfOwners } = useMembersQuery(
@@ -67,7 +67,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
     {
       enabled: !!organization,
       select: (data) => data.members?.totalCount,
-    }
+    },
   );
 
   const { data: members } = useMembersQuery(
@@ -82,7 +82,7 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
           label: `${member?.user?.firstName} ${member?.user?.lastName}`,
           value: member?.rowId,
         })),
-    }
+    },
   );
 
   const { isOwner, isMember, membershipId } = useOrganizationMembership({

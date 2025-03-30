@@ -46,7 +46,7 @@ const OrganizationMetrics = ({ organizationId }: Props) => {
         totalFeedback: data?.posts?.totalCount,
         activeUsers: data?.members?.totalCount,
       }),
-    }
+    },
   );
 
   const ORGANIZATION_METRICS: OrganizationMetric[] = [

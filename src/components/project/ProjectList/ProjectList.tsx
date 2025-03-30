@@ -30,7 +30,7 @@ const ProjectList = () => {
     },
     {
       select: (data) => data?.organizationBySlug?.rowId,
-    }
+    },
   );
 
   const { isOwner } = useOrganizationMembership({
@@ -57,7 +57,7 @@ const ProjectList = () => {
         totalCount: data?.projects?.totalCount,
         projects: data?.projects?.nodes,
       }),
-    }
+    },
   );
 
   const projects = data?.projects;

@@ -28,12 +28,12 @@ const baseSchema = z.object({
     .string()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
+      updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat,
     )
     .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
     .max(
       50,
-      updateOrganizationDetails.fields.organizationSlug.errors.maxLength
+      updateOrganizationDetails.fields.organizationSlug.errors.maxLength,
     ),
 });
 
@@ -63,7 +63,7 @@ const UpdateOrganization = () => {
           path: ["slug"],
         });
       }
-    }
+    },
   );
 
   const { user } = useAuth();
@@ -74,7 +74,7 @@ const UpdateOrganization = () => {
     },
     {
       select: (data) => data.organizationBySlug,
-    }
+    },
   );
 
   const { isAdmin } = useOrganizationMembership({
@@ -91,7 +91,7 @@ const UpdateOrganization = () => {
       });
 
       router.replace(
-        `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
+        `/organizations/${data?.updateOrganization?.organization?.slug}/settings`,
       );
 
       reset();

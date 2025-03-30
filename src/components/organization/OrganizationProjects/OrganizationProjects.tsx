@@ -40,7 +40,7 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
     },
     {
       select: (data) => data?.organizationBySlug?.projects?.nodes,
-    }
+    },
   );
 
   return (

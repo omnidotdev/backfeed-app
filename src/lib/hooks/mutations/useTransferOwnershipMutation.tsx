@@ -63,7 +63,7 @@ const useTransferOwnershipMutation = ({
           useOrganizationRoleQuery.getKey({
             userId: user?.rowId!,
             organizationId: organizationId!,
-          })
+          }),
         ) as OrganizationRoleQuery;
 
         queryClient.setQueryData(
@@ -76,7 +76,7 @@ const useTransferOwnershipMutation = ({
               ...snapshot?.memberByUserIdAndOrganizationId,
               role: Role.Member,
             },
-          }
+          },
         );
       },
       onSettled: () => {
@@ -88,7 +88,7 @@ const useTransferOwnershipMutation = ({
         });
       },
       ...mutationOptions,
-    }
+    },
   );
 };
 

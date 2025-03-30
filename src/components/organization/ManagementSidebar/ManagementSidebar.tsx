@@ -38,12 +38,12 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     },
     {
       select: (data) => data?.organizationBySlug,
-    }
+    },
   );
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "organization-management-sidebar",
-    true
+    true,
   );
 
   const onToggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
