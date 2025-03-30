@@ -22,18 +22,18 @@ export const POST = async () => {
             client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
             refresh_token: session.refreshToken,
           }),
-        },
+        }
       );
     }
 
     return Response.json(
       { message: "Successfully logged out of IDP" },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (err) {
     return Response.json(
       { error: "Error logging out of IDP" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
