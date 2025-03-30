@@ -30,7 +30,7 @@ const baseSchema = z.object({
     .string()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      updateProjectDetails.fields.projectSlug.errors.invalidFormat,
+      updateProjectDetails.fields.projectSlug.errors.invalidFormat
     )
     .min(3, updateProjectDetails.fields.projectSlug.errors.minLength)
     .max(50, updateProjectDetails.fields.projectSlug.errors.maxLength),
@@ -82,7 +82,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
     {
       placeholderData: keepPreviousData,
       select: (data) => data.projects?.nodes?.[0],
-    },
+    }
   );
 
   // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
@@ -91,7 +91,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
       const { name, description, slug } = variables.patch;
 
       const snapshot = queryClient.getQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
+        useProjectQuery.getKey({ projectSlug, organizationSlug })
       ) as ProjectQuery;
 
       const project = snapshot.projects?.nodes?.[0];
@@ -110,7 +110,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
               },
             ],
           },
-        },
+        }
       );
 
       // ! NB: if the slug has been updated, optimistically update the query data for that slug
@@ -129,7 +129,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
                 },
               ],
             },
-          },
+          }
         );
       }
     },
@@ -155,7 +155,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
         }
 
         router.replace(
-          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`,
+          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`
         );
 
         reset();

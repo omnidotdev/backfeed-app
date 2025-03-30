@@ -1,7 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 import ms from "ms";
 import NextAuth from "next-auth";
-import Keycloak from "next-auth/providers/keycloak";
 
 // import required for `next-auth/jwt` module augmentation: https://github.com/nextauthjs/next-auth/issues/9571#issuecomment-2143363518
 import "next-auth/jwt";
@@ -12,27 +11,6 @@ import { isDevEnv } from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
-
-interface UpdatedTokens {
-  /** New access token */
-  access_token: string;
-  /** Expiration time in seconds */
-  expires_in: number;
-  /** New refresh token */
-  refresh_token: string;
-}
-
-/**
- * GraphQL client SDK.
- */
-const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
-  const graphqlClient = new GraphQLClient(
-    process.env.NEXT_PUBLIC_API_BASE_URL!,
-    { headers },
-  );
-
-  return getSdk(graphqlClient);
-};
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
@@ -67,11 +45,33 @@ declare module "next-auth" {
   }
 }
 
+interface UpdatedTokens {
+  /** New access token. */
+  access_token: string;
+  /** Expiration time in seconds. */
+  expires_in: number;
+  /** New refresh token. */
+  refresh_token: string;
+}
+
+/**
+ * GraphQL client SDK.
+ */
+const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
+  const graphqlClient = new GraphQLClient(
+    process.env.NEXT_PUBLIC_API_BASE_URL!,
+    { headers },
+  );
+
+  return getSdk(graphqlClient);
+};
+
 /**
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
+  trustHost: true,
   providers: [
     {
       client: {
@@ -83,8 +83,8 @@ export const { handlers, auth } = NextAuth({
       type: "oidc",
       issuer: "https://localhost:8000/api/auth",
       // TODO env vars
-      clientId: "SmYLkGpcMrCwPUBJTIBAQtvZIebwavsX",
-      clientSecret: "hjsQbmKsRVSNEenGbuQvmTpQTgvPOMCt",
+      clientId: "IdogojmVVBHkwVmqTvuXATWHHxQDTPlF",
+      clientSecret: "bUIyCKTiVTdFryBnWQhKjFGbniRrNbBl",
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
@@ -120,9 +120,7 @@ export const { handlers, auth } = NextAuth({
         return token;
       }
 
-      if (Date.now() < token.expires_at * ms("1s")) {
-        return token;
-      }
+      if (Date.now() < token.expires_at * ms("1s")) return token;
 
       try {
         const response = await fetch(
@@ -153,7 +151,7 @@ export const { handlers, auth } = NextAuth({
           refresh_token: newTokens.refresh_token,
           expires_at: Math.floor(Date.now() / ms("1s") + newTokens.expires_in),
         };
-      } catch (error) {
+      } catch (err) {
         console.error(error);
         token.error = "RefreshTokenError";
 

@@ -50,7 +50,7 @@ const AccountInformation = () => {
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
-    setIsMobileProfileOpen(false),
+    setIsMobileProfileOpen(false)
   );
 
   const handleLogout = async () => {
