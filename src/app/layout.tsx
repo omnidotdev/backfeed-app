@@ -5,7 +5,6 @@ import Providers from "app/providers";
 import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
-import { getAuthSession } from "lib/util";
 import { mswNodeServer } from "test/e2e/util";
 
 import type { Metadata } from "next";
@@ -37,8 +36,6 @@ export const metadata: Metadata = {
  * Root layout.
  */
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await getAuthSession();
-
   const [isBasicTier, isTeamTier] = await Promise.all([
     hasBasicTierPrivileges(),
     hasTeamTierPrivileges(),
@@ -52,7 +49,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
           <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
         )}
 
-        <Providers session={session}>
+        <Providers>
           <Layout isBasicTier={isBasicTier} isTeamTier={isTeamTier}>
             {children}
           </Layout>

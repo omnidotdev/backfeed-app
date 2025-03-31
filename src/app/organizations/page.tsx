@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { LuCirclePlus } from "react-icons/lu";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationFilters, OrganizationList } from "components/organization";
 import {
@@ -13,12 +14,14 @@ import {
 import { app } from "lib/config";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
@@ -33,7 +36,7 @@ interface Props {
  * Organizations overview page.
  */
 const OrganizationsPage = async ({ searchParams }: Props) => {
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 

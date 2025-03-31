@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
+import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import {
@@ -13,18 +14,20 @@ import {
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
 
+export const dynamic = "force-dynamic";
+
 /**
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
 const HomePage = async () => {
-  const session = await getAuthSession();
+  const session = await auth();
 
   if (!session) return <LandingPage />;
 

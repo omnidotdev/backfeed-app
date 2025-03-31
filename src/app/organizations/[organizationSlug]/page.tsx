@@ -2,6 +2,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   OrganizationActions,
@@ -18,7 +19,7 @@ import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
@@ -50,7 +51,7 @@ interface Props {
 const OrganizationPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
