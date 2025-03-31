@@ -2,7 +2,7 @@
 # NB: standard Next.js environment variables are not injected here, they are intended to be injected by the platform (Kubernetes, cloud provider, or similar)
 # ! NB: Next.js `standalone` mode must be enabled (https://github.com/vercel/next.js/tree/canary/examples/with-docker#in-existing-projects)
 
-FROM oven/bun AS base
+FROM oven/bun:1.2.5 AS base
 
 # install dependencies only when needed
 FROM base AS deps
@@ -11,8 +11,6 @@ WORKDIR /app
 
 # install dependencies
 COPY package.json bun.lock panda.config.ts ./
-# `apt` commands below are a workaround for blocked builds on some systems: https://github.com/oven-sh/bun/issues/9807#issuecomment-2218837172
-RUN apt update && apt install python3 python3-pip make g++ -y
 RUN bun install --frozen-lockfile
 
 # rebuild the source code only when needed
