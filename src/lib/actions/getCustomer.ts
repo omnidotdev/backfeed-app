@@ -1,13 +1,13 @@
 "use server";
 
+import { auth } from "auth";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/util";
 
 /**
  * Server action to get customer details.
  */
 const getCustomer = async (userId: string) => {
-  const session = await getAuthSession();
+  const session = await auth();
 
   if (!session) {
     throw new Error("Unauthorized");
