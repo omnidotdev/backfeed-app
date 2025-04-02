@@ -4,6 +4,7 @@ import { Dialog, sigil, HStack, Button } from "@omnidev/sigil";
 import { z } from "zod";
 import { useState } from "react";
 
+import { useCreateInvitationMutation } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
@@ -12,7 +13,6 @@ import { toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { OrganizationInvitation } from "components/organization";
-import { useCreateInvitationMutation } from "generated/graphql";
 
 const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
 
@@ -46,7 +46,9 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
   }: OrganizationInvitation) => {
     setIsPending(true);
     try {
-      const response = await fetch("/api/invite", {
+      // TODO: check for current invitations before sending so duplicates are not sent.
+
+      await fetch("/api/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,19 +59,16 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
         }),
       });
 
-      const result = await response.json();
-
       await addInvitation({
         input: {
           invitation: {
             email: recipientEmail,
             organizationId,
-            resendId: result.data.id,
           },
         },
       });
     } catch (error) {
-      console.error("Error resending email:", error);
+      console.error("Error sending email:", error);
     } finally {
       setIsPending(false);
     }

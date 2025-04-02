@@ -37,22 +37,22 @@ const ProfilePage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
-  if (customer.status !== "rejected") {
-    await queryClient.prefetchQuery({
-      queryKey: ["Subscription", userId],
-      queryFn: async () => await getSubscription(userId),
-    });
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: useInvitationsQuery.getKey({
-      email: session.value?.user?.email!,
+  await Promise.all([
+    // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
+    customer.status !== "rejected" &&
+      queryClient.prefetchQuery({
+        queryKey: ["Subscription", userId],
+        queryFn: async () => await getSubscription(userId),
+      }),
+    queryClient.prefetchQuery({
+      queryKey: useInvitationsQuery.getKey({
+        email: session.value?.user?.email!,
+      }),
+      queryFn: useInvitationsQuery.fetcher({
+        email: session.value?.user?.email!,
+      }),
     }),
-    queryFn: useInvitationsQuery.fetcher({
-      email: session.value?.user?.email!,
-    }),
-  });
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

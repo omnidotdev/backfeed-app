@@ -1235,11 +1235,9 @@ export type Invitation = {
   __typename?: 'Invitation';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   email: Scalars['String']['output'];
-  hidraId?: Maybe<Scalars['UUID']['output']>;
   /** Reads a single `Organization` that is related to this `Invitation`. */
   organization?: Maybe<Organization>;
   organizationId: Scalars['UUID']['output'];
-  resendId?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
@@ -1268,12 +1266,8 @@ export type InvitationCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `email` field. */
   email?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `hidraId` field. */
-  hidraId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `resendId` field. */
-  resendId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1307,9 +1301,7 @@ export type InvitationConnectionGroupedAggregatesArgs = {
 export type InvitationDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   email?: InputMaybe<BigIntFilter>;
-  hidraId?: InputMaybe<BigIntFilter>;
   organizationId?: InputMaybe<BigIntFilter>;
-  resendId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
 };
@@ -1320,12 +1312,8 @@ export type InvitationDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of email across the matching connection */
   email?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of hidraId across the matching connection */
-  hidraId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of organizationId across the matching connection */
   organizationId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of resendId across the matching connection */
-  resendId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -1349,8 +1337,6 @@ export type InvitationFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `email` field. */
   email?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `hidraId` field. */
-  hidraId?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<InvitationFilter>;
   /** Checks for any expressions in this list. */
@@ -1359,8 +1345,6 @@ export type InvitationFilter = {
   organization?: InputMaybe<OrganizationFilter>;
   /** Filter by the object’s `organizationId` field. */
   organizationId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `resendId` field. */
-  resendId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -1373,9 +1357,7 @@ export enum InvitationGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Email = 'EMAIL',
-  HidraId = 'HIDRA_ID',
   OrganizationId = 'ORGANIZATION_ID',
-  ResendId = 'RESEND_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -1445,9 +1427,7 @@ export type InvitationHavingVarianceSampleInput = {
 export type InvitationInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   email: Scalars['String']['input'];
-  hidraId?: InputMaybe<Scalars['UUID']['input']>;
   organizationId: Scalars['UUID']['input'];
-  resendId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -1458,15 +1438,11 @@ export enum InvitationOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   EmailAsc = 'EMAIL_ASC',
   EmailDesc = 'EMAIL_DESC',
-  HidraIdAsc = 'HIDRA_ID_ASC',
-  HidraIdDesc = 'HIDRA_ID_DESC',
   Natural = 'NATURAL',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ResendIdAsc = 'RESEND_ID_ASC',
-  ResendIdDesc = 'RESEND_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -1477,9 +1453,7 @@ export enum InvitationOrderBy {
 export type InvitationPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
-  hidraId?: InputMaybe<Scalars['UUID']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
-  resendId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -2195,12 +2169,8 @@ export enum OrganizationOrderBy {
   InvitationsDistinctCountCreatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_DESC',
   InvitationsDistinctCountEmailAsc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_ASC',
   InvitationsDistinctCountEmailDesc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_DESC',
-  InvitationsDistinctCountHidraIdAsc = 'INVITATIONS_DISTINCT_COUNT_HIDRA_ID_ASC',
-  InvitationsDistinctCountHidraIdDesc = 'INVITATIONS_DISTINCT_COUNT_HIDRA_ID_DESC',
   InvitationsDistinctCountOrganizationIdAsc = 'INVITATIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
   InvitationsDistinctCountOrganizationIdDesc = 'INVITATIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
-  InvitationsDistinctCountResendIdAsc = 'INVITATIONS_DISTINCT_COUNT_RESEND_ID_ASC',
-  InvitationsDistinctCountResendIdDesc = 'INVITATIONS_DISTINCT_COUNT_RESEND_ID_DESC',
   InvitationsDistinctCountRowIdAsc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_ASC',
   InvitationsDistinctCountRowIdDesc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_DESC',
   InvitationsDistinctCountUpdatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -4922,7 +4892,7 @@ export type CreateInvitationMutationVariables = Exact<{
 }>;
 
 
-export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', email: string, hidraId?: string | null, organizationId: string, resendId?: string | null } | null } | null };
+export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', email: string, organizationId: string } | null } | null };
 
 export type DeleteInvitationMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -5108,7 +5078,7 @@ export type InvitationsQueryVariables = Exact<{
 }>;
 
 
-export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', createdAt?: Date | null, email: string, hidraId?: string | null, organizationId: string, resendId?: string | null, rowId: string, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null> } | null };
+export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null> } | null };
 
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -5337,9 +5307,7 @@ export const CreateInvitationDocument = gql`
   createInvitation(input: $input) {
     invitation {
       email
-      hidraId
       organizationId
-      resendId
     }
   }
 }
@@ -5565,15 +5533,13 @@ export const InvitationsDocument = gql`
   invitations(orderBy: CREATED_AT_DESC, condition: {email: $email}) {
     totalCount
     nodes {
-      createdAt
+      rowId
       email
-      hidraId
       organizationId
       organization {
         name
       }
-      resendId
-      rowId
+      createdAt
       updatedAt
     }
   }

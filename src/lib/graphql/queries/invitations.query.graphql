@@ -2,15 +2,13 @@ query Invitations($email: String!) {
   invitations(orderBy: CREATED_AT_DESC, condition: { email: $email }) {
     totalCount
     nodes {
-      createdAt
+      rowId
       email
-      hidraId
       organizationId
       organization {
         name
       }
-      resendId
-      rowId
+      createdAt
       updatedAt
     }
   }

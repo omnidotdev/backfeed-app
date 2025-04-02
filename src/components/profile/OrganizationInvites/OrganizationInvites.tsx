@@ -13,7 +13,8 @@ import {
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useQueryClient } from "@tanstack/react-query";
-import { RiUserAddLine } from "react-icons/ri";
+import { FiUserPlus } from "react-icons/fi";
+import { HiOutlineTrash } from "react-icons/hi2";
 
 import { SectionContainer } from "components/layout";
 import {
@@ -25,6 +26,18 @@ import {
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
+const organizationInviteDetails = app.profilePage.organizationInvites;
+
+interface JoinOrganizationProps {
+  /** Invitation ID. */
+  invitationId: string;
+  /** Organization ID. */
+  organizationId: string;
+}
+
+/**
+ * User's organization invitations.
+ */
 const OrganizationInvites = () => {
   const queryClient = useQueryClient();
 
@@ -69,10 +82,10 @@ const OrganizationInvites = () => {
     }
   );
 
-  const handleJoinOrganization = async (
-    rowId: string,
-    organizationId: string
-  ) => {
+  const handleJoinOrganization = async ({
+    invitationId,
+    organizationId,
+  }: JoinOrganizationProps) => {
     await joinOrganization({
       input: {
         member: {
@@ -84,14 +97,14 @@ const OrganizationInvites = () => {
     });
 
     declineOrganization({
-      rowId: rowId!,
+      rowId: invitationId!,
     });
   };
 
   return (
     <SectionContainer
-      title={app.profilePage.organizationInvites.title}
-      description={app.profilePage.organizationInvites.description}
+      title={organizationInviteDetails.title}
+      description={organizationInviteDetails.description}
       p={0}
       titleProps={{
         px: 4,
@@ -103,20 +116,30 @@ const OrganizationInvites = () => {
     >
       {isLoading ? (
         <Skeleton h={18} m={4} />
-      ) : error ? (
+      ) : error || !invitations?.length ? (
         <Stack mx={4} mb={4}>
-          <Text>No active invitations found.</Text>
+          <Text>{organizationInviteDetails.emptyState.message}</Text>
         </Stack>
       ) : (
         <Flex w="100%" overflowX="auto">
           <Table
             headerContent={
               <TableRow fontWeight="semibold" w="full" bgColor="transparent">
-                <TableCell>Organization</TableCell>
-
-                <TableCell>Invitation Date</TableCell>
-
-                <TableCell textAlign="end">Actions</TableCell>
+                {Object.values(organizationInviteDetails.headers).map(
+                  (header) => (
+                    <TableCell
+                      key={header}
+                      fontWeight="bold"
+                      textAlign={
+                        header === organizationInviteDetails.headers.actions
+                          ? "end"
+                          : "start"
+                      }
+                    >
+                      {header}
+                    </TableCell>
+                  )
+                )}
               </TableRow>
             }
             textWrap="nowrap"
@@ -129,7 +152,9 @@ const OrganizationInvites = () => {
                   bgColor="transparent"
                 >
                   <TableCell>{organizationName}</TableCell>
+
                   <TableCell>{createdAt}</TableCell>
+
                   <TableCell
                     gap={2}
                     display="flex"
@@ -146,11 +171,14 @@ const OrganizationInvites = () => {
                         isJoinOrganizationPending || isDeleteInvitationPending
                       }
                       onClick={() =>
-                        handleJoinOrganization(rowId!, organizationId!)
+                        handleJoinOrganization({
+                          invitationId: rowId!,
+                          organizationId: organizationId!,
+                        })
                       }
                     >
-                      <Icon src={RiUserAddLine} />
-                      {app.profilePage.organizationInvites.actions.accept.label}
+                      <Icon src={FiUserPlus} />
+                      {organizationInviteDetails.actions.accept.label}
                     </Button>
 
                     <Button
@@ -168,11 +196,8 @@ const OrganizationInvites = () => {
                         })
                       }
                     >
-                      <Icon src={RiUserAddLine} />
-                      {
-                        app.profilePage.organizationInvites.actions.decline
-                          .label
-                      }
+                      <Icon src={HiOutlineTrash} />
+                      {organizationInviteDetails.actions.decline.label}
                     </Button>
                   </TableCell>
                 </TableRow>

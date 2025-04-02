@@ -237,6 +237,11 @@ const app = {
     organizationInvites: {
       title: "Organization Invites",
       description: "View and manage your organization invites.",
+      headers: {
+        organizationName: "Organization Name",
+        invitationDate: "Invitation Date",
+        actions: "Actions",
+      },
       emptyState: {
         message: "No organization invites found.",
       },
