@@ -3,6 +3,8 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
+  // TODO
+  supportEmail: "test",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -335,6 +337,32 @@ const app = {
           submit: "Add Owner",
           pending: "Adding Owner...",
           cancel: "Cancel",
+        },
+      },
+      inviteMember: {
+        title: "Invite Member",
+        description: "Invite a new member to your organization.",
+        form: {
+          email: {
+            label: "Email",
+            placeholder: "Search for or select a member...",
+          },
+          submit: "Invite Member",
+          pending: "Inviting Member...",
+          cancel: "Cancel",
+        },
+        toast: {
+          loading: {
+            title: "Sending invite link...",
+          },
+          success: {
+            title: "Success!",
+            description: "Your invite link has been sent!",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while sending the invite link.",
+          },
         },
       },
     },

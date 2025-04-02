@@ -1,10 +1,12 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
+import { FiUserPlus } from "react-icons/fi";
 
 import { Page } from "components/layout";
 import {
   AddOwner,
+  InviteMember,
   Members,
   MembershipFilters,
   Owners,
@@ -124,6 +126,12 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
                     icon: <LuCirclePlus />,
                     dialogType: DialogType.AddOwner,
                   },
+                  {
+                    label: app.organizationMembersPage.cta.inviteMember.title,
+                    icon: <FiUserPlus />,
+                    dialogType: DialogType.InviteMember,
+                    variant: "outline",
+                  },
                 ]
               : undefined,
         }}
@@ -136,6 +144,8 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
         {/* dialogs */}
         <AddOwner organizationId={organization.rowId} />
+
+        <InviteMember organizationName={organization.name!} />
       </Page>
     </HydrationBoundary>
   );
