@@ -380,6 +380,39 @@ export type CreateDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
 };
 
+/** All input for the create `Invitation` mutation. */
+export type CreateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Invitation` to be created by this mutation. */
+  invitation: InvitationInput;
+};
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayload = {
+  __typename?: 'CreateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was created by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the create `Member` mutation. */
 export type CreateMemberInput = {
   /**
@@ -699,6 +732,38 @@ export type DeleteDownvotePayload = {
 /** The output of our delete `Downvote` mutation. */
 export type DeleteDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
+};
+
+/** All input for the `deleteInvitation` mutation. */
+export type DeleteInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayload = {
+  __typename?: 'DeleteInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was deleted by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
 };
 
 /** All input for the `deleteMember` mutation. */
@@ -1165,6 +1230,259 @@ export type HavingDatetimeFilter = {
   notEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
+export type Invitation = {
+  __typename?: 'Invitation';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  email: Scalars['String']['output'];
+  hidraId?: Maybe<Scalars['UUID']['output']>;
+  /** Reads a single `Organization` that is related to this `Invitation`. */
+  organization?: Maybe<Organization>;
+  organizationId: Scalars['UUID']['output'];
+  resendId?: Maybe<Scalars['String']['output']>;
+  rowId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+export type InvitationAggregates = {
+  __typename?: 'InvitationAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<InvitationDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Invitation` object types. */
+export type InvitationAggregatesFilter = {
+  /** Distinct count aggregate over matching `Invitation` objects. */
+  distinctCount?: InputMaybe<InvitationDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Invitation` object to be included within the aggregate. */
+  filter?: InputMaybe<InvitationFilter>;
+};
+
+/**
+ * A condition to be used against `Invitation` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type InvitationCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `hidraId` field. */
+  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `resendId` field. */
+  resendId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnection = {
+  __typename?: 'InvitationConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<InvitationAggregates>;
+  /** A list of edges which contains the `Invitation` and cursor to aid in pagination. */
+  edges: Array<Maybe<InvitationEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<InvitationAggregates>>;
+  /** A list of `Invitation` objects. */
+  nodes: Array<Maybe<Invitation>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Invitation` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnectionGroupedAggregatesArgs = {
+  groupBy: Array<InvitationGroupBy>;
+  having?: InputMaybe<InvitationHavingInput>;
+};
+
+export type InvitationDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  email?: InputMaybe<BigIntFilter>;
+  hidraId?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  resendId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type InvitationDistinctCountAggregates = {
+  __typename?: 'InvitationDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of email across the matching connection */
+  email?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of hidraId across the matching connection */
+  hidraId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of resendId across the matching connection */
+  resendId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Invitation` edge in the connection. */
+export type InvitationEdge = {
+  __typename?: 'InvitationEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Invitation` at the end of the edge. */
+  node?: Maybe<Invitation>;
+};
+
+/** A filter to be used against `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type InvitationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hidraId` field. */
+  hidraId?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<InvitationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `organization` relation. */
+  organization?: InputMaybe<OrganizationFilter>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `resendId` field. */
+  resendId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `Invitation` for usage during aggregation. */
+export enum InvitationGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Email = 'EMAIL',
+  HidraId = 'HIDRA_ID',
+  OrganizationId = 'ORGANIZATION_ID',
+  ResendId = 'RESEND_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type InvitationHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Invitation` aggregates. */
+export type InvitationHavingInput = {
+  AND?: InputMaybe<Array<InvitationHavingInput>>;
+  OR?: InputMaybe<Array<InvitationHavingInput>>;
+  average?: InputMaybe<InvitationHavingAverageInput>;
+  distinctCount?: InputMaybe<InvitationHavingDistinctCountInput>;
+  max?: InputMaybe<InvitationHavingMaxInput>;
+  min?: InputMaybe<InvitationHavingMinInput>;
+  stddevPopulation?: InputMaybe<InvitationHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<InvitationHavingStddevSampleInput>;
+  sum?: InputMaybe<InvitationHavingSumInput>;
+  variancePopulation?: InputMaybe<InvitationHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<InvitationHavingVarianceSampleInput>;
+};
+
+export type InvitationHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Invitation` */
+export type InvitationInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email: Scalars['String']['input'];
+  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId: Scalars['UUID']['input'];
+  resendId?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `Invitation`. */
+export enum InvitationOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmailAsc = 'EMAIL_ASC',
+  EmailDesc = 'EMAIL_DESC',
+  HidraIdAsc = 'HIDRA_ID_ASC',
+  HidraIdDesc = 'HIDRA_ID_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ResendIdAsc = 'RESEND_ID_ASC',
+  ResendIdDesc = 'RESEND_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `Invitation`. Fields that are set will be updated. */
+export type InvitationPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  resendId?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
 export type Member = {
   __typename?: 'Member';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
@@ -1389,6 +1707,8 @@ export type Mutation = {
   createComment?: Maybe<CreateCommentPayload>;
   /** Creates a single `Downvote`. */
   createDownvote?: Maybe<CreateDownvotePayload>;
+  /** Creates a single `Invitation`. */
+  createInvitation?: Maybe<CreateInvitationPayload>;
   /** Creates a single `Member`. */
   createMember?: Maybe<CreateMemberPayload>;
   /** Creates a single `Organization`. */
@@ -1407,6 +1727,8 @@ export type Mutation = {
   deleteComment?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Downvote` using a unique key. */
   deleteDownvote?: Maybe<DeleteDownvotePayload>;
+  /** Deletes a single `Invitation` using a unique key. */
+  deleteInvitation?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Member` using a unique key. */
   deleteMember?: Maybe<DeleteMemberPayload>;
   /** Deletes a single `Organization` using a unique key. */
@@ -1425,6 +1747,8 @@ export type Mutation = {
   updateComment?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Downvote` using a unique key and a patch. */
   updateDownvote?: Maybe<UpdateDownvotePayload>;
+  /** Updates a single `Invitation` using a unique key and a patch. */
+  updateInvitation?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Member` using a unique key and a patch. */
   updateMember?: Maybe<UpdateMemberPayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
@@ -1451,6 +1775,12 @@ export type MutationCreateCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateDownvoteArgs = {
   input: CreateDownvoteInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateInvitationArgs = {
+  input: CreateInvitationInput;
 };
 
 
@@ -1509,6 +1839,12 @@ export type MutationDeleteDownvoteArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationArgs = {
+  input: DeleteInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteMemberArgs = {
   input: DeleteMemberInput;
 };
@@ -1563,6 +1899,12 @@ export type MutationUpdateDownvoteArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationArgs = {
+  input: UpdateInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateMemberArgs = {
   input: UpdateMemberInput;
 };
@@ -1612,6 +1954,8 @@ export type Node = {
 export type Organization = {
   __typename?: 'Organization';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitations: InvitationConnection;
   /** Reads and enables pagination through a set of `Member`. */
   members: MemberConnection;
   name?: Maybe<Scalars['String']['output']>;
@@ -1620,6 +1964,18 @@ export type Organization = {
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+
+export type OrganizationInvitationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -1723,6 +2079,10 @@ export type OrganizationFilter = {
   and?: InputMaybe<Array<OrganizationFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `invitations` relation. */
+  invitations?: InputMaybe<OrganizationToManyInvitationFilter>;
+  /** Some related `invitations` exist. */
+  invitationsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `members` relation. */
   members?: InputMaybe<OrganizationToManyMemberFilter>;
   /** Some related `members` exist. */
@@ -1828,6 +2188,22 @@ export type OrganizationInput = {
 export enum OrganizationOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  InvitationsCountAsc = 'INVITATIONS_COUNT_ASC',
+  InvitationsCountDesc = 'INVITATIONS_COUNT_DESC',
+  InvitationsDistinctCountCreatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  InvitationsDistinctCountCreatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  InvitationsDistinctCountEmailAsc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_ASC',
+  InvitationsDistinctCountEmailDesc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_DESC',
+  InvitationsDistinctCountHidraIdAsc = 'INVITATIONS_DISTINCT_COUNT_HIDRA_ID_ASC',
+  InvitationsDistinctCountHidraIdDesc = 'INVITATIONS_DISTINCT_COUNT_HIDRA_ID_DESC',
+  InvitationsDistinctCountOrganizationIdAsc = 'INVITATIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  InvitationsDistinctCountOrganizationIdDesc = 'INVITATIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  InvitationsDistinctCountResendIdAsc = 'INVITATIONS_DISTINCT_COUNT_RESEND_ID_ASC',
+  InvitationsDistinctCountResendIdDesc = 'INVITATIONS_DISTINCT_COUNT_RESEND_ID_DESC',
+  InvitationsDistinctCountRowIdAsc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  InvitationsDistinctCountRowIdDesc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  InvitationsDistinctCountUpdatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  InvitationsDistinctCountUpdatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   MembersCountAsc = 'MEMBERS_COUNT_ASC',
   MembersCountDesc = 'MEMBERS_COUNT_DESC',
   MembersDistinctCountCreatedAtAsc = 'MEMBERS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -1878,6 +2254,18 @@ export type OrganizationPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type OrganizationToManyInvitationFilter = {
+  /** Aggregates across related `Invitation` match the filter criteria. */
+  aggregates?: InputMaybe<InvitationAggregatesFilter>;
+  /** Every related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<InvitationFilter>;
+  /** No related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<InvitationFilter>;
+  /** Some related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<InvitationFilter>;
 };
 
 /** A filter to be used against many `Member` object types. All fields are combined with a logical ‘and.’ */
@@ -3033,6 +3421,10 @@ export type Query = Node & {
   downvotes?: Maybe<DownvoteConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
+  /** Get a single `Invitation`. */
+  invitation?: Maybe<Invitation>;
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitations?: Maybe<InvitationConnection>;
   /** Get a single `Member`. */
   member?: Maybe<Member>;
   /** Get a single `Member`. */
@@ -3129,6 +3521,25 @@ export type QueryDownvotesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<DownvoteOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -3523,6 +3934,40 @@ export type UpdateDownvotePayload = {
 /** The output of our update `Downvote` mutation. */
 export type UpdateDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
+};
+
+/** All input for the `updateInvitation` mutation. */
+export type UpdateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayload = {
+  __typename?: 'UpdateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was updated by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
 };
 
 /** All input for the `updateMember` mutation. */
@@ -4471,6 +4916,20 @@ export type DeleteDownvoteMutationVariables = Exact<{
 
 export type DeleteDownvoteMutation = { __typename?: 'Mutation', deleteDownvote?: { __typename?: 'DeleteDownvotePayload', clientMutationId?: string | null } | null };
 
+export type CreateInvitationMutationVariables = Exact<{
+  input: CreateInvitationInput;
+}>;
+
+
+export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', email: string, hidraId?: string | null, organizationId: string, resendId?: string | null } | null } | null };
+
+export type DeleteInvitationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteInvitationMutation = { __typename?: 'Mutation', deleteInvitation?: { __typename?: 'DeleteInvitationPayload', clientMutationId?: string | null } | null };
+
 export type CreateMemberMutationVariables = Exact<{
   input: CreateMemberInput;
 }>;
@@ -4941,6 +5400,63 @@ useDeleteDownvoteMutation.getKey = () => ['DeleteDownvote'];
 
 
 useDeleteDownvoteMutation.fetcher = (variables: DeleteDownvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteDownvoteMutation, DeleteDownvoteMutationVariables>(DeleteDownvoteDocument, variables, options);
+
+export const CreateInvitationDocument = `
+    mutation CreateInvitation($input: CreateInvitationInput!) {
+  createInvitation(input: $input) {
+    invitation {
+      email
+      hidraId
+      organizationId
+      resendId
+    }
+  }
+}
+    `;
+
+export const useCreateInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateInvitation'],
+    mutationFn: (variables?: CreateInvitationMutationVariables) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateInvitationMutation.getKey = () => ['CreateInvitation'];
+
+
+useCreateInvitationMutation.fetcher = (variables: CreateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables, options);
+
+export const DeleteInvitationDocument = `
+    mutation DeleteInvitation($rowId: UUID!) {
+  deleteInvitation(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteInvitation'],
+    mutationFn: (variables?: DeleteInvitationMutationVariables) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteInvitationMutation.getKey = () => ['DeleteInvitation'];
+
+
+useDeleteInvitationMutation.fetcher = (variables: DeleteInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables, options);
 
 export const CreateMemberDocument = `
     mutation CreateMember($input: CreateMemberInput!) {

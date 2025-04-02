@@ -11,22 +11,16 @@ import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
 
-const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
+import type { OrganizationInvitation } from "components/organization";
+import { useCreateInvitationMutation } from "generated/graphql";
 
-interface HandleInvitationLink {
-  /** Email of the user. */
-  email: string;
-  /** Username of the user. */
-  username: string;
-  /** Email of the invitee. */
-  inviteeEmail: string;
-  /** Organization name. */
-  organizationName: string;
-}
+const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
 
 interface Props {
   /** Organization name. */
   organizationName: string;
+  /** Organization ID. */
+  organizationId: string;
 }
 
 /** Schema for defining the shape of the invite member form fields. */
@@ -34,7 +28,7 @@ const baseSchema = z.object({
   email: z.string().email(),
 });
 
-const InviteMember = ({ organizationName }: Props) => {
+const InviteMember = ({ organizationName, organizationId }: Props) => {
   const { user } = useAuth();
   const [isPending, setIsPending] = useState(false);
 
@@ -42,17 +36,38 @@ const InviteMember = ({ organizationName }: Props) => {
     type: DialogType.InviteMember,
   });
 
-  const handleInvitationLink = async ({
-    email,
-    username,
-    inviteeEmail,
+  const { mutateAsync: addInvitation } = useCreateInvitationMutation();
+
+  const handleOrganizationInvitation = async ({
+    inviterEmail,
+    inviterUsername,
+    recipientEmail,
     organizationName,
-  }: HandleInvitationLink) => {
+  }: OrganizationInvitation) => {
     setIsPending(true);
     try {
-      await fetch(
-        `/api/invite?email=${email}&username=${username}&inviteeEmail=${inviteeEmail}&organizationName=${organizationName}`
-      );
+      const response = await fetch("/api/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inviterEmail,
+          inviterUsername,
+          recipientEmail,
+          organizationName,
+        }),
+      });
+
+      const result = await response.json();
+
+      await addInvitation({
+        input: {
+          invitation: {
+            email: recipientEmail,
+            organizationId,
+            resendId: result.data.id,
+          },
+        },
+      });
     } catch (error) {
       console.error("Error resending email:", error);
     } finally {
@@ -70,10 +85,10 @@ const InviteMember = ({ organizationName }: Props) => {
     },
     onSubmit: async ({ value }) => {
       toaster.promise(
-        handleInvitationLink({
-          email: user?.email!,
-          username: user?.name!,
-          inviteeEmail: value.email,
+        handleOrganizationInvitation({
+          inviterEmail: user?.email!,
+          inviterUsername: user?.name!,
+          recipientEmail: value.email,
           organizationName,
         }),
         {

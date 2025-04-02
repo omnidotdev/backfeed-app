@@ -17,37 +17,38 @@ import { app } from "lib/config";
 const inviteMemberDetails =
   app.organizationMembersPage.cta.inviteMember.emailTemplate;
 
-interface Props {
-  /** Username of the inviter. */
-  invitedByUsername: string;
-  /** Email of the inviter. */
-  invitedByEmail: string;
-  /** Organization name. */
+export interface OrganizationInvitation {
+  /** Username of the person sending the invite. */
+  inviterUsername: string;
+  /** Email of the person sending the invite. */
+  inviterEmail: string;
+  /** Name of the organization the invite is for. */
   organizationName: string;
-  /** Email of the invitee. */
-  inviteeEmail: string;
-  /** Invite link. */
-  inviteLink: string;
+  /** Email of the person receiving the invite. */
+  recipientEmail: string;
+  /** URL for the invitee to accept the invitation. */
+  inviteUrl?: string;
 }
 
 /**
  * Invite member to an organziation email template.
  */
 const InviteMemberEmailTemplate = ({
-  invitedByUsername,
-  invitedByEmail,
+  inviterUsername,
+  inviterEmail,
   organizationName,
-  inviteeEmail,
-  inviteLink,
-}: Props) => (
+  recipientEmail,
+  inviteUrl,
+}: OrganizationInvitation) => (
   <Html>
     <Head />
+
     <Tailwind>
       <Body className="bg-white my-auto mx-auto font-sans px-2">
         <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
           <Section className="mt-[32px]">
             <Img
-              src="https://localhost:3000/img/logo.png"
+              src={`${app.productionUrl}/img/logo.png`}
               alt={`${app.name} logo`}
               width={80}
               height={40}
@@ -62,16 +63,16 @@ const InviteMemberEmailTemplate = ({
           </Heading>
 
           <Text className="text-black text-[14px] leading-[24px]">
-            {inviteMemberDetails.greeting.value} {inviteeEmail},
+            {inviteMemberDetails.greeting.value} {recipientEmail},
           </Text>
 
           <Text className="text-black text-[14px] leading-[24px]">
-            <strong>{invitedByUsername}</strong> (
+            <strong>{inviterUsername}</strong> (
             <Link
-              href={`mailto:${invitedByEmail}`}
+              href={`mailto:${inviterEmail}`}
               className="text-blue-600 no-underline"
             >
-              {invitedByEmail}
+              {inviterEmail}
             </Link>
             ) {inviteMemberDetails.statement.value1}{" "}
             <strong>{organizationName}</strong>{" "}
@@ -81,7 +82,7 @@ const InviteMemberEmailTemplate = ({
           <Section className="text-center mt-[32px] mb-[32px]">
             <Link
               className="bg-[#00a3a2] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
-              href={inviteLink}
+              href={inviteUrl}
             >
               {inviteMemberDetails.cta.value}
             </Link>

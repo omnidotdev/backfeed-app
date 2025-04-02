@@ -145,7 +145,10 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         {/* dialogs */}
         <AddOwner organizationId={organization.rowId} />
 
-        <InviteMember organizationName={organization.name!} />
+        <InviteMember
+          organizationName={organization.name!}
+          organizationId={organization.rowId}
+        />
       </Page>
     </HydrationBoundary>
   );

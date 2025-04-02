@@ -8,26 +8,22 @@ import type { ReactElement } from "react";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const GET = async (req: NextRequest) => {
-  const searchParams = req.nextUrl.searchParams;
-
-  const invitedByEmail = searchParams.get("email")!,
-    invitedByUsername = searchParams.get("username")!,
-    inviteeEmail = searchParams.get("inviteeEmail")!,
-    organizationName = searchParams.get("organizationName")!;
+export const POST = async (req: NextRequest) => {
+  const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
+    await req.json();
 
   try {
     const { data, error } = await resend.emails.send({
       from: `Backfeed Support <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
-      to: isDevEnv ? "delivered@resend.dev" : inviteeEmail,
+      to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
       subject: `${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value1} ${organizationName} ${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
-        invitedByUsername,
-        invitedByEmail,
+        inviterUsername,
+        inviterEmail,
         organizationName,
-        inviteeEmail,
+        recipientEmail,
         // TODO: Route to sign in page
-        inviteLink: isDevEnv
+        inviteUrl: isDevEnv
           ? process.env.NEXT_PUBLIC_BASE_URL!
           : app.productionUrl,
       }) as ReactElement,
