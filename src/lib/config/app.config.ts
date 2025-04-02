@@ -364,6 +364,30 @@ const app = {
             description: "An error occurred while sending the invite link.",
           },
         },
+        emailTemplate: {
+          subject: {
+            value1: "You have been invited to join the",
+            value2: "organization on",
+          },
+          heading: {
+            value1: "Join",
+            value2: "on",
+          },
+          greeting: {
+            value: "Hello",
+          },
+          statement: {
+            value1: "has invited to join the",
+            value2: "organization on",
+          },
+          cta: {
+            value: "Join the organization",
+          },
+          disclaimer: {
+            value:
+              "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
+          },
+        },
       },
     },
   },

@@ -14,6 +14,9 @@ import {
 
 import { app } from "lib/config";
 
+const inviteMemberDetails =
+  app.organizationMembersPage.cta.inviteMember.emailTemplate;
+
 interface Props {
   /** Username of the inviter. */
   invitedByUsername: string;
@@ -26,8 +29,6 @@ interface Props {
   /** Invite link. */
   inviteLink: string;
 }
-
-// TODO: add all static text to config file.
 
 /**
  * Invite member to an organziation email template.
@@ -55,12 +56,13 @@ const InviteMemberEmailTemplate = ({
           </Section>
 
           <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
-            Join <strong>{organizationName}</strong> on{" "}
-            <strong>{app.name}</strong>
+            {inviteMemberDetails.heading.value1}{" "}
+            <strong>{organizationName}</strong>{" "}
+            {inviteMemberDetails.heading.value2} <strong>{app.name}</strong>
           </Heading>
 
           <Text className="text-black text-[14px] leading-[24px]">
-            Hello {inviteeEmail},
+            {inviteMemberDetails.greeting.value} {inviteeEmail},
           </Text>
 
           <Text className="text-black text-[14px] leading-[24px]">
@@ -71,8 +73,9 @@ const InviteMemberEmailTemplate = ({
             >
               {invitedByEmail}
             </Link>
-            ) has invited you to the <strong>{organizationName}</strong>{" "}
-            organization on <strong>{app.name}</strong>.
+            ) {inviteMemberDetails.statement.value1}{" "}
+            <strong>{organizationName}</strong>{" "}
+            {inviteMemberDetails.statement.value2} <strong>{app.name}</strong>.
           </Text>
 
           <Section className="text-center mt-[32px] mb-[32px]">
@@ -80,16 +83,14 @@ const InviteMemberEmailTemplate = ({
               className="bg-[#00a3a2] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
               href={inviteLink}
             >
-              Join the organization
+              {inviteMemberDetails.cta.value}
             </Link>
           </Section>
 
           <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
 
           <Text className="text-[#666666] text-[12px] leading-[24px]">
-            If you were not expecting this invitation, you can ignore this
-            email. If you are concerned about your account's safety, please
-            reply to this email to get in touch with us.
+            {inviteMemberDetails.disclaimer.value}
           </Text>
         </Container>
       </Body>

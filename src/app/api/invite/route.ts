@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => {
     const { data, error } = await resend.emails.send({
       from: `Backfeed Support <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
       to: isDevEnv ? "delivered@resend.dev" : inviteeEmail,
-      subject: `You have been invited to join the ${organizationName} organization on ${app.name}`,
+      subject: `${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value1} ${organizationName} ${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
         invitedByUsername,
         invitedByEmail,
