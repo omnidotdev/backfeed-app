@@ -1,19 +1,18 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
+import { Combobox, Divider, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
-import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
+import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
   Role,
-  useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
@@ -32,8 +31,6 @@ const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 const transferOwnershipDetails =
   app.organizationSettingsPage.cta.transferOwnership;
-const joinOrganizationDetails =
-  app.organizationSettingsPage.cta.joinOrganization;
 
 interface Props {
   developmentFlag: boolean;
@@ -107,14 +104,9 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
       }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId: organization?.rowId,
-    }),
-    { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
-      useCreateMemberMutation({
-        onSettled,
-      });
+    });
 
-  const isCurrentMember =
-    !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
+  const isCurrentMember = !isLeaveOrganizationPending && isMember;
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
 
@@ -140,9 +132,6 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
         leaveOrganization({
           rowId: membershipId!,
         }),
-    },
-    triggerProps: {
-      disabled: isJoinOrganizationPending,
     },
   };
 
@@ -186,20 +175,12 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
       <UpdateOrganization />
 
       {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
-      {(isCurrentMember || developmentFlag) && (
+      {isCurrentMember && developmentFlag && (
         <SectionContainer
-          title={
-            isCurrentMember
-              ? app.organizationSettingsPage.dangerZone.title
-              : joinOrganizationDetails.title
-          }
-          description={
-            isCurrentMember
-              ? app.organizationSettingsPage.dangerZone.description
-              : joinOrganizationDetails.description
-          }
+          title={app.organizationSettingsPage.dangerZone.title}
+          description={app.organizationSettingsPage.dangerZone.description}
           outline="1px solid"
-          outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
+          outlineColor="omni.ruby"
         >
           <Divider />
 
@@ -227,31 +208,6 @@ const OrganizationSettings = ({ developmentFlag }: Props) => {
                 actionProps={DELETE_ORGANIZATION}
               />
             </Stack>
-          )}
-
-          {!isCurrentMember && (
-            <Button
-              fontSize="md"
-              colorPalette="green"
-              color="white"
-              w="fit"
-              placeSelf="flex-end"
-              disabled={isLeaveOrganizationPending}
-              onClick={() =>
-                joinOrganization({
-                  input: {
-                    member: {
-                      userId: user?.rowId!,
-                      organizationId: organization?.rowId!,
-                      role: Role.Member,
-                    },
-                  },
-                })
-              }
-            >
-              <Icon src={RiUserAddLine} />
-              {joinOrganizationDetails.actionLabel}
-            </Button>
           )}
         </SectionContainer>
       )}
