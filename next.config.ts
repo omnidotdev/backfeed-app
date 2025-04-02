@@ -13,12 +13,12 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*?)", // apply headers to all paths
         headers: [
-          // Enables DNS prefetching for faster resource loading
+          // Allow browser to prefetch DNS records for faster loading
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
           },
-          // Enforces HTTPS usage and allows preload list inclusion
+          // Forces HTTPS usage and allows preload list inclusion
           {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
-          // Enables legacy XSS protection mode in older browsers
+          // Enables legacy XSS protection mode in older browsers. 1 enables XSS protection and mode=block prevents the page from loading if an attack is detected.
           {
             key: "X-XSS-Protection",
             value: "1; mode=block",
@@ -58,13 +58,13 @@ const nextConfig: NextConfig = {
             key: "Cross-Origin-Resource-Policy",
             value: "same-origin",
           },
-          // Controls access to browser features like geolocation, camera, mic, fullscreen, etc.
+          // TODO: discuss which are needed/if they are needed at all. Currently controls access to browser features like geolocation, camera, mic, fullscreen, etc.
           {
             key: "Permissions-Policy",
             value:
               "geolocation=(), microphone=(), camera=(), fullscreen=(), payment=()",
           },
-          // Blocks legacy Adobe plugins (like Flash) from loading cross-domain data
+          // Blocks legacy Adobe plugins (i.e. Flash) from loading cross-domain data
           {
             key: "X-Permitted-Cross-Domain-Policies",
             value: "none",
