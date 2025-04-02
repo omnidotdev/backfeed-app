@@ -2,7 +2,8 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
 import { Page } from "components/layout";
-import { Subscription } from "components/profile";
+import { OrganizationInvites, Subscription } from "components/profile";
+import { useInvitationsQuery } from "generated/graphql";
 import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
@@ -44,6 +45,15 @@ const ProfilePage = async ({ params }: Props) => {
     });
   }
 
+  await queryClient.prefetchQuery({
+    queryKey: useInvitationsQuery.getKey({
+      email: session.value?.user?.email!,
+    }),
+    queryFn: useInvitationsQuery.fetcher({
+      email: session.value?.user?.email!,
+    }),
+  });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -53,6 +63,8 @@ const ProfilePage = async ({ params }: Props) => {
         }}
       >
         <Subscription customer={customer} />
+
+        <OrganizationInvites />
       </Page>
     </HydrationBoundary>
   );

@@ -5102,6 +5102,13 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
+export type InvitationsQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', createdAt?: Date | null, email: string, hidraId?: string | null, organizationId: string, resendId?: string | null, rowId: string, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null } | null> } | null };
+
 export type MembersQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
   roles?: InputMaybe<Array<Role> | Role>;
@@ -6199,6 +6206,68 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 
 
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
+
+export const InvitationsDocument = `
+    query Invitations($email: String!) {
+  invitations(orderBy: CREATED_AT_DESC, condition: {email: $email}) {
+    totalCount
+    nodes {
+      createdAt
+      email
+      hidraId
+      organizationId
+      organization {
+        name
+      }
+      resendId
+      rowId
+      updatedAt
+    }
+  }
+}
+    `;
+
+export const useInvitationsQuery = <
+      TData = InvitationsQuery,
+      TError = unknown
+    >(
+      variables: InvitationsQueryVariables,
+      options?: Omit<UseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<InvitationsQuery, TError, TData>(
+      {
+    queryKey: ['Invitations', variables],
+    queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
+    ...options
+  }
+    )};
+
+useInvitationsQuery.getKey = (variables: InvitationsQueryVariables) => ['Invitations', variables];
+
+export const useInfiniteInvitationsQuery = <
+      TData = InfiniteData<InvitationsQuery>,
+      TError = unknown
+    >(
+      variables: InvitationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<InvitationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Invitations.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteInvitationsQuery.getKey = (variables: InvitationsQueryVariables) => ['Invitations.infinite', variables];
+
+
+useInvitationsQuery.fetcher = (variables: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
 
 export const MembersDocument = `
     query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {

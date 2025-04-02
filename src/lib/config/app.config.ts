@@ -217,6 +217,9 @@ const app = {
       title: "Subscription",
       // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
       description: "Manage your subscription plan and billing information.",
+      emptyState: {
+        label: "No active subscription found.",
+      },
       actions: {
         subscribe: {
           label: "Subscribe",
@@ -229,6 +232,21 @@ const app = {
         productName: "Product Name",
         status: "Status",
         amount: "Amount",
+      },
+    },
+    organizationInvites: {
+      title: "Organization Invites",
+      description: "View and manage your organization invites.",
+      emptyState: {
+        message: "No organization invites found.",
+      },
+      actions: {
+        accept: {
+          label: "Accept",
+        },
+        decline: {
+          label: "Decline",
+        },
       },
     },
   },
