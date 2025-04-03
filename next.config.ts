@@ -11,7 +11,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*?)", // apply headers to all paths
+        // apply headers to all paths
+        source: "/(.*?)",
         headers: [
           // Allow browser to prefetch DNS records for faster loading
           {
