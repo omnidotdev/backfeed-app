@@ -62,8 +62,7 @@ const nextConfig: NextConfig = {
           // TODO: discuss which are needed/if they are needed at all. Currently controls access to browser features like geolocation, camera, mic, fullscreen, etc.
           {
             key: "Permissions-Policy",
-            value:
-              "geolocation=(), microphone=(), camera=(), fullscreen=(), payment=()",
+            value: "geolocation=(), microphone=(), camera=(), fullscreen=()",
           },
           // Blocks legacy Adobe plugins (i.e. Flash) from loading cross-domain data
           {
