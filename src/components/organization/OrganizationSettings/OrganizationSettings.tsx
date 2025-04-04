@@ -1,37 +1,54 @@
 "use client";
 
-import { Divider, HStack, Stack, Text } from "@omnidev/sigil";
-import dayjs from "dayjs";
+import { createListCollection } from "@ark-ui/react";
+import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { RiUserSharedLine } from "react-icons/ri";
+import { useState } from "react";
+import { BiTransfer } from "react-icons/bi";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
-import { DestructiveAction } from "components/core";
+import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
+  Role,
+  useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
+  useMembersQuery,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
-
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
+const transferOwnershipDetails =
+  app.organizationSettingsPage.cta.transferOwnership;
+const joinOrganizationDetails =
+  app.organizationSettingsPage.cta.joinOrganization;
+
+interface Props {
+  developmentFlag: boolean;
+}
 
 /** Organization settings. */
-const OrganizationSettings = () => {
+const OrganizationSettings = ({ developmentFlag }: Props) => {
+  const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
+
+  const queryClient = useQueryClient();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-  const { user } = useAuth();
   const router = useRouter();
 
-  // NB: used to mock ownership
-  const isOrganizationOwner = true;
+  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -42,12 +59,64 @@ const OrganizationSettings = () => {
     }
   );
 
+  const { data: numberOfOwners } = useMembersQuery(
+    {
+      organizationId: organization?.rowId!,
+      roles: [Role.Owner],
+    },
+    {
+      enabled: !!organization,
+      select: (data) => data.members?.totalCount,
+    }
+  );
+
+  const { data: members } = useMembersQuery(
+    {
+      organizationId: organization?.rowId!,
+      excludeRoles: [Role.Owner],
+    },
+    {
+      enabled: !!organization,
+      select: (data) =>
+        data.members?.nodes?.map((member) => ({
+          label: `${member?.user?.firstName} ${member?.user?.lastName}`,
+          value: member?.rowId,
+        })),
+    }
+  );
+
+  const { isOwner, isMember, membershipId } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
+
+  const onSettled = () =>
+    queryClient.invalidateQueries({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: user?.rowId!,
+        organizationId: organization?.rowId!,
+      }),
+    });
+
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
     }),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onMutate: () => router.replace("/"),
-    });
+    { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
+      useLeaveOrganizationMutation({
+        onSettled,
+      }),
+    { mutate: transferOwnership } = useTransferOwnershipMutation({
+      organizationId: organization?.rowId,
+    }),
+    { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
+      useCreateMemberMutation({
+        onSettled,
+      });
+
+  const isCurrentMember =
+    !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
+
+  const isOnlyOwner = isOwner && numberOfOwners === 1;
 
   const DELETE_ORGANIZATION: DestructiveActionProps = {
     title: deleteOrganizationDetails.destruciveAction.title,
@@ -57,9 +126,6 @@ const OrganizationSettings = () => {
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
       onClick: () => deleteOrganization({ rowId: organization?.rowId! }),
-    },
-    triggerProps: {
-      "aria-label": `${deleteOrganizationDetails.destruciveAction.actionLabel} organization`,
     },
   };
 
@@ -72,52 +138,123 @@ const OrganizationSettings = () => {
       label: leaveOrganizationDetails.destruciveAction.actionLabel,
       onClick: () =>
         leaveOrganization({
-          organizationId: organization?.rowId!,
-          userId: user?.hidraId!,
+          rowId: membershipId!,
         }),
     },
     triggerProps: {
-      "aria-label": `${leaveOrganizationDetails.destruciveAction.actionLabel} organization`,
+      disabled: isJoinOrganizationPending,
     },
   };
 
-  const DESTRUCTIVE_ACTION = isOrganizationOwner
-    ? DELETE_ORGANIZATION
-    : LEAVE_ORGANIZATION;
+  const TRANSFER_OWNERSHIP: DestructiveActionProps = {
+    title: transferOwnershipDetails.title,
+    description: transferOwnershipDetails.description,
+    triggerLabel: transferOwnershipDetails.actionLabel,
+    icon: BiTransfer,
+    action: {
+      label: transferOwnershipDetails.actionLabel,
+      disabled: !newOwnerMembershipId.length,
+      onClick: () =>
+        transferOwnership({
+          rowId: newOwnerMembershipId,
+          patch: {
+            role: Role.Owner,
+          },
+        }),
+    },
+    children: (
+      <Combobox
+        label={{ id: "member", singular: "Member", plural: "Members" }}
+        collection={createListCollection({ items: members ?? [] })}
+        placeholder="Search for or select a member..."
+        colorPalette="red"
+        clearTriggerProps={{
+          display: newOwnerMembershipId ? "block" : "none",
+        }}
+        value={[newOwnerMembershipId]}
+        onValueChange={({ value }) => {
+          value.length
+            ? setNewOwnerMembershipId(value[0])
+            : setNewOwnerMembershipId("");
+        }}
+      />
+    ),
+  };
 
   return (
     <Stack gap={6}>
       <UpdateOrganization />
 
-      <SectionContainer
-        title={
-          isOrganizationOwner
-            ? deleteOrganizationDetails.title
-            : leaveOrganizationDetails.title
-        }
-        description={
-          isOrganizationOwner
-            ? deleteOrganizationDetails.description
-            : leaveOrganizationDetails.description
-        }
-        border="1px solid"
-        borderColor="omni.ruby"
-      >
-        <Divider />
+      {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
+      {(isCurrentMember || developmentFlag) && (
+        <SectionContainer
+          title={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.title
+              : joinOrganizationDetails.title
+          }
+          description={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.description
+              : joinOrganizationDetails.description
+          }
+          outline="1px solid"
+          outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
+        >
+          <Divider />
 
-        <HStack alignItems="center" justifyContent="space-between">
-          <Stack gap={1}>
-            <Text fontWeight="semibold">{organization?.name}</Text>
+          {isCurrentMember && !isOnlyOwner && (
+            <DangerZoneAction
+              title={leaveOrganizationDetails.title}
+              description={leaveOrganizationDetails.description}
+              actionProps={LEAVE_ORGANIZATION}
+            />
+          )}
 
-            <Text
-              fontSize="sm"
-              color="foreground.muted"
-            >{`Updated: ${dayjs(organization?.updatedAt).fromNow()}`}</Text>
-          </Stack>
+          {isOwner && (
+            <Stack gap={6}>
+              {isOnlyOwner && (
+                <DangerZoneAction
+                  title={transferOwnershipDetails.title}
+                  description={transferOwnershipDetails.description}
+                  actionProps={TRANSFER_OWNERSHIP}
+                />
+              )}
 
-          <DestructiveAction {...DESTRUCTIVE_ACTION} />
-        </HStack>
-      </SectionContainer>
+              <DangerZoneAction
+                title={deleteOrganizationDetails.title}
+                description={deleteOrganizationDetails.description}
+                actionProps={DELETE_ORGANIZATION}
+              />
+            </Stack>
+          )}
+
+          {!isCurrentMember && (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              color="white"
+              w="fit"
+              placeSelf="flex-end"
+              disabled={isLeaveOrganizationPending}
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    member: {
+                      userId: user?.rowId!,
+                      organizationId: organization?.rowId!,
+                      role: Role.Member,
+                    },
+                  },
+                })
+              }
+            >
+              <Icon src={RiUserAddLine} />
+              {joinOrganizationDetails.actionLabel}
+            </Button>
+          )}
+        </SectionContainer>
+      )}
     </Stack>
   );
 };

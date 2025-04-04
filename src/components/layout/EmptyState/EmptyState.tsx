@@ -27,10 +27,12 @@ const EmptyState = ({ message, action, ...rest }: Props) => (
     direction="column"
     align="center"
     justify="center"
+    textAlign="center"
     borderRadius="md"
     borderWidth="1px"
     borderStyle="dashed"
     gap={6}
+    p={4}
     {...rest}
   >
     {message}

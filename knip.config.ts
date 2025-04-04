@@ -24,8 +24,6 @@ const knipConfig: KnipConfig = {
   },
   ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
   ignoreDependencies: [
-    // @omnidev/sigil peer dependency
-    "@ark-ui/react",
     // included by Next.js metapackage, used in Playwright config
     "@next/env",
     // used by GraphQL Code Generator scripts

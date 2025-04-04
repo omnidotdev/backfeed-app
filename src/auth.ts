@@ -13,6 +13,15 @@ import { isDevEnv } from "lib/config";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 
+interface UpdatedTokens {
+  /** New access token */
+  access_token: string;
+  /** Expiration time in seconds */
+  expires_in: number;
+  /** New refresh token */
+  refresh_token: string;
+}
+
 /**
  * GraphQL client SDK.
  */
@@ -38,6 +47,7 @@ declare module "next-auth/jwt" {
     access_token: string;
     expires_at: number;
     refresh_token: string;
+    error?: "RefreshTokenError";
   }
 }
 
@@ -53,6 +63,7 @@ declare module "next-auth" {
       rowId?: string;
       hidraId?: string;
     } & NextAuthUser;
+    error?: "RefreshTokenError";
   }
 }
 
@@ -61,11 +72,6 @@ declare module "next-auth" {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
-  session: {
-    // 30 minutes
-    // ! NB: this should match the expiry time of the refresh token from the IDP
-    maxAge: 60 * 30,
-  },
   providers: [
     Keycloak({
       clientId: process.env.AUTH_KEYCLOAK_ID!,
@@ -108,7 +114,45 @@ export const { handlers, auth } = NextAuth({
         return token;
       }
 
-      return token;
+      if (Date.now() < token.expires_at * ms("1s")) {
+        return token;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              client_id: process.env.AUTH_KEYCLOAK_ID!,
+              client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+              grant_type: "refresh_token",
+              refresh_token: token.refresh_token,
+            }),
+          }
+        );
+
+        const tokensOrError = await response.json();
+
+        if (!response.ok) throw tokensOrError;
+
+        const newTokens = tokensOrError as UpdatedTokens;
+
+        return {
+          ...token,
+          access_token: newTokens.access_token,
+          refresh_token: newTokens.refresh_token,
+          expires_at: Math.floor(Date.now() / ms("1s") + newTokens.expires_in),
+        };
+      } catch (error) {
+        console.error(error);
+        token.error = "RefreshTokenError";
+
+        return token;
+      }
     },
     // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
     session: async ({ session, token }) => {
@@ -117,6 +161,7 @@ export const { handlers, auth } = NextAuth({
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * ms("1s"));
+      session.error = token.error;
 
       return session;
     },

@@ -1,16 +1,22 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
+import { auth } from "auth";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
+  Role,
   useCommentsQuery,
+  useDownvoteQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
+  useOrganizationRoleQuery,
+  useProjectStatusesQuery,
+  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 
@@ -33,13 +39,22 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
 
   if (!feedback) notFound();
+
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user?.rowId!,
+    organizationId: feedback.project?.organization?.rowId!,
+  });
+
+  const isAdmin =
+    memberByUserIdAndOrganizationId?.role === Role.Admin ||
+    memberByUserIdAndOrganizationId?.role === Role.Owner;
 
   const queryClient = getQueryClient();
 
@@ -69,6 +84,49 @@ const FeedbackPage = async ({ params }: Props) => {
     queryClient.prefetchQuery({
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
+    }),
+    // ! NB: only prefetch the project statuses if the user is an admin
+    ...(isAdmin
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useProjectStatusesQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
+            queryFn: useProjectStatusesQuery.fetcher({
+              projectId: feedback.project?.rowId!,
+            }),
+          }),
+        ]
+      : []),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: feedback.project?.organization?.rowId!,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: feedback.project?.organization?.rowId!,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useDownvoteQuery.getKey({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+      queryFn: useDownvoteQuery.fetcher({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUpvoteQuery.getKey({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
+      queryFn: useUpvoteQuery.fetcher({
+        userId: session?.user?.rowId!,
+        feedbackId,
+      }),
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),

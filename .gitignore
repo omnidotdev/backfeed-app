@@ -1,10 +1,22 @@
-.next
-.swc
 node_modules
+
+# Next.js
+.next
+next-env.d.ts
+.swc
+
+# tests
 coverage
 
 # editor
 .vscode
+
+#generated artifacts
+**/generated/*
+!**/generated/.gitignore
+
+# TLS/HTTPS
+certificates
 
 # environment
 *.env*
@@ -15,9 +27,3 @@ coverage
 !.env.production
 !.env.test
 !.env.local.template
-
-# misc
-next-env.d.ts
-
-**/generated/*
-!**/generated/.gitignore

@@ -1,30 +1,17 @@
 "use client";
 
-import {
-  Button,
-  Dialog,
-  HStack,
-  Input,
-  Label,
-  Stack,
-  Text,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Dialog, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
-import {
-  useCreateOrganizationMutation,
-  useCreateUserOrganizationMutation,
-} from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { app } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth } from "lib/hooks";
+import { useAuth, useForm } from "lib/hooks";
+import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
+import { toaster } from "lib/util";
 import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -102,7 +89,10 @@ const CreateOrganization = () => {
 
   useHotkeys(
     "mod+o",
-    () => setIsOpen(!isOpen),
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
     {
       enabled: !!user && !isCreateProjectDialogOpen,
       enableOnFormTags: true,
@@ -111,14 +101,11 @@ const CreateOrganization = () => {
     [user, isOpen, isCreateProjectDialogOpen]
   );
 
-  const { data, mutateAsync: createOrganization } =
-    useCreateOrganizationMutation();
-
-  const { mutateAsync: addUserToOrganization } =
-    useCreateUserOrganizationMutation({
-      onSuccess: () => {
+  const { mutateAsync: createOrganization, isPending } =
+    useCreateOrganizationMutation({
+      onSuccess: (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createOrganization?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
         );
 
         setIsOpen(false);
@@ -126,43 +113,42 @@ const CreateOrganization = () => {
       },
     });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: "",
       slug: "",
     },
-    asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const { createOrganization: createOrganizationResponse } =
-          await createOrganization({
-            input: {
-              organization: {
-                name: value.name,
-                slug: value.slug,
-              },
-            },
-          });
-
-        await addUserToOrganization({
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        createOrganization({
           input: {
-            userOrganization: {
-              userId: user?.rowId!,
-              organizationId: createOrganizationResponse?.organization?.rowId!,
+            organization: {
+              name: value.name,
+              slug: value.slug,
             },
           },
-        });
-      } catch (error) {
-        if (isDevEnv) {
-          console.error(error);
+        }),
+        {
+          loading: {
+            title: app.dashboardPage.cta.newOrganization.action.pending,
+          },
+          success: {
+            title: app.dashboardPage.cta.newOrganization.action.success.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.success.description,
+          },
+          error: {
+            title: app.dashboardPage.cta.newOrganization.action.error.title,
+            description:
+              app.dashboardPage.cta.newOrganization.action.error.description,
+          },
         }
-      }
-    },
+      ),
   });
 
   return (
@@ -185,90 +171,36 @@ const CreateOrganization = () => {
           await handleSubmit();
         }}
       >
-        <Field name="name">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationName.id
-                }
-              >
-                {app.dashboardPage.cta.newOrganization.organizationName.id}
-              </Label>
-
-              <Input
-                id={app.dashboardPage.cta.newOrganization.organizationName.id}
-                placeholder={
-                  app.dashboardPage.cta.newOrganization.organizationName
-                    .placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="name">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newOrganization.organizationName.id}
+              placeholder={
+                app.dashboardPage.cta.newOrganization.organizationName
+                  .placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="slug">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={
-                  app.dashboardPage.cta.newOrganization.organizationSlug.id
-                }
-              >
-                {app.dashboardPage.cta.newOrganization.organizationSlug.id}
-              </Label>
-
-              <HStack>
-                <Text
-                  whiteSpace="nowrap"
-                  fontSize="lg"
-                >{`/${app.organizationsPage.breadcrumb.toLowerCase()}/`}</Text>
-
-                <Input
-                  id={app.dashboardPage.cta.newOrganization.organizationSlug.id}
-                  placeholder={
-                    app.dashboardPage.cta.newOrganization.organizationSlug
-                      .placeholder
-                  }
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                />
-              </HStack>
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="slug">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newOrganization.organizationSlug.id}
+              placeholder={
+                app.dashboardPage.cta.newOrganization.organizationSlug
+                  .placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting}
-              mt={4}
-            >
-              {isSubmitting
-                ? app.dashboardPage.cta.newOrganization.action.pending
-                : app.dashboardPage.cta.newOrganization.action.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.dashboardPage.cta.newOrganization.action}
+            isPending={isPending}
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );

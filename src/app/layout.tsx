@@ -1,7 +1,9 @@
+import Script from "next/script";
+
 import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
-import { ENABLE_MSW, NEXT_RUNTIME, app } from "lib/config";
+import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
 import { mswNodeServer } from "test/e2e/util";
 
 import type { Metadata } from "next";
@@ -32,26 +34,14 @@ export const metadata: Metadata = {
 /**
  * Root layout.
  */
-const RootLayout = ({ children }: { children: ReactNode }) => (
-  // !!NB: suppressHydrationWarning is required for next-themes to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#use for more details
+const RootLayout = async ({ children }: { children: ReactNode }) => (
+  // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
   <html lang="en" suppressHydrationWarning>
-    <head>
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="32x32"
-        href="/img/favicon-32x32.png"
-      />
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="16x16"
-        href="/img/favicon-16x16.png"
-      />
-      <link rel="shortcut icon" href="/favicon.ico" />
-    </head>
-
     <body>
+      {isDevEnv && (
+        <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+      )}
+
       <Providers>
         <Layout>{children}</Layout>
       </Providers>

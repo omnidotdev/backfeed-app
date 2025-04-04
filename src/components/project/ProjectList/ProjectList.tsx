@@ -8,26 +8,37 @@ import { LuCirclePlus } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useProjectsQuery } from "generated/graphql";
+import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useDebounceValue, useSearchParams } from "lib/hooks";
+import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
 
-// TODO: remove once ownership check is implemented
-const IS_ORGANIZATION_OWNER = Math.random() < 0.5;
-
 /**
  * Project list.
  */
 const ProjectList = () => {
+  const { user } = useAuth();
+
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
-  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
+  const { data: organizationId } = useOrganizationQuery(
+    {
+      slug: organizationSlug,
+    },
+    {
+      select: (data) => data?.organizationBySlug?.rowId,
+    }
+  );
 
-  const [debouncedSearch] = useDebounceValue({ value: search });
+  const { isOwner } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organizationId,
+  });
+
+  const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -38,7 +49,7 @@ const ProjectList = () => {
       pageSize,
       offset: (page - 1) * pageSize,
       organizationSlug,
-      search: debouncedSearch,
+      search,
     },
     {
       placeholderData: keepPreviousData,
@@ -65,12 +76,12 @@ const ProjectList = () => {
     return (
       <EmptyState
         message={
-          IS_ORGANIZATION_OWNER
+          isOwner
             ? app.projectsPage.emptyState.organizationOwnerMessage
             : app.projectsPage.emptyState.organizationUserMessage
         }
         action={
-          IS_ORGANIZATION_OWNER
+          isOwner
             ? {
                 label: app.projectsPage.emptyState.cta.label,
                 icon: LuCirclePlus,
@@ -90,16 +101,20 @@ const ProjectList = () => {
   return (
     <Stack align="center" justify="space-between" h="100%">
       <Stack w="100%">
-        {projects.map((project, index) => (
-          <ProjectListItem
-            key={project?.rowId}
-            project={project as Project}
-            index={index}
-          />
+        {projects.map((project) => (
+          <ProjectListItem key={project?.rowId} project={project as Project} />
         ))}
       </Stack>
 
       <Pagination
+        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
+        ellipsisProps={{
+          display: { base: "none", sm: "flex" },
+        }}
+        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
+        itemProps={{
+          display: { base: "none", sm: "flex" },
+        }}
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}

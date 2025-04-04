@@ -1,6 +1,7 @@
 "use client";
 
 import { Flex, Text } from "@omnidev/sigil";
+
 import { app } from "lib/config";
 
 /**

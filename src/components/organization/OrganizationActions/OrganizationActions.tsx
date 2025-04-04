@@ -2,12 +2,12 @@
 
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { useParams, useRouter } from "next/navigation";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
-import { MdManageAccounts } from "react-icons/md";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -21,35 +21,45 @@ interface Action extends ButtonProps {
   icon: IconType;
 }
 
+interface Props {
+  /** Organization ID. */
+  organizationId: string;
+}
+
 /**
  * Organization actions.
  */
-const OrganizationActions = () => {
+const OrganizationActions = ({ organizationId }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  const { isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
 
+  const { isAdmin } = useOrganizationMembership({
+    organizationId,
+    userId: user?.rowId,
+  });
+
   const ORGANIZATION_ACTIONS: Action[] = [
-    {
-      label: app.organizationPage.actions.cta.createProject.label,
-      icon: LuCirclePlus,
-      onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: isAuthLoading,
-    },
-    {
-      label: app.organizationPage.actions.cta.manageTeam.label,
-      icon: MdManageAccounts,
-      disabled: true,
-    },
     {
       label: app.organizationPage.actions.cta.settings.label,
       icon: LuSettings,
       onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
+    },
+    {
+      label: app.organizationPage.actions.cta.manageTeam.label,
+      icon: HiOutlineUserGroup,
+      onClick: () => router.push(`/organizations/${organizationSlug}/members`),
+    },
+    {
+      label: app.organizationPage.actions.cta.createProject.label,
+      icon: LuCirclePlus,
+      onClick: () => setIsCreateProjectDialogOpen(true),
+      disabled: !isAdmin,
     },
   ];
 

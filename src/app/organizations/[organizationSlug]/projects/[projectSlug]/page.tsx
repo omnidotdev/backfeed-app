@@ -3,16 +3,21 @@ import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
+  Role,
   useInfinitePostsQuery,
   usePostsQuery,
   useProjectMetricsQuery,
+  useProjectQuery,
+  useProjectStatusesQuery,
+  useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
@@ -44,7 +49,7 @@ interface Props {
 const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
@@ -53,6 +58,11 @@ const ProjectPage = async ({ params }: Props) => {
   const project = projects?.nodes?.[0];
 
   if (!project) notFound();
+
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user?.rowId!,
+    organizationId: project.organization?.rowId!,
+  });
 
   const queryClient = getQueryClient();
 
@@ -75,6 +85,16 @@ const ProjectPage = async ({ params }: Props) => {
   ];
 
   await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useProjectQuery.getKey({
+        projectSlug,
+        organizationSlug,
+      }),
+      queryFn: useProjectQuery.fetcher({
+        projectSlug,
+        organizationSlug,
+      }),
+    }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         pageSize: 5,
@@ -90,6 +110,14 @@ const ProjectPage = async ({ params }: Props) => {
       queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
       queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
     }),
+    queryClient.prefetchQuery({
+      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
+      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useStatusBreakdownQuery.getKey({ projectId: project.rowId }),
+      queryFn: useStatusBreakdownQuery.fetcher({ projectId: project.rowId }),
+    }),
   ]);
 
   return (
@@ -98,13 +126,15 @@ const ProjectPage = async ({ params }: Props) => {
       header={{
         title: project.name!,
         description: project.description!,
-        // TODO: add button actions
         cta: [
           {
             label: app.projectPage.header.cta.settings.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuSettings />,
-            disabled: true,
+            disabled:
+              !memberByUserIdAndOrganizationId ||
+              memberByUserIdAndOrganizationId.role === Role.Member,
+            href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
           },
           {
             label: app.projectPage.header.cta.viewAllProjects.label,

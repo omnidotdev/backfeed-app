@@ -4,6 +4,9 @@ const app = {
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
   breadcrumb: "Home",
+  unsavedChanges: {
+    description: "You have unsaved changes.",
+  },
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
@@ -33,6 +36,13 @@ const app = {
       label: "Coming Soon",
     },
   },
+  header: {
+    routes: {
+      pricing: {
+        label: "Pricing",
+      },
+    },
+  },
   landingPage: {
     hero: {
       title: "Transform User Feedback into Actionable Insights",
@@ -59,9 +69,9 @@ const app = {
         "Our comprehensive platform provides all the tools you need to collect, analyze, and act on user feedback.",
       pinned: {
         collection: {
-          title: "Real-time Feedback Collection",
+          title: "Feedback Collection",
           description:
-            "Gather user feedback instantly with customizable forms and widgets that seamlessly integrate into your product.",
+            "Gather and colocate user feedback across multiple projects, products, and services.",
         },
         analytics: {
           title: "Advanced Analytics",
@@ -115,6 +125,14 @@ const app = {
         action: {
           submit: "Create Organization",
           pending: "Creating Organization...",
+          success: {
+            title: "Success!",
+            description: "Your organization has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your organization.",
+          },
         },
         label: "New Organization",
         description: "Create a new organization by submitting the form below.",
@@ -142,6 +160,14 @@ const app = {
         action: {
           submit: "Create Project",
           pending: "Creating Project...",
+          success: {
+            title: "Success!",
+            description: "Your project has been successfully created.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while creating your project.",
+          },
         },
         label: "New Project",
         description: "Create a new project by submitting the form below.",
@@ -155,6 +181,7 @@ const app = {
         },
         projectName: {
           id: "Project Name",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "Backfeed",
           errors: {
             minLength: "Must be at least 3 characters.",
@@ -164,12 +191,14 @@ const app = {
         projectDescription: {
           id: "Project Description",
           placeholder:
+            // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
             "Backfeed is an open-source feedback reporting platform.",
           minLength: "Must be at least 10 characters.",
           maxLength: "Must be at most 240 characters.",
         },
         projectSlug: {
           id: "Project Slug",
+          // TODO extract to `omni-${app.name}` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "omni-backfeed",
           error: {
             invalidFormat: "Invalid slug format.",
@@ -181,6 +210,31 @@ const app = {
       },
       viewOrganizations: {
         label: "View All Organizations",
+      },
+    },
+  },
+  profilePage: {
+    breadcrumb: "Profile",
+    header: {
+      title: "User Profile",
+      description: "View and manage your account information.",
+    },
+    subscription: {
+      title: "Subscription",
+      // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
+      description: "Manage your subscription plan and billing information.",
+      actions: {
+        subscribe: {
+          label: "Subscribe",
+        },
+        manageSubscription: {
+          label: "Manage",
+        },
+      },
+      headers: {
+        productName: "Product Name",
+        status: "Status",
+        amount: "Amount",
       },
     },
   },
@@ -246,16 +300,49 @@ const app = {
     },
     actions: {
       title: "Quick Actions",
-      description: "Common organization tasks",
+      description: "Common organization details and actions",
       cta: {
         createProject: {
           label: "Create New Project",
         },
         manageTeam: {
-          label: "Manage Team",
+          label: "Members",
         },
         settings: {
-          label: "Organization Settings",
+          label: "Settings",
+        },
+      },
+    },
+  },
+  organizationMembersPage: {
+    breadcrumb: "Members",
+    description: "Manage the members and their roles within your organization.",
+    filters: {
+      search: {
+        placeholder: "Search all organization members...",
+      },
+      role: {
+        placeholder: "Select Roles",
+      },
+    },
+    membersMenu: {
+      makeAdmin: "Give administrative privileges",
+      removeAdmin: "Remove administrative privileges",
+      removeMember: "Remove from organization",
+    },
+    cta: {
+      addOwner: {
+        title: "Add Owner",
+        description: "Add a new owner to your organization.",
+        label: "New Owner",
+        noMembersFound: "No members found",
+        form: {
+          rowId: {
+            placeholder: "Search for or select a member...",
+          },
+          submit: "Add Owner",
+          pending: "Adding Owner...",
+          cancel: "Cancel",
         },
       },
     },
@@ -263,14 +350,17 @@ const app = {
   organizationSettingsPage: {
     breadcrumb: "Settings",
     description: "Manage your organization settings.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
     cta: {
       updateOrganization: {
         title: "Update Organization",
         memberTitle: "Organization Details",
-        actions: {
+        action: {
           submit: "Update Organization",
-        },
-        statuses: {
           pending: "Updating Organization...",
         },
         fields: {
@@ -291,22 +381,33 @@ const app = {
           },
         },
       },
+      transferOwnership: {
+        title: "Transfer Ownership",
+        description:
+          "Transfer ownership of this organization to another member.",
+        actionLabel: "Transfer",
+        destructiveAction: {
+          title: "Transfer Ownership",
+          description: "Are you sure you want to transfer ownership?",
+          actionLabel: "Transfer",
+        },
+      },
       deleteOrganization: {
         title: "Delete Organization",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments. This action is irreversible and cannot be undone.",
+          "The organization will be permanently deleted, including its projects, posts and comments.",
         actionLabel: "Delete",
         destruciveAction: {
           title: "Delete Organization",
           description: "Are you sure you want to delete this organization?",
           actionLabel: "Delete",
-          prompt: "Permanently delete organization",
+          prompt: "permanently delete organization",
         },
       },
       leaveOrganization: {
         title: "Leave Organization",
         description:
-          "You will no longer have access to this organization and its projects. This action is irreversible and cannot be undone.",
+          "You will no longer have access to this organization and its projects.",
         actionLabel: "Leave",
         destruciveAction: {
           title: "Leave Organization",
@@ -314,95 +415,89 @@ const app = {
           actionLabel: "Leave",
         },
       },
+      joinOrganization: {
+        title: "Join Organization",
+        description:
+          "You will be able to collaborate with other members of this organization.",
+        actionLabel: "Join",
+      },
     },
   },
-  // TODO update copy with correct pricing information (https://linear.app/omnidev/issue/OMNI-146/set-up-pricing-tiers)
   pricingPage: {
     title: "Pricing",
-    pricingCard: {
-      perMonth: "/month",
-      getStarted: "Get Started",
-    },
-    pricingTiers: {
-      recommended: "Recommended",
-      tiers: [
-        {
-          title: "Basic",
-          price: "$29",
-          description: "Perfect for small teams just getting started",
-          features: [
-            "Up to 1,000 responses per month",
-            "Basic analytics dashboard",
-            "Email support",
-            "1 project",
-            "Basic integrations",
-          ],
-        },
-        {
-          title: "Professional",
-          price: "$79",
-          description: "Everything you need for a growing business",
-          features: [
-            "Up to 10,000 responses per month",
-            "Advanced analytics & reporting",
-            "Priority email & chat support",
-            "Unlimited projects",
-            "Advanced integrations",
-            "Custom branding",
-            "Team collaboration",
-          ],
-        },
-        {
-          title: "Enterprise",
-          price: "Contact Us",
-          description: "Advanced features for large organizations",
-          features: [
-            "Unlimited responses",
-            "Custom analytics solutions",
-            "24/7 phone & email support",
-            "Dedicated account manager",
-            "Custom integrations",
-            "SLA guarantee",
-            "Advanced security features",
-            "On-premise deployment option",
-          ],
-        },
-      ],
-    },
-    pricingFAQ: {
-      FAQ: "Frequently Asked Questions",
-      items: [
-        {
-          title: "How does the 14-day trial work?",
-          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe or your account will automatically switch to the free plan.",
-        },
-        {
-          title: "Can I switch plans later?",
-          body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
-        },
-        {
-          title: "What payment methods do you accept?",
-          body: "We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. For Enterprise plans, we also support wire transfers and purchase orders.",
-        },
-        {
-          title:
-            "Do you offer discounts for non-profits or educational institutions?",
-          body: "Yes, we offer special pricing for non-profits, educational institutions, and open-source projects. Please contact our sales team for more information.",
-        },
-        {
-          title: "What happens to my data if I cancel?",
-          body: "You'll have 30 days to export your data after cancellation. After that period, your data will be permanently deleted from our servers.",
-        },
-        {
-          title: "Can I self-host this software?",
-          body: "Yes! We offer open access to our API free of charge so you can build your own feedback provider around our infrastructure.",
-        },
-      ],
-    },
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
         "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+      monthly: "Monthly",
+      annual: "Annual",
+      savings: "save 25%",
+    },
+    pricingCard: {
+      user: "user",
+      month: "month",
+      year: "year",
+      getStarted: "Get started",
+      enterprise: "Contact sales",
+      customPricing: "Custom",
+    },
+    pricingMatrix: {
+      feature: "Feature",
+      features: {
+        gdpr: "GDPR Compliance",
+        communitySupport: "Community Support",
+        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedOrgs: "Unlimited Organizations",
+        unlimitedProjects: "Unlimited Projects",
+        webhooks: "Webhooks",
+        apiAccess: "API Access",
+        customTags: "Custom Tags",
+        customCategories: "Custom Categories",
+        customAnalytics: "Custom Analytics",
+        internalCollaborationTools: "Internal Collaboration Tools",
+        customBranding: "Custom Branding",
+        thirdPartyIntegrations: "Third-Party Integrations",
+        customSso: "Custom SSO (SAML, OpenID Connect)",
+        customData: "Data Retention Policies",
+        customOnboardingTraining: "Custom Onboarding & Training",
+        slaBackedSupport: "SLA-backed Support",
+        selfHostingAssistance: "Self-hosting Assistance",
+        integrationSupportForInternalTools:
+          "Integration Support for Internal Tools",
+        customAiBasedFeedbackAnalysis: "Custom AI-based Feedback Analysis",
+      },
+    },
+    pricingTiers: {
+      recommended: "Recommended",
+      comingSoon: "Coming Soon",
+    },
+    pricingFaq: {
+      FAQ: "Frequently Asked Questions",
+      items: [
+        {
+          title: "How does the 14-day trial work?",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
+          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe to continue using Backfeed.",
+        },
+        {
+          title: "Can I switch plans later?",
+          // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)
+          body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
+        },
+        {
+          title: "What payment methods do you accept?",
+          body: "We accept a wide variety of payment methods, including all major credit card providers and PayPal.",
+        },
+        {
+          title: "What happens to my data if I cancel?",
+          body: "If you cancel your subscription, your data will be safe on our servers unless you explicitly reach out to us to permanently delete it, or we contact you to warn about deletion. We will never delete your data without your explicit consent or without fair warning from us.",
+        },
+        {
+          title: "Can I self-host this software?",
+          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
+          body: "Yes! Backfeed is open source software. Instructions for self-hosting will be available soon.",
+        },
+      ],
     },
   },
   projectsPage: {
@@ -447,7 +542,132 @@ const app = {
           label: "Delete",
         },
         destructiveInput: {
-          prompt: "Permanently delete project",
+          prompt: "permanently delete project",
+        },
+      },
+    },
+  },
+  projectSettingsPage: {
+    breadcrumb: "Settings",
+    description:
+      "Manage your project settings and handle feedback for your project.",
+    dangerZone: {
+      title: "Danger Zone",
+      description:
+        "Below are destructive actions that are irreversible and cannot be undone.",
+    },
+    cta: {
+      updateProject: {
+        title: "Update Project",
+        description:
+          "Edit core details and project information (i.e. name, description, slug).",
+        memberTitle: "Project Details",
+        action: {
+          submit: "Update Project",
+          pending: "Updating Project...",
+        },
+        fields: {
+          projectName: {
+            label: "Project Name",
+            errors: {
+              minLength: "Must be at least 3 characters.",
+            },
+          },
+          projectDescription: {
+            label: "Project Description",
+            errors: {
+              minLength: "Must be at least 10 characters.",
+            },
+          },
+          projectSlug: {
+            label: "Project Slug",
+            errors: {
+              invalidFormat: "Invalid slug format.",
+              minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 50 characters.",
+              duplicate: "Project slug already exists.",
+            },
+          },
+        },
+      },
+      updateProjectStatuses: {
+        title: "Project Statuses",
+        description:
+          "Customize statuses that are used to track progress on feedback items.",
+        actions: {
+          reset: {
+            label: "Reset",
+          },
+          remove: {
+            label: "Remove status",
+          },
+          add: {
+            label: "Add Status",
+          },
+          // NB: these labels are the same due to the nature of the form. When adding or removing rows, the `onSubmit` errors are re-mapped, causing state to be updated for `isSubmitting`. This PR hopefully resolves this issue: https://github.com/TanStack/form/pull/1324
+          update: {
+            submit: "Update Statuses",
+            pending: "Update Statuses",
+            toast: {
+              loading: {
+                title: "Updating project statuses...",
+              },
+              success: {
+                title: "Success!",
+                description: "Statuses updated successfully",
+              },
+              error: {
+                title: "Error",
+                description:
+                  "An error occurred while updating project statuses.",
+              },
+            },
+          },
+        },
+        // ! NB: Important to keep the order of these fields intact, and each one must include a label. They are used to define the header of the update project statuses form table.
+        fields: {
+          isDefault: {
+            label: "Default",
+            info: "Indicates whether this will be the default status for newly created feedback.",
+          },
+          status: {
+            label: "Status",
+            placeholder: "New",
+            errors: {
+              minLength: "Status must be at least 3 characters.",
+              maxLength: "Status must be at most 20 characters.",
+            },
+          },
+          description: {
+            label: "Description",
+            placeholder: "Newly created",
+            errors: {
+              minLength: "Description must be at least 10 characters.",
+              maxLength: "Description must be at most 40 characters.",
+            },
+          },
+          color: {
+            label: "Color",
+            errors: {
+              startsWith: "Invalid color format.",
+              length: "Invalid color format.",
+            },
+          },
+          remove: {
+            label: "Remove",
+          },
+        },
+      },
+      deleteProject: {
+        title: "Delete Project",
+        description:
+          "The project will be permanently deleted, including its posts and comments.",
+        actionLabel: "Delete",
+        destructiveAction: {
+          title: "Delete Project",
+          description: "Are you sure you want to delete this project?",
+          actionLabel: "Delete",
+          prompt: "permanently delete project",
         },
       },
     },
@@ -485,7 +705,15 @@ const app = {
       },
       action: {
         pending: "Submitting...",
-        submit: "Create",
+        submit: "Submit",
+        success: {
+          title: "Success!",
+          description: "Your feedback has been successfully submitted.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while submitting your feedback.",
+        },
       },
       totalResponses: "Total Responses",
       details: {
@@ -525,6 +753,15 @@ const app = {
     },
     comments: {
       createComment: {
+        pending: "Adding comment...",
+        success: {
+          title: "Success!",
+          description: "Your comment has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your comment.",
+        },
         errors: {
           invalid: "Invalid format",
           minLengthMessage: "Must be at least 10 characters.",
@@ -534,7 +771,10 @@ const app = {
       title: "Comments",
       description: "View all feedback comments.",
       textAreaPlaceholder: "I agree! This sounds like a great idea.",
-      submit: "Add Comment",
+      action: {
+        pending: "Adding Comment...",
+        submit: "Add Comment",
+      },
       totalComments: "total comments",
       emptyState: {
         message: "No comments found. Add a comment to start the conversation.",

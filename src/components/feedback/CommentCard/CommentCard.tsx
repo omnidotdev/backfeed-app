@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, Text, VStack } from "@omnidev/sigil";
+import { Circle, Stack, Text } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
@@ -9,8 +9,10 @@ import { DestructiveAction } from "components/core";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
+  useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { Comment } from "generated/graphql";
@@ -42,13 +44,32 @@ const CommentCard = ({
   isSender = false,
   ...rest
 }: Props) => {
+  const { user } = useAuth();
+
   const queryClient = useQueryClient();
 
-  const { feedbackId } = useParams<{ feedbackId: string }>();
+  const { organizationSlug, feedbackId } = useParams<{
+    organizationSlug: string;
+    feedbackId: string;
+  }>();
+
+  const { data: organizationId } = useOrganizationQuery(
+    {
+      slug: organizationSlug,
+    },
+    {
+      select: (data) => data.organizationBySlug?.rowId,
+    }
+  );
+
+  const { isAdmin } = useOrganizationMembership({
+    organizationId,
+    userId: user?.rowId,
+  });
 
   const { mutate: deleteComment, isPending: isDeletePending } =
     useDeleteCommentMutation({
-      onSuccess: () =>
+      onSettled: () =>
         queryClient.invalidateQueries({
           queryKey: useInfiniteCommentsQuery.getKey({
             pageSize: 5,
@@ -63,24 +84,22 @@ const CommentCard = ({
     <Stack
       position="relative"
       direction="row"
-      boxShadow="xs"
+      bgColor="card-item"
       borderRadius="sm"
       gap={4}
       p={4}
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
-      <VStack
-        justify="center"
-        bgColor="background.subtle"
-        borderRadius="full"
-        p={2}
-        h={8}
-        w={8}
+      <Circle
         display={{ base: "none", sm: "flex" }}
+        size={8}
+        p={2}
+        bgColor="background.muted"
+        color="foreground.muted"
       >
-        <Text color="foreground.muted">{senderName?.[0]}</Text>
-      </VStack>
+        {senderName?.[0]}
+      </Circle>
 
       <Stack gap={1} flex={1} pb={8}>
         <Text fontWeight="semibold">{senderName}</Text>
@@ -96,7 +115,7 @@ const CommentCard = ({
         </Text>
       </Stack>
 
-      {isSender && (
+      {(isSender || isAdmin) && (
         <Stack position="absolute" top={1} right={1}>
           <DestructiveAction
             title={app.feedbackPage.comments.delete.title}
@@ -108,6 +127,7 @@ const CommentCard = ({
             triggerProps={{
               "aria-label": app.feedbackPage.comments.delete.title,
               color: "omni.ruby",
+              backgroundColor: "transparent",
               disabled: actionIsPending,
             }}
           />

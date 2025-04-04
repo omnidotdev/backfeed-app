@@ -9,7 +9,7 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useDebounceValue, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -22,10 +22,6 @@ import type { Organization } from "generated/graphql";
 const OrganizationList = ({ ...props }: StackProps) => {
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
-  const [debouncedSearch] = useDebounceValue({ value: search });
-
-  const { user, isLoading: isAuthLoading } = useAuth();
-
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -34,12 +30,11 @@ const OrganizationList = ({ ...props }: StackProps) => {
     {
       pageSize,
       offset: (page - 1) * pageSize,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
-      userId: user?.rowId!,
-      search: debouncedSearch,
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
+      search,
+      isMember: false,
     },
     {
-      enabled: !!user?.rowId,
       placeholderData: keepPreviousData,
       select: (data) => ({
         totalCount: data?.organizations?.totalCount,
@@ -49,8 +44,6 @@ const OrganizationList = ({ ...props }: StackProps) => {
   );
 
   const organizations = data?.organizations;
-
-  if (isAuthLoading) return null;
 
   if (isError)
     return <ErrorBoundary message="Error fetching organizations" minH={48} />;
@@ -92,6 +85,14 @@ const OrganizationList = ({ ...props }: StackProps) => {
       </Stack>
 
       <Pagination
+        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
+        ellipsisProps={{
+          display: { base: "none", sm: "flex" },
+        }}
+        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
+        itemProps={{
+          display: { base: "none", sm: "flex" },
+        }}
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}

@@ -1,35 +1,33 @@
 "use client";
 
-import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+import { LuSettings } from "react-icons/lu";
 
-import { DestructiveAction, Link, OverflowText } from "components/core";
-import { useDeleteProjectMutation } from "generated/graphql";
-import { app } from "lib/config";
+import { Link, OverflowText } from "components/core";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { Project } from "generated/graphql";
 
-const deleteProjectDetails = app.projectsPage.dialogs.deleteProject;
-
 interface Props {
   project: Partial<Project>;
-  /** ! TODO remove, just used to implement dynamic ownership check for now. */
-  index: number;
 }
 
 /**
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { slug, organization, name, description, posts, rowId },
-  index,
+  project: { slug, organization, name, description, posts },
 }: Props) => {
-  const { mutate: deleteProject } = useDeleteProjectMutation();
+  const { user } = useAuth();
 
-  const isOrganizationOwner = index % 2 === 0;
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId: organization?.rowId,
+  });
 
   const AGGREGATES = [
     {
@@ -47,7 +45,7 @@ const ProjectListItem = ({
   return (
     <Stack
       p={4}
-      boxShadow="sm"
+      boxShadow="card"
       borderRadius="sm"
       w="full"
       maxW="100%"
@@ -78,22 +76,14 @@ const ProjectListItem = ({
             </Link>
           </Stack>
 
-          {/* TODO: handle in dedicated project settings page. */}
-          {isOrganizationOwner && (
-            <DestructiveAction
-              title={deleteProjectDetails.title}
-              description={deleteProjectDetails.description}
-              destructiveInput={deleteProjectDetails.destructiveInput.prompt}
-              action={{
-                label: deleteProjectDetails.action.label,
-                onClick: () => deleteProject({ rowId: rowId! }),
-              }}
-              triggerProps={{
-                "aria-label": `${deleteProjectDetails.action.label} organization`,
-                colorPalette: "omni.ruby",
-                px: "2",
-              }}
-            />
+          {isAdmin && (
+            <Link
+              href={`${`/organizations/${organization?.slug}/projects/${slug}/settings`}`}
+            >
+              <Button variant="ghost" px="2">
+                <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
+              </Button>
+            </Link>
           )}
         </HStack>
 

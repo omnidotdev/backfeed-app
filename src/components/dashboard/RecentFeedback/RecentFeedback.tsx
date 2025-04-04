@@ -3,7 +3,7 @@
 import { Flex } from "@omnidev/sigil";
 
 import { SkeletonArray } from "components/core";
-import { FeedbackCard, Response } from "components/dashboard";
+import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
@@ -32,19 +32,20 @@ const RecentFeedback = () => {
   );
 
   return (
-    <FeedbackCard
+    <FeedbackSection
       title="Recent Feedback"
       maxH="xl"
-      contentProps={{ overflow: "auto" }}
+      contentProps={{ overflow: "auto", p: 6 }}
     >
       {isError ? (
         <ErrorBoundary
           message="Error fetching recent feedback"
-          h={400}
+          minH={40}
+          h="full"
           w="full"
         />
       ) : (
-        <Flex w="full" direction="column" gap={2}>
+        <Flex w="full" direction="column" gap={2} h="full">
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
@@ -52,19 +53,22 @@ const RecentFeedback = () => {
               <Response
                 key={feedback?.rowId}
                 feedback={feedback as Partial<Post>}
-                type="Neutral"
+                borderBottomWidth={{ base: "1px", _last: 0 }}
+                pt={{ base: 3, _first: 0 }}
+                pb={{ base: 3, _last: 6 }}
               />
             ))
           ) : (
             <EmptyState
               message={app.dashboardPage.recentFeedback.emptyState.message}
-              h={400}
+              minH={40}
+              h="full"
               w="full"
             />
           )}
         </Flex>
       )}
-    </FeedbackCard>
+    </FeedbackSection>
   );
 };
 

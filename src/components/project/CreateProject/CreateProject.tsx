@@ -1,34 +1,53 @@
 "use client";
 
-import {
-  Button,
-  Dialog,
-  HStack,
-  Input,
-  Label,
-  Select,
-  Stack,
-  Text,
-  Textarea,
-  createListCollection,
-  sigil,
-} from "@omnidev/sigil";
-import { useForm } from "@tanstack/react-form";
+import { Dialog, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import { FormFieldError } from "components/core";
 import {
+  Role,
+  useCreatePostStatusMutation,
   useCreateProjectMutation,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { standardSchemaValidator } from "lib/constants";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth } from "lib/hooks";
+import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { toaster } from "lib/util";
 import { DialogType } from "store";
+
+// NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
+const DEFAULT_POST_STATUSES = [
+  {
+    status: "Open",
+    description: "Newly created",
+    color: "#3b82f6",
+    isDefault: true,
+  },
+  {
+    status: "Planned",
+    description: "Planned for future",
+    color: "#a855f7",
+  },
+  {
+    status: "In Progress",
+    description: "Currently in progress",
+    color: "#eab308",
+  },
+  {
+    status: "Closed",
+    description: "Not currently planned",
+    color: "#ef4444",
+  },
+  {
+    status: "Resolved",
+    description: "Resolved request",
+    color: "#22c55e",
+  },
+];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -98,23 +117,12 @@ const CreateProject = ({ organizationSlug }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  useHotkeys(
-    "mod+p",
-    () => setIsOpen(!isOpen),
-    {
-      enabled: !!user && !isCreateOrganizationDialogOpen,
-      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
-      enableOnFormTags: true,
-      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
-      preventDefault: true,
-    },
-    [user, isOpen, isCreateOrganizationDialogOpen]
-  );
-
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
+      isMember: true,
       slug: organizationSlug,
+      excludeRoles: [Role.Member],
     },
     {
       enabled: !!user?.rowId,
@@ -128,41 +136,102 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const firstOrganization = organizations?.[0];
 
-  const { mutate: createProject } = useCreateProjectMutation({
-    onSuccess: (data) => {
-      router.push(
-        `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.createProject?.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${data.createProject?.project?.slug}`
-      );
-
-      setIsOpen(false);
-      reset();
-    },
+  const { isAdmin } = useOrganizationMembership({
+    organizationId: firstOrganization?.value,
+    userId: user?.rowId,
   });
 
-  const { handleSubmit, Field, Subscribe, reset } = useForm({
+  useHotkeys(
+    "mod+p",
+    () => {
+      setIsOpen(!isOpen);
+      reset();
+    },
+    {
+      enabled:
+        !!user &&
+        !isCreateOrganizationDialogOpen &&
+        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin
+        (organizationSlug ? isAdmin : true),
+      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enableOnFormTags: true,
+      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
+      preventDefault: true,
+    },
+    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
+  );
+
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
+
+  const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
+
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
       description: "",
       slug: "",
     },
-    asyncDebounceMs: 300,
-    validatorAdapter: standardSchemaValidator,
+    asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onMount: baseSchema,
+      onChange: baseSchema,
       onSubmitAsync: createProjectSchema,
     },
-    onSubmit: ({ value }) =>
-      createProject({
-        input: {
-          project: {
-            name: value.name,
-            description: value.description,
-            slug: value.slug,
-            organizationId: value.organizationId,
-          },
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        async () => {
+          const { createProject: projectData } = await createProject({
+            input: {
+              project: {
+                name: value.name,
+                description: value.description,
+                slug: value.slug,
+                organizationId: value.organizationId,
+              },
+            },
+          });
+
+          if (projectData) {
+            await Promise.all(
+              DEFAULT_POST_STATUSES.map((status) =>
+                createPostStatus({
+                  input: {
+                    postStatus: {
+                      projectId: projectData.project?.rowId!,
+                      status: status.status,
+                      description: status.description,
+                      color: status.color,
+                      isDefault: status.isDefault,
+                    },
+                  },
+                })
+              )
+            );
+
+            router.push(
+              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
+            );
+
+            setIsOpen(false);
+            reset();
+          }
         },
-      }),
+        {
+          loading: {
+            title: app.dashboardPage.cta.newProject.action.pending,
+          },
+          success: {
+            title: app.dashboardPage.cta.newProject.action.success.title,
+            description:
+              app.dashboardPage.cta.newProject.action.success.description,
+          },
+          error: {
+            title: app.dashboardPage.cta.newProject.action.error.title,
+            description:
+              app.dashboardPage.cta.newProject.action.error.description,
+          },
+        }
+      ),
   });
 
   return (
@@ -185,142 +254,59 @@ const CreateProject = ({ organizationSlug }: Props) => {
           await handleSubmit();
         }}
       >
-        <Field name="organizationId">
-          {({ handleChange, state }) => (
-            <Stack position="relative">
-              <Select
-                label={
-                  app.dashboardPage.cta.newProject.selectOrganization.label
-                }
-                collection={createListCollection({
-                  items: organizations ?? [],
-                })}
-                displayGroupLabel={false}
-                clearTriggerProps={{
-                  display: organizationSlug ? "none" : undefined,
-                }}
-                disabled={!!organizationSlug}
-                valueTextProps={{
-                  placeholder: "Select an organization",
-                }}
-                triggerProps={{
-                  borderColor: "border.subtle",
-                }}
-                value={state.value?.length ? [state.value] : []}
-                onValueChange={({ value }) =>
-                  handleChange(value.length ? value[0] : "")
-                }
-              />
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="organizationId">
+          {({ SingularSelectField }) => (
+            <SingularSelectField
+              label={app.dashboardPage.cta.newProject.selectOrganization.label}
+              placeholder="Select an organization"
+              items={organizations ?? []}
+              clearTriggerProps={{
+                display: organizationSlug ? "none" : undefined,
+              }}
+              disabled={!!organizationSlug}
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="name">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={app.dashboardPage.cta.newProject.projectName.id}>
-                {app.dashboardPage.cta.newProject.projectName.id}
-              </Label>
-
-              <Input
-                id={app.dashboardPage.cta.newProject.projectName.id}
-                placeholder={
-                  app.dashboardPage.cta.newProject.projectName.placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="name">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newProject.projectName.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectName.placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="description">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label
-                htmlFor={app.dashboardPage.cta.newProject.projectDescription.id}
-              >
-                {app.dashboardPage.cta.newProject.projectDescription.id}
-              </Label>
-
-              <Textarea
-                id={app.dashboardPage.cta.newProject.projectDescription.id}
-                placeholder={
-                  app.dashboardPage.cta.newProject.projectDescription
-                    .placeholder
-                }
-                value={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="description">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newProject.projectDescription.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectDescription.placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Field name="slug">
-          {({ handleChange, state }) => (
-            <Stack position="relative" gap={1.5}>
-              <Label htmlFor={app.dashboardPage.cta.newProject.projectSlug.id}>
-                {app.dashboardPage.cta.newProject.projectSlug.id}
-              </Label>
-
-              <HStack>
-                <Text
-                  whiteSpace="nowrap"
-                  fontSize="lg"
-                >{`.../${app.projectsPage.breadcrumb.toLowerCase()}/`}</Text>
-
-                <Input
-                  id={app.dashboardPage.cta.newProject.projectSlug.id}
-                  placeholder={
-                    app.dashboardPage.cta.newProject.projectSlug.placeholder
-                  }
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                />
-              </HStack>
-
-              <FormFieldError
-                error={state.meta.errorMap.onSubmit}
-                isDirty={state.meta.isDirty}
-              />
-            </Stack>
+        <AppField name="slug">
+          {({ InputField }) => (
+            <InputField
+              label={app.dashboardPage.cta.newProject.projectSlug.id}
+              placeholder={
+                app.dashboardPage.cta.newProject.projectSlug.placeholder
+              }
+            />
           )}
-        </Field>
+        </AppField>
 
-        <Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <Button
-              type="submit"
-              disabled={!canSubmit || !isDirty || isSubmitting}
-              mt={4}
-            >
-              {isSubmitting
-                ? app.dashboardPage.cta.newProject.action.pending
-                : app.dashboardPage.cta.newProject.action.submit}
-            </Button>
-          )}
-        </Subscribe>
+        <AppForm>
+          <SubmitForm
+            action={app.dashboardPage.cta.newProject.action}
+            isPending={isPending}
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );

@@ -1,15 +1,26 @@
 fragment Feedback on Post {
   rowId
+  title
+  description
+  statusUpdatedAt
+  createdAt
+  updatedAt
   project {
     rowId
     name
+    slug
     organization {
       rowId
       name
+      slug
     }
   }
-  title
-  description
+  status {
+    rowId
+    status
+    description
+    color
+  }
   user {
     username
   }
@@ -19,6 +30,4 @@ fragment Feedback on Post {
   downvotes {
     totalCount
   }
-  createdAt
-  updatedAt
 }

@@ -7,12 +7,12 @@ import {
   ThemeProvider,
 } from "providers";
 
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 /**
  * Application context providers.
  */
-const Providers = ({ children }: { children: ReactNode }) => (
+const Providers = ({ children }: PropsWithChildren) => (
   <AuthProvider>
     <ThemeProvider>
       <SearchParamsProvider>

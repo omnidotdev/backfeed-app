@@ -4,9 +4,7 @@ query RecentFeedback($userId: UUID!) {
     orderBy: CREATED_AT_DESC
     filter: {
       project: {
-        organization: {
-          userOrganizations: { some: { userId: { equalTo: $userId } } }
-        }
+        organization: { members: { some: { userId: { equalTo: $userId } } } }
       }
     }
   ) {
@@ -15,6 +13,11 @@ query RecentFeedback($userId: UUID!) {
       createdAt
       title
       description
+      status {
+        rowId
+        status
+        color
+      }
       user {
         rowId
         username

@@ -1,6 +1,6 @@
 "use client";
 
-import { useDebounceValue as useSigilDebounceValue } from "@omnidev/sigil";
+import { useDebounceValue as useHooksDebounceValue } from "usehooks-ts";
 
 const DEFAULT_DELAY = 300;
 
@@ -15,6 +15,6 @@ interface Options<T> {
  * Custom hook that returns a debounced version of the provided value, along with a function to update it.
  */
 const useDebounceValue = <T,>({ value, delay = DEFAULT_DELAY }: Options<T>) =>
-  useSigilDebounceValue(value, delay);
+  useHooksDebounceValue(value, delay);
 
 export default useDebounceValue;

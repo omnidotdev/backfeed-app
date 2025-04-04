@@ -1,14 +1,13 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { useParams } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import { Link, OverflowText } from "components/core";
+import { OverflowText } from "components/core";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Project } from "generated/graphql";
@@ -32,8 +31,6 @@ interface Props extends FlexProps {
  * Project, nested within an organization. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
 const ProjectCard = ({ project, ...rest }: Props) => {
-  const params = useParams<{ organizationSlug: string }>();
-
   const PROJECT_METRICS: ProjectMetric[] = [
     {
       icon: HiOutlineChatBubbleLeftRight,
@@ -51,27 +48,22 @@ const ProjectCard = ({ project, ...rest }: Props) => {
     <Flex
       position="relative"
       direction="column"
-      bgColor="background.subtle"
+      bgColor="card-item"
       borderRadius="lg"
-      boxShadow="xs"
       p={8}
       {...rest}
     >
-      <Link
-        href={`/organizations/${params.organizationSlug}/projects/${project?.slug}`}
+      <Button
+        position="absolute"
+        top={1}
+        right={1}
+        p={2}
+        variant="icon"
+        color={{ base: "foreground.muted", _groupHover: "brand.primary" }}
+        bgColor="transparent"
       >
-        <Button
-          position="absolute"
-          top={1}
-          right={1}
-          p={2}
-          variant="icon"
-          color={{ base: "foreground.muted", _hover: "brand.primary" }}
-          bgColor="transparent"
-        >
-          <Icon src={FiArrowUpRight} w={5} h={5} />
-        </Button>
-      </Link>
+        <Icon src={FiArrowUpRight} w={5} h={5} />
+      </Button>
 
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>

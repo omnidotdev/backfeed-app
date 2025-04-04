@@ -22,7 +22,7 @@ const OrganizationListItem = ({ organization }: Props) => {
     {
       type: "Users",
       icon: HiOutlineUserGroup,
-      value: organization?.userOrganizations?.totalCount,
+      value: organization?.members?.totalCount,
     },
     {
       type: "Projects",
@@ -34,7 +34,7 @@ const OrganizationListItem = ({ organization }: Props) => {
   return (
     <Stack
       p={4}
-      boxShadow="sm"
+      boxShadow="card"
       borderRadius="sm"
       w="full"
       maxW="100%"

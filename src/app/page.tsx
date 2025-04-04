@@ -1,28 +1,32 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
+import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import {
   OrganizationOrderBy,
+  Role,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
   useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
 
+export const dynamic = "force-dynamic";
+
 /**
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
 const HomePage = async () => {
-  const session = await getAuthSession();
+  const session = await auth();
 
   if (!session) return <LandingPage />;
 
@@ -31,14 +35,27 @@ const HomePage = async () => {
   const organizationsQueryVariables: OrganizationsQueryVariables = {
     pageSize: 3,
     offset: 0,
-    orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+    orderBy: [OrganizationOrderBy.MembersCountDesc],
     userId: session.user.rowId!,
+    isMember: true,
   };
 
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
       queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationsQuery.getKey({
+        userId: organizationsQueryVariables.userId,
+        isMember: true,
+        excludeRoles: [Role.Member],
+      }),
+      queryFn: useOrganizationsQuery.fetcher({
+        userId: organizationsQueryVariables.userId,
+        isMember: true,
+        excludeRoles: [Role.Member],
+      }),
     }),
     queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({

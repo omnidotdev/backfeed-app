@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, Grid } from "@omnidev/sigil";
 import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
 import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
-import { EmptyState, ErrorBoundary } from "components/layout";
+import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -32,8 +32,9 @@ const PinnedOrganizations = () => {
     {
       pageSize: 3,
       offset: 0,
-      orderBy: [OrganizationOrderBy.UserOrganizationsCountDesc],
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
       userId: user?.rowId!,
+      isMember: true,
     },
     {
       enabled: !!user?.rowId,
@@ -42,46 +43,36 @@ const PinnedOrganizations = () => {
   );
 
   return (
-    <Flex
-      direction="column"
-      bgColor="background.default"
-      w="100%"
-      borderRadius="lg"
-      boxShadow="lg"
-      borderColor="border.subtle"
-      p={6}
-      gap={6}
+    <SectionContainer
+      title={app.dashboardPage.organizations.title}
+      description={app.dashboardPage.organizations.description}
+      icon={LuBuilding2}
     >
       <Flex
         direction={{ base: "column", md: "row" }}
         justify="space-between"
         gap={4}
       >
-        <Stack>
-          <Flex align="center" gap={2}>
-            <Icon src={LuBuilding2} w={5} h={5} color="foreground.subtle" />
-
-            <Text fontSize="2xl" fontWeight="semibold" lineHeight={1.2}>
-              {app.dashboardPage.organizations.title}
-            </Text>
-          </Flex>
-
-          <Text color="foreground.subtle" fontSize="sm">
-            {app.dashboardPage.organizations.description}
-          </Text>
-        </Stack>
-
-        <Link href="/organizations" disabled={!pinnedOrganizations?.length}>
-          <Button
-            variant="outline"
-            color="brand.primary"
-            borderColor="brand.primary"
-            opacity={{ base: 1, _disabled: 0.5 }}
-            disabled={!pinnedOrganizations?.length}
-          >
-            {app.dashboardPage.cta.viewOrganizations.label}
-          </Button>
-        </Link>
+        <Flex
+          direction="column"
+          position={{ md: "absolute" }}
+          top={{ md: 6 }}
+          right={{ md: 6 }}
+        >
+          <Link href="/organizations">
+            <Button
+              variant="outline"
+              color="brand.primary"
+              borderColor="brand.primary"
+              bgColor={{
+                _hover: { base: "brand.primary.50", _dark: "neutral.900" },
+              }}
+              w={{ base: "full", md: "auto" }}
+            >
+              {app.dashboardPage.cta.viewOrganizations.label}
+            </Button>
+          </Link>
+        </Flex>
       </Flex>
 
       {isError ? (
@@ -102,12 +93,17 @@ const PinnedOrganizations = () => {
             <SkeletonArray count={3} h={48} />
           ) : pinnedOrganizations?.length ? (
             pinnedOrganizations?.map((organization) => (
-              <OrganizationCard
+              <Link
                 key={organization?.rowId}
-                organization={organization as Partial<Organization>}
-                // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
-                h={48}
-              />
+                href={`/organizations/${organization?.slug}`}
+                role="group"
+              >
+                <OrganizationCard
+                  organization={organization as Partial<Organization>}
+                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
+                  h={48}
+                />
+              </Link>
             ))
           ) : (
             <EmptyState
@@ -127,7 +123,7 @@ const PinnedOrganizations = () => {
           )}
         </Grid>
       )}
-    </Flex>
+    </SectionContainer>
   );
 };
 

@@ -1,16 +1,19 @@
 "use client";
 
-import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { Button, Grid, Icon, Stack, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { SkeletonArray, Spinner } from "components/core";
-import { CreateFeedback, FeedbackDetails } from "components/feedback";
+import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
+  useProjectStatusesQuery,
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -31,7 +34,11 @@ interface Props {
  * Project feedback.
  */
 const ProjectFeedback = ({ projectId }: Props) => {
+  const router = useRouter();
+
   const { user } = useAuth();
+
+  const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
   const { data: username } = useUserQuery(
     {
@@ -40,6 +47,17 @@ const ProjectFeedback = ({ projectId }: Props) => {
     {
       enabled: !!user?.hidraId,
       select: (data) => data?.userByHidraId?.username,
+    }
+  );
+
+  const { data: defaultStatus } = useProjectStatusesQuery(
+    {
+      projectId,
+      isDefault: true,
+    },
+    {
+      enabled: !!projectId,
+      select: (data) => data?.postStatuses?.nodes?.[0],
     }
   );
 
@@ -58,7 +76,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       }
     );
 
-  const pendingFeedback = useMutationState<Partial<FeedbackFragment>>({
+  const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
       mutationKey: useCreateFeedbackMutation.getKey(),
       status: "pending",
@@ -71,8 +89,10 @@ const ProjectFeedback = ({ projectId }: Props) => {
         rowId: "pending",
         title: input.post.title,
         description: input.post.description,
+        status: defaultStatus!,
         project: {
           rowId: input.post.projectId,
+          slug: "pending",
         },
         user: {
           username,
@@ -87,19 +107,17 @@ const ProjectFeedback = ({ projectId }: Props) => {
     },
   });
 
-  const totalCount =
-    (data?.pages?.[0]?.posts?.totalCount ?? 0) + pendingFeedback.length;
-  const posts = data?.pages?.flatMap((page) =>
-    page?.posts?.nodes?.map((post) => post)
-  );
+  const posts =
+    data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
+    [];
+
+  const allPosts = [...pendingFeedback, ...posts];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: hasNextPage,
     onLoadMore: fetchNextPage,
     disabled: isError,
-    // NB: `rootMargin` is passed to `IntersectionObserver`. We can use it to trigger 'onLoadMore' when the spinner comes *near* to being visible, instead of when it becomes fully visible within the root element.
-    rootMargin: "0px 0px 400px 0px",
   });
 
   return (
@@ -109,11 +127,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
       icon={HiOutlineFolder}
     >
       <Stack>
-        <CreateFeedback
-          isLoading={isLoading}
-          isError={isError}
-          totalCount={totalCount}
-        />
+        <CreateFeedback />
 
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
@@ -121,29 +135,51 @@ const ProjectFeedback = ({ projectId }: Props) => {
           <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
-            ) : posts?.length || pendingFeedback.length ? (
+            ) : allPosts.length ? (
               <VStack>
-                {!!pendingFeedback.length && (
-                  <FeedbackDetails
-                    feedback={pendingFeedback[0]}
-                    projectPage
-                    isPending
-                    w="full"
-                    minH={21}
-                  />
-                )}
+                {allPosts.map((feedback) => {
+                  const isPending = feedback?.rowId === "pending";
 
-                {posts?.map((feedback) => (
-                  <FeedbackDetails
-                    key={feedback?.rowId}
-                    feedback={feedback!}
-                    projectPage
-                    w="full"
-                    minH={21}
-                  />
-                ))}
+                  return (
+                    <FeedbackCard
+                      key={feedback?.rowId}
+                      feedback={feedback!}
+                      totalUpvotes={feedback?.upvotes?.totalCount}
+                      totalDownvotes={feedback?.downvotes?.totalCount}
+                      isPending={isPending}
+                      w="full"
+                      minH={21}
+                      borderRadius="md"
+                      bgColor="card-item"
+                      cursor={isPending ? "not-allowed" : "pointer"}
+                      role="group"
+                      onClick={() =>
+                        !isPending
+                          ? router.push(
+                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
+                            )
+                          : undefined
+                      }
+                    >
+                      <Button
+                        position="absolute"
+                        top={1}
+                        right={1}
+                        p={2}
+                        variant="icon"
+                        color={{
+                          base: "foreground.muted",
+                          _groupHover: "brand.primary",
+                        }}
+                        bgColor="transparent"
+                      >
+                        <Icon src={FiArrowUpRight} w={5} h={5} />
+                      </Button>
+                    </FeedbackCard>
+                  );
+                })}
 
-                {hasNextPage && <Spinner ref={loaderRef} />}
+                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
               </VStack>
             ) : (
               <EmptyState
