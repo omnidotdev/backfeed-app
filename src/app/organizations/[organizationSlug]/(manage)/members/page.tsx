@@ -2,6 +2,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   AddOwner,
@@ -16,7 +17,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { Metadata } from "next";
@@ -51,7 +52,7 @@ interface Props {
 const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
