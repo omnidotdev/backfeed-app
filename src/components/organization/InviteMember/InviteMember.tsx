@@ -2,17 +2,13 @@
 
 import { Dialog, sigil, HStack, Button } from "@omnidev/sigil";
 import { z } from "zod";
-import { useState } from "react";
 
-import { useCreateInvitationMutation } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useAuth, useForm, useInviteToOrganization } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
-
-import type { OrganizationInvitation } from "components/organization";
 
 const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
 
@@ -30,49 +26,14 @@ const baseSchema = z.object({
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
   const { user } = useAuth();
-  const [isPending, setIsPending] = useState(false);
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.InviteMember,
   });
 
-  const { mutateAsync: addInvitation } = useCreateInvitationMutation();
-
-  const handleOrganizationInvitation = async ({
-    inviterEmail,
-    inviterUsername,
-    recipientEmail,
-    organizationName,
-  }: OrganizationInvitation) => {
-    setIsPending(true);
-    try {
-      // TODO: check for current invitations before sending so duplicates are not sent.
-
-      await fetch("/api/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inviterEmail,
-          inviterUsername,
-          recipientEmail,
-          organizationName,
-        }),
-      });
-
-      await addInvitation({
-        input: {
-          invitation: {
-            email: recipientEmail,
-            organizationId,
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Error sending email:", error);
-    } finally {
-      setIsPending(false);
-    }
-  };
+  const { createInvitation, isPending } = useInviteToOrganization({
+    organizationId,
+  });
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
@@ -84,7 +45,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     },
     onSubmit: async ({ value }) => {
       toaster.promise(
-        handleOrganizationInvitation({
+        createInvitation({
           inviterEmail: user?.email!,
           inviterUsername: user?.name!,
           recipientEmail: value.email,
@@ -98,9 +59,14 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
             title: inviteMemberDetails.toast.success.title,
             description: inviteMemberDetails.toast.success.description,
           },
-          error: {
-            title: inviteMemberDetails.toast.error.title,
-            description: inviteMemberDetails.toast.error.description,
+          error: (error) => {
+            return {
+              title: inviteMemberDetails.toast.error.title,
+              description:
+                error instanceof Error && error.message
+                  ? error.message
+                  : inviteMemberDetails.toast.error.description,
+            };
           },
         }
       );

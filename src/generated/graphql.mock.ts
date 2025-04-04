@@ -538,7 +538,7 @@ export const mockDeleteUpvoteMutation = (resolver: GraphQLResponseResolver<Types
  * @example
  * mockCreateUserMutation(
  *   ({ query, variables }) => {
- *     const { hidraId, username, firstName, lastName } = variables;
+ *     const { hidraId, username, firstName, lastName, email } = variables;
  *     return HttpResponse.json({
  *       data: { createUser }
  *     })
@@ -648,7 +648,7 @@ export const mockFeedbackByIdQuery = (resolver: GraphQLResponseResolver<Types.Fe
  * @example
  * mockInvitationsQuery(
  *   ({ query, variables }) => {
- *     const { email } = variables;
+ *     const { email, organizationId } = variables;
  *     return HttpResponse.json({
  *       data: { invitations }
  *     })
@@ -989,6 +989,28 @@ export const mockUpvoteQuery = (resolver: GraphQLResponseResolver<Types.UpvoteQu
 export const mockUserQuery = (resolver: GraphQLResponseResolver<Types.UserQuery, Types.UserQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.UserQuery, Types.UserQueryVariables>(
     'User',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserByEmailQuery(
+ *   ({ query, variables }) => {
+ *     const { email } = variables;
+ *     return HttpResponse.json({
+ *       data: { userByEmail }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUserByEmailQuery = (resolver: GraphQLResponseResolver<Types.UserByEmailQuery, Types.UserByEmailQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.UserByEmailQuery, Types.UserByEmailQueryVariables>(
+    'userByEmail',
     resolver,
     options
   )

@@ -13,8 +13,7 @@ import {
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiUserPlus } from "react-icons/fi";
-import { HiOutlineTrash } from "react-icons/hi2";
+import { FiCheck, FiX } from "react-icons/fi";
 
 import { SectionContainer } from "components/layout";
 import {
@@ -177,7 +176,7 @@ const OrganizationInvites = () => {
                         })
                       }
                     >
-                      <Icon src={FiUserPlus} />
+                      <Icon src={FiCheck} />
                       {organizationInviteDetails.actions.accept.label}
                     </Button>
 
@@ -196,7 +195,7 @@ const OrganizationInvites = () => {
                         })
                       }
                     >
-                      <Icon src={HiOutlineTrash} />
+                      <Icon src={FiX} />
                       {organizationInviteDetails.actions.decline.label}
                     </Button>
                   </TableCell>

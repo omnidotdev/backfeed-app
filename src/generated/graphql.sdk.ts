@@ -3442,6 +3442,8 @@ export type Query = Node & {
   /** Get a single `User`. */
   user?: Maybe<User>;
   /** Get a single `User`. */
+  userByEmail?: Maybe<User>;
+  /** Get a single `User`. */
   userByHidraId?: Maybe<User>;
   /** Get a single `User`. */
   userByUsername?: Maybe<User>;
@@ -3676,6 +3678,12 @@ export type QueryUpvotesArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryUserArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserByEmailArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -4414,6 +4422,7 @@ export type User = {
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Downvote`. */
   downvotes: DownvoteConnection;
+  email: Scalars['String']['output'];
   firstName?: Maybe<Scalars['String']['output']>;
   hidraId: Scalars['UUID']['output'];
   lastName?: Maybe<Scalars['String']['output']>;
@@ -4499,6 +4508,8 @@ export type UserAggregates = {
 export type UserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `firstName` field. */
   firstName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `hidraId` field. */
@@ -4541,6 +4552,8 @@ export type UserDistinctCountAggregates = {
   __typename?: 'UserDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of email across the matching connection */
+  email?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of firstName across the matching connection */
   firstName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hidraId across the matching connection */
@@ -4578,6 +4591,8 @@ export type UserFilter = {
   downvotes?: InputMaybe<UserToManyDownvoteFilter>;
   /** Some related `downvotes` exist. */
   downvotesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
   /** Filter by the object’s `firstName` field. */
   firstName?: InputMaybe<StringFilter>;
   /** Filter by the object’s `hidraId` field. */
@@ -4683,6 +4698,7 @@ export type UserHavingVarianceSampleInput = {
 /** An input for mutations affecting `User` */
 export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email: Scalars['String']['input'];
   firstName?: InputMaybe<Scalars['String']['input']>;
   hidraId: Scalars['UUID']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -4721,6 +4737,8 @@ export enum UserOrderBy {
   DownvotesDistinctCountUpdatedAtDesc = 'DOWNVOTES_DISTINCT_COUNT_UPDATED_AT_DESC',
   DownvotesDistinctCountUserIdAsc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_ASC',
   DownvotesDistinctCountUserIdDesc = 'DOWNVOTES_DISTINCT_COUNT_USER_ID_DESC',
+  EmailAsc = 'EMAIL_ASC',
+  EmailDesc = 'EMAIL_DESC',
   FirstNameAsc = 'FIRST_NAME_ASC',
   FirstNameDesc = 'FIRST_NAME_DESC',
   HidraIdAsc = 'HIDRA_ID_ASC',
@@ -4785,6 +4803,7 @@ export enum UserOrderBy {
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   hidraId?: InputMaybe<Scalars['UUID']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -5037,6 +5056,7 @@ export type CreateUserMutationVariables = Exact<{
   username?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
 }>;
 
 
@@ -5075,6 +5095,7 @@ export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'P
 
 export type InvitationsQueryVariables = Exact<{
   email: Scalars['String']['input'];
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
@@ -5205,6 +5226,13 @@ export type UserQueryVariables = Exact<{
 
 
 export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+
+export type UserByEmailQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5469,9 +5497,9 @@ export const DeleteUpvoteDocument = gql`
 }
     `;
 export const CreateUserDocument = gql`
-    mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String) {
+    mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String, $email: String!) {
   createUser(
-    input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName}}
+    input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName, email: $email}}
   ) {
     user {
       rowId
@@ -5529,8 +5557,11 @@ export const FeedbackByIdDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const InvitationsDocument = gql`
-    query Invitations($email: String!) {
-  invitations(orderBy: CREATED_AT_DESC, condition: {email: $email}) {
+    query Invitations($email: String!, $organizationId: UUID) {
+  invitations(
+    orderBy: CREATED_AT_DESC
+    condition: {email: $email, organizationId: $organizationId}
+  ) {
     totalCount
     nodes {
       rowId
@@ -5804,6 +5835,18 @@ export const UserDocument = gql`
   }
 }
     `;
+export const UserByEmailDocument = gql`
+    query userByEmail($email: String!) {
+  userByEmail(email: $email) {
+    rowId
+    hidraId
+    username
+    firstName
+    lastName
+    email
+  }
+}
+    `;
 export const WeeklyFeedbackDocument = gql`
     query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
   posts(
@@ -5960,6 +6003,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);
+    },
+    userByEmail(variables: UserByEmailQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserByEmailQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserByEmailQuery>(UserByEmailDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userByEmail', 'query', variables);
     },
     WeeklyFeedback(variables: WeeklyFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<WeeklyFeedbackQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WeeklyFeedbackQuery>(WeeklyFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'WeeklyFeedback', 'query', variables);
