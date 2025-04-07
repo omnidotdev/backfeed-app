@@ -6,9 +6,9 @@ import {
   Divider,
   Flex,
   HStack,
+  Icon,
   Stack,
   Text,
-  Icon,
   useDisclosure,
 } from "@omnidev/sigil";
 import { FiChevronRight } from "react-icons/fi";
@@ -30,10 +30,14 @@ const SidebarNavigation = () => {
   const {
     isOpen: isOrganizationContentOpen,
     onToggle: toggleisOrganizationContentOpen,
-  } = useDisclosure();
+  } = useDisclosure({
+    defaultIsOpen: true,
+  });
 
   const { isOpen: isProjectContentOpen, onToggle: toggleisProjectContentOpen } =
-    useDisclosure();
+    useDisclosure({
+      defaultIsOpen: true,
+    });
 
   return (
     <Stack mt={4} gap={2} w="full" flex={1}>
@@ -41,7 +45,6 @@ const SidebarNavigation = () => {
         isCollapsible ? (
           <Collapsible
             key={label}
-            defaultOpen={true}
             unmountOnExit
             open={isOrganizationContentOpen}
             onOpenChange={() => {
@@ -95,7 +98,6 @@ const SidebarNavigation = () => {
                     }) =>
                       isCollapsible ? (
                         <Collapsible
-                          defaultOpen={true}
                           key={label}
                           unmountOnExit
                           open={isProjectContentOpen}
