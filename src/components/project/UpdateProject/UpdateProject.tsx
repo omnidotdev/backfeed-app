@@ -12,6 +12,7 @@ import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
+import { getAuthSession } from "lib/util";
 
 import type { ProjectQuery } from "generated/graphql";
 
@@ -54,9 +55,11 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
 
   /** Schema for validation of the update project form. */
   const updateProjectSchema = baseSchema.superRefine(async ({ slug }, ctx) => {
-    if (!slug?.length || slug === projectSlug) return z.NEVER;
+    const session = await getAuthSession();
 
-    const sdk = await getSdk();
+    if (!slug?.length || slug === projectSlug || !session) return z.NEVER;
+
+    const sdk = getSdk({ session });
 
     const { projects } = await sdk.Project({
       projectSlug: slug,
