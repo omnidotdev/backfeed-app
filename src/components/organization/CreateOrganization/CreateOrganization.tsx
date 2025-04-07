@@ -188,6 +188,7 @@ const CreateOrganization = () => {
           <SubmitForm
             action={app.dashboardPage.cta.newOrganization.action}
             isPending={isPending}
+            flex={1}
           />
         </AppForm>
       </sigil.form>

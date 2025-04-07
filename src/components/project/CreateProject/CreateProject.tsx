@@ -301,6 +301,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
           <SubmitForm
             action={app.dashboardPage.cta.newProject.action}
             isPending={isPending}
+            flex={1}
           />
         </AppForm>
       </sigil.form>
