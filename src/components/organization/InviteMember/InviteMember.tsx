@@ -61,11 +61,11 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           },
           error: (error) => {
             return {
-              title: inviteMemberDetails.toast.error.title,
+              title: inviteMemberDetails.toast.errors.title,
               description:
                 error instanceof Error && error.message
                   ? error.message
-                  : inviteMemberDetails.toast.error.description,
+                  : inviteMemberDetails.toast.errors.default,
             };
           },
         }

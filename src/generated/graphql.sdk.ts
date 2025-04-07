@@ -5094,7 +5094,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type InvitationsQueryVariables = Exact<{
-  email: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
@@ -5557,7 +5557,7 @@ export const FeedbackByIdDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const InvitationsDocument = gql`
-    query Invitations($email: String!, $organizationId: UUID) {
+    query Invitations($email: String, $organizationId: UUID) {
   invitations(
     orderBy: CREATED_AT_DESC
     condition: {email: $email, organizationId: $organizationId}
@@ -5956,7 +5956,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
     },
-    Invitations(variables: InvitationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<InvitationsQuery> {
+    Invitations(variables?: InvitationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<InvitationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<InvitationsQuery>(InvitationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Invitations', 'query', variables);
     },
     Members(variables: MembersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<MembersQuery> {

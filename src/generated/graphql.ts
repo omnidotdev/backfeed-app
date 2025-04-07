@@ -5093,7 +5093,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
 
 export type InvitationsQueryVariables = Exact<{
-  email: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
@@ -6204,7 +6204,7 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
 
 export const InvitationsDocument = `
-    query Invitations($email: String!, $organizationId: UUID) {
+    query Invitations($email: String, $organizationId: UUID) {
   invitations(
     orderBy: CREATED_AT_DESC
     condition: {email: $email, organizationId: $organizationId}
@@ -6228,19 +6228,19 @@ export const useInvitationsQuery = <
       TData = InvitationsQuery,
       TError = unknown
     >(
-      variables: InvitationsQueryVariables,
+      variables?: InvitationsQueryVariables,
       options?: Omit<UseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<InvitationsQuery, TError, TData>(
       {
-    queryKey: ['Invitations', variables],
+    queryKey: variables === undefined ? ['Invitations'] : ['Invitations', variables],
     queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
     ...options
   }
     )};
 
-useInvitationsQuery.getKey = (variables: InvitationsQueryVariables) => ['Invitations', variables];
+useInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations'] : ['Invitations', variables];
 
 export const useInfiniteInvitationsQuery = <
       TData = InfiniteData<InvitationsQuery>,
@@ -6254,17 +6254,17 @@ export const useInfiniteInvitationsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Invitations.infinite', variables],
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables],
       queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteInvitationsQuery.getKey = (variables: InvitationsQueryVariables) => ['Invitations.infinite', variables];
+useInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables];
 
 
-useInvitationsQuery.fetcher = (variables: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
+useInvitationsQuery.fetcher = (variables?: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
 
 export const MembersDocument = `
     query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {

@@ -8,6 +8,10 @@ import {
   useOrganizationRoleQuery,
   useUserByEmailQuery,
 } from "generated/graphql";
+import { app } from "lib/config";
+
+const inviteMemberErrors =
+  app.organizationMembersPage.cta.inviteMember.toast.errors;
 
 interface CreateInvitation {
   /** Username of the person sending the invite. */
@@ -39,53 +43,42 @@ const useInviteToOrganization = ({ organizationId }: Props) => {
     setIsPending(true);
 
     try {
+      // Prevent self-invitation
       if (inviterEmail === recipientEmail) {
-        return Promise.reject(
-          new Error("You are already a member of this organization.")
-        );
+        return Promise.reject(new Error(inviteMemberErrors.currentOwner));
       }
 
       // Check if an invitation has already been sent
-      const invitationDetailsResponse = await useInvitationsQuery.fetcher({
+      const { invitations } = await useInvitationsQuery.fetcher({
         email: recipientEmail,
         organizationId,
       })();
 
-      const existingInvitations =
-        invitationDetailsResponse?.invitations?.nodes.length;
-
-      if (existingInvitations && existingInvitations > 0) {
-        return Promise.reject(
-          new Error("An invitation has already been sent to this email.")
-        );
+      if (invitations?.nodes.length) {
+        return Promise.reject(new Error(inviteMemberErrors.duplicateInvite));
       }
 
-      // Check if recipient is already a user
-      const userDetailsResponse = await useUserByEmailQuery.fetcher({
+      // Check if recipient is already a registered user
+      const { userByEmail } = await useUserByEmailQuery.fetcher({
         email: recipientEmail,
       })();
 
-      const userId = userDetailsResponse?.userByEmail?.hidraId;
+      const userId = userByEmail?.hidraId;
 
-      // If user exists, check their organization membership
+      // If user exists, check organization membership
       if (userId) {
-        const organizationRoleDetailsResponse =
+        const { memberByUserIdAndOrganizationId } =
           await useOrganizationRoleQuery.fetcher({
             userId,
             organizationId,
           })();
 
-        if (
-          organizationRoleDetailsResponse?.memberByUserIdAndOrganizationId !=
-          null
-        ) {
-          return Promise.reject(
-            new Error("This user is already a member of this organization.")
-          );
+        if (memberByUserIdAndOrganizationId != null) {
+          return Promise.reject(new Error(inviteMemberErrors.currentMember));
         }
       }
 
-      // // Send the invitation email
+      // Send the invitation email
       await Promise.all([
         fetch("/api/invite", {
           method: "POST",

@@ -175,6 +175,7 @@ const app = {
             singular: "Organization",
             plural: "Organizations",
           },
+          placeholder: "Select an organization",
           error: "Please select an organization.",
         },
         projectName: {
@@ -382,9 +383,14 @@ const app = {
             title: "Success!",
             description: "Your invite link has been sent!",
           },
-          error: {
+          errors: {
             title: "Error",
-            description: "An error occurred while sending the invite link.",
+            default: "An error occurred while sending the invite link.",
+            currentOwner: "You are already a member of this organization.",
+            duplicateInvite:
+              "An invitation has already been sent to this email address.",
+            currentMember:
+              "This user is already a member of this organization.",
           },
         },
         emailTemplate: {
@@ -396,20 +402,14 @@ const app = {
             value1: "Join",
             value2: "on",
           },
-          greeting: {
-            value: "Hello",
-          },
+          greeting: "Hello",
           statement: {
             value1: "has invited to join the",
             value2: "organization on",
           },
-          cta: {
-            value: "Join the organization",
-          },
-          disclaimer: {
-            value:
-              "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
-          },
+          cta: "Join the organization",
+          disclaimer:
+            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
         },
       },
     },

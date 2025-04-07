@@ -63,7 +63,7 @@ const InviteMemberEmailTemplate = ({
           </Heading>
 
           <Text className="text-black text-[14px] leading-[24px]">
-            {inviteMemberDetails.greeting.value} {recipientEmail},
+            {inviteMemberDetails.greeting} {recipientEmail},
           </Text>
 
           <Text className="text-black text-[14px] leading-[24px]">
@@ -84,14 +84,14 @@ const InviteMemberEmailTemplate = ({
               className="bg-[#00a3a2] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
               href={inviteUrl}
             >
-              {inviteMemberDetails.cta.value}
+              {inviteMemberDetails.cta}
             </Link>
           </Section>
 
           <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
 
           <Text className="text-[#666666] text-[12px] leading-[24px]">
-            {inviteMemberDetails.disclaimer.value}
+            {inviteMemberDetails.disclaimer}
           </Text>
         </Container>
       </Body>
