@@ -4,10 +4,8 @@ import * as handlers from "__mocks__/handlers";
 import Providers from "app/providers";
 import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
-import { getAuthSession } from "lib/util";
 import { mswNodeServer } from "test/e2e/util";
 
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
@@ -27,31 +25,30 @@ if (ENABLE_MSW) {
   }
 }
 
-export const metadata: Metadata = {
-  title: app.name,
+export const metadata = {
+  title: {
+    default: app.name,
+    template: `%s | ${app.name}`,
+  },
   description: app.description,
 };
 
 /**
  * Root layout.
  */
-const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await getAuthSession();
+const RootLayout = async ({ children }: { children: ReactNode }) => (
+  // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
+  <html lang="en" suppressHydrationWarning>
+    <body>
+      {isDevEnv && (
+        <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+      )}
 
-  return (
-    // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        {isDevEnv && (
-          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
-        )}
-
-        <Providers session={session}>
-          <Layout>{children}</Layout>
-        </Providers>
-      </body>
-    </html>
-  );
-};
+      <Providers>
+        <Layout>{children}</Layout>
+      </Providers>
+    </body>
+  </html>
+);
 
 export default RootLayout;

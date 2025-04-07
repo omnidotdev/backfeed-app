@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 
+import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
-import { getAuthSession } from "lib/util";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: `${app.pricingPage.title} | ${app.name}`,
+  title: app.pricingPage.title,
 };
 
 /**
@@ -19,7 +21,7 @@ const PricingPage = async () => {
       result: { items: products },
     },
   ] = await Promise.all([
-    getAuthSession(),
+    auth(),
     polar.products.list({
       isArchived: false,
       // ! NB: important that the product name includes this query string (i.e. Backfeed)

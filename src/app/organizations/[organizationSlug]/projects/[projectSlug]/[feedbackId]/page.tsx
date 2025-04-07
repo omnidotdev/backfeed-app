@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
+import { auth } from "auth";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
@@ -15,12 +16,12 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 
 export const metadata = {
-  title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
+  title: app.feedbackPage.breadcrumb,
 };
 
 interface Props {
@@ -38,7 +39,7 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
@@ -139,7 +140,10 @@ const FeedbackPage = async ({ params }: Props) => {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <FeedbackDetails feedbackId={feedbackId} />
 
-        <Comments feedbackId={feedbackId} />
+        <Comments
+          organizationId={feedback.project?.organization?.rowId!}
+          feedbackId={feedbackId}
+        />
       </HydrationBoundary>
     </Page>
   );

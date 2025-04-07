@@ -17,7 +17,7 @@ import { app } from "lib/config";
 const inviteMemberDetails =
   app.organizationMembersPage.cta.inviteMember.emailTemplate;
 
-export interface OrganizationInvitation {
+interface OrganizationInvitation {
   /** Username of the person sending the invite. */
   inviterUsername: string;
   /** Email of the person sending the invite. */

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 import { FiUserPlus } from "react-icons/fi";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   AddOwner,
@@ -18,27 +19,10 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
+import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
-import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.organizationMembersPage.breadcrumb} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Organization members page parameters. */
@@ -53,7 +37,7 @@ interface Props {
 const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
@@ -113,7 +97,9 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        pt={0}
+        metadata={{
+          title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
+        }}
         header={{
           title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
           description: app.organizationMembersPage.description,
@@ -135,6 +121,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
                 ]
               : undefined,
         }}
+        pt={0}
       >
         <Owners organizationId={organization.rowId} />
 

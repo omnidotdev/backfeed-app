@@ -30,4 +30,4 @@ docker run -p 3000:3000 backfeed-app
 
 ## License
 
-The code in this repository is licensed under MIT, &copy; Brian Cooper and Omni LLC. See [LICENSE.md](LICENSE.md) for more information.
+The code in this repository is licensed under MIT, &copy; Omni LLC. See [LICENSE.md](LICENSE.md) for more information.

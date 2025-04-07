@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import {
@@ -11,25 +12,7 @@ import {
 import { app } from "lib/config";
 import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
-
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb} | ${app.name}`,
-  };
-};
+import { getQueryClient } from "lib/util";
 
 interface Props {
   /** Organization page params. */
@@ -44,7 +27,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const developmentFlag = await isDevelopment();
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
@@ -82,13 +65,19 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        pt={0}
+        metadata={{
+          title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
+        }}
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
           description: app.organizationSettingsPage.description,
         }}
+        pt={0}
       >
-        <OrganizationSettings developmentFlag={developmentFlag} />
+        <OrganizationSettings
+          organizationId={organization.rowId}
+          developmentFlag={developmentFlag}
+        />
       </Page>
     </HydrationBoundary>
   );

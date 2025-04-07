@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
+import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
 import {
@@ -11,26 +12,9 @@ import {
 import { app } from "lib/config";
 import { hasTeamSubscription, isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getAuthSession, getQueryClient } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug, projectSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
-
-  const project = projects?.nodes?.[0];
-
-  return {
-    title: `${project?.name} ${app.projectSettingsPage.breadcrumb} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Project settings page params. */
@@ -43,7 +27,7 @@ interface Props {
 const ProjectSettingsPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const [session, sdk] = await Promise.all([getAuthSession(), getSdk()]);
+  const [session, sdk] = await Promise.all([auth(), getSdk()]);
 
   if (!session || !sdk) notFound();
 
@@ -116,6 +100,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   return (
     <Page
+      metadata={{
+        title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
+      }}
       breadcrumbs={breadcrumbs}
       header={{
         title: `${project.name!} Settings`,
