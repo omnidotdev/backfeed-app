@@ -1,6 +1,5 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
@@ -24,7 +23,7 @@ import type { SearchParams } from "nuqs/server";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: `${app.organizationsPage.breadcrumb} | ${app.name}`,
+  title: app.organizationsPage.breadcrumb,
 };
 
 interface Props {
@@ -92,12 +91,9 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
           ],
         }}
       >
-        {/* // ! NB: wrapped in a suspense boundary to avoid opting entire page into CSR. See: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
-        <Suspense fallback={null}>
-          <OrganizationFilters />
+        <OrganizationFilters />
 
-          <OrganizationList />
-        </Suspense>
+        <OrganizationList />
       </Page>
     </HydrationBoundary>
   );

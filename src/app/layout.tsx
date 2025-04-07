@@ -7,7 +7,6 @@ import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { mswNodeServer } from "test/e2e/util";
 
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "lib/styles/main.css";
@@ -27,8 +26,11 @@ if (ENABLE_MSW) {
   }
 }
 
-export const metadata: Metadata = {
-  title: app.name,
+export const metadata = {
+  title: {
+    default: app.name,
+    template: `%s | ${app.name}`,
+  },
   description: app.description,
 };
 
