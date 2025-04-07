@@ -16,7 +16,7 @@ import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { toaster } from "lib/util";
+import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
@@ -73,9 +73,11 @@ const baseSchema = z.object({
 /** Schema for validation of the create project form. */
 const createProjectSchema = baseSchema.superRefine(
   async ({ organizationId, slug }, ctx) => {
-    if (!organizationId.length || !slug.length) return z.NEVER;
+    const session = await getAuthSession();
 
-    const sdk = await getSdk();
+    if (!organizationId.length || !slug.length || !session) return z.NEVER;
+
+    const sdk = getSdk({ session });
 
     const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
       organizationId,

@@ -21,7 +21,11 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
-  const sdk = await getSdk();
+  const session = await auth();
+
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
@@ -45,9 +49,11 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const developmentFlag = await isDevelopment();
 
-  const [session, sdk] = await Promise.all([auth(), getSdk()]);
+  const session = await auth();
 
-  if (!session || !sdk) notFound();
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,

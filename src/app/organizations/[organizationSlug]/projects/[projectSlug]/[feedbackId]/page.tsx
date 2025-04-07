@@ -39,9 +39,11 @@ interface Props {
 const FeedbackPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const [session, sdk] = await Promise.all([auth(), getSdk()]);
+  const session = await auth();
 
-  if (!session || !sdk) notFound();
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
 
