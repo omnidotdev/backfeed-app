@@ -21,7 +21,7 @@ import { getQueryClient } from "lib/util";
 import type { BreadcrumbRecord } from "components/core";
 
 export const metadata = {
-  title: `${app.feedbackPage.breadcrumb} | ${app.name}`,
+  title: app.feedbackPage.breadcrumb,
 };
 
 interface Props {
@@ -142,7 +142,10 @@ const FeedbackPage = async ({ params }: Props) => {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <FeedbackDetails feedbackId={feedbackId} />
 
-        <Comments feedbackId={feedbackId} />
+        <Comments
+          organizationId={feedback.project?.organization?.rowId!}
+          feedbackId={feedbackId}
+        />
       </HydrationBoundary>
     </Page>
   );

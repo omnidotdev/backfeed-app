@@ -15,27 +15,6 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug, projectSlug } = await params;
-
-  const session = await auth();
-
-  if (!session) notFound();
-
-  const sdk = getSdk({ session });
-
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
-
-  const project = projects?.nodes?.[0];
-
-  return {
-    title: `${project?.name} ${app.projectSettingsPage.breadcrumb} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Project settings page params. */
@@ -123,6 +102,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   return (
     <Page
+      metadata={{
+        title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
+      }}
       breadcrumbs={breadcrumbs}
       header={{
         title: `${project.name!} Settings`,

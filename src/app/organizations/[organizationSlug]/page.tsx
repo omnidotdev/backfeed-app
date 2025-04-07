@@ -20,27 +20,6 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const session = await auth();
-
-  if (!session) notFound();
-
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Organization page params. */
@@ -105,6 +84,9 @@ const OrganizationPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
+        metadata={{
+          title: organization.name!,
+        }}
         breadcrumbs={breadcrumbs}
         header={{
           title: organization.name!,
