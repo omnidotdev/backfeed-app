@@ -1,16 +1,17 @@
 "use client";
 
 import { Pagination, Stack } from "@omnidev/sigil";
-import { keepPreviousData } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import { OrganizationOrderBy } from "generated/graphql";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { organizationsQueryOptions } from "lib/react-query/options";
 import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";
@@ -26,22 +27,20 @@ const OrganizationList = ({ ...props }: StackProps) => {
     type: DialogType.CreateOrganization,
   });
 
-  const { data, isLoading, isError } = useOrganizationsQuery(
-    {
+  const { data, isLoading, isError } = useQuery({
+    ...organizationsQueryOptions({
       pageSize,
       offset: (page - 1) * pageSize,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
       search,
       isMember: false,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => ({
-        totalCount: data?.organizations?.totalCount,
-        organizations: data?.organizations?.nodes,
-      }),
-    }
-  );
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) => ({
+      totalCount: data?.organizations?.totalCount,
+      organizations: data?.organizations?.nodes,
+    }),
+  });
 
   const organizations = data?.organizations;
 
@@ -66,7 +65,7 @@ const OrganizationList = ({ ...props }: StackProps) => {
             variant: "outline",
             color: "brand.primary",
             borderColor: "brand.primary",
-            onClick: () => setIsCreateOrganizationDialogOpen(true),
+            onMouseDown: () => setIsCreateOrganizationDialogOpen(true),
           },
         }}
         minH={64}

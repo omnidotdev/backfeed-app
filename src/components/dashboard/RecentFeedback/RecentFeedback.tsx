@@ -1,35 +1,29 @@
 "use client";
 
 import { Flex } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
-import { useRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import { recentFeedbackQueryOptions } from "lib/react-query/options";
 
-import type { Post } from "generated/graphql";
+import type { Post, User } from "generated/graphql";
+
+interface Props {
+  userId: User["rowId"];
+}
 
 /**
  * Recent feedback section.
  */
-const RecentFeedback = () => {
-  const { user } = useAuth();
-
-  const {
-    data: recentFeedback,
-    isLoading,
-    isError,
-  } = useRecentFeedbackQuery(
-    {
-      userId: user?.rowId!,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.posts?.nodes,
-    }
-  );
+const RecentFeedback = ({ userId }: Props) => {
+  const { data: recentFeedback, isError } = useSuspenseQuery({
+    ...recentFeedbackQueryOptions({
+      userId,
+    }),
+    select: (data) => data?.posts?.nodes,
+  });
 
   return (
     <FeedbackSection
@@ -46,9 +40,7 @@ const RecentFeedback = () => {
         />
       ) : (
         <Flex w="full" direction="column" gap={2} h="full">
-          {isLoading ? (
-            <SkeletonArray count={5} h={24} w="100%" />
-          ) : recentFeedback?.length ? (
+          {recentFeedback?.length ? (
             recentFeedback?.map((feedback) => (
               <Response
                 key={feedback?.rowId}

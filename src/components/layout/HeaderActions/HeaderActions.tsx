@@ -63,11 +63,11 @@ const HeaderActions = () => {
           <AccountInformation />
         ) : (
           <HStack>
-            <Button variant="outline" onClick={() => signIn("omni")}>
+            <Button variant="outline" onMouseDown={() => signIn("omni")}>
               {app.auth.signIn.label}
             </Button>
 
-            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+            <Button onMouseDown={handleSignUp}>{app.auth.signUp.label}</Button>
           </HStack>
         )}
       </Flex>
@@ -117,7 +117,7 @@ const HeaderActions = () => {
             <LogoLink
               width={60}
               flexDirection="column"
-              onClick={() => setIsMobileSidebarOpen(false)}
+              onMouseDown={() => setIsMobileSidebarOpen(false)}
             />
 
             {!isLoading && <SidebarNavigation />}
@@ -127,11 +127,13 @@ const HeaderActions = () => {
             <AccountInformation />
           ) : (
             <Stack>
-              <Button variant="outline" onClick={() => signIn("omni")}>
+              <Button variant="outline" onMouseDown={() => signIn("omni")}>
                 {app.auth.signIn.label}
               </Button>
 
-              <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+              <Button onMouseDown={handleSignUp}>
+                {app.auth.signUp.label}
+              </Button>
             </Stack>
           )}
         </Stack>

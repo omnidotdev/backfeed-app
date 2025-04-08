@@ -139,7 +139,7 @@ const AddOwner = ({ organizationId }: Props) => {
           <Button
             variant="outline"
             flex={1}
-            onClick={() => {
+            onMouseDown={() => {
               reset();
               setIsOpen(false);
             }}

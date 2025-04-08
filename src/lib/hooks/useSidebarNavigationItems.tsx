@@ -1,13 +1,15 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { LuBuilding2 } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuBuilding2 } from "react-icons/lu";
 
-import { useOrganizationQuery, useProjectBySlugQuery } from "generated/graphql";
+import { useProjectBySlugQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { organizationQueryOptions } from "lib/react-query/options";
 
 import type { IconType } from "react-icons";
 
@@ -39,15 +41,13 @@ const useSidebarNavigationItems = () => {
     projectSlug: string;
   }>();
 
-  const { data: organization } = useOrganizationQuery(
-      {
+  const { data: organization } = useQuery({
+      ...organizationQueryOptions({
         slug: organizationSlug,
-      },
-      {
-        enabled: isAuthenticated && !!organizationSlug,
-        select: (data) => data?.organizationBySlug,
-      }
-    ),
+      }),
+      enabled: isAuthenticated && !!organizationSlug,
+      select: (data) => data?.organizationBySlug,
+    }),
     { data: project } = useProjectBySlugQuery(
       {
         slug: projectSlug,

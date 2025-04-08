@@ -9,14 +9,15 @@ import {
   OrganizationMetrics,
   OrganizationProjects,
 } from "components/organization";
-import {
-  useOrganizationMetricsQuery,
-  useOrganizationQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { CreateProject } from "components/project";
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import {
+  organizationMetricsQueryOptions,
+  organizationQueryOptions,
+  organizationRoleQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -56,30 +57,20 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationMetricsQuery.getKey({
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationMetricsQuery.fetcher({
-        organizationId: organization.rowId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
-  ]);
+  queryClient.prefetchQuery(
+    organizationQueryOptions({ slug: organizationSlug })
+  );
+  queryClient.prefetchQuery(
+    organizationMetricsQueryOptions({
+      organizationId: organization.rowId,
+    })
+  );
+  queryClient.prefetchQuery(
+    organizationRoleQueryOptions({
+      userId: session.user.rowId!,
+      organizationId: organization.rowId,
+    })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -109,6 +100,12 @@ const OrganizationPage = async ({ params }: Props) => {
 
           <OrganizationActions organizationId={organization.rowId} />
         </Grid>
+
+        {/* dialogs */}
+        <CreateProject
+          organizationSlug={organizationSlug}
+          userId={session.user.rowId!}
+        />
       </Page>
     </HydrationBoundary>
   );

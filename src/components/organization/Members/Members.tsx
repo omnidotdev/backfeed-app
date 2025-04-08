@@ -10,7 +10,7 @@ import {
   TableRow,
   Text,
 } from "@omnidev/sigil";
-import { keepPreviousData } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -21,8 +21,9 @@ import { useMemo } from "react";
 import { match } from "ts-pattern";
 
 import { MembershipMenu } from "components/organization";
-import { Role, useMembersQuery } from "generated/graphql";
+import { Role } from "generated/graphql";
 import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
+import { membersQueryOptions } from "lib/react-query/options";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
@@ -47,18 +48,16 @@ const Members = ({ organizationId }: Props) => {
 
   const [{ roles, search }] = useSearchParams();
 
-  const { data: members } = useMembersQuery(
-    {
+  // TODO: determine if this should use suspense (error due to no `placeholderData` and updates)
+  const { data: members } = useSuspenseQuery({
+    ...membersQueryOptions({
       organizationId,
       roles: roles ?? undefined,
       search,
       excludeRoles: [Role.Owner],
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => data.members?.nodes,
-    }
-  );
+    }),
+    select: (data) => data.members?.nodes ?? [],
+  });
 
   const columns = useMemo(
     () => [
@@ -68,14 +67,14 @@ const Members = ({ organizationId }: Props) => {
             size="sm"
             // explicit width to prevent CLS with row selection
             w={28}
-            // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+            // Prevent spacing between checkbox and label. See note for label `onMouseDown` handler below
             gap={0}
             labelProps={{
               flex: 1,
               px: isOwner ? 4 : 2,
               fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
-              onClick: (e) => e.preventDefault(),
+              onMouseDown: (e) => e.preventDefault(),
             }}
             label={
               table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (

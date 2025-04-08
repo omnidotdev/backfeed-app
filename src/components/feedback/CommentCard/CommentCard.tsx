@@ -114,7 +114,7 @@ const CommentCard = ({
             description={app.feedbackPage.comments.delete.description}
             action={{
               label: app.feedbackPage.comments.delete.action.label,
-              onClick: () => deleteComment({ rowId: commentId }),
+              onMouseDown: () => deleteComment({ rowId: commentId }),
             }}
             triggerProps={{
               "aria-label": app.feedbackPage.comments.delete.title,

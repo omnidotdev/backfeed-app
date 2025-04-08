@@ -49,7 +49,7 @@ const ManagementNavigation = ({
     {
       label: "Members",
       icon: HiOutlineUserGroup,
-      onClick: () => {
+      onMouseDown: () => {
         onClose?.();
         router.push(`/organizations/${organizationSlug}/members`);
       },
@@ -57,7 +57,7 @@ const ManagementNavigation = ({
     {
       label: app.organizationSettingsPage.breadcrumb,
       icon: LuSettings,
-      onClick: () => {
+      onMouseDown: () => {
         onClose?.();
         router.push(`/organizations/${organizationSlug}/settings`);
       },
@@ -76,7 +76,7 @@ const ManagementNavigation = ({
         {isOpen || !truncateText ? organizationName : organizationName[0]}
       </OverflowText>
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
+      {SIDEBAR_NAVIGATION.map(({ label, icon, onMouseDown }) => (
         <Button
           key={label}
           variant="ghost"
@@ -92,7 +92,7 @@ const ManagementNavigation = ({
               _active: { base: "neutral.300a", _dark: "neutral.100a" },
             },
           }}
-          onClick={onClick}
+          onMouseDown={onMouseDown}
           // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
           data-active={label.toLowerCase() === segment || undefined}
           aria-label={label}

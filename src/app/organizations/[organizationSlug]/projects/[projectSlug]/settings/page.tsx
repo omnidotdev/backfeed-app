@@ -4,14 +4,14 @@ import { notFound } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
-import {
-  Role,
-  useProjectQuery,
-  useProjectStatusesQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { hasTeamSubscription, isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
+import {
+  projectQueryOptions,
+  projectStatusesQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -80,25 +80,17 @@ const ProjectSettingsPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
-      queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
-    }),
-    // ! NB: only prefetch the project statuses if the user can edit statuses
-    ...(canEditStatuses
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: project.rowId,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: project.rowId,
-            }),
-          }),
-        ]
-      : []),
-  ]);
+  queryClient.prefetchQuery(
+    projectQueryOptions({ projectSlug, organizationSlug })
+  );
+
+  if (canEditStatuses) {
+    queryClient.prefetchQuery(
+      projectStatusesQueryOptions({
+        projectId: project.rowId,
+      })
+    );
+  }
 
   return (
     <Page

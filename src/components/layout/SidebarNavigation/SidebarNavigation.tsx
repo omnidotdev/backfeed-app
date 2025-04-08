@@ -142,7 +142,7 @@ const SidebarNavigation = () => {
                                     <Link
                                       key={label}
                                       href={href!}
-                                      onClick={() =>
+                                      onMouseDown={() =>
                                         setIsMobileSidebarOpen(false)
                                       }
                                     >
@@ -169,7 +169,7 @@ const SidebarNavigation = () => {
                           {href && (
                             <Link
                               href={href}
-                              onClick={() => setIsMobileSidebarOpen(false)}
+                              onMouseDown={() => setIsMobileSidebarOpen(false)}
                             >
                               <Button
                                 disabled={isActive}
@@ -193,7 +193,7 @@ const SidebarNavigation = () => {
           <Flex
             key={label}
             display="block"
-            onClick={() => setIsMobileSidebarOpen(false)}
+            onMouseDown={() => setIsMobileSidebarOpen(false)}
           >
             {href && (
               <Link href={href}>

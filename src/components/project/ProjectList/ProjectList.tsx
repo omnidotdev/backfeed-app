@@ -1,17 +1,17 @@
 "use client";
 
 import { Pagination, Stack } from "@omnidev/sigil";
-import { keepPreviousData } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { projectsQueryOptions } from "lib/react-query/options";
 import { DialogType } from "store";
 
 import type { Organization, Project } from "generated/graphql";
@@ -40,21 +40,19 @@ const ProjectList = ({ organizationId }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const { data, isLoading, isError } = useProjectsQuery(
-    {
+  const { data, isLoading, isError } = useQuery({
+    ...projectsQueryOptions({
       pageSize,
       offset: (page - 1) * pageSize,
       organizationSlug,
       search,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => ({
-        totalCount: data?.projects?.totalCount,
-        projects: data?.projects?.nodes,
-      }),
-    }
-  );
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) => ({
+      totalCount: data?.projects?.totalCount,
+      projects: data?.projects?.nodes,
+    }),
+  });
 
   const projects = data?.projects;
 
@@ -85,7 +83,7 @@ const ProjectList = ({ organizationId }: Props) => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
+                  onMouseDown: () => setIsCreateProjectDialogOpen(true),
                 },
               }
             : undefined

@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, sigil } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
@@ -9,15 +10,18 @@ import {
   Role,
   useCreatePostStatusMutation,
   useCreateProjectMutation,
-  useOrganizationsQuery,
 } from "generated/graphql";
+import { getAuthSession } from "lib/actions";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import { useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { getAuthSession, toaster } from "lib/util";
+import { organizationsQueryOptions } from "lib/react-query/options";
+import { toaster } from "lib/util";
 import { DialogType } from "store";
+
+import type { Organization, User } from "generated/graphql";
 
 // NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
 const DEFAULT_POST_STATUSES = [
@@ -95,17 +99,16 @@ const createProjectSchema = baseSchema.superRefine(
 );
 
 interface Props {
+  userId: User["rowId"];
   /** Slug of the organization to create the project under. */
-  organizationSlug?: string;
+  organizationSlug?: Organization["slug"];
 }
 
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ organizationSlug }: Props) => {
+const CreateProject = ({ userId, organizationSlug }: Props) => {
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const { isOpen: isCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
@@ -115,28 +118,25 @@ const CreateProject = ({ organizationSlug }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const { data: organizations } = useOrganizationsQuery(
-    {
-      userId: user?.rowId!,
+  const { data: organizations } = useQuery({
+    ...organizationsQueryOptions({
+      userId,
       isMember: true,
       slug: organizationSlug,
       excludeRoles: [Role.Member],
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) =>
-        data?.organizations?.nodes?.map((organization) => ({
-          label: organization?.name,
-          value: organization?.rowId,
-        })),
-    }
-  );
+    }),
+    select: (data) =>
+      data?.organizations?.nodes?.map((organization) => ({
+        label: organization?.name,
+        value: organization?.rowId,
+      })),
+  });
 
   const firstOrganization = organizations?.[0];
 
   const { isAdmin } = useOrganizationMembership({
     organizationId: firstOrganization?.value,
-    userId: user?.rowId,
+    userId,
   });
 
   useHotkeys(
@@ -147,7 +147,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
     {
       enabled:
-        !!user &&
         !isCreateOrganizationDialogOpen &&
         // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin
         (organizationSlug ? isAdmin : true),
@@ -156,7 +155,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
+    [isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation();

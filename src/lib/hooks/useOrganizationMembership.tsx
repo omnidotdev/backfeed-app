@@ -1,4 +1,7 @@
-import { Role, useOrganizationRoleQuery } from "generated/graphql";
+import { useQuery } from "@tanstack/react-query";
+
+import { Role } from "generated/graphql";
+import { organizationRoleQueryOptions } from "lib/react-query/options";
 
 interface Options {
   userId: string | undefined;
@@ -9,16 +12,14 @@ interface Options {
  * Check organization membership details of a user.
  */
 const useOrganizationMembership = ({ userId, organizationId }: Options) => {
-  const { data } = useOrganizationRoleQuery(
-    {
+  const { data } = useQuery({
+    ...organizationRoleQueryOptions({
       userId: userId!,
       organizationId: organizationId!,
-    },
-    {
-      enabled: !!userId && !!organizationId,
-      select: (data) => data.memberByUserIdAndOrganizationId,
-    }
-  );
+    }),
+    enabled: !!userId && !!organizationId,
+    select: (data) => data.memberByUserIdAndOrganizationId,
+  });
 
   return {
     /**

@@ -4,14 +4,18 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { OrganizationFilters, OrganizationList } from "components/organization";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import {
+  CreateOrganization,
+  OrganizationFilters,
+  OrganizationList,
+} from "components/organization";
+import { OrganizationOrderBy } from "generated/graphql";
 import { app } from "lib/config";
+import { organizationsQueryOptions } from "lib/react-query/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const dynamic = "force-dynamic";
@@ -43,18 +47,16 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
-  const variables: OrganizationsQueryVariables = {
-    pageSize: pageSize,
-    offset: (page - 1) * pageSize,
-    orderBy: [OrganizationOrderBy.MembersCountDesc],
-    search,
-    isMember: false,
-  };
-
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationsQuery.getKey(variables),
-    queryFn: useOrganizationsQuery.fetcher(variables),
-  });
+  // NB: due to the need to refetch (update) this query frequently from the client, we should avoid suspense and to prevent loading indicators just await the prefetch here
+  await queryClient.prefetchQuery(
+    organizationsQueryOptions({
+      pageSize: pageSize,
+      offset: (page - 1) * pageSize,
+      orderBy: [OrganizationOrderBy.MembersCountDesc],
+      search,
+      isMember: false,
+    })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -76,6 +78,9 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         <OrganizationFilters />
 
         <OrganizationList />
+
+        {/* dialogs */}
+        <CreateOrganization />
       </Page>
     </HydrationBoundary>
   );

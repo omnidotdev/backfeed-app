@@ -16,7 +16,7 @@ const Tooltip = ({ triggerProps, ...rest }: TooltipProps) => {
       // TODO: figure out how to handle conflict with `triggerProps.onClick` when using touch device.
       onOpenChange={onToggle}
       triggerProps={{
-        onClick: onToggle,
+        onMouseDown: onToggle,
         ...triggerProps,
       }}
       {...rest}

@@ -1,18 +1,23 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
 import { UpdateStatuses } from "components/project";
 import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
+import { getAuthSession } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
-import { getAuthSession } from "lib/util";
+import { projectQueryOptions } from "lib/react-query/options";
 
 import type { ProjectQuery } from "generated/graphql";
 
@@ -77,16 +82,16 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
 
   const router = useRouter();
 
-  const { data: project } = useProjectQuery(
-    {
-      projectSlug,
-      organizationSlug,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => data.projects?.nodes?.[0],
-    }
-  );
+  const projectQueryVariables = {
+    projectSlug,
+    organizationSlug,
+  };
+
+  const { data: project } = useQuery({
+    ...projectQueryOptions(projectQueryVariables),
+    placeholderData: keepPreviousData,
+    select: (data) => data.projects?.nodes?.[0],
+  });
 
   // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
@@ -94,13 +99,13 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
       const { name, description, slug } = variables.patch;
 
       const snapshot = queryClient.getQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug })
+        projectQueryOptions(projectQueryVariables).queryKey
       ) as ProjectQuery;
 
-      const project = snapshot.projects?.nodes?.[0];
+      const project = snapshot.projects?.nodes?.[0]!;
 
       queryClient.setQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
+        projectQueryOptions(projectQueryVariables).queryKey,
         {
           projects: {
             ...snapshot.projects,
@@ -109,7 +114,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
                 ...project,
                 name,
                 description,
-                slug,
+                slug: slug!,
               },
             ],
           },

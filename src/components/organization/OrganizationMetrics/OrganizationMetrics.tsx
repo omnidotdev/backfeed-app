@@ -1,6 +1,7 @@
 "use client";
 
-import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
+import { Flex, Grid, Icon, Text } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineFolder,
@@ -8,8 +9,8 @@ import {
 } from "react-icons/hi2";
 
 import { SectionContainer } from "components/layout";
-import { useOrganizationMetricsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { organizationMetricsQueryOptions } from "lib/react-query/options";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -32,22 +33,16 @@ interface OrganizationMetric extends FlexProps {
  * Organization metrics.
  */
 const OrganizationMetrics = ({ organizationId }: Props) => {
-  const {
-    data: organizationMetrics,
-    isLoading,
-    isError,
-  } = useOrganizationMetricsQuery(
-    {
+  const { data: organizationMetrics, isError } = useSuspenseQuery({
+    ...organizationMetricsQueryOptions({
       organizationId,
-    },
-    {
-      select: (data) => ({
-        totalProjects: data?.projects?.totalCount,
-        totalFeedback: data?.posts?.totalCount,
-        activeUsers: data?.members?.totalCount,
-      }),
-    }
-  );
+    }),
+    select: (data) => ({
+      totalProjects: data?.projects?.totalCount,
+      totalFeedback: data?.posts?.totalCount,
+      activeUsers: data?.members?.totalCount,
+    }),
+  });
 
   const ORGANIZATION_METRICS: OrganizationMetric[] = [
     {
@@ -91,11 +86,9 @@ const OrganizationMetrics = ({ organizationId }: Props) => {
               </Text>
             </Flex>
 
-            <Skeleton isLoaded={!isLoading} minW={8}>
-              <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
-                {isError ? 0 : value}
-              </Text>
-            </Skeleton>
+            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+              {isError ? 0 : value}
+            </Text>
           </Flex>
         ))}
       </Grid>

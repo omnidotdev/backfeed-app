@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -9,60 +10,53 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
 import { Page } from "components/layout";
-import {
-  Role,
-  useDashboardAggregatesQuery,
-  useOrganizationsQuery,
-  useUserQuery,
-} from "generated/graphql";
+import { CreateOrganization } from "components/organization";
+import { CreateProject } from "components/project";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
+import {
+  dashboardAggregatesQueryOptions,
+  organizationsQueryOptions,
+  userQueryOptions,
+} from "lib/react-query/options";
 import { DialogType } from "store";
+
+import type { User } from "generated/graphql";
+
+interface Props {
+  hidraId: User["hidraId"];
+  userId: User["rowId"];
+}
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = () => {
-  const { user, isLoading: isAuthLoading } = useAuth();
+const DashboardPage = ({ hidraId, userId }: Props) => {
+  const { data: firstName } = useSuspenseQuery({
+    ...userQueryOptions({
+      hidraId,
+    }),
+    select: (data) => data?.userByHidraId?.firstName,
+  });
 
-  const { data: firstName } = useUserQuery(
-    {
-      hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.firstName,
-    }
-  );
+  const { data: dashboardAggregates, isError } = useSuspenseQuery({
+    ...dashboardAggregatesQueryOptions({
+      userId,
+    }),
+    select: (data) => ({
+      totalFeedback: data?.posts?.totalCount,
+      totalUsers: data?.users?.totalCount,
+    }),
+  });
 
-  const {
-    data: dashboardAggregates,
-    isLoading,
-    isError,
-  } = useDashboardAggregatesQuery(
-    {
-      userId: user?.rowId!,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => ({
-        totalFeedback: data?.posts?.totalCount,
-        totalUsers: data?.users?.totalCount,
-      }),
-    }
-  );
-
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
-    {
-      userId: user?.rowId!,
+  const { data: numberOfOrganizations } = useSuspenseQuery({
+    ...organizationsQueryOptions({
+      userId,
       isMember: true,
       excludeRoles: [Role.Member],
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
-    }
-  );
+    }),
+    select: (data) => data?.organizations?.totalCount,
+  });
 
   const aggregates = [
     {
@@ -76,8 +70,6 @@ const DashboardPage = () => {
       icon: HiOutlineUserGroup,
     },
   ];
-
-  if (isAuthLoading) return null;
 
   return (
     <Page
@@ -102,7 +94,7 @@ const DashboardPage = () => {
         ],
       }}
     >
-      <PinnedOrganizations />
+      <PinnedOrganizations userId={userId} />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -111,13 +103,16 @@ const DashboardPage = () => {
             title={title}
             value={value}
             icon={icon}
-            isLoaded={!isLoading}
             isError={isError}
           />
         ))}
       </Grid>
 
-      <Feedback />
+      <Feedback userId={userId} />
+
+      {/* dialogs */}
+      <CreateOrganization />
+      <CreateProject userId={userId} />
     </Page>
   );
 };

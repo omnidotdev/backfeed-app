@@ -16,10 +16,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Role, useMembersQuery } from "generated/graphql";
+import { Role } from "generated/graphql";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { membersQueryOptions } from "lib/react-query/options";
 
 const columnHelper = createColumnHelper<MemberFragment>();
 
@@ -64,12 +66,10 @@ interface Props {
  * Organization owners table.
  */
 const Owners = ({ organizationId }: Props) => {
-  const { data: owners } = useMembersQuery(
-    { organizationId, roles: [Role.Owner] },
-    {
-      select: (data) => data.members?.nodes,
-    }
-  );
+  const { data: owners } = useSuspenseQuery({
+    ...membersQueryOptions({ organizationId, roles: [Role.Owner] }),
+    select: (data) => data.members?.nodes ?? [],
+  });
 
   const table = useReactTable({
     data: owners as MemberFragment[],

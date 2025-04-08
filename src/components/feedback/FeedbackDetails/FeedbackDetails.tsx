@@ -1,6 +1,7 @@
 "use client";
 
 import { HStack, Icon, Tooltip } from "@omnidev/sigil";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
@@ -9,12 +10,6 @@ import {
 } from "react-icons/pi";
 
 import { FeedbackCard } from "components/feedback";
-import {
-  useDownvoteQuery,
-  useFeedbackByIdQuery,
-  useProjectStatusesQuery,
-  useUpvoteQuery,
-} from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
@@ -28,6 +23,13 @@ import {
   useHandleDownvoteMutation,
   useHandleUpvoteMutation,
 } from "lib/hooks/mutations";
+import {
+  downvoteQueryOptions,
+  feedbackByIdQueryOptions,
+  projectStatusesQueryOptions,
+  upvoteQueryOptions,
+} from "lib/react-query/options";
+
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -52,56 +54,49 @@ interface Props extends HstackProps {
 const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
   const { user } = useAuth();
 
-  const { data: feedback } = useFeedbackByIdQuery(
-    {
+  const { data: feedback } = useSuspenseQuery({
+    ...feedbackByIdQueryOptions({
       rowId: feedbackId,
-    },
-    {
-      select: (data) => data?.post,
-    }
-  );
+    }),
+
+    select: (data) => data?.post,
+  });
 
   const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: feedback?.project?.organization?.rowId,
   });
 
-  const { data: projectStatuses } = useProjectStatusesQuery(
-    {
+  // TODO: determine if needs suspense
+  const { data: projectStatuses } = useQuery({
+    ...projectStatusesQueryOptions({
       projectId: feedback?.project?.rowId!,
-    },
-    {
-      enabled: isAdmin,
-      select: (data) =>
-        data?.postStatuses?.nodes.map((status) => ({
-          rowId: status?.rowId,
-          status: status?.status,
-          color: status?.color,
-        })),
-    }
-  );
+    }),
+    enabled: isAdmin,
+    select: (data) =>
+      data?.postStatuses?.nodes.map((status) => ({
+        rowId: status?.rowId,
+        status: status?.status,
+        color: status?.color,
+      })),
+  });
 
-  const { data: hasUpvoted } = useUpvoteQuery(
-    {
+  // TODO: for the most part works fine, but figure out why optimistic updates are a bit off for these (maybe userId??)
+  const { data: hasUpvoted } = useSuspenseQuery({
+    ...upvoteQueryOptions({
       userId: user?.rowId!,
       feedbackId,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.upvoteByPostIdAndUserId,
-    }
-  );
+    }),
+    select: (data) => data?.upvoteByPostIdAndUserId,
+  });
 
-  const { data: hasDownvoted } = useDownvoteQuery(
-    {
+  const { data: hasDownvoted } = useSuspenseQuery({
+    ...downvoteQueryOptions({
       userId: user?.rowId!,
       feedbackId,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.downvoteByPostIdAndUserId,
-    }
-  );
+    }),
+    select: (data) => data?.downvoteByPostIdAndUserId,
+  });
 
   const { mutate: handleUpvote } = useHandleUpvoteMutation({
     feedbackId,
@@ -126,7 +121,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       tooltip: app.feedbackPage.details.upvote,
       icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
-      onClick: () => handleUpvote(),
+      onMouseDown: () => handleUpvote(),
     },
     {
       id: "downvote",
@@ -134,7 +129,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       tooltip: app.feedbackPage.details.downvote,
       icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
-      onClick: () => handleDownvote(),
+      onMouseDown: () => handleDownvote(),
     },
   ];
 

@@ -7,15 +7,17 @@ import { Page } from "components/layout";
 import {
   Role,
   useCommentsQuery,
-  useDownvoteQuery,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
-  useOrganizationRoleQuery,
-  useProjectStatusesQuery,
-  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import {
+  downvoteQueryOptions,
+  feedbackByIdQueryOptions,
+  organizationRoleQueryOptions,
+  projectStatusesQueryOptions,
+  upvoteQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -50,7 +52,7 @@ const FeedbackPage = async ({ params }: Props) => {
   if (!feedback) notFound();
 
   const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-    userId: session.user?.rowId!,
+    userId: session.user.rowId!,
     organizationId: feedback.project?.organization?.rowId!,
   });
 
@@ -82,60 +84,39 @@ const FeedbackPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
-    }),
-    // ! NB: only prefetch the project statuses if the user is an admin
-    ...(isAdmin
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: feedback.project?.rowId!,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: feedback.project?.rowId!,
-            }),
-          }),
-        ]
-      : []),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDownvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useDownvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUpvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useUpvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
-      queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
-      initialPageParam: undefined,
-    }),
-  ]);
+  queryClient.prefetchQuery(feedbackByIdQueryOptions({ rowId: feedbackId }));
+  queryClient.prefetchQuery(
+    organizationRoleQueryOptions({
+      userId: session.user.rowId!,
+      organizationId: feedback.project?.organization?.rowId!,
+    })
+  );
+  queryClient.prefetchQuery(
+    downvoteQueryOptions({
+      userId: session?.user.rowId!,
+      feedbackId,
+    })
+  );
+  queryClient.prefetchQuery(
+    upvoteQueryOptions({
+      userId: session?.user.rowId!,
+      feedbackId,
+    })
+  );
+  // TODO: figure out if suspense works for this query
+  queryClient.prefetchInfiniteQuery({
+    queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
+    queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
+    initialPageParam: undefined,
+  });
+
+  if (isAdmin) {
+    queryClient.prefetchQuery(
+      projectStatusesQueryOptions({
+        projectId: feedback.project?.rowId!,
+      })
+    );
+  }
 
   return (
     <Page breadcrumbs={breadcrumbs}>

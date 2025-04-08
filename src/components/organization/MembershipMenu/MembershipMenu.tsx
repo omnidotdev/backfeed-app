@@ -110,7 +110,9 @@ const MembershipMenu = ({
             color="red"
             disabled={!isOwner}
             {...menuItemStyles}
-            onClick={() => handleMenuAction({ type: MenuAction.RemoveAdmin })}
+            onMouseDown={() =>
+              handleMenuAction({ type: MenuAction.RemoveAdmin })
+            }
           >
             {app.organizationMembersPage.membersMenu.removeAdmin}
           </MenuItem>
@@ -119,7 +121,7 @@ const MembershipMenu = ({
             value={MenuAction.MakeAdmin}
             disabled={!isOwner}
             {...menuItemStyles}
-            onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
+            onMouseDown={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
           >
             {app.organizationMembersPage.membersMenu.makeAdmin}
           </MenuItem>
@@ -130,7 +132,9 @@ const MembershipMenu = ({
           color="red"
           disabled={!isOwner}
           {...menuItemStyles}
-          onClick={() => handleMenuAction({ type: MenuAction.RemoveMember })}
+          onMouseDown={() =>
+            handleMenuAction({ type: MenuAction.RemoveMember })
+          }
         >
           {app.organizationMembersPage.membersMenu.removeMember}
         </MenuItem>

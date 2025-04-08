@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import {
   Bar,
@@ -13,9 +13,10 @@ import {
 
 import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
-import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
-import { useAuth } from "lib/hooks";
+import { weeklyFeedbackQueryOptions } from "lib/react-query/options";
+
+import type { User } from "generated/graphql";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
@@ -23,31 +24,26 @@ const startOfToday = dayjs().startOf("day").toDate();
 const getFormattedDate = (diff: number) =>
   dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
+interface Props {
+  userId: User["rowId"];
+}
+
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = () => {
-  const { user } = useAuth();
-
-  const {
-    data: weeklyFeedback,
-    isLoading,
-    isError,
-  } = useWeeklyFeedbackQuery(
-    {
-      userId: user?.rowId!,
+const FeedbackOverview = ({ userId }: Props) => {
+  const { data: weeklyFeedback, isError } = useSuspenseQuery({
+    ...weeklyFeedbackQueryOptions({
+      userId,
       startDate: oneWeekAgo,
       endDate: startOfToday,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) =>
-        data?.posts?.groupedAggregates?.map((aggregate) => ({
-          name: dayjs(aggregate.keys?.[0]).format("ddd"),
-          total: Number(aggregate.distinctCount?.rowId),
-        })),
-    }
-  );
+    }),
+    select: (data) =>
+      data?.posts?.groupedAggregates?.map((aggregate) => ({
+        name: dayjs(aggregate.keys?.[0]).format("ddd"),
+        total: Number(aggregate.distinctCount?.rowId),
+      })),
+  });
 
   const getDailyTotal = (date: string) =>
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;
@@ -67,41 +63,37 @@ const FeedbackOverview = () => {
       maxH="xl"
       contentProps={{ align: "center", justify: "center" }}
     >
-      {!isLoading ? (
-        isError ? (
-          <ErrorBoundary
-            message="Error fetching feedback overview"
-            h={400}
-            w="full"
-          />
-        ) : (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={DATA}>
-              <XAxis dataKey="name" axisLine={false} tickLine={false} />
-
-              {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
-              <YAxis
-                allowDecimals={false}
-                axisLine={false}
-                tickLine={false}
-                width={32}
-              />
-
-              <Tooltip
-                cursor={{ fill: "transparent" }}
-                content={<FeedbackTooltip />}
-              />
-
-              <Bar
-                dataKey="total"
-                fill={token("colors.foreground.muted")}
-                radius={10}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )
+      {isError ? (
+        <ErrorBoundary
+          message="Error fetching feedback overview"
+          h={400}
+          w="full"
+        />
       ) : (
-        <Skeleton width="full" height={400} />
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={DATA}>
+            <XAxis dataKey="name" axisLine={false} tickLine={false} />
+
+            {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
+            <YAxis
+              allowDecimals={false}
+              axisLine={false}
+              tickLine={false}
+              width={32}
+            />
+
+            <Tooltip
+              cursor={{ fill: "transparent" }}
+              content={<FeedbackTooltip />}
+            />
+
+            <Bar
+              dataKey="total"
+              fill={token("colors.foreground.muted")}
+              radius={10}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       )}
     </FeedbackSection>
   );

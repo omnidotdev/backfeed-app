@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
+import { getAuthSession } from "lib/actions";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
-import { getAuthSession, toaster } from "lib/util";
+import { toaster } from "lib/util";
 import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -68,8 +69,6 @@ const createOrganizationSchema = baseSchema.superRefine(
 const CreateOrganization = () => {
   const router = useRouter();
 
-  const { user } = useAuth();
-
   const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -85,11 +84,11 @@ const CreateOrganization = () => {
       reset();
     },
     {
-      enabled: !!user && !isCreateProjectDialogOpen,
+      enabled: !isCreateProjectDialogOpen,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen]
+    [isOpen, isCreateProjectDialogOpen]
   );
 
   const { mutateAsync: createOrganization, isPending } =

@@ -1,46 +1,42 @@
 "use client";
 
 import { Button, Flex, Grid } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
-import { Link, SkeletonArray } from "components/core";
+import { Link } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import { OrganizationOrderBy } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { organizationsQueryOptions } from "lib/react-query/options";
 import { DialogType } from "store";
 
-import type { Organization } from "generated/graphql";
+import type { Organization, User } from "generated/graphql";
+
+interface Props {
+  userId: User["rowId"];
+}
 
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = () => {
-  const { user } = useAuth();
-
+const PinnedOrganizations = ({ userId }: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
 
-  const {
-    data: pinnedOrganizations,
-    isLoading,
-    isError,
-  } = useOrganizationsQuery(
-    {
+  const { data: pinnedOrganizations, isError } = useSuspenseQuery({
+    ...organizationsQueryOptions({
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
-      userId: user?.rowId!,
+      userId,
       isMember: true,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.nodes,
-    }
-  );
+    }),
+    select: (data) => data?.organizations?.nodes,
+  });
 
   return (
     <SectionContainer
@@ -82,16 +78,12 @@ const PinnedOrganizations = () => {
           gap={6}
           columns={{
             base: 1,
-            md: isLoading
-              ? 3
-              : pinnedOrganizations?.length
-                ? Math.min(3, pinnedOrganizations.length)
-                : 1,
+            md: pinnedOrganizations?.length
+              ? Math.min(3, pinnedOrganizations.length)
+              : 1,
           }}
         >
-          {isLoading ? (
-            <SkeletonArray count={3} h={48} />
-          ) : pinnedOrganizations?.length ? (
+          {pinnedOrganizations?.length ? (
             pinnedOrganizations?.map((organization) => (
               <Link
                 key={organization?.rowId}
@@ -115,7 +107,7 @@ const PinnedOrganizations = () => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
-                  onClick: () => setIsCreateOrganizationDialogOpen(true),
+                  onMouseDown: () => setIsCreateOrganizationDialogOpen(true),
                 },
               }}
               h={48}

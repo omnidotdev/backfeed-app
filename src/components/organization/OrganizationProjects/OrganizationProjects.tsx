@@ -1,16 +1,17 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
-import { Link, SkeletonArray } from "components/core";
+import { Link } from "components/core";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { organizationQueryOptions } from "lib/react-query/options";
 import { DialogType } from "store";
 
 import type { Organization, Project } from "generated/graphql";
@@ -30,18 +31,12 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const {
-    data: projects,
-    isLoading,
-    isError,
-  } = useOrganizationQuery(
-    {
+  const { data: projects, isError } = useSuspenseQuery({
+    ...organizationQueryOptions({
       slug: organizationSlug,
-    },
-    {
-      select: (data) => data?.organizationBySlug?.projects?.nodes,
-    }
-  );
+    }),
+    select: (data) => data?.organizationBySlug?.projects?.nodes,
+  });
 
   return (
     <SectionContainer
@@ -61,16 +56,10 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
           gap={6}
           columns={{
             base: 1,
-            md: isLoading
-              ? 2
-              : projects?.length
-                ? Math.min(2, projects.length)
-                : 1,
+            md: projects?.length ? Math.min(2, projects.length) : 1,
           }}
         >
-          {isLoading ? (
-            <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
-          ) : projects?.length ? (
+          {projects?.length ? (
             projects?.map((project) => (
               <Link
                 key={project?.rowId}
@@ -94,7 +83,7 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
                   variant: "outline",
                   color: "brand.primary",
                   borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
+                  onMouseDown: () => setIsCreateProjectDialogOpen(true),
                   disabled: isAuthLoading,
                 },
               }}

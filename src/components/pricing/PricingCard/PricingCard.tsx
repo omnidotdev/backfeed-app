@@ -152,7 +152,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
             fontSize="lg"
             disabled={isDisabled}
             variant={isRecommendedTier ? "solid" : "outline"}
-            onClick={() =>
+            onMouseDown={() =>
               isAuthenticated
                 ? router.push(
                     `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.hidraId}`

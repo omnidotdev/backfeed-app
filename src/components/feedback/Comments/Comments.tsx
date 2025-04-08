@@ -1,7 +1,7 @@
 "use client";
 
 import { Grid, Stack, VStack } from "@omnidev/sigil";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -11,7 +11,6 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   useCreateCommentMutation,
   useInfiniteCommentsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -22,6 +21,7 @@ import type {
   Organization,
   Post,
 } from "generated/graphql";
+import { userQueryOptions } from "lib/react-query/options";
 
 interface Props {
   /** Organization ID. */
@@ -36,15 +36,13 @@ interface Props {
 const Comments = ({ organizationId, feedbackId }: Props) => {
   const { user } = useAuth();
 
-  const { data: username } = useUserQuery(
-    {
+  const { data: username } = useQuery({
+    ...userQueryOptions({
       hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.username,
-    }
-  );
+    }),
+    enabled: !!user?.hidraId,
+    select: (data) => data?.userByHidraId?.username,
+  });
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(

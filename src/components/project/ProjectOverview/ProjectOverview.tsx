@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 import {
@@ -9,7 +10,7 @@ import {
   ProjectInformation,
   StatusBreakdown,
 } from "components/project";
-import { useProjectMetricsQuery } from "generated/graphql";
+import { projectMetricsQueryOptions } from "lib/react-query/options";
 
 import type { Project } from "generated/graphql";
 
@@ -19,23 +20,21 @@ interface Props {
 }
 
 const ProjectOverview = ({ projectId }: Props) => {
-  // TODO: look into optimistic updates. Unnecessary for now, but would be nice for synchronous feedback with the details component. See: https://github.com/omnidotdev/backfeed-app/pull/58#issuecomment-2593070248 for more context.
-  const { data, isLoading, isError } = useProjectMetricsQuery(
-    {
+  const { data, isError } = useSuspenseQuery({
+    ...projectMetricsQueryOptions({
       projectId,
-    },
-    {
-      select: (data) => ({
-        createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
-        activeUsers: Number(
-          data?.project?.posts.aggregates?.distinctCount?.userId
-        ),
-        totalFeedback: data?.project?.posts.totalCount,
-        totalEngagement:
-          (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
-      }),
-    }
-  );
+    }),
+
+    select: (data) => ({
+      createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
+      activeUsers: Number(
+        data?.project?.posts.aggregates?.distinctCount?.userId
+      ),
+      totalFeedback: data?.project?.posts.totalCount,
+      totalEngagement:
+        (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
+    }),
+  });
 
   return (
     <Grid columns={{ lg: 3 }} gap={6}>
@@ -48,14 +47,12 @@ const ProjectOverview = ({ projectId }: Props) => {
           <ProjectInformation
             createdAt={data?.createdAt}
             activeUsers={data?.activeUsers}
-            isLoaded={!isLoading}
             isError={isError}
           />
 
           <FeedbackMetrics
             totalFeedback={data?.totalFeedback ?? 0}
             totalEngagement={data?.totalEngagement ?? 0}
-            isLoaded={!isLoading}
             isError={isError}
           />
 

@@ -180,7 +180,7 @@ const FeedbackCard = ({
                       // NB: Needs to be analyzed at runtime.
                       // TODO: Implement check to validate that the status color is a valid color
                       style={status.color ? { color: status.color } : undefined}
-                      onClick={() =>
+                      onMouseDown={() =>
                         updateStatus({
                           rowId: feedback.rowId!,
                           patch: {

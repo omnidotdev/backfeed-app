@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Grid, Icon, Stack, VStack } from "@omnidev/sigil";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -14,10 +14,10 @@ import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
   useProjectStatusesQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { userQueryOptions } from "lib/react-query/options";
 
 import type {
   CreateFeedbackMutationVariables,
@@ -40,15 +40,13 @@ const ProjectFeedback = ({ projectId }: Props) => {
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
-  const { data: username } = useUserQuery(
-    {
+  const { data: username } = useQuery({
+    ...userQueryOptions({
       hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.username,
-    }
-  );
+    }),
+    enabled: !!user?.hidraId,
+    select: (data) => data?.userByHidraId?.username,
+  });
 
   const { data: defaultStatus } = useProjectStatusesQuery(
     {
@@ -160,7 +158,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       bgColor="card-item"
                       cursor={isPending ? "not-allowed" : "pointer"}
                       role="group"
-                      onClick={() =>
+                      onMouseDown={() =>
                         !isPending
                           ? router.push(
                               `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`

@@ -1,11 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import {
-  Role,
-  useOrganizationRoleQuery,
-  useUpdateMemberMutation,
-} from "generated/graphql";
+import { Role, useUpdateMemberMutation } from "generated/graphql";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { organizationRoleQueryOptions } from "lib/react-query/options";
 
 import type { UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -59,33 +56,29 @@ const useTransferOwnershipMutation = ({
         return Promise.resolve(updateMember as UpdateMemberPayload);
       },
       onMutate: () => {
+        const roleOptions = organizationRoleQueryOptions({
+          userId: user?.rowId!,
+          organizationId: organizationId!,
+        });
+
         const snapshot = queryClient.getQueryData(
-          useOrganizationRoleQuery.getKey({
+          roleOptions.queryKey
+        ) as OrganizationRoleQuery;
+
+        queryClient.setQueryData(roleOptions.queryKey, {
+          memberByUserIdAndOrganizationId: {
+            ...snapshot?.memberByUserIdAndOrganizationId!,
+            role: Role.Member,
+          },
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          organizationRoleQueryOptions({
             userId: user?.rowId!,
             organizationId: organizationId!,
           })
-        ) as OrganizationRoleQuery;
-
-        queryClient.setQueryData(
-          useOrganizationRoleQuery.getKey({
-            userId: user?.rowId!,
-            organizationId: organizationId!,
-          }),
-          {
-            memberByUserIdAndOrganizationId: {
-              ...snapshot?.memberByUserIdAndOrganizationId,
-              role: Role.Member,
-            },
-          }
         );
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({
-          queryKey: useOrganizationRoleQuery.getKey({
-            userId: user?.rowId!,
-            organizationId: organizationId!,
-          }),
-        });
       },
       ...mutationOptions,
     }

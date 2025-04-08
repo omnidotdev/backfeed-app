@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
+import { Flex, Icon, Text } from "@omnidev/sigil";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { IoCalendarOutline } from "react-icons/io5";
 
@@ -12,8 +12,6 @@ interface Props {
   createdAt: string | undefined;
   /** Number of active users. */
   activeUsers: number | undefined;
-  /** Whether the project data is loaded. */
-  isLoaded?: boolean;
   /** Whether loading the project data encountered an error. */
   isError?: boolean;
 }
@@ -21,12 +19,7 @@ interface Props {
 /**
  * Project information.
  */
-const ProjectInformation = ({
-  createdAt,
-  activeUsers,
-  isLoaded,
-  isError,
-}: Props) => {
+const ProjectInformation = ({ createdAt, activeUsers, isError }: Props) => {
   const information = [
     {
       title: app.projectPage.projectInformation.created,
@@ -50,11 +43,9 @@ const ProjectInformation = ({
             <Text color="foreground.muted">{title}</Text>
           </Flex>
 
-          <Skeleton isLoaded={isLoaded} minW={8}>
-            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
-              {isError ? 0 : value}
-            </Text>
-          </Skeleton>
+          <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+            {isError ? 0 : value}
+          </Text>
         </Flex>
       ))}
     </SectionContainer>

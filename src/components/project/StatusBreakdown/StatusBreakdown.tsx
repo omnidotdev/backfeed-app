@@ -4,13 +4,14 @@ import { Flex, Text } from "@omnidev/sigil";
 
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
-import {
-  useProjectStatusesQuery,
-  useStatusBreakdownQuery,
-} from "generated/graphql";
 import { app } from "lib/config";
 
 import type { Project } from "generated/graphql";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  projectStatusesQueryOptions,
+  statusBreakdownQueryOptions,
+} from "lib/react-query/options";
 
 interface Props {
   /** Project ID. */
@@ -21,40 +22,35 @@ interface Props {
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
-  const { data: projectStatuses } = useProjectStatusesQuery(
-    {
+  const { data: projectStatuses } = useSuspenseQuery({
+    ...projectStatusesQueryOptions({
       projectId,
-    },
-    {
-      select: (data) =>
-        data?.postStatuses?.nodes?.map((status) => ({
-          rowId: status?.rowId,
-          status: status?.status,
-          color: status?.color,
-        })),
-    }
-  );
+    }),
+    select: (data) =>
+      data?.postStatuses?.nodes?.map((status) => ({
+        rowId: status?.rowId,
+        status: status?.status,
+        color: status?.color,
+      })),
+  });
 
-  const { data: breakdown } = useStatusBreakdownQuery(
-    {
+  const { data: breakdown } = useSuspenseQuery({
+    ...statusBreakdownQueryOptions({
       projectId,
-    },
-    {
-      enabled: !!projectStatuses?.length,
-      select: (data) =>
-        projectStatuses?.map((status) => {
-          const count =
-            data?.posts?.groupedAggregates?.find(
-              ({ keys }) => keys?.[0] === status?.rowId
-            )?.distinctCount?.rowId ?? 0;
+    }),
+    select: (data) =>
+      projectStatuses?.map((status) => {
+        const count =
+          data?.posts?.groupedAggregates?.find(
+            ({ keys }) => keys?.[0] === status?.rowId
+          )?.distinctCount?.rowId ?? 0;
 
-          return {
-            status,
-            count,
-          };
-        }),
-    }
-  );
+        return {
+          status,
+          count,
+        };
+      }),
+  });
 
   return (
     <SectionContainer title={app.projectPage.statusBreakdown.title}>

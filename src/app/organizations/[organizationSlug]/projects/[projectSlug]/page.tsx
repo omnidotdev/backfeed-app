@@ -6,17 +6,15 @@ import { LuSettings } from "react-icons/lu";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
-import {
-  Role,
-  useInfinitePostsQuery,
-  usePostsQuery,
-  useProjectMetricsQuery,
-  useProjectQuery,
-  useProjectStatusesQuery,
-  useStatusBreakdownQuery,
-} from "generated/graphql";
+import { Role, useInfinitePostsQuery, usePostsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import {
+  projectMetricsQueryOptions,
+  projectQueryOptions,
+  projectStatusesQueryOptions,
+  statusBreakdownQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -69,17 +67,14 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({
+  Promise.all([
+    queryClient.prefetchQuery(
+      projectQueryOptions({
         projectSlug,
         organizationSlug,
-      }),
-      queryFn: useProjectQuery.fetcher({
-        projectSlug,
-        organizationSlug,
-      }),
-    }),
+      })
+    ),
+    // TODO: determine if it is best to stream this or not
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         pageSize: 5,
@@ -91,18 +86,15 @@ const ProjectPage = async ({ params }: Props) => {
       }),
       initialPageParam: undefined,
     }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
-      queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
-      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useStatusBreakdownQuery.getKey({ projectId: project.rowId }),
-      queryFn: useStatusBreakdownQuery.fetcher({ projectId: project.rowId }),
-    }),
+    queryClient.prefetchQuery(
+      projectMetricsQueryOptions({ projectId: project.rowId })
+    ),
+    queryClient.prefetchQuery(
+      projectStatusesQueryOptions({ projectId: project.rowId })
+    ),
+    queryClient.prefetchQuery(
+      statusBreakdownQueryOptions({ projectId: project.rowId })
+    ),
   ]);
 
   return (

@@ -427,7 +427,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                 bgColor={{
                   _hover: { base: "brand.primary.50", _dark: "neutral.900" },
                 }}
-                onClick={() => pushValue(DEFAULT_PENDING_STATUS)}
+                onMouseDown={() => pushValue(DEFAULT_PENDING_STATUS)}
               >
                 <Icon src={HiPlus} h={4} w={4} />
 

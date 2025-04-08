@@ -16,9 +16,9 @@ import {
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
-import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { app, isDevEnv } from "lib/config";
@@ -90,7 +90,7 @@ const AccountInformation = () => {
 
           <MenuSeparator />
 
-          <MenuItem value="profile" onClick={handleProfileClick}>
+          <MenuItem value="profile" onMouseDown={handleProfileClick}>
             <HStack gap={2}>
               <Icon src={FiUser} size="sm" />
 
@@ -100,7 +100,7 @@ const AccountInformation = () => {
 
           <MenuSeparator />
 
-          <MenuItem value="logout" onClick={handleLogout}>
+          <MenuItem value="logout" onMouseDown={handleLogout}>
             <HStack gap={2} color="red">
               <Icon src={FiLogOut} size="sm" color="red" />
 
@@ -116,7 +116,7 @@ const AccountInformation = () => {
     <Stack ref={userActions} justifyContent="end">
       <Collapsible open={isMobileProfileOpen}>
         <Stack>
-          <Button onClick={handleProfileClick}>
+          <Button onMouseDown={handleProfileClick}>
             <HStack gap={2}>
               <Icon src={FiUser} />
 
@@ -124,7 +124,11 @@ const AccountInformation = () => {
             </HStack>
           </Button>
 
-          <Button variant="outline" onClick={handleLogout} borderColor="red">
+          <Button
+            variant="outline"
+            onMouseDown={handleLogout}
+            borderColor="red"
+          >
             <HStack gap={2} color="red">
               <Icon src={FiLogOut} size="sm" color="red" />
 
@@ -140,7 +144,7 @@ const AccountInformation = () => {
         outline="1px solid"
         outlineColor="background.subtle"
         size="xl"
-        onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
+        onMouseDown={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
       >
         <HStack justifyContent="space-between" w="full">
           <HStack alignItems="center">

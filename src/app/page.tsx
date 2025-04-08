@@ -4,15 +4,14 @@ import dayjs from "dayjs";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
+import { OrganizationOrderBy, Role } from "generated/graphql";
 import {
-  OrganizationOrderBy,
-  Role,
-  useDashboardAggregatesQuery,
-  useOrganizationsQuery,
-  useRecentFeedbackQuery,
-  useUserQuery,
-  useWeeklyFeedbackQuery,
-} from "generated/graphql";
+  dashboardAggregatesQueryOptions,
+  organizationsQueryOptions,
+  recentFeedbackQueryOptions,
+  userQueryOptions,
+  weeklyFeedbackQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
@@ -40,56 +39,39 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
-      queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey({
-        userId: organizationsQueryVariables.userId,
-        isMember: true,
-        excludeRoles: [Role.Member],
-      }),
-      queryFn: useOrganizationsQuery.fetcher({
-        userId: organizationsQueryVariables.userId,
-        isMember: true,
-        excludeRoles: [Role.Member],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDashboardAggregatesQuery.getKey({
-        userId: session.user.rowId!,
-      }),
-      queryFn: useDashboardAggregatesQuery.fetcher({
-        userId: session.user.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useWeeklyFeedbackQuery.getKey({
-        userId: session.user.rowId!,
-        startDate: oneWeekAgo,
-        endDate: startOfToday,
-      }),
-      queryFn: useWeeklyFeedbackQuery.fetcher({
-        userId: session.user.rowId!,
-        startDate: oneWeekAgo,
-        endDate: startOfToday,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
-      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
-    }),
-  ]);
+  queryClient.prefetchQuery(
+    organizationsQueryOptions(organizationsQueryVariables)
+  );
+  queryClient.prefetchQuery(
+    organizationsQueryOptions({
+      userId: organizationsQueryVariables.userId,
+      isMember: true,
+      excludeRoles: [Role.Member],
+    })
+  );
+  queryClient.prefetchQuery(
+    dashboardAggregatesQueryOptions({ userId: session.user.rowId! })
+  );
+  queryClient.prefetchQuery(
+    weeklyFeedbackQueryOptions({
+      userId: session.user.rowId!,
+      startDate: oneWeekAgo,
+      endDate: startOfToday,
+    })
+  );
+  queryClient.prefetchQuery(
+    recentFeedbackQueryOptions({ userId: session.user.rowId! })
+  );
+  queryClient.prefetchQuery(
+    userQueryOptions({ hidraId: session.user.hidraId! })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage />
+      <DashboardPage
+        hidraId={session.user.hidraId!}
+        userId={session.user.rowId!}
+      />
     </HydrationBoundary>
   );
 };

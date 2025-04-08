@@ -10,13 +10,13 @@ import {
   MembershipFilters,
   Owners,
 } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import {
+  membersQueryOptions,
+  organizationRoleQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
@@ -57,42 +57,26 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const { search, roles } = await getSearchParams.parse(searchParams);
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: roles ?? undefined,
-        search,
-        excludeRoles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: roles ?? undefined,
-        search,
-        excludeRoles: [Role.Owner],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
-  ]);
+  queryClient.prefetchQuery(
+    membersQueryOptions({
+      organizationId: organization.rowId,
+      roles: [Role.Owner],
+    })
+  );
+  queryClient.prefetchQuery(
+    membersQueryOptions({
+      organizationId: organization.rowId,
+      roles: roles ?? undefined,
+      search,
+      excludeRoles: [Role.Owner],
+    })
+  );
+  queryClient.prefetchQuery(
+    organizationRoleQueryOptions({
+      organizationId: organization.rowId,
+      userId: session.user.rowId!,
+    })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

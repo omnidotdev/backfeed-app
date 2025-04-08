@@ -2,7 +2,11 @@
 
 import { createListCollection } from "@ark-ui/react";
 import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
@@ -16,12 +20,14 @@ import {
   useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
-  useMembersQuery,
-  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
+import {
+  membersQueryOptions,
+  organizationRoleQueryOptions,
+} from "lib/react-query/options";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization } from "generated/graphql";
@@ -52,43 +58,40 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
 
   const { user } = useAuth();
 
-  const { data: numberOfOwners } = useMembersQuery(
-    {
+  const { data: numberOfOwners } = useSuspenseQuery({
+    ...membersQueryOptions({
       organizationId,
       roles: [Role.Owner],
-    },
-    {
-      select: (data) => data.members?.totalCount,
-    }
-  );
+    }),
+    select: (data) => data.members?.totalCount,
+  });
 
   // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
-  const { data: members } = useMembersQuery(
-    {
+  const { data: members } = useQuery({
+    ...membersQueryOptions({
       organizationId,
       excludeRoles: [Role.Owner],
-    },
-    {
-      select: (data) =>
-        data.members?.nodes?.map((member) => ({
-          label: `${member?.user?.firstName} ${member?.user?.lastName}`,
-          value: member?.rowId,
-        })),
-    }
-  );
+    }),
+    select: (data) =>
+      data.members?.nodes?.map((member) => ({
+        label: `${member?.user?.firstName} ${member?.user?.lastName}`,
+        value: member?.rowId,
+      })),
+  });
 
+  // TODO: isLoading because this cant be put in a suspense query
   const { isOwner, isMember, membershipId } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId,
   });
 
   const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useOrganizationRoleQuery.getKey({
+    queryClient.invalidateQueries(
+      organizationRoleQueryOptions({
         userId: user?.rowId!,
         organizationId,
-      }),
-    });
+      })
+    );
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),

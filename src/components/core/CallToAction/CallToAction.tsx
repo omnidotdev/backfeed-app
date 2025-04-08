@@ -52,7 +52,7 @@ const CallToAction = ({ action }: Props) => {
     <Button
       size="sm"
       width={{ base: "full", md: "auto" }}
-      onClick={handleAction}
+      onMouseDown={handleAction}
       {...buttonProps}
     >
       {icon}

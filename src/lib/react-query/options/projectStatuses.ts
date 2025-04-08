@@ -1,0 +1,15 @@
+import { queryOptions } from "@tanstack/react-query";
+
+import { useProjectStatusesQuery } from "generated/graphql";
+
+import type { ProjectStatusesQueryVariables } from "generated/graphql";
+
+const projectStatusesQueryOptions = (
+  variables: ProjectStatusesQueryVariables
+) =>
+  queryOptions({
+    queryKey: useProjectStatusesQuery.getKey(variables),
+    queryFn: useProjectStatusesQuery.fetcher(variables),
+  });
+
+export default projectStatusesQueryOptions;

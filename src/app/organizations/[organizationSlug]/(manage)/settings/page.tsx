@@ -4,14 +4,14 @@ import { notFound } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
+import {
+  membersQueryOptions,
+  organizationRoleQueryOptions,
+} from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 interface Props {
@@ -41,28 +41,18 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-    }),
-  ]);
+  queryClient.prefetchQuery(
+    organizationRoleQueryOptions({
+      userId: session.user.rowId!,
+      organizationId: organization.rowId,
+    })
+  );
+  queryClient.prefetchQuery(
+    membersQueryOptions({
+      organizationId: organization.rowId,
+      roles: [Role.Owner],
+    })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

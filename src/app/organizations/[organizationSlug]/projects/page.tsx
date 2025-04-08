@@ -4,19 +4,15 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { ProjectFilters, ProjectList } from "components/project";
-import {
-  Role,
-  useOrganizationRoleQuery,
-  useProjectsQuery,
-} from "generated/graphql";
+import { CreateProject, ProjectFilters, ProjectList } from "components/project";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { projectsQueryOptions } from "lib/react-query/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { ProjectsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 interface Props {
@@ -68,29 +64,15 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
-  const variables: ProjectsQueryVariables = {
-    pageSize: pageSize,
-    offset: (page - 1) * pageSize,
-    organizationSlug,
-    search,
-  };
-
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectsQuery.getKey(variables),
-      queryFn: useProjectsQuery.fetcher(variables),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
-  ]);
+  // NB: due to the need to refetch (update) this query frequently from the client, we should avoid suspense and to prevent loading indicators just await the prefetch here
+  await queryClient.prefetchQuery(
+    projectsQueryOptions({
+      pageSize: pageSize,
+      offset: (page - 1) * pageSize,
+      organizationSlug,
+      search,
+    })
+  );
 
   return (
     <Page
@@ -116,6 +98,12 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProjectList organizationId={organization.rowId} />
+
+        {/* dialogs */}
+        <CreateProject
+          organizationSlug={organizationSlug}
+          userId={session.user.rowId!}
+        />
       </HydrationBoundary>
     </Page>
   );

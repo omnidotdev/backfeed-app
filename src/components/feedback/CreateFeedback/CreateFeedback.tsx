@@ -2,7 +2,7 @@
 
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
@@ -10,14 +10,16 @@ import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
-  useProjectMetricsQuery,
-  useProjectQuery,
-  useProjectStatusesQuery,
-  useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import {
+  projectMetricsQueryOptions,
+  projectQueryOptions,
+  projectStatusesQueryOptions,
+  statusBreakdownQueryOptions,
+} from "lib/react-query/options";
 import { toaster } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 240;
@@ -58,44 +60,41 @@ const CreateFeedback = () => {
 
   const { user } = useAuth();
 
-  const { data: projectId } = useProjectQuery(
-    {
+  const { data: projectId } = useQuery({
+    ...projectQueryOptions({
       projectSlug,
       organizationSlug,
-    },
-    {
-      enabled: !!projectSlug && !!organizationSlug,
-      select: (data) => data?.projects?.nodes?.[0]?.rowId,
-    }
-  );
+    }),
 
-  const { data: defaultStatusId } = useProjectStatusesQuery(
-    {
+    enabled: !!projectSlug && !!organizationSlug,
+    select: (data) => data?.projects?.nodes?.[0]?.rowId,
+  });
+
+  const { data: defaultStatusId } = useQuery({
+    ...projectStatusesQueryOptions({
       projectId: projectId!,
       isDefault: true,
-    },
-    {
-      enabled: !!projectId,
-      select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
-    }
-  );
+    }),
+    enabled: !!projectId,
+    select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
+  });
+
+  const sharedVariables = {
+    projectId: projectId!,
+  };
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
     onSettled: async () => {
       reset();
 
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: useStatusBreakdownQuery.getKey({
-            projectId: projectId!,
-          }),
-        }),
+        queryClient.invalidateQueries(
+          statusBreakdownQueryOptions(sharedVariables)
+        ),
 
-        queryClient.invalidateQueries({
-          queryKey: useProjectMetricsQuery.getKey({
-            projectId: projectId!,
-          }),
-        }),
+        queryClient.invalidateQueries(
+          projectMetricsQueryOptions(sharedVariables)
+        ),
       ]);
 
       return queryClient.invalidateQueries({

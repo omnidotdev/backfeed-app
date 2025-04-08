@@ -1,7 +1,7 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
@@ -10,11 +10,12 @@ import {
   useOrganizationQuery,
   useUpdateOrganizationMutation,
 } from "generated/graphql";
+import { getAuthSession } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
-import { getAuthSession } from "lib/util";
+import { organizationQueryOptions } from "lib/react-query/options";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -72,14 +73,12 @@ const UpdateOrganization = () => {
 
   const { user } = useAuth();
 
-  const { data: organization } = useOrganizationQuery(
-    {
+  const { data: organization } = useSuspenseQuery({
+    ...organizationQueryOptions({
       slug: organizationSlug,
-    },
-    {
-      select: (data) => data.organizationBySlug,
-    }
-  );
+    }),
+    select: (data) => data.organizationBySlug,
+  });
 
   const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,

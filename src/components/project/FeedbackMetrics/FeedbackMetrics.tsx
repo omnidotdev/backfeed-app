@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
+import { Flex, Icon, Text } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { TbHeartbeat } from "react-icons/tb";
 
@@ -12,8 +12,6 @@ interface Props {
   totalFeedback: number;
   /** Total upvotes for the project posts. */
   totalEngagement: number;
-  /** Whether the project data is loaded. */
-  isLoaded?: boolean;
   /** Whether loading the project data encountered an error. */
   isError?: boolean;
 }
@@ -24,7 +22,6 @@ interface Props {
 const FeedbackMetrics = ({
   totalFeedback,
   totalEngagement,
-  isLoaded,
   isError,
 }: Props) => {
   const metrics = [
@@ -50,11 +47,9 @@ const FeedbackMetrics = ({
             <Text color="foreground.muted">{title}</Text>
           </Flex>
 
-          <Skeleton isLoaded={isLoaded} minW={8}>
-            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
-              {isError ? 0 : value}
-            </Text>
-          </Skeleton>
+          <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+            {isError ? 0 : value}
+          </Text>
         </Flex>
       ))}
     </SectionContainer>

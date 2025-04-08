@@ -8,15 +8,16 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ManagementNavigation } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDebounceValue, useViewportSize } from "lib/hooks";
+import { organizationQueryOptions } from "lib/react-query/options";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -32,14 +33,12 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
-  const { data: organization } = useOrganizationQuery(
-    {
+  const { data: organization } = useSuspenseQuery({
+    ...organizationQueryOptions({
       slug: organizationSlug,
-    },
-    {
-      select: (data) => data?.organizationBySlug,
-    }
-  );
+    }),
+    select: (data) => data?.organizationBySlug,
+  });
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "organization-management-sidebar",
@@ -134,7 +133,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           />
 
           <Stack w="full" px={6}>
-            <Button variant="ghost" onClick={onCloseDrawer}>
+            <Button variant="ghost" onMouseDown={onCloseDrawer}>
               Close
             </Button>
           </Stack>
@@ -162,7 +161,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
             aria-label="Toggle Sidebar"
-            onClick={isLargeViewport ? onToggleSidebar : onToggleDrawer}
+            onMouseDown={isLargeViewport ? onToggleSidebar : onToggleDrawer}
             ml={2}
           >
             <Icon

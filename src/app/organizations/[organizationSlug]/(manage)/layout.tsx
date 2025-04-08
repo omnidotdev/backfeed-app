@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { ManagementSidebar } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
+import { organizationQueryOptions } from "lib/react-query/options";
 import { getQueryClient } from "lib/util";
 
 import type { PropsWithChildren } from "react";
@@ -25,10 +25,9 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-    queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-  });
+  queryClient.prefetchQuery(
+    organizationQueryOptions({ slug: organizationSlug })
+  );
 
   return (
     <HStack h="full" w="full" gap={0}>
