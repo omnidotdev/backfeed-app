@@ -67,35 +67,33 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
-  Promise.all([
-    queryClient.prefetchQuery(
-      projectQueryOptions({
-        projectSlug,
-        organizationSlug,
-      })
-    ),
-    // TODO: determine if it is best to stream this or not
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfinitePostsQuery.getKey({
-        pageSize: 5,
-        projectId: project.rowId,
-      }),
-      queryFn: usePostsQuery.fetcher({
-        pageSize: 5,
-        projectId: project.rowId,
-      }),
-      initialPageParam: undefined,
+  queryClient.prefetchQuery(
+    projectQueryOptions({
+      projectSlug,
+      organizationSlug,
+    })
+  );
+  // TODO: determine if it is best to stream this or not
+  queryClient.prefetchInfiniteQuery({
+    queryKey: useInfinitePostsQuery.getKey({
+      pageSize: 5,
+      projectId: project.rowId,
     }),
-    queryClient.prefetchQuery(
-      projectMetricsQueryOptions({ projectId: project.rowId })
-    ),
-    queryClient.prefetchQuery(
-      projectStatusesQueryOptions({ projectId: project.rowId })
-    ),
-    queryClient.prefetchQuery(
-      statusBreakdownQueryOptions({ projectId: project.rowId })
-    ),
-  ]);
+    queryFn: usePostsQuery.fetcher({
+      pageSize: 5,
+      projectId: project.rowId,
+    }),
+    initialPageParam: undefined,
+  });
+  queryClient.prefetchQuery(
+    projectMetricsQueryOptions({ projectId: project.rowId })
+  );
+  queryClient.prefetchQuery(
+    projectStatusesQueryOptions({ projectId: project.rowId })
+  );
+  queryClient.prefetchQuery(
+    statusBreakdownQueryOptions({ projectId: project.rowId })
+  );
 
   return (
     <Page

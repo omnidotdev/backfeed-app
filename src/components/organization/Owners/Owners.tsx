@@ -19,8 +19,8 @@ import {
 import { Role } from "generated/graphql";
 import { capitalizeFirstLetter } from "lib/util";
 
-import type { MemberFragment } from "generated/graphql";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { MemberFragment } from "generated/graphql";
 import { membersQueryOptions } from "lib/react-query/options";
 
 const columnHelper = createColumnHelper<MemberFragment>();
@@ -76,6 +76,8 @@ const Owners = ({ organizationId }: Props) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (!owners.length) return null;
 
   return (
     <Table

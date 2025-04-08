@@ -30,6 +30,8 @@ import type { MemberFragment } from "generated/graphql";
 
 const columnHelper = createColumnHelper<MemberFragment>();
 
+// TODO: add fallback for no members / add member(s)
+
 interface Props {
   /** Organization ID. */
   organizationId: string;
