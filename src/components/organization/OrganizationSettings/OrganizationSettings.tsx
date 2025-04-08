@@ -22,7 +22,7 @@ import {
   useLeaveOrganizationMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 import {
   membersQueryOptions,
@@ -30,7 +30,7 @@ import {
 } from "lib/react-query/options";
 
 import type { DestructiveActionProps } from "components/core";
-import type { Organization } from "generated/graphql";
+import type { Organization, User } from "generated/graphql";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -42,6 +42,7 @@ const joinOrganizationDetails =
   app.organizationSettingsPage.cta.joinOrganization;
 
 interface Props {
+  userId: User["rowId"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Whether the application is currently running in a development environment. */
@@ -49,14 +50,16 @@ interface Props {
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
+const OrganizationSettings = ({
+  userId,
+  organizationId,
+  developmentFlag,
+}: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
 
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const { data: numberOfOwners } = useSuspenseQuery({
     ...membersQueryOptions({
@@ -79,16 +82,15 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
       })),
   });
 
-  // TODO: isLoading because this cant be put in a suspense query
   const { isOwner, isMember, membershipId } = useOrganizationMembership({
-    userId: user?.rowId,
+    userId,
     organizationId,
   });
 
   const onSettled = () =>
     queryClient.invalidateQueries(
       organizationRoleQueryOptions({
-        userId: user?.rowId!,
+        userId,
         organizationId,
       })
     );
@@ -236,7 +238,7 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
                 joinOrganization({
                   input: {
                     member: {
-                      userId: user?.rowId!,
+                      userId,
                       organizationId,
                       role: Role.Member,
                     },
