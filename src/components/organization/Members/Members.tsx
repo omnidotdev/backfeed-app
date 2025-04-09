@@ -93,6 +93,12 @@ const Members = ({ organizationId }: Props) => {
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
+            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            iconProps={{
+              style: {
+                pointerEvents: "none",
+              },
+            }}
             checked={
               table.getIsAllRowsSelected()
                 ? true
@@ -123,6 +129,12 @@ const Members = ({ organizationId }: Props) => {
             }
             controlProps={{
               display: isOwner ? "flex" : "none",
+            }}
+            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            iconProps={{
+              style: {
+                pointerEvents: "none",
+              },
             }}
             disabled={!isOwner}
             checked={row.getIsSelected()}

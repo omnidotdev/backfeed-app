@@ -6,7 +6,7 @@ import { z } from "zod";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm } from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
@@ -98,6 +98,7 @@ const createInvitationSchema = baseSchema.superRefine(
 const InviteMember = ({ organizationName, organizationId }: Props) => {
   const { user } = useAuth();
   const [isPending, setIsPending] = useState(false);
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.InviteMember,
@@ -198,6 +199,12 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       onOpenChange={({ open }) => {
         reset();
         setIsOpen(open);
+      }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        style: {
+          minWidth: isSmallViewport ? undefined : 0,
+        },
       }}
     >
       <sigil.form
