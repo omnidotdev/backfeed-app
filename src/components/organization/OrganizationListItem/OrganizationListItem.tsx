@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
@@ -41,6 +41,7 @@ const OrganizationListItem = ({ organization }: Props) => {
       mx="auto"
       h={36}
       justify="space-between"
+      position="relative"
     >
       <HStack alignItems="flex-start" justify="space-between">
         {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
@@ -69,11 +70,13 @@ const OrganizationListItem = ({ organization }: Props) => {
           </Link>
         </Stack>
 
-        <Link href={`${`/organizations/${organization.slug}/settings`}`}>
-          <Button variant="ghost" px="2">
-            <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
-          </Button>
-        </Link>
+        <Flex position="absolute" right={0} top={0} m={2}>
+          <Link href={`${`/organizations/${organization.slug}/settings`}`}>
+            <Button variant="ghost" p={0}>
+              <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
+            </Button>
+          </Link>
+        </Flex>
       </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end">

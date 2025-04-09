@@ -127,8 +127,13 @@ const FeedbackCard = ({
     >
       <Stack w="full">
         <HStack justify="space-between">
-          <Stack gap={0.5}>
-            <Text fontWeight="semibold" fontSize="xl" lineHeight={1}>
+          <Stack gap={1}>
+            <Text
+              fontWeight="semibold"
+              fontSize="lg"
+              lineHeight={1}
+              maxW="50svw"
+            >
               {feedback.title}
             </Text>
 
