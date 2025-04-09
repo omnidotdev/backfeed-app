@@ -1,7 +1,7 @@
 "use client";
 
 import { Pagination, Stack } from "@omnidev/sigil";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
@@ -40,19 +40,14 @@ const ProjectList = ({ organizationId }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const { data, isLoading, isError } = useQuery({
-    ...projectsQueryOptions({
+  const { data, isLoading, isError } = useQuery(
+    projectsQueryOptions({
       pageSize,
       offset: (page - 1) * pageSize,
       organizationSlug,
       search,
-    }),
-    placeholderData: keepPreviousData,
-    select: (data) => ({
-      totalCount: data?.projects?.totalCount,
-      projects: data?.projects?.nodes,
-    }),
-  });
+    })
+  );
 
   const projects = data?.projects;
 

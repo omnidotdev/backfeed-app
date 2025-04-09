@@ -36,17 +36,15 @@ interface Props {
 const ProjectFeedback = ({ projectId }: Props) => {
   const router = useRouter();
 
-  const { user } = useAuth();
+  const { user: loggedInUser } = useAuth();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
-  const { data: username } = useQuery({
-    ...userQueryOptions({
-      hidraId: user?.hidraId!,
-    }),
-    enabled: !!user?.hidraId,
-    select: (data) => data?.userByHidraId?.username,
-  });
+  const { data: user } = useQuery(
+    userQueryOptions({
+      hidraId: loggedInUser?.hidraId!,
+    })
+  );
 
   const { data: defaultStatus } = useProjectStatusesQuery(
     {
@@ -93,7 +91,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
           slug: "pending",
         },
         user: {
-          username,
+          username: user?.username,
         },
         upvotes: {
           totalCount: 0,
@@ -144,6 +142,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
               <VStack>
                 {allPosts.map((feedback) => {
                   const isPending = feedback?.rowId === "pending";
+                  const href = `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`;
 
                   return (
                     <FeedbackCard
@@ -158,12 +157,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       bgColor="card-item"
                       cursor={isPending ? "not-allowed" : "pointer"}
                       role="group"
+                      onMouseOver={() =>
+                        !isPending ? router.prefetch(href) : undefined
+                      }
                       onMouseDown={() =>
-                        !isPending
-                          ? router.push(
-                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
-                            )
-                          : undefined
+                        !isPending ? router.push(href) : undefined
                       }
                     >
                       <Button

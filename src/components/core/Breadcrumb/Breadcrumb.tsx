@@ -44,7 +44,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
           />
 
           {href ? (
-            <Link href={href}>
+            <Link href={href} prefetch>
               <Text
                 display={isLastItem ? "none" : { base: "inline", lg: "none" }}
                 color={{

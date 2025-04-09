@@ -60,32 +60,29 @@ const CreateFeedback = () => {
 
   const { user } = useAuth();
 
-  const { data: projectId } = useQuery({
-    ...projectQueryOptions({
+  const { data: project } = useQuery(
+    projectQueryOptions({
       projectSlug,
       organizationSlug,
-    }),
-
-    enabled: !!projectSlug && !!organizationSlug,
-    select: (data) => data?.projects?.nodes?.[0]?.rowId,
-  });
+    })
+  );
 
   const { data: defaultStatusId } = useQuery({
     ...projectStatusesQueryOptions({
-      projectId: projectId!,
+      projectId: project?.rowId!,
       isDefault: true,
     }),
-    enabled: !!projectId,
+    enabled: !!project?.rowId,
     select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
   });
-
-  const sharedVariables = {
-    projectId: projectId!,
-  };
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
     onSettled: async () => {
       reset();
+
+      const sharedVariables = {
+        projectId: project?.rowId!,
+      };
 
       await Promise.all([
         queryClient.invalidateQueries(
@@ -100,7 +97,7 @@ const CreateFeedback = () => {
       return queryClient.invalidateQueries({
         queryKey: useInfinitePostsQuery.getKey({
           pageSize: 5,
-          projectId: projectId!,
+          projectId: project?.rowId!,
         }),
       });
     },
@@ -110,7 +107,7 @@ const CreateFeedback = () => {
     {
       defaultValues: {
         statusId: defaultStatusId ?? "",
-        projectId: projectId ?? "",
+        projectId: project?.rowId ?? "",
         userId: user?.rowId ?? "",
         title: "",
         description: "",

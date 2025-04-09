@@ -33,16 +33,11 @@ interface OrganizationMetric extends FlexProps {
  * Organization metrics.
  */
 const OrganizationMetrics = ({ organizationId }: Props) => {
-  const { data: organizationMetrics, isError } = useSuspenseQuery({
-    ...organizationMetricsQueryOptions({
+  const { data: organizationMetrics, isError } = useSuspenseQuery(
+    organizationMetricsQueryOptions({
       organizationId,
-    }),
-    select: (data) => ({
-      totalProjects: data?.projects?.totalCount,
-      totalFeedback: data?.posts?.totalCount,
-      activeUsers: data?.members?.totalCount,
-    }),
-  });
+    })
+  );
 
   const ORGANIZATION_METRICS: OrganizationMetric[] = [
     {

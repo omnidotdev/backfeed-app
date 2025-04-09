@@ -51,15 +51,14 @@ const Members = ({ organizationId }: Props) => {
   const [{ roles, search }] = useSearchParams();
 
   // TODO: determine if this should use suspense (error due to no `placeholderData` and updates)
-  const { data: members } = useSuspenseQuery({
-    ...membersQueryOptions({
+  const { data: members } = useSuspenseQuery(
+    membersQueryOptions({
       organizationId,
       roles: roles ?? undefined,
       search,
       excludeRoles: [Role.Owner],
-    }),
-    select: (data) => data.members?.nodes ?? [],
-  });
+    })
+  );
 
   const columns = useMemo(
     () => [

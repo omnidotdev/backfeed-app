@@ -1,17 +1,17 @@
 "use client";
 
 import { Flex, Text } from "@omnidev/sigil";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-
-import type { Project } from "generated/graphql";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   projectStatusesQueryOptions,
   statusBreakdownQueryOptions,
 } from "lib/react-query/options";
+
+import type { Project } from "generated/graphql";
 
 interface Props {
   /** Project ID. */
@@ -22,17 +22,11 @@ interface Props {
  * Feedback status breakdown for a project. Shows the number of feedback items in each status.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
-  const { data: projectStatuses } = useSuspenseQuery({
-    ...projectStatusesQueryOptions({
+  const { data: projectStatuses } = useSuspenseQuery(
+    projectStatusesQueryOptions({
       projectId,
-    }),
-    select: (data) =>
-      data?.postStatuses?.nodes?.map((status) => ({
-        rowId: status?.rowId,
-        status: status?.status,
-        color: status?.color,
-      })),
-  });
+    })
+  );
 
   const { data: breakdown } = useSuspenseQuery({
     ...statusBreakdownQueryOptions({

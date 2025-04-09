@@ -33,12 +33,11 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
-  const { data: organization } = useSuspenseQuery({
-    ...organizationQueryOptions({
+  const { data: organization } = useSuspenseQuery(
+    organizationQueryOptions({
       slug: organizationSlug,
-    }),
-    select: (data) => data?.organizationBySlug,
-  });
+    })
+  );
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "organization-management-sidebar",

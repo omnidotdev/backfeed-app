@@ -8,6 +8,7 @@ const upvoteQueryOptions = (variables: UpvoteQueryVariables) =>
   queryOptions({
     queryKey: useUpvoteQuery.getKey(variables),
     queryFn: useUpvoteQuery.fetcher(variables),
+    select: (data) => data?.upvoteByPostIdAndUserId,
   });
 
 export default upvoteQueryOptions;

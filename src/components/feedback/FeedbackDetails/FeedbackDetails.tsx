@@ -54,13 +54,11 @@ interface Props extends HstackProps {
 const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
   const { user } = useAuth();
 
-  const { data: feedback } = useSuspenseQuery({
-    ...feedbackByIdQueryOptions({
+  const { data: feedback } = useSuspenseQuery(
+    feedbackByIdQueryOptions({
       rowId: feedbackId,
-    }),
-
-    select: (data) => data?.post,
-  });
+    })
+  );
 
   const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,
@@ -73,30 +71,22 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       projectId: feedback?.project?.rowId!,
     }),
     enabled: isAdmin,
-    select: (data) =>
-      data?.postStatuses?.nodes.map((status) => ({
-        rowId: status?.rowId,
-        status: status?.status,
-        color: status?.color,
-      })),
   });
 
   // TODO: for the most part works fine, but figure out why optimistic updates are a bit off for these (maybe userId??)
-  const { data: hasUpvoted } = useSuspenseQuery({
-    ...upvoteQueryOptions({
+  const { data: hasUpvoted } = useSuspenseQuery(
+    upvoteQueryOptions({
       userId: user?.rowId!,
       feedbackId,
-    }),
-    select: (data) => data?.upvoteByPostIdAndUserId,
-  });
+    })
+  );
 
-  const { data: hasDownvoted } = useSuspenseQuery({
-    ...downvoteQueryOptions({
+  const { data: hasDownvoted } = useSuspenseQuery(
+    downvoteQueryOptions({
       userId: user?.rowId!,
       feedbackId,
-    }),
-    select: (data) => data?.downvoteByPostIdAndUserId,
-  });
+    })
+  );
 
   const { mutate: handleUpvote } = useHandleUpvoteMutation({
     feedbackId,

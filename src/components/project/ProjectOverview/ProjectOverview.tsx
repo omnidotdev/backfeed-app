@@ -2,7 +2,6 @@
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
 
 import {
   FeedbackMetrics,
@@ -20,21 +19,11 @@ interface Props {
 }
 
 const ProjectOverview = ({ projectId }: Props) => {
-  const { data, isError } = useSuspenseQuery({
-    ...projectMetricsQueryOptions({
+  const { data, isError } = useSuspenseQuery(
+    projectMetricsQueryOptions({
       projectId,
-    }),
-
-    select: (data) => ({
-      createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
-      activeUsers: Number(
-        data?.project?.posts.aggregates?.distinctCount?.userId
-      ),
-      totalFeedback: data?.project?.posts.totalCount,
-      totalEngagement:
-        (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
-    }),
-  });
+    })
+  );
 
   return (
     <Grid columns={{ lg: 3 }} gap={6}>
@@ -45,14 +34,14 @@ const ProjectOverview = ({ projectId }: Props) => {
       <GridItem>
         <Stack gap={6}>
           <ProjectInformation
-            createdAt={data?.createdAt}
-            activeUsers={data?.activeUsers}
+            createdAt={data.createdAt}
+            activeUsers={data.activeUsers}
             isError={isError}
           />
 
           <FeedbackMetrics
-            totalFeedback={data?.totalFeedback ?? 0}
-            totalEngagement={data?.totalEngagement ?? 0}
+            totalFeedback={data.totalFeedback}
+            totalEngagement={data.totalEngagement}
             isError={isError}
           />
 

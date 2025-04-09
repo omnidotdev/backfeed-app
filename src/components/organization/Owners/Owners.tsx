@@ -66,10 +66,9 @@ interface Props {
  * Organization owners table.
  */
 const Owners = ({ organizationId }: Props) => {
-  const { data: owners } = useSuspenseQuery({
-    ...membersQueryOptions({ organizationId, roles: [Role.Owner] }),
-    select: (data) => data.members?.nodes ?? [],
-  });
+  const { data: owners } = useSuspenseQuery(
+    membersQueryOptions({ organizationId, roles: [Role.Owner] })
+  );
 
   const table = useReactTable({
     data: owners as MemberFragment[],

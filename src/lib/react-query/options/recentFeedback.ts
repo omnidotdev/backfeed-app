@@ -8,6 +8,7 @@ const recentFeedbackQueryOptions = (variables: RecentFeedbackQueryVariables) =>
   queryOptions({
     queryKey: useRecentFeedbackQuery.getKey(variables),
     queryFn: useRecentFeedbackQuery.fetcher(variables),
+    select: (data) => data?.posts?.nodes,
   });
 
 export default recentFeedbackQueryOptions;

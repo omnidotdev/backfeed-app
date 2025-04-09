@@ -8,6 +8,8 @@ const userQueryOptions = (variables: UserQueryVariables) =>
   queryOptions({
     queryKey: useUserQuery.getKey(variables),
     queryFn: useUserQuery.fetcher(variables),
+    enabled: !!variables.hidraId,
+    select: (data) => data?.userByHidraId,
   });
 
 export default userQueryOptions;

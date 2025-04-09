@@ -12,14 +12,12 @@ interface Options {
  * Check organization membership details of a user.
  */
 const useOrganizationMembership = ({ userId, organizationId }: Options) => {
-  const { data } = useQuery({
-    ...organizationRoleQueryOptions({
+  const { data } = useQuery(
+    organizationRoleQueryOptions({
       userId: userId!,
       organizationId: organizationId!,
-    }),
-    enabled: !!userId && !!organizationId,
-    select: (data) => data.memberByUserIdAndOrganizationId,
-  });
+    })
+  );
 
   return {
     /**

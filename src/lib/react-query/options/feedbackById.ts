@@ -8,6 +8,7 @@ const feedbackByIdQueryOptions = (variables: FeedbackByIdQueryVariables) =>
   queryOptions({
     queryKey: useFeedbackByIdQuery.getKey(variables),
     queryFn: useFeedbackByIdQuery.fetcher(variables),
+    select: (data) => data?.post,
   });
 
 export default feedbackByIdQueryOptions;

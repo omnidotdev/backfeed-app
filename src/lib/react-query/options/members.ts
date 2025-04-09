@@ -8,6 +8,7 @@ const membersQueryOptions = (variables: MembersQueryVariables) =>
   queryOptions({
     queryKey: useMembersQuery.getKey(variables),
     queryFn: useMembersQuery.fetcher(variables),
+    select: (data) => data.members?.nodes ?? [],
   });
 
 export default membersQueryOptions;

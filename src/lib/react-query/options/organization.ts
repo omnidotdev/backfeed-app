@@ -8,6 +8,7 @@ const organizationQueryOptions = (variables: OrganizationQueryVariables) =>
   queryOptions({
     queryKey: useOrganizationQuery.getKey(variables),
     queryFn: useOrganizationQuery.fetcher(variables),
+    select: (data) => data?.organizationBySlug,
   });
 
 export default organizationQueryOptions;

@@ -73,12 +73,11 @@ const UpdateOrganization = () => {
 
   const { user } = useAuth();
 
-  const { data: organization } = useSuspenseQuery({
-    ...organizationQueryOptions({
+  const { data: organization } = useSuspenseQuery(
+    organizationQueryOptions({
       slug: organizationSlug,
-    }),
-    select: (data) => data.organizationBySlug,
-  });
+    })
+  );
 
   const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,

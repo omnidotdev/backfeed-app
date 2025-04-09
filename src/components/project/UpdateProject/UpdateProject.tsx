@@ -1,11 +1,7 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
@@ -87,11 +83,9 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
     organizationSlug,
   };
 
-  const { data: project } = useQuery({
-    ...projectQueryOptions(projectQueryVariables),
-    placeholderData: keepPreviousData,
-    select: (data) => data.projects?.nodes?.[0],
-  });
+  const { data: project } = useQuery(
+    projectQueryOptions(projectQueryVariables)
+  );
 
   // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({

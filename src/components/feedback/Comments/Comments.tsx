@@ -34,15 +34,13 @@ interface Props {
  * Feedback comments section.
  */
 const Comments = ({ organizationId, feedbackId }: Props) => {
-  const { user } = useAuth();
+  const { user: loggedInUser } = useAuth();
 
-  const { data: username } = useQuery({
-    ...userQueryOptions({
-      hidraId: user?.hidraId!,
-    }),
-    enabled: !!user?.hidraId,
-    select: (data) => data?.userByHidraId?.username,
-  });
+  const { data: user } = useQuery(
+    userQueryOptions({
+      hidraId: loggedInUser?.hidraId!,
+    })
+  );
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
@@ -73,7 +71,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
         message: input.comment.message,
         user: {
           rowId: user?.rowId!,
-          username,
+          username: user?.username,
         },
       };
     },

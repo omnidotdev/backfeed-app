@@ -18,12 +18,11 @@ interface Props {
  * Recent feedback section.
  */
 const RecentFeedback = ({ userId }: Props) => {
-  const { data: recentFeedback, isError } = useSuspenseQuery({
-    ...recentFeedbackQueryOptions({
+  const { data: recentFeedback, isError } = useSuspenseQuery(
+    recentFeedbackQueryOptions({
       userId,
-    }),
-    select: (data) => data?.posts?.nodes,
-  });
+    })
+  );
 
   return (
     <FeedbackSection

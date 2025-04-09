@@ -8,6 +8,7 @@ const downvoteQueryOptions = (variables: DownvoteQueryVariables) =>
   queryOptions({
     queryKey: useDownvoteQuery.getKey(variables),
     queryFn: useDownvoteQuery.fetcher(variables),
+    select: (data) => data?.downvoteByPostIdAndUserId,
   });
 
 export default downvoteQueryOptions;

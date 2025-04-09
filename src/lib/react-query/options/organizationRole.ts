@@ -10,6 +10,8 @@ const organizationRoleQueryOptions = (
   queryOptions({
     queryKey: useOrganizationRoleQuery.getKey(variables),
     queryFn: useOrganizationRoleQuery.fetcher(variables),
+    select: (data) => data.memberByUserIdAndOrganizationId,
+    enabled: !!variables.userId && !!variables.organizationId,
   });
 
 export default organizationRoleQueryOptions;

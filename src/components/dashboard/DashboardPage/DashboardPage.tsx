@@ -32,22 +32,17 @@ interface Props {
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
 const DashboardPage = ({ hidraId, userId }: Props) => {
-  const { data: firstName } = useSuspenseQuery({
-    ...userQueryOptions({
+  const { data: user } = useSuspenseQuery(
+    userQueryOptions({
       hidraId,
-    }),
-    select: (data) => data?.userByHidraId?.firstName,
-  });
+    })
+  );
 
-  const { data: dashboardAggregates, isError } = useSuspenseQuery({
-    ...dashboardAggregatesQueryOptions({
+  const { data: dashboardAggregates, isError } = useSuspenseQuery(
+    dashboardAggregatesQueryOptions({
       userId,
-    }),
-    select: (data) => ({
-      totalFeedback: data?.posts?.totalCount,
-      totalUsers: data?.users?.totalCount,
-    }),
-  });
+    })
+  );
 
   const { data: numberOfOrganizations } = useSuspenseQuery({
     ...organizationsQueryOptions({
@@ -74,7 +69,7 @@ const DashboardPage = ({ hidraId, userId }: Props) => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${user?.firstName}!`,
         description: app.dashboardPage.description,
         cta: [
           {

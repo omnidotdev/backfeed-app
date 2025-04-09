@@ -10,6 +10,12 @@ const projectStatusesQueryOptions = (
   queryOptions({
     queryKey: useProjectStatusesQuery.getKey(variables),
     queryFn: useProjectStatusesQuery.fetcher(variables),
+    select: (data) =>
+      data?.postStatuses?.nodes?.map((status) => ({
+        rowId: status?.rowId,
+        status: status?.status,
+        color: status?.color,
+      })),
   });
 
 export default projectStatusesQueryOptions;

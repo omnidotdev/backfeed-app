@@ -27,16 +27,15 @@ const PinnedOrganizations = ({ userId }: Props) => {
     type: DialogType.CreateOrganization,
   });
 
-  const { data: pinnedOrganizations, isError } = useSuspenseQuery({
-    ...organizationsQueryOptions({
+  const { data: pinnedOrganizations, isError } = useSuspenseQuery(
+    organizationsQueryOptions({
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
       userId,
       isMember: true,
-    }),
-    select: (data) => data?.organizations?.nodes,
-  });
+    })
+  );
 
   return (
     <SectionContainer
@@ -78,9 +77,7 @@ const PinnedOrganizations = ({ userId }: Props) => {
           gap={6}
           columns={{
             base: 1,
-            md: pinnedOrganizations?.length
-              ? Math.min(3, pinnedOrganizations.length)
-              : 1,
+            md: Math.min(3, pinnedOrganizations?.length ?? 1),
           }}
         >
           {pinnedOrganizations?.length ? (

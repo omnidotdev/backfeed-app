@@ -32,18 +32,13 @@ interface Props {
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = ({ userId }: Props) => {
-  const { data: weeklyFeedback, isError } = useSuspenseQuery({
-    ...weeklyFeedbackQueryOptions({
+  const { data: weeklyFeedback, isError } = useSuspenseQuery(
+    weeklyFeedbackQueryOptions({
       userId,
       startDate: oneWeekAgo,
       endDate: startOfToday,
-    }),
-    select: (data) =>
-      data?.posts?.groupedAggregates?.map((aggregate) => ({
-        name: dayjs(aggregate.keys?.[0]).format("ddd"),
-        total: Number(aggregate.distinctCount?.rowId),
-      })),
-  });
+    })
+  );
 
   const getDailyTotal = (date: string) =>
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;

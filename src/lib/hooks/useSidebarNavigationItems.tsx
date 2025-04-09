@@ -46,7 +46,6 @@ const useSidebarNavigationItems = () => {
         slug: organizationSlug,
       }),
       enabled: isAuthenticated && !!organizationSlug,
-      select: (data) => data?.organizationBySlug,
     }),
     { data: project } = useProjectBySlugQuery(
       {

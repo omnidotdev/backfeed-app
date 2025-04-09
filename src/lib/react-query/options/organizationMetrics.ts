@@ -10,6 +10,11 @@ const organizationMetricsQueryOptions = (
   queryOptions({
     queryKey: useOrganizationMetricsQuery.getKey(variables),
     queryFn: useOrganizationMetricsQuery.fetcher(variables),
+    select: (data) => ({
+      totalProjects: data?.projects?.totalCount,
+      totalFeedback: data?.posts?.totalCount,
+      activeUsers: data?.members?.totalCount,
+    }),
   });
 
 export default organizationMetricsQueryOptions;
