@@ -8,6 +8,9 @@ import type { ReactElement } from "react";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+const emailTemplate =
+  app.organizationMembersPage.cta.inviteMember.emailTemplate.subject;
+
 export const POST = async (req: NextRequest) => {
   const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
     await req.json();
@@ -16,7 +19,7 @@ export const POST = async (req: NextRequest) => {
     const { data, error } = await resend.emails.send({
       from: `Backfeed Support <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
       to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
-      subject: `${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value1} ${organizationName} ${app.organizationMembersPage.cta.inviteMember.emailTemplate.subject.value2} ${app.name}`,
+      subject: `${emailTemplate.value1} ${organizationName} ${emailTemplate.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
         inviterUsername,
         inviterEmail,
