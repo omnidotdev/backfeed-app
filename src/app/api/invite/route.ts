@@ -5,6 +5,7 @@ import { app, isDevEnv } from "lib/config";
 
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
+import type { OrganizationInvitation } from "components/organization"
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,7 +17,7 @@ const emailTemplate =
  */
 export const POST = async (req: NextRequest) => {
   const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
-    await req.json();
+    await req.json() as OrganizationInvitation;
 
   try {
     const { data, error } = await resend.emails.send({
