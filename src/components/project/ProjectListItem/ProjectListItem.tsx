@@ -54,7 +54,7 @@ const ProjectListItem = ({
       justify="space-between"
       position="relative"
     >
-      <Stack gap={0} pr={8}>
+      <Stack gap={0}>
         <HStack alignItems="center" justify="space-between">
           <Stack maxW="65svw">
             <Link

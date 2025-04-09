@@ -4,15 +4,13 @@ import { Dialog, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
-
-import { getAuthSession } from "lib/actions";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
-import { toaster } from "lib/util";
+import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -150,6 +148,12 @@ const CreateOrganization = () => {
         reset();
         setIsOpen(open);
       }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        style: {
+          minWidth: 0,
+        },
+      }}
     >
       <sigil.form
         display="flex"
@@ -189,7 +193,7 @@ const CreateOrganization = () => {
           <SubmitForm
             action={app.dashboardPage.cta.newOrganization.action}
             isPending={isPending}
-            flex={1}
+            flex={{ sm: 1 }}
           />
         </AppForm>
       </sigil.form>

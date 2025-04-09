@@ -28,7 +28,7 @@ const Header = () => {
         backgroundColor: "background.default",
       })}
     >
-      <Flex align="center" justify="space-between" w="full" mx="auto" px={4}>
+      <Flex align="center" justify="space-between" w="full" px={4}>
         <Flex gap={4} alignItems="center">
           <LogoLink width={48} />
 
