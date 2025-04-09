@@ -437,11 +437,14 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
           )}
         </Field>
 
-        <HStack mt={6}>
+        <HStack mt={4}>
           <AppForm>
             <SubmitForm
               action={updateProjectStatuses.actions.update}
               showAlert
+              containerProps={{
+                w: "full",
+              }}
             />
           </AppForm>
         </HStack>

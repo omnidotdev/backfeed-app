@@ -14,6 +14,7 @@ import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import { getAuthSession } from "lib/util";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -49,9 +50,12 @@ const UpdateOrganization = () => {
   /** Schema for validation of the update organization form. */
   const updateOrganizationSchema = baseSchema.superRefine(
     async ({ slug }, ctx) => {
-      if (!slug?.length || slug === organizationSlug) return z.NEVER;
+      const session = await getAuthSession();
 
-      const sdk = await getSdk();
+      if (!slug?.length || slug === organizationSlug || !session)
+        return z.NEVER;
+
+      const sdk = getSdk({ session });
 
       const { organizationBySlug } = await sdk.Organization({ slug });
 

@@ -1,8 +1,8 @@
 import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
-import { auth } from "auth";
 import { API_BASE_URL } from "lib/config";
+import { getAuthSession } from "lib/util";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { Variables } from "graphql-request";
@@ -26,7 +26,7 @@ export const graphqlFetch =
     options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>
   async (): Promise<TData> => {
-    const session = await auth();
+    const session = await getAuthSession();
 
     const { next, cache, ...restOptions } = options || {};
 

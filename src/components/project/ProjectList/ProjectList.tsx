@@ -8,30 +8,26 @@ import { LuCirclePlus } from "react-icons/lu";
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
-import { useOrganizationQuery, useProjectsQuery } from "generated/graphql";
+import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
-import type { Project } from "generated/graphql";
+import type { Organization, Project } from "generated/graphql";
+
+interface Props {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
+}
 
 /**
  * Project list.
  */
-const ProjectList = () => {
+const ProjectList = ({ organizationId }: Props) => {
   const { user } = useAuth();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-
-  const { data: organizationId } = useOrganizationQuery(
-    {
-      slug: organizationSlug,
-    },
-    {
-      select: (data) => data?.organizationBySlug?.rowId,
-    },
-  );
 
   const { isOwner } = useOrganizationMembership({
     userId: user?.rowId,

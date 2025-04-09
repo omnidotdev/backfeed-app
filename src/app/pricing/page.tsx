@@ -8,7 +8,7 @@ import { polar } from "lib/polar";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: `${app.pricingPage.title} | ${app.name}`,
+  title: app.pricingPage.title,
 };
 
 /**

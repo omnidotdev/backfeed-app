@@ -7,7 +7,6 @@ import { Page } from "components/layout";
 import { ProjectFilters, ProjectList } from "components/project";
 import {
   Role,
-  useOrganizationQuery,
   useOrganizationRoleQuery,
   useProjectsQuery,
 } from "generated/graphql";
@@ -18,24 +17,7 @@ import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
-import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.projectsPage.breadcrumb} | ${app.name}`,
-  };
-};
 
 interface Props {
   /** Projects page params. */
@@ -50,9 +32,11 @@ interface Props {
 const ProjectsPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
-  const [session, sdk] = await Promise.all([auth(), getSdk()]);
+  const session = await auth();
 
-  if (!session || !sdk) notFound();
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
@@ -97,10 +81,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       queryFn: useProjectsQuery.fetcher(variables),
     }),
     queryClient.prefetchQuery({
-      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-    }),
-    queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
         organizationId: organization.rowId,
@@ -114,6 +94,9 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   return (
     <Page
+      metadata={{
+        title: `${organization.name} ${app.projectsPage.breadcrumb}`,
+      }}
       breadcrumbs={breadcrumbs}
       header={{
         title: app.projectsPage.header.title,
@@ -132,7 +115,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       <ProjectFilters />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList />
+        <ProjectList organizationId={organization.rowId} />
       </HydrationBoundary>
     </Page>
   );

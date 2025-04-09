@@ -20,7 +20,7 @@ const Header = () => {
       display="flex"
       w="full"
       h="full"
-      p={2}
+      py={2}
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
       css={css.raw({
         borderBottom: "1px solid",
@@ -28,7 +28,7 @@ const Header = () => {
         backgroundColor: "background.default",
       })}
     >
-      <Flex align="center" justify="space-between" w="full" mx="auto" px={3}>
+      <Flex align="center" justify="space-between" w="full" px={4}>
         <Flex gap={4} alignItems="center">
           <LogoLink width={48} />
 

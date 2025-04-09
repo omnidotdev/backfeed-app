@@ -60,7 +60,11 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
         />
       </ProgressCircle>
 
-      <Text fontSize="sm" color={characterLimitColor ?? "foreground.muted"}>
+      <Text
+        fontSize="sm"
+        color={characterLimitColor ?? "foreground.muted"}
+        whiteSpace="nowrap"
+      >
         {`${value} / ${max}`}
       </Text>
     </ProgressRoot>

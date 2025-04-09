@@ -14,24 +14,6 @@ import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
-import type { Metadata } from "next";
-
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
-  const { organizationSlug } = await params;
-
-  const sdk = await getSdk();
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
-
-  return {
-    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb} | ${app.name}`,
-  };
-};
-
 interface Props {
   /** Organization page params. */
   params: Promise<{ organizationSlug: string }>;
@@ -45,9 +27,11 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const developmentFlag = await isDevelopment();
 
-  const [session, sdk] = await Promise.all([auth(), getSdk()]);
+  const session = await auth();
 
-  if (!session || !sdk) notFound();
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { organizationBySlug: organization } = await sdk.Organization({
     slug: organizationSlug,
@@ -83,13 +67,19 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        pt={0}
+        metadata={{
+          title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
+        }}
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
           description: app.organizationSettingsPage.description,
         }}
+        pt={0}
       >
-        <OrganizationSettings developmentFlag={developmentFlag} />
+        <OrganizationSettings
+          organizationId={organization.rowId}
+          developmentFlag={developmentFlag}
+        />
       </Page>
     </HydrationBoundary>
   );

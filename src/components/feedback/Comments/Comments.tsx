@@ -19,10 +19,13 @@ import { useAuth } from "lib/hooks";
 import type {
   CommentFragment,
   CreateCommentMutationVariables,
+  Organization,
   Post,
 } from "generated/graphql";
 
 interface Props {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
   /** Feedback ID. */
   feedbackId: Post["rowId"];
 }
@@ -30,7 +33,7 @@ interface Props {
 /**
  * Feedback comments section.
  */
-const Comments = ({ feedbackId }: Props) => {
+const Comments = ({ organizationId, feedbackId }: Props) => {
   const { user } = useAuth();
 
   const { data: username } = useUserQuery(
@@ -78,8 +81,7 @@ const Comments = ({ feedbackId }: Props) => {
     },
   });
 
-  // These are not defined within the `select` function in order to preserve type safety.
-  const totalCount = data?.pages?.[0]?.comments?.totalCount ?? 0;
+  // This is not defined within the `select` function in order to preserve type safety.
   const comments =
     data?.pages?.flatMap((page) =>
       page?.comments?.edges?.map((edge) => edge?.node),
@@ -108,7 +110,14 @@ const Comments = ({ feedbackId }: Props) => {
           <ErrorBoundary message="Error fetching comments" h="xs" />
         ) : (
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
-          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
+          <Grid
+            gap={2}
+            mt={4}
+            maxH="sm"
+            overflow="auto"
+            p="1px"
+            scrollbar="hidden"
+          >
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
@@ -119,6 +128,7 @@ const Comments = ({ feedbackId }: Props) => {
                   return (
                     <CommentCard
                       key={comment?.rowId}
+                      organizationId={organizationId}
                       commentId={comment?.rowId!}
                       senderName={comment?.user?.username}
                       message={comment?.message}

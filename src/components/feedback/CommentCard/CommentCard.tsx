@@ -9,15 +9,16 @@ import { DestructiveAction } from "components/core";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
-  useOrganizationQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { StackProps } from "@omnidev/sigil";
-import type { Comment } from "generated/graphql";
+import type { Comment, Organization } from "generated/graphql";
 
 interface Props extends StackProps {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
   /** Comment ID. */
   commentId: Comment["rowId"];
   /** Comment sender. */
@@ -36,6 +37,7 @@ interface Props extends StackProps {
  * Comment card.
  */
 const CommentCard = ({
+  organizationId,
   commentId,
   senderName,
   message,
@@ -48,19 +50,9 @@ const CommentCard = ({
 
   const queryClient = useQueryClient();
 
-  const { organizationSlug, feedbackId } = useParams<{
-    organizationSlug: string;
+  const { feedbackId } = useParams<{
     feedbackId: string;
   }>();
-
-  const { data: organizationId } = useOrganizationQuery(
-    {
-      slug: organizationSlug,
-    },
-    {
-      select: (data) => data.organizationBySlug?.rowId,
-    },
-  );
 
   const { isAdmin } = useOrganizationMembership({
     organizationId,
