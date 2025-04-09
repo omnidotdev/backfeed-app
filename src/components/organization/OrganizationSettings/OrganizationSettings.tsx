@@ -177,76 +177,75 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
       <UpdateOrganization />
 
       {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
-      {isCurrentMember ||
-        (developmentFlag && (
-          <SectionContainer
-            title={
-              isCurrentMember
-                ? app.organizationSettingsPage.dangerZone.title
-                : joinOrganizationDetails.title
-            }
-            description={
-              isCurrentMember
-                ? app.organizationSettingsPage.dangerZone.description
-                : joinOrganizationDetails.description
-            }
-            outline="1px solid"
-            outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
-          >
-            <Divider />
+      {(isCurrentMember || developmentFlag) && (
+        <SectionContainer
+          title={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.title
+              : joinOrganizationDetails.title
+          }
+          description={
+            isCurrentMember
+              ? app.organizationSettingsPage.dangerZone.description
+              : joinOrganizationDetails.description
+          }
+          outline="1px solid"
+          outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
+        >
+          <Divider />
 
-            {isCurrentMember && !isOnlyOwner && (
-              <DangerZoneAction
-                title={leaveOrganizationDetails.title}
-                description={leaveOrganizationDetails.description}
-                actionProps={LEAVE_ORGANIZATION}
-              />
-            )}
+          {isCurrentMember && !isOnlyOwner && (
+            <DangerZoneAction
+              title={leaveOrganizationDetails.title}
+              description={leaveOrganizationDetails.description}
+              actionProps={LEAVE_ORGANIZATION}
+            />
+          )}
 
-            {isOwner && (
-              <Stack gap={6}>
-                {isOnlyOwner && (
-                  <DangerZoneAction
-                    title={transferOwnershipDetails.title}
-                    description={transferOwnershipDetails.description}
-                    actionProps={TRANSFER_OWNERSHIP}
-                  />
-                )}
-
+          {isOwner && (
+            <Stack gap={6}>
+              {isOnlyOwner && (
                 <DangerZoneAction
-                  title={deleteOrganizationDetails.title}
-                  description={deleteOrganizationDetails.description}
-                  actionProps={DELETE_ORGANIZATION}
+                  title={transferOwnershipDetails.title}
+                  description={transferOwnershipDetails.description}
+                  actionProps={TRANSFER_OWNERSHIP}
                 />
-              </Stack>
-            )}
+              )}
 
-            {!isCurrentMember && (
-              <Button
-                fontSize="md"
-                colorPalette="green"
-                color="white"
-                w="fit"
-                placeSelf="flex-end"
-                disabled={isLeaveOrganizationPending}
-                onClick={() =>
-                  joinOrganization({
-                    input: {
-                      member: {
-                        userId: user?.rowId!,
-                        organizationId,
-                        role: Role.Member,
-                      },
+              <DangerZoneAction
+                title={deleteOrganizationDetails.title}
+                description={deleteOrganizationDetails.description}
+                actionProps={DELETE_ORGANIZATION}
+              />
+            </Stack>
+          )}
+
+          {!isCurrentMember && (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              color="white"
+              w="fit"
+              placeSelf="flex-end"
+              disabled={isLeaveOrganizationPending}
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    member: {
+                      userId: user?.rowId!,
+                      organizationId,
+                      role: Role.Member,
                     },
-                  })
-                }
-              >
-                <Icon src={RiUserAddLine} />
-                {joinOrganizationDetails.actionLabel}
-              </Button>
-            )}
-          </SectionContainer>
-        ))}
+                  },
+                })
+              }
+            >
+              <Icon src={RiUserAddLine} />
+              {joinOrganizationDetails.actionLabel}
+            </Button>
+          )}
+        </SectionContainer>
+      )}
     </Stack>
   );
 };
