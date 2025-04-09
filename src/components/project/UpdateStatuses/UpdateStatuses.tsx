@@ -437,7 +437,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
           )}
         </Field>
 
-        <HStack mt={2.5}>
+        <HStack mt={4}>
           <AppForm>
             <SubmitForm
               action={updateProjectStatuses.actions.update}
