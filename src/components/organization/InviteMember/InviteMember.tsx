@@ -102,26 +102,13 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           )}
         </AppField>
 
-        <HStack w="full">
-          <AppForm>
-            <SubmitForm
-              action={inviteMemberDetails.form}
-              isPending={isPending}
-              flex={1}
-            />
-          </AppForm>
-
-          <Button
-            variant="outline"
+        <AppForm>
+          <SubmitForm
+            action={inviteMemberDetails.form}
+            isPending={isPending}
             flex={1}
-            onClick={() => {
-              reset();
-              setIsOpen(false);
-            }}
-          >
-            {inviteMemberDetails.form.cancel}
-          </Button>
-        </HStack>
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );
