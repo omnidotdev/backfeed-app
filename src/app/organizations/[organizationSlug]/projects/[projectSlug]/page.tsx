@@ -32,9 +32,11 @@ interface Props {
 const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const [session, sdk] = await Promise.all([auth(), getSdk()]);
+  const session = await auth();
 
-  if (!session || !sdk) notFound();
+  if (!session) notFound();
+
+  const sdk = getSdk({ session });
 
   const { projects } = await sdk.Project({ projectSlug, organizationSlug });
 

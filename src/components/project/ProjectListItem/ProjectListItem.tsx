@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -52,9 +52,10 @@ const ProjectListItem = ({
       mx="auto"
       h={40}
       justify="space-between"
+      position="relative"
     >
       <Stack gap={0}>
-        <HStack alignItems="center" justify="space-between" minH={10}>
+        <HStack alignItems="center" justify="space-between">
           <Stack maxW="65svw">
             <Link
               href={`/organizations/${organization?.slug}/projects/${slug}`}
@@ -77,13 +78,15 @@ const ProjectListItem = ({
           </Stack>
 
           {isAdmin && (
-            <Link
-              href={`${`/organizations/${organization?.slug}/projects/${slug}/settings`}`}
-            >
-              <Button variant="ghost" px="2">
-                <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
-              </Button>
-            </Link>
+            <Flex position="absolute" right={0} top={0} m={2}>
+              <Link
+                href={`${`/organizations/${organization?.slug}/projects/${slug}/settings`}`}
+              >
+                <Button variant="ghost" px="2">
+                  <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
+                </Button>
+              </Link>
+            </Flex>
           )}
         </HStack>
 

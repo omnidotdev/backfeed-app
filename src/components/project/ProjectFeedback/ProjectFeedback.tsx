@@ -132,7 +132,14 @@ const ProjectFeedback = ({ projectId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />
         ) : (
-          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
+          <Grid
+            gap={2}
+            mt={4}
+            maxH="sm"
+            overflow="auto"
+            p="1px"
+            scrollbar="hidden"
+          >
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
             ) : allPosts.length ? (

@@ -151,6 +151,12 @@ const CreateOrganization = () => {
         reset();
         setIsOpen(open);
       }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        style: {
+          minWidth: 0,
+        },
+      }}
     >
       <sigil.form
         display="flex"
@@ -190,6 +196,7 @@ const CreateOrganization = () => {
           <SubmitForm
             action={app.dashboardPage.cta.newOrganization.action}
             isPending={isPending}
+            flex={{ sm: 1 }}
           />
         </AppForm>
       </sigil.form>

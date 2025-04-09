@@ -110,7 +110,14 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
           <ErrorBoundary message="Error fetching comments" h="xs" />
         ) : (
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
-          <Grid gap={2} mt={4} maxH="sm" overflow="auto" p="1px">
+          <Grid
+            gap={2}
+            mt={4}
+            maxH="sm"
+            overflow="auto"
+            p="1px"
+            scrollbar="hidden"
+          >
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
