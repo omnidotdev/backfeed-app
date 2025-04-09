@@ -11,6 +11,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const emailTemplate =
   app.organizationMembersPage.cta.inviteMember.emailTemplate.subject;
 
+/**
+ * Organization invite route.
+ */
 export const POST = async (req: NextRequest) => {
   const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
     await req.json();
