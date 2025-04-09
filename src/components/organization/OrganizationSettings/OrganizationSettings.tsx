@@ -1,18 +1,19 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Combobox, Divider, Stack } from "@omnidev/sigil";
+import { Button, Combobox, Divider, Icon, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
-import { RiUserSharedLine } from "react-icons/ri";
+import { RiUserAddLine, RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
   Role,
+  useCreateMemberMutation,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
@@ -31,6 +32,9 @@ const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
 const transferOwnershipDetails =
   app.organizationSettingsPage.cta.transferOwnership;
+const joinOrganizationDetails =
+  app.organizationSettingsPage.cta.joinOrganization;
+
 
 interface Props {
   /** Organization ID. */
@@ -88,15 +92,19 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
     });
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
-      onMutate: () => router.replace("/"),
-    }),
+    onMutate: () => router.replace("/"),
+  }),
     { mutate: leaveOrganization, isPending: isLeaveOrganizationPending } =
       useLeaveOrganizationMutation({
         onSettled,
       }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId,
-    });
+    }),
+    { mutate: joinOrganization, isPending: isJoinOrganizationPending } =
+      useCreateMemberMutation({
+        onSettled,
+      });
 
   const isCurrentMember = !isLeaveOrganizationPending && isMember;
 
@@ -124,6 +132,9 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
         leaveOrganization({
           rowId: membershipId!,
         }),
+    },
+    triggerProps: {
+      disabled: isJoinOrganizationPending,
     },
   };
 
@@ -167,7 +178,7 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
       <UpdateOrganization />
 
       {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
-      {isCurrentMember && developmentFlag && (
+      {isCurrentMember || developmentFlag && (
         <SectionContainer
           title={app.organizationSettingsPage.dangerZone.title}
           description={app.organizationSettingsPage.dangerZone.description}
@@ -200,6 +211,31 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
                 actionProps={DELETE_ORGANIZATION}
               />
             </Stack>
+          )}
+
+          {!isCurrentMember && (
+            <Button
+              fontSize="md"
+              colorPalette="green"
+              color="white"
+              w="fit"
+              placeSelf="flex-end"
+              disabled={isLeaveOrganizationPending}
+              onClick={() =>
+                joinOrganization({
+                  input: {
+                    member: {
+                      userId: user?.rowId!,
+                      organizationId,
+                      role: Role.Member,
+                    },
+                  },
+                })
+              }
+            >
+              <Icon src={RiUserAddLine} />
+              {joinOrganizationDetails.actionLabel}
+            </Button>
           )}
         </SectionContainer>
       )}

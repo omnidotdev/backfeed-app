@@ -759,7 +759,7 @@ const app = {
       },
     },
     projectFeedback: {
-      title: "Project Feeback",
+      title: "Project Feedback",
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",
