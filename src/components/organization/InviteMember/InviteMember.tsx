@@ -220,7 +220,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           <SubmitForm
             action={inviteMemberDetails.form}
             isPending={isPending}
-            flex={1}
+            flex={{ sm: 1 }}
           />
         </AppForm>
       </sigil.form>
