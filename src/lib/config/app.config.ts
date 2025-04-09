@@ -377,7 +377,7 @@ const app = {
         form: {
           email: {
             label: "Email",
-            placeholder: "Search for or select a member...",
+            placeholder: "hello@omni.dev",
           },
           submit: "Invite Member",
           pending: "Inviting Member...",
