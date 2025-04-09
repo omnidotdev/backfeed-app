@@ -23,6 +23,7 @@ import { match } from "ts-pattern";
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
 import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
+import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
@@ -85,7 +86,7 @@ const Members = ({ organizationId }: Props) => {
                   toggleRowSelection={table.toggleAllRowsSelected}
                 />
               ) : (
-                "Members"
+                app.organizationMembersPage.membersTable.headers.members
               )
             }
             controlProps={{
@@ -132,7 +133,7 @@ const Members = ({ organizationId }: Props) => {
         ),
       }),
       columnHelper.accessor("role", {
-        header: "Role",
+        header: app.organizationMembersPage.membersTable.headers.role,
         cell: (info) => {
           const accentColor = match(info.getValue())
             .with(Role.Admin, () => "brand.secondary")

@@ -348,6 +348,18 @@ const app = {
       removeAdmin: "Remove administrative privileges",
       removeMember: "Remove from organization",
     },
+    ownersTable: {
+      headers: {
+        owners: "Owners",
+        role: "Role",
+      },
+    },
+    membersTable: {
+      headers: {
+        members: "Members",
+        role: "Role",
+      },
+    },
     cta: {
       addOwner: {
         title: "Add Owner",
