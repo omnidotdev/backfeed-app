@@ -3,7 +3,7 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { z } from "zod";
 
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
@@ -13,30 +13,23 @@ import { DialogType } from "store";
 import { useState } from "react";
 import { useCreateInvitationMutation } from "generated/graphql";
 
+import type { Organization } from "generated/graphql";
+
 const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
 
 interface Props {
   /** Organization name. */
-  organizationName: string;
+  organizationName: Organization["name"];
   /** Organization ID. */
-  organizationId: string;
-}
-
-interface CreateInvitation {
-  /** Username of the person sending the invite. */
-  inviterUsername: string;
-  /** Email of the person sending the invite. */
-  inviterEmail: string;
-  /** Name of the organization the invite is for. */
-  organizationName: string;
-  /** Email of the person receiving the invite. */
-  recipientEmail: string;
+  organizationId: Organization["rowId"];
 }
 
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
   email: z.string().email(),
   organizationId: z.string(),
+  inviterEmail: z.string().email(),
+  inviterUsername: z.string(),
 });
 
 const createInvitationSchema = baseSchema.superRefine(
@@ -111,50 +104,12 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     },
   });
 
-  const handleCreateInvitation = async ({
-    inviterEmail,
-    inviterUsername,
-    recipientEmail,
-    organizationName,
-  }: CreateInvitation) => {
-    setIsPending(true);
-
-    try {
-      const response = await fetch("/api/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inviterEmail,
-          inviterUsername,
-          recipientEmail,
-          organizationName,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(inviteMemberDetails.toast.errors.default);
-      }
-
-      await inviteToOrganization({
-        input: {
-          invitation: {
-            email: recipientEmail,
-            organizationId,
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Error sending email:", error);
-      throw error;
-    } finally {
-      setIsPending(false);
-    }
-  };
-
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       email: "",
       organizationId,
+      inviterEmail: user?.email ?? "",
+      inviterUsername: user?.name ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -163,12 +118,45 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     },
     onSubmit: async ({ value }) => {
       toaster.promise(
-        handleCreateInvitation({
-          inviterEmail: user?.email!,
-          inviterUsername: user?.name!,
-          recipientEmail: value.email,
-          organizationName,
-        }),
+        async () => {
+          setIsPending(true);
+
+          try {
+            const [sendEmailResponse] = await Promise.all([
+              fetch("/api/invite", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  inviterEmail: value.inviterEmail,
+                  inviterUsername: value.inviterUsername,
+                  recipientEmail: value.email,
+                  organizationName,
+                }),
+              }),
+              inviteToOrganization({
+                input: {
+                  invitation: {
+                    email: value.email,
+                    organizationId,
+                  },
+                },
+              }),
+            ]);
+
+            if (!sendEmailResponse.ok) {
+              throw new Error(inviteMemberDetails.toast.errors.default);
+            }
+
+            reset();
+          } catch (error) {
+            if (isDevEnv) {
+              console.error("Error sending email:", error);
+            }
+            throw error;
+          } finally {
+            setIsPending(false);
+          }
+        },
         {
           loading: {
             title: inviteMemberDetails.toast.loading.title,
