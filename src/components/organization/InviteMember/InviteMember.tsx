@@ -3,6 +3,7 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { z } from "zod";
 
+import { useCreateInvitationMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -10,8 +11,6 @@ import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
-import { useState } from "react";
-import { useCreateInvitationMutation } from "generated/graphql";
 
 import type { Organization } from "generated/graphql";
 
@@ -90,7 +89,6 @@ const createInvitationSchema = baseSchema.superRefine(
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
   const { user } = useAuth();
-  const [isPending, setIsPending] = useState(false);
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { isOpen, setIsOpen } = useDialogStore({
@@ -119,8 +117,6 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     onSubmit: async ({ value }) => {
       toaster.promise(
         async () => {
-          setIsPending(true);
-
           try {
             const [sendEmailResponse] = await Promise.all([
               fetch("/api/invite", {
@@ -153,8 +149,6 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
               console.error("Error sending email:", error);
             }
             throw error;
-          } finally {
-            setIsPending(false);
           }
         },
         {
@@ -215,11 +209,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
         </AppField>
 
         <AppForm>
-          <SubmitForm
-            action={inviteMemberDetails.form}
-            isPending={isPending}
-            flex={{ sm: 1 }}
-          />
+          <SubmitForm action={inviteMemberDetails.form} flex={{ sm: 1 }} />
         </AppForm>
       </sigil.form>
     </Dialog>
