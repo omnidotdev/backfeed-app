@@ -393,12 +393,10 @@ const app = {
           },
           errors: {
             title: "Error",
-            default: "An error occurred while sending the invite link.",
-            currentOwner: "You are already a member of this organization.",
-            duplicateInvite:
-              "An invitation has already been sent to this email address.",
-            currentMember:
-              "This user is already a member of this organization.",
+            default: "Failed to send invite.",
+            currentOwner: "You're already a member.",
+            duplicateInvite: "Invite already sent to this email.",
+            currentMember: "User is already a member.",
           },
         },
         emailTemplate: {

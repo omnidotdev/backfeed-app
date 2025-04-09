@@ -77,7 +77,7 @@ const OrganizationInvites = () => {
                 organizationInviteDetails.headers.organizationName
               )
             }
-            // @ts-ignore TODO: fix upstream component in Sigil to prevent the icon from toggling the checkbox
+            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
             iconProps={{
               style: {
                 pointerEvents: "none",
@@ -104,7 +104,7 @@ const OrganizationInvites = () => {
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
             }}
-            // @ts-ignore TODO: fix upstream component in Sigil to prevent the icon from toggling the checkbox
+            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
             iconProps={{
               style: {
                 pointerEvents: "none",
