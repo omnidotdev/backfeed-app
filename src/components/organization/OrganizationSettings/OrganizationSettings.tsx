@@ -180,10 +180,18 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
       {isCurrentMember ||
         (developmentFlag && (
           <SectionContainer
-            title={app.organizationSettingsPage.dangerZone.title}
-            description={app.organizationSettingsPage.dangerZone.description}
+            title={
+              isCurrentMember
+                ? app.organizationSettingsPage.dangerZone.title
+                : joinOrganizationDetails.title
+            }
+            description={
+              isCurrentMember
+                ? app.organizationSettingsPage.dangerZone.description
+                : joinOrganizationDetails.description
+            }
             outline="1px solid"
-            outlineColor="omni.ruby"
+            outlineColor={isCurrentMember ? "omni.ruby" : "omni.emerald"}
           >
             <Divider />
 
