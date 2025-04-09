@@ -86,7 +86,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       <sigil.form
         display="flex"
         flexDirection="column"
-        gap={8}
+        gap={4}
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
