@@ -1,65 +1,41 @@
 "use client";
 
 import {
-  Button,
-  Flex,
-  Icon,
+  Checkbox,
   Skeleton,
   Stack,
   Table,
   TableCell,
+  TableHeader,
   TableRow,
   Text,
 } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { useQueryClient } from "@tanstack/react-query";
-import { FiCheck, FiX } from "react-icons/fi";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useMemo } from "react";
 
 import { SectionContainer } from "components/layout";
-import {
-  Role,
-  useCreateMemberMutation,
-  useDeleteInvitationMutation,
-  useInvitationsQuery,
-} from "generated/graphql";
+import { InvitationMenu } from "components/profile";
+import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
+import type { InvitationFragment } from "generated/graphql";
+
 const organizationInviteDetails = app.profilePage.organizationInvites;
 
-interface JoinOrganizationProps {
-  /** Invitation ID. */
-  invitationId: string;
-  /** Organization ID. */
-  organizationId: string;
-}
+const columnHelper = createColumnHelper<InvitationFragment>();
 
 /**
  * User's organization invitations.
  */
 const OrganizationInvites = () => {
-  const queryClient = useQueryClient();
-
   const { user } = useAuth();
-
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useInvitationsQuery.getKey({
-        email: user?.email!,
-      }),
-    });
-
-  const {
-    mutateAsync: joinOrganization,
-    isPending: isJoinOrganizationPending,
-  } = useCreateMemberMutation({
-    onSettled,
-  });
-
-  const { mutate: declineOrganization, isPending: isDeleteInvitationPending } =
-    useDeleteInvitationMutation({
-      onSettled,
-    });
 
   const {
     data: invitations,
@@ -71,34 +47,91 @@ const OrganizationInvites = () => {
     },
     {
       enabled: !!user,
-      select: (data) =>
-        data.invitations?.nodes.map((node) => ({
-          rowId: node?.rowId,
-          organizationName: node?.organization?.name,
-          organizationId: node?.organizationId,
-          createdAt: dayjs(node?.createdAt).format("M/D/YYYY"),
-        })),
+      select: (data) => data.invitations?.nodes,
     }
   );
 
-  const handleJoinOrganization = async ({
-    invitationId,
-    organizationId,
-  }: JoinOrganizationProps) => {
-    await joinOrganization({
-      input: {
-        member: {
-          userId: user?.rowId!,
-          organizationId,
-          role: Role.Member,
-        },
-      },
-    });
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("rowId", {
+        header: ({ table }) => (
+          <Checkbox
+            size="sm"
+            // explicit width to prevent CLS with row selection
+            w={48}
+            // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+            gap={0}
+            labelProps={{
+              px: 4,
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
+            }}
+            label={
+              table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
+                <InvitationMenu
+                  selectedRows={table.getSelectedRowModel().rows}
+                  toggleRowSelection={table.toggleAllRowsSelected}
+                />
+              ) : (
+                organizationInviteDetails.headers.organizationName
+              )
+            }
+            // @ts-ignore TODO: fix upstream component in Sigil to prevent the icon from toggling the checkbox
+            iconProps={{
+              style: {
+                pointerEvents: "none",
+              },
+            }}
+            checked={
+              table.getIsAllRowsSelected()
+                ? true
+                : table.getIsSomeRowsSelected()
+                  ? "indeterminate"
+                  : false
+            }
+            onCheckedChange={({ checked }) =>
+              table.toggleAllRowsSelected(checked as boolean)
+            }
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            size="sm"
+            gap={4}
+            labelProps={{
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
+            }}
+            // @ts-ignore TODO: fix upstream component in Sigil to prevent the icon from toggling the checkbox
+            iconProps={{
+              style: {
+                pointerEvents: "none",
+              },
+            }}
+            label={row.original.organization?.name}
+            checked={row.getIsSelected()}
+            onCheckedChange={({ checked }) =>
+              row.toggleSelected(checked as boolean)
+            }
+          />
+        ),
+      }),
 
-    declineOrganization({
-      rowId: invitationId!,
-    });
-  };
+      columnHelper.accessor("createdAt", {
+        header: organizationInviteDetails.headers.invitationDate,
+        cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
+      }),
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data: invitations as InvitationFragment[],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <SectionContainer
@@ -120,90 +153,32 @@ const OrganizationInvites = () => {
           <Text>{organizationInviteDetails.emptyState.message}</Text>
         </Stack>
       ) : (
-        <Flex w="100%" overflowX="auto">
-          <Table
-            headerContent={
-              <TableRow fontWeight="semibold" w="full" bgColor="transparent">
-                {Object.values(organizationInviteDetails.headers).map(
-                  (header) => (
-                    <TableCell
-                      key={header}
-                      fontWeight="bold"
-                      textAlign={
-                        header === organizationInviteDetails.headers.actions
-                          ? "end"
-                          : "start"
-                      }
-                    >
-                      {header}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-            }
-            textWrap="nowrap"
-          >
-            {invitations?.map(
-              ({ rowId, organizationName, createdAt, organizationId }) => (
-                <TableRow
-                  key={rowId}
-                  fontSize={{ base: "sm", md: "lg" }}
-                  bgColor="transparent"
-                >
-                  <TableCell>{organizationName}</TableCell>
-
-                  <TableCell>{createdAt}</TableCell>
-
-                  <TableCell
-                    gap={2}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="flex-end"
-                  >
-                    <Button
-                      size="sm"
-                      fontSize="md"
-                      colorPalette="green"
-                      color="white"
-                      w="fit"
-                      disabled={
-                        isJoinOrganizationPending || isDeleteInvitationPending
-                      }
-                      onClick={() =>
-                        handleJoinOrganization({
-                          invitationId: rowId!,
-                          organizationId: organizationId!,
-                        })
-                      }
-                    >
-                      <Icon src={FiCheck} />
-                      {organizationInviteDetails.actions.accept.label}
-                    </Button>
-
-                    <Button
-                      size="sm"
-                      fontSize="md"
-                      colorPalette="red"
-                      color="white"
-                      w="fit"
-                      disabled={
-                        isJoinOrganizationPending || isDeleteInvitationPending
-                      }
-                      onClick={() =>
-                        declineOrganization({
-                          rowId: rowId!,
-                        })
-                      }
-                    >
-                      <Icon src={FiX} />
-                      {organizationInviteDetails.actions.decline.label}
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )
-            )}
-          </Table>
-        </Flex>
+        <Table
+          headerContent={table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} bgColor="background.subtle">
+              {headerGroup.headers.map((header) => (
+                <TableHeader key={header.id} fontWeight="bold">
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHeader>
+              ))}
+            </TableRow>
+          ))}
+        >
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id} fontWeight="light">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </Table>
       )}
     </SectionContainer>
   );

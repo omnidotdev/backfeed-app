@@ -4876,6 +4876,8 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name?: string | null, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
 
+export type InvitationFragment = { __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name?: string | null } | null };
+
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
 export type CreateCommentMutationVariables = Exact<{
@@ -5289,6 +5291,18 @@ export const FeedbackFragmentDoc = gql`
   }
 }
     `;
+export const InvitationFragmentDoc = gql`
+    fragment Invitation on Invitation {
+  rowId
+  email
+  organizationId
+  organization {
+    name
+  }
+  createdAt
+  updatedAt
+}
+    `;
 export const MemberFragmentDoc = gql`
     fragment Member on Member {
   rowId
@@ -5564,18 +5578,11 @@ export const InvitationsDocument = gql`
   ) {
     totalCount
     nodes {
-      rowId
-      email
-      organizationId
-      organization {
-        name
-      }
-      createdAt
-      updatedAt
+      ...Invitation
     }
   }
 }
-    `;
+    ${InvitationFragmentDoc}`;
 export const MembersDocument = gql`
     query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
   members(

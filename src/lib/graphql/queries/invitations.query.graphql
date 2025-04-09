@@ -5,14 +5,7 @@ query Invitations($email: String, $organizationId: UUID) {
   ) {
     totalCount
     nodes {
-      rowId
-      email
-      organizationId
-      organization {
-        name
-      }
-      createdAt
-      updatedAt
+      ...Invitation
     }
   }
 }

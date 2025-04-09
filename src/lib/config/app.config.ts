@@ -247,12 +247,8 @@ const app = {
         message: "No organization invites found.",
       },
       actions: {
-        accept: {
-          label: "Accept",
-        },
-        decline: {
-          label: "Decline",
-        },
+        accept: "Accept",
+        delete: "Delete",
       },
     },
   },
