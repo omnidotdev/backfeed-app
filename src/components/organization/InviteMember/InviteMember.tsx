@@ -103,7 +103,12 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     type: DialogType.InviteMember,
   });
 
-  const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation();
+  const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
+    onSuccess: () => {
+      reset();
+      setIsOpen(false);
+    },
+  });
 
   const handleCreateInvitation = async ({
     inviterEmail,
@@ -137,8 +142,6 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           },
         },
       });
-
-      reset();
     } catch (error) {
       console.error("Error sending email:", error);
       throw error;
