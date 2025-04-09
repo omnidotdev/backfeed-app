@@ -12,7 +12,7 @@ import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
-import { toaster } from "lib/util";
+import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -41,9 +41,11 @@ const baseSchema = z.object({
 /** Schema for validation of the create organization form. */
 const createOrganizationSchema = baseSchema.superRefine(
   async ({ slug }, ctx) => {
-    if (!slug.length) return z.NEVER;
+    const session = await getAuthSession();
 
-    const sdk = await getSdk();
+    if (!slug.length || !session) return z.NEVER;
+
+    const sdk = getSdk({ session });
 
     const { organizationBySlug } = await sdk.Organization({
       slug,
@@ -174,6 +176,12 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
         reset();
         setIsOpen(open);
       }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        style: {
+          minWidth: 0,
+        },
+      }}
     >
       <sigil.form
         display="flex"
@@ -213,7 +221,7 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
           <SubmitForm
             action={app.dashboardPage.cta.newOrganization.action}
             isPending={isPending}
-            flex={1}
+            flex={{ sm: 1 }}
           />
         </AppForm>
       </sigil.form>

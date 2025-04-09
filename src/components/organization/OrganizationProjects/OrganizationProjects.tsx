@@ -55,6 +55,7 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
         <Grid
           maxH="md"
           overflow="auto"
+          scrollbar="hidden"
           // NB: The padding is necessary to prevent clipping of the card borders/box shadows
           p="1px"
           gap={6}

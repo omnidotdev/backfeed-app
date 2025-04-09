@@ -17,7 +17,7 @@ import { DEBOUNCE_TIME, MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { toaster } from "lib/util";
+import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
@@ -75,9 +75,11 @@ const baseSchema = z.object({
 /** Schema for validation of the create project form. */
 const createProjectSchema = baseSchema.superRefine(
   async ({ isTeamTier, organizationId, slug }, ctx) => {
-    if (!organizationId.length || !slug.length) return z.NEVER;
+    const session = await getAuthSession();
 
-    const sdk = await getSdk();
+    if (!organizationId.length || !slug.length || !session) return z.NEVER;
+
+    const sdk = getSdk({ session });
 
     const [{ organizations }, { projectBySlugAndOrganizationId }] =
       await Promise.all([
@@ -295,6 +297,12 @@ const CreateProject = ({
         reset();
         setIsOpen(open);
       }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        style: {
+          minWidth: 0,
+        },
+      }}
     >
       <sigil.form
         display="flex"
@@ -357,7 +365,7 @@ const CreateProject = ({
           <SubmitForm
             action={app.dashboardPage.cta.newProject.action}
             isPending={isPending}
-            flex={1}
+            flex={{ sm: 1 }}
           />
         </AppForm>
       </sigil.form>
