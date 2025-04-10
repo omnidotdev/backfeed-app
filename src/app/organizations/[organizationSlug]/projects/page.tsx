@@ -95,40 +95,40 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   ]);
 
   return (
-    <Page
-      metadata={{
-        title: `${organization.name} ${app.projectsPage.breadcrumb}`,
-      }}
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: app.projectsPage.header.title,
-        description: app.projectsPage.header.description,
-        cta: [
-          {
-            label: app.projectsPage.header.cta.newProject.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuCirclePlus />,
-            disabled: !canCreateProjects,
-            dialogType: DialogType.CreateProject,
-          },
-        ],
-      }}
-    >
-      <ProjectFilters />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        metadata={{
+          title: `${organization.name} ${app.projectsPage.breadcrumb}`,
+        }}
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: app.projectsPage.header.title,
+          description: app.projectsPage.header.description,
+          cta: [
+            {
+              label: app.projectsPage.header.cta.newProject.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <LuCirclePlus />,
+              disabled: !canCreateProjects,
+              dialogType: DialogType.CreateProject,
+            },
+          ],
+        }}
+      >
+        <ProjectFilters />
 
-      <HydrationBoundary state={dehydrate(queryClient)}>
         <ProjectList canCreateProjects={canCreateProjects} />
-      </HydrationBoundary>
 
-      {/* dialogs */}
-      {canCreateProjects && (
-        <CreateProject
-          isBasicTier={isBasicTier}
-          isTeamTier={isTeamTier}
-          organizationSlug={organizationSlug}
-        />
-      )}
-    </Page>
+        {/* dialogs */}
+        {canCreateProjects && (
+          <CreateProject
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+            organizationSlug={organizationSlug}
+          />
+        )}
+      </Page>
+    </HydrationBoundary>
   );
 };
 

@@ -101,25 +101,25 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   ]);
 
   return (
-    <Page
-      metadata={{
-        title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
-      }}
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: `${project.name!} Settings`,
-        description:
-          "Handle project settings and manage feedback for your project.",
-      }}
-    >
-      <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        metadata={{
+          title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
+        }}
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: `${project.name!} Settings`,
+          description:
+            "Handle project settings and manage feedback for your project.",
+        }}
+      >
         <ProjectSettings
           projectId={project.rowId}
           organizationSlug={organizationSlug}
           canEditStatuses={canEditStatuses}
         />
-      </HydrationBoundary>
-    </Page>
+      </Page>
+    </HydrationBoundary>
   );
 };
 
