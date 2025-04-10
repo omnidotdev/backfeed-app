@@ -2,6 +2,7 @@ import { Resend } from "resend";
 
 import { InviteMemberEmailTemplate } from "components/organization";
 import { app, isDevEnv } from "lib/config";
+import { auth } from "auth";
 
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
@@ -10,20 +11,26 @@ import type { OrganizationInvitation } from "components/organization";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const emailTemplate =
-  app.organizationMembersPage.cta.inviteMember.emailTemplate.subject;
+  app.organizationMembersPage.cta.inviteMember.emailTemplate;
 
 /**
  * Organization invite route.
  */
 export const POST = async (req: NextRequest) => {
-  const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
-    (await req.json()) as OrganizationInvitation;
+  const session = await auth();
+
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
+    const { inviterEmail, inviterUsername, recipientEmail, organizationName } =
+      (await req.json()) as OrganizationInvitation;
+
     const { data, error } = await resend.emails.send({
-      from: `Backfeed Support <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
+      from: `${app.supportName} <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
       to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
-      subject: `${emailTemplate.value1} ${organizationName} ${emailTemplate.value2} ${app.name}`,
+      subject: `${emailTemplate.subject.value1} ${organizationName} ${emailTemplate.subject.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
         inviterUsername,
         inviterEmail,

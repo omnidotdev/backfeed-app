@@ -3,7 +3,7 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
-  // TODO
+  supportName: "Backfeed Support",
   supportEmail: "test",
   breadcrumb: "Home",
   unsavedChanges: {
@@ -400,6 +400,9 @@ const app = {
           },
         },
         emailTemplate: {
+          from: {
+            value1: "Backfeed Support",
+          },
           subject: {
             value1: "You have been invited to join the",
             value2: "organization on",
