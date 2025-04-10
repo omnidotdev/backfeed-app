@@ -26,7 +26,7 @@ interface Props {
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
   email: z.string().email(),
-  organizationId: z.string(),
+  organizationId: z.string().uuid(),
   inviterEmail: z.string().email(),
   inviterUsername: z.string(),
 });
