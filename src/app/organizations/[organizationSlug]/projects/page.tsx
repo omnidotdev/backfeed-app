@@ -5,11 +5,7 @@ import { LuCirclePlus } from "react-icons/lu";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
-import {
-  Role,
-  useOrganizationRoleQuery,
-  useProjectsQuery,
-} from "generated/graphql";
+import { Role, useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
@@ -96,16 +92,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       queryKey: useProjectsQuery.getKey(variables),
       queryFn: useProjectsQuery.fetcher(variables),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
   ]);
 
   return (
@@ -131,7 +117,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       <ProjectFilters />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList organizationId={organization.rowId} />
+        <ProjectList canCreateProjects={canCreateProjects} />
       </HydrationBoundary>
 
       {/* dialogs */}
