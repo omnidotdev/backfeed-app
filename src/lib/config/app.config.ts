@@ -413,7 +413,7 @@ const app = {
           },
           greeting: "Hello",
           statement: {
-            value1: "has invited to join the",
+            value1: "has invited you to join the",
             value2: "organization on",
           },
           cta: "Join the organization",
