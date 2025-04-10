@@ -31,6 +31,7 @@ const baseSchema = z.object({
   inviterUsername: z.string(),
 });
 
+/** Schema for validation of the invite member form. */
 const createInvitationSchema = baseSchema.superRefine(
   async ({ email, organizationId }, ctx) => {
     const session = await getAuthSession();
