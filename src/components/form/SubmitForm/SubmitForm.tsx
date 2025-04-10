@@ -1,11 +1,11 @@
-import { Alert, Button, HStack, Icon } from "@omnidev/sigil";
+import { Alert, Button, Icon, Stack } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { IoWarningOutline } from "react-icons/io5";
 
 import { app } from "lib/config";
 import { useFormContext } from "lib/hooks";
 
-import type { ButtonProps } from "@omnidev/sigil";
+import type { ButtonProps, StackProps } from "@omnidev/sigil";
 
 interface Props extends ButtonProps {
   /** Action labels for submit button states. */
@@ -17,6 +17,8 @@ interface Props extends ButtonProps {
   isPending?: boolean;
   /** Whether to inform the user of unsaved changes. */
   showAlert?: boolean;
+  /** Container props. */
+  containerProps?: StackProps;
 }
 
 /**
@@ -27,6 +29,7 @@ const SubmitForm = ({
   action,
   isPending = false,
   showAlert = false,
+  containerProps,
   ...rest
 }: Props) => {
   const {
@@ -44,9 +47,10 @@ const SubmitForm = ({
   return (
     <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
       {([canSubmit, isSubmitting]) => (
-        <HStack>
+        <Stack direction={{ base: "column", sm: "row" }} {...containerProps}>
           <Button
             type="submit"
+            minW="fit-content"
             disabled={
               !canSubmit || !isDirty || isSubmitting || isPending || disabled
             }
@@ -59,17 +63,16 @@ const SubmitForm = ({
             <Alert
               variant="warning"
               description={app.unsavedChanges.description}
-              icon={<Icon src={IoWarningOutline} h={4} w={4} mt={1} />}
-              w="fit"
+              icon={<Icon src={IoWarningOutline} h={4} w={4} />}
               borderRadius="sm"
-              borderWidth={0}
-              px={3}
-              py={2}
+              p={2}
               alignItems="center"
+              justifyContent={{ baseToSm: "center" }}
+              w={{ sm: "fit-content" }}
               gap={1}
             />
           )}
-        </HStack>
+        </Stack>
       )}
     </Subscribe>
   );
