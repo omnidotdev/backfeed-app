@@ -3,8 +3,8 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
-  supportName: "Backfeed Support",
-  supportEmail: "test",
+  supportName: "Omni Support",
+  supportEmail: "team@support.omni.dev",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
