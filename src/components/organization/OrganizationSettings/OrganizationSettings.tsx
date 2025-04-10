@@ -105,7 +105,8 @@ const OrganizationSettings = ({ organizationId, developmentFlag }: Props) => {
         onSettled,
       });
 
-  const isCurrentMember = !isLeaveOrganizationPending && isMember;
+  const isCurrentMember =
+    !isLeaveOrganizationPending && (isMember || isJoinOrganizationPending);
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
 
