@@ -100,9 +100,16 @@ const HomePage = async () => {
       <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
 
       {/* dialogs */}
-      <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+      {isBasicTier && (
+        <>
+          <CreateOrganization
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+          />
 
-      <CreateProject isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+          <CreateProject isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+        </>
+      )}
     </HydrationBoundary>
   );
 };

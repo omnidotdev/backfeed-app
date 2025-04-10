@@ -51,7 +51,9 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!organization) notFound();
 
-  const canCreateProject =
+  // NB: To create projects, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  // Administrative privileges check is done in `Page` header cta below
+  const canCreateProjects =
     isBasicTier &&
     (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
 
@@ -118,7 +120,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             disabled:
-              !member || member.role === Role.Member || !canCreateProject,
+              !member || member.role === Role.Member || !canCreateProjects,
             dialogType: DialogType.CreateProject,
           },
         ],
@@ -131,11 +133,13 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       </HydrationBoundary>
 
       {/* dialogs */}
-      <CreateProject
-        isBasicTier={isBasicTier}
-        isTeamTier={isTeamTier}
-        organizationSlug={organizationSlug}
-      />
+      {canCreateProjects && (
+        <CreateProject
+          isBasicTier={isBasicTier}
+          isTeamTier={isTeamTier}
+          organizationSlug={organizationSlug}
+        />
+      )}
     </Page>
   );
 };

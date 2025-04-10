@@ -78,6 +78,11 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     queryFn: useOrganizationsQuery.fetcher(variables),
   });
 
+  // TODO: discuss the below. Should the check be strictly scoped to ownership??
+  // NB: To create an organization, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited organizations) or that they are not currently an owner/admin of another organization
+  const canCreateOrganization =
+    isBasicTier && (isTeamTier || !organizations?.totalCount);
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -91,8 +96,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
-              disabled:
-                !isBasicTier || (!isTeamTier && !!organizations?.totalCount),
+              disabled: !canCreateOrganization,
             },
           ],
         }}
@@ -102,7 +106,12 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         <OrganizationList />
 
         {/* dialogs */}
-        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+        {canCreateOrganization && (
+          <CreateOrganization
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+          />
+        )}
       </Page>
     </HydrationBoundary>
   );

@@ -98,9 +98,9 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
     type: DialogType.CreateOrganization,
   });
 
-  // Validate user, and validate that the user has a team tier subscription *or* that they are not an admin/owner of another organization
+  // Validate user has a subscription, and validate that the subscription is a team tier subscription *or* that they are not an admin/owner of another organization
   const canCreateOrganization =
-    !!user && (isTeamTier || !numberOfOrganizations);
+    isBasicTier && (isTeamTier || !numberOfOrganizations);
 
   useHotkeys(
     "mod+o",
@@ -109,12 +109,11 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
       reset();
     },
     {
-      enabled:
-        isBasicTier && !isCreateProjectDialogOpen && canCreateOrganization,
+      enabled: !isCreateProjectDialogOpen && canCreateOrganization,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [isOpen, isBasicTier, isCreateProjectDialogOpen, canCreateOrganization]
+    [isOpen, isCreateProjectDialogOpen, canCreateOrganization]
   );
 
   const { mutateAsync: createOrganization, isPending } =

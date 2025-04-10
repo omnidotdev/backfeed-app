@@ -89,6 +89,12 @@ const OrganizationPage = async ({ params }: Props) => {
     }),
   ]);
 
+  // NB: To create projects, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  // Administrative privileges check is done in `OrganizationActions` component
+  const canCreateProjects =
+    isBasicTier &&
+    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -117,20 +123,18 @@ const OrganizationPage = async ({ params }: Props) => {
 
           <OrganizationActions
             organizationId={organization.rowId}
-            canCreateProjects={
-              isBasicTier &&
-              (isTeamTier ||
-                organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS)
-            }
+            canCreateProjects={canCreateProjects}
           />
         </Grid>
 
         {/* dialogs */}
-        <CreateProject
-          isBasicTier={isBasicTier}
-          isTeamTier={isTeamTier}
-          organizationSlug={organizationSlug}
-        />
+        {canCreateProjects && (
+          <CreateProject
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+            organizationSlug={organizationSlug}
+          />
+        )}
       </Page>
     </HydrationBoundary>
   );
