@@ -2,6 +2,7 @@
 
 import { Skeleton } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import { useMemo } from "react";
 import {
   Bar,
   BarChart,
@@ -15,7 +16,7 @@ import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
-import { useAuth } from "lib/hooks";
+import { useAuth, useViewportSize } from "lib/hooks";
 
 const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
 const startOfToday = dayjs().startOf("day").toDate();
@@ -27,6 +28,8 @@ const getFormattedDate = (diff: number) =>
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = () => {
+  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+
   const { user } = useAuth();
 
   const {
@@ -61,11 +64,20 @@ const FeedbackOverview = () => {
     };
   });
 
+  const DISPLAYED_DATA = useMemo(
+    () => (isLargeViewport ? DATA : DATA.slice(3)),
+    [isLargeViewport, DATA]
+  );
+
   return (
     <FeedbackSection
       title="Feedback Overview"
       maxH="xl"
-      contentProps={{ align: "center", justify: "center" }}
+      contentProps={{
+        align: "center",
+        justify: "center",
+        p: 4,
+      }}
     >
       {!isLoading ? (
         isError ? (
@@ -76,7 +88,7 @@ const FeedbackOverview = () => {
           />
         ) : (
           <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={DATA}>
+            <BarChart data={DISPLAYED_DATA}>
               <XAxis dataKey="name" axisLine={false} tickLine={false} />
 
               {/* NB: the explicit width removes some unecessary spacing on the y-axis. This should be fine for 3-digit numbers, but may need to be adjusted for larger numbers. */}
