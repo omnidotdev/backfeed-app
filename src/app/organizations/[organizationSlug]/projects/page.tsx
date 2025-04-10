@@ -51,17 +51,20 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!organization) notFound();
 
-  // NB: To create projects, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
-  // Administrative privileges check is done in `Page` header cta below
-  const canCreateProjects =
-    isBasicTier &&
-    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
-
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
       userId: session.user.rowId!,
       organizationId: organization.rowId,
     });
+
+  const hasAdminPrivileges =
+    member?.role === Role.Admin || member?.role === Role.Owner;
+
+  // NB: To create projects, user must be subscribed and have administrative privileges. If so, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  const canCreateProjects =
+    isBasicTier &&
+    hasAdminPrivileges &&
+    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -119,8 +122,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
             label: app.projectsPage.header.cta.newProject.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
-            disabled:
-              !member || member.role === Role.Member || !canCreateProjects,
+            disabled: !canCreateProjects,
             dialogType: DialogType.CreateProject,
           },
         ],

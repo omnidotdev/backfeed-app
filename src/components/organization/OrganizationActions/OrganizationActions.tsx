@@ -7,7 +7,6 @@ import { LuCirclePlus, LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -22,8 +21,6 @@ interface Action extends ButtonProps {
 }
 
 interface Props {
-  /** Organization ID. */
-  organizationId: string;
   /** Whether the user has necessary subscription permissions to create projects. */
   canCreateProjects: boolean;
 }
@@ -31,19 +28,12 @@ interface Props {
 /**
  * Organization actions.
  */
-const OrganizationActions = ({ organizationId, canCreateProjects }: Props) => {
+const OrganizationActions = ({ canCreateProjects }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  const { user } = useAuth();
-
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
-  });
-
-  const { isAdmin } = useOrganizationMembership({
-    organizationId,
-    userId: user?.rowId,
   });
 
   const ORGANIZATION_ACTIONS: Action[] = [
@@ -61,7 +51,7 @@ const OrganizationActions = ({ organizationId, canCreateProjects }: Props) => {
       label: app.organizationPage.actions.cta.createProject.label,
       icon: LuCirclePlus,
       onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: !isAdmin || !canCreateProjects,
+      disabled: !canCreateProjects,
     },
   ];
 

@@ -11,9 +11,9 @@ import {
 } from "components/organization";
 import { CreateProject } from "components/project";
 import {
+  Role,
   useOrganizationMetricsQuery,
   useOrganizationQuery,
-  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
 import { app } from "lib/config";
@@ -52,6 +52,21 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
+  const { memberByUserIdAndOrganizationId: member } =
+    await sdk.OrganizationRole({
+      userId: session.user.rowId!,
+      organizationId: organization.rowId,
+    });
+
+  const hasAdminPrivileges =
+    member?.role === Role.Admin || member?.role === Role.Owner;
+
+  // NB: To create projects, user must be subscribed and have administrative privileges. If so, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  const canCreateProjects =
+    isBasicTier &&
+    hasAdminPrivileges &&
+    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
+
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -77,23 +92,7 @@ const OrganizationPage = async ({ params }: Props) => {
         organizationId: organization.rowId,
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
   ]);
-
-  // NB: To create projects, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
-  // Administrative privileges check is done in `OrganizationActions` component
-  const canCreateProjects =
-    isBasicTier &&
-    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -121,10 +120,7 @@ const OrganizationPage = async ({ params }: Props) => {
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
 
-          <OrganizationActions
-            organizationId={organization.rowId}
-            canCreateProjects={canCreateProjects}
-          />
+          <OrganizationActions canCreateProjects={canCreateProjects} />
         </Grid>
 
         {/* dialogs */}
