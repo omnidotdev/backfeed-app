@@ -70,6 +70,10 @@ const statusSchema = z.object({
   rowId: z.string().uuid().or(z.literal("pending")),
   status: z
     .string()
+    .regex(
+      /^[a-zA-Z0-9 ]*$/,
+      updateProjectStatuses.fields.status.errors.invalid
+    )
     .min(3, updateProjectStatuses.fields.status.errors.minLength)
     .max(20, updateProjectStatuses.fields.status.errors.maxLength),
   description: z

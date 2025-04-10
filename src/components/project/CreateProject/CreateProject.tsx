@@ -58,6 +58,11 @@ const baseSchema = z.object({
     .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
   name: z
     .string()
+    // TODO: confirm with team that this is the regex we want to use for project names
+    .regex(
+      /^[a-z0-9-]+$/,
+      app.dashboardPage.cta.newProject.projectName.errors.invalid
+    )
     .min(3, app.dashboardPage.cta.newProject.projectName.errors.minLength)
     .max(60, app.dashboardPage.cta.newProject.projectName.errors.maxLength),
   description: z

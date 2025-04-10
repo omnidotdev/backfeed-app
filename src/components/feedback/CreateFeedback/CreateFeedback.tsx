@@ -38,6 +38,11 @@ const createFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
+    // TODO: check with team to see if we want to broaden or narrow this regex
+    .regex(
+      /^[a-zA-Z0-9- ]*$/,
+      app.projectPage.projectFeedback.createFeedback.errors.invalid
+    )
     .min(
       3,
       app.projectPage.projectFeedback.createFeedback.errors.minTitleLength

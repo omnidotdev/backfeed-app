@@ -184,6 +184,7 @@ const app = {
           // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "Backfeed",
           errors: {
+            invalid: "Invalid project name.",
             minLength: "Must be at least 3 characters.",
             maxLength: "Must be at most 60 characters.",
           },
@@ -634,6 +635,7 @@ const app = {
             label: "Status",
             placeholder: "New",
             errors: {
+              invalid: "Invalid format.",
               minLength: "Status must be at least 3 characters.",
               maxLength: "Status must be at most 20 characters.",
             },
