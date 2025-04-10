@@ -3,35 +3,21 @@
 import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useParams } from "next/navigation";
 import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
-import { CreateOrganization } from "components/organization";
-import { CreateProject } from "components/project";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 dayjs.extend(relativeTime);
-
-interface Props {
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
-  /** Whether the user has team tier subscription permissions. */
-  isTeamTier: boolean;
-  /** The main content of the layout. */
-  children: ReactNode;
-}
 
 /**
  * Core application layout.
  */
-const Layout = ({ isBasicTier, isTeamTier, children }: Props) => {
+const Layout = ({ children }: PropsWithChildren) => {
   const isClient = useIsClient();
-
-  const { organizationSlug } = useParams<{ organizationSlug?: string }>();
 
   // TODO remove this and prod URL check below once ready for public launch
   if (!isClient) return null;
@@ -54,15 +40,6 @@ const Layout = ({ isBasicTier, isTeamTier, children }: Props) => {
         </sigil.main>
 
         <Footer />
-
-        {/* dialogs */}
-        <CreateProject
-          organizationSlug={organizationSlug}
-          isBasicTier={isBasicTier}
-          isTeamTier={isTeamTier}
-        />
-
-        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
 
         {/* toaster */}
         <Toaster toaster={toaster} />

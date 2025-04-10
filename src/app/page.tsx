@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
+import { CreateOrganization } from "components/organization";
+import { CreateProject } from "components/project";
 import {
   OrganizationOrderBy,
   Role,
@@ -96,6 +98,11 @@ const HomePage = async () => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+
+      {/* dialogs */}
+      <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+
+      <CreateProject isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
     </HydrationBoundary>
   );
 };

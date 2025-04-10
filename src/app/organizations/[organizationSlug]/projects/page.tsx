@@ -4,7 +4,7 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { ProjectFilters, ProjectList } from "components/project";
+import { CreateProject, ProjectFilters, ProjectList } from "components/project";
 import {
   Role,
   useOrganizationRoleQuery,
@@ -40,16 +40,16 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const [{ organizationBySlug: organization }, isBasicTier, isTeamTier] =
+    await Promise.all([
+      sdk.Organization({
+        slug: organizationSlug,
+      }),
+      hasBasicTierPrivileges(),
+      hasTeamTierPrivileges(),
+    ]);
 
   if (!organization) notFound();
-
-  const [isBasicTier, isTeamTier] = await Promise.all([
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
-  ]);
 
   const canCreateProject =
     isBasicTier &&
@@ -129,6 +129,13 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProjectList organizationId={organization.rowId} />
       </HydrationBoundary>
+
+      {/* dialogs */}
+      <CreateProject
+        isBasicTier={isBasicTier}
+        isTeamTier={isTeamTier}
+        organizationSlug={organizationSlug}
+      />
     </Page>
   );
 };

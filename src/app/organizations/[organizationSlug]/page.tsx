@@ -9,6 +9,7 @@ import {
   OrganizationMetrics,
   OrganizationProjects,
 } from "components/organization";
+import { CreateProject } from "components/project";
 import {
   useOrganizationMetricsQuery,
   useOrganizationQuery,
@@ -40,16 +41,16 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const [{ organizationBySlug: organization }, isBasicTier, isTeamTier] =
+    await Promise.all([
+      sdk.Organization({
+        slug: organizationSlug,
+      }),
+      hasBasicTierPrivileges(),
+      hasTeamTierPrivileges(),
+    ]);
 
   if (!organization) notFound();
-
-  const [isBasicTier, isTeamTier] = await Promise.all([
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
-  ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -123,6 +124,13 @@ const OrganizationPage = async ({ params }: Props) => {
             }
           />
         </Grid>
+
+        {/* dialogs */}
+        <CreateProject
+          isBasicTier={isBasicTier}
+          isTeamTier={isTeamTier}
+          organizationSlug={organizationSlug}
+        />
       </Page>
     </HydrationBoundary>
   );

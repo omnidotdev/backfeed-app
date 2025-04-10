@@ -4,7 +4,11 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { OrganizationFilters, OrganizationList } from "components/organization";
+import {
+  CreateOrganization,
+  OrganizationFilters,
+  OrganizationList,
+} from "components/organization";
 import {
   OrganizationOrderBy,
   Role,
@@ -41,14 +45,14 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const [isBasicTier, isTeamTier, { organizations }] = await Promise.all([
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+  const [{ organizations }, isBasicTier, isTeamTier] = await Promise.all([
     sdk.Organizations({
       userId: session?.user.rowId!,
       isMember: true,
       excludeRoles: [Role.Member],
     }),
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
   ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -96,6 +100,9 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         <OrganizationFilters />
 
         <OrganizationList />
+
+        {/* dialogs */}
+        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
       </Page>
     </HydrationBoundary>
   );
