@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import { app } from "lib/config";
 
-// TODO: update `app.config.ts` references here to make them more universal
-
 export const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
 export const slugSchema = z
