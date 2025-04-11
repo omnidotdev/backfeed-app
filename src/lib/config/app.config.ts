@@ -461,7 +461,7 @@ const app = {
       features: {
         gdpr: "GDPR Compliance",
         communitySupport: "Community Support",
-        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedFeedback: "Unlimited Feedback",
         unlimitedOrgs: "Unlimited Organizations",
         unlimitedProjects: "Unlimited Projects",
         webhooks: "Webhooks",
@@ -608,7 +608,7 @@ const app = {
       updateProjectStatuses: {
         title: "Project Statuses",
         description:
-          "Customize statuses that are used to track progress on feedback items.",
+          "Customize statuses that are used to track progress on feedback.",
         actions: {
           reset: {
             label: "Reset",
