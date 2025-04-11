@@ -12,7 +12,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -22,17 +22,16 @@ const MAX_COMMENT_LENGTH = 500;
 
 /** Schema for defining the shape of the create comment form fields, as well as validating the form. */
 const createCommentSchema = z.object({
-  postId: z
-    .string()
-    .uuid(app.feedbackPage.comments.createComment.errors.invalid),
-  userId: z
-    .string()
-    .uuid(app.feedbackPage.comments.createComment.errors.invalid),
+  postId: uuidSchema,
+  userId: uuidSchema,
   message: z
     .string()
     .trim()
     .min(10, app.feedbackPage.comments.createComment.errors.minLengthMessage)
-    .max(500, app.feedbackPage.comments.createComment.errors.maxLengthMessage),
+    .max(
+      MAX_COMMENT_LENGTH,
+      app.feedbackPage.comments.createComment.errors.maxLengthMessage
+    ),
 });
 
 /**
@@ -67,7 +66,6 @@ const CreateComment = () => {
       },
       asyncDebounceMs: DEBOUNCE_TIME,
       validators: {
-        onChange: createCommentSchema,
         onSubmitAsync: createCommentSchema,
       },
       onSubmit: async ({ value }) =>

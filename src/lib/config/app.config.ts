@@ -1,3 +1,5 @@
+// TODO: dedupe as much as possible.
+
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
@@ -6,6 +8,18 @@ const app = {
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
+  },
+  forms: {
+    errors: {
+      slug: {
+        regex: "Invalid slug format.",
+        minLength: "Must be at least 3 characters.",
+        maxLength: "Must be at most 50 characters.",
+      },
+      id: {
+        format: "Invalid UUID format.",
+      },
+    },
   },
   notFound: {
     statusCode: 404,
