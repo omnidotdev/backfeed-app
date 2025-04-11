@@ -8,7 +8,7 @@ export const POST = async () => {
     const session = await auth();
 
     if (session) {
-      // TODO update, no longer using Keycloak
+      // TODO update, no longer using Keycloak. Determine proper `end_session_endpoint` for Better Auth
       await fetch(
         `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/logout`,
         {

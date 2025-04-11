@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Text, VStack } from "@omnidev/sigil";
+import { Button, Text, Stack } from "@omnidev/sigil";
 
 import { Link } from "components/core";
 import { app } from "lib/config";
@@ -9,19 +9,19 @@ import { app } from "lib/config";
  * Global 404 (not found error) page.
  */
 const GlobalNotFound = () => (
-  <VStack justify="center" gap={4} h="full">
-    <VStack>
+  <Stack justify="center" gap={4} h="full">
+    <Stack>
       <Text fontSize={80} color="foreground.disabled">
         {app.notFound.statusCode}
       </Text>
 
       <Text>{app.notFound.title}</Text>
-    </VStack>
+    </Stack>
 
     <Link href="/">
       <Button>{app.notFound.returnHome}</Button>
     </Link>
-  </VStack>
+  </Stack>
 );
 
 export default GlobalNotFound;
