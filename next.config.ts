@@ -1,5 +1,17 @@
 import type { NextConfig } from "next";
 
+/**
+ * CORS headers.
+ */
+const corsHeaders = [
+  { key: "Access-Control-Allow-Credentials", value: "true" },
+  {
+    key: "Access-Control-Allow-Origin",
+    // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
+    value: process.env.NEXT_PUBLIC_AUTH_ISSUER!.split("/api")[0],
+  },
+];
+
 const nextConfig: NextConfig = {
   // enable standalone mode for running in a container (https://github.com/vercel/next.js/tree/canary/examples/with-docker#in-existing-projects)
   output: "standalone",
@@ -63,6 +75,8 @@ const nextConfig: NextConfig = {
           key: "X-Permitted-Cross-Domain-Policies",
           value: "none",
         },
+        // set CORS headers for identity provider
+        ...corsHeaders,
       ],
     },
   ],
