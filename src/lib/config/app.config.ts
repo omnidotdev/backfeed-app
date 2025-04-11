@@ -362,6 +362,10 @@ const app = {
         description: "Add a new owner to your organization.",
         label: "New Owner",
         noMembersFound: "No members found",
+        comboboxLabel: {
+          singular: "Member",
+          plural: "Members",
+        },
         form: {
           rowId: {
             placeholder: "Search for or select a member...",
