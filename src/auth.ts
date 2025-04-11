@@ -7,7 +7,7 @@ import "next-auth/jwt";
 
 import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { isDevEnv } from "lib/config";
+import { AUTH_ISSUER, isDevEnv } from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
@@ -81,7 +81,7 @@ export const { handlers, auth } = NextAuth({
       id: "omni",
       name: "Omni",
       type: "oidc",
-      issuer: "https://localhost:8000/api/auth",
+      issuer: AUTH_ISSUER,
       // TODO env vars
       clientId: "eSphfHoVTrmRqwsBAttPHBtQsbFRhkwJ",
       clientSecret: "oGhxkkvJCPjOmezpQVGvLJDBtPJRyQjb",
@@ -99,7 +99,7 @@ export const { handlers, auth } = NextAuth({
     authorized: async ({ auth }) => !!auth,
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      // account is present on fresh login. We can set additional claims on the token given this information.
+      // account is present on fresh login, set additional claims on the token
       if (account) {
         token.sub = profile?.sub!;
         token.preferred_username = profile?.preferred_username!;
