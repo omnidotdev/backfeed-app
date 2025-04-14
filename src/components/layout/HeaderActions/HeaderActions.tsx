@@ -21,7 +21,7 @@ import {
   SidebarNavigation,
   ThemeToggle,
 } from "components/layout";
-import { app } from "lib/config";
+import { app, AUTH_ISSUER } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -41,8 +41,9 @@ const HeaderActions = () => {
 
   const handleSignUp = () => {
     // use custom URL because Auth.js doesn't have built-in support for direct registration flows
-    // TODO update, no longer using Keycloak
-    const signUpUrl = `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/registrations?client_id=${process.env.AUTH_KEYCLOAK_ID}&redirect_uri=${window.location.origin}/auth/callback/keycloak&response_type=code`;
+    // TODO env vars
+    // TODO fix session not set from this flow, but works if you go Backfeed Sign In button -> Click Sign Up tab on HIDRA -> sign up -> back to Backfeed. Note that cookies are set from this, might need to add scopes to URL or something
+    const signUpUrl = `https://localhost:8000/sign-up?response_type=code&client_id=eSphfHoVTrmRqwsBAttPHBtQsbFRhkwJ&redirect_uri=${window.location.origin}/auth/callback/omni`;
 
     router.push(signUpUrl);
   };
