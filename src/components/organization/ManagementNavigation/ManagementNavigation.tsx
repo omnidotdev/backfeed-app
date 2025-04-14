@@ -8,8 +8,10 @@ import { FiUserPlus } from "react-icons/fi";
 
 import { OverflowText } from "components/core";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
+import type { Organization } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface NavigationItem extends ButtonProps {
@@ -20,6 +22,8 @@ interface NavigationItem extends ButtonProps {
 }
 
 interface Props extends StackProps {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
   /** Organization slug. */
   organizationSlug: string;
   /** Organization name */
@@ -36,6 +40,7 @@ interface Props extends StackProps {
  * Management navigation component.
  */
 const ManagementNavigation = ({
+  organizationId,
   organizationSlug,
   organizationName,
   isOpen,
@@ -43,8 +48,15 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
+  const { user } = useAuth();
+
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
+
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
@@ -70,6 +82,7 @@ const ManagementNavigation = ({
         onClose?.();
         router.push(`/organizations/${organizationSlug}/invitations`);
       },
+      disabled: !isAdmin,
     },
   ];
 
@@ -85,7 +98,7 @@ const ManagementNavigation = ({
         {isOpen || !truncateText ? organizationName : organizationName[0]}
       </OverflowText>
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
+      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick, disabled }) => (
         <Button
           key={label}
           variant="ghost"
@@ -101,6 +114,7 @@ const ManagementNavigation = ({
               _active: { base: "neutral.300a", _dark: "neutral.100a" },
             },
           }}
+          disabled={disabled}
           onClick={onClick}
           // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
           data-active={label.toLowerCase() === segment || undefined}

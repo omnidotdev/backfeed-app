@@ -123,7 +123,7 @@ const InvitationMenu = ({
             handleMenuAction({ type: MenuAction.ResendInvitation })
           }
         >
-          {app.organizationInvitationsPage.table.actions.resend}
+          {app.organizationInvitationsPage.invitationsMenu.resend}
         </MenuItem>
 
         <MenuItem
@@ -134,7 +134,7 @@ const InvitationMenu = ({
             handleMenuAction({ type: MenuAction.DeclineInvitation })
           }
         >
-          {app.organizationInvitationsPage.table.actions.delete}
+          {app.organizationInvitationsPage.invitationsMenu.delete}
         </MenuItem>
       </MenuItemGroup>
     </Menu>

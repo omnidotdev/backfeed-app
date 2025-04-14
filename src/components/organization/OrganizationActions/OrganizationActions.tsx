@@ -40,7 +40,7 @@ const OrganizationActions = ({ organizationId }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const { isAdmin, isOwner } = useOrganizationMembership({
+  const { isAdmin } = useOrganizationMembership({
     organizationId,
     userId: user?.rowId,
   });

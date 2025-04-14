@@ -78,7 +78,7 @@ const Invitations = ({ organizationId }: Props) => {
                   toggleRowSelection={table.toggleAllRowsSelected}
                 />
               ) : (
-                organizationInviteDetails.table.headers.email
+                organizationInviteDetails.invitationsTable.headers.email
               )
             }
             controlProps={{
@@ -131,7 +131,8 @@ const Invitations = ({ organizationId }: Props) => {
         ),
       }),
       columnHelper.accessor("createdAt", {
-        header: organizationInviteDetails.table.headers.invitationDate,
+        header:
+          organizationInviteDetails.invitationsTable.headers.invitationDate,
         cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],

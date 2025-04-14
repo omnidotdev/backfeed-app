@@ -18,7 +18,7 @@ import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
 
-const inviteMemberDetails = app.organizationMembersPage.cta.inviteMember;
+const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
 interface Props {
   /** Organization name. */

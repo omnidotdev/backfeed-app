@@ -40,6 +40,10 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
       organizationId: organization.rowId,
     });
 
+  const isAdmin = member?.role === Role.Admin || member?.role === Role.Owner;
+
+  if (!isAdmin) notFound();
+
   const queryClient = getQueryClient();
 
   queryClient.prefetchQuery({
@@ -60,17 +64,17 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
         header={{
           title: `${organization.name} ${app.organizationInvitationsPage.breadcrumb}`,
           description: app.organizationInvitationsPage.description,
-          cta:
-            member?.role === Role.Owner
-              ? [
-                  {
-                    label: app.organizationMembersPage.cta.inviteMember.title,
-                    icon: <FiUserPlus />,
-                    dialogType: DialogType.InviteMember,
-                    variant: "outline",
-                  },
-                ]
-              : undefined,
+          cta: isAdmin
+            ? [
+                {
+                  label: app.organizationInvitationsPage.cta.inviteMember.title,
+                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                  icon: <FiUserPlus />,
+                  dialogType: DialogType.InviteMember,
+                  variant: "outline",
+                },
+              ]
+            : undefined,
         }}
         pt={0}
       >

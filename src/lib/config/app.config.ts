@@ -378,56 +378,6 @@ const app = {
           cancel: "Cancel",
         },
       },
-      inviteMember: {
-        title: "Invite Member",
-        description: "Invite a new member to your organization.",
-        form: {
-          email: {
-            label: "Email",
-            placeholder: "hello@omni.dev",
-          },
-          submit: "Invite Member",
-          pending: "Inviting Member...",
-          cancel: "Cancel",
-        },
-        toast: {
-          loading: {
-            title: "Sending invite link...",
-          },
-          success: {
-            title: "Success!",
-            description: "Your invite link has been sent!",
-          },
-          errors: {
-            title: "Error",
-            default: "Failed to send invite.",
-            currentOwner: "You're already a member.",
-            duplicateInvite: "Invite already sent to this email.",
-            currentMember: "User is already a member.",
-          },
-        },
-        emailTemplate: {
-          from: {
-            value1: "Backfeed Support",
-          },
-          subject: {
-            value1: "You have been invited to join the",
-            value2: "organization on",
-          },
-          heading: {
-            value1: "Join",
-            value2: "on",
-          },
-          greeting: "Hello",
-          statement: {
-            value1: "has invited you to join the",
-            value2: "organization on",
-          },
-          cta: "Join the organization",
-          disclaimer:
-            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
-        },
-      },
     },
   },
   organizationSettingsPage: {
@@ -509,14 +459,66 @@ const app = {
   organizationInvitationsPage: {
     breadcrumb: "Invitations",
     description: "Manage the members invitations.",
-    table: {
+    invitationsMenu: {
+      resend: "Resend",
+      delete: "Delete",
+    },
+    invitationsTable: {
       headers: {
         email: "Email",
         invitationDate: "Invitation Date",
       },
-      actions: {
-        resend: "Resend",
-        delete: "Delete",
+    },
+    cta: {
+      inviteMember: {
+        title: "Invite Member",
+        description: "Invite a new member to your organization.",
+        form: {
+          email: {
+            label: "Email",
+            placeholder: "hello@omni.dev",
+          },
+          submit: "Invite Member",
+          pending: "Inviting Member...",
+          cancel: "Cancel",
+        },
+        toast: {
+          loading: {
+            title: "Sending invite link...",
+          },
+          success: {
+            title: "Success!",
+            description: "Your invite link has been sent!",
+          },
+          errors: {
+            title: "Error",
+            default: "Failed to send invite.",
+            currentOwner: "You're already a member.",
+            duplicateInvite: "Invite already sent to this email.",
+            currentMember: "User is already a member.",
+          },
+        },
+        emailTemplate: {
+          from: {
+            value1: "Backfeed Support",
+          },
+          subject: {
+            value1: "You have been invited to join the",
+            value2: "organization on",
+          },
+          heading: {
+            value1: "Join",
+            value2: "on",
+          },
+          greeting: "Hello",
+          statement: {
+            value1: "has invited you to join the",
+            value2: "organization on",
+          },
+          cta: "Join the organization",
+          disclaimer:
+            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
+        },
       },
     },
   },
