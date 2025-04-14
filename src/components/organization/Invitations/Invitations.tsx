@@ -1,15 +1,13 @@
 "use client";
 
 import {
-  Badge,
   Checkbox,
-  Stack,
   Table,
   TableCell,
   TableHeader,
   TableRow,
-  Text,
 } from "@omnidev/sigil";
+import dayjs from "dayjs";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -18,17 +16,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { match } from "ts-pattern";
 
-import { MembershipMenu } from "components/organization";
-import { Role, useMembersQuery } from "generated/graphql";
-import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
+import { InvitationMenu } from "components/organization";
+import { useInvitationsQuery } from "generated/graphql";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { app } from "lib/config";
-import { capitalizeFirstLetter } from "lib/util";
 
-import type { Organization, MemberFragment } from "generated/graphql";
+import type { InvitationFragment, Organization } from "generated/graphql";
 
-const columnHelper = createColumnHelper<MemberFragment>();
+const columnHelper = createColumnHelper<InvitationFragment>();
+
+const organizationInviteDetails = app.organizationInvitationsPage;
 
 interface Props {
   /** Organization ID. */
@@ -36,9 +34,9 @@ interface Props {
 }
 
 /**
- * Organization members table.
+ * Organization invitations table.
  */
-const Members = ({ organizationId }: Props) => {
+const Invitations = ({ organizationId }: Props) => {
   const { user } = useAuth();
 
   const { isOwner } = useOrganizationMembership({
@@ -46,18 +44,13 @@ const Members = ({ organizationId }: Props) => {
     organizationId,
   });
 
-  const [{ roles, search }] = useSearchParams();
-
-  const { data: members } = useMembersQuery(
+  const { data: invitations } = useInvitationsQuery(
     {
       organizationId,
-      roles: roles ?? undefined,
-      search,
-      excludeRoles: [Role.Owner],
     },
     {
       placeholderData: keepPreviousData,
-      select: (data) => data.members?.nodes,
+      select: (data) => data.invitations?.nodes ?? [],
     }
   );
 
@@ -68,25 +61,24 @@ const Members = ({ organizationId }: Props) => {
           <Checkbox
             size="sm"
             // explicit width to prevent CLS with row selection
-            w={28}
+            w={48}
             // Prevent spacing between checkbox and label. See note for label `onClick` handler below
             gap={0}
             labelProps={{
-              flex: 1,
-              px: isOwner ? 4 : 2,
+              px: 4,
               fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
             }}
             label={
               table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
-                <MembershipMenu
+                <InvitationMenu
                   organizationId={organizationId}
                   selectedRows={table.getSelectedRowModel().rows}
                   toggleRowSelection={table.toggleAllRowsSelected}
                 />
               ) : (
-                app.organizationMembersPage.membersTable.headers.members
+                organizationInviteDetails.table.headers.email
               )
             }
             controlProps={{
@@ -114,29 +106,23 @@ const Members = ({ organizationId }: Props) => {
         cell: ({ row }) => (
           <Checkbox
             size="sm"
+            gap={4}
             labelProps={{
-              px: 2,
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
             }}
-            label={
-              <Stack py={4}>
-                <Text fontSize="lg">
-                  {row.original.user?.firstName} {row.original.user?.lastName}
-                </Text>
-                <Text color="foreground.subtle">
-                  {row.original.user?.username}
-                </Text>
-              </Stack>
-            }
             controlProps={{
               display: isOwner ? "flex" : "none",
             }}
+            disabled={!isOwner}
             // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
             iconProps={{
               style: {
                 pointerEvents: "none",
               },
             }}
-            disabled={!isOwner}
+            label={row.original.email}
             checked={row.getIsSelected()}
             onCheckedChange={({ checked }) =>
               row.toggleSelected(checked as boolean)
@@ -144,34 +130,16 @@ const Members = ({ organizationId }: Props) => {
           />
         ),
       }),
-      columnHelper.accessor("role", {
-        header: app.organizationMembersPage.membersTable.headers.role,
-        cell: (info) => {
-          const accentColor = match(info.getValue())
-            .with(Role.Admin, () => "brand.secondary")
-            .with(Role.Member, () => "brand.tertiary")
-            .otherwise(() => undefined);
-
-          return (
-            <Badge
-              variant="outline"
-              w={18}
-              justifyContent="center"
-              color={accentColor}
-              borderColor={accentColor}
-              fontWeight="semibold"
-            >
-              {capitalizeFirstLetter(info.getValue())}
-            </Badge>
-          );
-        },
+      columnHelper.accessor("createdAt", {
+        header: organizationInviteDetails.table.headers.invitationDate,
+        cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],
     [isOwner, organizationId]
   );
 
   const table = useReactTable({
-    data: members as MemberFragment[],
+    data: invitations as InvitationFragment[],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -206,4 +174,4 @@ const Members = ({ organizationId }: Props) => {
   );
 };
 
-export default Members;
+export default Invitations;

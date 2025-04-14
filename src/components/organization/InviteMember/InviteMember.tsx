@@ -3,11 +3,15 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { z } from "zod";
 
-import { useCreateInvitationMutation } from "generated/graphql";
+import {
+  useCreateInvitationMutation,
+  useInvitationsQuery,
+} from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
+import { getQueryClient } from "lib/util";
 import { useDialogStore } from "lib/hooks/store";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
@@ -96,7 +100,17 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     type: DialogType.InviteMember,
   });
 
+  const queryClient = getQueryClient();
+
+  const onSettled = () =>
+    queryClient.invalidateQueries({
+      queryKey: useInvitationsQuery.getKey({
+        organizationId,
+      }),
+    });
+
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
+    onSettled,
     onSuccess: () => {
       reset();
       setIsOpen(false);

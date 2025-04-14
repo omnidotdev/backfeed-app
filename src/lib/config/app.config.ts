@@ -503,6 +503,20 @@ const app = {
       },
     },
   },
+  organizationInvitationsPage: {
+    breadcrumb: "Invitations",
+    description: "Manage the members invitations.",
+    table: {
+      headers: {
+        email: "Email",
+        invitationDate: "Invitation Date",
+      },
+      actions: {
+        resend: "Resend",
+        delete: "Delete",
+      },
+    },
+  },
   pricingPage: {
     title: "Pricing",
     pricingHeader: {

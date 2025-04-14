@@ -4,6 +4,7 @@ import { Button, Icon, Stack, Text } from "@omnidev/sigil";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+import { FiUserPlus } from "react-icons/fi";
 
 import { OverflowText } from "components/core";
 import { app } from "lib/config";
@@ -47,7 +48,7 @@ const ManagementNavigation = ({
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
-      label: "Members",
+      label: app.organizationMembersPage.breadcrumb,
       icon: HiOutlineUserGroup,
       onClick: () => {
         onClose?.();
@@ -60,6 +61,14 @@ const ManagementNavigation = ({
       onClick: () => {
         onClose?.();
         router.push(`/organizations/${organizationSlug}/settings`);
+      },
+    },
+    {
+      label: app.organizationInvitationsPage.breadcrumb,
+      icon: FiUserPlus,
+      onClick: () => {
+        onClose?.();
+        router.push(`/organizations/${organizationSlug}/invitations`);
       },
     },
   ];

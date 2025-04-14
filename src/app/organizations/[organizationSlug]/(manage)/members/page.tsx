@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
-import { FiUserPlus } from "react-icons/fi";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
@@ -113,12 +112,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
                     // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                     icon: <LuCirclePlus />,
                     dialogType: DialogType.AddOwner,
-                  },
-                  {
-                    label: app.organizationMembersPage.cta.inviteMember.title,
-                    icon: <FiUserPlus />,
-                    dialogType: DialogType.InviteMember,
-                    variant: "outline",
                   },
                 ]
               : undefined,
