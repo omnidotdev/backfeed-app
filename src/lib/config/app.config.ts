@@ -325,6 +325,9 @@ const app = {
         settings: {
           label: "Settings",
         },
+        invitations: {
+          label: "Invitations",
+        },
       },
     },
   },

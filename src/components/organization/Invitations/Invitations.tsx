@@ -139,7 +139,7 @@ const Invitations = ({ organizationId }: Props) => {
   );
 
   const table = useReactTable({
-    data: invitations as InvitationFragment[],
+    data: (invitations as InvitationFragment[]) ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

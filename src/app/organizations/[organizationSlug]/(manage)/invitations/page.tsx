@@ -4,20 +4,16 @@ import { FiUserPlus } from "react-icons/fi";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
+import { Invitations, InviteMember } from "components/organization";
 import { Role, useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
-import type { SearchParams } from "nuqs/server";
-import { Invitations, InviteMember } from "components/organization";
-
 interface Props {
-  /** Organization members page parameters. */
+  /** Organization invitations page parameters. */
   params: Promise<{ organizationSlug: string }>;
-  /** Organization members page search parameters. */
-  searchParams: Promise<SearchParams>;
 }
 
 /**
@@ -48,11 +44,9 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
   queryClient.prefetchQuery({
     queryKey: useInvitationsQuery.getKey({
-      // email: session?.user?.email,
       organizationId: organization.rowId,
     }),
     queryFn: useInvitationsQuery.fetcher({
-      // email: session?.user?.email,
       organizationId: organization.rowId,
     }),
   });
