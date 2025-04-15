@@ -1,10 +1,11 @@
 import {
   Body,
   Container,
-  Head,
   Heading,
-  Hr,
   Html,
+  Head,
+  Markdown,
+  Hr,
   Img,
   Link,
   Section,
@@ -42,11 +43,24 @@ const InviteMemberEmailTemplate = ({
 }: OrganizationInvitation) => (
   <Html>
     <Head />
-
-    <Tailwind>
-      <Body className="bg-white my-auto mx-auto font-sans px-2">
-        <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
-          <Section className="mt-[32px]">
+    <Tailwind
+      config={{
+        theme: {
+          extend: {
+            colors: {
+              brand: "#00a3a2",
+              muted: "#666666",
+            },
+            borderColor: {
+              subtle: "#eaeaea",
+            },
+          },
+        },
+      }}
+    >
+      <Body className="my-auto mx-auto font-sans px-2">
+        <Container className="border border-solid border-subtle rounded my-10 mx-auto p-5 max-w-md">
+          <Section className="mt-8">
             <Img
               src={`${app.productionUrl}/img/logo.png`}
               alt={`${app.name} logo`}
@@ -56,41 +70,46 @@ const InviteMemberEmailTemplate = ({
             />
           </Section>
 
-          <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
-            {inviteMemberDetails.heading.value1}{" "}
-            <strong>{organizationName}</strong>{" "}
-            {inviteMemberDetails.heading.value2} <strong>{app.name}</strong>
+          <Heading
+            as="h1"
+            className="text-2xl font-normal text-center p-0 my-8 mx-0"
+          >
+            <Markdown>
+              {inviteMemberDetails.heading.replace(
+                "{organizationName}",
+                organizationName
+              )}
+            </Markdown>
           </Heading>
 
-          <Text className="text-black text-[14px] leading-[24px]">
+          <Text className="text-sm leading-6">
             {inviteMemberDetails.greeting} {recipientEmail},
           </Text>
 
-          <Text className="text-black text-[14px] leading-[24px]">
-            <strong>{inviterUsername}</strong> (
-            <Link
-              href={`mailto:${inviterEmail}`}
-              className="text-blue-600 no-underline"
-            >
-              {inviterEmail}
-            </Link>
-            ) {inviteMemberDetails.statement.value1}{" "}
-            <strong>{organizationName}</strong>{" "}
-            {inviteMemberDetails.statement.value2} <strong>{app.name}</strong>.
-          </Text>
+          <Markdown
+            markdownCustomStyles={{
+              link: { textDecoration: "underline" },
+              p: { fontSize: 14, lineHeight: 24 },
+            }}
+          >
+            {inviteMemberDetails.statement
+              .replace("{inviterUsername}", inviterUsername)
+              .replace("{inviterEmail}", inviterEmail)
+              .replace("{organizationName}", organizationName)}
+          </Markdown>
 
-          <Section className="text-center mt-[32px] mb-[32px]">
+          <Section className="text-center my-8">
             <Link
-              className="bg-[#00a3a2] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
+              className="bg-brand rounded text-white text-xs font-semibold no-underline text-center px-5 py-3"
               href={inviteUrl}
             >
               {inviteMemberDetails.cta}
             </Link>
           </Section>
 
-          <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
+          <Hr className="border border-solid border-subtle my-6 mx-0 w-full" />
 
-          <Text className="text-[#666666] text-[12px] leading-[24px]">
+          <Text className="text-muted text-xs leading-6">
             {inviteMemberDetails.disclaimer}
           </Text>
         </Container>

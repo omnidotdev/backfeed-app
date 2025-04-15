@@ -506,15 +506,10 @@ const app = {
             value1: "You have been invited to join the",
             value2: "organization on",
           },
-          heading: {
-            value1: "Join",
-            value2: "on",
-          },
+          heading: "Join **{organizationName}** on **Backfeed**",
           greeting: "Hello",
-          statement: {
-            value1: "has invited you to join the",
-            value2: "organization on",
-          },
+          statement:
+            "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{organizationName}** on **Backfeed**.",
           cta: "Join the organization",
           disclaimer:
             "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
