@@ -93,8 +93,8 @@ const InvitationMenu = ({
             },
           });
         })
-        .with(MenuAction.DeclineInvitation, () =>
-          deleteInvitation({
+        .with(MenuAction.DeclineInvitation, async () =>
+          await deleteInvitation({
             rowId: invitation.rowId,
           })
         )
