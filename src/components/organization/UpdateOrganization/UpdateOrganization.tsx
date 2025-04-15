@@ -24,9 +24,16 @@ const updateOrganizationDetails =
 const baseSchema = z.object({
   name: z
     .string()
-    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength),
+    .trim()
+    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength)
+    // TODO: Discuss length with team. Currently set to match CreateOrganization max length but 90 is likely too long for majority of cases.
+    .max(
+      90,
+      updateOrganizationDetails.fields.organizationName.errors.maxLength
+    ),
   slug: z
     .string()
+    .trim()
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat

@@ -410,6 +410,7 @@ const app = {
             label: "Organization Name",
             errors: {
               minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 90 characters.",
             },
           },
           organizationSlug: {

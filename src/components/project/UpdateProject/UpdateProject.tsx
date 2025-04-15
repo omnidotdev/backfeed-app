@@ -23,9 +23,11 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 const baseSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(3, updateProjectDetails.fields.projectName.errors.minLength),
   description: z
     .string()
+    .trim()
     .min(10, updateProjectDetails.fields.projectDescription.errors.minLength),
   slug: z
     .string()
