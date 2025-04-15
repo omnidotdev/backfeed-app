@@ -1,0 +1,10 @@
+query userByEmail($email: String!) {
+  userByEmail(email: $email) {
+    rowId
+    hidraId
+    username
+    firstName
+    lastName
+    email
+  }
+}

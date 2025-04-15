@@ -3,6 +3,8 @@ const app = {
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
+  supportName: "Omni Support",
+  supportEmail: "team@support.omni.dev",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -173,6 +175,7 @@ const app = {
             singular: "Organization",
             plural: "Organizations",
           },
+          placeholder: "Select an organization",
           error: "Please select an organization.",
         },
         organizationId: {
@@ -220,6 +223,9 @@ const app = {
       title: "Subscription",
       // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
       description: "Manage your subscription plan and billing information.",
+      emptyState: {
+        label: "No active subscription found.",
+      },
       actions: {
         subscribe: {
           label: "Subscribe",
@@ -232,6 +238,22 @@ const app = {
         productName: "Product Name",
         status: "Status",
         amount: "Amount",
+      },
+    },
+    organizationInvites: {
+      title: "Organization Invites",
+      description: "View and manage your organization invites.",
+      headers: {
+        organizationName: "Organization Name",
+        invitationDate: "Invitation Date",
+        actions: "Actions",
+      },
+      emptyState: {
+        message: "No organization invites found.",
+      },
+      actions: {
+        accept: "Accept",
+        delete: "Delete",
       },
     },
   },
@@ -308,6 +330,9 @@ const app = {
         settings: {
           label: "Settings",
         },
+        invitations: {
+          label: "Invitations",
+        },
       },
     },
   },
@@ -327,12 +352,28 @@ const app = {
       removeAdmin: "Remove administrative privileges",
       removeMember: "Remove from organization",
     },
+    ownersTable: {
+      headers: {
+        owners: "Owners",
+        role: "Role",
+      },
+    },
+    membersTable: {
+      headers: {
+        members: "Members",
+        role: "Role",
+      },
+    },
     cta: {
       addOwner: {
         title: "Add Owner",
         description: "Add a new owner to your organization.",
         label: "New Owner",
         noMembersFound: "No members found",
+        comboboxLabel: {
+          singular: "Member",
+          plural: "Members",
+        },
         form: {
           rowId: {
             placeholder: "Search for or select a member...",
@@ -417,6 +458,67 @@ const app = {
         description:
           "You will be able to collaborate with other members of this organization.",
         actionLabel: "Join",
+      },
+    },
+  },
+  organizationInvitationsPage: {
+    breadcrumb: "Invitations",
+    description: "Manage the members invitations.",
+    invitationsMenu: {
+      resend: "Resend",
+      delete: "Delete",
+    },
+    invitationsTable: {
+      headers: {
+        email: "Email",
+        invitationDate: "Invitation Date",
+      },
+    },
+    cta: {
+      inviteMember: {
+        title: "Invite Member",
+        description: "Invite a new member to your organization.",
+        form: {
+          email: {
+            label: "Email",
+            placeholder: "hello@omni.dev",
+          },
+          submit: "Invite Member",
+          pending: "Inviting Member...",
+          cancel: "Cancel",
+        },
+        toast: {
+          loading: {
+            title: "Sending invite link...",
+          },
+          success: {
+            title: "Success!",
+            description: "Your invite link has been sent!",
+          },
+          errors: {
+            title: "Error",
+            default: "Failed to send invite.",
+            currentOwner: "You're already a member.",
+            duplicateInvite: "Invite already sent to this email.",
+            currentMember: "User is already a member.",
+          },
+        },
+        emailTemplate: {
+          from: {
+            value1: "Backfeed Support",
+          },
+          subject: {
+            value1: "You have been invited to join the",
+            value2: "organization on",
+          },
+          heading: "Join **{organizationName}** on **Backfeed**",
+          greeting: "Hello",
+          statement:
+            "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{organizationName}** on **Backfeed**.",
+          cta: "Join the organization",
+          disclaimer:
+            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
+        },
       },
     },
   },
@@ -681,7 +783,7 @@ const app = {
       },
     },
     projectFeedback: {
-      title: "Project Feeback",
+      title: "Project Feedback",
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",

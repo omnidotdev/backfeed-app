@@ -4,6 +4,7 @@ import { Button, Grid, Icon } from "@omnidev/sigil";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
+import { FiUserPlus } from "react-icons/fi";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
@@ -46,6 +47,13 @@ const OrganizationActions = ({ canCreateProjects }: Props) => {
       label: app.organizationPage.actions.cta.manageTeam.label,
       icon: HiOutlineUserGroup,
       onClick: () => router.push(`/organizations/${organizationSlug}/members`),
+    },
+    {
+      label: app.organizationPage.actions.cta.invitations.label,
+      icon: FiUserPlus,
+      onClick: () =>
+        router.push(`/organizations/${organizationSlug}/invitations`),
+      disabled: !isAdmin,
     },
     {
       label: app.organizationPage.actions.cta.createProject.label,

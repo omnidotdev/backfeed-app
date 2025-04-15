@@ -304,7 +304,9 @@ const CreateProject = ({
           {({ SingularSelectField }) => (
             <SingularSelectField
               label={app.dashboardPage.cta.newProject.selectOrganization.label}
-              placeholder="Select an organization"
+              placeholder={
+                app.dashboardPage.cta.newProject.selectOrganization.placeholder
+              }
               items={organizations ?? []}
               clearTriggerProps={{
                 display: organizationSlug ? "none" : undefined,

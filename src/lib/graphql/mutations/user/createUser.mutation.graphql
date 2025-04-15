@@ -3,6 +3,7 @@ mutation CreateUser(
   $username: String
   $firstName: String
   $lastName: String
+  $email: String!
 ) {
   createUser(
     input: {
@@ -11,6 +12,7 @@ mutation CreateUser(
         username: $username
         firstName: $firstName
         lastName: $lastName
+        email: $email
       }
     }
   ) {
