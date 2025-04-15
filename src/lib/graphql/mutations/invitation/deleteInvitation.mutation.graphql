@@ -1,0 +1,5 @@
+mutation DeleteInvitation($rowId: UUID!) {
+  deleteInvitation(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

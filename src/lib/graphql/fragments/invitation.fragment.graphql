@@ -1,0 +1,10 @@
+fragment Invitation on Invitation {
+  rowId
+  email
+  organizationId
+  organization {
+    name
+  }
+  createdAt
+  updatedAt
+}
