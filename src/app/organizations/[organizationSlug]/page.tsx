@@ -120,7 +120,10 @@ const OrganizationPage = async ({ params }: Props) => {
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
 
-          <OrganizationActions canCreateProjects={canCreateProjects} />
+          <OrganizationActions
+            hasAdminPrivileges={hasAdminPrivileges}
+            canCreateProjects={canCreateProjects}
+          />
         </Grid>
 
         {/* dialogs */}

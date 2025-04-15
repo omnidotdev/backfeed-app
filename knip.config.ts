@@ -18,6 +18,8 @@ const knipConfig: KnipConfig = {
     "src/app/**/{icon,apple-icon}.{ts,tsx}",
     "src/app/**/{opengraph,twitter}-image.{ts,tsx}",
     "src/test/**/*.{ts,tsx}",
+    // NB: include test files and their dependencies as entry points
+    "src/**/*.test.{ts,tsx}",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
   project: ["src/**/*.{ts,tsx}"],
