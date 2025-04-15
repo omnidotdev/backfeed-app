@@ -22,4 +22,5 @@ const getSdk = ({ session }: Options) => {
 
   return getGraphQLSdk(graphqlClient);
 };
+
 export default getSdk;
