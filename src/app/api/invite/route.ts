@@ -11,7 +11,7 @@ import type { OrganizationInvitation } from "components/organization";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const emailTemplate =
-  app.organizationMembersPage.cta.inviteMember.emailTemplate;
+  app.organizationInvitationsPage.cta.inviteMember.emailTemplate;
 
 /**
  * Organization invite route.

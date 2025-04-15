@@ -7,14 +7,16 @@ import {
   useInvitationsQuery,
   useCreateInvitationMutation,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { getQueryClient } from "lib/util";
+import { getQueryClient, toaster } from "lib/util";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
 import type { Organization, InvitationFragment } from "generated/graphql";
 import type { JsxStyleProps } from "generated/panda/types";
+
+const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
 enum MenuAction {
   ResendInvitation = "resendInvitation",
@@ -73,30 +75,64 @@ const InvitationMenu = ({
             rowId: invitation.rowId,
           });
 
-          fetch("/api/invite", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              inviterEmail: user?.email,
-              inviterUsername: user?.name,
-              recipientEmail: invitation.email,
-              organizationName: invitation.organization?.name,
-            }),
-          });
+          toaster.promise(
+            async () => {
+              try {
+                const [sendEmailResponse] = await Promise.all([
+                  fetch("/api/invite", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      inviterEmail: user?.email,
+                      inviterUsername: user?.name,
+                      recipientEmail: invitation.email,
+                      organizationName: invitation.organization?.name,
+                    }),
+                  }),
+                  inviteToOrganization({
+                    input: {
+                      invitation: {
+                        email: invitation.email,
+                        organizationId,
+                      },
+                    },
+                  }),
+                ]);
 
-          inviteToOrganization({
-            input: {
-              invitation: {
-                email: invitation.email,
-                organizationId,
-              },
+                if (!sendEmailResponse.ok) {
+                  throw new Error(inviteMemberDetails.toast.errors.default);
+                }
+              } catch (error) {
+                if (isDevEnv) {
+                  console.error("Error resending invitation:", error);
+                }
+                throw error;
+              }
             },
-          });
+            {
+              loading: {
+                title: inviteMemberDetails.toast.loading.title,
+              },
+              success: {
+                title: inviteMemberDetails.toast.success.title,
+                description: inviteMemberDetails.toast.success.description,
+              },
+              error: (error) => ({
+                title: inviteMemberDetails.toast.errors.title,
+                description:
+                  error instanceof Error && error.message
+                    ? error.message
+                    : inviteMemberDetails.toast.errors.default,
+              }),
+            }
+          );
         })
-        .with(MenuAction.DeclineInvitation, async () =>
-          await deleteInvitation({
-            rowId: invitation.rowId,
-          })
+        .with(
+          MenuAction.DeclineInvitation,
+          async () =>
+            await deleteInvitation({
+              rowId: invitation.rowId,
+            })
         )
         .exhaustive();
     }

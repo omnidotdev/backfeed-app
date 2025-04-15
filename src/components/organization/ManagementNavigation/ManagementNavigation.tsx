@@ -98,33 +98,34 @@ const ManagementNavigation = ({
         {isOpen || !truncateText ? organizationName : organizationName[0]}
       </OverflowText>
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick, disabled }) => (
-        <Button
-          key={label}
-          variant="ghost"
-          w="full"
-          rounded="none"
-          alignItems="center"
-          textWrap="nowrap"
-          py={6}
-          bgColor={{
-            _active: { base: "neutral.300a", _dark: "neutral.100a" },
-            _hover: {
-              base: "neutral.200a",
+      {SIDEBAR_NAVIGATION.filter(({ disabled }) => !disabled).map(
+        ({ label, icon, onClick }) => (
+          <Button
+            key={label}
+            variant="ghost"
+            w="full"
+            rounded="none"
+            alignItems="center"
+            textWrap="nowrap"
+            py={6}
+            bgColor={{
               _active: { base: "neutral.300a", _dark: "neutral.100a" },
-            },
-          }}
-          disabled={disabled}
-          onClick={onClick}
-          // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
-          data-active={label.toLowerCase() === segment || undefined}
-          aria-label={label}
-        >
-          <Icon src={icon} h={5} w={5} />
+              _hover: {
+                base: "neutral.200a",
+                _active: { base: "neutral.300a", _dark: "neutral.100a" },
+              },
+            }}
+            onClick={onClick}
+            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+            data-active={label.toLowerCase() === segment || undefined}
+            aria-label={label}
+          >
+            <Icon src={icon} h={5} w={5} />
 
-          {(isOpen || !truncateText) && <Text>{label}</Text>}
-        </Button>
-      ))}
+            {(isOpen || !truncateText) && <Text>{label}</Text>}
+          </Button>
+        )
+      )}
     </Stack>
   );
 };
