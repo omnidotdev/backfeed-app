@@ -50,7 +50,7 @@ const Subscription = ({ customer }: Props) => {
       p={0}
       titleProps={{
         px: 4,
-        pt: 4,
+        mt: 4,
       }}
       descriptionProps={{
         px: 4,
@@ -60,7 +60,7 @@ const Subscription = ({ customer }: Props) => {
         <Skeleton h={18} m={4} />
       ) : customer.status === "rejected" || error ? (
         <Stack mx={4} mb={4}>
-          <Text>No active subscription found.</Text>
+          <Text>{app.profilePage.subscription.emptyState.label}</Text>
           <Link href="/pricing">
             <Button>
               {app.profilePage.subscription.actions.subscribe.label}

@@ -100,6 +100,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             gap={0}
             top="header"
             zIndex="sticky"
+            organizationId={organization?.rowId!}
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}
             isOpen={debouncedIsOpen}
@@ -125,6 +126,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           }}
         >
           <ManagementNavigation
+            organizationId={organization?.rowId!}
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}
             isOpen={isDrawerOpen}

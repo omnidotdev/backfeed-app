@@ -17,6 +17,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Role, useMembersQuery } from "generated/graphql";
+import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment } from "generated/graphql";
@@ -25,7 +26,7 @@ const columnHelper = createColumnHelper<MemberFragment>();
 
 const columns = [
   columnHelper.accessor("rowId", {
-    header: "Owners",
+    header: app.organizationMembersPage.ownersTable.headers.owners,
     cell: ({ row }) => (
       <Stack py={4}>
         <Text fontSize="lg" fontWeight="medium">
@@ -39,7 +40,7 @@ const columns = [
     ),
   }),
   columnHelper.accessor("role", {
-    header: "Role",
+    header: app.organizationMembersPage.ownersTable.headers.role,
     cell: (info) => (
       <Badge
         variant="outline"

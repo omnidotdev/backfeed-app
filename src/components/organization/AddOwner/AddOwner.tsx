@@ -116,7 +116,11 @@ const AddOwner = ({ organizationId }: Props) => {
           <AppField name="rowId">
             {({ SingularComboboxField }) => (
               <SingularComboboxField
-                label={{ id: "member", singular: "Member", plural: "Members" }}
+                label={{
+                  id: "member",
+                  singular: addOwnerDetails.comboboxLabel.singular,
+                  plural: addOwnerDetails.comboboxLabel.plural,
+                }}
                 items={members ?? []}
                 placeholder={addOwnerDetails.form.rowId.placeholder}
               />
