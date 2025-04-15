@@ -9,6 +9,8 @@ export enum DialogType {
   AddOwner = "addOwner",
   /** Dialog for managing the mobile sidebar navigation and actions. */
   MobileSidebar = "mobileSidebar",
+  /** Dialog for inviting a member to an organization. */
+  InviteMember = "inviteMember",
 }
 
 interface DialogState {

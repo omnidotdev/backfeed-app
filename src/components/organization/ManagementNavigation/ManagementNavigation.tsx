@@ -4,11 +4,14 @@ import { Button, Icon, Stack, Text } from "@omnidev/sigil";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+import { FiUserPlus } from "react-icons/fi";
 
 import { OverflowText } from "components/core";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
+import type { Organization } from "generated/graphql";
 import type { IconType } from "react-icons";
 
 interface NavigationItem extends ButtonProps {
@@ -19,6 +22,8 @@ interface NavigationItem extends ButtonProps {
 }
 
 interface Props extends StackProps {
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
   /** Organization slug. */
   organizationSlug: string;
   /** Organization name */
@@ -35,6 +40,7 @@ interface Props extends StackProps {
  * Management navigation component.
  */
 const ManagementNavigation = ({
+  organizationId,
   organizationSlug,
   organizationName,
   isOpen,
@@ -42,12 +48,19 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
+  const { user } = useAuth();
+
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
 
+  const { isAdmin } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
+
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
-      label: "Members",
+      label: app.organizationMembersPage.breadcrumb,
       icon: HiOutlineUserGroup,
       onClick: () => {
         onClose?.();
@@ -61,6 +74,15 @@ const ManagementNavigation = ({
         onClose?.();
         router.push(`/organizations/${organizationSlug}/settings`);
       },
+    },
+    {
+      label: app.organizationInvitationsPage.breadcrumb,
+      icon: FiUserPlus,
+      onClick: () => {
+        onClose?.();
+        router.push(`/organizations/${organizationSlug}/invitations`);
+      },
+      disabled: !isAdmin,
     },
   ];
 
@@ -76,32 +98,34 @@ const ManagementNavigation = ({
         {isOpen || !truncateText ? organizationName : organizationName[0]}
       </OverflowText>
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
-        <Button
-          key={label}
-          variant="ghost"
-          w="full"
-          rounded="none"
-          alignItems="center"
-          textWrap="nowrap"
-          py={6}
-          bgColor={{
-            _active: { base: "neutral.300a", _dark: "neutral.100a" },
-            _hover: {
-              base: "neutral.200a",
+      {SIDEBAR_NAVIGATION.filter(({ disabled }) => !disabled).map(
+        ({ label, icon, onClick }) => (
+          <Button
+            key={label}
+            variant="ghost"
+            w="full"
+            rounded="none"
+            alignItems="center"
+            textWrap="nowrap"
+            py={6}
+            bgColor={{
               _active: { base: "neutral.300a", _dark: "neutral.100a" },
-            },
-          }}
-          onClick={onClick}
-          // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
-          data-active={label.toLowerCase() === segment || undefined}
-          aria-label={label}
-        >
-          <Icon src={icon} h={5} w={5} />
+              _hover: {
+                base: "neutral.200a",
+                _active: { base: "neutral.300a", _dark: "neutral.100a" },
+              },
+            }}
+            onClick={onClick}
+            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+            data-active={label.toLowerCase() === segment || undefined}
+            aria-label={label}
+          >
+            <Icon src={icon} h={5} w={5} />
 
-          {(isOpen || !truncateText) && <Text>{label}</Text>}
-        </Button>
-      ))}
+            {(isOpen || !truncateText) && <Text>{label}</Text>}
+          </Button>
+        )
+      )}
     </Stack>
   );
 };
