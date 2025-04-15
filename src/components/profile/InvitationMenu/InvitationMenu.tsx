@@ -29,7 +29,7 @@ const menuItemStyles: JsxStyleProps = {
 };
 
 interface Props extends MenuProps {
-  /** The selected rows in the invatation table */
+  /** The selected rows in the invitation table. */
   selectedRows: Row<InvitationFragment>[];
   /** Toggle the selection state of the rows. */
   toggleRowSelection: (value?: boolean) => void;
