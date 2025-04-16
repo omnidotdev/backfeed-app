@@ -9,8 +9,8 @@ import "next-auth/jwt";
 
 import { Tier, getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { getSubscription } from "lib/actions";
 import { isDevEnv } from "lib/config";
+import { polar } from "lib/polar";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
@@ -45,20 +45,31 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   return getSdk(graphqlClient);
 };
 
+/**
+ * Handler to update a user's subscription tier.
+ */
 const updateSubscriptionTier = async ({
   hidraId,
   rowId,
   accessToken,
 }: UpdateSubscriptionTier) => {
-  const [subscriptionResponse] = await Promise.allSettled([
-    getSubscription(hidraId),
+  const [customer] = await Promise.allSettled([
+    polar.customers.getStateExternal({
+      externalId: hidraId,
+    }),
   ]);
 
-  // Will be `fulfilled` if the user has an active subscription
-  if (subscriptionResponse.status === "fulfilled") {
-    const subscription = subscriptionResponse.value;
+  if (
+    customer.status === "fulfilled" &&
+    customer.value.activeSubscriptions.length
+  ) {
+    const productId = customer.value.activeSubscriptions[0].productId;
 
-    const tier = match(subscription.product.metadata?.title as Tier)
+    const product = await polar.products.get({
+      id: productId,
+    });
+
+    const tier = match(product.metadata?.title as Tier)
       .with(Tier.Basic, () => Tier.Basic)
       .with(Tier.Team, () => Tier.Team)
       .with(Tier.Enterprise, () => Tier.Enterprise)
@@ -166,9 +177,9 @@ export const { handlers, auth } = NextAuth({
         token.row_id = user?.userByHidraId?.rowId;
 
         await updateSubscriptionTier({
-          hidraId: token.sub!,
-          rowId: token.row_id!,
-          accessToken: token.access_token,
+          hidraId: profile?.sub!,
+          rowId: user?.userByHidraId?.rowId!,
+          accessToken: account.access_token!,
         });
 
         return token;
