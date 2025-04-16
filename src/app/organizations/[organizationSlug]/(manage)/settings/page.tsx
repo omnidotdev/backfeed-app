@@ -87,6 +87,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
+          userId={session.user.rowId!}
           organizationId={organization.rowId}
           developmentFlag={developmentFlag}
         />
