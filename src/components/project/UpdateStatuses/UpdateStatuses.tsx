@@ -33,7 +33,7 @@ import {
   useUpdatePostStatusMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -67,7 +67,7 @@ const COLOR_PRESETS = [
 ];
 
 const statusSchema = z.object({
-  rowId: z.string().uuid().or(z.literal("pending")),
+  rowId: uuidSchema.or(z.literal("pending")),
   status: z
     .string()
     .regex(
@@ -144,7 +144,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: updateStatusesSchema,
       onSubmitAsync: updateStatusesSchema,
     },
     onSubmit: async ({ formApi, value }) =>
@@ -317,7 +316,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         </Field>
                       </TableCell>
 
-                      <TableCell py={5}>
+                      <TableCell py={6}>
                         <AppField name={`projectStatuses[${i}].status`}>
                           {({ InputField }) => (
                             <InputField

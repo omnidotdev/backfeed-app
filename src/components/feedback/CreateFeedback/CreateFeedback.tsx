@@ -16,7 +16,7 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -26,15 +26,9 @@ const MAX_DESCRIPTION_LENGTH = 240;
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
-  statusId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
-  projectId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
-  userId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
+  statusId: uuidSchema,
+  projectId: uuidSchema,
+  userId: uuidSchema,
   title: z
     .string()
     .trim()
@@ -59,7 +53,7 @@ const createFeedbackSchema = z.object({
       app.projectPage.projectFeedback.createFeedback.errors.minDescriptionLength
     )
     .max(
-      240,
+      MAX_DESCRIPTION_LENGTH,
       app.projectPage.projectFeedback.createFeedback.errors.maxDescriptionLength
     ),
 });
@@ -137,7 +131,6 @@ const CreateFeedback = () => {
       },
       asyncDebounceMs: DEBOUNCE_TIME,
       validators: {
-        onChange: createFeedbackSchema,
         onSubmitAsync: createFeedbackSchema,
       },
       onSubmit: async ({ value }) =>

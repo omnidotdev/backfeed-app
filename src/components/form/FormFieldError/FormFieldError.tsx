@@ -9,8 +9,6 @@ import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 export interface Props extends Omit<TextProps, "as"> {
   /** Error messages. */
   errors: StandardSchemaV1Issue[] | undefined;
-  /** Dirty state of the form field. */
-  isDirty: boolean;
   /** What HTML element to render the error text as. */
   as?: TagVariants;
 }
@@ -18,15 +16,15 @@ export interface Props extends Omit<TextProps, "as"> {
 /**
  * Text to be displayed when a form field has errors.
  */
-const FormFieldError = ({ errors, isDirty, as = "p", ...rest }: Props) => (
+const FormFieldError = ({ errors, as = "p", ...rest }: Props) => (
   <Text
     position="absolute"
-    top={-0.5}
+    top={0}
     right={0}
     h={5}
     fontSize="sm"
     color="red"
-    visibility={errors && isDirty ? "visible" : "hidden"}
+    visibility={errors?.length ? "visible" : "hidden"}
     as={as}
     {...rest}
   >

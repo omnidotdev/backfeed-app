@@ -1,3 +1,5 @@
+// TODO: dedupe as much as possible.
+
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
@@ -8,6 +10,18 @@ const app = {
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
+  },
+  forms: {
+    errors: {
+      slug: {
+        regex: "Invalid slug format.",
+        minLength: "Must be at least 3 characters.",
+        maxLength: "Must be at most 50 characters.",
+      },
+      id: {
+        format: "Invalid UUID format.",
+      },
+    },
   },
   notFound: {
     statusCode: 404,
@@ -550,7 +564,7 @@ const app = {
       features: {
         gdpr: "GDPR Compliance",
         communitySupport: "Community Support",
-        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedFeedback: "Unlimited Feedback",
         unlimitedOrgs: "Unlimited Organizations",
         unlimitedProjects: "Unlimited Projects",
         webhooks: "Webhooks",
@@ -697,7 +711,7 @@ const app = {
       updateProjectStatuses: {
         title: "Project Statuses",
         description:
-          "Customize statuses that are used to track progress on feedback items.",
+          "Customize statuses that are used to track progress on feedback.",
         actions: {
           reset: {
             label: "Reset",
