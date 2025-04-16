@@ -46,7 +46,7 @@ const AccountInformation = () => {
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
-    router.push(`/profile/${user?.rowId}`);
+    router.push(`/profile/${user?.rowId}/account`);
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>

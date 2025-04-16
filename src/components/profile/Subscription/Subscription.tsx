@@ -17,7 +17,6 @@ import {
 import Link from "next/link";
 import { LuSettings } from "react-icons/lu";
 
-import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 import { useSubscription } from "lib/hooks/queries";
 import { capitalizeFirstLetter } from "lib/util";
@@ -44,26 +43,15 @@ const Subscription = ({ customer }: Props) => {
   });
 
   return (
-    <SectionContainer
-      title={app.profilePage.subscription.title}
-      description={app.profilePage.subscription.description}
-      p={0}
-      titleProps={{
-        px: 4,
-        mt: 4,
-      }}
-      descriptionProps={{
-        px: 4,
-      }}
-    >
+    <>
       {isLoading ? (
         <Skeleton h={18} m={4} />
       ) : customer.status === "rejected" || error ? (
-        <Stack mx={4} mb={4}>
-          <Text>{app.profilePage.subscription.emptyState.label}</Text>
+        <Stack>
+          <Text>{app.profileSubscriptionPage.table.emptyState.label}</Text>
           <Link href="/pricing">
             <Button>
-              {app.profilePage.subscription.actions.subscribe.label}
+              {app.profileSubscriptionPage.table.actions.subscribe.label}
             </Button>
           </Link>
         </Stack>
@@ -72,7 +60,7 @@ const Subscription = ({ customer }: Props) => {
           <Table
             headerContent={
               <TableRow bgColor="transparent">
-                {Object.values(app.profilePage.subscription.headers).map(
+                {Object.values(app.profileSubscriptionPage.table.headers).map(
                   (header) => (
                     <TableCell key={header} fontWeight="bold">
                       {header}
@@ -110,8 +98,8 @@ const Subscription = ({ customer }: Props) => {
                       <Icon src={LuSettings} h={4} w={4} />
 
                       {
-                        app.profilePage.subscription.actions.manageSubscription
-                          .label
+                        app.profileSubscriptionPage.table.actions
+                          .manageSubscription.label
                       }
                     </Button>
                   </SigilLink>
@@ -121,7 +109,7 @@ const Subscription = ({ customer }: Props) => {
           </Table>
         </Flex>
       )}
-    </SectionContainer>
+    </>
   );
 };
 

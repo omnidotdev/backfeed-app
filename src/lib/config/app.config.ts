@@ -5,6 +5,7 @@ const app = {
   productionUrl: "https://backfeed.omni.dev",
   supportName: "Omni Support",
   supportEmail: "team@support.omni.dev",
+  identityUrl: "https://identity.omni.dev",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -208,29 +209,52 @@ const app = {
       },
     },
   },
-  profilePage: {
-    breadcrumb: "Profile",
-    header: {
-      title: "User Profile",
-      description: "View and manage your account information.",
+  profileAccountPage: {
+    breadcrumb: "Account",
+    description: "View and manage your account information.",
+    fields: {
+      username: "Username",
+      firstName: "First Name",
+      lastName: "Last Name",
+      email: "Email",
     },
-    accountInformation: {
-      title: "Account Information",
-      description: "View your profile information.",
-      fields: {
-        username: "Username",
-        firstName: "First Name",
-        lastName: "Last Name",
-        email: "Email",
-      },
-      cta: {
-        updateProfile: "Update Profile",
+    cta: {
+      updateProfile: {
+        label: "Update Profile",
       },
     },
-    subscription: {
-      title: "Subscription",
-      // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
-      description: "Manage your subscription plan and billing information.",
+  },
+  profileInvitationsPage: {
+    breadcrumb: "Invitations",
+    description: "View and manage your organization invitations.",
+    table: {
+      headers: {
+        organizationName: "Organization Name",
+        invitationDate: "Invitation Date",
+        actions: "Actions",
+      },
+      emptyState: {
+        label: "No organization invites found.",
+      },
+      actions: {
+        accept: {
+          label: "Accept",
+        },
+        delete: {
+          label: "Delete",
+        },
+      },
+    },
+  },
+  profileSubscriptionPage: {
+    breadcrumb: "Subscription",
+    description: "Manage your subscription plan and billing information.",
+    table: {
+      headers: {
+        productName: "Product Name",
+        status: "Status",
+        amount: "Amount",
+      },
       emptyState: {
         label: "No active subscription found.",
       },
@@ -241,27 +265,6 @@ const app = {
         manageSubscription: {
           label: "Manage",
         },
-      },
-      headers: {
-        productName: "Product Name",
-        status: "Status",
-        amount: "Amount",
-      },
-    },
-    organizationInvites: {
-      title: "Organization Invites",
-      description: "View and manage your organization invites.",
-      headers: {
-        organizationName: "Organization Name",
-        invitationDate: "Invitation Date",
-        actions: "Actions",
-      },
-      emptyState: {
-        message: "No organization invites found.",
-      },
-      actions: {
-        accept: "Accept",
-        delete: "Delete",
       },
     },
   },

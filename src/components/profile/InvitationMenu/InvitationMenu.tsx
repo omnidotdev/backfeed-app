@@ -112,7 +112,7 @@ const InvitationMenu = ({
             handleMenuAction({ type: MenuAction.AcceptInvitation })
           }
         >
-          {app.profilePage.organizationInvites.actions.accept}
+          {app.profileInvitationsPage.table.actions.accept.label}
         </MenuItem>
 
         <MenuItem
@@ -123,7 +123,7 @@ const InvitationMenu = ({
             handleMenuAction({ type: MenuAction.DeclineInvitation })
           }
         >
-          {app.profilePage.organizationInvites.actions.delete}
+          {app.profileInvitationsPage.table.actions.delete.label}
         </MenuItem>
       </MenuItemGroup>
     </Menu>
