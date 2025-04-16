@@ -5071,6 +5071,14 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
+export type UpdateUserMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: UserPatch;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+
 export type CommentsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -5528,6 +5536,13 @@ export const CreateUserDocument = gql`
   }
 }
     `;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($rowId: UUID!, $patch: UserPatch!) {
+  updateUser(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
 export const CommentsDocument = gql`
     query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
   comments(
@@ -5958,6 +5973,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreateUser(variables: CreateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUserMutation>(CreateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUser', 'mutation', variables);
+    },
+    UpdateUser(variables: UpdateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateUserMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateUser', 'mutation', variables);
     },
     Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CommentsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>(CommentsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Comments', 'query', variables);
