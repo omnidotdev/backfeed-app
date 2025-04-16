@@ -214,8 +214,18 @@ const app = {
       title: "User Profile",
       description: "View and manage your account information.",
     },
-    cta: {
-      updateProfile: {},
+    accountInformation: {
+      title: "Account Information",
+      description: "View your profile information.",
+      fields: {
+        username: "Username",
+        firstName: "First Name",
+        lastName: "Last Name",
+        email: "Email",
+      },
+      cta: {
+        updateProfile: "Update Profile",
+      },
     },
     subscription: {
       title: "Subscription",

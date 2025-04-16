@@ -16,13 +16,13 @@ import { useUserQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
-const updateProfileDetails = app.profilePage.cta.updateProfile;
+const accountInformation = app.profilePage.accountInformation;
 
 // TODO: preftech userData from rsc.
-// TODO: add all static text to config file.
+// TODO: maybe rename this component
 
 /**
- * Form for updating profile details.
+ * Users account information.
  */
 const UpdateProfile = () => {
   const { user } = useAuth();
@@ -36,31 +36,34 @@ const UpdateProfile = () => {
     }
   );
 
-  const defaultUserData = [
+  const profileData = [
     {
-      label: "Username",
+      label: accountInformation.fields.username,
       value: userData?.username ?? "",
     },
     {
-      label: "First Name",
+      label: accountInformation.fields.firstName,
       value: userData?.firstName ?? "",
     },
     {
-      label: "Last Name",
+      label: accountInformation.fields.lastName,
       value: userData?.lastName ?? "",
     },
     {
-      label: "Email",
+      label: accountInformation.fields.email,
       value: userData?.email ?? "",
     },
   ];
 
   return (
-    <SectionContainer title="Update Profile">
+    <SectionContainer
+      title={accountInformation.title}
+      description={accountInformation.description}
+    >
       <Divider />
 
       <Stack gap={4}>
-        {defaultUserData.map(({ label, value }) => (
+        {profileData.map(({ label, value }) => (
           <Stack key={label} gap={1}>
             <Label>{label}</Label>
             <Input readOnly defaultValue={value} borderColor="border.subtle" />
@@ -73,7 +76,7 @@ const UpdateProfile = () => {
           textDecoration="none"
         >
           <Button>
-            Update Profile
+            {accountInformation.cta.updateProfile}
             <Icon src={HiOutlineExternalLink} />
           </Button>
         </Link>
