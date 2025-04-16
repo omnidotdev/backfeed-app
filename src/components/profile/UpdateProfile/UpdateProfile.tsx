@@ -1,8 +1,15 @@
 "use client";
 
-import { Button, Divider, Input, Label, Link, Stack } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import {
+  Button,
+  Divider,
+  Input,
+  Label,
+  Stack,
+  Link,
+  Icon,
+} from "@omnidev/sigil";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 import { SectionContainer } from "components/layout";
 import { useUserQuery } from "generated/graphql";
@@ -12,20 +19,16 @@ import { useAuth } from "lib/hooks";
 const updateProfileDetails = app.profilePage.cta.updateProfile;
 
 // TODO: preftech userData from rsc.
+// TODO: add all static text to config file.
 
 /**
  * Form for updating profile details.
  */
 const UpdateProfile = () => {
-  const queryClient = useQueryClient();
-
-  const { userId } = useParams<{ userId: string }>();
-
   const { user } = useAuth();
 
   const { data: userData } = useUserQuery(
     {
-      // TODO: determine whether params of auth hooks should be used for query variable.
       hidraId: user?.hidraId!,
     },
     {
@@ -52,12 +55,11 @@ const UpdateProfile = () => {
     },
   ];
 
-  // TODO: add all static text to config file.
   return (
     <SectionContainer title="Update Profile">
       <Divider />
 
-      <Stack>
+      <Stack gap={4}>
         {defaultUserData.map(({ label, value }) => (
           <Stack key={label} gap={1}>
             <Label>{label}</Label>
@@ -65,8 +67,15 @@ const UpdateProfile = () => {
           </Stack>
         ))}
 
-        <Link href="https://identity.omni.dev/">
-          <Button>Update Profile</Button>
+        <Link
+          href="https://identity.omni.dev/"
+          isExternal
+          textDecoration="none"
+        >
+          <Button>
+            Update Profile
+            <Icon src={HiOutlineExternalLink} />
+          </Button>
         </Link>
       </Stack>
     </SectionContainer>
