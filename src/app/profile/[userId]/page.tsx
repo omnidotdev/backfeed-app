@@ -5,10 +5,10 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationInvites, Subscription } from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
-import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
+import { subscriptionOptions } from "lib/options";
 
 export const metadata = {
   title: app.profilePage.breadcrumb,
@@ -41,10 +41,7 @@ const ProfilePage = async ({ params }: Props) => {
   await Promise.all([
     // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
     customer.status !== "rejected" &&
-      queryClient.prefetchQuery({
-        queryKey: ["Subscription", userId],
-        queryFn: async () => await getSubscription(userId),
-      }),
+      queryClient.prefetchQuery(subscriptionOptions({ hidraId: userId })),
     queryClient.prefetchQuery({
       queryKey: useInvitationsQuery.getKey({
         email: session.value?.user?.email!,
