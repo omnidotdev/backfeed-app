@@ -67,6 +67,7 @@ const OrganizationSettings = ({
   );
 
   // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
+  // TODO: include variable(s) to filter out members that are an owner of another org *if* they have a basic tier subscription
   const { data: members } = useMembersQuery(
     {
       organizationId,
