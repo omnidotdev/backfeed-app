@@ -6,6 +6,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
 import { Role, useProjectsQuery } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
@@ -16,6 +17,23 @@ import { DialogType } from "store";
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const session = await auth();
+
+  if (session) {
+    const organization = await getOrganization({
+      session,
+      organizationSlug,
+    });
+
+    return {
+      title: `${organization?.name} ${app.projectsPage.breadcrumb}`,
+    };
+  }
+};
 
 interface Props {
   /** Projects page params. */
@@ -34,18 +52,15 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const [{ organizationBySlug: organization }, isBasicTier, isTeamTier] =
-    await Promise.all([
-      sdk.Organization({
-        slug: organizationSlug,
-      }),
-      hasBasicTierPrivileges(),
-      hasTeamTierPrivileges(),
-    ]);
+  const [organization, isBasicTier, isTeamTier] = await Promise.all([
+    getOrganization({ session, organizationSlug }),
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
+  ]);
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -97,9 +112,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${organization.name} ${app.projectsPage.breadcrumb}`,
-        }}
         breadcrumbs={breadcrumbs}
         header={{
           title: app.projectsPage.header.title,

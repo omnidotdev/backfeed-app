@@ -3,16 +3,11 @@
 import { Flex, Stack, Text } from "@omnidev/sigil";
 
 import { Breadcrumb, CallToAction } from "components/core";
-import { app } from "lib/config";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { ActionButton, BreadcrumbRecord } from "components/core";
 
 interface Props extends StackProps {
-  /** Metadata to hoist to the head of the document. */
-  metadata?: {
-    title?: string;
-  };
   /** Page breadcrumbs for navigation. */
   breadcrumbs?: BreadcrumbRecord[];
   /** Page header props. */
@@ -31,7 +26,7 @@ interface Props extends StackProps {
 /**
  * Page layout.
  */
-const Page = ({ metadata, breadcrumbs, header, children, ...rest }: Props) => (
+const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
   <Stack
     h="100%"
     w="full"
@@ -43,8 +38,6 @@ const Page = ({ metadata, breadcrumbs, header, children, ...rest }: Props) => (
     gap={6}
     {...rest}
   >
-    {metadata?.title && <title>{`${metadata.title} | ${app.name}`}</title>}
-
     {breadcrumbs && <Breadcrumb breadcrumbs={breadcrumbs} />}
 
     {header && (

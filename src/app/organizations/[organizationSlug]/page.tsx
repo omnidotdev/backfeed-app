@@ -16,6 +16,7 @@ import {
   useOrganizationQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
@@ -23,6 +24,23 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const session = await auth();
+
+  if (session) {
+    const organization = await getOrganization({
+      session,
+      organizationSlug,
+    });
+
+    return {
+      title: `${organization?.name}`,
+    };
+  }
+};
 
 interface Props {
   /** Organization page params. */
@@ -39,18 +57,15 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const [{ organizationBySlug: organization }, isBasicTier, isTeamTier] =
-    await Promise.all([
-      sdk.Organization({
-        slug: organizationSlug,
-      }),
-      hasBasicTierPrivileges(),
-      hasTeamTierPrivileges(),
-    ]);
+  const [organization, isBasicTier, isTeamTier] = await Promise.all([
+    getOrganization({ session, organizationSlug }),
+    hasBasicTierPrivileges(),
+    hasTeamTierPrivileges(),
+  ]);
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -97,9 +112,6 @@ const OrganizationPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: organization.name!,
-        }}
         breadcrumbs={breadcrumbs}
         header={{
           title: organization.name!,

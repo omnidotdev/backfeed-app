@@ -9,12 +9,31 @@ import {
   useProjectQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
+import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { hasTeamTierPrivileges, isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug, projectSlug } = await params;
+
+  const session = await auth();
+
+  if (session) {
+    const project = await getProject({
+      session,
+      organizationSlug,
+      projectSlug,
+    });
+
+    return {
+      title: `${project?.name} ${app.projectSettingsPage.breadcrumb}`,
+    };
+  }
+};
 
 interface Props {
   /** Project settings page params. */
@@ -31,13 +50,11 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
-
-  const project = projects?.nodes?.[0];
+  const project = await getProject({ session, organizationSlug, projectSlug });
 
   if (!project) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
     userId: session.user?.rowId!,
@@ -103,9 +120,6 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
-        }}
         breadcrumbs={breadcrumbs}
         header={{
           title: `${project.name!} Settings`,

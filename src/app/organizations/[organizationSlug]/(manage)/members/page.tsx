@@ -16,12 +16,30 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { SearchParams } from "nuqs/server";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const session = await auth();
+
+  if (session) {
+    const organization = await getOrganization({
+      session,
+      organizationSlug,
+    });
+
+    return {
+      title: `${organization?.name} ${app.organizationMembersPage.breadcrumb}`,
+    };
+  }
+};
 
 interface Props {
   /** Organization members page parameters. */
@@ -40,13 +58,14 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
+  const organization = await getOrganization({
+    session,
+    organizationSlug,
   });
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -98,9 +117,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
-        }}
         header={{
           title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
           description: app.organizationMembersPage.description,
