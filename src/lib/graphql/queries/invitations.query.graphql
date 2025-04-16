@@ -1,0 +1,11 @@
+query Invitations($email: String, $organizationId: UUID) {
+  invitations(
+    orderBy: CREATED_AT_DESC
+    condition: { email: $email, organizationId: $organizationId }
+  ) {
+    totalCount
+    nodes {
+      ...Invitation
+    }
+  }
+}

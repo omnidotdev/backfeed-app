@@ -29,10 +29,12 @@ const updateProjectSchema = z
   .object({
     name: z
       .string()
+      .trim()
       .min(3, updateProjectDetails.fields.projectName.errors.minLength),
     description: emptyStringAsUndefined.or(
       z
         .string()
+        .trim()
         .min(
           10,
           updateProjectDetails.fields.projectDescription.errors.minLength

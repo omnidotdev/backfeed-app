@@ -3,7 +3,8 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { Subscription } from "components/profile";
+import { OrganizationInvites, Subscription } from "components/profile";
+import { useInvitationsQuery } from "generated/graphql";
 import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
@@ -37,13 +38,22 @@ const ProfilePage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
-  if (customer.status !== "rejected") {
-    await queryClient.prefetchQuery({
-      queryKey: ["Subscription", userId],
-      queryFn: async () => await getSubscription(userId),
-    });
-  }
+  await Promise.all([
+    // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
+    customer.status !== "rejected" &&
+      queryClient.prefetchQuery({
+        queryKey: ["Subscription", userId],
+        queryFn: async () => await getSubscription(userId),
+      }),
+    queryClient.prefetchQuery({
+      queryKey: useInvitationsQuery.getKey({
+        email: session.value?.user?.email!,
+      }),
+      queryFn: useInvitationsQuery.fetcher({
+        email: session.value?.user?.email!,
+      }),
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -54,6 +64,8 @@ const ProfilePage = async ({ params }: Props) => {
         }}
       >
         <Subscription customer={customer} />
+
+        <OrganizationInvites />
       </Page>
     </HydrationBoundary>
   );
