@@ -2,14 +2,16 @@ import { GraphQLClient } from "graphql-request";
 import ms from "ms";
 import NextAuth from "next-auth";
 import Keycloak from "next-auth/providers/keycloak";
+import { match } from "ts-pattern";
 
 // import required for `next-auth/jwt` module augmentation: https://github.com/nextauthjs/next-auth/issues/9571#issuecomment-2143363518
 import "next-auth/jwt";
 
-import { getSdk } from "generated/graphql.sdk";
+import { Tier, getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
 import { isDevEnv } from "lib/config";
 
+import { getSubscription } from "lib/actions";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 
@@ -110,6 +112,29 @@ export const { handlers, auth } = NextAuth({
         });
 
         token.row_id = user?.userByHidraId?.rowId;
+
+        const [subscriptionResponse] = await Promise.allSettled([
+          getSubscription(token.sub!),
+        ]);
+
+        if (subscriptionResponse.status === "fulfilled") {
+          const subscription = subscriptionResponse.value;
+
+          const tier = match(subscription.product.metadata?.title as Tier)
+            .with(Tier.Basic, () => Tier.Basic)
+            .with(Tier.Team, () => Tier.Team)
+            .with(Tier.Enterprise, () => Tier.Enterprise)
+            .otherwise(() => null);
+
+          await sdk({
+            headers: { Authorization: `Bearer ${account.access_token}` },
+          }).UpdateUser({
+            rowId: user?.userByHidraId?.rowId!,
+            patch: {
+              tier,
+            },
+          });
+        }
 
         return token;
       }
