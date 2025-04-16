@@ -1,44 +1,24 @@
 "use client";
 
-import { Divider, sigil, Stack } from "@omnidev/sigil";
+import { Button, Divider, Input, Label, Link, Stack } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
 import { useUserQuery } from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
-import { useAuth, useForm } from "lib/hooks";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { app } from "lib/config";
+import { useAuth } from "lib/hooks";
 
 const updateProfileDetails = app.profilePage.cta.updateProfile;
 
-/** Schema for depeing the shape of the update proile form fields. */
-// TODO: update schema after finalizing constraints.
-// TODO: add messages/errors to congif file.
-const baseSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(32, "Username must be at most 32 characters long")
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores"
-    ),
-  firstName: z
-    .string()
-    .min(1, "First name cannot be empty")
-    .max(50, "First name must be at most 50 characters long"),
-  lastName: z
-    .string()
-    .min(1, "Last name cannot be empty")
-    .max(50, "Last name must be at most 50 characters long"),
-  email: z.string().email("Must be a valid email address"),
-});
+// TODO: preftech userData from rsc.
 
 /**
  * Form for updating profile details.
  */
 const UpdateProfile = () => {
+  const queryClient = useQueryClient();
+
   const { userId } = useParams<{ userId: string }>();
 
   const { user } = useAuth();
@@ -53,66 +33,42 @@ const UpdateProfile = () => {
     }
   );
 
-  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
-    defaultValues: {
-      username: userData?.username ?? "",
-      firstName: userData?.firstName ?? "",
-      lastName: userData?.lastName ?? "",
-      email: userData?.email ?? "",
+  const defaultUserData = [
+    {
+      label: "Username",
+      value: userData?.username ?? "",
     },
-    asyncDebounceMs: DEBOUNCE_TIME,
-    validators: {
-      onChange: baseSchema,
+    {
+      label: "First Name",
+      value: userData?.firstName ?? "",
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const values = { value };
-        return values;
-      } catch (error) {
-        if (isDevEnv) {
-          console.error(error);
-        }
-      }
+    {
+      label: "Last Name",
+      value: userData?.lastName ?? "",
     },
-  });
+    {
+      label: "Email",
+      value: userData?.email ?? "",
+    },
+  ];
 
   // TODO: add all static text to config file.
   return (
     <SectionContainer title="Update Profile">
       <Divider />
 
-      <sigil.form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await handleSubmit();
-        }}
-      >
-        <Stack>
-          <AppField name="username">
-            {({ InputField }) => <InputField label="Username" />}
-          </AppField>
-          <AppField name="firstName">
-            {({ InputField }) => <InputField label="First Name" />}
-          </AppField>
-          <AppField name="lastName">
-            {({ InputField }) => <InputField label="Last Name" />}
-          </AppField>
-          <AppField name="email">
-            {({ InputField }) => <InputField label="Email" />}
-          </AppField>
-        </Stack>
+      <Stack>
+        {defaultUserData.map(({ label, value }) => (
+          <Stack key={label} gap={1}>
+            <Label>{label}</Label>
+            <Input readOnly defaultValue={value} borderColor="border.subtle" />
+          </Stack>
+        ))}
 
-        <AppForm>
-          <SubmitForm
-            action={{
-              submit: "Update Profile",
-              pending: "Updating Profile...",
-            }}
-            mt={4}
-          />
-        </AppForm>
-      </sigil.form>
+        <Link href="https://identity.omni.dev/">
+          <Button>Update Profile</Button>
+        </Link>
+      </Stack>
     </SectionContainer>
   );
 };

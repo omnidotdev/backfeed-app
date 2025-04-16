@@ -5077,7 +5077,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'UpdateUserPayload', clientMutationId?: string | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', hidraId: string } | null } | null };
 
 export type CommentsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -5539,7 +5539,9 @@ export const CreateUserDocument = gql`
 export const UpdateUserDocument = gql`
     mutation UpdateUser($rowId: UUID!, $patch: UserPatch!) {
   updateUser(input: {rowId: $rowId, patch: $patch}) {
-    clientMutationId
+    user {
+      hidraId
+    }
   }
 }
     `;
