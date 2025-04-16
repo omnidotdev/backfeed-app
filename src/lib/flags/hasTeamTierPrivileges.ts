@@ -1,7 +1,7 @@
 import { flag } from "flags/next";
 
+import { Tier } from "generated/graphql.sdk";
 import { isDevEnv } from "lib/config";
-import { SubscriptionTier } from "lib/constants";
 import { dedupeSubscription } from "lib/flags/identity";
 
 /**
@@ -16,7 +16,7 @@ const hasTeamTierPrivileges = flag({
 
     if (!entities) return false;
 
-    return entities.product.metadata?.title !== SubscriptionTier.BASIC;
+    return entities.product.metadata?.title !== Tier.Basic;
   },
 });
 
