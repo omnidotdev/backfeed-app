@@ -24,6 +24,8 @@ COPY . .
 # disable telemetry during build (https://nextjs.org/telemetry)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG RESEND_API_KEY
+
 RUN bun prepare
 RUN bun run build
 
