@@ -8,7 +8,7 @@ import {
   Subscription,
   UpdateProfile,
 } from "components/profile";
-import { useInvitationsQuery } from "generated/graphql";
+import { useInvitationsQuery, useUserQuery } from "generated/graphql";
 import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { polar } from "lib/polar";
@@ -55,6 +55,14 @@ const ProfilePage = async ({ params }: Props) => {
       }),
       queryFn: useInvitationsQuery.fetcher({
         email: session.value?.user?.email!,
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUserQuery.getKey({
+        hidraId: session.value?.user?.hidraId!,
+      }),
+      queryFn: useUserQuery.fetcher({
+        hidraId: session.value?.user?.hidraId!,
       }),
     }),
   ]);

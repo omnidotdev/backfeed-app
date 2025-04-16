@@ -18,7 +18,6 @@ import { useAuth } from "lib/hooks";
 
 const accountInformation = app.profilePage.accountInformation;
 
-// TODO: preftech userData from rsc.
 // TODO: maybe rename this component
 
 /**
