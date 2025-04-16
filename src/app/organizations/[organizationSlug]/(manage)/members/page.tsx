@@ -27,18 +27,13 @@ import type { SearchParams } from "nuqs/server";
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const organization = await getOrganization({
+    organizationSlug,
+  });
 
-  if (session) {
-    const organization = await getOrganization({
-      session,
-      organizationSlug,
-    });
-
-    return {
-      title: `${organization?.name} ${app.organizationMembersPage.breadcrumb}`,
-    };
-  }
+  return {
+    title: `${organization?.name} ${app.organizationMembersPage.breadcrumb}`,
+  };
 };
 
 interface Props {
@@ -59,7 +54,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   if (!session) notFound();
 
   const organization = await getOrganization({
-    session,
     organizationSlug,
   });
 

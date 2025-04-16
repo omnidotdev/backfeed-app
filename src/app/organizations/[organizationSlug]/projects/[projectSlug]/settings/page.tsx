@@ -20,19 +20,14 @@ import type { BreadcrumbRecord } from "components/core";
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const session = await auth();
+  const project = await getProject({
+    organizationSlug,
+    projectSlug,
+  });
 
-  if (session) {
-    const project = await getProject({
-      session,
-      organizationSlug,
-      projectSlug,
-    });
-
-    return {
-      title: `${project?.name} ${app.projectSettingsPage.breadcrumb}`,
-    };
-  }
+  return {
+    title: `${project?.name} ${app.projectSettingsPage.breadcrumb}`,
+  };
 };
 
 interface Props {
@@ -50,7 +45,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const project = await getProject({ session, organizationSlug, projectSlug });
+  const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();
 

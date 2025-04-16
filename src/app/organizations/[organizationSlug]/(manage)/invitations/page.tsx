@@ -15,18 +15,13 @@ import { DialogType } from "store";
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const organization = await getOrganization({
+    organizationSlug,
+  });
 
-  if (session) {
-    const organization = await getOrganization({
-      session,
-      organizationSlug,
-    });
-
-    return {
-      title: `${organization?.name} ${app.organizationInvitationsPage.breadcrumb}`,
-    };
-  }
+  return {
+    title: `${organization?.name} ${app.organizationInvitationsPage.breadcrumb}`,
+  };
 };
 
 interface Props {
@@ -44,7 +39,7 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ session, organizationSlug });
+  const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
 

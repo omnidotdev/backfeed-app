@@ -17,18 +17,13 @@ import { getQueryClient } from "lib/util";
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const organization = await getOrganization({
+    organizationSlug,
+  });
 
-  if (session) {
-    const organization = await getOrganization({
-      session,
-      organizationSlug,
-    });
-
-    return {
-      title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb}`,
-    };
-  }
+  return {
+    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb}`,
+  };
 };
 
 interface Props {
@@ -48,7 +43,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ session, organizationSlug });
+  const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
 

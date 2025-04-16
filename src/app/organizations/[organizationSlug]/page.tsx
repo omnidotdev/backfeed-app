@@ -28,18 +28,13 @@ import type { BreadcrumbRecord } from "components/core";
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const organization = await getOrganization({
+    organizationSlug,
+  });
 
-  if (session) {
-    const organization = await getOrganization({
-      session,
-      organizationSlug,
-    });
-
-    return {
-      title: `${organization?.name}`,
-    };
-  }
+  return {
+    title: `${organization?.name}`,
+  };
 };
 
 interface Props {
@@ -58,7 +53,7 @@ const OrganizationPage = async ({ params }: Props) => {
   if (!session) notFound();
 
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
-    getOrganization({ session, organizationSlug }),
+    getOrganization({ organizationSlug }),
     hasBasicTierPrivileges(),
     hasTeamTierPrivileges(),
   ]);
