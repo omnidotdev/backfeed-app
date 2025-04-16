@@ -6,9 +6,9 @@ import { Page } from "components/layout";
 import { OrganizationInvites, Subscription } from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
-import { subscriptionOptions } from "lib/options";
 
 export const metadata = {
   title: app.profilePage.breadcrumb,

@@ -9,11 +9,20 @@ import "next-auth/jwt";
 
 import { Tier, getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
+import { getSubscription } from "lib/actions";
 import { isDevEnv } from "lib/config";
 
-import { getSubscription } from "lib/actions";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
+
+interface UpdateSubscriptionTier {
+  /** Current user's HIDRA ID. */
+  hidraId: string;
+  /** Current user's row ID. */
+  rowId: string;
+  /** Access token. */
+  accessToken: string;
+}
 
 interface UpdatedTokens {
   /** New access token */
@@ -34,6 +43,49 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   );
 
   return getSdk(graphqlClient);
+};
+
+const updateSubscriptionTier = async ({
+  hidraId,
+  rowId,
+  accessToken,
+}: UpdateSubscriptionTier) => {
+  const [subscriptionResponse] = await Promise.allSettled([
+    getSubscription(hidraId),
+  ]);
+
+  // Will be `fulfilled` if the user has an active subscription
+  if (subscriptionResponse.status === "fulfilled") {
+    const subscription = subscriptionResponse.value;
+
+    const tier = match(subscription.product.metadata?.title as Tier)
+      .with(Tier.Basic, () => Tier.Basic)
+      .with(Tier.Team, () => Tier.Team)
+      .with(Tier.Enterprise, () => Tier.Enterprise)
+      .otherwise(() => null);
+
+    // If the user has an active subscription, update the database with the tier accordingly
+    await sdk({
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }).UpdateUser({
+      rowId,
+      patch: {
+        tier,
+        updatedAt: new Date(),
+      },
+    });
+  } else {
+    // If the user does not have an active subscription, reset `tier` to be NULL
+    await sdk({
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }).UpdateUser({
+      rowId,
+      patch: {
+        tier: null,
+        updatedAt: new Date(),
+      },
+    });
+  }
 };
 
 /**
@@ -113,28 +165,11 @@ export const { handlers, auth } = NextAuth({
 
         token.row_id = user?.userByHidraId?.rowId;
 
-        const [subscriptionResponse] = await Promise.allSettled([
-          getSubscription(token.sub!),
-        ]);
-
-        if (subscriptionResponse.status === "fulfilled") {
-          const subscription = subscriptionResponse.value;
-
-          const tier = match(subscription.product.metadata?.title as Tier)
-            .with(Tier.Basic, () => Tier.Basic)
-            .with(Tier.Team, () => Tier.Team)
-            .with(Tier.Enterprise, () => Tier.Enterprise)
-            .otherwise(() => null);
-
-          await sdk({
-            headers: { Authorization: `Bearer ${account.access_token}` },
-          }).UpdateUser({
-            rowId: user?.userByHidraId?.rowId!,
-            patch: {
-              tier,
-            },
-          });
-        }
+        await updateSubscriptionTier({
+          hidraId: token.sub!,
+          rowId: token.row_id!,
+          accessToken: token.access_token,
+        });
 
         return token;
       }
@@ -165,6 +200,12 @@ export const { handlers, auth } = NextAuth({
         if (!response.ok) throw tokensOrError;
 
         const newTokens = tokensOrError as UpdatedTokens;
+
+        await updateSubscriptionTier({
+          hidraId: token.sub!,
+          rowId: token.row_id!,
+          accessToken: newTokens.access_token,
+        });
 
         return {
           ...token,
