@@ -214,6 +214,9 @@ const app = {
       title: "User Profile",
       description: "View and manage your account information.",
     },
+    cta: {
+      updateProfile: {},
+    },
     subscription: {
       title: "Subscription",
       // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."

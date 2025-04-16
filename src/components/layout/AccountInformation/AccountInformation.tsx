@@ -43,6 +43,7 @@ const AccountInformation = () => {
     type: DialogType.MobileSidebar,
   });
 
+  // TODO: possibly route with user rowId instead of hidraId.
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);

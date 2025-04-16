@@ -3,7 +3,11 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { OrganizationInvites, Subscription } from "components/profile";
+import {
+  OrganizationInvites,
+  Subscription,
+  UpdateProfile,
+} from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
 import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
@@ -66,6 +70,9 @@ const ProfilePage = async ({ params }: Props) => {
         <Subscription customer={customer} />
 
         <OrganizationInvites />
+
+        {/* TODO: move appropriately once design decisions are made. */}
+        <UpdateProfile />
       </Page>
     </HydrationBoundary>
   );
