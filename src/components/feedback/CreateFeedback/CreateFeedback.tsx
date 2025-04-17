@@ -22,6 +22,9 @@ import { toaster } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 240;
 
+const feedbackSchemaErrors =
+  app.projectPage.projectFeedback.createFeedback.errors;
+
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
@@ -30,25 +33,13 @@ const createFeedbackSchema = z.object({
   projectId: uuidSchema,
   userId: uuidSchema,
   title: standardRegexSchema
-    .min(
-      3,
-      app.projectPage.projectFeedback.createFeedback.errors.minTitleLength
-    )
-    .max(
-      90,
-      app.projectPage.projectFeedback.createFeedback.errors.maxTitleLength
-    ),
+    .min(3, feedbackSchemaErrors.title.minLength)
+    .max(90, feedbackSchemaErrors.title.maxLength),
   description: z
     .string()
     .trim()
-    .min(
-      10,
-      app.projectPage.projectFeedback.createFeedback.errors.minDescriptionLength
-    )
-    .max(
-      MAX_DESCRIPTION_LENGTH,
-      app.projectPage.projectFeedback.createFeedback.errors.maxDescriptionLength
-    ),
+    .min(10, feedbackSchemaErrors.description.minLength)
+    .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
 /**

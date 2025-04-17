@@ -835,10 +835,14 @@ const app = {
       createFeedback: {
         errors: {
           invalid: "Invalid format",
-          minTitleLength: "Must be at least 3 characters.",
-          maxTitleLength: "Must be at most 90 characters.",
-          minDescriptionLength: "Must be at least 10 characters.",
-          maxDescriptionLength: "Must be at most 240 characters.",
+          title: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 90 characters.",
+          },
+          description: {
+            minLength: "Must be at least 10 characters.",
+            maxLength: "Must be at most 240 characters.",
+          },
         },
       },
       action: {
