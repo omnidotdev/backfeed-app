@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Dialog, HStack, sigil } from "@omnidev/sigil";
+import { Dialog, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 
@@ -131,26 +131,16 @@ const AddOwner = ({ organizationId }: Props) => {
           addOwnerDetails.noMembersFound
         )}
 
-        <HStack w="full">
-          <AppForm>
-            <SubmitForm
-              action={addOwnerDetails.form}
-              isPending={isPending}
-              flex={1}
-            />
-          </AppForm>
-
-          <Button
-            variant="outline"
+        <AppForm>
+          <SubmitForm
+            action={addOwnerDetails.form}
+            isPending={isPending}
             flex={1}
-            onClick={() => {
-              reset();
-              setIsOpen(false);
+            containerProps={{
+              w: "full",
             }}
-          >
-            {addOwnerDetails.form.cancel}
-          </Button>
-        </HStack>
+          />
+        </AppForm>
       </sigil.form>
     </Dialog>
   );
