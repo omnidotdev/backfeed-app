@@ -16,12 +16,7 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  DEBOUNCE_TIME,
-  projectFeedbackDescriptionSchema,
-  titleSchema,
-  uuidSchema,
-} from "lib/constants";
+import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -34,8 +29,26 @@ const createFeedbackSchema = z.object({
   statusId: uuidSchema,
   projectId: uuidSchema,
   userId: uuidSchema,
-  title: titleSchema,
-  description: projectFeedbackDescriptionSchema,
+  title: standardRegexSchema
+    .min(
+      3,
+      app.projectPage.projectFeedback.createFeedback.errors.minTitleLength
+    )
+    .max(
+      90,
+      app.projectPage.projectFeedback.createFeedback.errors.maxTitleLength
+    ),
+  description: z
+    .string()
+    .trim()
+    .min(
+      10,
+      app.projectPage.projectFeedback.createFeedback.errors.minDescriptionLength
+    )
+    .max(
+      MAX_DESCRIPTION_LENGTH,
+      app.projectPage.projectFeedback.createFeedback.errors.maxDescriptionLength
+    ),
 });
 
 /**

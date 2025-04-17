@@ -33,13 +33,7 @@ import {
   useUpdatePostStatusMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  DEBOUNCE_TIME,
-  statusColorSchema,
-  statusDescriptionSchema,
-  statusNameSchema,
-  uuidSchema,
-} from "lib/constants";
+import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -74,9 +68,18 @@ const COLOR_PRESETS = [
 
 const statusSchema = z.object({
   rowId: uuidSchema.or(z.literal("pending")),
-  status: statusNameSchema,
-  description: statusDescriptionSchema,
-  color: statusColorSchema,
+  status: standardRegexSchema
+    .min(3, updateProjectStatuses.fields.status.errors.minLength)
+    .max(20, updateProjectStatuses.fields.status.errors.maxLength),
+  description: z
+    .string()
+    .trim()
+    .min(10, updateProjectStatuses.fields.description.errors.minLength)
+    .max(40, updateProjectStatuses.fields.description.errors.maxLength),
+  color: z
+    .string()
+    .startsWith("#", updateProjectStatuses.fields.color.errors.startsWith)
+    .length(7, updateProjectStatuses.fields.color.errors.length),
   isDefault: z.boolean(),
 });
 

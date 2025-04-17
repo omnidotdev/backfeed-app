@@ -21,6 +21,22 @@ const app = {
       id: {
         format: "Invalid UUID format.",
       },
+      organization: {
+        name: {
+          minLength: "Must be at least 3 characters.",
+          maxLength: "Must be at most 90 characters.",
+        },
+      },
+      project: {
+        name: {
+          minLength: "Must be at least 3 characters.",
+          maxLength: "Must be at most 60 characters.",
+        },
+        description: {
+          minLength: "Must be at least 10 characters.",
+          maxLength: "Must be at most 240 characters.",
+        },
+      },
     },
   },
   notFound: {

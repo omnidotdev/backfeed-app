@@ -11,7 +11,11 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
-import { DEBOUNCE_TIME, organizationSchema, slugSchema } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  organizationNameSchema,
+  slugSchema,
+} from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { getAuthSession } from "lib/util";
@@ -22,7 +26,7 @@ const updateOrganizationDetails =
 /** Schema for defining the shape of the update organization form fields, as well as validating the form. */
 const updateOrganizationSchema = z
   .object({
-    name: organizationSchema,
+    name: organizationNameSchema,
     currentSlug: slugSchema,
     updatedSlug: slugSchema,
   })
