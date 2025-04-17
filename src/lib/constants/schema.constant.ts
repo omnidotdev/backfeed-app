@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { app } from "lib/config";
 
+// TODO: discuss where we want to utilize this regex.
 export const standardRegex = /^[\p{L}\p{N}\s]+$/u;
 
 const emptyStringAsUndefined = z.literal("").transform(() => undefined);
@@ -17,7 +18,6 @@ export const uuidSchema = z.string().uuid(app.forms.errors.id.format);
 export const organizationSchema = z
   .string()
   .trim()
-  // TODO: discuss if we want a Regex for organization name
   .regex(
     standardRegex,
     app.dashboardPage.cta.newOrganization.organizationName.errors.invalidFormat
@@ -34,7 +34,6 @@ export const organizationSchema = z
 export const titleSchema = z
   .string()
   .trim()
-  // TODO: check with team to see if we want to broaden or narrow this regex
   .regex(
     standardRegex,
     app.projectPage.projectFeedback.createFeedback.errors.invalid
@@ -84,10 +83,7 @@ const updateProjectStatuses = app.projectSettingsPage.cta.updateProjectStatuses;
 export const statusNameSchema = z
   .string()
   .trim()
-  .regex(
-    /^[\p{L}\p{N}\s]+$/u,
-    updateProjectStatuses.fields.status.errors.invalid
-  )
+  .regex(standardRegex, updateProjectStatuses.fields.status.errors.invalid)
   .min(3, updateProjectStatuses.fields.status.errors.minLength)
   .max(20, updateProjectStatuses.fields.status.errors.maxLength);
 
