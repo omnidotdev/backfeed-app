@@ -135,22 +135,18 @@ export const { handlers, auth } = NextAuth({
       if (Date.now() < token.expires_at * ms("1s")) return token;
 
       try {
-        const response = await fetch(
-          // TODO verify this is correct path
-          `${AUTH_ISSUER}/oauth2/token`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              client_id: AUTH_CLIENT_ID!,
-              client_secret: AUTH_CLIENT_SECRET!,
-              grant_type: "refresh_token",
-              refresh_token: token.refresh_token,
-            }),
+        const response = await fetch(`${AUTH_ISSUER}/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-        );
+          body: new URLSearchParams({
+            client_id: AUTH_CLIENT_ID!,
+            client_secret: AUTH_CLIENT_SECRET!,
+            grant_type: "refresh_token",
+            refresh_token: token.refresh_token,
+          }),
+        });
 
         const tokensOrError = await response.json();
 
