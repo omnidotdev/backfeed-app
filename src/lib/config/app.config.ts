@@ -225,6 +225,10 @@ const app = {
       },
       email: {
         label: "Email",
+        ariaLabel: {
+          show: "Show email",
+          hide: "Hide email",
+        },
       },
       password: {
         label: "Password",
@@ -234,6 +238,9 @@ const app = {
     cta: {
       updateProfile: {
         label: "Update Profile",
+      },
+      changePassword: {
+        label: "Change Password",
       },
       deleteAccount: {
         title: "Close Your Account",

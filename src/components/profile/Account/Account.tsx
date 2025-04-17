@@ -24,38 +24,33 @@ interface Props {
   user: UserFragment;
 }
 
-interface Data extends InputProps {
-  /** Label for the field. */
-  label: string;
-}
-
 /**
  * Details of the user's account information.
  */
 const Account = ({ user }: Props) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
 
-  const profileData = useMemo<Data[]>(
+  const profileData = useMemo<InputProps[]>(
     () => [
       {
-        label: app.profileAccountPage.fields.username.label,
+        id: app.profileAccountPage.fields.username.label,
         value: user?.username ?? "",
       },
       {
-        label: app.profileAccountPage.fields.firstName.label,
+        id: app.profileAccountPage.fields.firstName.label,
         value: user?.firstName ?? "",
       },
       {
-        label: app.profileAccountPage.fields.lastName.label,
+        id: app.profileAccountPage.fields.lastName.label,
         value: user?.lastName ?? "",
       },
       {
-        label: app.profileAccountPage.fields.email.label,
+        id: app.profileAccountPage.fields.email.label,
         value: user?.email,
         type: "password",
       },
       {
-        label: app.profileAccountPage.fields.password.label,
+        id: app.profileAccountPage.fields.password.label,
         value: app.profileAccountPage.fields.password.value,
         type: "password",
       },
@@ -66,61 +61,68 @@ const Account = ({ user }: Props) => {
   return (
     <Stack gap={8} h="full" justifyContent="space-between">
       <Stack gap={4}>
-        {profileData.map(({ label, value, type }) => (
-          <Stack key={label} gap={1}>
-            <Label htmlFor={label}>{label}</Label>
+        {profileData.map(({ id, value, type }) => {
+          const isEmail = id === app.profileAccountPage.fields.email.label;
+          const isPassword =
+            id === app.profileAccountPage.fields.password.label;
 
-            <Flex position="relative" gap={4}>
-              <Input
-                disabled
-                readOnly
-                id={label}
-                type={
-                  showPassword &&
-                  label === app.profileAccountPage.fields.email.label
-                    ? "text"
-                    : type
-                }
-                value={value}
-                opacity={1}
-                borderColor="border.subtle"
-                bgColor="background.subtle"
-                color="foreground.subtle"
-              />
+          return (
+            <Stack key={id} gap={1}>
+              <Label htmlFor={id}>{id}</Label>
 
-              {label === app.profileAccountPage.fields.email.label && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  pos="absolute"
-                  right={0.5}
-                  bottom={0.5}
-                  w="fit"
-                  _hover={{ opacity: "40%", bgColor: "transparent" }}
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <IoEyeOutline aria-hidden="true" />
-                  ) : (
-                    <IoEyeOffOutline aria-hidden="true" />
-                  )}
-                </Button>
-              )}
+              <Flex position="relative" gap={4}>
+                <Input
+                  disabled
+                  readOnly
+                  id={id}
+                  type={showEmail && isEmail ? "text" : type}
+                  value={value}
+                  opacity={1}
+                  borderColor="border.subtle"
+                  bgColor="background.subtle"
+                  color="foreground.subtle"
+                />
 
-              {label === "Password" && (
-                <Link
-                  isExternal
-                  href={app.forgotPasswordUrl}
-                  textDecoration="none"
-                >
-                  <Button>Change Password</Button>
-                </Link>
-              )}
-            </Flex>
-          </Stack>
-        ))}
+                {isEmail && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    pos="absolute"
+                    right={0.5}
+                    bottom={0.5}
+                    w="fit"
+                    _hover={{ opacity: "40%", bgColor: "transparent" }}
+                    onClick={() => setShowEmail((prev) => !prev)}
+                    aria-label={
+                      showEmail
+                        ? app.profileAccountPage.fields.email.ariaLabel.hide
+                        : app.profileAccountPage.fields.email.ariaLabel.show
+                    }
+                  >
+                    {showEmail ? (
+                      <IoEyeOutline aria-hidden="true" />
+                    ) : (
+                      <IoEyeOffOutline aria-hidden="true" />
+                    )}
+                  </Button>
+                )}
+
+                {isPassword && (
+                  <Link
+                    isExternal
+                    href={app.forgotPasswordUrl}
+                    textDecoration="none"
+                  >
+                    <Button>
+                      {app.profileAccountPage.cta.changePassword.label}
+                    </Button>
+                  </Link>
+                )}
+              </Flex>
+            </Stack>
+          );
+        })}
       </Stack>
 
       <SectionContainer
