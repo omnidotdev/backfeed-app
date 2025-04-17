@@ -12,7 +12,6 @@ import {
   Table,
   TableCell,
   TableRow,
-  Text,
 } from "@omnidev/sigil";
 import Link from "next/link";
 import { LuSettings } from "react-icons/lu";
@@ -48,7 +47,7 @@ const Subscription = ({ customer }: Props) => {
         <Skeleton h={18} m={4} />
       ) : customer.status === "rejected" || error ? (
         <Stack>
-          <Text>{app.profileSubscriptionPage.table.emptyState.label}</Text>
+          {app.profileSubscriptionPage.table.emptyState.label}
           <Link href="/pricing">
             <Button>
               {app.profileSubscriptionPage.table.actions.subscribe.label}

@@ -1,0 +1,8 @@
+fragment User on User {
+  rowId
+  hidraId
+  username
+  firstName
+  lastName
+  email
+}

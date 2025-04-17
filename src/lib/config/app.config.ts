@@ -6,6 +6,7 @@ const app = {
   supportName: "Omni Support",
   supportEmail: "team@support.omni.dev",
   identityUrl: "https://identity.omni.dev",
+  forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -213,14 +214,31 @@ const app = {
     breadcrumb: "Account",
     description: "View and manage your account information.",
     fields: {
-      username: "Username",
-      firstName: "First Name",
-      lastName: "Last Name",
-      email: "Email",
+      username: {
+        label: "Username",
+      },
+      firstName: {
+        label: "First Name",
+      },
+      lastName: {
+        label: "Last Name",
+      },
+      email: {
+        label: "Email",
+      },
+      password: {
+        label: "Password",
+        value: "**********",
+      },
     },
     cta: {
       updateProfile: {
         label: "Update Profile",
+      },
+      deleteAccount: {
+        title: "Close Your Account",
+        description:
+          "To permanently close your account and delete your data, please contact us at",
       },
     },
   },

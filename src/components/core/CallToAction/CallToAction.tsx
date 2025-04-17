@@ -15,9 +15,8 @@ export interface ActionButton extends ButtonProps {
   /** Button icon. */
   icon: ReactNode;
   /** URL path for navigation. */
-  href?: `/${string}`;
-  /** URL path for external navigation. */
-  externalHref?: string;
+  href?: `/${string}` | string;
+
   /** Type of dialog to trigger. */
   dialogType?: DialogType;
 }
@@ -33,8 +32,7 @@ interface Props {
 const CallToAction = ({ action }: Props) => {
   const router = useRouter();
 
-  const { label, icon, href, externalHref, dialogType, ...buttonProps } =
-    action;
+  const { label, icon, href, dialogType, ...buttonProps } = action;
 
   const { setIsOpen } = useDialogStore({
     type: dialogType,
@@ -42,12 +40,11 @@ const CallToAction = ({ action }: Props) => {
 
   const handleAction = () => {
     if (href) {
-      router.push(href);
-      return;
-    }
-
-    if (externalHref?.startsWith("https://")) {
-      window.open(href, "_blank", "noopener,noreferrer");
+      if (href.startsWith("https://")) {
+        window.open(href, "_blank", "noopener,noreferrer");
+      } else {
+        router.push(href);
+      }
       return;
     }
 

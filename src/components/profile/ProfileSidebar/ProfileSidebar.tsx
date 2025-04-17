@@ -135,6 +135,7 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
         w="full"
         placeSelf="flex-start"
         px={{ base: 0, lg: 4 }}
+        h="full"
       >
         <HStack
           position="sticky"

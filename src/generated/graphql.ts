@@ -1355,6 +1355,7 @@ export enum InvitationGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Email = 'EMAIL',
   OrganizationId = 'ORGANIZATION_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -3392,8 +3393,6 @@ export type Query = Node & {
   id: Scalars['ID']['output'];
   /** Get a single `Invitation`. */
   invitation?: Maybe<Invitation>;
-  /** Get a single `Invitation`. */
-  invitationByEmail?: Maybe<Invitation>;
   /** Reads and enables pagination through a set of `Invitation`. */
   invitations?: Maybe<InvitationConnection>;
   /** Get a single `Member`. */
@@ -3500,12 +3499,6 @@ export type QueryDownvotesArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryInvitationArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryInvitationByEmailArgs = {
-  email: Scalars['String']['input'];
 };
 
 
@@ -4886,6 +4879,8 @@ export type InvitationFragment = { __typename?: 'Invitation', rowId: string, ema
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
+export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
+
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
@@ -5321,6 +5316,16 @@ export const MemberFragmentDoc = `
     lastName
     username
   }
+}
+    `;
+export const UserFragmentDoc = `
+    fragment User on User {
+  rowId
+  hidraId
+  username
+  firstName
+  lastName
+  email
 }
     `;
 export const CreateCommentDocument = `
@@ -7133,15 +7138,10 @@ useUpvoteQuery.fetcher = (variables: UpvoteQueryVariables, options?: RequestInit
 export const UserDocument = `
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
-    rowId
-    hidraId
-    username
-    firstName
-    lastName
-    email
+    ...User
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 
 export const useUserQuery = <
       TData = UserQuery,
