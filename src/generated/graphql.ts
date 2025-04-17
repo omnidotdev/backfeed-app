@@ -3827,6 +3827,38 @@ export type StringFilter = {
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
 };
 
+export enum Tier {
+  Basic = 'basic',
+  Enterprise = 'enterprise',
+  Team = 'team'
+}
+
+/** A filter to be used against Tier fields. All fields are combined with a logical ‘and.’ */
+export type TierFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Tier>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Tier>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Tier>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Tier>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Tier>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Tier>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Tier>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Tier>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Tier>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Tier>>;
+};
+
 /** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
 export type UuidFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -4437,6 +4469,7 @@ export type User = {
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   rowId: Scalars['UUID']['output'];
+  tier?: Maybe<Tier>;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Upvote`. */
   upvotes: UpvoteConnection;
@@ -4524,6 +4557,8 @@ export type UserCondition = {
   lastName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `tier` field. */
+  tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `username` field. */
@@ -4568,6 +4603,8 @@ export type UserDistinctCountAggregates = {
   lastName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of tier across the matching connection */
+  tier?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of username across the matching connection */
@@ -4619,6 +4656,8 @@ export type UserFilter = {
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `tier` field. */
+  tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `upvotes` relation. */
@@ -4636,6 +4675,7 @@ export enum UserGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   FirstName = 'FIRST_NAME',
   LastName = 'LAST_NAME',
+  Tier = 'TIER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -4709,6 +4749,7 @@ export type UserInput = {
   hidraId: Scalars['UUID']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
 };
@@ -4788,6 +4829,8 @@ export enum UserOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TierAsc = 'TIER_ASC',
+  TierDesc = 'TIER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UpvotesCountAsc = 'UPVOTES_COUNT_ASC',
@@ -4814,6 +4857,7 @@ export type UserPatch = {
   hidraId?: InputMaybe<Scalars['UUID']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
 };

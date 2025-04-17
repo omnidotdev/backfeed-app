@@ -7,7 +7,13 @@ import "next-auth/jwt";
 
 import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { AUTH_ISSUER, isDevEnv } from "lib/config";
+import {
+  API_BASE_URL,
+  AUTH_CLIENT_ID,
+  AUTH_CLIENT_SECRET,
+  AUTH_ISSUER,
+  isDevEnv,
+} from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
@@ -58,10 +64,9 @@ interface UpdatedTokens {
  * GraphQL client SDK.
  */
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
-  const graphqlClient = new GraphQLClient(
-    process.env.NEXT_PUBLIC_API_BASE_URL!,
-    { headers },
-  );
+  const graphqlClient = new GraphQLClient(API_BASE_URL!, {
+    headers,
+  });
 
   return getSdk(graphqlClient);
 };
@@ -75,6 +80,7 @@ export const { handlers, auth } = NextAuth({
   providers: [
     {
       client: {
+        // ? unsure if necessary, needed to set this at least on first implementation of Better Auth integration
         authorization_signed_response_alg: "HS256",
         id_token_signed_response_alg: "HS256",
       },
@@ -82,9 +88,15 @@ export const { handlers, auth } = NextAuth({
       name: "Omni",
       type: "oidc",
       issuer: AUTH_ISSUER,
-      // TODO env vars
-      clientId: "eSphfHoVTrmRqwsBAttPHBtQsbFRhkwJ",
-      clientSecret: "oGhxkkvJCPjOmezpQVGvLJDBtPJRyQjb",
+      clientId: AUTH_CLIENT_ID,
+      clientSecret: AUTH_CLIENT_SECRET,
+      authorization: {
+        params: {
+          // TODO fix, refresh tokens not granted
+          // scope: "openid profile email offline_access",
+          // prompt: "consent",
+        },
+      },
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
@@ -124,16 +136,16 @@ export const { handlers, auth } = NextAuth({
 
       try {
         const response = await fetch(
-          // TODO update, no longer using Keycloak
-          `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
+          // TODO verify this is correct path
+          `${AUTH_ISSUER}/oauth2/token`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
             body: new URLSearchParams({
-              client_id: process.env.AUTH_KEYCLOAK_ID!,
-              client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
+              client_id: AUTH_CLIENT_ID!,
+              client_secret: AUTH_CLIENT_SECRET!,
               grant_type: "refresh_token",
               refresh_token: token.refresh_token,
             }),
