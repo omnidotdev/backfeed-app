@@ -36,7 +36,6 @@ const app = {
           maxLength: "Must be at most 60 characters.",
         },
         description: {
-          minLength: "Must be at least 10 characters.",
           maxLength: "Must be at most 240 characters.",
         },
       },
