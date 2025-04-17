@@ -145,9 +145,6 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                 }),
               }),
 
-              console.log("value", value),
-              console.log("organizationId", organizationId),
-
               inviteToOrganization({
                 input: {
                   invitation: {
