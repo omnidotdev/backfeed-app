@@ -5070,14 +5070,6 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
-export type UpdateUserMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-  patch: UserPatch;
-}>;
-
-
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', hidraId: string } | null } | null };
-
 export type CommentsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -6010,34 +6002,6 @@ useCreateUserMutation.getKey = () => ['CreateUser'];
 
 
 useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
-
-export const UpdateUserDocument = `
-    mutation UpdateUser($rowId: UUID!, $patch: UserPatch!) {
-  updateUser(input: {rowId: $rowId, patch: $patch}) {
-    user {
-      hidraId
-    }
-  }
-}
-    `;
-
-export const useUpdateUserMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateUser'],
-    mutationFn: (variables?: UpdateUserMutationVariables) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateUserMutation.getKey = () => ['UpdateUser'];
-
-
-useUpdateUserMutation.fetcher = (variables: UpdateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
 
 export const CommentsDocument = `
     query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
