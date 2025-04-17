@@ -13,7 +13,7 @@ import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
-import { ManagementNavigation } from "components/profile";
+import { ProfileNavigation } from "components/profile";
 import { useUserQuery } from "generated/graphql";
 import { useAuth, useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
@@ -22,9 +22,9 @@ import type { BreadcrumbRecord } from "components/core";
 import type { PropsWithChildren } from "react";
 
 /**
- * Sidebar for profile management. Used for navigation between profile pages.
+ * Sidebar for profile page. Used for navigation between profile pages.
  */
-const ManagementSidebar = ({ children }: PropsWithChildren) => {
+const ProfileSidebar = ({ children }: PropsWithChildren) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
 
   const segment = useSelectedLayoutSegment();
@@ -86,7 +86,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           transition="all 200ms ease-in-out"
           gap={0}
         >
-          <ManagementNavigation
+          <ProfileNavigation
             username={userData?.username!}
             isOpen={debouncedIsOpen}
             truncateText={!debouncedIsOpen}
@@ -114,7 +114,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             width: { base: "80%", sm: "sm" },
           }}
         >
-          <ManagementNavigation
+          <ProfileNavigation
             username={userData?.username!}
             isOpen={isDrawerOpen}
             onClose={onCloseDrawer}
@@ -169,4 +169,4 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default ManagementSidebar;
+export default ProfileSidebar;

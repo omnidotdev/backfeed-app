@@ -7,7 +7,6 @@ import {
   useSelectedLayoutSegment,
 } from "next/navigation";
 import { FiUserPlus, FiUser } from "react-icons/fi";
-// import { IoKeyOutline } from "react-icons/io5";
 import { PiCreditCardLight } from "react-icons/pi";
 
 import { OverflowText } from "components/core";
@@ -37,15 +36,13 @@ interface Props extends StackProps {
 /**
  * Management navigation component.
  */
-const ManagementNavigation = ({
+const ProfileNavigation = ({
   username,
   isOpen,
   onClose,
   truncateText = false,
   ...rest
 }: Props) => {
-  // TODO: use auth hook or params?
-  // const { user } = useAuth();
   const { userId } = useParams<{ userId: string }>();
 
   const router = useRouter(),
@@ -120,4 +117,4 @@ const ManagementNavigation = ({
   );
 };
 
-export default ManagementNavigation;
+export default ProfileNavigation;

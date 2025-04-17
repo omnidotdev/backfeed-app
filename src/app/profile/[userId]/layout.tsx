@@ -3,7 +3,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
-import { ManagementSidebar } from "components/profile";
+import { ProfileSidebar } from "components/profile";
 import { useInvitationsQuery, useUserQuery } from "generated/graphql";
 import { getSubscription } from "lib/actions";
 import { getQueryClient } from "lib/util";
@@ -62,7 +62,7 @@ const ProfileLayout = async ({ children, params }: Props) => {
   return (
     <HStack h="full" w="full" gap={0}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ManagementSidebar>{children}</ManagementSidebar>
+        <ProfileSidebar>{children}</ProfileSidebar>
       </HydrationBoundary>
     </HStack>
   );
