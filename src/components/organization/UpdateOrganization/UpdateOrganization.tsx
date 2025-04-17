@@ -11,7 +11,11 @@ import {
   useUpdateOrganizationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  organizationNameSchema,
+  slugSchema,
+} from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { getAuthSession } from "lib/util";
@@ -19,24 +23,34 @@ import { getAuthSession } from "lib/util";
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
 
-/** Schema for defining the shape of the update organization form fields. */
-// TODO: dedup these schemas with the create organization form
-const baseSchema = z.object({
-  name: z
-    .string()
-    .min(3, updateOrganizationDetails.fields.organizationName.errors.minLength),
-  slug: z
-    .string()
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      updateOrganizationDetails.fields.organizationSlug.errors.invalidFormat
-    )
-    .min(3, updateOrganizationDetails.fields.organizationSlug.errors.minLength)
-    .max(
-      50,
-      updateOrganizationDetails.fields.organizationSlug.errors.maxLength
-    ),
-});
+/** Schema for defining the shape of the update organization form fields, as well as validating the form. */
+const updateOrganizationSchema = z
+  .object({
+    name: organizationNameSchema,
+    currentSlug: slugSchema,
+    updatedSlug: slugSchema,
+  })
+  .superRefine(async ({ currentSlug, updatedSlug }, ctx) => {
+    const session = await getAuthSession();
+
+    if (!updatedSlug?.length || updatedSlug === currentSlug || !session)
+      return z.NEVER;
+
+    const sdk = getSdk({ session });
+
+    const { organizationBySlug } = await sdk.Organization({
+      slug: updatedSlug,
+    });
+
+    if (organizationBySlug) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
+        path: ["slug"],
+      });
+    }
+  });
 
 /**
  * Form for updating organization details.
@@ -46,29 +60,6 @@ const UpdateOrganization = () => {
   const router = useRouter();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-
-  /** Schema for validation of the update organization form. */
-  const updateOrganizationSchema = baseSchema.superRefine(
-    async ({ slug }, ctx) => {
-      const session = await getAuthSession();
-
-      if (!slug?.length || slug === organizationSlug || !session)
-        return z.NEVER;
-
-      const sdk = getSdk({ session });
-
-      const { organizationBySlug } = await sdk.Organization({ slug });
-
-      if (organizationBySlug) {
-        ctx.addIssue({
-          code: "custom",
-          message:
-            updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
-          path: ["slug"],
-        });
-      }
-    }
-  );
 
   const { user } = useAuth();
 
@@ -105,11 +96,11 @@ const UpdateOrganization = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: organization?.name ?? "",
-      slug: organization?.slug ?? "",
+      currentSlug: organization?.slug ?? "",
+      updatedSlug: organization?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: baseSchema,
       onSubmitAsync: updateOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
@@ -118,7 +109,7 @@ const UpdateOrganization = () => {
           rowId: organization?.rowId!,
           patch: {
             name: value.name,
-            slug: value.slug,
+            slug: value.updatedSlug,
             updatedAt: new Date(),
           },
         });
@@ -157,7 +148,7 @@ const UpdateOrganization = () => {
             )}
           </AppField>
 
-          <AppField name="slug">
+          <AppField name="updatedSlug">
             {({ InputField }) => (
               <InputField
                 label={updateOrganizationDetails.fields.organizationSlug.label}

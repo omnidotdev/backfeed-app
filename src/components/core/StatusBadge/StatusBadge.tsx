@@ -9,7 +9,7 @@ interface Props extends BadgeProps {
 }
 
 /*
- * Badge representing the status for a feedback item.
+ * Badge representing the status for feedback.
  */
 const StatusBadge = ({ status, children, ...rest }: Props) => (
   <Badge

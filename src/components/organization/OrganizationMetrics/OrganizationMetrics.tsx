@@ -71,9 +71,8 @@ const OrganizationMetrics = ({ organizationId }: Props) => {
     <SectionContainer
       title={app.organizationPage.metrics.title}
       description={app.organizationPage.metrics.description}
-      h="fit"
     >
-      <Grid gap={4}>
+      <Grid h="full">
         {ORGANIZATION_METRICS.map(({ title, value, icon, ...rest }) => (
           <Flex
             key={title}
