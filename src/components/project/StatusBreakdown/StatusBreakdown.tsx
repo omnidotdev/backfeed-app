@@ -18,7 +18,7 @@ interface Props {
 }
 
 /**
- * Feedback status breakdown for a project. Shows the number of feedback items in each status.
+ * Feedback status breakdown for a project.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
   const { data: projectStatuses } = useProjectStatusesQuery(

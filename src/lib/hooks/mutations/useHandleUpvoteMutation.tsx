@@ -25,7 +25,7 @@ interface Options {
 }
 
 /**
- * Handle upvoting a feedback item.
+ * Handle upvoting on feedback.
  */
 const useHandleUpvoteMutation = ({
   feedbackId,

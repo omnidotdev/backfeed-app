@@ -33,7 +33,7 @@ import {
   useUpdatePostStatusMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -66,20 +66,22 @@ const COLOR_PRESETS = [
   "hsl(350, 81%, 59%)",
 ];
 
+const statusFields = updateProjectStatuses.fields;
+
 const statusSchema = z.object({
-  rowId: z.string().uuid().or(z.literal("pending")),
-  status: z
-    .string()
-    .min(3, updateProjectStatuses.fields.status.errors.minLength)
-    .max(20, updateProjectStatuses.fields.status.errors.maxLength),
+  rowId: uuidSchema.or(z.literal("pending")),
+  status: standardRegexSchema
+    .min(3, statusFields.status.errors.minLength)
+    .max(20, statusFields.status.errors.maxLength),
   description: z
     .string()
-    .min(10, updateProjectStatuses.fields.description.errors.minLength)
-    .max(40, updateProjectStatuses.fields.description.errors.maxLength),
+    .trim()
+    .min(10, statusFields.description.errors.minLength)
+    .max(40, statusFields.description.errors.maxLength),
   color: z
     .string()
-    .startsWith("#", updateProjectStatuses.fields.color.errors.startsWith)
-    .length(7, updateProjectStatuses.fields.color.errors.length),
+    .startsWith("#", statusFields.color.errors.startsWith)
+    .length(7, statusFields.color.errors.length),
   isDefault: z.boolean(),
 });
 
@@ -140,7 +142,6 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: updateStatusesSchema,
       onSubmitAsync: updateStatusesSchema,
     },
     onSubmit: async ({ formApi, value }) =>
@@ -242,40 +243,38 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                 <Table
                   headerContent={
                     <TableRow bgColor="background.muted">
-                      {Object.values(updateProjectStatuses.fields).map(
-                        (field) => (
-                          <TableCell
-                            key={field.label}
-                            fontWeight="bold"
-                            justifyContent={{ _last: "right" }}
-                          >
-                            <Flex align="center" justify="inherit">
-                              {field.label}
+                      {Object.values(statusFields).map((field) => (
+                        <TableCell
+                          key={field.label}
+                          fontWeight="bold"
+                          justifyContent={{ _last: "right" }}
+                        >
+                          <Flex align="center" justify="inherit">
+                            {field.label}
 
-                              {(field as FieldInfo).info ? (
-                                <Popover
-                                  trigger={
-                                    <Icon src={HiOutlineInformationCircle} />
-                                  }
-                                  closeTrigger={null}
-                                  positioning={{
-                                    placement: "top-start",
-                                    strategy: "fixed",
-                                    gutter: -4,
-                                  }}
-                                  triggerProps={{ cursor: "pointer", p: 2 }}
-                                  titleProps={{ display: "none" }}
-                                  descriptionProps={{ display: "none" }}
-                                >
-                                  <Text fontWeight="normal" mt={-2}>
-                                    {(field as FieldInfo).info}
-                                  </Text>
-                                </Popover>
-                              ) : null}
-                            </Flex>
-                          </TableCell>
-                        ),
-                      )}
+                            {(field as FieldInfo).info ? (
+                              <Popover
+                                trigger={
+                                  <Icon src={HiOutlineInformationCircle} />
+                                }
+                                closeTrigger={null}
+                                positioning={{
+                                  placement: "top-start",
+                                  strategy: "fixed",
+                                  gutter: -4,
+                                }}
+                                triggerProps={{ cursor: "pointer", p: 2 }}
+                                titleProps={{ display: "none" }}
+                                descriptionProps={{ display: "none" }}
+                              >
+                                <Text fontWeight="normal" mt={-2}>
+                                  {(field as FieldInfo).info}
+                                </Text>
+                              </Popover>
+                            ) : null}
+                          </Flex>
+                        </TableCell>
+                      ))}
                     </TableRow>
                   }
                 >
@@ -313,13 +312,11 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         </Field>
                       </TableCell>
 
-                      <TableCell py={5}>
+                      <TableCell py={6}>
                         <AppField name={`projectStatuses[${i}].status`}>
                           {({ InputField }) => (
                             <InputField
-                              placeholder={
-                                updateProjectStatuses.fields.status.placeholder
-                              }
+                              placeholder={statusFields.status.placeholder}
                               minW={40}
                               errorProps={{
                                 top: -5,
@@ -333,10 +330,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                         <AppField name={`projectStatuses[${i}].description`}>
                           {({ InputField }) => (
                             <InputField
-                              placeholder={
-                                updateProjectStatuses.fields.description
-                                  .placeholder
-                              }
+                              placeholder={statusFields.description.placeholder}
                               minW={40}
                               errorProps={{
                                 top: -5,

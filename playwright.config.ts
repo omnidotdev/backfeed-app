@@ -72,7 +72,7 @@ loadEnvConfig(process.cwd());
  * @see https://playwright.dev/docs/test-configuration
  */
 const playwrightConfig = defineConfig({
-  testDir: "src/__tests__",
+  testDir: "src/__tests__/e2e",
   // maximum single-test timeout
   timeout: ms("3m"),
   expect: {

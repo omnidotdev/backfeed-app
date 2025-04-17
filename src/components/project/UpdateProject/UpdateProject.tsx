@@ -9,7 +9,12 @@ import { SectionContainer } from "components/layout";
 import { UpdateStatuses } from "components/project";
 import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  projectDescriptionSchema,
+  projectNameSchema,
+  slugSchema,
+} from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
 import { getAuthSession } from "lib/util";
@@ -18,24 +23,38 @@ import type { ProjectQuery } from "generated/graphql";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
-/** Schema for defining the shape of the update project form fields. */
-// TODO: dedup these schemas with the create project form
-const baseSchema = z.object({
-  name: z
-    .string()
-    .min(3, updateProjectDetails.fields.projectName.errors.minLength),
-  description: z
-    .string()
-    .min(10, updateProjectDetails.fields.projectDescription.errors.minLength),
-  slug: z
-    .string()
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      updateProjectDetails.fields.projectSlug.errors.invalidFormat,
-    )
-    .min(3, updateProjectDetails.fields.projectSlug.errors.minLength)
-    .max(50, updateProjectDetails.fields.projectSlug.errors.maxLength),
-});
+// TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
+
+/** Schema for defining the shape of the update project form fields, as well as validating the form. */
+const updateProjectSchema = z
+  .object({
+    name: projectNameSchema,
+    description: projectDescriptionSchema,
+    organizationSlug: slugSchema,
+    currentSlug: slugSchema,
+    updatedSlug: slugSchema,
+  })
+  .superRefine(async ({ organizationSlug, currentSlug, updatedSlug }, ctx) => {
+    const session = await getAuthSession();
+
+    if (!updatedSlug?.length || currentSlug === updatedSlug || !session)
+      return z.NEVER;
+
+    const sdk = getSdk({ session });
+
+    const { projects } = await sdk.Project({
+      projectSlug: updatedSlug,
+      organizationSlug,
+    });
+
+    if (projects?.nodes?.length) {
+      ctx.addIssue({
+        code: "custom",
+        message: updateProjectDetails.fields.projectSlug.errors.duplicate,
+        path: ["slug"],
+      });
+    }
+  });
 
 interface Props {
   /** If the user has permission to edit the project statuses. */
@@ -52,28 +71,6 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
     organizationSlug: string;
     projectSlug: string;
   }>();
-
-  /** Schema for validation of the update project form. */
-  const updateProjectSchema = baseSchema.superRefine(async ({ slug }, ctx) => {
-    const session = await getAuthSession();
-
-    if (!slug?.length || slug === projectSlug || !session) return z.NEVER;
-
-    const sdk = getSdk({ session });
-
-    const { projects } = await sdk.Project({
-      projectSlug: slug,
-      organizationSlug,
-    });
-
-    if (projects?.nodes?.length) {
-      ctx.addIssue({
-        code: "custom",
-        message: updateProjectDetails.fields.projectSlug.errors.duplicate,
-        path: ["slug"],
-      });
-    }
-  });
 
   const router = useRouter();
 
@@ -170,11 +167,12 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
     defaultValues: {
       name: project?.name ?? "",
       description: project?.description ?? "",
-      slug: project?.slug ?? "",
+      organizationSlug,
+      currentSlug: project?.slug ?? "",
+      updatedSlug: project?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: baseSchema,
       onSubmitAsync: updateProjectSchema,
     },
     onSubmit: async ({ value }) => {
@@ -184,7 +182,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
           patch: {
             name: value.name,
             description: value.description,
-            slug: value.slug,
+            slug: value.updatedSlug,
             updatedAt: new Date(),
           },
         });
@@ -223,7 +221,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
             )}
           </AppField>
 
-          <AppField name="slug">
+          <AppField name="updatedSlug">
             {({ InputField }) => (
               <InputField
                 label={updateProjectDetails.fields.projectSlug.label}
