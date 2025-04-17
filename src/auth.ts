@@ -78,8 +78,8 @@ export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
   providers: [
     {
+      // hint encryption algorithms from IDP
       client: {
-        // ? unsure if necessary, needed to set this at least on first implementation of Better Auth integration
         authorization_signed_response_alg: "HS256",
         id_token_signed_response_alg: "HS256",
       },
