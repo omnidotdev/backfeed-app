@@ -76,7 +76,6 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
-  trustHost: true,
   providers: [
     {
       client: {
@@ -90,13 +89,13 @@ export const { handlers, auth } = NextAuth({
       issuer: AUTH_ISSUER,
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
-      authorization: {
-        params: {
-          // TODO fix, refresh tokens not granted (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-          // scope: "openid profile email offline_access",
-          // prompt: "consent",
-        },
-      },
+      // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
+      // authorization: {
+      // params: {
+      // scope: "openid profile email offline_access",
+      // prompt: "consent",
+      // },
+      // },
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
