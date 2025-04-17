@@ -124,7 +124,7 @@ const InvitationMenu = ({
                     ? error.message
                     : inviteMemberDetails.toast.errors.default,
               }),
-            }
+            },
           );
         })
         .with(
@@ -132,7 +132,7 @@ const InvitationMenu = ({
           async () =>
             await deleteInvitation({
               rowId: invitation.rowId,
-            })
+            }),
         )
         .exhaustive();
     }

@@ -30,7 +30,7 @@ const createCommentSchema = z.object({
     .min(10, app.feedbackPage.comments.createComment.errors.minLengthMessage)
     .max(
       MAX_COMMENT_LENGTH,
-      app.feedbackPage.comments.createComment.errors.maxLengthMessage
+      app.feedbackPage.comments.createComment.errors.maxLengthMessage,
     ),
 });
 

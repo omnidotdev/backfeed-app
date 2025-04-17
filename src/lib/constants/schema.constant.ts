@@ -29,5 +29,5 @@ export const projectNameSchema = standardRegexSchema
   .max(60, projectErrors.name.maxLength);
 
 export const projectDescriptionSchema = emptyStringAsUndefined.or(
-  z.string().trim().max(240, projectErrors.description.maxLength)
+  z.string().trim().max(240, projectErrors.description.maxLength),
 );
