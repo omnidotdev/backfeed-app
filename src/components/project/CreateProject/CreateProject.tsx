@@ -14,7 +14,8 @@ import {
 import { app } from "lib/config";
 import {
   DEBOUNCE_TIME,
-  emptyStringAsUndefined,
+  projectDescriptionSchema,
+  projectNameSchema,
   slugSchema,
   uuidSchema,
 } from "lib/constants";
@@ -60,17 +61,8 @@ const DEFAULT_POST_STATUSES = [
 const createProjectSchema = z
   .object({
     organizationId: uuidSchema,
-    name: z
-      .string()
-      .min(3, app.dashboardPage.cta.newProject.projectName.errors.minLength)
-      .max(60, app.dashboardPage.cta.newProject.projectName.errors.maxLength),
-    description: emptyStringAsUndefined.or(
-      z
-        .string()
-        // TODO: normalize the access pattern `.errors.minLength` etc. Similar to above (either way works though, but that seems to be the most commonly used)
-        .min(10, app.dashboardPage.cta.newProject.projectDescription.minLength)
-        .max(240, app.dashboardPage.cta.newProject.projectDescription.maxLength)
-    ),
+    name: projectNameSchema,
+    description: projectDescriptionSchema,
     slug: slugSchema,
   })
   .superRefine(async ({ organizationId, slug }, ctx) => {

@@ -11,7 +11,8 @@ import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import {
   DEBOUNCE_TIME,
-  emptyStringAsUndefined,
+  projectDescriptionSchema,
+  projectNameSchema,
   slugSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -27,19 +28,8 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 /** Schema for defining the shape of the update project form fields, as well as validating the form. */
 const updateProjectSchema = z
   .object({
-    name: z
-      .string()
-      .trim()
-      .min(3, updateProjectDetails.fields.projectName.errors.minLength),
-    description: emptyStringAsUndefined.or(
-      z
-        .string()
-        .trim()
-        .min(
-          10,
-          updateProjectDetails.fields.projectDescription.errors.minLength
-        )
-    ),
+    name: projectNameSchema,
+    description: projectDescriptionSchema,
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
     updatedSlug: slugSchema,

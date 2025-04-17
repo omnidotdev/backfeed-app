@@ -425,6 +425,7 @@ const app = {
             errors: {
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 90 characters.",
+              invalid: "Invalid organization name.",
             },
           },
           organizationSlug: {
@@ -695,6 +696,8 @@ const app = {
             label: "Project Description",
             errors: {
               minLength: "Must be at least 10 characters.",
+              maxLength: "Must be at most 240 characters.",
+              invalid: "Invalid project description.",
             },
           },
           projectSlug: {

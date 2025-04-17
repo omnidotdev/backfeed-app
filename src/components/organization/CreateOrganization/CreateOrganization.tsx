@@ -6,7 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, slugSchema } from "lib/constants";
+import { DEBOUNCE_TIME, organizationSchema, slugSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
@@ -19,16 +19,7 @@ import { DialogType } from "store";
 /** Schema for defining the shape of the create organization form fields, as well as validating the form. */
 const createOrganizationSchema = z
   .object({
-    name: z
-      .string()
-      .min(
-        3,
-        app.dashboardPage.cta.newOrganization.organizationName.errors.minLength
-      )
-      .max(
-        90,
-        app.dashboardPage.cta.newOrganization.organizationName.errors.maxLength
-      ),
+    name: organizationSchema,
     slug: slugSchema,
   })
   .superRefine(async ({ slug }, ctx) => {
