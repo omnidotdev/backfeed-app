@@ -26,6 +26,7 @@ interface NavigationItem extends ButtonProps {
 interface Props extends StackProps {
   /** Username. */
   username: User["username"];
+  /** Boolean indicating whether the sidebar is open. */
   isOpen: boolean;
   /** Callback function to close the sidebar. */
   onClose?: () => void;
