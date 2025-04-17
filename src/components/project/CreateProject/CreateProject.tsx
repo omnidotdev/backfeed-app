@@ -169,7 +169,7 @@ const CreateProject = ({
     userId: user?.rowId,
   });
 
-  // NB: First we validate the user has a subsacription, then if the dialog is not scoped to a specific organization, allow the user to open the dialog. The validation is handled by the async form validation, otherwise check that they have adminstrative privileges for the organization.
+  // NB: First we validate the user has a subscription, then if the dialog is not scoped to a specific organization, allow the user to open the dialog. The validation is handled by the async form validation, otherwise check that they have adminstrative privileges for the organization.
   const isCreateProjectEnabled = isBasicTier && (isAdmin || !organizationSlug);
 
   useHotkeys(
