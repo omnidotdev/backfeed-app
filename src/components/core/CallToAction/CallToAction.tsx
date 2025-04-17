@@ -43,10 +43,12 @@ const CallToAction = ({ action }: Props) => {
   const handleAction = () => {
     if (href) {
       router.push(href);
+      return;
     }
 
     if (externalHref?.startsWith("https://")) {
       window.open(href, "_blank", "noopener,noreferrer");
+      return;
     }
 
     if (dialogType) {
