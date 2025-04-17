@@ -18,6 +18,9 @@ const app = {
         minLength: "Must be at least 3 characters.",
         maxLength: "Must be at most 50 characters.",
       },
+      regex: {
+        invalid: "Must not contain special characters.",
+      },
       id: {
         format: "Invalid UUID format.",
       },

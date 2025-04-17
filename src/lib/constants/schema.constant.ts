@@ -18,7 +18,7 @@ export const uuidSchema = z.string().uuid(app.forms.errors.id.format);
 export const standardRegexSchema = z
   .string()
   .trim()
-  .regex(/^[\p{L}\p{N}\s]+$/u, app.forms.errors.slug.regex);
+  .regex(/^[\p{L}\p{N}\s]+$/u, app.forms.errors.regex.invalid);
 
 export const organizationNameSchema = standardRegexSchema
   .min(3, organizationErrors.name.minLength)
