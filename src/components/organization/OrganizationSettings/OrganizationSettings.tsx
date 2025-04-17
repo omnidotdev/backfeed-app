@@ -210,6 +210,7 @@ const OrganizationSettings = ({
 
           {isOwner && (
             <Stack gap={6}>
+              {/* TODO: remove development flag when functionality for ownership transfers is resolved. */}
               {isOnlyOwner && developmentFlag && (
                 <DangerZoneAction
                   title={transferOwnershipDetails.title}
