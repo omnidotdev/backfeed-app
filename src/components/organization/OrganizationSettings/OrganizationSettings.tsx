@@ -210,7 +210,7 @@ const OrganizationSettings = ({
 
           {isOwner && (
             <Stack gap={6}>
-              {isOnlyOwner && (
+              {isOnlyOwner && developmentFlag && (
                 <DangerZoneAction
                   title={transferOwnershipDetails.title}
                   description={transferOwnershipDetails.description}
