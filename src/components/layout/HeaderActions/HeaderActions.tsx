@@ -69,7 +69,8 @@ const HeaderActions = () => {
               {app.auth.signIn.label}
             </Button>
 
-            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
+            {/* TODO enable (https://linear.app/omnidev/issue/OMNI-303/fix-sign-up-button-flow) */}
+            {/* <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button> */}
           </HStack>
         )}
       </Flex>
