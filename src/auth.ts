@@ -92,7 +92,7 @@ export const { handlers, auth } = NextAuth({
       clientSecret: AUTH_CLIENT_SECRET,
       authorization: {
         params: {
-          // TODO fix, refresh tokens not granted
+          // TODO fix, refresh tokens not granted (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
           // scope: "openid profile email offline_access",
           // prompt: "consent",
         },
