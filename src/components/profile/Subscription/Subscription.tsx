@@ -55,9 +55,10 @@ const Subscription = ({ customer }: Props) => {
       title={app.profilePage.subscription.title}
       description={app.profilePage.subscription.description}
       p={0}
+      // TODO: figure out why styles are not being applied
       titleProps={{
         px: 4,
-        mt: 4,
+        pt: 4,
       }}
       descriptionProps={{
         px: 4,
