@@ -25,7 +25,7 @@ interface Options {
 }
 
 /**
- * Handle downvoting a feedback item.
+ * Handle downvoting on feedback.
  */
 const useHandleDownvoteMutation = ({
   feedbackId,

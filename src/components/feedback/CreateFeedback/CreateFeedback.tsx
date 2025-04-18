@@ -16,33 +16,30 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 240;
 
+const feedbackSchemaErrors =
+  app.projectPage.projectFeedback.createFeedback.errors;
+
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
-  statusId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
-  projectId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
-  userId: z
-    .string()
-    .uuid(app.projectPage.projectFeedback.createFeedback.errors.invalid),
-  title: z
-    .string()
-    .trim()
-    .min(3, app.projectPage.projectFeedback.createFeedback.errors.title),
+  statusId: uuidSchema,
+  projectId: uuidSchema,
+  userId: uuidSchema,
+  title: standardRegexSchema
+    .min(3, feedbackSchemaErrors.title.minLength)
+    .max(90, feedbackSchemaErrors.title.maxLength),
   description: z
     .string()
     .trim()
-    .min(10, app.projectPage.projectFeedback.createFeedback.errors.description),
+    .min(10, feedbackSchemaErrors.description.minLength)
+    .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
 /**
@@ -118,7 +115,6 @@ const CreateFeedback = () => {
       },
       asyncDebounceMs: DEBOUNCE_TIME,
       validators: {
-        onChange: createFeedbackSchema,
         onSubmitAsync: createFeedbackSchema,
       },
       onSubmit: async ({ value }) =>

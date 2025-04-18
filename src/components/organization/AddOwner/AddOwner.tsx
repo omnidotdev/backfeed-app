@@ -10,7 +10,7 @@ import {
   useUpdateMemberMutation,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -19,7 +19,7 @@ const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 
 /** Schema for defining the shape of the add owner form fields. */
 const baseSchema = z.object({
-  rowId: z.string().uuid(),
+  rowId: uuidSchema,
 });
 
 interface Props {

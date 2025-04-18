@@ -13,7 +13,14 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, MAX_NUMBER_OF_PROJECTS } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  MAX_NUMBER_OF_PROJECTS,
+  projectDescriptionSchema,
+  projectNameSchema,
+  slugSchema,
+  uuidSchema,
+} from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -52,29 +59,16 @@ const DEFAULT_POST_STATUSES = [
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
-/** Schema for defining the shape of the create project form fields. */
-const baseSchema = z.object({
-  isTeamTier: z.boolean(),
-  organizationId: z
-    .string()
-    .uuid(app.dashboardPage.cta.newProject.selectOrganization.error),
-  name: z.string().min(3, app.dashboardPage.cta.newProject.projectName.error),
-  description: z
-    .string()
-    .min(10, app.dashboardPage.cta.newProject.projectDescription.error),
-  slug: z
-    .string()
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      app.dashboardPage.cta.newProject.projectSlug.error.invalidFormat
-    )
-    .min(3, app.dashboardPage.cta.newProject.projectSlug.error.minLength)
-    .max(50, app.dashboardPage.cta.newProject.projectSlug.error.maxLength),
-});
-
-/** Schema for validation of the create project form. */
-const createProjectSchema = baseSchema.superRefine(
-  async ({ isTeamTier, organizationId, slug }, ctx) => {
+/** Schema for defining the shape of the create project form fields, as well as validating the form. */
+const createProjectSchema = z
+  .object({
+    isTeamTier: z.boolean(),
+    organizationId: uuidSchema,
+    name: projectNameSchema,
+    description: projectDescriptionSchema,
+    slug: slugSchema,
+  })
+  .superRefine(async ({ isTeamTier, organizationId, slug }, ctx) => {
     const session = await getAuthSession();
 
     if (!organizationId.length || !slug.length || !session) return z.NEVER;
@@ -110,8 +104,7 @@ const createProjectSchema = baseSchema.superRefine(
         path: ["slug"],
       });
     }
-  }
-);
+  });
 
 interface Props {
   /** Whether the user has basic tier subscription permissions. */
@@ -214,7 +207,6 @@ const CreateProject = ({
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: baseSchema,
       onSubmitAsync: createProjectSchema,
     },
     onSubmit: async ({ value }) =>

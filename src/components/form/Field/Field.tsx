@@ -21,11 +21,7 @@ const Field = ({ errorProps, children, ...rest }: Props) => {
     <Stack position="relative" gap={1.5} {...rest}>
       {children}
 
-      <FormFieldError
-        errors={state.meta.errorMap.onSubmit}
-        isDirty={state.meta.isDirty}
-        {...errorProps}
-      />
+      <FormFieldError errors={state.meta.errorMap.onSubmit} {...errorProps} />
     </Stack>
   );
 };
