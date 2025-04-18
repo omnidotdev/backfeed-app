@@ -21,7 +21,7 @@ import {
   SidebarNavigation,
   ThemeToggle,
 } from "components/layout";
-import { app, AUTH_CLIENT_ID, AUTH_ISSUER } from "lib/config";
+import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
