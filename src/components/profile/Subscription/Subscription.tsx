@@ -19,7 +19,7 @@ import Link from "next/link";
 import { LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
-import { app } from "lib/config";
+import { API_BASE_URL, app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
 import { capitalizeFirstLetter } from "lib/util";
@@ -111,7 +111,7 @@ const Subscription = ({ customer }: Props) => {
                 <Flex justify="flex-end">
                   {/* NB: `SigilLink` is used to avoid initial CORS issues on external domain prefetching for the redirect */}
                   <SigilLink
-                    href={`/api/customer/portal?customerId=${customer.value.id}`}
+                    href={`${API_BASE_URL}/portal?customerId=${customer.value.id}`}
                     textDecoration="none"
                   >
                     <Button>

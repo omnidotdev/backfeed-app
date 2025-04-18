@@ -6,7 +6,8 @@ import { render } from "test/unit/util";
 
 describe("dashboard page", () => {
   beforeEach(() => {
-    render(<DashboardPage />);
+    // TODO: add tests for different tier level renders (i.e. disabled create org button, etc)
+    render(<DashboardPage isBasicTier isTeamTier />);
   });
 
   // TODO enable below, blocked by MSW integration (see test setup file for corresponding TODO) which is further blocked by https://github.com/oven-sh/bun/issues/13072
