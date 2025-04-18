@@ -28,7 +28,7 @@ interface UpdatedTokens {
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
   const graphqlClient = new GraphQLClient(
     process.env.NEXT_PUBLIC_API_GRAPHQL_URL!,
-    { headers },
+    { headers }
   );
 
   return getSdk(graphqlClient);
@@ -132,7 +132,7 @@ export const { handlers, auth } = NextAuth({
               grant_type: "refresh_token",
               refresh_token: token.refresh_token,
             }),
-          },
+          }
         );
 
         const tokensOrError = await response.json();
