@@ -121,7 +121,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
           label: organization?.name,
           value: organization?.rowId,
         })),
-    }
+    },
   );
 
   const firstOrganization = organizations?.[0];
@@ -148,7 +148,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin]
+    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin],
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
@@ -193,12 +193,12 @@ const CreateProject = ({ organizationSlug }: Props) => {
                       isDefault: status.isDefault,
                     },
                   },
-                })
-              )
+                }),
+              ),
             );
 
             router.push(
-              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
+              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`,
             );
 
             setIsOpen(false);
@@ -219,7 +219,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
             description:
               app.dashboardPage.cta.newProject.action.error.description,
           },
-        }
+        },
       ),
   });
 

@@ -67,11 +67,11 @@ const FeedbackCard = ({
     useUpdatePostMutation({
       onMutate: (variables) => {
         const snapshot = queryClient.getQueryData(
-          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! })
+          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         ) as FeedbackByIdQuery;
 
         const updatedStatus = projectStatuses?.find(
-          (status) => status.rowId === variables.patch.statusId
+          (status) => status.rowId === variables.patch.statusId,
         );
 
         queryClient.setQueryData(
@@ -87,7 +87,7 @@ const FeedbackCard = ({
                 color: updatedStatus?.color,
               },
             },
-          }
+          },
         );
       },
       onSettled: () => {
@@ -103,7 +103,7 @@ const FeedbackCard = ({
     .with(0, () => "gray.400")
     .when(
       (net) => net > 0,
-      () => "brand.tertiary"
+      () => "brand.tertiary",
     )
     .otherwise(() => "brand.quinary");
 
@@ -111,7 +111,7 @@ const FeedbackCard = ({
     .with(0, () => "+/- ")
     .when(
       (net) => net > 0,
-      () => "+"
+      () => "+",
     )
     .otherwise(() => "");
 

@@ -89,7 +89,7 @@ const createInvitationSchema = baseSchema.superRefine(
         });
       }
     }
-  }
+  },
 );
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
@@ -183,7 +183,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                   : inviteMemberDetails.toast.errors.default,
             };
           },
-        }
+        },
       );
     },
   });

@@ -169,7 +169,7 @@ const app = {
           },
         },
         label: "New Organization",
-        description: "Create a new organization by submitting the form below.",
+        description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
           placeholder: "Omni",
@@ -204,7 +204,7 @@ const app = {
           },
         },
         label: "New Project",
-        description: "Create a new project by submitting the form below.",
+        description: "Create a new project",
         selectOrganization: {
           label: {
             id: "organizations",

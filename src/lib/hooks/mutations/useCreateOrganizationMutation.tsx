@@ -21,7 +21,7 @@ const useCreateOrganizationMutation = (
     CreateOrganizationPayload,
     Error,
     CreateOrganizationMutationVariables
-  >
+  >,
 ) => {
   const { user } = useAuth();
 
@@ -57,7 +57,7 @@ const useCreateOrganizationMutation = (
       }
 
       return Promise.resolve(
-        createOrganizationResponse as CreateOrganizationPayload
+        createOrganizationResponse as CreateOrganizationPayload,
       );
     },
     ...options,

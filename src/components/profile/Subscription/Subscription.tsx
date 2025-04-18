@@ -77,7 +77,7 @@ const Subscription = ({ customer }: Props) => {
                     <TableCell key={header} fontWeight="bold">
                       {header}
                     </TableCell>
-                  )
+                  ),
                 )}
               </TableRow>
             }

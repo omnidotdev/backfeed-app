@@ -37,13 +37,5 @@
         "noConsoleLog": "error"
       }
     }
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double",
-      "arrowParentheses": "always",
-      "semicolons": "always",
-      "trailingCommas": "es5"
-    }
   }
 }

@@ -23,7 +23,7 @@ export const graphqlFetch =
   <TData, TVariables>(
     query: string,
     variables?: TVariables,
-    options?: (HeadersInit & FetchOptions) | FetchOptions
+    options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>
   async (): Promise<TData> => {
     const session = await getAuthSession();

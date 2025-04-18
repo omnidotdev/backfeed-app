@@ -9,14 +9,14 @@ const mockHidraHandlers = [
     () =>
       HttpResponse.json({
         issuer: "https://hidra.omni.dev/realms/test",
-      })
+      }),
   ),
   http.post(
     "https://hidra.omni.dev/realms/test/protocol/openid-connect/token",
     () =>
       HttpResponse.json({
         access_token: "test",
-      })
+      }),
   ),
 ];
 

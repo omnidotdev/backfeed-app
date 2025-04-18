@@ -69,7 +69,7 @@ const UpdateOrganization = () => {
     },
     {
       select: (data) => data.organizationBySlug,
-    }
+    },
   );
 
   const { isAdmin } = useOrganizationMembership({
@@ -86,7 +86,7 @@ const UpdateOrganization = () => {
       });
 
       router.replace(
-        `/organizations/${data?.updateOrganization?.organization?.slug}/settings`
+        `/organizations/${data?.updateOrganization?.organization?.slug}/settings`,
       );
 
       reset();
@@ -113,10 +113,8 @@ const UpdateOrganization = () => {
             updatedAt: new Date(),
           },
         });
-      } catch (error) {
-        if (isDevEnv) {
-          console.error(error);
-        }
+      } catch (err) {
+        if (isDevEnv) console.error(err);
       }
     },
   });

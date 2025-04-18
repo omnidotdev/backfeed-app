@@ -32,7 +32,7 @@ const DashboardPage = () => {
     {
       enabled: !!user?.hidraId,
       select: (data) => data?.userByHidraId?.firstName,
-    }
+    },
   );
 
   const {
@@ -49,7 +49,7 @@ const DashboardPage = () => {
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
       }),
-    }
+    },
   );
 
   const { data: numberOfOrganizations } = useOrganizationsQuery(
@@ -61,7 +61,7 @@ const DashboardPage = () => {
     {
       enabled: !!user?.rowId,
       select: (data) => data?.organizations?.totalCount,
-    }
+    },
   );
 
   const aggregates = [

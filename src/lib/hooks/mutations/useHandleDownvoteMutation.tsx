@@ -67,7 +67,7 @@ const useHandleDownvoteMutation = ({
     },
     onMutate: async () => {
       const snapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId })
+        useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       ) as FeedbackByIdQuery;
 
       queryClient.setQueryData(
@@ -87,7 +87,7 @@ const useHandleDownvoteMutation = ({
                 (snapshot?.post?.upvotes?.totalCount ?? 0) + (upvote ? -1 : 0),
             },
           },
-        }
+        },
       );
 
       queryClient.setQueryData(
@@ -98,13 +98,13 @@ const useHandleDownvoteMutation = ({
               downvoteByPostIdAndUserId: {
                 rowId: "pending",
               },
-            }
+            },
       );
 
       if (upvote) {
         queryClient.setQueryData(
           useUpvoteQuery.getKey({ feedbackId, userId: user?.rowId! }),
-          null
+          null,
         );
       }
     },

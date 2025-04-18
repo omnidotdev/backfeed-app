@@ -47,7 +47,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
     {
       enabled: !!user?.hidraId,
       select: (data) => data?.userByHidraId?.username,
-    }
+    },
   );
 
   const { data: defaultStatus } = useProjectStatusesQuery(
@@ -58,7 +58,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
     {
       enabled: !!projectId,
       select: (data) => data?.postStatuses?.nodes?.[0],
-    }
+    },
   );
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
@@ -73,7 +73,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
           lastPage?.posts?.pageInfo?.hasNextPage
             ? { after: lastPage?.posts?.pageInfo?.endCursor }
             : undefined,
-      }
+      },
     );
 
   const pendingFeedback = useMutationState<FeedbackFragment>({
@@ -163,7 +163,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                       onClick={() =>
                         !isPending
                           ? router.push(
-                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`
+                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`,
                             )
                           : undefined
                       }

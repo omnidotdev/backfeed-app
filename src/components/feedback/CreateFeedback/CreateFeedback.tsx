@@ -63,7 +63,7 @@ const CreateFeedback = () => {
     {
       enabled: !!projectSlug && !!organizationSlug,
       select: (data) => data?.projects?.nodes?.[0]?.rowId,
-    }
+    },
   );
 
   const { data: defaultStatusId } = useProjectStatusesQuery(
@@ -74,7 +74,7 @@ const CreateFeedback = () => {
     {
       enabled: !!projectId,
       select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
-    }
+    },
   );
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
@@ -144,14 +144,14 @@ const CreateFeedback = () => {
               description:
                 app.projectPage.projectFeedback.action.error.description,
             },
-          }
+          },
         ),
-    }
+    },
   );
 
   const descriptionLength = useStore(
     store,
-    (store) => store.values.description.length
+    (store) => store.values.description.length,
   );
 
   return (

@@ -15,7 +15,7 @@ const hasTeamSubscription = flag({
       const subscription = await getSubscription(session?.user?.hidraId!);
 
       return subscription;
-    } catch (error) {
+    } catch (err) {
       return null;
     }
   },

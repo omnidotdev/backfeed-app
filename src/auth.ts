@@ -1,38 +1,22 @@
 import { GraphQLClient } from "graphql-request";
 import ms from "ms";
 import NextAuth from "next-auth";
-import Keycloak from "next-auth/providers/keycloak";
 
 // import required for `next-auth/jwt` module augmentation: https://github.com/nextauthjs/next-auth/issues/9571#issuecomment-2143363518
 import "next-auth/jwt";
 
 import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
-import { isDevEnv } from "lib/config";
+import {
+  API_BASE_URL,
+  AUTH_CLIENT_ID,
+  AUTH_CLIENT_SECRET,
+  AUTH_ISSUER,
+  isDevEnv,
+} from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
-
-interface UpdatedTokens {
-  /** New access token */
-  access_token: string;
-  /** Expiration time in seconds */
-  expires_in: number;
-  /** New refresh token */
-  refresh_token: string;
-}
-
-/**
- * GraphQL client SDK.
- */
-const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
-  const graphqlClient = new GraphQLClient(
-    process.env.NEXT_PUBLIC_API_BASE_URL!,
-    { headers }
-  );
-
-  return getSdk(graphqlClient);
-};
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
@@ -67,25 +51,58 @@ declare module "next-auth" {
   }
 }
 
+interface UpdatedTokens {
+  /** New access token. */
+  access_token: string;
+  /** Expiration time in seconds. */
+  expires_in: number;
+  /** New refresh token. */
+  refresh_token: string;
+}
+
+/**
+ * GraphQL client SDK.
+ */
+const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
+  const graphqlClient = new GraphQLClient(API_BASE_URL!, {
+    headers,
+  });
+
+  return getSdk(graphqlClient);
+};
+
 /**
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
   providers: [
-    Keycloak({
-      clientId: process.env.AUTH_KEYCLOAK_ID!,
-      clientSecret: process.env.AUTH_KEYCLOAK_SECRET!,
-      issuer: process.env.AUTH_KEYCLOAK_ISSUER!,
+    {
+      // hint encryption algorithms from IDP
+      client: {
+        authorization_signed_response_alg: "HS256",
+        id_token_signed_response_alg: "HS256",
+      },
       id: "omni",
       name: "Omni",
+      type: "oidc",
+      issuer: AUTH_ISSUER,
+      clientId: AUTH_CLIENT_ID,
+      clientSecret: AUTH_CLIENT_SECRET,
+      // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
+      // authorization: {
+      // params: {
+      // scope: "openid profile email offline_access",
+      // prompt: "consent",
+      // },
+      // },
       style: {
         // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
         logo: "/img/omni-logo.png",
       },
-    }),
+    },
   ],
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
@@ -93,7 +110,7 @@ export const { handlers, auth } = NextAuth({
     authorized: async ({ auth }) => !!auth,
     // include additional claims in the token
     jwt: async ({ token, profile, account }) => {
-      // Account is present on fresh login. We can set additional claims on the token given this information.
+      // account is present on fresh login, set additional claims on the token
       if (account) {
         token.sub = profile?.sub!;
         token.preferred_username = profile?.preferred_username!;
@@ -114,26 +131,21 @@ export const { handlers, auth } = NextAuth({
         return token;
       }
 
-      if (Date.now() < token.expires_at * ms("1s")) {
-        return token;
-      }
+      if (Date.now() < token.expires_at * ms("1s")) return token;
 
       try {
-        const response = await fetch(
-          `${process.env.AUTH_KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              client_id: process.env.AUTH_KEYCLOAK_ID!,
-              client_secret: process.env.AUTH_KEYCLOAK_SECRET!,
-              grant_type: "refresh_token",
-              refresh_token: token.refresh_token,
-            }),
-          }
-        );
+        const response = await fetch(`${AUTH_ISSUER}/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            client_id: AUTH_CLIENT_ID!,
+            client_secret: AUTH_CLIENT_SECRET!,
+            grant_type: "refresh_token",
+            refresh_token: token.refresh_token,
+          }),
+        });
 
         const tokensOrError = await response.json();
 
@@ -147,8 +159,8 @@ export const { handlers, auth } = NextAuth({
           refresh_token: newTokens.refresh_token,
           expires_at: Math.floor(Date.now() / ms("1s") + newTokens.expires_in),
         };
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
         token.error = "RefreshTokenError";
 
         return token;

@@ -75,14 +75,14 @@ const CreateOrganization = () => {
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen]
+    [user, isOpen, isCreateProjectDialogOpen],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSuccess: (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
 
         setIsOpen(false);
@@ -123,7 +123,7 @@ const CreateOrganization = () => {
             description:
               app.dashboardPage.cta.newOrganization.action.error.description,
           },
-        }
+        },
       ),
   });
 
