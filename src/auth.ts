@@ -80,6 +80,7 @@ export const { handlers, auth } = NextAuth({
     {
       // hint encryption algorithms from IDP
       client: {
+        // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
         authorization_signed_response_alg: "HS256",
         id_token_signed_response_alg: "HS256",
       },
@@ -97,13 +98,14 @@ export const { handlers, auth } = NextAuth({
       // },
       // },
       style: {
-        // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
         logo: "/img/omni-logo.png",
       },
     },
   ],
+  // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
+  // pages: { ... },
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
     // verify authentication within middleware
