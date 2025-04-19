@@ -73,7 +73,7 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
     {
       enabled: !!user?.rowId,
       select: (data) => data?.organizations?.totalCount,
-    }
+    },
   );
 
   const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
@@ -99,14 +99,14 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [isOpen, isCreateProjectDialogOpen, canCreateOrganization]
+    [isOpen, isCreateProjectDialogOpen, canCreateOrganization],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSuccess: (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
 
         setIsOpen(false);
@@ -147,7 +147,7 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
             description:
               app.dashboardPage.cta.newOrganization.action.error.description,
           },
-        }
+        },
       ),
   });
 

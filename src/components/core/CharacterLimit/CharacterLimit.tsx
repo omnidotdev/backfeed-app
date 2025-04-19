@@ -25,11 +25,11 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
   const characterLimitColor = match(value / max)
     .when(
       (value) => value >= 0.9,
-      () => "red"
+      () => "red",
     )
     .when(
       (value) => value >= 0.7,
-      () => "yellow"
+      () => "yellow",
     )
     .otherwise(() => token("colors.brand.primary"));
 

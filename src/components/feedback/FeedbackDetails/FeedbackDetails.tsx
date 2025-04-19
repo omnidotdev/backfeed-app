@@ -58,7 +58,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     },
     {
       select: (data) => data?.post,
-    }
+    },
   );
 
   const { isAdmin } = useOrganizationMembership({
@@ -78,7 +78,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
           status: status?.status,
           color: status?.color,
         })),
-    }
+    },
   );
 
   const { data: hasUpvoted } = useUpvoteQuery(
@@ -89,7 +89,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     {
       enabled: !!user?.rowId,
       select: (data) => data?.upvoteByPostIdAndUserId,
-    }
+    },
   );
 
   const { data: hasDownvoted } = useDownvoteQuery(
@@ -100,7 +100,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
     {
       enabled: !!user?.rowId,
       select: (data) => data?.downvoteByPostIdAndUserId,
-    }
+    },
   );
 
   const { mutate: handleUpvote } = useHandleUpvoteMutation({

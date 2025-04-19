@@ -90,7 +90,7 @@ const updateStatusesSchema = z.object({
     .array(statusSchema)
     // Validate that there is exactly one default status
     .refine(
-      (statuses) => statuses.filter((status) => status.isDefault).length === 1
+      (statuses) => statuses.filter((status) => status.isDefault).length === 1,
     ),
 });
 
@@ -121,7 +121,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
           color: status?.color,
           isDefault: status?.isDefault,
         })),
-    }
+    },
   );
 
   const { mutateAsync: deleteStatus } = useDeletePostStatusMutation(),
@@ -151,8 +151,8 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
         const removedStatuses = statuses?.filter(
           (status) =>
             !currentStatuses.some(
-              (currentStatus) => currentStatus.rowId === status.rowId
-            )
+              (currentStatus) => currentStatus.rowId === status.rowId,
+            ),
         );
 
         if (removedStatuses?.length) {
@@ -160,8 +160,8 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
             removedStatuses.map((status) =>
               deleteStatus({
                 statusId: status.rowId!,
-              })
-            )
+              }),
+            ),
           );
         }
 
@@ -190,7 +190,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                 },
               });
             }
-          })
+          }),
         );
 
         await queryClient.invalidateQueries({
@@ -297,7 +297,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
                                   if (i !== indexOfStatus) {
                                     setFieldValue(
                                       `projectStatuses[${indexOfStatus}].isDefault`,
-                                      false
+                                      false,
                                     );
                                   } else {
                                     // This essentially disables unchecking the default status

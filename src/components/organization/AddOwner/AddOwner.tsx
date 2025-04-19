@@ -70,7 +70,7 @@ const AddOwner = ({ organizationId }: Props) => {
           label: `${member?.user?.firstName} ${member?.user?.lastName}`,
           value: member?.rowId,
         })),
-    }
+    },
   );
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({

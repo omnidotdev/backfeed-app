@@ -26,7 +26,7 @@ const getProject = cache(
     const { projects } = await sdk.Project({ projectSlug, organizationSlug });
 
     return projects?.nodes?.[0];
-  }
+  },
 );
 
 export default getProject;

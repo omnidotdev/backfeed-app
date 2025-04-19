@@ -28,13 +28,13 @@ const ProjectOverview = ({ projectId }: Props) => {
       select: (data) => ({
         createdAt: dayjs(data?.project?.createdAt).format("M/D/YYYY"),
         activeUsers: Number(
-          data?.project?.posts.aggregates?.distinctCount?.userId
+          data?.project?.posts.aggregates?.distinctCount?.userId,
         ),
         totalFeedback: data?.project?.posts.totalCount,
         totalEngagement:
           (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
       }),
-    }
+    },
   );
 
   return (

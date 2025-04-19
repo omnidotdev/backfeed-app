@@ -30,7 +30,7 @@ const createCommentSchema = z.object({
     .min(10, app.feedbackPage.comments.createComment.errors.minLengthMessage)
     .max(
       MAX_COMMENT_LENGTH,
-      app.feedbackPage.comments.createComment.errors.maxLengthMessage
+      app.feedbackPage.comments.createComment.errors.maxLengthMessage,
     ),
 });
 
@@ -93,9 +93,9 @@ const CreateComment = () => {
               description:
                 app.feedbackPage.comments.createComment.error.description,
             },
-          }
+          },
         ),
-    }
+    },
   );
 
   const messageLength = useStore(store, (store) => store.values.message.length);

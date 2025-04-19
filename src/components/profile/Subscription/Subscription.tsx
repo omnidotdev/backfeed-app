@@ -47,7 +47,7 @@ const Subscription = ({ customer }: Props) => {
     subscriptionOptions({
       hidraId: user?.hidraId,
       enabled: customer.status !== "rejected",
-    })
+    }),
   );
 
   return (
@@ -85,7 +85,7 @@ const Subscription = ({ customer }: Props) => {
                     <TableCell key={header} fontWeight="bold">
                       {header}
                     </TableCell>
-                  )
+                  ),
                 )}
               </TableRow>
             }

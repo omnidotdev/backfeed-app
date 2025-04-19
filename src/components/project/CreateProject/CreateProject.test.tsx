@@ -24,7 +24,7 @@ describe("create project", () => {
 
     it.todo(
       "user (admin) can not create more than 3 projects for the same organization",
-      () => {}
+      () => {},
     );
   });
 

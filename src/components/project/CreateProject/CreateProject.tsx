@@ -152,7 +152,7 @@ const CreateProject = ({
           value: organization?.rowId,
           numberOfProjects: organization?.projects?.totalCount ?? 0,
         })),
-    }
+    },
   );
 
   const firstOrganization = organizations?.[0];
@@ -178,7 +178,7 @@ const CreateProject = ({
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled]
+    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled],
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
@@ -236,12 +236,12 @@ const CreateProject = ({
                       isDefault: status.isDefault,
                     },
                   },
-                })
-              )
+                }),
+              ),
             );
 
             router.push(
-              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`
+              `/${app.organizationsPage.breadcrumb.toLowerCase()}/${projectData.project?.organization?.slug}/${app.projectsPage.breadcrumb.toLowerCase()}/${projectData.project?.slug}`,
             );
 
             setIsOpen(false);
@@ -262,7 +262,7 @@ const CreateProject = ({
             description:
               app.dashboardPage.cta.newProject.action.error.description,
           },
-        }
+        },
       ),
   });
 

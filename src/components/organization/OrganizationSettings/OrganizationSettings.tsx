@@ -63,7 +63,7 @@ const OrganizationSettings = ({
     },
     {
       select: (data) => data.members?.totalCount,
-    }
+    },
   );
 
   // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
@@ -79,7 +79,7 @@ const OrganizationSettings = ({
           label: `${member?.user?.firstName} ${member?.user?.lastName}`,
           value: member?.rowId,
         })),
-    }
+    },
   );
 
   const { isOwner, isMember, membershipId } = useOrganizationMembership({

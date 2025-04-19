@@ -48,7 +48,7 @@ const OrganizationInvites = () => {
     {
       enabled: !!user,
       select: (data) => data.invitations?.nodes,
-    }
+    },
   );
 
   const columns = useMemo(
@@ -124,7 +124,7 @@ const OrganizationInvites = () => {
         cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -162,7 +162,7 @@ const OrganizationInvites = () => {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHeader>
               ))}

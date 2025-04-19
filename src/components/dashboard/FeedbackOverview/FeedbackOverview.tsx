@@ -49,7 +49,7 @@ const FeedbackOverview = () => {
           name: dayjs(aggregate.keys?.[0]).format("ddd"),
           total: Number(aggregate.distinctCount?.rowId),
         })),
-    }
+    },
   );
 
   const getDailyTotal = (date: string) =>
@@ -66,7 +66,7 @@ const FeedbackOverview = () => {
 
   const DISPLAYED_DATA = useMemo(
     () => (isLargeViewport ? DATA : DATA.slice(3)),
-    [isLargeViewport, DATA]
+    [isLargeViewport, DATA],
   );
 
   return (

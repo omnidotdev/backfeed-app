@@ -10,6 +10,11 @@ export const isDevEnv = NODE_ENV === "development";
 // NB: `APP_ENV` is used instead of `NODE_ENV` because `next dev` shadows `NODE_ENV`, so even if `NODE_ENV=test` is injected into the environment, it will be overwritten to "development". See https://github.com/vercel/next.js/issues/17032
 const isTestEnv = APP_ENV === "test";
 
+// auth
+export const AUTH_ISSUER = process.env.NEXT_PUBLIC_AUTH_ISSUER;
+export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
+export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
+
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;

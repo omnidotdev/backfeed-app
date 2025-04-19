@@ -135,7 +135,7 @@ const SidebarNavigation = () => {
                             <Stack w="full" flex={1} p={2}>
                               {children
                                 ?.filter(
-                                  ({ isVisible, href }) => isVisible && !!href
+                                  ({ isVisible, href }) => isVisible && !!href,
                                 )
                                 .map(({ href, label, isActive }) => (
                                   <Flex key={label} display="block">
@@ -184,7 +184,7 @@ const SidebarNavigation = () => {
                             </Link>
                           )}
                         </Flex>
-                      )
+                      ),
                   )}
               </Stack>
             </Flex>
@@ -213,7 +213,7 @@ const SidebarNavigation = () => {
               </Link>
             )}
           </Flex>
-        )
+        ),
       )}
     </Stack>
   );

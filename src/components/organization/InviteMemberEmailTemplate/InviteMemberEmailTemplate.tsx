@@ -77,7 +77,7 @@ const InviteMemberEmailTemplate = ({
             <Markdown>
               {inviteMemberDetails.heading.replace(
                 "{organizationName}",
-                organizationName
+                organizationName,
               )}
             </Markdown>
           </Heading>

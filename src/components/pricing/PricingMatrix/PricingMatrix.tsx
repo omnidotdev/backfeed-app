@@ -163,7 +163,7 @@ const tiers: {
 ] as const;
 
 const allFeatures = Array.from(
-  new Set(tiers.flatMap(({ features }) => Object.keys(features)))
+  new Set(tiers.flatMap(({ features }) => Object.keys(features))),
 );
 
 const headerProps = {

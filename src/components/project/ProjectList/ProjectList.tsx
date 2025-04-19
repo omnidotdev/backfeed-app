@@ -46,7 +46,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
         totalCount: data?.projects?.totalCount,
         projects: data?.projects?.nodes,
       }),
-    }
+    },
   );
 
   const projects = data?.projects;

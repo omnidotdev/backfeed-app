@@ -26,7 +26,7 @@ const getOrganization = cache(
     });
 
     return organization;
-  }
+  },
 );
 
 export default getOrganization;

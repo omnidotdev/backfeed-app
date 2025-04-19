@@ -53,7 +53,7 @@ const graphqlCodegenConfig: CodegenConfig = {
       plugins: [
         // filter in only the shared `add` plugin config
         ...sharedPlugins.filter((plugin) =>
-          Object.keys(plugin).includes("add")
+          Object.keys(plugin).includes("add"),
         ),
         "typescript-msw",
       ],
