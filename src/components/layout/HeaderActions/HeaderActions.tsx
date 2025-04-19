@@ -21,7 +21,7 @@ import {
   SidebarNavigation,
   ThemeToggle,
 } from "components/layout";
-import { app, AUTH_CLIENT_ID, AUTH_ISSUER } from "lib/config";
+import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -43,9 +43,9 @@ const HeaderActions = () => {
     // use custom sign up URL because Auth.js doesn't have built-in support for direct sign up flow (https://github.com/nextauthjs/next-auth/discussions/945)
     // TODO fix session not set from this flow, but works if you go Backfeed Sign In button -> Click Sign Up tab on HIDRA -> sign up -> back to Backfeed. Note that cookies are set from this, might need to add scopes to URL or something. (https://linear.app/omnidev/issue/OMNI-303/fix-sign-up-button-flow)
     // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
-    const signUpUrl = `${AUTH_ISSUER!.split("/api")[0]}/sign-up?response_type=code&client_id=${AUTH_CLIENT_ID}&redirect_uri=${window.location.origin}/api/auth/callback/omni`;
+    // const signUpUrl = `${AUTH_ISSUER!.split("/api")[0]}/sign-up?response_type=code&client_id=${AUTH_CLIENT_ID}&redirect_uri=${window.location.origin}/api/auth/callback/omni`;
 
-    router.push(signUpUrl);
+    // router.push(signUpUrl);
   };
 
   useEffect(() => {
