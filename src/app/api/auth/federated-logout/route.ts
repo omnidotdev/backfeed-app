@@ -1,5 +1,4 @@
 import { auth } from "auth";
-import { AUTH_CLIENT_ID, AUTH_ISSUER } from "lib/config";
 
 /**
  * Federated logout route handler. This route is used to log the user out of the IDP session.
