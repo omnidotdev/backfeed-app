@@ -15,7 +15,7 @@ export interface ActionButton extends ButtonProps {
   /** Button icon. */
   icon: ReactNode;
   /** URL path for navigation. */
-  href?: `/${string}` | string;
+  href?: string;
 
   /** Type of dialog to trigger. */
   dialogType?: DialogType;
