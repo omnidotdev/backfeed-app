@@ -20,7 +20,12 @@ import {
   uuidSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import {
+  useAuth,
+  useForm,
+  useOrganizationMembership,
+  useViewportSize,
+} from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
@@ -96,6 +101,8 @@ interface Props {
  */
 const CreateProject = ({ organizationSlug }: Props) => {
   const router = useRouter();
+
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { user } = useAuth();
 
@@ -235,7 +242,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
-          minWidth: 0,
+          minWidth: isSmallViewport ? undefined : "70%",
         },
       }}
     >

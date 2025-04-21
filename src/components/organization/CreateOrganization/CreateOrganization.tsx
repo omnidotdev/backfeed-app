@@ -12,7 +12,7 @@ import {
   slugSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm } from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
 import { getAuthSession, toaster } from "lib/util";
@@ -53,6 +53,8 @@ const createOrganizationSchema = z
  */
 const CreateOrganization = () => {
   const router = useRouter();
+
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { user } = useAuth();
 
@@ -139,7 +141,7 @@ const CreateOrganization = () => {
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
-          minWidth: 0,
+          minWidth: isSmallViewport ? undefined : "70%",
         },
       }}
     >
