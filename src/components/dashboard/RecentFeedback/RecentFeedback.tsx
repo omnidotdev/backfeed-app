@@ -28,7 +28,7 @@ const RecentFeedback = () => {
     {
       enabled: !!user?.rowId,
       select: (data) => data?.posts?.nodes,
-    }
+    },
   );
 
   return (

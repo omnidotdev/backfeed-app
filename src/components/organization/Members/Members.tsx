@@ -58,7 +58,7 @@ const Members = ({ organizationId }: Props) => {
     {
       placeholderData: keepPreviousData,
       select: (data) => data.members?.nodes,
-    }
+    },
   );
 
   const columns = useMemo(
@@ -167,7 +167,7 @@ const Members = ({ organizationId }: Props) => {
         },
       }),
     ],
-    [isOwner, organizationId]
+    [isOwner, organizationId],
   );
 
   const table = useReactTable({
@@ -186,7 +186,7 @@ const Members = ({ organizationId }: Props) => {
                 ? null
                 : flexRender(
                     header.column.columnDef.header,
-                    header.getContext()
+                    header.getContext(),
                   )}
             </TableHeader>
           ))}

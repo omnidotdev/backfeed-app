@@ -43,7 +43,7 @@ const OrganizationInvites = ({ email }: Props) => {
     {
       enabled: !!email,
       select: (data) => data.invitations?.nodes,
-    }
+    },
   );
 
   const columns = useMemo(
@@ -119,7 +119,7 @@ const OrganizationInvites = ({ email }: Props) => {
         cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -144,7 +144,7 @@ const OrganizationInvites = ({ email }: Props) => {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHeader>
               ))}

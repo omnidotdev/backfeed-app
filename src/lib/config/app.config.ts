@@ -1,3 +1,5 @@
+// TODO: dedupe as much as possible.
+
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
@@ -10,6 +12,36 @@ const app = {
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
+  },
+  forms: {
+    errors: {
+      slug: {
+        regex: "Invalid slug format.",
+        minLength: "Must be at least 3 characters.",
+        maxLength: "Must be at most 50 characters.",
+      },
+      regex: {
+        invalid: "Must not contain special characters.",
+      },
+      id: {
+        format: "Invalid UUID format.",
+      },
+      organization: {
+        name: {
+          minLength: "Must be at least 3 characters.",
+          maxLength: "Must be at most 90 characters.",
+        },
+      },
+      project: {
+        name: {
+          minLength: "Must be at least 3 characters.",
+          maxLength: "Must be at most 60 characters.",
+        },
+        description: {
+          maxLength: "Must be at most 240 characters.",
+        },
+      },
+    },
   },
   notFound: {
     statusCode: 404,
@@ -139,11 +171,15 @@ const app = {
           },
         },
         label: "New Organization",
-        description: "Create a new organization by submitting the form below.",
+        description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
           placeholder: "Omni",
-          error: "Must be at least 3 characters.",
+          errors: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 90 characters.",
+            invalidFormat: "Invalid organization name.",
+          },
         },
         organizationSlug: {
           id: "Organization Slug",
@@ -170,7 +206,7 @@ const app = {
           },
         },
         label: "New Project",
-        description: "Create a new project by submitting the form below.",
+        description: "Create a new project",
         selectOrganization: {
           label: {
             id: "organizations",
@@ -184,14 +220,19 @@ const app = {
           id: "Project Name",
           // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
           placeholder: "Backfeed",
-          error: "Must be at least 3 characters.",
+          errors: {
+            invalid: "Invalid project name.",
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 60 characters.",
+          },
         },
         projectDescription: {
           id: "Project Description",
           placeholder:
             // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
             "Backfeed is an open-source feedback reporting platform.",
-          error: "Must be at least 10 characters.",
+          minLength: "Must be at least 10 characters.",
+          maxLength: "Must be at most 240 characters.",
         },
         projectSlug: {
           id: "Project Slug",
@@ -442,6 +483,8 @@ const app = {
             label: "Organization Name",
             errors: {
               minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 90 characters.",
+              invalid: "Invalid organization name.",
             },
           },
           organizationSlug: {
@@ -581,7 +624,7 @@ const app = {
       features: {
         gdpr: "GDPR Compliance",
         communitySupport: "Community Support",
-        unlimitedFeedback: "Unlimited Feedback Items",
+        unlimitedFeedback: "Unlimited Feedback",
         unlimitedOrgs: "Unlimited Organizations",
         unlimitedProjects: "Unlimited Projects",
         webhooks: "Webhooks",
@@ -712,6 +755,8 @@ const app = {
             label: "Project Description",
             errors: {
               minLength: "Must be at least 10 characters.",
+              maxLength: "Must be at most 240 characters.",
+              invalid: "Invalid project description.",
             },
           },
           projectSlug: {
@@ -728,7 +773,7 @@ const app = {
       updateProjectStatuses: {
         title: "Project Statuses",
         description:
-          "Customize statuses that are used to track progress on feedback items.",
+          "Customize statuses that are used to track progress on feedback.",
         actions: {
           reset: {
             label: "Reset",
@@ -769,6 +814,7 @@ const app = {
             label: "Status",
             placeholder: "New",
             errors: {
+              invalid: "Invalid format.",
               minLength: "Status must be at least 3 characters.",
               maxLength: "Status must be at most 20 characters.",
             },
@@ -832,8 +878,14 @@ const app = {
       createFeedback: {
         errors: {
           invalid: "Invalid format",
-          title: "Must be at least 3 characters.",
-          description: "Must be at least 10 characters.",
+          title: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 90 characters.",
+          },
+          description: {
+            minLength: "Must be at least 10 characters.",
+            maxLength: "Must be at most 240 characters.",
+          },
         },
       },
       action: {
@@ -897,7 +949,8 @@ const app = {
         },
         errors: {
           invalid: "Invalid format",
-          message: "Must be at least 10 characters.",
+          minLengthMessage: "Must be at least 10 characters.",
+          maxLengthMessage: "Must be at most 500 characters.",
         },
       },
       title: "Comments",

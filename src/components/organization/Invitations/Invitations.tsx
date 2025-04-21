@@ -51,7 +51,7 @@ const Invitations = ({ organizationId }: Props) => {
     {
       placeholderData: keepPreviousData,
       select: (data) => data.invitations?.nodes ?? [],
-    }
+    },
   );
 
   const columns = useMemo(
@@ -136,7 +136,7 @@ const Invitations = ({ organizationId }: Props) => {
         cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],
-    [isOwner, organizationId]
+    [isOwner, organizationId],
   );
 
   const table = useReactTable({
@@ -155,7 +155,7 @@ const Invitations = ({ organizationId }: Props) => {
                 ? null
                 : flexRender(
                     header.column.columnDef.header,
-                    header.getContext()
+                    header.getContext(),
                   )}
             </TableHeader>
           ))}

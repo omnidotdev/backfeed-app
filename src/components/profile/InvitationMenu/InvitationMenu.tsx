@@ -84,7 +84,7 @@ const InvitationMenu = ({
         .with(MenuAction.DeclineInvitation, () =>
           deleteInvitation({
             rowId: invitation.rowId,
-          })
+          }),
         )
         .exhaustive();
     }

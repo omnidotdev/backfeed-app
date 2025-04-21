@@ -18,7 +18,7 @@ interface Props {
 }
 
 /**
- * Feedback status breakdown for a project. Shows the number of feedback items in each status.
+ * Feedback status breakdown for a project.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
   const { data: projectStatuses } = useProjectStatusesQuery(
@@ -32,7 +32,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
           status: status?.status,
           color: status?.color,
         })),
-    }
+    },
   );
 
   const { data: breakdown } = useStatusBreakdownQuery(
@@ -45,7 +45,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
         projectStatuses?.map((status) => {
           const count =
             data?.posts?.groupedAggregates?.find(
-              ({ keys }) => keys?.[0] === status?.rowId
+              ({ keys }) => keys?.[0] === status?.rowId,
             )?.distinctCount?.rowId ?? 0;
 
           return {
@@ -53,7 +53,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
             count,
           };
         }),
-    }
+    },
   );
 
   return (

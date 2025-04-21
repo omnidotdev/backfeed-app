@@ -41,7 +41,7 @@ const SubmitForm = ({
   // NB: This works fine for simple objects without circular references and consistent key orders. If forms are ever built recursively or dynamically, we may have to revisit this approach.
   const isDirty = useStore(
     store,
-    ({ values }) => JSON.stringify(values) !== JSON.stringify(defaultValues)
+    ({ values }) => JSON.stringify(values) !== JSON.stringify(defaultValues),
   );
 
   return (

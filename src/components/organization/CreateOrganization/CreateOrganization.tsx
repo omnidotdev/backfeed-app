@@ -6,7 +6,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { app } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  organizationNameSchema,
+  slugSchema,
+} from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
@@ -16,30 +20,13 @@ import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
-/** Schema for defining the shape of the create organization form fields. */
-const baseSchema = z.object({
-  name: z
-    .string()
-    .min(3, app.dashboardPage.cta.newOrganization.organizationName.error),
-  slug: z
-    .string()
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.invalidFormat
-    )
-    .min(
-      3,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.minLength
-    )
-    .max(
-      50,
-      app.dashboardPage.cta.newOrganization.organizationSlug.error.maxLength
-    ),
-});
-
-/** Schema for validation of the create organization form. */
-const createOrganizationSchema = baseSchema.superRefine(
-  async ({ slug }, ctx) => {
+/** Schema for defining the shape of the create organization form fields, as well as validating the form. */
+const createOrganizationSchema = z
+  .object({
+    name: organizationNameSchema,
+    slug: slugSchema,
+  })
+  .superRefine(async ({ slug }, ctx) => {
     const session = await getAuthSession();
 
     if (!slug.length || !session) return z.NEVER;
@@ -59,8 +46,7 @@ const createOrganizationSchema = baseSchema.superRefine(
         path: ["slug"],
       });
     }
-  }
-);
+  });
 
 /**
  * Dialog for creating a new organization.
@@ -89,14 +75,14 @@ const CreateOrganization = () => {
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [user, isOpen, isCreateProjectDialogOpen]
+    [user, isOpen, isCreateProjectDialogOpen],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSuccess: (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
 
         setIsOpen(false);
@@ -111,7 +97,6 @@ const CreateOrganization = () => {
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: baseSchema,
       onSubmitAsync: createOrganizationSchema,
     },
     onSubmit: async ({ value }) =>
@@ -138,7 +123,7 @@ const CreateOrganization = () => {
             description:
               app.dashboardPage.cta.newOrganization.action.error.description,
           },
-        }
+        },
       ),
   });
 

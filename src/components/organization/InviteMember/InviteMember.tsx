@@ -8,11 +8,11 @@ import {
   useInvitationsQuery,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
-import { DEBOUNCE_TIME } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
-import { getQueryClient } from "lib/util";
 import { useDialogStore } from "lib/hooks/store";
+import { getQueryClient } from "lib/util";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
@@ -29,10 +29,10 @@ interface Props {
 
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
-  email: z.string().email(),
-  organizationId: z.string().uuid(),
-  inviterEmail: z.string().email(),
-  inviterUsername: z.string(),
+  email: z.string().email().trim(),
+  organizationId: uuidSchema,
+  inviterEmail: z.string().email().trim(),
+  inviterUsername: z.string().trim(),
 });
 
 /** Schema for validation of the invite member form. */
@@ -89,7 +89,7 @@ const createInvitationSchema = baseSchema.superRefine(
         });
       }
     }
-  }
+  },
 );
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
@@ -184,7 +184,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                   : inviteMemberDetails.toast.errors.default,
             };
           },
-        }
+        },
       );
     },
   });

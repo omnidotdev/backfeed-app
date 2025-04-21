@@ -69,7 +69,7 @@ const Owners = ({ organizationId }: Props) => {
     { organizationId, roles: [Role.Owner] },
     {
       select: (data) => data.members?.nodes,
-    }
+    },
   );
 
   const table = useReactTable({
@@ -88,7 +88,7 @@ const Owners = ({ organizationId }: Props) => {
                 ? null
                 : flexRender(
                     header.column.columnDef.header,
-                    header.getContext()
+                    header.getContext(),
                   )}
             </TableHeader>
           ))}

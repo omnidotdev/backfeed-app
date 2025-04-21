@@ -48,7 +48,7 @@ const MembershipMenu = ({
   const { user } = useAuth();
 
   const selectedRowsAreAdmins = selectedRows.every(
-    (row) => row.original.role === Role.Admin
+    (row) => row.original.role === Role.Admin,
   );
 
   const { isOwner } = useOrganizationMembership({
@@ -71,7 +71,7 @@ const MembershipMenu = ({
             patch: {
               role: Role.Admin,
             },
-          })
+          }),
         )
         .with(MenuAction.RemoveAdmin, () =>
           updateMember({
@@ -79,12 +79,12 @@ const MembershipMenu = ({
             patch: {
               role: Role.Member,
             },
-          })
+          }),
         )
         .with(MenuAction.RemoveMember, () =>
           removeMember({
             rowId: member.rowId,
-          })
+          }),
         )
         .exhaustive();
     }

@@ -12,18 +12,14 @@ import { CreateProject } from "components/project";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 dayjs.extend(relativeTime);
-
-interface Props {
-  children: ReactNode;
-}
 
 /**
  * Core application layout.
  */
-const Layout = ({ children }: Props) => {
+const Layout = ({ children }: PropsWithChildren) => {
   const isClient = useIsClient();
 
   const { organizationSlug } = useParams<{ organizationSlug?: string }>();

@@ -41,9 +41,9 @@ const PricingOverview = ({ products }: Props) => {
         .sort(
           (a, b) =>
             (a.prices[0] as ProductPriceFixed).priceAmount -
-            (b.prices[0] as ProductPriceFixed).priceAmount
+            (b.prices[0] as ProductPriceFixed).priceAmount,
         ),
-    [products, pricingModel]
+    [products, pricingModel],
   );
 
   return (

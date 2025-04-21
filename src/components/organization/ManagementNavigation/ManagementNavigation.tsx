@@ -124,7 +124,7 @@ const ManagementNavigation = ({
 
             {(isOpen || !truncateText) && <Text>{label}</Text>}
           </Button>
-        )
+        ),
       )}
     </Stack>
   );

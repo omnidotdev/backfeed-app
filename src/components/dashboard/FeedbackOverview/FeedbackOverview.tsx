@@ -46,7 +46,7 @@ const FeedbackOverview = () => {
           name: dayjs(aggregate.keys?.[0]).format("ddd"),
           total: Number(aggregate.distinctCount?.rowId),
         })),
-    }
+    },
   );
 
   const getDailyTotal = (date: string) =>
