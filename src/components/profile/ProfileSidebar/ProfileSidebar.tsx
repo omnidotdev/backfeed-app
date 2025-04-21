@@ -36,12 +36,12 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
     },
     {
       select: (data) => data?.userByHidraId,
-    }
+    },
   );
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "profile-management-sidebar",
-    true
+    true,
   );
 
   const onToggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -86,7 +86,6 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           gap={0}
         >
           <ProfileNavigation
-            // username or users first and last name?
             username={user?.username}
             email={user?.email!}
             isOpen={debouncedIsOpen}
@@ -116,7 +115,6 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           }}
         >
           <ProfileNavigation
-            // username or users first and last name?
             username={user?.username}
             email={user?.email!}
             isOpen={isDrawerOpen}

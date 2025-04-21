@@ -61,7 +61,7 @@ const ProfileNavigation = ({
         const count = data?.invitations?.totalCount;
         return count && count > 0 ? count : undefined;
       },
-    }
+    },
   );
 
   const router = useRouter(),

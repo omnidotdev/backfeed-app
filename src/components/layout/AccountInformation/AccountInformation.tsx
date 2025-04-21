@@ -21,6 +21,7 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 
+import { useUserQuery } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -35,6 +36,16 @@ const AccountInformation = () => {
   const router = useRouter();
   const { user } = useAuth();
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
+
+  const { data: username } = useUserQuery(
+    {
+      hidraId: user?.hidraId!,
+    },
+    {
+      enabled: !!user?.hidraId,
+      select: (data) => data?.userByHidraId?.username,
+    },
+  );
 
   const userActions = useRef<HTMLDivElement>(null);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
@@ -72,10 +83,7 @@ const AccountInformation = () => {
       <Menu
         trigger={
           <Button variant="ghost">
-            <Avatar
-              // Should we use username instead of name?
-              name={user?.name}
-            />
+            <Avatar name={username} />
           </Button>
         }
         triggerProps={{
