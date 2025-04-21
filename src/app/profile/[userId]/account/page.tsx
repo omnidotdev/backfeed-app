@@ -1,6 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { LuPencilLine } from "react-icons/lu";
+import { FaRegEdit } from "react-icons/fa";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
@@ -24,7 +24,7 @@ const ProfileAccountPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  if (session?.user?.rowId !== userId) notFound();
+  if (session?.user?.hidraId !== userId) notFound();
 
   const sdk = getSdk({ session });
 
@@ -45,9 +45,10 @@ const ProfileAccountPage = async ({ params }: Props) => {
           description: app.profileAccountPage.description,
           cta: [
             {
+              // TODO: match identity to say Edit Profile.
               label: app.profileAccountPage.cta.updateProfile.label,
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <LuPencilLine />,
+              icon: <FaRegEdit />,
               href: app.identityUrl,
             },
           ],

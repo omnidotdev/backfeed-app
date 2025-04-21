@@ -8,14 +8,14 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
 import { useUserQuery } from "generated/graphql";
-import { useAuth, useDebounceValue, useViewportSize } from "lib/hooks";
+import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -26,14 +26,13 @@ import type { PropsWithChildren } from "react";
  */
 const ProfileSidebar = ({ children }: PropsWithChildren) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
-
   const segment = useSelectedLayoutSegment();
 
-  const { user } = useAuth();
+  const { userId } = useParams<{ userId: string }>();
 
-  const { data: userData } = useUserQuery(
+  const { data: user } = useUserQuery(
     {
-      hidraId: user?.hidraId!,
+      hidraId: userId,
     },
     {
       select: (data) => data?.userByHidraId,
@@ -80,14 +79,16 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           }}
           position="relative"
           h="full"
-          w={isSidebarOpen ? "xs" : 14}
+          w={isSidebarOpen ? "xs" : 16}
           borderRightWidth="1px"
           borderColor="border.subtle"
           transition="all 200ms ease-in-out"
           gap={0}
         >
           <ProfileNavigation
-            username={userData?.username!}
+            // username or users first and last name?
+            username={user?.username}
+            email={user?.email!}
             isOpen={debouncedIsOpen}
             truncateText={!debouncedIsOpen}
             position="sticky"
@@ -115,7 +116,9 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           }}
         >
           <ProfileNavigation
-            username={userData?.username!}
+            // username or users first and last name?
+            username={user?.username}
+            email={user?.email!}
             isOpen={isDrawerOpen}
             onClose={onCloseDrawer}
             gap={4}

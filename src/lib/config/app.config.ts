@@ -237,7 +237,7 @@ const app = {
     },
     cta: {
       updateProfile: {
-        label: "Update Profile",
+        label: "Edit Profile",
       },
       changePassword: {
         label: "Change Password",
@@ -245,7 +245,7 @@ const app = {
       deleteAccount: {
         title: "Close Your Account",
         description:
-          "To permanently close your account and delete your data, please contact us at",
+          "Want to delete your account, or need other assistance? Contact us at ",
       },
     },
   },

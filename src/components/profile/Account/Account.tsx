@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Button,
-  Flex,
-  Input,
-  Label,
-  Link,
-  Stack,
-  Text,
-  sigil,
-} from "@omnidev/sigil";
+import { Button, Flex, Input, Label, Stack, Text, sigil } from "@omnidev/sigil";
 import { useMemo, useState } from "react";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
@@ -107,18 +98,6 @@ const Account = ({ user }: Props) => {
                     )}
                   </Button>
                 )}
-
-                {isPassword && (
-                  <Link
-                    isExternal
-                    href={app.forgotPasswordUrl}
-                    textDecoration="none"
-                  >
-                    <Button>
-                      {app.profileAccountPage.cta.changePassword.label}
-                    </Button>
-                  </Link>
-                )}
               </Flex>
             </Stack>
           );
@@ -135,8 +114,10 @@ const Account = ({ user }: Props) => {
           fontSize={{ base: "xs", lg: "sm" }}
           mt={-3}
         >
-          {app.profileAccountPage.cta.deleteAccount.description}{" "}
-          <sigil.span color="foreground.default">{app.supportEmail}</sigil.span>
+          {app.profileAccountPage.cta.deleteAccount.description}
+          <sigil.a href={`mailto:${app.supportEmail}`}>
+            <sigil.span color="brand.primary">{app.supportEmail}</sigil.span>
+          </sigil.a>
           .
         </Text>
       </SectionContainer>

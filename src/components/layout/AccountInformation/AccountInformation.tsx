@@ -46,7 +46,7 @@ const AccountInformation = () => {
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
-    router.push(`/profile/${user?.rowId}/account`);
+    router.push(`/profile/${user?.hidraId}/account`);
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
@@ -74,7 +74,10 @@ const AccountInformation = () => {
       <Menu
         trigger={
           <Button variant="ghost">
-            <Avatar name={user?.name} />
+            <Avatar
+              // Should we use username instead of name?
+              name={user?.name}
+            />
           </Button>
         }
         triggerProps={{

@@ -1,15 +1,15 @@
 "use client";
 
-import { Button, Icon, Stack, Text } from "@omnidev/sigil";
+import { Avatar, Badge, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   useParams,
   useRouter,
   useSelectedLayoutSegment,
 } from "next/navigation";
-import { FiUserPlus, FiUser } from "react-icons/fi";
-import { PiCreditCardLight } from "react-icons/pi";
+import { PiUserCircle, PiCreditCardLight, PiUserPlus } from "react-icons/pi";
 
 import { OverflowText } from "components/core";
+import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
@@ -21,11 +21,15 @@ interface NavigationItem extends ButtonProps {
   label: string;
   /** Navigation item icon. */
   icon: IconType;
+  /** Navigation badge indicator.  */
+  badgeCount?: number;
 }
 
 interface Props extends StackProps {
   /** Username. */
   username: User["username"];
+  /** User email. */
+  email: User["email"];
   /** Boolean indicating whether the sidebar is open. */
   isOpen: boolean;
   /** Callback function to close the sidebar. */
@@ -39,6 +43,7 @@ interface Props extends StackProps {
  */
 const ProfileNavigation = ({
   username,
+  email,
   isOpen,
   onClose,
   truncateText = false,
@@ -46,13 +51,26 @@ const ProfileNavigation = ({
 }: Props) => {
   const { userId } = useParams<{ userId: string }>();
 
+  const { data: usersTotalInvitations } = useInvitationsQuery(
+    {
+      email,
+    },
+    {
+      enabled: !!email,
+      select: (data) => {
+        const count = data?.invitations?.totalCount;
+        return count && count > 0 ? count : undefined;
+      },
+    }
+  );
+
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
       label: app.profileAccountPage.breadcrumb,
-      icon: FiUser,
+      icon: PiUserCircle,
       onClick: () => {
         onClose?.();
         router.push(`/profile/${userId}/account`);
@@ -60,7 +78,8 @@ const ProfileNavigation = ({
     },
     {
       label: app.profileInvitationsPage.breadcrumb,
-      icon: FiUserPlus,
+      badgeCount: usersTotalInvitations,
+      icon: PiUserPlus,
       onClick: () => {
         onClose?.();
         router.push(`/profile/${userId}/invitations`);
@@ -78,23 +97,36 @@ const ProfileNavigation = ({
 
   return (
     <Stack gap={0} {...rest}>
-      <OverflowText
-        as="h1"
+      <Flex
+        w="full"
         p={4}
+        gap={2}
         bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
-        textAlign="center"
-        whiteSpace="nowrap"
+        alignItems="center"
       >
-        {(isOpen || !truncateText) && username}
-      </OverflowText>
+        <Avatar size="xs" name={username} />
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
+        {isOpen && (
+          <OverflowText
+            as="h1"
+            textAlign="center"
+            whiteSpace="nowrap"
+            fontSize="sm"
+          >
+            {username ?? ""}
+          </OverflowText>
+        )}
+      </Flex>
+
+      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick, badgeCount }) => (
         <Button
           key={label}
           variant="ghost"
           w="full"
           rounded="none"
           alignItems="center"
+          justifyContent={isOpen ? "flex-start" : "center"}
+          textAlign="left"
           textWrap="nowrap"
           py={6}
           bgColor={{
@@ -111,7 +143,17 @@ const ProfileNavigation = ({
         >
           <Icon src={icon} h={5} w={5} />
 
-          {(isOpen || !truncateText) && <Text>{label}</Text>}
+          {(isOpen || !truncateText) && (
+            <Flex justifyContent="space-between" w="full">
+              <Text>{label}</Text>
+
+              {badgeCount && (
+                <Badge variant="solid" colorPalette="omni" size="sm">
+                  {badgeCount}
+                </Badge>
+              )}
+            </Flex>
+          )}
         </Button>
       ))}
     </Stack>
