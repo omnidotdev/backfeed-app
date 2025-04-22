@@ -89,7 +89,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           }}
           position="relative"
           h="full"
-          w={isSidebarOpen ? "xs" : 14}
+          w={isSidebarOpen ? "xs" : 16}
           borderRightWidth="1px"
           borderColor="border.subtle"
           transition="all 200ms ease-in-out"

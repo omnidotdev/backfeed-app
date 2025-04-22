@@ -3393,6 +3393,8 @@ export type Query = Node & {
   id: Scalars['ID']['output'];
   /** Get a single `Invitation`. */
   invitation?: Maybe<Invitation>;
+  /** Get a single `Invitation`. */
+  invitationByOrganizationIdAndEmail?: Maybe<Invitation>;
   /** Reads and enables pagination through a set of `Invitation`. */
   invitations?: Maybe<InvitationConnection>;
   /** Get a single `Member`. */
@@ -3499,6 +3501,13 @@ export type QueryDownvotesArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryInvitationArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationByOrganizationIdAndEmailArgs = {
+  email: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
 };
 
 

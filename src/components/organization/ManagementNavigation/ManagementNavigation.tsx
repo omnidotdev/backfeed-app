@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icon, Stack, Text } from "@omnidev/sigil";
+import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
@@ -88,15 +88,28 @@ const ManagementNavigation = ({
 
   return (
     <Stack gap={0} {...rest}>
-      <OverflowText
-        as="h1"
+      <Flex
+        w="full"
         p={4}
+        gap={2}
         bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
-        textAlign="center"
-        whiteSpace="nowrap"
+        alignItems="center"
       >
-        {isOpen || !truncateText ? organizationName : organizationName[0]}
-      </OverflowText>
+        {/* TODO: update with organization image */}
+        <Avatar size="xs" name={organizationName ?? organizationName[0]} />
+
+        {isOpen && (
+          <OverflowText
+            as="h1"
+            textAlign="center"
+            whiteSpace="nowrap"
+            fontSize="sm"
+            fontWeight="semibold"
+          >
+            {organizationName ?? organizationName[0]}
+          </OverflowText>
+        )}
+      </Flex>
 
       {SIDEBAR_NAVIGATION.filter(({ disabled }) => !disabled).map(
         ({ label, icon, onClick }) => (
@@ -106,6 +119,8 @@ const ManagementNavigation = ({
             w="full"
             rounded="none"
             alignItems="center"
+            justifyContent={isOpen ? "flex-start" : "center"}
+            textAlign="left"
             textWrap="nowrap"
             py={6}
             bgColor={{
