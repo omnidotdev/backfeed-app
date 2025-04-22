@@ -1,4 +1,3 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { FaRegEdit } from "react-icons/fa";
 
@@ -7,7 +6,6 @@ import { Page } from "components/layout";
 import { Account } from "components/profile";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
 
 interface Props {
   /** Params for the profile account page. */
@@ -32,32 +30,28 @@ const ProfileAccountPage = async ({ params }: Props) => {
     hidraId: session.user.hidraId!,
   });
 
-  const queryClient = getQueryClient();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Page
-        metadata={{
-          title: app.profileAccountPage.breadcrumb,
-        }}
-        header={{
-          title: app.profileAccountPage.breadcrumb,
-          description: app.profileAccountPage.description,
-          cta: [
-            {
-              // TODO: match identity to say Edit Profile.
-              label: app.profileAccountPage.cta.updateProfile.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <FaRegEdit />,
-              href: app.identityUrl,
-            },
-          ],
-        }}
-        pt={0}
-      >
-        <Account user={user!} />
-      </Page>
-    </HydrationBoundary>
+    <Page
+      metadata={{
+        title: app.profileAccountPage.breadcrumb,
+      }}
+      header={{
+        title: app.profileAccountPage.breadcrumb,
+        description: app.profileAccountPage.description,
+        cta: [
+          {
+            // TODO: match identity to say Edit Profile.
+            label: app.profileAccountPage.cta.updateProfile.label,
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <FaRegEdit />,
+            href: app.identityUrl,
+          },
+        ],
+      }}
+      pt={0}
+    >
+      <Account user={user!} />
+    </Page>
   );
 };
 
