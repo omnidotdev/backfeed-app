@@ -96,7 +96,7 @@ const ManagementNavigation = ({
         alignItems="center"
       >
         {/* TODO: update with organization image */}
-        <Avatar size="xs" name={organizationName ?? organizationName[0]} />
+        <Avatar size="xs" name={organizationName} />
 
         {isOpen && (
           <OverflowText
@@ -106,7 +106,7 @@ const ManagementNavigation = ({
             fontSize="sm"
             fontWeight="semibold"
           >
-            {organizationName ?? organizationName[0]}
+            {organizationName}
           </OverflowText>
         )}
       </Flex>
