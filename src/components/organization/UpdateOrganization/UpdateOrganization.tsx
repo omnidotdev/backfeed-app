@@ -46,7 +46,6 @@ const updateOrganizationSchema = z
     if (organizationBySlug) {
       ctx.addIssue({
         code: "custom",
-        // TODO: update validation error message (describe URL path)
         message:
           updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
         path: ["name"],

@@ -85,7 +85,6 @@ const createProjectSchema = z
     if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
         code: "custom",
-        // TODO: update validation error message (describe URL path)
         message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
         path: ["name"],
       });

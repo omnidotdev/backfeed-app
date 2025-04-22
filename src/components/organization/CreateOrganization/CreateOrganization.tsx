@@ -37,7 +37,6 @@ const createOrganizationSchema = z
     if (organizationBySlug) {
       ctx.addIssue({
         code: "custom",
-        // TODO: update validation error message (describe URL path)
         message:
           app.dashboardPage.cta.newOrganization.organizationSlug.error
             .duplicate,

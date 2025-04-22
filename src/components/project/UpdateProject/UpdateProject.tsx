@@ -51,7 +51,6 @@ const updateProjectSchema = z
     if (projects?.nodes?.length) {
       ctx.addIssue({
         code: "custom",
-        // TODO: update validation error message (describe URL path)
         message: updateProjectDetails.fields.projectSlug.errors.duplicate,
         path: ["name"],
       });
