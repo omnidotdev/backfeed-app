@@ -1,13 +1,17 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
-import { app } from "lib/config";
 import { getSubscription } from "lib/actions";
+import { app } from "lib/config";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
+
+export const metadata = {
+  title: app.profileSubscriptionPage.breadcrumb,
+};
 
 interface Props {
   /** Params for the profile subscription page. */
@@ -44,9 +48,6 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: app.profileSubscriptionPage.breadcrumb,
-        }}
         header={{
           title: app.profileSubscriptionPage.breadcrumb,
           description: app.profileSubscriptionPage.description,
