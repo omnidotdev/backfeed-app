@@ -8,41 +8,28 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useParams, useSelectedLayoutSegment } from "next/navigation";
+import { useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
-import { ManagementNavigation } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
-import { app } from "lib/config";
-import { useDebounceValue, useViewportSize } from "lib/hooks";
+import { ProfileNavigation } from "components/profile";
+import { useDebounceValue, useViewportSize, useAuth } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { PropsWithChildren } from "react";
 
 /**
- * Sidebar for organization management. Used for navigation between organization management pages.
+ * Sidebar for profile page. Used for navigation between profile pages.
  */
-const ManagementSidebar = ({ children }: PropsWithChildren) => {
+const ProfileSidebar = ({ children }: PropsWithChildren) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
-
   const segment = useSelectedLayoutSegment();
-
-  const { organizationSlug } = useParams<{ organizationSlug: string }>();
-
-  const { data: organization } = useOrganizationQuery(
-    {
-      slug: organizationSlug,
-    },
-    {
-      select: (data) => data?.organizationBySlug,
-    },
-  );
+  const { user } = useAuth();
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
-    "organization-management-sidebar",
+    "profile-management-sidebar",
     true,
   );
 
@@ -62,14 +49,6 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   });
 
   const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.organizationsPage.breadcrumb,
-      href: "/organizations",
-    },
-    {
-      label: organization?.name ?? organizationSlug,
-      href: `/organizations/${organizationSlug}`,
-    },
     {
       label: capitalizeFirstLetter(segment)!,
     },
@@ -95,16 +74,15 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           transition="all 200ms ease-in-out"
           gap={0}
         >
-          <ManagementNavigation
+          <ProfileNavigation
+            username={user?.username}
+            email={user?.email!}
+            isOpen={debouncedIsOpen}
+            truncateText={!debouncedIsOpen}
             position="sticky"
             gap={0}
             top="header"
             zIndex="sticky"
-            organizationId={organization?.rowId!}
-            organizationSlug={organizationSlug}
-            organizationName={organization?.name!}
-            isOpen={debouncedIsOpen}
-            truncateText={!debouncedIsOpen}
           />
         </Stack>
       ) : (
@@ -125,10 +103,9 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             width: { base: "80%", sm: "sm" },
           }}
         >
-          <ManagementNavigation
-            organizationId={organization?.rowId!}
-            organizationSlug={organizationSlug}
-            organizationName={organization?.name!}
+          <ProfileNavigation
+            username={user?.username}
+            email={user?.email!}
             isOpen={isDrawerOpen}
             onClose={onCloseDrawer}
             gap={4}
@@ -148,6 +125,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
         w="full"
         placeSelf="flex-start"
         px={{ base: 0, lg: 4 }}
+        h="full"
       >
         <HStack
           position="sticky"
@@ -182,4 +160,4 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default ManagementSidebar;
+export default ProfileSidebar;

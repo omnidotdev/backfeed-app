@@ -14,7 +14,6 @@ import {
   useCreateFeedbackMutation,
   useInfinitePostsQuery,
   useProjectStatusesQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -39,16 +38,6 @@ const ProjectFeedback = ({ projectId }: Props) => {
   const { user } = useAuth();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
-
-  const { data: username } = useUserQuery(
-    {
-      hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.username,
-    },
-  );
 
   const { data: defaultStatus } = useProjectStatusesQuery(
     {
@@ -92,10 +81,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
         status: defaultStatus!,
         project: {
           rowId: input.post.projectId,
+          name: "pending",
           slug: "pending",
         },
         user: {
-          username,
+          username: user?.username,
         },
         upvotes: {
           totalCount: 0,

@@ -18,7 +18,7 @@ import {
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
-import { getAuthSession } from "lib/util";
+import { generateSlug, getAuthSession } from "lib/util";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -28,10 +28,11 @@ const updateOrganizationSchema = z
   .object({
     name: organizationNameSchema,
     currentSlug: slugSchema,
-    updatedSlug: slugSchema,
   })
-  .superRefine(async ({ currentSlug, updatedSlug }, ctx) => {
+  .superRefine(async ({ name, currentSlug }, ctx) => {
     const session = await getAuthSession();
+
+    const updatedSlug = generateSlug(name);
 
     if (!updatedSlug?.length || updatedSlug === currentSlug || !session)
       return z.NEVER;
@@ -47,7 +48,7 @@ const updateOrganizationSchema = z
         code: "custom",
         message:
           updateOrganizationDetails.fields.organizationSlug.errors.duplicate,
-        path: ["slug"],
+        path: ["name"],
       });
     }
   });
@@ -97,7 +98,6 @@ const UpdateOrganization = () => {
     defaultValues: {
       name: organization?.name ?? "",
       currentSlug: organization?.slug ?? "",
-      updatedSlug: organization?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -109,7 +109,7 @@ const UpdateOrganization = () => {
           rowId: organization?.rowId!,
           patch: {
             name: value.name,
-            slug: value.updatedSlug,
+            slug: generateSlug(value.name),
             updatedAt: new Date(),
           },
         });
@@ -141,15 +141,6 @@ const UpdateOrganization = () => {
             {({ InputField }) => (
               <InputField
                 label={updateOrganizationDetails.fields.organizationName.label}
-                disabled={!isAdmin}
-              />
-            )}
-          </AppField>
-
-          <AppField name="updatedSlug">
-            {({ InputField }) => (
-              <InputField
-                label={updateOrganizationDetails.fields.organizationSlug.label}
                 disabled={!isAdmin}
               />
             )}

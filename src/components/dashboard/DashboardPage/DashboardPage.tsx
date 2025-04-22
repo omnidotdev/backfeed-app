@@ -13,7 +13,6 @@ import {
   Role,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -31,16 +30,6 @@ interface Props {
  */
 const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
-
-  const { data: firstName } = useUserQuery(
-    {
-      hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.firstName,
-    },
-  );
 
   const {
     data: dashboardAggregates,
@@ -89,7 +78,7 @@ const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${user?.username}!`,
         description: app.dashboardPage.description,
         cta: [
           {

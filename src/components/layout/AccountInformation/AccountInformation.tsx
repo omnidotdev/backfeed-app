@@ -46,7 +46,7 @@ const AccountInformation = () => {
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
-    router.push(`/profile/${user?.hidraId}`);
+    router.push(`/profile/${user?.hidraId}/account`);
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
@@ -72,7 +72,7 @@ const AccountInformation = () => {
       <Menu
         trigger={
           <Button variant="ghost">
-            <Avatar name={user?.name} />
+            <Avatar name={user?.username} />
           </Button>
         }
         triggerProps={{
@@ -84,7 +84,7 @@ const AccountInformation = () => {
         }}
       >
         <MenuItemGroup minW={32}>
-          <MenuItemGroupLabel>{user?.name}</MenuItemGroupLabel>
+          <MenuItemGroupLabel>{user?.username}</MenuItemGroupLabel>
 
           <MenuSeparator />
 

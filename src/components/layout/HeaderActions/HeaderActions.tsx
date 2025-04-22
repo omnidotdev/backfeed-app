@@ -10,7 +10,6 @@ import {
   Stack,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
@@ -32,8 +31,7 @@ import { DialogType } from "store";
 const HeaderActions = () => {
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
-  const router = useRouter(),
-    { isAuthenticated, isLoading } = useAuth(),
+  const { isAuthenticated, isLoading } = useAuth(),
     { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =
       useDialogStore({
         type: DialogType.MobileSidebar,

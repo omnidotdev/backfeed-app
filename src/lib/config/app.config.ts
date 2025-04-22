@@ -7,6 +7,8 @@ const app = {
   productionUrl: "https://backfeed.omni.dev",
   supportName: "Omni Support",
   supportEmail: "team@support.omni.dev",
+  identityUrl: "https://identity.omni.dev",
+  forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -186,7 +188,7 @@ const app = {
             invalidFormat: "Invalid slug format.",
             minLength: "Must be at least 3 characters.",
             maxLength: "Must be at most 50 characters.",
-            duplicate: "Organization slug already exists.",
+            duplicate: "Organization already exists.",
           },
         },
       },
@@ -245,7 +247,7 @@ const app = {
             invalidFormat: "Invalid slug format.",
             minLength: "Must be at least 3 characters.",
             maxLength: "Must be at most 50 characters.",
-            duplicate: "Project slug already exists.",
+            duplicate: "Project already exists.",
           },
         },
       },
@@ -254,16 +256,72 @@ const app = {
       },
     },
   },
-  profilePage: {
-    breadcrumb: "Profile",
-    header: {
-      title: "User Profile",
-      description: "View and manage your account information.",
+  profileAccountPage: {
+    breadcrumb: "Account",
+    description: "View and manage your account information.",
+    fields: {
+      username: {
+        label: "Username",
+      },
+      firstName: {
+        label: "First Name",
+      },
+      lastName: {
+        label: "Last Name",
+      },
+      email: {
+        label: "Email",
+        ariaLabel: {
+          show: "Show email",
+          hide: "Hide email",
+        },
+      },
     },
-    subscription: {
-      title: "Subscription",
-      // TODO: with i18n integration make this dynamic, i.e. "Manage your {app.name} subscription plan and billing information."
-      description: "Manage your subscription plan and billing information.",
+    cta: {
+      updateProfile: {
+        label: "Edit Profile",
+      },
+      changePassword: {
+        label: "Change Password",
+      },
+      deleteAccount: {
+        title: "Close Your Account",
+        description:
+          "Want to delete your account, or need other assistance? Contact us at ",
+      },
+    },
+  },
+  profileInvitationsPage: {
+    breadcrumb: "Invitations",
+    description: "View and manage your organization invitations.",
+    table: {
+      headers: {
+        organizationName: "Organization Name",
+        invitationDate: "Invitation Date",
+        actions: "Actions",
+      },
+      emptyState: {
+        label: "No organization invites found.",
+      },
+      actions: {
+        accept: {
+          label: "Accept",
+        },
+        delete: {
+          label: "Delete",
+        },
+      },
+    },
+  },
+  profileSubscriptionPage: {
+    breadcrumb: "Subscription",
+    description: "Manage your subscription plan and billing information.",
+    table: {
+      headers: {
+        productName: "Product Name",
+        status: "Status",
+        amount: "Amount",
+      },
       emptyState: {
         label: "No active subscription found.",
       },
@@ -274,27 +332,6 @@ const app = {
         manageSubscription: {
           label: "Manage",
         },
-      },
-      headers: {
-        productName: "Product Name",
-        status: "Status",
-        amount: "Amount",
-      },
-    },
-    organizationInvites: {
-      title: "Organization Invites",
-      description: "View and manage your organization invites.",
-      headers: {
-        organizationName: "Organization Name",
-        invitationDate: "Invitation Date",
-        actions: "Actions",
-      },
-      emptyState: {
-        message: "No organization invites found.",
-      },
-      actions: {
-        accept: "Accept",
-        delete: "Delete",
       },
     },
   },
@@ -457,7 +494,7 @@ const app = {
               invalidFormat: "Invalid slug format.",
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 50 characters.",
-              duplicate: "Organization slug already exists.",
+              duplicate: "Organization already exists.",
             },
           },
         },
@@ -729,7 +766,7 @@ const app = {
               invalidFormat: "Invalid slug format.",
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 50 characters.",
-              duplicate: "Project slug already exists.",
+              duplicate: "Project already exists.",
             },
           },
         },

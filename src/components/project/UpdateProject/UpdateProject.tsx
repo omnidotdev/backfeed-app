@@ -17,7 +17,7 @@ import {
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
-import { getAuthSession } from "lib/util";
+import { generateSlug, getAuthSession } from "lib/util";
 
 import type { ProjectQuery } from "generated/graphql";
 
@@ -32,10 +32,11 @@ const updateProjectSchema = z
     description: projectDescriptionSchema,
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
-    updatedSlug: slugSchema,
   })
-  .superRefine(async ({ organizationSlug, currentSlug, updatedSlug }, ctx) => {
+  .superRefine(async ({ name, organizationSlug, currentSlug }, ctx) => {
     const session = await getAuthSession();
+
+    const updatedSlug = generateSlug(name);
 
     if (!updatedSlug?.length || currentSlug === updatedSlug || !session)
       return z.NEVER;
@@ -51,7 +52,7 @@ const updateProjectSchema = z
       ctx.addIssue({
         code: "custom",
         message: updateProjectDetails.fields.projectSlug.errors.duplicate,
-        path: ["slug"],
+        path: ["name"],
       });
     }
   });
@@ -169,7 +170,6 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
       description: project?.description ?? "",
       organizationSlug,
       currentSlug: project?.slug ?? "",
-      updatedSlug: project?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -182,7 +182,7 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
           patch: {
             name: value.name,
             description: value.description,
-            slug: value.updatedSlug,
+            slug: generateSlug(value.name)!,
             updatedAt: new Date(),
           },
         });
@@ -217,14 +217,6 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
             {({ InputField }) => (
               <InputField
                 label={updateProjectDetails.fields.projectDescription.label}
-              />
-            )}
-          </AppField>
-
-          <AppField name="updatedSlug">
-            {({ InputField }) => (
-              <InputField
-                label={updateProjectDetails.fields.projectSlug.label}
               />
             )}
           </AppField>

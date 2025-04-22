@@ -1,9 +1,5 @@
 query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
-    rowId
-    hidraId
-    username
-    firstName
-    lastName
+    ...User
   }
 }
