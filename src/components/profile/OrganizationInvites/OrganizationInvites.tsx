@@ -41,7 +41,6 @@ const OrganizationInvites = ({ email }: Props) => {
   } = useInvitationsQuery(
     { email },
     {
-      enabled: !!email,
       select: (data) => data.invitations?.nodes,
     },
   );
