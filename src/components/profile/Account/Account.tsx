@@ -57,13 +57,11 @@ const Account = ({ user }: Props) => {
               <Flex position="relative" gap={4}>
                 <Input
                   disabled
-                  readOnly
                   id={id}
                   type={showEmail && isEmail ? "text" : type}
                   value={value}
                   opacity={1}
                   borderColor="border.subtle"
-                  bgColor="background.subtle"
                   color="foreground.subtle"
                 />
 
