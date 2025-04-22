@@ -4,8 +4,8 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
-import { getSubscription } from "lib/actions";
 import { app } from "lib/config";
+import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
@@ -39,10 +39,11 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
 
   // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
   if (customer.status !== "rejected") {
-    await queryClient.prefetchQuery({
-      queryKey: ["Subscription", userId],
-      queryFn: async () => await getSubscription(userId),
-    });
+    await queryClient.prefetchQuery(
+      subscriptionOptions({
+        hidraId: session.value.user.hidraId,
+      }),
+    );
   }
 
   return (
