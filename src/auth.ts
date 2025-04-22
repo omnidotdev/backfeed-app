@@ -46,6 +46,7 @@ declare module "next-auth" {
     user: {
       rowId?: string;
       hidraId?: string;
+      username?: string;
     } & NextAuthUser;
     error?: "RefreshTokenError";
   }
@@ -172,6 +173,7 @@ export const { handlers, auth } = NextAuth({
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
       session.user.rowId = token.row_id;
+      session.user.username = token.preferred_username;
       session.accessToken = token.access_token;
       session.refreshToken = token.refresh_token;
       session.expires = new Date(token.expires_at * ms("1s"));
