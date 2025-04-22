@@ -19,16 +19,14 @@ const ProfileLayout = async ({ children }: PropsWithChildren) => {
 
   const queryClient = getQueryClient();
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useInvitationsQuery.getKey({
-        email: session?.user?.email!,
-      }),
-      queryFn: useInvitationsQuery.fetcher({
-        email: session?.user?.email!,
-      }),
+  await queryClient.prefetchQuery({
+    queryKey: useInvitationsQuery.getKey({
+      email: session?.user?.email!,
     }),
-  ]);
+    queryFn: useInvitationsQuery.fetcher({
+      email: session?.user?.email!,
+    }),
+  });
 
   return (
     <HStack h="full" w="full" gap={0}>
