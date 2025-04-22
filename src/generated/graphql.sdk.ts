@@ -4882,6 +4882,8 @@ export type InvitationFragment = { __typename?: 'Invitation', rowId: string, ema
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
+export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
+
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
@@ -5229,7 +5231,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null } | null };
+export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
 
 export type UserByEmailQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -5316,6 +5318,16 @@ export const MemberFragmentDoc = gql`
     lastName
     username
   }
+}
+    `;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  rowId
+  hidraId
+  username
+  firstName
+  lastName
+  email
 }
     `;
 export const CreateCommentDocument = gql`
@@ -5836,14 +5848,10 @@ export const UpvoteDocument = gql`
 export const UserDocument = gql`
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
-    rowId
-    hidraId
-    username
-    firstName
-    lastName
+    ...User
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 export const UserByEmailDocument = gql`
     query userByEmail($email: String!) {
   userByEmail(email: $email) {
