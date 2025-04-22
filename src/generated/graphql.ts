@@ -4744,7 +4744,6 @@ export type UserInput = {
   hidraId: Scalars['UUID']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
 };
@@ -4852,7 +4851,6 @@ export type UserPatch = {
   hidraId?: InputMaybe<Scalars['UUID']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
-  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
 };
