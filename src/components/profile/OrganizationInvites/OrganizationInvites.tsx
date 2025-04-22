@@ -127,41 +127,38 @@ const OrganizationInvites = ({ email }: Props) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (isLoading) return <Skeleton h={18} m={4} />;
+
+  if (error || !invitations?.length)
+    return app.profileInvitationsPage.table.emptyState.label;
+
   return (
-    <>
-      {isLoading ? (
-        <Skeleton h={18} m={4} />
-      ) : error || !invitations?.length ? (
-        app.profileInvitationsPage.table.emptyState.label
-      ) : (
-        <Table
-          headerContent={table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} bgColor="background.subtle">
-              {headerGroup.headers.map((header) => (
-                <TableHeader key={header.id} fontWeight="bold">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHeader>
-              ))}
-            </TableRow>
+    <Table
+      headerContent={table.getHeaderGroups().map((headerGroup) => (
+        <TableRow key={headerGroup.id} bgColor="background.subtle">
+          {headerGroup.headers.map((header) => (
+            <TableHeader key={header.id} fontWeight="bold">
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+            </TableHeader>
           ))}
-        >
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} fontWeight="light">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
+        </TableRow>
+      ))}
+    >
+      {table.getRowModel().rows.map((row) => (
+        <TableRow key={row.id}>
+          {row.getVisibleCells().map((cell) => (
+            <TableCell key={cell.id} fontWeight="light">
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
           ))}
-        </Table>
-      )}
-    </>
+        </TableRow>
+      ))}
+    </Table>
   );
 };
 
