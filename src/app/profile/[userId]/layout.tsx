@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { ProfileSidebar } from "components/profile";
-import { useInvitationsQuery, useUserQuery } from "generated/graphql";
+import { useInvitationsQuery } from "generated/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { PropsWithChildren } from "react";
@@ -20,14 +20,6 @@ const ProfileLayout = async ({ children }: PropsWithChildren) => {
   const queryClient = getQueryClient();
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({
-        hidraId: session?.user?.hidraId!,
-      }),
-      queryFn: useUserQuery.fetcher({
-        hidraId: session?.user?.hidraId!,
-      }),
-    }),
     queryClient.prefetchQuery({
       queryKey: useInvitationsQuery.getKey({
         email: session?.user?.email!,

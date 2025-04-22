@@ -13,7 +13,6 @@ import {
   Role,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
-  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -24,17 +23,6 @@ import { DialogType } from "store";
  */
 const DashboardPage = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
-
-  // Fetch the user's first name using their hidraId instead of splitting the users name returned by auth.
-  const { data: firstName } = useUserQuery(
-    {
-      hidraId: user?.hidraId!,
-    },
-    {
-      enabled: !!user?.hidraId,
-      select: (data) => data?.userByHidraId?.firstName,
-    },
-  );
 
   const {
     data: dashboardAggregates,
@@ -83,7 +71,7 @@ const DashboardPage = () => {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${firstName}!`,
+        title: `${app.dashboardPage.welcomeMessage}, ${user?.username}!`,
         description: app.dashboardPage.description,
         cta: [
           {
