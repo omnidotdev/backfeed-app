@@ -1355,6 +1355,7 @@ export enum InvitationGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Email = 'EMAIL',
   OrganizationId = 'ORGANIZATION_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -3394,7 +3395,7 @@ export type Query = Node & {
   /** Get a single `Invitation`. */
   invitation?: Maybe<Invitation>;
   /** Get a single `Invitation`. */
-  invitationByEmail?: Maybe<Invitation>;
+  invitationByOrganizationIdAndEmail?: Maybe<Invitation>;
   /** Reads and enables pagination through a set of `Invitation`. */
   invitations?: Maybe<InvitationConnection>;
   /** Get a single `Member`. */
@@ -3503,8 +3504,9 @@ export type QueryInvitationArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryInvitationByEmailArgs = {
+export type QueryInvitationByOrganizationIdAndEmailArgs = {
   email: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
 };
 
 

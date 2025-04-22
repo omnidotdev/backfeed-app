@@ -200,7 +200,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
-          minWidth: isSmallViewport ? undefined : "70%",
+          minWidth: isSmallViewport ? undefined : "80%",
         },
       }}
     >
