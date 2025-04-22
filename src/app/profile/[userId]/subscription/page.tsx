@@ -41,7 +41,7 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
   if (customer.status !== "rejected") {
     await queryClient.prefetchQuery(
       subscriptionOptions({
-        hidraId: session.value.user.hidraId,
+        hidraId: userId,
       }),
     );
   }
