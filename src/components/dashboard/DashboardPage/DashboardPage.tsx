@@ -25,6 +25,7 @@ import { DialogType } from "store";
 const DashboardPage = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
+  // Fetch the user's first name using their hidraId instead of splitting the users name returned by auth.
   const { data: firstName } = useUserQuery(
     {
       hidraId: user?.hidraId!,
