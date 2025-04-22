@@ -6,16 +6,12 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
 import { app } from "lib/config";
-import {
-  DEBOUNCE_TIME,
-  organizationNameSchema,
-  slugSchema,
-} from "lib/constants";
+import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm } from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
-import { getAuthSession, toaster } from "lib/util";
+import { generateSlug, getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -24,12 +20,13 @@ import { DialogType } from "store";
 const createOrganizationSchema = z
   .object({
     name: organizationNameSchema,
-    slug: slugSchema,
   })
-  .superRefine(async ({ slug }, ctx) => {
+  .superRefine(async ({ name }, ctx) => {
     const session = await getAuthSession();
 
-    if (!slug.length || !session) return z.NEVER;
+    const slug = generateSlug(name);
+
+    if (!slug?.length || !session) return z.NEVER;
 
     const sdk = getSdk({ session });
 
@@ -43,7 +40,7 @@ const createOrganizationSchema = z
         message:
           app.dashboardPage.cta.newOrganization.organizationSlug.error
             .duplicate,
-        path: ["slug"],
+        path: ["name"],
       });
     }
   });
@@ -53,6 +50,8 @@ const createOrganizationSchema = z
  */
 const CreateOrganization = () => {
   const router = useRouter();
+
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { user } = useAuth();
 
@@ -93,7 +92,6 @@ const CreateOrganization = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       name: "",
-      slug: "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -105,7 +103,7 @@ const CreateOrganization = () => {
           input: {
             organization: {
               name: value.name,
-              slug: value.slug,
+              slug: generateSlug(value.name)!,
             },
           },
         }),
@@ -139,7 +137,7 @@ const CreateOrganization = () => {
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
-          minWidth: 0,
+          minWidth: isSmallViewport ? undefined : "80%",
         },
       }}
     >
@@ -159,18 +157,6 @@ const CreateOrganization = () => {
               label={app.dashboardPage.cta.newOrganization.organizationName.id}
               placeholder={
                 app.dashboardPage.cta.newOrganization.organizationName
-                  .placeholder
-              }
-            />
-          )}
-        </AppField>
-
-        <AppField name="slug">
-          {({ InputField }) => (
-            <InputField
-              label={app.dashboardPage.cta.newOrganization.organizationSlug.id}
-              placeholder={
-                app.dashboardPage.cta.newOrganization.organizationSlug
                   .placeholder
               }
             />

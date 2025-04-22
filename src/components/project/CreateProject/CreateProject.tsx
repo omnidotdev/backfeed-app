@@ -16,13 +16,17 @@ import {
   DEBOUNCE_TIME,
   projectDescriptionSchema,
   projectNameSchema,
-  slugSchema,
   uuidSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import {
+  useAuth,
+  useForm,
+  useOrganizationMembership,
+  useViewportSize,
+} from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { getAuthSession, toaster } from "lib/util";
+import { generateSlug, getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 // NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
@@ -63,12 +67,13 @@ const createProjectSchema = z
     organizationId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
-    slug: slugSchema,
   })
-  .superRefine(async ({ organizationId, slug }, ctx) => {
+  .superRefine(async ({ organizationId, name }, ctx) => {
     const session = await getAuthSession();
 
-    if (!organizationId.length || !slug.length || !session) return z.NEVER;
+    const slug = generateSlug(name);
+
+    if (!organizationId.length || !slug?.length || !session) return z.NEVER;
 
     const sdk = getSdk({ session });
 
@@ -81,7 +86,7 @@ const createProjectSchema = z
       ctx.addIssue({
         code: "custom",
         message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
-        path: ["slug"],
+        path: ["name"],
       });
     }
   });
@@ -96,6 +101,8 @@ interface Props {
  */
 const CreateProject = ({ organizationSlug }: Props) => {
   const router = useRouter();
+
+  const isSmallViewport = useViewportSize({ minWidth: "40em" });
 
   const { user } = useAuth();
 
@@ -160,7 +167,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
       organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
       name: "",
       description: "",
-      slug: "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -174,7 +180,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
               project: {
                 name: value.name,
                 description: value.description,
-                slug: value.slug,
+                slug: generateSlug(value.name)!,
                 organizationId: value.organizationId,
               },
             },
@@ -235,7 +241,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
-          minWidth: 0,
+          minWidth: isSmallViewport ? undefined : "80%",
         },
       }}
     >
@@ -282,17 +288,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
               label={app.dashboardPage.cta.newProject.projectDescription.id}
               placeholder={
                 app.dashboardPage.cta.newProject.projectDescription.placeholder
-              }
-            />
-          )}
-        </AppField>
-
-        <AppField name="slug">
-          {({ InputField }) => (
-            <InputField
-              label={app.dashboardPage.cta.newProject.projectSlug.id}
-              placeholder={
-                app.dashboardPage.cta.newProject.projectSlug.placeholder
               }
             />
           )}
