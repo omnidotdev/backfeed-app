@@ -40,13 +40,8 @@ const Account = ({ user }: Props) => {
         value: user?.email,
         type: "password",
       },
-      {
-        id: app.profileAccountPage.fields.password.label,
-        value: app.profileAccountPage.fields.password.value,
-        type: "password",
-      },
     ],
-    [user]
+    [user],
   );
 
   return (
@@ -54,8 +49,6 @@ const Account = ({ user }: Props) => {
       <Stack gap={4}>
         {profileData.map(({ id, value, type }) => {
           const isEmail = id === app.profileAccountPage.fields.email.label;
-          const isPassword =
-            id === app.profileAccountPage.fields.password.label;
 
           return (
             <Stack key={id} gap={1}>

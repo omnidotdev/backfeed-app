@@ -271,10 +271,6 @@ const app = {
           hide: "Hide email",
         },
       },
-      password: {
-        label: "Password",
-        value: "**********",
-      },
     },
     cta: {
       updateProfile: {
