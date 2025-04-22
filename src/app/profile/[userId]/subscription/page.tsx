@@ -4,10 +4,10 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
-
 import { app } from "lib/config";
-import { getQueryClient } from "lib/util";
+import { getSubscription } from "lib/actions";
 import { polar } from "lib/polar";
+import { getQueryClient } from "lib/util";
 
 interface Props {
   /** Params for the profile subscription page. */
@@ -32,6 +32,14 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
   if (session?.value?.user?.hidraId !== userId) notFound();
 
   const queryClient = getQueryClient();
+
+  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
+  if (customer.status !== "rejected") {
+    await queryClient.prefetchQuery({
+      queryKey: ["Subscription", userId],
+      queryFn: async () => await getSubscription(userId),
+    });
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
