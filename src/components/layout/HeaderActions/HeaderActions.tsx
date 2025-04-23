@@ -20,7 +20,7 @@ import {
   SidebarNavigation,
   ThemeToggle,
 } from "components/layout";
-import { APP_URL, app } from "lib/config";
+import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -58,10 +58,7 @@ const HeaderActions = () => {
           <AccountInformation />
         ) : (
           <HStack>
-            <Button
-              variant="outline"
-              onClick={() => signIn("omni", { redirectTo: APP_URL })}
-            >
+            <Button variant="outline" onClick={() => signIn("omni")}>
               {app.auth.signIn.label}
             </Button>
 
@@ -125,10 +122,7 @@ const HeaderActions = () => {
             <AccountInformation />
           ) : (
             <Stack>
-              <Button
-                variant="outline"
-                onClick={() => signIn("omni", { redirectTo: APP_URL })}
-              >
+              <Button variant="outline" onClick={() => signIn("omni")}>
                 {app.auth.signIn.label}
               </Button>
 
