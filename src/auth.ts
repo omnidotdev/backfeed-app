@@ -91,6 +91,8 @@ export const { handlers, auth } = NextAuth({
       issuer: AUTH_ISSUER,
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
+      // TODO also add `nonce`, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
+      checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
