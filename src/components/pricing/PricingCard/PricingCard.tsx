@@ -157,10 +157,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 ? router.push(
                     `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.hidraId}`,
                   )
-                : signIn("omni", {
-                    redirectTo:
-                      "https://backfeed-app-prerelease.up.railway.app",
-                  })
+                : signIn("omni")
             }
           >
             {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
