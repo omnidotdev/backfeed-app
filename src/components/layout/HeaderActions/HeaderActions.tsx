@@ -38,7 +38,11 @@ const HeaderActions = () => {
       });
 
   const handleSignUp = () => {
-    signIn("omni", { redirectTo: window.location.href }, { action: "sign-up" });
+    signIn(
+      "omni",
+      { redirectTo: "https://backfeed-app-prerelease.up.railway.app" },
+      { action: "sign-up" },
+    );
   };
 
   useEffect(() => {
@@ -61,7 +65,9 @@ const HeaderActions = () => {
             <Button
               variant="outline"
               onClick={() =>
-                signIn("omni", { redirectTo: window.location.href })
+                signIn("omni", {
+                  redirectTo: "https://backfeed-app-prerelease.up.railway.app",
+                })
               }
             >
               {app.auth.signIn.label}
@@ -130,7 +136,10 @@ const HeaderActions = () => {
               <Button
                 variant="outline"
                 onClick={() =>
-                  signIn("omni", { redirectTo: window.location.href })
+                  signIn("omni", {
+                    redirectTo:
+                      "https://backfeed-app-prerelease.up.railway.app",
+                  })
                 }
               >
                 {app.auth.signIn.label}
