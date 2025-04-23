@@ -95,9 +95,7 @@ export const { handlers, auth } = NextAuth({
       // PKCE protects against authorization code interception
       // State parameter prevents CSRF attacks
       // Nonce ensures the ID token wasn't tampered with
-      // checks: ["pkce", "state"],
-      // ! TODO REPLACE BELOW WITH ABOVE, not secure
-      checks: ["none"],
+      checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
