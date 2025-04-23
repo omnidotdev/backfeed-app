@@ -77,6 +77,7 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
+  redirectProxyUrl: isDevEnv ? undefined : process.env.AUTH_REDIRECT_PROXY_URL,
   providers: [
     {
       // hint encryption algorithms from IDP
