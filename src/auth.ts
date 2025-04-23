@@ -109,6 +109,8 @@ export const { handlers, auth } = NextAuth({
   // pages: { ... },
   // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
   callbacks: {
+    // https://github.com/nextauthjs/next-auth/issues/10928#issuecomment-2762340431
+    redirect: async ({ url }) => url,
     // verify authentication within middleware
     authorized: async ({ auth }) => !!auth,
     // include additional claims in the token
