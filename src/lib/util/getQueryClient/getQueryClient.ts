@@ -1,5 +1,6 @@
 import {
   QueryClient as ReactQueryClient,
+  defaultShouldDehydrateQuery,
   isServer,
 } from "@tanstack/react-query";
 
@@ -16,6 +17,12 @@ const makeQueryClient = () => {
         staleTime: 60 * 1000,
         // NB: Next.js middleware validates / alters the session which the queries depend on. This option is set to prevent refetching queries when the access token may be invalid
         refetchOnWindowFocus: false,
+      },
+      dehydrate: {
+        shouldDehydrateQuery: (query) =>
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === "pending",
+        shouldRedactErrors: () => false,
       },
     },
   });

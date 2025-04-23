@@ -1,8 +1,8 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import {
   OrganizationActions,
@@ -10,18 +10,14 @@ import {
   OrganizationProjects,
 } from "components/organization";
 import { CreateProject } from "components/project";
-import {
-  Role,
-  useOrganizationMetricsQuery,
-  useOrganizationQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { organizationMetricsOptions, organizationOptions } from "lib/options";
 
 import type { BreadcrumbRecord } from "components/core";
 
@@ -87,25 +83,16 @@ const OrganizationPage = async ({ params }: Props) => {
     },
   ];
 
-  const queryClient = getQueryClient();
-
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationMetricsQuery.getKey({
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationMetricsQuery.fetcher({
-        organizationId: organization.rowId,
-      }),
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        organizationOptions({ slug: organizationSlug }),
+        organizationMetricsOptions({
+          organizationId: organization.rowId,
+        }),
+      ]}
+    >
       <Page
         breadcrumbs={breadcrumbs}
         header={{
@@ -142,7 +129,7 @@ const OrganizationPage = async ({ params }: Props) => {
           />
         )}
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

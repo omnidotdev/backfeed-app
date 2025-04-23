@@ -1,22 +1,23 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
   Role,
   useCommentsQuery,
-  useDownvoteQuery,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
-  useOrganizationRoleQuery,
-  useProjectStatusesQuery,
-  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import {
+  downvoteOptions,
+  feedbackByIdOptions,
+  organizationRoleOptions,
+  projectStatusesOptions,
+  upvoteOptions,
+} from "lib/options";
 
 import type { BreadcrumbRecord } from "components/core";
 
@@ -58,8 +59,6 @@ const FeedbackPage = async ({ params }: Props) => {
     memberByUserIdAndOrganizationId?.role === Role.Admin ||
     memberByUserIdAndOrganizationId?.role === Role.Owner;
 
-  const queryClient = getQueryClient();
-
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -82,63 +81,43 @@ const FeedbackPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
-    }),
-    // ! NB: only prefetch the project statuses if the user is an admin
-    ...(isAdmin
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: feedback.project?.rowId!,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: feedback.project?.rowId!,
-            }),
-          }),
-        ]
-      : []),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDownvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useDownvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUpvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useUpvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
-      queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
-      initialPageParam: undefined,
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        feedbackByIdOptions({ rowId: feedbackId }),
+        organizationRoleOptions({
+          userId: session.user.rowId!,
+          organizationId: feedback.project?.organization?.rowId!,
+        }),
+        downvoteOptions({
+          userId: session?.user?.rowId!,
+          feedbackId,
+        }),
+        upvoteOptions({
+          userId: session?.user?.rowId!,
+          feedbackId,
+        }),
+        // TODO: Add infinite query options
+        {
+          queryKey: useInfiniteCommentsQuery.getKey({
+            pageSize: 5,
+            feedbackId,
+          }),
+          queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
+          // @ts-ignore TODO fix
+          initialPageParam: undefined,
+        },
+        // NB: only prefetch project statuses for users with admin permissions
+        ...(isAdmin
+          ? [
+              projectStatusesOptions({
+                projectId: feedback.project?.rowId!,
+              }),
+            ]
+          : []),
+      ]}
+    >
       <Page breadcrumbs={breadcrumbs}>
         <FeedbackDetails feedbackId={feedbackId} />
 
@@ -147,7 +126,7 @@ const FeedbackPage = async ({ params }: Props) => {
           feedbackId={feedbackId}
         />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

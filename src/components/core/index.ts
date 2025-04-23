@@ -1,3 +1,4 @@
+export { default as Await } from "./Await/Await";
 export {
   default as Breadcrumb,
   type BreadcrumbRecord,

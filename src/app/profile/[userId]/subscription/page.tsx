@@ -1,13 +1,12 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
 import { app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
-import { getQueryClient } from "lib/util";
 
 export const metadata = {
   title: app.profileSubscriptionPage.breadcrumb,
@@ -35,19 +34,18 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
 
   if (session?.value?.user?.hidraId !== userId) notFound();
 
-  const queryClient = getQueryClient();
-
-  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
-  if (customer.status !== "rejected") {
-    await queryClient.prefetchQuery(
-      subscriptionOptions({
-        hidraId: userId,
-      }),
-    );
-  }
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <Await
+      prefetch={
+        customer.status !== "rejected"
+          ? [
+              subscriptionOptions({
+                hidraId: userId,
+              }),
+            ]
+          : undefined
+      }
+    >
       <Page
         header={{
           title: app.profileSubscriptionPage.breadcrumb,
@@ -57,7 +55,7 @@ const ProfileSubscriptionPage = async ({ params }: Props) => {
       >
         <Subscription customer={customer} />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

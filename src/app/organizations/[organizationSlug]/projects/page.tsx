@@ -1,17 +1,18 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
-import { Role, useProjectsQuery } from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { projectsOptions } from "lib/options";
+import { getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -86,8 +87,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
     },
   ];
 
-  const queryClient = getQueryClient();
-
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
   const variables: ProjectsQueryVariables = {
@@ -97,15 +96,8 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
     search,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectsQuery.getKey(variables),
-      queryFn: useProjectsQuery.fetcher(variables),
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <Await prefetch={[projectsOptions(variables)]}>
       <Page
         breadcrumbs={breadcrumbs}
         header={{
@@ -135,7 +127,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
           />
         )}
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

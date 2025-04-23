@@ -1,4 +1,3 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 import { auth } from "auth";
@@ -6,16 +5,16 @@ import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import { CreateOrganization } from "components/organization";
 import { CreateProject } from "components/project";
-import {
-  OrganizationOrderBy,
-  Role,
-  useDashboardAggregatesQuery,
-  useOrganizationsQuery,
-  useRecentFeedbackQuery,
-  useWeeklyFeedbackQuery,
-} from "generated/graphql";
+import { OrganizationOrderBy, Role } from "generated/graphql";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
-import { getQueryClient } from "lib/util";
+
+import { Await } from "components/core";
+import {
+  dashboardAggregatesOptions,
+  organizationsOptions,
+  recentFeedbackOptions,
+  weeklyFeedbackOptions,
+} from "lib/options";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
@@ -37,8 +36,6 @@ const HomePage = async () => {
     hasTeamTierPrivileges(),
   ]);
 
-  const queryClient = getQueryClient();
-
   const organizationsQueryVariables: OrganizationsQueryVariables = {
     pageSize: 3,
     offset: 0,
@@ -47,51 +44,27 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
-      queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey({
-        userId: organizationsQueryVariables.userId,
-        isMember: true,
-        excludeRoles: [Role.Member],
-      }),
-      queryFn: useOrganizationsQuery.fetcher({
-        userId: organizationsQueryVariables.userId,
-        isMember: true,
-        excludeRoles: [Role.Member],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDashboardAggregatesQuery.getKey({
-        userId: session.user.rowId!,
-      }),
-      queryFn: useDashboardAggregatesQuery.fetcher({
-        userId: session.user.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useWeeklyFeedbackQuery.getKey({
-        userId: session.user.rowId!,
-        startDate: oneWeekAgo,
-        endDate: startOfToday,
-      }),
-      queryFn: useWeeklyFeedbackQuery.fetcher({
-        userId: session.user.rowId!,
-        startDate: oneWeekAgo,
-        endDate: startOfToday,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
-      queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        organizationsOptions(organizationsQueryVariables),
+        organizationsOptions({
+          userId: organizationsQueryVariables.userId,
+          isMember: true,
+          excludeRoles: [Role.Member],
+        }),
+        dashboardAggregatesOptions({
+          userId: session.user.rowId!,
+        }),
+        weeklyFeedbackOptions({
+          userId: session.user.rowId!,
+          startDate: oneWeekAgo,
+          endDate: startOfToday,
+        }),
+        recentFeedbackOptions({ userId: session.user.rowId! }),
+      ]}
+    >
       <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
 
       {/* dialogs */}
@@ -105,7 +78,7 @@ const HomePage = async () => {
           <CreateProject isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
         </>
       )}
-    </HydrationBoundary>
+    </Await>
   );
 };
 

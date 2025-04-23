@@ -1,21 +1,17 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
-import {
-  Role,
-  useProjectQuery,
-  useProjectStatusesQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { hasTeamTierPrivileges, isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import { projectOptions, projectStatusesOptions } from "lib/options";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -68,8 +64,6 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   // TODO: when ready to implement for production, remove the development check
   const canEditStatuses = development && (await hasTeamTierPrivileges());
 
-  const queryClient = getQueryClient();
-
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -92,28 +86,21 @@ const ProjectSettingsPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
-      queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
-    }),
-    // ! NB: only prefetch the project statuses if the user can edit statuses
-    ...(canEditStatuses
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: project.rowId,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: project.rowId,
-            }),
-          }),
-        ]
-      : []),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <Await
+      // TODO: separate concerns for prefetching for loading / error state management
+      prefetch={[
+        projectOptions({ projectSlug, organizationSlug }),
+        // ! NB: only prefetch the project statuses if the user can edit statuses
+        ...(canEditStatuses
+          ? [
+              projectStatusesOptions({
+                projectId: project.rowId,
+              }),
+            ]
+          : []),
+      ]}
+    >
       <Page
         breadcrumbs={breadcrumbs}
         header={{
@@ -128,7 +115,7 @@ const ProjectSettingsPage = async ({ params }: Props) => {
           canEditStatuses={canEditStatuses}
         />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

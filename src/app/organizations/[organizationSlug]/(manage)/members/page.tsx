@@ -1,8 +1,8 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import {
   AddOwner,
@@ -11,15 +11,12 @@ import {
   MembershipFilters,
   Owners,
 } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { membersOptions, organizationRoleOptions } from "lib/options";
+import { getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import { isDevelopment } from "lib/flags";
@@ -70,49 +67,28 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
       organizationId: organization.rowId,
     });
 
-  const queryClient = getQueryClient();
-
   const { search, roles } = await getSearchParams.parse(searchParams);
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: roles ?? undefined,
-        search,
-        excludeRoles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: roles ?? undefined,
-        search,
-        excludeRoles: [Role.Owner],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        membersOptions({
+          organizationId: organization.rowId,
+          roles: [Role.Owner],
+        }),
+        membersOptions({
+          organizationId: organization.rowId,
+          roles: roles ?? undefined,
+          search,
+          excludeRoles: [Role.Owner],
+        }),
+        organizationRoleOptions({
+          organizationId: organization.rowId,
+          userId: session.user.rowId!,
+        }),
+      ]}
+    >
       <Page
         header={{
           title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
@@ -147,7 +123,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
           organizationId={organization.rowId}
         />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

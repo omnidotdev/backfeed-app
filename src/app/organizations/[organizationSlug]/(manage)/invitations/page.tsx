@@ -1,15 +1,15 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { Invitations, InviteMember } from "components/organization";
-import { Role, useInvitationsQuery } from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { invitationsOptions } from "lib/options";
 import { DialogType } from "store";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -55,19 +55,15 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
   if (!isAdmin) notFound();
 
-  const queryClient = getQueryClient();
-
-  queryClient.prefetchQuery({
-    queryKey: useInvitationsQuery.getKey({
-      organizationId: organization.rowId,
-    }),
-    queryFn: useInvitationsQuery.fetcher({
-      organizationId: organization.rowId,
-    }),
-  });
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: loading / error state management
+    <Await
+      prefetch={[
+        invitationsOptions({
+          organizationId: organization.rowId,
+        }),
+      ]}
+    >
       <Page
         header={{
           title: `${organization.name} ${app.organizationInvitationsPage.breadcrumb}`,
@@ -94,7 +90,7 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
           organizationId={organization.rowId}
         />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

@@ -1,23 +1,20 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import {
   CreateOrganization,
   OrganizationFilters,
   OrganizationList,
 } from "components/organization";
-import {
-  OrganizationOrderBy,
-  Role,
-  useOrganizationsQuery,
-} from "generated/graphql";
+import { OrganizationOrderBy, Role } from "generated/graphql";
 import { app } from "lib/config";
 import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
 import { getSdk } from "lib/graphql";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { organizationsOptions } from "lib/options";
+import { getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -61,8 +58,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     },
   ];
 
-  const queryClient = getQueryClient();
-
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
 
   const variables: OrganizationsQueryVariables = {
@@ -73,18 +68,13 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     isMember: false,
   };
 
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationsQuery.getKey(variables),
-    queryFn: useOrganizationsQuery.fetcher(variables),
-  });
-
   // TODO: discuss the below. Should the check be strictly scoped to ownership??
   // NB: To create an organization, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited organizations) or that they are not currently an owner/admin of another organization
   const canCreateOrganization =
     isBasicTier && (isTeamTier || !organizations?.totalCount);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <Await prefetch={[organizationsOptions(variables)]}>
       <Page
         breadcrumbs={breadcrumbs}
         header={{
@@ -113,7 +103,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
           />
         )}
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

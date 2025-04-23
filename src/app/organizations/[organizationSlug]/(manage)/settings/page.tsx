@@ -1,18 +1,14 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { isDevelopment } from "lib/flags";
-import { getQueryClient } from "lib/util";
+import { membersOptions, organizationRoleOptions } from "lib/options";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
@@ -47,33 +43,20 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   if (!organization) notFound();
 
-  const queryClient = getQueryClient();
-
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useMembersQuery.getKey({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-      queryFn: useMembersQuery.fetcher({
-        organizationId: organization.rowId,
-        roles: [Role.Owner],
-      }),
-    }),
-  ]);
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        organizationRoleOptions({
+          userId: session.user.rowId!,
+          organizationId: organization.rowId,
+        }),
+        membersOptions({
+          organizationId: organization.rowId,
+          roles: [Role.Owner],
+        }),
+      ]}
+    >
       <Page
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
@@ -87,7 +70,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
           developmentFlag={developmentFlag}
         />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

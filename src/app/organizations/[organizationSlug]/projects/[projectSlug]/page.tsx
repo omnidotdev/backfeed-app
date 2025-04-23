@@ -1,26 +1,23 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { auth } from "auth";
+import { Await } from "components/core";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
-import {
-  Role,
-  useInfinitePostsQuery,
-  usePostsQuery,
-  useProjectMetricsQuery,
-  useProjectQuery,
-  useProjectStatusesQuery,
-  useStatusBreakdownQuery,
-} from "generated/graphql";
+import { Role, useInfinitePostsQuery, usePostsQuery } from "generated/graphql";
+import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import {
+  projectMetricsOptions,
+  projectOptions,
+  projectStatusesOptions,
+  statusBreakdownOptions,
+} from "lib/options";
 
 import type { BreadcrumbRecord } from "components/core";
-import { getProject } from "lib/actions";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -61,8 +58,6 @@ const ProjectPage = async ({ params }: Props) => {
     organizationId: project.organization?.rowId!,
   });
 
-  const queryClient = getQueryClient();
-
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -81,44 +76,34 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({
-        projectSlug,
-        organizationSlug,
-      }),
-      queryFn: useProjectQuery.fetcher({
-        projectSlug,
-        organizationSlug,
-      }),
-    }),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfinitePostsQuery.getKey({
-        pageSize: 5,
-        projectId: project.rowId,
-      }),
-      queryFn: usePostsQuery.fetcher({
-        pageSize: 5,
-        projectId: project.rowId,
-      }),
-      initialPageParam: undefined,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
-      queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useProjectStatusesQuery.getKey({ projectId: project.rowId }),
-      queryFn: useProjectStatusesQuery.fetcher({ projectId: project.rowId }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useStatusBreakdownQuery.getKey({ projectId: project.rowId }),
-      queryFn: useStatusBreakdownQuery.fetcher({ projectId: project.rowId }),
-    }),
-  ]);
+  const commonVariables = { projectId: project.rowId };
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    // TODO: separate concerns for prefetching for loading / error state management
+    <Await
+      prefetch={[
+        // TODO: add options for infinite query
+        {
+          queryKey: useInfinitePostsQuery.getKey({
+            pageSize: 5,
+            projectId: project.rowId,
+          }),
+          queryFn: usePostsQuery.fetcher({
+            pageSize: 5,
+            projectId: project.rowId,
+          }),
+          // @ts-ignore fix
+          initialPageParam: undefined,
+        },
+        projectOptions({
+          projectSlug,
+          organizationSlug,
+        }),
+        projectMetricsOptions(commonVariables),
+        projectStatusesOptions(commonVariables),
+        statusBreakdownOptions(commonVariables),
+      ]}
+    >
       <Page
         breadcrumbs={breadcrumbs}
         header={{
@@ -146,7 +131,7 @@ const ProjectPage = async ({ params }: Props) => {
       >
         <ProjectOverview projectId={project.rowId} />
       </Page>
-    </HydrationBoundary>
+    </Await>
   );
 };
 

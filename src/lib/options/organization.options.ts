@@ -1,0 +1,14 @@
+import { queryOptions } from "@tanstack/react-query";
+
+import { useOrganizationQuery } from "generated/graphql";
+
+import type { OrganizationQueryVariables } from "generated/graphql";
+
+const organizationOptions = (variables: OrganizationQueryVariables) =>
+  queryOptions({
+    queryKey: useOrganizationQuery.getKey(variables),
+    queryFn: useOrganizationQuery.fetcher(variables),
+    select: (data) => data?.organizationBySlug,
+  });
+
+export default organizationOptions;
