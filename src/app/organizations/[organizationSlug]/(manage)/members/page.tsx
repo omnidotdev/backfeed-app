@@ -18,11 +18,11 @@ import {
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
+import { isDevelopment } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
-import { isDevelopment } from "lib/flags";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
