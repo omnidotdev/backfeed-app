@@ -38,7 +38,7 @@ const HeaderActions = () => {
       });
 
   const handleSignUp = () => {
-    signIn("omni", undefined, { action: "sign-up" });
+    signIn("omni", { redirectTo: window.location.href }, { action: "sign-up" });
   };
 
   useEffect(() => {
@@ -58,7 +58,12 @@ const HeaderActions = () => {
           <AccountInformation />
         ) : (
           <HStack>
-            <Button variant="outline" onClick={() => signIn("omni")}>
+            <Button
+              variant="outline"
+              onClick={() =>
+                signIn("omni", { redirectTo: window.location.href })
+              }
+            >
               {app.auth.signIn.label}
             </Button>
 

@@ -157,7 +157,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 ? router.push(
                     `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.hidraId}`,
                   )
-                : signIn("omni")
+                : signIn("omni", { redirectTo: window.location.href })
             }
           >
             {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
