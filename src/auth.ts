@@ -97,12 +97,13 @@ export const { handlers, auth } = NextAuth({
       // Nonce ensures the ID token wasn't tampered with
       checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
+      authorization: {
+        params: {
+          // scope: "openid profile email offline_access",
+          // prompt: "consent",
+          state: crypto.randomUUID(),
+        },
+      },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
