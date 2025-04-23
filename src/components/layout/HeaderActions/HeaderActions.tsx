@@ -127,7 +127,12 @@ const HeaderActions = () => {
             <AccountInformation />
           ) : (
             <Stack>
-              <Button variant="outline" onClick={() => signIn("omni")}>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  signIn("omni", { redirectTo: window.location.href })
+                }
+              >
                 {app.auth.signIn.label}
               </Button>
 
