@@ -75,116 +75,132 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 /**
  * Auth configuration.
  */
-export const { handlers, auth } = NextAuth({
-  debug: isDevEnv,
-  providers: [
-    {
-      // hint encryption algorithms from IDP
-      client: {
-        // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
-        authorization_signed_response_alg: "HS256",
-        id_token_signed_response_alg: "HS256",
+export const { handlers, auth } = NextAuth(async (req) => {
+  const proto = req?.headers.get("x-forwarded-proto") ?? "https";
+  const host = req?.headers.get("x-forwarded-host") ?? "";
+
+  const dynamicBaseUrl = `${proto}://${host}`;
+  const redirectProxyUrl = `${dynamicBaseUrl}/api/auth`;
+
+  return {
+    debug: isDevEnv,
+    trustHost: true,
+    redirectProxyUrl,
+    providers: [
+      {
+        // hint encryption algorithms from IDP
+        client: {
+          // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
+          authorization_signed_response_alg: "HS256",
+          id_token_signed_response_alg: "HS256",
+        },
+        id: "omni",
+        name: "Omni",
+        type: "oidc" as const,
+        issuer: AUTH_ISSUER,
+        clientId: AUTH_CLIENT_ID,
+        clientSecret: AUTH_CLIENT_SECRET,
+        // TODO also add `nonce` check, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
+        // PKCE protects against authorization code interception
+        // State parameter prevents CSRF attacks
+        // Nonce ensures the ID token wasn't tampered with
+        // checks: ["pkce", "state"] as const,
+        // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
+        // authorization: {
+        // params: {
+        // scope: "openid profile email offline_access",
+        // prompt: "consent",
+        // },
+        // },
+        style: {
+          brandColor: token("colors.brand.primary.500"),
+          // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
+          logo: "/img/omni-logo.png",
+        },
       },
-      id: "omni",
-      name: "Omni",
-      type: "oidc",
-      issuer: AUTH_ISSUER,
-      clientId: AUTH_CLIENT_ID,
-      clientSecret: AUTH_CLIENT_SECRET,
-      // TODO also add `nonce` check, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
-      // PKCE protects against authorization code interception
-      // State parameter prevents CSRF attacks
-      // Nonce ensures the ID token wasn't tampered with
-      checks: ["pkce", "state"],
-      // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
-      style: {
-        brandColor: token("colors.brand.primary.500"),
-        // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
-        logo: "/img/omni-logo.png",
+    ],
+    // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
+    // pages: { ... },
+    // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
+    callbacks: {
+      // explicitly redirect back to the original URL
+      // ! NB: required for production authentication (https://github.com/nextauthjs/next-auth/issues/10928#issuecomment-2762340431)
+      redirect: async ({ url }) =>
+        url.startsWith(dynamicBaseUrl) ? url : dynamicBaseUrl,
+      // verify authentication within middleware
+      authorized: async ({ auth }) => !!auth,
+      // include additional claims in the token
+      jwt: async ({ token, profile, account }) => {
+        // account is present on fresh login, set additional claims on the token
+        if (account) {
+          token.sub = profile?.sub!;
+          token.preferred_username = profile?.preferred_username!;
+          token.given_name = profile?.given_name!;
+          token.family_name = profile?.family_name!;
+          token.access_token = account.access_token!;
+          token.expires_at = account.expires_at!;
+          token.refresh_token = account.refresh_token!;
+
+          const user = await sdk({
+            headers: { Authorization: `Bearer ${account.access_token}` },
+          }).User({
+            hidraId: token.sub!,
+          });
+
+          token.row_id = user?.userByHidraId?.rowId;
+
+          return token;
+        }
+
+        if (Date.now() < token.expires_at * ms("1s")) return token;
+
+        try {
+          const response = await fetch(`${AUTH_ISSUER}/oauth2/token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              client_id: AUTH_CLIENT_ID!,
+              client_secret: AUTH_CLIENT_SECRET!,
+              grant_type: "refresh_token",
+              refresh_token: token.refresh_token,
+            }),
+          });
+
+          const tokensOrError = await response.json();
+
+          if (!response.ok) throw tokensOrError;
+
+          const newTokens = tokensOrError as UpdatedTokens;
+
+          return {
+            ...token,
+            access_token: newTokens.access_token,
+            refresh_token: newTokens.refresh_token,
+            expires_at: Math.floor(
+              Date.now() / ms("1s") + newTokens.expires_in,
+            ),
+          };
+        } catch (err) {
+          console.error(err);
+          token.error = "RefreshTokenError";
+
+          return token;
+        }
+      },
+      // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
+      session: async ({ session, token }) => {
+        session.user.hidraId = token.sub;
+        session.user.rowId = token.row_id;
+        session.user.username = token.preferred_username;
+        session.accessToken = token.access_token;
+        session.refreshToken = token.refresh_token;
+        session.expires = new Date(token.expires_at * ms("1s"));
+        session.error = token.error;
+
+        return session;
       },
     },
-  ],
-  // TODO custom auth pages (https://linear.app/omnidev/issue/OMNI-143/create-custom-auth-pages)
-  // pages: { ... },
-  // Auth.js sanitizes the profile object (claims) by default, removing even claims that were requested by scopes. Configure `jwt` and `session` below to augment the profile. Be sure to augment the module declarations above if any changes are made for type safety
-  callbacks: {
-    // verify authentication within middleware
-    authorized: async ({ auth }) => !!auth,
-    // include additional claims in the token
-    jwt: async ({ token, profile, account }) => {
-      // account is present on fresh login, set additional claims on the token
-      if (account) {
-        token.sub = profile?.sub!;
-        token.preferred_username = profile?.preferred_username!;
-        token.given_name = profile?.given_name!;
-        token.family_name = profile?.family_name!;
-        token.access_token = account.access_token!;
-        token.expires_at = account.expires_at!;
-        token.refresh_token = account.refresh_token!;
-
-        const user = await sdk({
-          headers: { Authorization: `Bearer ${account.access_token}` },
-        }).User({
-          hidraId: token.sub!,
-        });
-
-        token.row_id = user?.userByHidraId?.rowId;
-
-        return token;
-      }
-
-      if (Date.now() < token.expires_at * ms("1s")) return token;
-
-      try {
-        const response = await fetch(`${AUTH_ISSUER}/oauth2/token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            client_id: AUTH_CLIENT_ID!,
-            client_secret: AUTH_CLIENT_SECRET!,
-            grant_type: "refresh_token",
-            refresh_token: token.refresh_token,
-          }),
-        });
-
-        const tokensOrError = await response.json();
-
-        if (!response.ok) throw tokensOrError;
-
-        const newTokens = tokensOrError as UpdatedTokens;
-
-        return {
-          ...token,
-          access_token: newTokens.access_token,
-          refresh_token: newTokens.refresh_token,
-          expires_at: Math.floor(Date.now() / ms("1s") + newTokens.expires_in),
-        };
-      } catch (err) {
-        console.error(err);
-        token.error = "RefreshTokenError";
-
-        return token;
-      }
-    },
-    // augment the session object with custom claims (these are forwarded to the client, e.g. for the `useSession` hook)
-    session: async ({ session, token }) => {
-      session.user.hidraId = token.sub;
-      session.user.rowId = token.row_id;
-      session.user.username = token.preferred_username;
-      session.accessToken = token.access_token;
-      session.refreshToken = token.refresh_token;
-      session.expires = new Date(token.expires_at * ms("1s"));
-      session.error = token.error;
-
-      return session;
-    },
-  },
+  };
 });
