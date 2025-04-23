@@ -12,21 +12,22 @@ import type {
 import type { PropsWithChildren, ReactNode } from "react";
 
 interface HydrateClientProps extends PropsWithChildren {
-  prefetch: (AnyUseQueryOptions | AnyUseInfiniteQueryOptions)[];
+  prefetch?: AnyUseQueryOptions[];
+  infinitePrefetch?: AnyUseInfiniteQueryOptions[];
 }
 
-const HydrateClient = ({ prefetch, children }: HydrateClientProps) => {
+const HydrateClient = ({
+  prefetch,
+  infinitePrefetch,
+  children,
+}: HydrateClientProps) => {
   unstable_noStore(); // opt out of pre-rendering
 
   const queryClient = getQueryClient();
 
-  Promise.all(
-    prefetch.map((p) =>
-      "initialPageParam" in p
-        ? queryClient.prefetchInfiniteQuery(p)
-        : queryClient.prefetchQuery(p),
-    ),
-  );
+  prefetch?.map((p) => queryClient.prefetchQuery(p));
+
+  infinitePrefetch?.map((p) => queryClient.prefetchInfiniteQuery(p));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -39,16 +40,28 @@ interface Props extends PropsWithChildren {
   fallback?: ReactNode;
   errorComponent?: ReactNode;
   prefetch?: AnyUseQueryOptions[];
+  infinitePrefetch?: AnyUseInfiniteQueryOptions[];
 }
 
-const Await = ({ fallback, errorComponent, prefetch, children }: Props) => {
+const Await = ({
+  fallback,
+  errorComponent,
+  prefetch,
+  infinitePrefetch,
+  children,
+}: Props) => {
   const MaybeErrorBoundary = errorComponent ? ErrorBoundary : Fragment;
 
   return (
     <MaybeErrorBoundary fallback={errorComponent}>
       <Suspense fallback={fallback}>
-        {prefetch ? (
-          <HydrateClient prefetch={prefetch}>{children}</HydrateClient>
+        {prefetch || infinitePrefetch ? (
+          <HydrateClient
+            prefetch={prefetch}
+            infinitePrefetch={infinitePrefetch}
+          >
+            {children}
+          </HydrateClient>
         ) : (
           children
         )}

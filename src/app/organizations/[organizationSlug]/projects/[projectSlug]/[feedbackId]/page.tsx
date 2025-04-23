@@ -4,16 +4,13 @@ import { auth } from "auth";
 import { Await } from "components/core";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
-import {
-  Role,
-  useCommentsQuery,
-  useInfiniteCommentsQuery,
-} from "generated/graphql";
+import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import {
   downvoteOptions,
   feedbackByIdOptions,
+  infiniteCommentsOptions,
   organizationRoleOptions,
   projectStatusesOptions,
   upvoteOptions,
@@ -98,16 +95,6 @@ const FeedbackPage = async ({ params }: Props) => {
           userId: session?.user?.rowId!,
           feedbackId,
         }),
-        // TODO: Add infinite query options
-        {
-          queryKey: useInfiniteCommentsQuery.getKey({
-            pageSize: 5,
-            feedbackId,
-          }),
-          queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
-          // @ts-ignore TODO fix
-          initialPageParam: undefined,
-        },
         // NB: only prefetch project statuses for users with admin permissions
         ...(isAdmin
           ? [
@@ -116,6 +103,12 @@ const FeedbackPage = async ({ params }: Props) => {
               }),
             ]
           : []),
+      ]}
+      infinitePrefetch={[
+        infiniteCommentsOptions({
+          pageSize: 5,
+          feedbackId,
+        }),
       ]}
     >
       <Page breadcrumbs={breadcrumbs}>

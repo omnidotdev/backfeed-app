@@ -1,6 +1,8 @@
 export { default as dashboardAggregatesOptions } from "./dashboardAggregates.options";
 export { default as downvoteOptions } from "./downvote.options";
 export { default as feedbackByIdOptions } from "./feedbackById.options";
+export { default as infiniteCommentsOptions } from "./infiniteComments.options";
+export { default as infinitePostsOptions } from "./infinitePosts.options";
 export { default as invitationsOptions } from "./invitations.options";
 export { default as membersOptions } from "./members.options";
 export { default as organizationOptions } from "./organization.options";

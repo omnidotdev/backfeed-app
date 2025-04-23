@@ -6,11 +6,12 @@ import { auth } from "auth";
 import { Await } from "components/core";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
-import { Role, useInfinitePostsQuery, usePostsQuery } from "generated/graphql";
+import { Role } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import {
+  infinitePostsOptions,
   projectMetricsOptions,
   projectOptions,
   projectStatusesOptions,
@@ -82,19 +83,6 @@ const ProjectPage = async ({ params }: Props) => {
     // TODO: separate concerns for prefetching for loading / error state management
     <Await
       prefetch={[
-        // TODO: add options for infinite query
-        {
-          queryKey: useInfinitePostsQuery.getKey({
-            pageSize: 5,
-            projectId: project.rowId,
-          }),
-          queryFn: usePostsQuery.fetcher({
-            pageSize: 5,
-            projectId: project.rowId,
-          }),
-          // @ts-ignore fix
-          initialPageParam: undefined,
-        },
         projectOptions({
           projectSlug,
           organizationSlug,
@@ -102,6 +90,12 @@ const ProjectPage = async ({ params }: Props) => {
         projectMetricsOptions(commonVariables),
         projectStatusesOptions(commonVariables),
         statusBreakdownOptions(commonVariables),
+      ]}
+      infinitePrefetch={[
+        infinitePostsOptions({
+          pageSize: 5,
+          projectId: project.rowId,
+        }),
       ]}
     >
       <Page
