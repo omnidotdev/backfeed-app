@@ -34,7 +34,6 @@ const PricingOverview = ({ products }: Props) => {
 
   const filteredProducts = useMemo(
     () =>
-      // ! NB: this sort function is limited. Prices must fall in the `fixed` price type. May need to adjust accordingly in the future.
       products.filter((product) => product.recurringInterval === pricingModel),
     [products, pricingModel],
   );
