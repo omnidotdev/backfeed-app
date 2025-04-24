@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
-import { polar, BACKFEED_PRODUCT_IDS } from "lib/polar";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
 export const dynamic = "force-dynamic";
 
