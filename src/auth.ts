@@ -159,13 +159,13 @@ export const { handlers, auth } = NextAuth({
         token.expires_at = account.expires_at!;
         token.refresh_token = account.refresh_token!;
 
-        // const user = await sdk({
-        //   headers: { Authorization: `Bearer ${account.access_token}` },
-        // }).User({
-        //   hidraId: token.sub!,
-        // });
+        const user = await sdk({
+          headers: { Authorization: `Bearer ${account.access_token}` },
+        }).User({
+          hidraId: token.sub!,
+        });
 
-        // token.row_id = user?.userByHidraId?.rowId;
+        token.row_id = user?.userByHidraId?.rowId;
 
         return token;
       }
