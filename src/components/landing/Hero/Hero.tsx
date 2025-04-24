@@ -67,7 +67,7 @@ const Hero = () => {
 
       <Flex mt={6} gap={4}>
         {actions.map(({ label, icon: ActionIcon, ...rest }) => (
-          <Button key={label.short} size="lg" {...rest}>
+          <Button key={label.long} size="lg" {...rest}>
             <Text display={{ base: "inline", md: "none" }}>{label.short}</Text>
             <Text display={{ base: "none", md: "inline" }}>{label.long}</Text>
             {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
