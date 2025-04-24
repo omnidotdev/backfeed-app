@@ -77,30 +77,6 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 export const { handlers, auth } = NextAuth({
   // debug: isDevEnv,
   debug: true,
-  cookies: {
-    csrfToken: {
-      name: "__Host-authjs.csrf-token",
-      options: {
-        sameSite: "none",
-      },
-    },
-    callbackUrl: {
-      name: "__Secure-authjs.callback-url",
-      options: {
-        sameSite: "none",
-      },
-    },
-    state: {
-      name: "__Secure-authjs.state",
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
-        secure: true,
-        domain: "backfeed-app-prerelease.up.railway.app",
-      },
-    },
-  },
   providers: [
     {
       // hint encryption algorithms from IDP
