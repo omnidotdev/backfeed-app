@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { app } from "lib/config";
+import { API_BASE_URL, app } from "lib/config";
 import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
@@ -155,7 +155,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
             onClick={() =>
               isAuthenticated
                 ? router.push(
-                    `/api/customer/checkout?productId=${product.id}&customerExternalId=${user?.hidraId}`,
+                    `${API_BASE_URL}/checkout?products=${product.id}&customerExternalId=${user?.hidraId}&customerEmail=${user?.email}`,
                   )
                 : signIn("omni")
             }

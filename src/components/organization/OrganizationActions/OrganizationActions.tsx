@@ -2,13 +2,12 @@
 
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { useParams, useRouter } from "next/navigation";
+import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuCirclePlus, LuSettings } from "react-icons/lu";
-import { FiUserPlus } from "react-icons/fi";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
@@ -23,26 +22,24 @@ interface Action extends ButtonProps {
 }
 
 interface Props {
-  /** Organization ID. */
-  organizationId: string;
+  /** Whether the user has admin privileges for the organization. */
+  hasAdminPrivileges: boolean;
+  /** Whether the user has necessary subscription permissions to create projects. */
+  canCreateProjects: boolean;
 }
 
 /**
  * Organization actions.
  */
-const OrganizationActions = ({ organizationId }: Props) => {
+const OrganizationActions = ({
+  hasAdminPrivileges,
+  canCreateProjects,
+}: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  const { user } = useAuth();
-
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
-  });
-
-  const { isAdmin } = useOrganizationMembership({
-    organizationId,
-    userId: user?.rowId,
   });
 
   const ORGANIZATION_ACTIONS: Action[] = [
@@ -61,13 +58,13 @@ const OrganizationActions = ({ organizationId }: Props) => {
       icon: FiUserPlus,
       onClick: () =>
         router.push(`/organizations/${organizationSlug}/invitations`),
-      disabled: !isAdmin,
+      disabled: !hasAdminPrivileges,
     },
     {
       label: app.organizationPage.actions.cta.createProject.label,
       icon: LuCirclePlus,
       onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: !isAdmin,
+      disabled: !canCreateProjects,
     },
   ];
 

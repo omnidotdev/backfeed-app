@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
+import { CreateOrganization } from "components/organization";
 import {
   OrganizationOrderBy,
   Role,
@@ -12,6 +13,10 @@ import {
   useRecentFeedbackQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
@@ -28,6 +33,11 @@ const HomePage = async () => {
   const session = await auth();
 
   if (!session) return <LandingPage />;
+
+  const [isBasicTier, isTeamTier] = await Promise.all([
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
+  ]);
 
   const queryClient = getQueryClient();
 
@@ -84,7 +94,12 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage />
+      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+
+      {/* dialogs */}
+      {isBasicTier && (
+        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+      )}
     </HydrationBoundary>
   );
 };

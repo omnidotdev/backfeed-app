@@ -16,12 +16,26 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
+import { enableOwnershipTransferFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { SearchParams } from "nuqs/server";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const organization = await getOrganization({
+    organizationSlug,
+  });
+
+  return {
+    title: `${organization?.name} ${app.organizationMembersPage.breadcrumb}`,
+  };
+};
 
 interface Props {
   /** Organization members page parameters. */
@@ -36,17 +50,19 @@ interface Props {
 const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
 
+  const isOwnershipTransferEnabled = await enableOwnershipTransferFlag();
+
   const session = await auth();
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
+  const organization = await getOrganization({
+    organizationSlug,
   });
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -98,14 +114,12 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
-        }}
         header={{
           title: `${organization.name} ${app.organizationMembersPage.breadcrumb}`,
           description: app.organizationMembersPage.description,
           cta:
-            member?.role === Role.Owner
+            // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.
+            member?.role === Role.Owner && isOwnershipTransferEnabled
               ? [
                   {
                     label: app.organizationMembersPage.cta.addOwner.label,
@@ -125,7 +139,10 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         <Members organizationId={organization.rowId} />
 
         {/* dialogs */}
-        <AddOwner organizationId={organization.rowId} />
+        {/* TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now. */}
+        {isOwnershipTransferEnabled && (
+          <AddOwner organizationId={organization.rowId} />
+        )}
 
         <InviteMember
           organizationName={organization.name!}

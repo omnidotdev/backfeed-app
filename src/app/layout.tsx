@@ -36,7 +36,7 @@ export const metadata = {
 /**
  * Root layout.
  */
-const RootLayout = async ({ children }: { children: ReactNode }) => (
+const RootLayout = ({ children }: { children: ReactNode }) => (
   // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
   <html lang="en" suppressHydrationWarning>
     <body>

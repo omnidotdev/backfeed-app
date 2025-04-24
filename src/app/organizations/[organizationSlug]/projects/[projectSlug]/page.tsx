@@ -20,6 +20,20 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import { getProject } from "lib/actions";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug, projectSlug } = await params;
+
+  const project = await getProject({
+    organizationSlug,
+    projectSlug,
+  });
+
+  return {
+    title: `${project?.name}`,
+  };
+};
 
 interface Props {
   /** Project page params. */
@@ -36,13 +50,11 @@ const ProjectPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
-
-  const project = projects?.nodes?.[0];
+  const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
     userId: session.user?.rowId!,
@@ -106,38 +118,35 @@ const ProjectPage = async ({ params }: Props) => {
   ]);
 
   return (
-    <Page
-      metadata={{
-        title: project.name!,
-      }}
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: project.name!,
-        description: project.description!,
-        cta: [
-          {
-            label: app.projectPage.header.cta.settings.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuSettings />,
-            disabled:
-              !memberByUserIdAndOrganizationId ||
-              memberByUserIdAndOrganizationId.role === Role.Member,
-            href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
-          },
-          {
-            label: app.projectPage.header.cta.viewAllProjects.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <HiOutlineFolder />,
-            variant: "outline",
-            href: `/organizations/${organizationSlug}/projects`,
-          },
-        ],
-      }}
-    >
-      <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: project.name!,
+          description: project.description!,
+          cta: [
+            {
+              label: app.projectPage.header.cta.settings.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <LuSettings />,
+              disabled:
+                !memberByUserIdAndOrganizationId ||
+                memberByUserIdAndOrganizationId.role === Role.Member,
+              href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
+            },
+            {
+              label: app.projectPage.header.cta.viewAllProjects.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <HiOutlineFolder />,
+              variant: "outline",
+              href: `/organizations/${organizationSlug}/projects`,
+            },
+          ],
+        }}
+      >
         <ProjectOverview projectId={project.rowId} />
-      </HydrationBoundary>
-    </Page>
+      </Page>
+    </HydrationBoundary>
   );
 };
 

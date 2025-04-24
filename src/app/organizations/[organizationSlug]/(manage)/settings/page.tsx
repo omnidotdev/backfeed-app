@@ -9,10 +9,25 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import { isDevelopment } from "lib/flags";
-import { getSdk } from "lib/graphql";
+import {
+  enableJoinOrganizationFlag,
+  enableOwnershipTransferFlag,
+} from "lib/flags";
 import { getQueryClient } from "lib/util";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const organization = await getOrganization({
+    organizationSlug,
+  });
+
+  return {
+    title: `${organization?.name} ${app.organizationSettingsPage.breadcrumb}`,
+  };
+};
 
 interface Props {
   /** Organization page params. */
@@ -25,17 +40,17 @@ interface Props {
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const developmentFlag = await isDevelopment();
+  const [isJoinOrganizationEnabled, isOwnershipTransferEnabled] =
+    await Promise.all([
+      enableJoinOrganizationFlag(),
+      enableOwnershipTransferFlag(),
+    ]);
 
   const session = await auth();
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
 
@@ -67,9 +82,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
-        }}
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
           description: app.organizationSettingsPage.description,
@@ -77,8 +89,10 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
+          userId={session.user.rowId!}
           organizationId={organization.rowId}
-          developmentFlag={developmentFlag}
+          isJoinOrganizationEnabled={isJoinOrganizationEnabled}
+          isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
       </Page>
     </HydrationBoundary>

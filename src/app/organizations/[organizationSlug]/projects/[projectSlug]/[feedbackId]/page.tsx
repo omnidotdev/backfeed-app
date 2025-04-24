@@ -138,16 +138,16 @@ const FeedbackPage = async ({ params }: Props) => {
   ]);
 
   return (
-    <Page breadcrumbs={breadcrumbs}>
-      <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page breadcrumbs={breadcrumbs}>
         <FeedbackDetails feedbackId={feedbackId} />
 
         <Comments
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
         />
-      </HydrationBoundary>
-    </Page>
+      </Page>
+    </HydrationBoundary>
   );
 };
 

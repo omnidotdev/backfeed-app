@@ -3,12 +3,9 @@
 import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useParams } from "next/navigation";
 import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
-import { CreateOrganization } from "components/organization";
-import { CreateProject } from "components/project";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
@@ -21,8 +18,6 @@ dayjs.extend(relativeTime);
  */
 const Layout = ({ children }: PropsWithChildren) => {
   const isClient = useIsClient();
-
-  const { organizationSlug } = useParams<{ organizationSlug?: string }>();
 
   // TODO remove this and prod URL check below once ready for public launch
   if (!isClient) return null;
@@ -45,10 +40,6 @@ const Layout = ({ children }: PropsWithChildren) => {
         </sigil.main>
 
         <Footer />
-
-        {/* dialogs */}
-        <CreateProject organizationSlug={organizationSlug} />
-        <CreateOrganization />
 
         {/* toaster */}
         <Toaster toaster={toaster} />
