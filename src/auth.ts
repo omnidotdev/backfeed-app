@@ -90,6 +90,12 @@ export const { handlers, auth } = NextAuth({
         sameSite: "none",
       },
     },
+    state: {
+      name: "__Secure-authjs.state",
+      options: {
+        sameSite: "none",
+      },
+    },
   },
   providers: [
     {
