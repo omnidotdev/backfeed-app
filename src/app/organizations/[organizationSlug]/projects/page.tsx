@@ -9,7 +9,10 @@ import { Role, useProjectsQuery } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -49,8 +52,8 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
     getOrganization({ organizationSlug }),
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   if (!organization) notFound();

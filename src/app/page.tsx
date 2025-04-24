@@ -14,7 +14,10 @@ import {
   useRecentFeedbackQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
@@ -33,8 +36,8 @@ const HomePage = async () => {
   if (!session) return <LandingPage />;
 
   const [isBasicTier, isTeamTier] = await Promise.all([
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   const queryClient = getQueryClient();

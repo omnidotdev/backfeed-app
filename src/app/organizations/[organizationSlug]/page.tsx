@@ -19,7 +19,10 @@ import { Grid } from "generated/panda/jsx";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
@@ -54,8 +57,8 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
     getOrganization({ organizationSlug }),
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   if (!organization) notFound();

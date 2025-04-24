@@ -40,15 +40,18 @@ interface Props {
   userId: User["rowId"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
-  /** Whether the application is currently running in a development environment. */
-  developmentFlag: boolean;
+  /** Whether the join organization functionality is enabled. */
+  isJoinOrganizationEnabled: boolean;
+  /** Whether the transfer ownership functionality is enabled. */
+  isOwnershipTransferEnabled: boolean;
 }
 
 /** Organization settings. */
 const OrganizationSettings = ({
   userId,
   organizationId,
-  developmentFlag,
+  isJoinOrganizationEnabled,
+  isOwnershipTransferEnabled,
 }: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
@@ -182,8 +185,8 @@ const OrganizationSettings = ({
     <Stack gap={6}>
       <UpdateOrganization />
 
-      {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag (only allowed in development). */}
-      {(isCurrentMember || developmentFlag) && (
+      {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag. */}
+      {(isCurrentMember || isJoinOrganizationEnabled) && (
         <SectionContainer
           title={
             isCurrentMember
@@ -210,8 +213,8 @@ const OrganizationSettings = ({
 
           {isOwner && (
             <Stack gap={6}>
-              {/* TODO: remove development flag when functionality for ownership transfers is resolved. */}
-              {isOnlyOwner && developmentFlag && (
+              {/* TODO: remove `isOwnershipTransferEnabled` flag when functionality for ownership transfers is resolved. */}
+              {isOnlyOwner && isOwnershipTransferEnabled && (
                 <DangerZoneAction
                   title={transferOwnershipDetails.title}
                   description={transferOwnershipDetails.description}

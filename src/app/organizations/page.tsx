@@ -15,7 +15,10 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -51,8 +54,8 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
       isMember: true,
       excludeRoles: [Role.Member],
     }),
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
