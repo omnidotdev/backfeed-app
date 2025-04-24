@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "rm -rf .next && concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"bun dev:next\"",
-    "dev:next": "next dev --turbo --experimental-https -H app.local",
+    "dev:next": "next dev --turbo --experimental-https",
     "build": "next build",
     "start": "next start",
     "check": "biome check src",
@@ -17,9 +17,7 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
