@@ -98,12 +98,13 @@ export const { handlers, auth } = NextAuth({
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
       checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
+      authorization: {
+        params: {
+          // scope: "openid profile email offline_access",
+          // prompt: "consent",
+          state: undefined,
+        },
+      },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
