@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
-import { polar } from "lib/polar";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
 export const dynamic = "force-dynamic";
 
@@ -23,9 +23,8 @@ const PricingPage = async () => {
   ] = await Promise.all([
     auth(),
     polar.products.list({
-      isArchived: false,
-      // ! NB: important that the product name includes this query string (i.e. Backfeed)
-      query: app.name,
+      id: BACKFEED_PRODUCT_IDS,
+      sorting: ["price_amount"],
     }),
   ]);
 
