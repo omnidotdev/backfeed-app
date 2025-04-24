@@ -9,6 +9,7 @@ const app = {
   supportEmail: "team@support.omni.dev",
   identityUrl: "https://identity.omni.dev",
   forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
+  docsUrl: "https://docs.omni.dev/backfeed/overview",
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -91,10 +92,10 @@ const app = {
             long: "Start Collecting Feedback",
           },
         },
-        demo: {
+        docs: {
           label: {
-            short: "Demo",
-            long: "Watch Demo",
+            short: "Docs",
+            long: "View Docs",
           },
         },
       },
