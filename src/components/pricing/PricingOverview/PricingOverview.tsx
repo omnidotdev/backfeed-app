@@ -20,7 +20,6 @@ import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
-import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed";
 
 interface Props {
   /** The products available for pricing tiers. */
@@ -35,14 +34,7 @@ const PricingOverview = ({ products }: Props) => {
 
   const filteredProducts = useMemo(
     () =>
-      products
-        .filter((product) => product.recurringInterval === pricingModel)
-        // ! NB: this sort function is limited. Prices must fall in the `fixed` price type. May need to adjust accordingly in the future.
-        .sort(
-          (a, b) =>
-            (a.prices[0] as ProductPriceFixed).priceAmount -
-            (b.prices[0] as ProductPriceFixed).priceAmount,
-        ),
+      products.filter((product) => product.recurringInterval === pricingModel),
     [products, pricingModel],
   );
 
