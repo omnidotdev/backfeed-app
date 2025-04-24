@@ -1,4 +1,3 @@
-import { skipCSRFCheck } from "@auth/core";
 import { GraphQLClient } from "graphql-request";
 import ms from "ms";
 import NextAuth from "next-auth";
@@ -78,7 +77,6 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 export const { handlers, auth } = NextAuth({
   // debug: isDevEnv,
   debug: true,
-  skipCSRFCheck,
   providers: [
     {
       // hint encryption algorithms from IDP
@@ -98,7 +96,7 @@ export const { handlers, auth } = NextAuth({
       // State parameter prevents CSRF attacks
       // Nonce ensures the ID token wasn't tampered with
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
-      checks: ["pkce"],
+      checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
