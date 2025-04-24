@@ -1,4 +1,3 @@
-import { skipCSRFCheck } from "@auth/core";
 import { GraphQLClient } from "graphql-request";
 import ms from "ms";
 import NextAuth from "next-auth";
@@ -78,7 +77,33 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 export const { handlers, auth } = NextAuth({
   // debug: isDevEnv,
   debug: true,
-  skipCSRFCheck,
+  cookies: {
+    sessionToken: {
+      options: {
+        sameSite: "none",
+      },
+    },
+    callbackUrl: {
+      options: {
+        sameSite: "none",
+      },
+    },
+    csrfToken: {
+      options: {
+        sameSite: "none",
+      },
+    },
+    state: {
+      options: {
+        sameSite: "none",
+      },
+    },
+    pkceCodeVerifier: {
+      options: {
+        sameSite: "none",
+      },
+    },
+  },
   providers: [
     {
       // hint encryption algorithms from IDP
@@ -98,17 +123,17 @@ export const { handlers, auth } = NextAuth({
       // State parameter prevents CSRF attacks
       // Nonce ensures the ID token wasn't tampered with
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
-      // checks: ["pkce", "state"],
+      checks: ["pkce", "state"],
       // checks: ["pkce"],
-      checks: ["none"],
+      // checks: ["none"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      authorization: {
-        params: {
-          state: undefined,
-          // scope: "openid profile email offline_access",
-          // prompt: "consent",
-        },
-      },
+      // authorization: {
+      // params: {
+      // state: undefined,
+      // scope: "openid profile email offline_access",
+      // prompt: "consent",
+      // },
+      // },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
