@@ -19,19 +19,9 @@ const reqWithTrustedOrigin = (req: NextRequest): NextRequest => {
 
   const envOrigin = `${proto}://${host}`;
 
-  const { href, origin, search } = req.nextUrl;
+  const { href, origin } = req.nextUrl;
 
-  console.info("Search params:", req.nextUrl.search);
-
-  const newHref = href.replace(origin, envOrigin) + (search ?? "");
-
-  console.info("New HREF:", newHref);
-
-  return new NextRequest(newHref, {
-    headers: req.headers,
-    method: req.method,
-    body: req.body,
-  });
+  return new NextRequest(href.replace(origin, envOrigin), req);
 };
 
 export const GET = (req: NextRequest) =>
