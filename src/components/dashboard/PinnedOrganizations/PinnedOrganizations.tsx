@@ -14,10 +14,15 @@ import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
 
+interface Props {
+  /** Whether the user has basic tier subscription permissions. */
+  isBasicTier: boolean;
+}
+
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = () => {
+const PinnedOrganizations = ({ isBasicTier }: Props) => {
   const { user } = useAuth();
 
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
@@ -116,6 +121,7 @@ const PinnedOrganizations = () => {
                   color: "brand.primary",
                   borderColor: "brand.primary",
                   onClick: () => setIsCreateOrganizationDialogOpen(true),
+                  disabled: !isBasicTier,
                 },
               }}
               h={48}

@@ -92,7 +92,7 @@ const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
         ],
       }}
     >
-      <PinnedOrganizations />
+      <PinnedOrganizations isBasicTier={isBasicTier} />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
