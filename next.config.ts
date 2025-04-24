@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   headers: async () => [
     {
-      //     // apply headers to all paths
+      // apply headers to all paths
       source: "/(.*?)",
       headers: [
         //       // prefetch DNS records in browse for faster loading
@@ -75,7 +75,7 @@ const nextConfig: NextConfig = {
         //         key: "X-Permitted-Cross-Domain-Policies",
         //         value: "none",
         //       },
-        //       // set CORS headers for identity provider
+        // set CORS headers for identity provider
         ...corsHeaders,
       ],
     },

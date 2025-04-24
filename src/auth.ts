@@ -76,7 +76,8 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
-  debug: isDevEnv,
+  // debug: isDevEnv,
+  debug: true,
   cookies: {
     csrfToken: {
       name: "__Host-authjs.csrf-token",
