@@ -1,3 +1,4 @@
-export { default as hasBasicTierPrivileges } from "./hasBasicTierPrivileges";
-export { default as hasTeamTierPrivileges } from "./hasTeamTierPrivileges";
-export { default as isDevelopment } from "./isDevelopment";
+export { default as enableJoinOrganizationFlag } from "./enableJoinOrganizationFlag";
+export { default as enableOwnershipTransferFlag } from "./enableOwnershipTransferFlag";
+export { default as enableBasicTierPrivilegesFlag } from "./enableBasicTierPrivilegesFlag";
+export { default as enableTeamTierPrivilegesFlag } from "./enableTeamTierPrivilegesFlag";

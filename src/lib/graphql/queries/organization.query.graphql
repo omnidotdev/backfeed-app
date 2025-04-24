@@ -5,6 +5,7 @@ query Organization($slug: String!) {
     slug
     updatedAt
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
+      totalCount
       nodes {
         rowId
         name

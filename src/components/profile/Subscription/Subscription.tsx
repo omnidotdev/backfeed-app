@@ -54,11 +54,13 @@ const Subscription = ({ customer }: Props) => {
     return (
       <Stack>
         {app.profileSubscriptionPage.table.emptyState.label}
-        <Link href="/pricing">
-          <Button>
-            {app.profileSubscriptionPage.table.actions.subscribe.label}
-          </Button>
-        </Link>
+        <Flex>
+          <Link href="/pricing">
+            <Button>
+              {app.profileSubscriptionPage.table.actions.subscribe.label}
+            </Button>
+          </Link>
+        </Flex>
       </Stack>
     );
 

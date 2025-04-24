@@ -7,7 +7,10 @@ import { OrganizationSettings } from "components/organization";
 import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import { isDevelopment } from "lib/flags";
+import {
+  enableJoinOrganizationFlag,
+  enableOwnershipTransferFlag,
+} from "lib/flags";
 import { membersOptions, organizationRoleOptions } from "lib/options";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -33,7 +36,11 @@ interface Props {
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const developmentFlag = await isDevelopment();
+  const [isJoinOrganizationEnabled, isOwnershipTransferEnabled] =
+    await Promise.all([
+      enableJoinOrganizationFlag(),
+      enableOwnershipTransferFlag(),
+    ]);
 
   const session = await auth();
 
@@ -67,7 +74,8 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         <OrganizationSettings
           userId={session.user.rowId!}
           organizationId={organization.rowId}
-          developmentFlag={developmentFlag}
+          isJoinOrganizationEnabled={isJoinOrganizationEnabled}
+          isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
       </Page>
     </Await>

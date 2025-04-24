@@ -9,7 +9,10 @@ import { Role } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { projectsOptions } from "lib/options";
 import { getSearchParams } from "lib/util";
@@ -50,8 +53,8 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
     getOrganization({ organizationSlug }),
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   if (!organization) notFound();
@@ -71,7 +74,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   const canCreateProjects =
     isBasicTier &&
     hasAdminPrivileges &&
-    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
+    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {

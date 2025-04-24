@@ -1,12 +1,9 @@
-import { notFound } from "next/navigation";
-import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { Await } from "components/core";
-import { Page } from "components/layout";
-import { ProjectOverview } from "components/project";
-import { Role } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -17,6 +14,9 @@ import {
   projectStatusesOptions,
   statusBreakdownOptions,
 } from "lib/options";
+import { Page } from "components/layout";
+import { ProjectOverview } from "components/project";
+import { Role } from "generated/graphql";
 
 import type { BreadcrumbRecord } from "components/core";
 

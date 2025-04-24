@@ -5,7 +5,6 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import {
   InputField,
   SingularComboboxField,
-  SingularSelectField,
   SubmitForm,
   TextareaField,
 } from "components/form";
@@ -21,7 +20,6 @@ const { useAppForm: useForm } = createFormHook({
   formContext,
   fieldComponents: {
     SingularComboboxField,
-    SingularSelectField,
     TextareaField,
     InputField,
   },

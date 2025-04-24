@@ -6,8 +6,8 @@ import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
 import { Role } from "generated/graphql";
 import { getProject } from "lib/actions";
-import { app } from "lib/config";
-import { hasTeamTierPrivileges, isDevelopment } from "lib/flags";
+import { app, isDevEnv } from "lib/config";
+import { enableTeamTierPrivilegesFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -58,11 +58,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!isAdmin) notFound();
 
-  const development = await isDevelopment();
-
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
   // TODO: when ready to implement for production, remove the development check
-  const canEditStatuses = development && (await hasTeamTierPrivileges());
+  const canEditStatuses = isDevEnv && (await enableTeamTierPrivilegesFlag());
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {

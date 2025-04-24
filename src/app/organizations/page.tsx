@@ -11,7 +11,10 @@ import {
 } from "components/organization";
 import { OrganizationOrderBy, Role } from "generated/graphql";
 import { app } from "lib/config";
-import { hasBasicTierPrivileges, hasTeamTierPrivileges } from "lib/flags";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { organizationsOptions } from "lib/options";
 import { getSearchParams } from "lib/util";
@@ -48,8 +51,8 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
       isMember: true,
       excludeRoles: [Role.Member],
     }),
-    hasBasicTierPrivileges(),
-    hasTeamTierPrivileges(),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
   ]);
 
   const breadcrumbs: BreadcrumbRecord[] = [
