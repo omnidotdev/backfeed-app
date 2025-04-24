@@ -17,9 +17,7 @@
     "prepare": "panda codegen && husky"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": ["public"]
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -71,7 +69,7 @@
     "graphql-request": "^7.1.2",
     "ms": "^2.1.3",
     "next": "15.2.4",
-    "next-auth": "^5.0.0-beta.21",
+    "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.6",
     "nuqs": "^2.4.1",
     "react": "^19.1.0",
