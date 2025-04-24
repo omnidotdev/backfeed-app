@@ -78,7 +78,7 @@ const OrganizationPage = async ({ params }: Props) => {
   const canCreateProjects =
     isBasicTier &&
     hasAdminPrivileges &&
-    (isTeamTier || organization.projects.nodes.length < MAX_NUMBER_OF_PROJECTS);
+    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {

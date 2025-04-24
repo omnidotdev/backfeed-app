@@ -5,7 +5,6 @@ import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import { CreateOrganization } from "components/organization";
-import { CreateProject } from "components/project";
 import {
   OrganizationOrderBy,
   Role,
@@ -99,14 +98,7 @@ const HomePage = async () => {
 
       {/* dialogs */}
       {isBasicTier && (
-        <>
-          <CreateOrganization
-            isBasicTier={isBasicTier}
-            isTeamTier={isTeamTier}
-          />
-
-          <CreateProject isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
-        </>
+        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
       )}
     </HydrationBoundary>
   );

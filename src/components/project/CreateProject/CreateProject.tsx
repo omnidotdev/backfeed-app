@@ -10,6 +10,7 @@ import {
   Role,
   useCreatePostStatusMutation,
   useCreateProjectMutation,
+  useOrganizationQuery,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -117,7 +118,7 @@ interface Props {
   /** Whether the user has team tier subscription permissions. */
   isTeamTier: boolean;
   /** Slug of the organization to create the project under. */
-  organizationSlug?: string;
+  organizationSlug: string;
 }
 
 /**
@@ -144,33 +145,27 @@ const CreateProject = ({
     type: DialogType.CreateProject,
   });
 
-  const { data: organizations } = useOrganizationsQuery(
+  const { data: organization } = useOrganizationQuery(
     {
-      userId: user?.rowId!,
-      isMember: true,
       slug: organizationSlug,
-      excludeRoles: [Role.Member],
     },
     {
       enabled: !!user?.rowId,
-      select: (data) =>
-        data?.organizations?.nodes?.map((organization) => ({
-          label: organization?.name,
-          value: organization?.rowId,
-          numberOfProjects: organization?.projects?.totalCount ?? 0,
-        })),
+      select: (data) => data?.organizationBySlug,
     },
   );
 
-  const firstOrganization = organizations?.[0];
-
   const { isAdmin } = useOrganizationMembership({
-    organizationId: firstOrganization?.value,
+    organizationId: organization?.rowId,
     userId: user?.rowId,
   });
 
-  // NB: First we validate the user has a subscription, then if the dialog is not scoped to a specific organization, allow the user to open the dialog. The validation is handled by the async form validation, otherwise check that they have adminstrative privileges for the organization.
-  const isCreateProjectEnabled = isBasicTier && (isAdmin || !organizationSlug);
+  // NB: must be subscribed and have admin privileges. If the user has team tier privileges, enabled. Otherwise, check the number of projects for the organization
+  const isCreateProjectEnabled =
+    !!organization &&
+    isBasicTier &&
+    isAdmin &&
+    (isTeamTier || organization?.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   useHotkeys(
     "mod+p",
@@ -207,7 +202,7 @@ const CreateProject = ({
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       isTeamTier,
-      organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
+      organizationId: organization?.rowId ?? "",
       name: "",
       description: "",
     },
@@ -298,22 +293,6 @@ const CreateProject = ({
           await handleSubmit();
         }}
       >
-        <AppField name="organizationId">
-          {({ SingularSelectField }) => (
-            <SingularSelectField
-              label={app.dashboardPage.cta.newProject.selectOrganization.label}
-              placeholder={
-                app.dashboardPage.cta.newProject.selectOrganization.placeholder
-              }
-              items={organizations ?? []}
-              clearTriggerProps={{
-                display: organizationSlug ? "none" : undefined,
-              }}
-              disabled={!!organizationSlug}
-            />
-          )}
-        </AppField>
-
         <AppField name="name">
           {({ InputField }) => (
             <InputField
