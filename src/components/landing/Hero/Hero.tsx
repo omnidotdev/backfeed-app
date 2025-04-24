@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
@@ -27,13 +28,15 @@ const Hero = () => {
         long: app.landingPage.hero.cta.collect.label.long,
       },
       icon: FiArrowRight,
+      onClick: () => signIn("omni"),
     },
     {
       label: {
-        short: app.landingPage.hero.cta.demo.label.short,
-        long: app.landingPage.hero.cta.demo.label.long,
+        short: app.landingPage.hero.cta.docs.label.short,
+        long: app.landingPage.hero.cta.docs.label.long,
       },
       variant: "outline",
+      onClick: () => window.open(app.docsUrl, "_blank", "noopener,noreferrer"),
     },
   ];
 
@@ -64,7 +67,7 @@ const Hero = () => {
 
       <Flex mt={6} gap={4}>
         {actions.map(({ label, icon: ActionIcon, ...rest }) => (
-          <Button key={label.long} size="lg" {...rest}>
+          <Button key={label.short} size="lg" {...rest}>
             <Text display={{ base: "inline", md: "none" }}>{label.short}</Text>
             <Text display={{ base: "none", md: "inline" }}>{label.long}</Text>
             {ActionIcon && <Icon src={ActionIcon} h={4} w={4} />}
