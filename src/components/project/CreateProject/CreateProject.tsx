@@ -165,7 +165,7 @@ const CreateProject = ({
     !!organization &&
     isBasicTier &&
     isAdmin &&
-    (isTeamTier || organization?.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
+    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   useHotkeys(
     "mod+p",
