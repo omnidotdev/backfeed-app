@@ -15,6 +15,9 @@ export const AUTH_ISSUER = process.env.NEXT_PUBLIC_AUTH_ISSUER;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
+// polar
+export const SANDBOX = process.env.NEXT_PUBLIC_SANDBOX === "true";
+
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
