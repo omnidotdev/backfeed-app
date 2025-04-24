@@ -115,6 +115,8 @@ export const { handlers, auth } = NextAuth({
       issuer: AUTH_ISSUER,
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
+      redirectProxyUrl:
+        "https://backfeed-app-prerelease.up.railway.app/api/auth",
       // TODO also add `nonce` check, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
       // PKCE protects against authorization code interception
       // State parameter prevents CSRF attacks
