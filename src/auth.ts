@@ -92,12 +92,13 @@ export const { handlers, auth } = NextAuth({
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
+      authorization: {
+        params: {
+          // scope: "openid profile email offline_access",
+          // prompt: "consent",
+          state: undefined,
+        },
+      },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
