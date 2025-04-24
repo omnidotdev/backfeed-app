@@ -77,6 +77,20 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
+  cookies: {
+    csrfToken: {
+      name: "__Host-authjs.csrf-token",
+      options: {
+        sameSite: "none",
+      },
+    },
+    callbackUrl: {
+      name: "__Secure-authjs.callback-url",
+      options: {
+        sameSite: "none",
+      },
+    },
+  },
   providers: [
     {
       // hint encryption algorithms from IDP
