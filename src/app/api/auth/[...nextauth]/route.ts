@@ -21,7 +21,11 @@ const reqWithTrustedOrigin = (req: NextRequest): NextRequest => {
 
   const { href, origin, search } = req.nextUrl;
 
+  console.info("Search params:", req.nextUrl.search);
+
   const newHref = href.replace(origin, envOrigin) + (search ?? "");
+
+  console.info("New HREF:", newHref);
 
   return new NextRequest(newHref, {
     headers: req.headers,
