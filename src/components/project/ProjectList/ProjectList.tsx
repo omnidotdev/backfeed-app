@@ -10,29 +10,22 @@ import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
 import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
-import type { Organization, Project } from "generated/graphql";
+import type { Project } from "generated/graphql";
 
 interface Props {
-  /** Organization ID. */
-  organizationId: Organization["rowId"];
+  /** Whether the current user can create projects. */
+  canCreateProjects: boolean;
 }
 
 /**
  * Project list.
  */
-const ProjectList = ({ organizationId }: Props) => {
-  const { user } = useAuth();
-
+const ProjectList = ({ canCreateProjects }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-
-  const { isOwner } = useOrganizationMembership({
-    userId: user?.rowId,
-    organizationId: organizationId,
-  });
 
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
@@ -72,12 +65,12 @@ const ProjectList = ({ organizationId }: Props) => {
     return (
       <EmptyState
         message={
-          isOwner
+          canCreateProjects
             ? app.projectsPage.emptyState.organizationOwnerMessage
             : app.projectsPage.emptyState.organizationUserMessage
         }
         action={
-          isOwner
+          canCreateProjects
             ? {
                 label: app.projectsPage.emptyState.cta.label,
                 icon: LuCirclePlus,

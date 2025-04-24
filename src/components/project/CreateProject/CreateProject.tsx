@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, sigil } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
@@ -9,11 +10,13 @@ import {
   Role,
   useCreatePostStatusMutation,
   useCreateProjectMutation,
+  useOrganizationQuery,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
   DEBOUNCE_TIME,
+  MAX_NUMBER_OF_PROJECTS,
   projectDescriptionSchema,
   projectNameSchema,
   uuidSchema,
@@ -64,11 +67,12 @@ const DEFAULT_POST_STATUSES = [
 /** Schema for defining the shape of the create project form fields, as well as validating the form. */
 const createProjectSchema = z
   .object({
+    isTeamTier: z.boolean(),
     organizationId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
   })
-  .superRefine(async ({ organizationId, name }, ctx) => {
+  .superRefine(async ({ isTeamTier, organizationId, name }, ctx) => {
     const session = await getAuthSession();
 
     const slug = generateSlug(name);
@@ -77,10 +81,27 @@ const createProjectSchema = z
 
     const sdk = getSdk({ session });
 
-    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
-      organizationId,
-      slug,
-    });
+    const [{ organizations }, { projectBySlugAndOrganizationId }] =
+      await Promise.all([
+        sdk.Organizations({
+          organizationId,
+        }),
+        sdk.ProjectBySlug({
+          organizationId,
+          slug,
+        }),
+      ]);
+
+    const numberOfProjects =
+      organizations?.nodes?.[0]?.projects?.totalCount ?? 0;
+
+    if (!isTeamTier && numberOfProjects >= MAX_NUMBER_OF_PROJECTS) {
+      ctx.addIssue({
+        code: "custom",
+        message: app.dashboardPage.cta.newProject.organizationId.error.max,
+        path: ["organizationId"],
+      });
+    }
 
     if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
@@ -92,14 +113,24 @@ const createProjectSchema = z
   });
 
 interface Props {
+  /** Whether the user has basic tier subscription permissions. */
+  isBasicTier: boolean;
+  /** Whether the user has team tier subscription permissions. */
+  isTeamTier: boolean;
   /** Slug of the organization to create the project under. */
-  organizationSlug?: string;
+  organizationSlug: string;
 }
 
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ organizationSlug }: Props) => {
+const CreateProject = ({
+  isBasicTier,
+  isTeamTier,
+  organizationSlug,
+}: Props) => {
+  const queryClient = useQueryClient();
+
   const router = useRouter();
 
   const isSmallViewport = useViewportSize({ minWidth: "40em" });
@@ -114,29 +145,27 @@ const CreateProject = ({ organizationSlug }: Props) => {
     type: DialogType.CreateProject,
   });
 
-  const { data: organizations } = useOrganizationsQuery(
+  const { data: organization } = useOrganizationQuery(
     {
-      userId: user?.rowId!,
-      isMember: true,
       slug: organizationSlug,
-      excludeRoles: [Role.Member],
     },
     {
       enabled: !!user?.rowId,
-      select: (data) =>
-        data?.organizations?.nodes?.map((organization) => ({
-          label: organization?.name,
-          value: organization?.rowId,
-        })),
+      select: (data) => data?.organizationBySlug,
     },
   );
 
-  const firstOrganization = organizations?.[0];
-
   const { isAdmin } = useOrganizationMembership({
-    organizationId: firstOrganization?.value,
+    organizationId: organization?.rowId,
     userId: user?.rowId,
   });
+
+  // NB: must be subscribed and have admin privileges. If the user has team tier privileges, enabled. Otherwise, check the number of projects for the organization
+  const isCreateProjectEnabled =
+    !!organization &&
+    isBasicTier &&
+    isAdmin &&
+    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   useHotkeys(
     "mod+p",
@@ -145,26 +174,35 @@ const CreateProject = ({ organizationSlug }: Props) => {
       reset();
     },
     {
-      enabled:
-        !!user &&
-        !isCreateOrganizationDialogOpen &&
-        // If the dialog is scoped to a specific organization, only allow the user to create projects in that organization if they are an admin
-        (organizationSlug ? isAdmin : true),
+      enabled: !isCreateOrganizationDialogOpen && isCreateProjectEnabled,
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [user, isOpen, isCreateOrganizationDialogOpen, organizationSlug, isAdmin],
+    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled],
   );
 
-  const { mutateAsync: createProject, isPending } = useCreateProjectMutation();
+  const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
+    onSettled: () => {
+      // ! NB: needed to invalidate the number of projects for an organization
+      queryClient.invalidateQueries({
+        queryKey: useOrganizationsQuery.getKey({
+          userId: user?.rowId!,
+          isMember: true,
+          slug: organizationSlug,
+          excludeRoles: [Role.Member],
+        }),
+      });
+    },
+  });
 
   const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      organizationId: organizationSlug ? (firstOrganization?.value ?? "") : "",
+      isTeamTier,
+      organizationId: organization?.rowId ?? "",
       name: "",
       description: "",
     },
@@ -255,22 +293,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
           await handleSubmit();
         }}
       >
-        <AppField name="organizationId">
-          {({ SingularSelectField }) => (
-            <SingularSelectField
-              label={app.dashboardPage.cta.newProject.selectOrganization.label}
-              placeholder={
-                app.dashboardPage.cta.newProject.selectOrganization.placeholder
-              }
-              items={organizations ?? []}
-              clearTriggerProps={{
-                display: organizationSlug ? "none" : undefined,
-              }}
-              disabled={!!organizationSlug}
-            />
-          )}
-        </AppField>
-
         <AppField name="name">
           {({ InputField }) => (
             <InputField

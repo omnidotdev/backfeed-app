@@ -56,6 +56,7 @@ const MembershipMenu = ({
     organizationId,
   });
 
+  // TODO: handle query invalidates for `MembersQuery` across different `roles` variable options
   const { mutate: updateMember } = useUpdateMemberMutation();
   const { mutate: removeMember } = useRemoveMemberMutation();
 

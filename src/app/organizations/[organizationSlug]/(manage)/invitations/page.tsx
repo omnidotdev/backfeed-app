@@ -6,10 +6,23 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { Invitations, InviteMember } from "components/organization";
 import { Role, useInvitationsQuery } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const organization = await getOrganization({
+    organizationSlug,
+  });
+
+  return {
+    title: `${organization?.name} ${app.organizationInvitationsPage.breadcrumb}`,
+  };
+};
 
 interface Props {
   /** Organization invitations page parameters. */
@@ -26,13 +39,11 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
@@ -58,9 +69,6 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
-        metadata={{
-          title: `${organization.name} ${app.organizationInvitationsPage.breadcrumb}`,
-        }}
         header={{
           title: `${organization.name} ${app.organizationInvitationsPage.breadcrumb}`,
           description: app.organizationInvitationsPage.description,

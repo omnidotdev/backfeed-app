@@ -28,6 +28,7 @@ const SingularComboboxField = ({
 
   return (
     <Field w="full" gap={0} errorProps={errorProps}>
+      {/* TODO: figure out how to appropriately style clearTrigger and trigger */}
       <Combobox
         label={label}
         collection={createListCollection({

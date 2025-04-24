@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "lib/config";
+import { API_GRAPHQL_URL } from "lib/config";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import type { Types } from "@graphql-codegen/plugin-helpers";
@@ -36,7 +36,7 @@ const sharedConfig: GraphQLCodegenConfig["config"] = {
  * GraphQL Code Generator configuration. This generates various artifacts based on the GraphQL schema.
  */
 const graphqlCodegenConfig: CodegenConfig = {
-  schema: API_BASE_URL,
+  schema: API_GRAPHQL_URL,
   documents: "src/lib/graphql/**/*.graphql",
   // suppress non-zero exit code if there are no documents to generate
   ignoreNoDocuments: true,

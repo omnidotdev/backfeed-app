@@ -18,10 +18,17 @@ import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+interface Props {
+  /** Whether the user has basic tier subscription permissions. */
+  isBasicTier: boolean;
+  /** Whether the user has team tier subscription permissions. */
+  isTeamTier: boolean;
+}
+
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = () => {
+const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const {
@@ -80,13 +87,7 @@ const DashboardPage = () => {
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             variant: "outline",
-          },
-          {
-            label: app.dashboardPage.cta.newProject.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuCirclePlus />,
-            dialogType: DialogType.CreateProject,
-            disabled: !numberOfOrganizations,
+            disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
           },
         ],
       }}

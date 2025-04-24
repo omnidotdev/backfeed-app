@@ -7,6 +7,10 @@ import { Account } from "components/profile";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 
+export const metadata = {
+  title: app.profileAccountPage.breadcrumb,
+};
+
 interface Props {
   /** Params for the profile account page. */
   params: Promise<{ userId: string }>;
@@ -32,9 +36,6 @@ const ProfileAccountPage = async ({ params }: Props) => {
 
   return (
     <Page
-      metadata={{
-        title: app.profileAccountPage.breadcrumb,
-      }}
       header={{
         title: app.profileAccountPage.breadcrumb,
         description: app.profileAccountPage.description,

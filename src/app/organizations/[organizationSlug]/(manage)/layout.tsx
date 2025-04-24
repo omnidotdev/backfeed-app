@@ -31,11 +31,11 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
   });
 
   return (
-    <HStack h="full" w="full" gap={0}>
-      <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <HStack h="full" w="full" gap={0}>
         <ManagementSidebar>{children}</ManagementSidebar>
-      </HydrationBoundary>
-    </HStack>
+      </HStack>
+    </HydrationBoundary>
   );
 };
 

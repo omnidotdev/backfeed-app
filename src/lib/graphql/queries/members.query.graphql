@@ -4,6 +4,7 @@ query Members(
   $search: String
   $excludeRoles: [Role!]
 ) {
+  # TODO: add conditional filter to validate that members are not already an owner of another organizaion *if* they are not on a team level subscription tier (deals with ownership transfers)
   members(
     orderBy: ROLE_ASC
     condition: { organizationId: $organizationId }

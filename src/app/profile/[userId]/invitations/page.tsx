@@ -5,6 +5,10 @@ import { Page } from "components/layout";
 import { OrganizationInvites } from "components/profile";
 import { app } from "lib/config";
 
+export const metadata = {
+  title: app.profileInvitationsPage.breadcrumb,
+};
+
 /**
  * Profile invitations page.
  */
@@ -15,9 +19,6 @@ const ProfileInvitationsPage = async () => {
 
   return (
     <Page
-      metadata={{
-        title: app.profileInvitationsPage.breadcrumb,
-      }}
       header={{
         title: app.profileInvitationsPage.breadcrumb,
         description: app.profileInvitationsPage.description,

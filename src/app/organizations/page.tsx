@@ -4,9 +4,22 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { OrganizationFilters, OrganizationList } from "components/organization";
-import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
+import {
+  CreateOrganization,
+  OrganizationFilters,
+  OrganizationList,
+} from "components/organization";
+import {
+  OrganizationOrderBy,
+  Role,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
+import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
@@ -33,6 +46,18 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   if (!session) notFound();
 
+  const sdk = getSdk({ session });
+
+  const [{ organizations }, isBasicTier, isTeamTier] = await Promise.all([
+    sdk.Organizations({
+      userId: session?.user.rowId!,
+      isMember: true,
+      excludeRoles: [Role.Member],
+    }),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
+  ]);
+
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.organizationsPage.breadcrumb,
@@ -56,6 +81,11 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     queryFn: useOrganizationsQuery.fetcher(variables),
   });
 
+  // TODO: discuss the below. Should the check be strictly scoped to ownership??
+  // NB: To create an organization, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited organizations) or that they are not currently an owner/admin of another organization
+  const canCreateOrganization =
+    isBasicTier && (isTeamTier || !organizations?.totalCount);
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -69,6 +99,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
+              disabled: !canCreateOrganization,
             },
           ],
         }}
@@ -76,6 +107,14 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         <OrganizationFilters />
 
         <OrganizationList />
+
+        {/* dialogs */}
+        {canCreateOrganization && (
+          <CreateOrganization
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+          />
+        )}
       </Page>
     </HydrationBoundary>
   );

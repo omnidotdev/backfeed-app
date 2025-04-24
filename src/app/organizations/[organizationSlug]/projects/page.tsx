@@ -4,13 +4,15 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { ProjectFilters, ProjectList } from "components/project";
-import {
-  Role,
-  useOrganizationRoleQuery,
-  useProjectsQuery,
-} from "generated/graphql";
+import { CreateProject, ProjectFilters, ProjectList } from "components/project";
+import { Role, useProjectsQuery } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
+import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
+import {
+  enableBasicTierPrivilegesFlag,
+  enableTeamTierPrivilegesFlag,
+} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -18,6 +20,18 @@ import { DialogType } from "store";
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug } = await params;
+
+  const organization = await getOrganization({
+    organizationSlug,
+  });
+
+  return {
+    title: `${organization?.name} ${app.projectsPage.breadcrumb}`,
+  };
+};
 
 interface Props {
   /** Projects page params. */
@@ -36,19 +50,30 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { organizationBySlug: organization } = await sdk.Organization({
-    slug: organizationSlug,
-  });
+  const [organization, isBasicTier, isTeamTier] = await Promise.all([
+    getOrganization({ organizationSlug }),
+    enableBasicTierPrivilegesFlag(),
+    enableTeamTierPrivilegesFlag(),
+  ]);
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId: member } =
     await sdk.OrganizationRole({
       userId: session.user.rowId!,
       organizationId: organization.rowId,
     });
+
+  const hasAdminPrivileges =
+    member?.role === Role.Admin || member?.role === Role.Owner;
+
+  // NB: To create projects, user must be subscribed and have administrative privileges. If so, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  const canCreateProjects =
+    isBasicTier &&
+    hasAdminPrivileges &&
+    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -80,44 +105,40 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       queryKey: useProjectsQuery.getKey(variables),
       queryFn: useProjectsQuery.fetcher(variables),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
   ]);
 
   return (
-    <Page
-      metadata={{
-        title: `${organization.name} ${app.projectsPage.breadcrumb}`,
-      }}
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: app.projectsPage.header.title,
-        description: app.projectsPage.header.description,
-        cta: [
-          {
-            label: app.projectsPage.header.cta.newProject.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuCirclePlus />,
-            disabled: !member || member.role === Role.Member,
-            dialogType: DialogType.CreateProject,
-          },
-        ],
-      }}
-    >
-      <ProjectFilters />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: app.projectsPage.header.title,
+          description: app.projectsPage.header.description,
+          cta: [
+            {
+              label: app.projectsPage.header.cta.newProject.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <LuCirclePlus />,
+              disabled: !canCreateProjects,
+              dialogType: DialogType.CreateProject,
+            },
+          ],
+        }}
+      >
+        <ProjectFilters />
 
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList organizationId={organization.rowId} />
-      </HydrationBoundary>
-    </Page>
+        <ProjectList canCreateProjects={canCreateProjects} />
+
+        {/* dialogs */}
+        {canCreateProjects && (
+          <CreateProject
+            isBasicTier={isBasicTier}
+            isTeamTier={isTeamTier}
+            organizationSlug={organizationSlug}
+          />
+        )}
+      </Page>
+    </HydrationBoundary>
   );
 };
 

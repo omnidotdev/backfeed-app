@@ -9,12 +9,26 @@ import {
   useProjectQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
-import { app } from "lib/config";
-import { hasTeamSubscription, isDevelopment } from "lib/flags";
+import { getProject } from "lib/actions";
+import { app, isDevEnv } from "lib/config";
+import { enableTeamTierPrivilegesFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { organizationSlug, projectSlug } = await params;
+
+  const project = await getProject({
+    organizationSlug,
+    projectSlug,
+  });
+
+  return {
+    title: `${project?.name} ${app.projectSettingsPage.breadcrumb}`,
+  };
+};
 
 interface Props {
   /** Project settings page params. */
@@ -31,13 +45,11 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const sdk = getSdk({ session });
-
-  const { projects } = await sdk.Project({ projectSlug, organizationSlug });
-
-  const project = projects?.nodes?.[0];
+  const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();
+
+  const sdk = getSdk({ session });
 
   const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
     userId: session.user?.rowId!,
@@ -50,11 +62,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!isAdmin) notFound();
 
-  const development = await isDevelopment();
-
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
-  // TODO: when ready to implement for production, remove the development check
-  const canEditStatuses = development && (await hasTeamSubscription());
+  // TODO: when ready to implement for production, remove the development environment check
+  const canEditStatuses = isDevEnv && (await enableTeamTierPrivilegesFlag());
 
   const queryClient = getQueryClient();
 
@@ -101,25 +111,22 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   ]);
 
   return (
-    <Page
-      metadata={{
-        title: `${project.name} ${app.projectSettingsPage.breadcrumb}`,
-      }}
-      breadcrumbs={breadcrumbs}
-      header={{
-        title: `${project.name!} Settings`,
-        description:
-          "Handle project settings and manage feedback for your project.",
-      }}
-    >
-      <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Page
+        breadcrumbs={breadcrumbs}
+        header={{
+          title: `${project.name!} Settings`,
+          description:
+            "Handle project settings and manage feedback for your project.",
+        }}
+      >
         <ProjectSettings
           projectId={project.rowId}
           organizationSlug={organizationSlug}
           canEditStatuses={canEditStatuses}
         />
-      </HydrationBoundary>
-    </Page>
+      </Page>
+    </HydrationBoundary>
   );
 };
 

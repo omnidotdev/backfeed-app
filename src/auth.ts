@@ -8,7 +8,7 @@ import "next-auth/jwt";
 import { getSdk } from "generated/graphql.sdk";
 import { token } from "generated/panda/tokens";
 import {
-  API_BASE_URL,
+  API_GRAPHQL_URL,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
   AUTH_ISSUER,
@@ -64,7 +64,7 @@ interface UpdatedTokens {
  * GraphQL client SDK.
  */
 const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
-  const graphqlClient = new GraphQLClient(API_BASE_URL!, {
+  const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
     headers,
   });
 

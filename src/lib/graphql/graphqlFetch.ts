@@ -1,7 +1,7 @@
 import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
-import { API_BASE_URL } from "lib/config";
+import { API_GRAPHQL_URL } from "lib/config";
 import { getAuthSession } from "lib/util";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
@@ -30,7 +30,7 @@ export const graphqlFetch =
 
     const { next, cache, ...restOptions } = options || {};
 
-    const client = new GraphQLClient(API_BASE_URL!, {
+    const client = new GraphQLClient(API_GRAPHQL_URL!, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session?.accessToken ?? ""}`,
