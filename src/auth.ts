@@ -98,7 +98,7 @@ export const { handlers, auth } = NextAuth({
       // State parameter prevents CSRF attacks
       // Nonce ensures the ID token wasn't tampered with
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
-      checks: ["pkce", "state"],
+      checks: ["pkce"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
