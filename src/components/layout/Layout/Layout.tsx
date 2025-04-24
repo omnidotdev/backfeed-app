@@ -27,7 +27,11 @@ const Layout = ({ children }: PropsWithChildren) => {
   // TODO remove this and prod URL check below once ready for public launch
   if (!isClient) return null;
 
-  return (
+  return window?.location.href.includes(app.productionUrl) ? (
+    <Center mt={12} fontSize="2xl" fontWeight="semibold">
+      Coming soon
+    </Center>
+  ) : (
     <>
       {/* NB: needs to be outside of main container in order to stay fixed to top of page, see: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
       <Flex position="fixed" top={0} zIndex="sticky" h="header" w="full">
