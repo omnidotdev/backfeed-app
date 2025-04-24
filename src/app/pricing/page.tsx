@@ -23,7 +23,7 @@ const PricingPage = async () => {
   ] = await Promise.all([
     auth(),
     polar.products.list({
-      id: [...BACKFEED_PRODUCT_IDS],
+      id: BACKFEED_PRODUCT_IDS,
       sorting: ["price_amount"],
     }),
   ]);
