@@ -151,7 +151,14 @@ const FeedbackCard = ({
           {children}
         </HStack>
 
-        <Text color="foreground.muted">{feedback.description}</Text>
+        <Text
+          overflowWrap="break-word"
+          wordBreak="break-word"
+          whiteSpace="pre-wrap"
+          color="foreground.muted"
+        >
+          {feedback.description}
+        </Text>
 
         <Stack justify="space-between" gap={4} mt={2}>
           <HStack justify="space-between">
