@@ -112,13 +112,15 @@ export const { handlers, auth } = NextAuth({
       // Nonce ensures the ID token wasn't tampered with (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#oauth-20-essential-basics)
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
       checks: ["pkce", "state"],
-      // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
+      authorization: {
+        params: {
+          // explicitly request scopes (otherwise defaults to `openid profile email`)
+          // `offline_access` is required for refresh tokens (https://openid.net/specs/openid-connect-core-1_0.html#offlineaccess)
+          scope: "openid profile email offline_access",
+          // `prompt=consent` parameter is required for refresh token flow
+          prompt: "consent",
+        },
+      },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)
