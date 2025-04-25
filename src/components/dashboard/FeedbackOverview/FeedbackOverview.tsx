@@ -2,6 +2,8 @@
 
 import { Skeleton } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useMemo } from "react";
 import {
   Bar,
@@ -18,6 +20,9 @@ import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { useAuth, useViewportSize } from "lib/hooks";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 interface Props {
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
@@ -31,8 +36,10 @@ interface Props {
 const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
 
+  const userTimezone = dayjs.tz.guess();
+
   const getFormattedDate = (diff: number) =>
-    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+    dayjs(oneWeekAgo).tz(userTimezone).add(diff, "day").format("ddd");
 
   const { user } = useAuth();
 
