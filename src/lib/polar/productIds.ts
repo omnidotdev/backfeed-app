@@ -1,9 +1,7 @@
-import type { UUID } from "node:crypto";
-
 /**
  * Polar sandbox Product IDs.
  */
-const sandboxProductIds: UUID[] = [
+const sandboxProductIds = [
   // Backfeed Basic (Monthly)
   "9fdf9d78-f4f7-4222-93ed-55ae60d996e4",
   // Backfeed Basic (Yearly)
@@ -16,12 +14,12 @@ const sandboxProductIds: UUID[] = [
   "3776b994-1c73-4869-afef-f34a2ca68181",
   // Backfeed Enterprise (Yearly)
   "48d27c97-50da-441b-ba44-d90b8c2d60b3",
-] as const;
+];
 
 /**
  * Polar production product IDs.
  */
-const productionProductIds: UUID[] = [
+const productionProductIds = [
   // Backfeed Basic (Monthly)
   "768e1aee-fc38-46fa-91d9-1c15b71375dd",
   // Backfeed Basic (Yearly)
@@ -34,14 +32,11 @@ const productionProductIds: UUID[] = [
   "7e2bd7d7-6a43-4c0d-8545-c59d2fabd598",
   // Backfeed Enterprise (Yearly)
   "51906ba1-b6a9-43c9-83ee-f2fe399a792f",
-] as const;
+];
 
 /**
  * Polar product IDs.
  */
-const BACKFEED_PRODUCT_IDS: UUID[] = [
-  ...sandboxProductIds,
-  ...productionProductIds,
-] as const;
+const BACKFEED_PRODUCT_IDS = [...sandboxProductIds, ...productionProductIds];
 
 export default BACKFEED_PRODUCT_IDS;
