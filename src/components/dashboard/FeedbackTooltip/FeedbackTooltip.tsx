@@ -16,7 +16,7 @@ const FeedbackTooltip = ({
   payload,
   label,
 }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
+  if (active && payload && payload.length && !!payload[0].value) {
     return (
       <Flex
         bgColor="background.default"

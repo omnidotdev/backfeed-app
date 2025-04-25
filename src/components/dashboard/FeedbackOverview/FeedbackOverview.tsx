@@ -112,6 +112,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
 
               <Tooltip
                 cursor={{ fill: "transparent" }}
+                isAnimationActive={false}
                 content={<FeedbackTooltip />}
               />
 
