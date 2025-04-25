@@ -12,6 +12,7 @@ import {
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
   AUTH_ISSUER,
+  isDevEnv,
 } from "lib/config";
 
 import type { User as NextAuthUser } from "next-auth";
