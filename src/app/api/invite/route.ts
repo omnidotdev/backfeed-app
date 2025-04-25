@@ -37,9 +37,7 @@ export const POST = async (req: NextRequest) => {
         organizationName,
         recipientEmail,
         // TODO: Route to sign in page
-        inviteUrl: isDevEnv
-          ? process.env.NEXT_PUBLIC_BASE_URL!
-          : app.productionUrl,
+        inviteUrl: process.env.NEXT_PUBLIC_BASE_URL!,
       }) as ReactElement,
     });
 
