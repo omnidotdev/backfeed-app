@@ -32,9 +32,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
 
   const getFormattedDate = (diff: number) =>
-    dayjs(oneWeekAgo)
-      .add(diff + 1, "day")
-      .format("ddd");
+    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
   const { user } = useAuth();
 
@@ -62,7 +60,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;
 
   const DATA = Array.from({ length: 7 }).map((_, index) => {
-    const date = getFormattedDate(index);
+    const date = getFormattedDate(index + 1);
 
     return {
       name: date,
