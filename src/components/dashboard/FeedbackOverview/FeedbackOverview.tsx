@@ -50,7 +50,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
       enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
-          name: dayjs(aggregate.keys?.[0]).format("ddd"),
+          name: dayjs(aggregate.keys?.[0]).startOf("day").format("ddd"),
           total: Number(aggregate.distinctCount?.rowId),
         })),
     },
