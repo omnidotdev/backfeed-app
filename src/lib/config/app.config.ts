@@ -44,6 +44,12 @@ const app = {
       },
     },
   },
+  globalError: {
+    title: "Error",
+    description:
+      "We're sorry, but an error occurred while rendering this page, please try again. If the issue persists, please reach out at",
+    goBack: "Back",
+  },
   notFound: {
     statusCode: 404,
     title: "Page Not Found",
