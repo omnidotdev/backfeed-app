@@ -17,6 +17,7 @@ import {
 
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
+import { CookieOption } from "@auth/core/types";
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
@@ -73,36 +74,23 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 };
 
 /**
+ * Shared cookie options required for cross-domain cookie processing flows. Without these, authentication breaks.
+ */
+const cookieOptions: Pick<CookieOption, "options"> = {
+  options: {
+    sameSite: "none",
+  },
+};
+
+/**
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
   cookies: {
-    sessionToken: {
-      options: {
-        sameSite: "none",
-      },
-    },
-    callbackUrl: {
-      options: {
-        sameSite: "none",
-      },
-    },
-    csrfToken: {
-      options: {
-        sameSite: "none",
-      },
-    },
-    state: {
-      options: {
-        sameSite: "none",
-      },
-    },
-    pkceCodeVerifier: {
-      options: {
-        sameSite: "none",
-      },
-    },
+    sessionToken: cookieOptions,
+    state: cookieOptions,
+    pkceCodeVerifier: cookieOptions,
   },
   providers: [
     {
