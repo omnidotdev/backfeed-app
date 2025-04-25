@@ -15,9 +15,9 @@ import {
   isDevEnv,
 } from "lib/config";
 
+import type { CookieOption } from "@auth/core/types";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
-import { CookieOption } from "@auth/core/types";
 
 /**
  * Augment the JWT interface with custom claims. See `callbacks` below, where the `jwt` callback is augmented.
