@@ -1,4 +1,4 @@
-import type { ProductsListRequest } from "@polar-sh/sdk/models/operations/productslist.js";
+import type { ProductsListRequest } from "@polar-sh/sdk/models/operations/productslist";
 
 type ProductIds = ProductsListRequest["id"];
 
