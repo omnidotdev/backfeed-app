@@ -10,12 +10,20 @@ describe("Schema Validation", () => {
       const input3 = "Test#";
       const input4 = "Test$";
       const input5 = "Test%";
+      const input6 = "Test.";
+      const input7 = "Test-Test";
+      const input8 = "I'm Testing";
+      const input9 = "Test, Test";
 
       expect(standardRegexSchema.safeParse(input1).success).toBe(false);
-      expect(standardRegexSchema.safeParse(input2).success).toBe(false);
+      expect(standardRegexSchema.safeParse(input2).success).toBe(true);
       expect(standardRegexSchema.safeParse(input3).success).toBe(false);
       expect(standardRegexSchema.safeParse(input4).success).toBe(false);
       expect(standardRegexSchema.safeParse(input5).success).toBe(false);
+      expect(standardRegexSchema.safeParse(input6).success).toBe(true);
+      expect(standardRegexSchema.safeParse(input7).success).toBe(true);
+      expect(standardRegexSchema.safeParse(input8).success).toBe(true);
+      expect(standardRegexSchema.safeParse(input9).success).toBe(true);
     });
 
     it("passes for accented characters", () => {
