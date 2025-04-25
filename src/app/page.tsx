@@ -24,7 +24,7 @@ import type { OrganizationsQueryVariables } from "generated/graphql";
 
 dayjs.extend(utc);
 
-const oneWeekAgo = dayjs().utc().subtract(1, "week").startOf("day").toDate();
+const oneWeekAgo = dayjs().utc().subtract(8, "days").startOf("day").toDate();
 const startOfToday = dayjs().utc().subtract(1, "day").startOf("day").toDate();
 
 export const dynamic = "force-dynamic";
