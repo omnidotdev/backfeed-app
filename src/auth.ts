@@ -88,8 +88,6 @@ const cookieOptions: Pick<CookieOption, "options"> = {
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
   cookies: {
-    callbackUrl: cookieOptions,
-    csrfToken: cookieOptions,
     sessionToken: cookieOptions,
     state: cookieOptions,
     pkceCodeVerifier: cookieOptions,
