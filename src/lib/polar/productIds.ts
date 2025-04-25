@@ -1,3 +1,7 @@
+import type { ProductsListRequest } from "@polar-sh/sdk/models/operations/productslist.js";
+
+type ProductIds = ProductsListRequest["id"];
+
 /**
  * Polar sandbox Product IDs.
  */
@@ -37,6 +41,9 @@ const productionProductIds = [
 /**
  * Polar product IDs.
  */
-const BACKFEED_PRODUCT_IDS = [...sandboxProductIds, ...productionProductIds];
+const BACKFEED_PRODUCT_IDS: ProductIds = [
+  ...sandboxProductIds,
+  ...productionProductIds,
+];
 
 export default BACKFEED_PRODUCT_IDS;
