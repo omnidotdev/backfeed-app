@@ -75,8 +75,7 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
-  // debug: isDevEnv,
-  debug: true,
+  debug: isDevEnv,
   cookies: {
     sessionToken: {
       options: {
@@ -106,7 +105,7 @@ export const { handlers, auth } = NextAuth({
   },
   providers: [
     {
-      // hint encryption algorithms from IDP
+      // hint encryption algorithms from IDP; currently not correctly broadcast by Better Auth (https://github.com/better-auth/better-auth/pull/2326)
       client: {
         // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
         authorization_signed_response_alg: "HS256",
@@ -129,7 +128,6 @@ export const { handlers, auth } = NextAuth({
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
-      // state: undefined,
       // scope: "openid profile email offline_access",
       // prompt: "consent",
       // },
