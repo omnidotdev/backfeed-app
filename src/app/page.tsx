@@ -94,7 +94,12 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+      <DashboardPage
+        isBasicTier={isBasicTier}
+        isTeamTier={isTeamTier}
+        oneWeekAgo={oneWeekAgo}
+        startOfToday={startOfToday}
+      />
 
       {/* dialogs */}
       {isBasicTier && (

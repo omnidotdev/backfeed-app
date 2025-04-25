@@ -18,17 +18,21 @@ import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { useAuth, useViewportSize } from "lib/hooks";
 
-const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
-const startOfToday = dayjs().startOf("day").toDate();
-
-const getFormattedDate = (diff: number) =>
-  dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+interface Props {
+  /** Start of day from one week ago. */
+  oneWeekAgo: Date;
+  /** Start of today. */
+  startOfToday: Date;
+}
 
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = () => {
+const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
+
+  const getFormattedDate = (diff: number) =>
+    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
   const { user } = useAuth();
 

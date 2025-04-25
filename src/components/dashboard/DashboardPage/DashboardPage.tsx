@@ -7,7 +7,12 @@ import {
 } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
-import { Aggregate, Feedback, PinnedOrganizations } from "components/dashboard";
+import {
+  Aggregate,
+  FeedbackOverview,
+  PinnedOrganizations,
+  RecentFeedback,
+} from "components/dashboard";
 import { Page } from "components/layout";
 import {
   Role,
@@ -23,12 +28,21 @@ interface Props {
   isBasicTier: boolean;
   /** Whether the user has team tier subscription permissions. */
   isTeamTier: boolean;
+  /** Start of day from one week ago. */
+  oneWeekAgo: Date;
+  /** Start of today. */
+  startOfToday: Date;
 }
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
+const DashboardPage = ({
+  isBasicTier,
+  isTeamTier,
+  oneWeekAgo,
+  startOfToday,
+}: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const {
@@ -107,7 +121,11 @@ const DashboardPage = ({ isBasicTier, isTeamTier }: Props) => {
         ))}
       </Grid>
 
-      <Feedback />
+      <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
+        <FeedbackOverview oneWeekAgo={oneWeekAgo} startOfToday={startOfToday} />
+
+        <RecentFeedback />
+      </Grid>
     </Page>
   );
 };
