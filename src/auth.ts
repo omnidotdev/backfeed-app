@@ -119,13 +119,11 @@ export const { handlers, auth } = NextAuth({
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
       // TODO also add `nonce` check, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
-      // PKCE protects against authorization code interception
-      // State parameter prevents CSRF attacks
-      // Nonce ensures the ID token wasn't tampered with
+      // PKCE protects against authorization code interception (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#pkce-proof-key-for-code-exchange-mechanism)
+      // State parameter prevents CSRF attacks (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#oauth-20-essential-basics)
+      // Nonce ensures the ID token wasn't tampered with (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#oauth-20-essential-basics)
       // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
-      // checks: ["pkce", "state"],
-      // checks: ["pkce"],
-      checks: ["none"],
+      checks: ["pkce", "state"],
       // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
       // authorization: {
       // params: {
