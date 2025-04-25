@@ -32,7 +32,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
 
   const getFormattedDate = (diff: number) =>
-    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+    dayjs(oneWeekAgo).add(diff, "day").startOf("day").format("ddd");
 
   const { user } = useAuth();
 
