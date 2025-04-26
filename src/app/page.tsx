@@ -1,5 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
@@ -20,6 +21,8 @@ import {
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
+
+dayjs.extend(utc);
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +49,8 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  const oneWeekAgo = dayjs().subtract(8, "days").startOf("day").toDate();
-  const startOfToday = dayjs().startOf("day").toDate();
+  const oneWeekAgo = dayjs().utc().subtract(8, "days").startOf("day").toDate();
+  const startOfToday = dayjs().utc().subtract(1, "day").startOf("day").toDate();
 
   await Promise.all([
     queryClient.prefetchQuery({
