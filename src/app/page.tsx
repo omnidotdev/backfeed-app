@@ -49,8 +49,8 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  const oneWeekAgo = dayjs().utc().subtract(8, "days").startOf("day").toDate();
-  const startOfToday = dayjs().utc().subtract(1, "day").startOf("day").toDate();
+  const oneWeekAgo = dayjs().utc().subtract(7, "days").startOf("day").toDate();
+  const startOfToday = dayjs().utc().startOf("day").toDate();
 
   await Promise.all([
     queryClient.prefetchQuery({
