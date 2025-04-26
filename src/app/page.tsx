@@ -21,9 +21,6 @@ import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
-const oneWeekAgo = dayjs().subtract(8, "days").startOf("day").toDate();
-const startOfToday = dayjs().startOf("day").toDate();
-
 export const dynamic = "force-dynamic";
 
 /**
@@ -48,6 +45,9 @@ const HomePage = async () => {
     userId: session.user.rowId!,
     isMember: true,
   };
+
+  const oneWeekAgo = dayjs().subtract(8, "days").startOf("day").toDate();
+  const startOfToday = dayjs().startOf("day").toDate();
 
   await Promise.all([
     queryClient.prefetchQuery({
