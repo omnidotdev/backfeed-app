@@ -2,13 +2,13 @@
 
 import { Button, Flex, Input, Label, Stack, Text, sigil } from "@omnidev/sigil";
 import { useMemo, useState } from "react";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 
-import type { UserFragment } from "generated/graphql";
 import type { InputProps } from "@omnidev/sigil";
+import type { UserFragment } from "generated/graphql";
 
 interface Props {
   /** User account information. */

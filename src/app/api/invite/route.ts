@@ -1,12 +1,12 @@
 import { Resend } from "resend";
 
+import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
 import { app, isDevEnv } from "lib/config";
-import { auth } from "auth";
 
+import type { OrganizationInvitation } from "components/organization";
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
-import type { OrganizationInvitation } from "components/organization";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,9 +37,7 @@ export const POST = async (req: NextRequest) => {
         organizationName,
         recipientEmail,
         // TODO: Route to sign in page
-        inviteUrl: isDevEnv
-          ? process.env.NEXT_PUBLIC_BASE_URL!
-          : app.productionUrl,
+        inviteUrl: process.env.NEXT_PUBLIC_BASE_URL!,
       }) as ReactElement,
     });
 

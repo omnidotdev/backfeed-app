@@ -18,17 +18,21 @@ import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { useAuth, useViewportSize } from "lib/hooks";
 
-const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
-const startOfToday = dayjs().startOf("day").toDate();
-
-const getFormattedDate = (diff: number) =>
-  dayjs(oneWeekAgo).add(diff, "day").format("ddd");
+interface Props {
+  /** Start of day from one week ago. */
+  oneWeekAgo: Date;
+  /** Start of today. */
+  startOfToday: Date;
+}
 
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = () => {
+const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
   const isLargeViewport = useViewportSize({ minWidth: "64em" });
+
+  const getFormattedDate = (diff: number) =>
+    dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
   const { user } = useAuth();
 
@@ -46,7 +50,7 @@ const FeedbackOverview = () => {
       enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
-          name: dayjs(aggregate.keys?.[0]).format("ddd"),
+          name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),
           total: Number(aggregate.distinctCount?.rowId),
         })),
     },
@@ -56,7 +60,7 @@ const FeedbackOverview = () => {
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;
 
   const DATA = Array.from({ length: 7 }).map((_, index) => {
-    const date = getFormattedDate(index);
+    const date = getFormattedDate(index + 1);
 
     return {
       name: date,
@@ -101,6 +105,7 @@ const FeedbackOverview = () => {
 
               <Tooltip
                 cursor={{ fill: "transparent" }}
+                isAnimationActive={false}
                 content={<FeedbackTooltip />}
               />
 

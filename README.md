@@ -6,9 +6,7 @@ Backfeed is an open-source feedback reporting platform.
 
 First, `cp .env.local.template .env.local` and fill in the values.
 
-### Building and Running (Native)
-
-#### Native
+### Building and Running
 
 ```sh
 bun install
@@ -16,16 +14,6 @@ bun install
 
 ```sh
 bun run dev
-```
-
-#### Container (for Production)
-
-```sh
-docker build -t backfeed-app .
-```
-
-```sh
-docker run -p 3000:3000 backfeed-app
 ```
 
 ## License

@@ -15,6 +15,7 @@ import {
   isDevEnv,
 } from "lib/config";
 
+import type { CookieOption } from "@auth/core/types";
 import type { User as NextAuthUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 
@@ -73,13 +74,27 @@ const sdk = ({ headers }: { headers?: HeadersInit } = {}) => {
 };
 
 /**
+ * Shared cookie options required for cross-domain cookie processing flows. Without these, authentication breaks.
+ */
+const cookieOptions: Pick<CookieOption, "options"> = {
+  options: {
+    sameSite: "none",
+  },
+};
+
+/**
  * Auth configuration.
  */
 export const { handlers, auth } = NextAuth({
   debug: isDevEnv,
+  cookies: {
+    sessionToken: cookieOptions,
+    state: cookieOptions,
+    pkceCodeVerifier: cookieOptions,
+  },
   providers: [
     {
-      // hint encryption algorithms from IDP
+      // hint encryption algorithms from IDP; currently not correctly broadcast by Better Auth (https://github.com/better-auth/better-auth/pull/2326)
       client: {
         // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
         authorization_signed_response_alg: "HS256",
@@ -91,13 +106,24 @@ export const { handlers, auth } = NextAuth({
       issuer: AUTH_ISSUER,
       clientId: AUTH_CLIENT_ID,
       clientSecret: AUTH_CLIENT_SECRET,
-      // TODO fix, refresh tokens not granted. Below might be useful (https://linear.app/omnidev/issue/OMNI-305/fix-refresh-token-flow)
-      // authorization: {
-      // params: {
-      // scope: "openid profile email offline_access",
-      // prompt: "consent",
-      // },
-      // },
+      // TODO also add `nonce` check, currently `OperationProcessingError: JWT "nonce" (nonce) claim missing`
+      // PKCE protects against authorization code interception (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#pkce-proof-key-for-code-exchange-mechanism)
+      // State parameter prevents CSRF attacks (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#oauth-20-essential-basics)
+      // Nonce ensures the ID token wasn't tampered with (https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html#oauth-20-essential-basics)
+      // NB: "state" is added to checks automatically if redirect proxy URL is set, listed here for completeness
+      checks: ["pkce", "state"],
+      authorization: {
+        params: {
+          // explicitly request scopes (otherwise defaults to `openid profile email`)
+          // `offline_access` is required for refresh tokens (https://openid.net/specs/openid-connect-core-1_0.html#offlineaccess)
+          // scope: "openid profile email offline_access",
+          // TODO enable above (replace below) for refresh tokens
+          scope: "openid profile email",
+          // `prompt=consent` parameter is required for refresh token flow
+          // TODO enable below for refresh tokens
+          // prompt: "consent",
+        },
+      },
       style: {
         brandColor: token("colors.brand.primary.500"),
         // TODO use Omni CDN (https://linear.app/omnidev/issue/OMNI-142/create-and-use-dedicated-cdn)

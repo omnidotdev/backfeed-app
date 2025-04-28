@@ -3,9 +3,9 @@ import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import {
+  useCreateInvitationMutation,
   useDeleteInvitationMutation,
   useInvitationsQuery,
-  useCreateInvitationMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -13,7 +13,7 @@ import { getQueryClient, toaster } from "lib/util";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
-import type { Organization, InvitationFragment } from "generated/graphql";
+import type { InvitationFragment, Organization } from "generated/graphql";
 import type { JsxStyleProps } from "generated/panda/types";
 
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;

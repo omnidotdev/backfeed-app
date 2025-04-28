@@ -36,6 +36,7 @@ const pandaConfig = defineConfig({
       },
       body: {
         overscrollBehaviorY: "none",
+        fontSynthesisWeight: "none",
       },
     },
   },
