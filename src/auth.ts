@@ -116,9 +116,12 @@ export const { handlers, auth } = NextAuth({
         params: {
           // explicitly request scopes (otherwise defaults to `openid profile email`)
           // `offline_access` is required for refresh tokens (https://openid.net/specs/openid-connect-core-1_0.html#offlineaccess)
-          scope: "openid profile email offline_access",
+          // scope: "openid profile email offline_access",
+          // TODO enable above (replace below) for refresh tokens
+          scope: "openid profile email",
           // `prompt=consent` parameter is required for refresh token flow
-          prompt: "consent",
+          // TODO enable below for refresh tokens
+          // prompt: "consent",
         },
       },
       style: {
