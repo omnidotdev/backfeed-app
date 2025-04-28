@@ -22,11 +22,11 @@ import { match } from "ts-pattern";
 
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
-import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
-import type { Organization, MemberFragment } from "generated/graphql";
+import type { MemberFragment, Organization } from "generated/graphql";
 
 const columnHelper = createColumnHelper<MemberFragment>();
 

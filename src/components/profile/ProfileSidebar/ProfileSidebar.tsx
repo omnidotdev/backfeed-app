@@ -14,7 +14,7 @@ import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
-import { useDebounceValue, useViewportSize, useAuth } from "lib/hooks";
+import { useAuth, useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";

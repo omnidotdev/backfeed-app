@@ -4,9 +4,9 @@ import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
 import { app, isDevEnv } from "lib/config";
 
+import type { OrganizationInvitation } from "components/organization";
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
-import type { OrganizationInvitation } from "components/organization";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

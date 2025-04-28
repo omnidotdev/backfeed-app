@@ -16,9 +16,9 @@ import {
 } from "@omnidev/sigil";
 import { signOut } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
-import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { app, isDevEnv } from "lib/config";
