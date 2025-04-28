@@ -70,7 +70,12 @@ const HomePage = async () => {
         recentFeedbackOptions({ userId: session.user.rowId! }),
       ]}
     >
-      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} oneWeekAgo={oneWeekAgo} startOfToday={startOfToday} />
+      <DashboardPage
+        isBasicTier={isBasicTier}
+        isTeamTier={isTeamTier}
+        oneWeekAgo={oneWeekAgo}
+        startOfToday={startOfToday}
+      />
 
       {/* dialogs */}
       {isBasicTier && (
