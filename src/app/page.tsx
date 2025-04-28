@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
@@ -20,8 +21,7 @@ import {
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
-const oneWeekAgo = dayjs().subtract(1, "week").startOf("day").toDate();
-const startOfToday = dayjs().startOf("day").toDate();
+dayjs.extend(utc);
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +46,9 @@ const HomePage = async () => {
     isMember: true,
   };
 
+  const oneWeekAgo = dayjs().utc().subtract(7, "days").startOf("day").toDate();
+  const startOfToday = dayjs().utc().startOf("day").toDate();
+
   return (
     // TODO: separate concerns for prefetching for loading / error state management
     <Await
@@ -67,7 +70,7 @@ const HomePage = async () => {
         recentFeedbackOptions({ userId: session.user.rowId! }),
       ]}
     >
-      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
+      <DashboardPage isBasicTier={isBasicTier} isTeamTier={isTeamTier} oneWeekAgo={oneWeekAgo} startOfToday={startOfToday} />
 
       {/* dialogs */}
       {isBasicTier && (

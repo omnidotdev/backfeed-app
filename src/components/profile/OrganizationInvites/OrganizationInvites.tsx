@@ -8,13 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@omnidev/sigil";
-import dayjs from "dayjs";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { useMemo } from "react";
 
 import { InvitationMenu } from "components/profile";

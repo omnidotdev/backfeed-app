@@ -2,9 +2,9 @@
 
 import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
+import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
-import { FiUserPlus } from "react-icons/fi";
 
 import { OverflowText } from "components/core";
 import { app } from "lib/config";

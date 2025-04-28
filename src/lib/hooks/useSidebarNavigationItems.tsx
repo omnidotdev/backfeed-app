@@ -2,8 +2,8 @@
 
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { LuBuilding2 } from "react-icons/lu";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuBuilding2 } from "react-icons/lu";
 
 import { useOrganizationQuery, useProjectBySlugQuery } from "generated/graphql";
 import { app } from "lib/config";

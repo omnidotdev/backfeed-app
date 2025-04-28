@@ -9,6 +9,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { getQueryClient } from "lib/util";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
@@ -56,9 +57,16 @@ const MembershipMenu = ({
     organizationId,
   });
 
+  const queryClient = getQueryClient();
+
+  const onSettled = () =>
+    queryClient.invalidateQueries({
+      queryKey: ["Members"],
+    });
+
   // TODO: handle query invalidates for `MembersQuery` across different `roles` variable options
-  const { mutate: updateMember } = useUpdateMemberMutation();
-  const { mutate: removeMember } = useRemoveMemberMutation();
+  const { mutate: updateMember } = useUpdateMemberMutation({ onSettled });
+  const { mutate: removeMember } = useRemoveMemberMutation({ onSettled });
 
   const handleMenuAction = ({ type }: { type: MenuAction }) => {
     // NB: this is safe as owners are already filtered out by default from the query.

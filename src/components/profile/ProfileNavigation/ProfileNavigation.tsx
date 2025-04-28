@@ -6,7 +6,7 @@ import {
   useRouter,
   useSelectedLayoutSegment,
 } from "next/navigation";
-import { PiUserCircle, PiCreditCardLight, PiUserPlus } from "react-icons/pi";
+import { PiCreditCardLight, PiUserCircle, PiUserPlus } from "react-icons/pi";
 
 import { OverflowText } from "components/core";
 import { useInvitationsQuery } from "generated/graphql";

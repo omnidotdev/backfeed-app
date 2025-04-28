@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@omnidev/sigil";
-import dayjs from "dayjs";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -15,12 +14,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { useMemo } from "react";
 
 import { InvitationMenu } from "components/organization";
 import { useInvitationsQuery } from "generated/graphql";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { app } from "lib/config";
+import { useAuth, useOrganizationMembership } from "lib/hooks";
 
 import type { InvitationFragment, Organization } from "generated/graphql";
 

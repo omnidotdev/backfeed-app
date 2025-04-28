@@ -1,19 +1,30 @@
 "use client";
 
 import { Flex, css, sigil } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { subscriptionOptions } from "lib/options";
 
 /**
  * Layout header.
  */
 const Header = () => {
   const pathname = usePathname(),
-    { isAuthenticated, isLoading } = useAuth();
+    { user, isAuthenticated, isLoading } = useAuth();
+
+  const { error: subscriptionNotFound } = useQuery(
+    subscriptionOptions({
+      hidraId: user?.hidraId,
+    }),
+  );
+
+  const showPricingLink =
+    !isLoading && (!isAuthenticated || subscriptionNotFound);
 
   return (
     <sigil.header
@@ -32,7 +43,7 @@ const Header = () => {
         <Flex gap={4} alignItems="center">
           <LogoLink width={48} />
 
-          {!isLoading && !isAuthenticated && (
+          {showPricingLink && (
             <Flex display={{ base: "none", sm: "flex" }}>
               <Link href="/pricing" role="group">
                 <Flex
