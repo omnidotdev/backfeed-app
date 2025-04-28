@@ -1,8 +1,8 @@
 import { Resend } from "resend";
 
+import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
 import { app, isDevEnv } from "lib/config";
-import { auth } from "auth";
 
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
