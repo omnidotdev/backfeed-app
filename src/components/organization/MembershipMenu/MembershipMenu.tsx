@@ -9,12 +9,12 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { getQueryClient } from "lib/util";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
 import type { MemberFragment } from "generated/graphql";
 import type { JsxStyleProps } from "generated/panda/types";
-import { getQueryClient } from "lib/util";
 
 enum MenuAction {
   MakeAdmin = "admin",
