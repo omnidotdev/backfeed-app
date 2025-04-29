@@ -4,7 +4,6 @@ import { Center, Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import utc from "dayjs/plugin/utc";
 import { useIsClient } from "usehooks-ts";
 
 import { Footer, Header } from "components/layout";
@@ -15,7 +14,6 @@ import type { PropsWithChildren } from "react";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
-dayjs.extend(utc);
 
 /**
  * Core application layout.
