@@ -7,7 +7,7 @@ const app = {
   productionUrl: "https://backfeed.omni.dev",
   supportName: "Omni Support",
   supportEmailAddress: "support@omni.dev",
-  identityUrl: "https://identity.omni.dev",
+  identityProviderUrl: "https://identity.omni.dev",
   forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
   breadcrumb: "Home",

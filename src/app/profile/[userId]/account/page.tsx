@@ -44,7 +44,7 @@ const ProfileAccountPage = async ({ params }: Props) => {
             label: app.profileAccountPage.cta.updateProfile.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <FaRegEdit />,
-            href: app.identityUrl,
+            href: app.identityProviderUrl,
           },
         ],
       }}
