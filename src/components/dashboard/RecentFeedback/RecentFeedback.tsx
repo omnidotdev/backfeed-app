@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex } from "@omnidev/sigil";
+import { Flex, Stack } from "@omnidev/sigil";
 
 import { Link, SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
@@ -45,7 +45,7 @@ const RecentFeedback = () => {
           w="full"
         />
       ) : (
-        <Flex w="full" direction="column" gap={2} h="full">
+        <Stack w="full" gap={2} h="full">
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
@@ -57,6 +57,7 @@ const RecentFeedback = () => {
                 <Response
                   feedback={feedback as Partial<Post>}
                   p={2}
+                  _last={{ pb: 6 }}
                   _hover={{
                     bgColor: "background.muted",
                     borderRadius: "md",
@@ -72,7 +73,7 @@ const RecentFeedback = () => {
               w="full"
             />
           )}
-        </Flex>
+        </Stack>
       )}
     </FeedbackSection>
   );
