@@ -2,7 +2,11 @@
 
 import { Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
-import { HiOutlineFolder } from "react-icons/hi2";
+import {
+  HiOutlineCalendar,
+  HiOutlineFolder,
+  HiOutlineUser,
+} from "react-icons/hi2";
 
 import { StatusBadge } from "components/core";
 
@@ -32,28 +36,30 @@ const Response = ({ feedback, ...rest }: Props) => {
       <Stack gap={2}>
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
-            {feedback?.user?.username}
+            {feedback?.title}
           </Text>
 
           <StatusBadge status={feedback?.status!} />
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {feedback?.title}
+          {feedback?.description}
         </Text>
       </Stack>
 
-      <HStack>
-        <Text fontSize="xs" color="foreground.muted">
-          {date}
-        </Text>
-
-        <HStack gap={1}>
-          <Icon src={HiOutlineFolder} size="sm" />
-          <Text fontSize="xs" color="foreground.muted">
-            {feedback.project?.name}
-          </Text>
-        </HStack>
+      <HStack gap={3}>
+        {[
+          { icon: HiOutlineCalendar, text: date },
+          { icon: HiOutlineFolder, text: feedback.project?.name },
+          { icon: HiOutlineUser, text: feedback.user?.username },
+        ].map((item) => (
+          <HStack key={item.text} gap={1}>
+            <Icon src={item.icon} size="sm" color="foreground.muted" />
+            <Text fontSize="xs" color="foreground.muted">
+              {item.text}
+            </Text>
+          </HStack>
+        ))}
       </HStack>
     </Stack>
   );
