@@ -94,24 +94,6 @@ const Account = ({ user }: Props) => {
           );
         })}
       </Stack>
-
-      <SectionContainer
-        title={app.profileAccountPage.cta.deleteAccount.title}
-        outline="1px solid"
-        outlineColor="omni.ruby"
-      >
-        <Text
-          color="foreground.subtle"
-          fontSize={{ base: "xs", lg: "sm" }}
-          mt={-3}
-        >
-          {app.profileAccountPage.cta.deleteAccount.description}
-          <sigil.a href={`mailto:${app.supportEmail}`}>
-            <sigil.span color="brand.primary">{app.supportEmail}</sigil.span>
-          </sigil.a>
-          .
-        </Text>
-      </SectionContainer>
     </Stack>
   );
 };
