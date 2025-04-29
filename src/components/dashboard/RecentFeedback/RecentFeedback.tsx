@@ -57,7 +57,7 @@ const RecentFeedback = () => {
                 <Response
                   feedback={feedback as Partial<Post>}
                   p={2}
-                  _last={{ pb: 6 }}
+                  _last={{ mb: 6 }}
                   _hover={{
                     bgColor: "background.muted",
                     borderRadius: "md",
