@@ -1,7 +1,5 @@
 // TODO: dedupe as much as possible.
 
-import { isDevEnv } from "lib/config/env.config";
-
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
