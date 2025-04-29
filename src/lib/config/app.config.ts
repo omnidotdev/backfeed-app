@@ -12,7 +12,6 @@ const app = {
     name: "Omni",
     supportEmailDisplayName: "Omni Support",
     supportEmailAddress: "support@omni.dev",
-    identityProviderUrl: "https://identity.omni.dev",
   },
   breadcrumb: "Home",
   unsavedChanges: {

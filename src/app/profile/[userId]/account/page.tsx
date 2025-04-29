@@ -4,7 +4,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Account } from "components/profile";
-import { app } from "lib/config";
+import { app, AUTH_ISSUER } from "lib/config";
 import { getSdk } from "lib/graphql";
 
 export const metadata = {
@@ -44,7 +44,8 @@ const ProfileAccountPage = async ({ params }: Props) => {
             label: app.profileAccountPage.cta.updateProfile.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <FaRegEdit />,
-            href: app.organization.identityProviderUrl,
+            // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
+            href: AUTH_ISSUER!.split("/api")[0],
           },
         ],
       }}
