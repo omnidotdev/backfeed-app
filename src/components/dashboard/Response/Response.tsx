@@ -28,8 +28,8 @@ const Response = ({ feedback, ...rest }: Props) => {
     : startOfDay.fromNow();
 
   return (
-    <Flex direction="column" gap={4} w="100%" {...rest}>
-      <Flex direction="column" gap={2}>
+    <Stack gap={4} w="100%" {...rest}>
+      <Stack gap={2}>
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
             {feedback?.user?.username}
@@ -39,9 +39,9 @@ const Response = ({ feedback, ...rest }: Props) => {
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">
-          {feedback?.description}
+          {feedback?.title}
         </Text>
-      </Flex>
+      </Stack>
 
       <HStack>
         <Text fontSize="xs" color="foreground.muted">
@@ -55,7 +55,7 @@ const Response = ({ feedback, ...rest }: Props) => {
           </Text>
         </HStack>
       </HStack>
-    </Flex>
+    </Stack>
   );
 };
 

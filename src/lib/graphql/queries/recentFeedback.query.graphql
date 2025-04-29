@@ -15,6 +15,10 @@ query RecentFeedback($userId: UUID!) {
       description
       project {
         name
+        slug
+        organization {
+          slug
+        }
       }
       status {
         rowId

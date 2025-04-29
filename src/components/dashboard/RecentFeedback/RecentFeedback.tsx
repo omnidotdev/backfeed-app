@@ -1,6 +1,7 @@
 "use client";
 
 import { Flex } from "@omnidev/sigil";
+import Link from "next/link";
 
 import { SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
@@ -50,13 +51,19 @@ const RecentFeedback = () => {
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
             recentFeedback?.map((feedback) => (
-              <Response
+              <Link
                 key={feedback?.rowId}
-                feedback={feedback as Partial<Post>}
-                borderBottomWidth={{ base: "1px", _last: 0 }}
-                pt={{ base: 3, _first: 0 }}
-                pb={{ base: 3, _last: 6 }}
-              />
+                href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
+              >
+                <Response
+                  feedback={feedback as Partial<Post>}
+                  p={2}
+                  _hover={{
+                    bgColor: "background.muted",
+                    borderRadius: "md",
+                  }}
+                />
+              </Link>
             ))
           ) : (
             <EmptyState
