@@ -3,13 +3,14 @@
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
-  organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
-  supportName: "Omni Support",
-  supportEmailAddress: "support@omni.dev",
-  identityProviderUrl: "https://identity.omni.dev",
-  forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
+  organization: {
+    name: "Omni",
+    supportEmailDisplayName: "Omni Support",
+    supportEmailAddress: "support@omni.dev",
+    identityProviderUrl: "https://identity.omni.dev",
+  },
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",

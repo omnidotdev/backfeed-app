@@ -21,7 +21,7 @@ const Footer = () => (
       borderColor: "border.subtle",
     })}
   >
-    &copy; {new Date().getFullYear()} {app.organization}
+    &copy; {new Date().getFullYear()} {app.organization.name}
   </sigil.footer>
 );
 
