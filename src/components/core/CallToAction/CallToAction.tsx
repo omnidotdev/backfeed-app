@@ -13,7 +13,7 @@ export interface ActionButton extends ButtonProps {
   /** Button label. */
   label: string;
   /** Button icon. */
-  icon: ReactNode;
+  icon?: ReactNode;
   /** URL path for navigation. */
   href?: string;
 

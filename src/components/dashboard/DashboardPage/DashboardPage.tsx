@@ -89,11 +89,15 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
         description: app.dashboardPage.description,
         cta: [
           {
+            label: app.dashboardPage.cta.viewOrganizations.label,
+            variant: "outline",
+            disabled: !numberOfOrganizations,
+          },
+          {
             label: app.dashboardPage.cta.newOrganization.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
-            variant: "outline",
             disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
           },
         ],
