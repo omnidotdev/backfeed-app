@@ -1,5 +1,8 @@
 // TODO: dedupe as much as possible.
 
+/**
+ * Application configuration.
+ */
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
