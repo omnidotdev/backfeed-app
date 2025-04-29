@@ -286,7 +286,7 @@ const app = {
     },
     cta: {
       updateProfile: {
-        label: "Edit Profile",
+        label: "Manage Profile",
       },
       changePassword: {
         label: "Change Password",
