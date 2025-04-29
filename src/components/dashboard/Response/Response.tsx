@@ -17,7 +17,14 @@ interface Props extends FlexProps {
  * Recent feedback response.
  */
 const Response = ({ feedback, ...rest }: Props) => {
-  const date = dayjs(feedback?.createdAt).fromNow();
+  const startOfDay = dayjs(feedback?.createdAt).utc().startOf("day");
+
+  const isToday = dayjs.duration(dayjs().utc().diff(startOfDay)).asDays() < 1;
+
+  // NB: `isToday` is used to stabilize the relative time in order to keep in sync with `FeedbackOverview` calculations.
+  const date = isToday
+    ? dayjs(feedback?.createdAt).utc().fromNow()
+    : startOfDay.fromNow();
 
   return (
     <Flex direction="column" gap={4} w="100%" {...rest}>
