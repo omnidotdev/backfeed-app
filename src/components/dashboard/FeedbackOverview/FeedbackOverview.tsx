@@ -47,7 +47,7 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
       enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
-          name: dayjs(aggregate.keys?.[0]).format("ddd"),
+          name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),
           total: Number(aggregate.distinctCount?.rowId),
         })),
     },
@@ -57,7 +57,7 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;
 
   const DATA = Array.from({ length: 7 }).map((_, index) => {
-    const date = getFormattedDate(index);
+    const date = getFormattedDate(index + 1);
 
     return {
       name: date,

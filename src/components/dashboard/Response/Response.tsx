@@ -22,7 +22,7 @@ interface Props extends FlexProps {
  * Recent feedback response.
  */
 const Response = ({ feedback, ...rest }: Props) => {
-  const date = dayjs(feedback?.createdAt).fromNow();
+  const date = dayjs(feedback?.createdAt).utc().fromNow();
 
   return (
     <Stack gap={4} w="100%" {...rest}>
