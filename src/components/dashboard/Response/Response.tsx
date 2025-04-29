@@ -1,7 +1,8 @@
 "use client";
 
-import { Flex, Text } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import { HiOutlineFolder } from "react-icons/hi2";
 
 import { StatusBadge } from "components/core";
 
@@ -42,9 +43,18 @@ const Response = ({ feedback, ...rest }: Props) => {
         </Text>
       </Flex>
 
-      <Text fontSize="xs" color="foreground.muted">
-        {date}
-      </Text>
+      <HStack>
+        <Text fontSize="xs" color="foreground.muted">
+          {date}
+        </Text>
+
+        <HStack gap={1}>
+          <Icon src={HiOutlineFolder} size="sm" />
+          <Text fontSize="xs" color="foreground.muted">
+            {feedback.project?.name}
+          </Text>
+        </HStack>
+      </HStack>
     </Flex>
   );
 };
