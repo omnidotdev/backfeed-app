@@ -10,6 +10,10 @@ const corsHeaders = [
     // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
     value: process.env.NEXT_PUBLIC_AUTH_ISSUER!.split("/api")[0],
   },
+  {
+    key: "Access-Control-Allow-Headers",
+    value: "Content-Type, Authorization",
+  },
 ];
 
 const nextConfig: NextConfig = {
