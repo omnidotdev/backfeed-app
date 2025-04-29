@@ -5286,7 +5286,6 @@ export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typenam
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   startDate: Scalars['Datetime']['input'];
-  endDate: Scalars['Datetime']['input'];
 }>;
 
 
@@ -5916,9 +5915,9 @@ export const UserByEmailDocument = gql`
 }
     `;
 export const WeeklyFeedbackDocument = gql`
-    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
   posts(
-    filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate, lessThan: $endDate}}
+    filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
       keys

@@ -30,19 +30,12 @@ interface Props {
   isTeamTier: boolean;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
-  /** Start of today. */
-  startOfToday: Date;
 }
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({
-  isBasicTier,
-  isTeamTier,
-  oneWeekAgo,
-  startOfToday,
-}: Props) => {
+const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const {
@@ -122,7 +115,7 @@ const DashboardPage = ({
       </Grid>
 
       <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
-        <FeedbackOverview oneWeekAgo={oneWeekAgo} startOfToday={startOfToday} />
+        <FeedbackOverview oneWeekAgo={oneWeekAgo} />
 
         <RecentFeedback />
       </Grid>

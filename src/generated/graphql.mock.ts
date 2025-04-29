@@ -1022,7 +1022,7 @@ export const mockUserByEmailQuery = (resolver: GraphQLResponseResolver<Types.Use
  * @example
  * mockWeeklyFeedbackQuery(
  *   ({ query, variables }) => {
- *     const { userId, startDate, endDate } = variables;
+ *     const { userId, startDate } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })
