@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Flex, Grid } from "@omnidev/sigil";
+import { Grid } from "@omnidev/sigil";
 import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
 import { Link, SkeletonArray } from "components/core";
@@ -53,33 +53,6 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
       description={app.dashboardPage.organizations.description}
       icon={LuBuilding2}
     >
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        justify="space-between"
-        gap={4}
-      >
-        <Flex
-          direction="column"
-          position={{ md: "absolute" }}
-          top={{ md: 6 }}
-          right={{ md: 6 }}
-        >
-          <Link href="/organizations">
-            <Button
-              variant="outline"
-              color="brand.primary"
-              borderColor="brand.primary"
-              bgColor={{
-                _hover: { base: "brand.primary.50", _dark: "neutral.900" },
-              }}
-              w={{ base: "full", md: "auto" }}
-            >
-              {app.dashboardPage.cta.viewOrganizations.label}
-            </Button>
-          </Link>
-        </Flex>
-      </Flex>
-
       {isError ? (
         <ErrorBoundary message="Error fetching organizations" h={48} />
       ) : (
