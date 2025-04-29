@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Stack } from "@omnidev/sigil";
+import { Stack } from "@omnidev/sigil";
 
 import { Link, SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
