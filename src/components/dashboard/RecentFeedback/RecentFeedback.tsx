@@ -1,9 +1,8 @@
 "use client";
 
 import { Flex } from "@omnidev/sigil";
-import Link from "next/link";
 
-import { SkeletonArray } from "components/core";
+import { Link, SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useRecentFeedbackQuery } from "generated/graphql";
