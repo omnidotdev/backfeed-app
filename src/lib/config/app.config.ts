@@ -1,12 +1,17 @@
 // TODO: dedupe as much as possible.
 
+import { isDevEnv } from "lib/config/env.config";
+
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
   supportName: "Omni Support",
-  supportEmail: "team@support.omni.dev",
+  supportEmailAddress: "support@omni.dev",
+  fromEmailAddress: isDevEnv
+    ? "onboarding@resend.dev"
+    : "team@support.omni.dev",
   identityUrl: "https://identity.omni.dev",
   forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
