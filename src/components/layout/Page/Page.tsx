@@ -15,7 +15,7 @@ interface Props extends StackProps {
     /** Header section title. */
     title: string;
     /** Header section description. */
-    description: string;
+    description?: string;
     /** Header section call to action buttons. */
     cta?: ActionButton[];
     /** Props to pass to the header section. */
@@ -53,14 +53,16 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
               {header.title}
             </Text>
 
-            <Text
-              as="h2"
-              fontSize={{ base: "sm", sm: "md" }}
-              fontWeight="medium"
-              color="foreground.subtle"
-            >
-              {header.description}
-            </Text>
+            {header.description && (
+              <Text
+                as="h2"
+                fontSize={{ base: "sm", sm: "md" }}
+                fontWeight="medium"
+                color="foreground.subtle"
+              >
+                {header.description}
+              </Text>
+            )}
           </Stack>
 
           <Flex

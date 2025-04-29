@@ -84,7 +84,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
       <Page
         header={{
           title: `${organization.name} ${app.organizationSettingsPage.breadcrumb}`,
-          description: app.organizationSettingsPage.description,
         }}
         pt={0}
       >

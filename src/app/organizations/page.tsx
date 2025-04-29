@@ -92,7 +92,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: app.organizationsPage.header.title,
-          description: app.organizationsPage.header.description,
           cta: [
             {
               label: app.organizationsPage.header.cta.newOrganization.label,

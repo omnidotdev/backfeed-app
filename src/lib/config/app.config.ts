@@ -139,7 +139,7 @@ const app = {
     description: "Here's what's happening with your feedback today.",
     organizations: {
       title: "Organizations",
-      description: "Manage your organizations and their feedback projects",
+      description: "Quickly view organizations that you are a member of.",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
         cta: {
@@ -346,7 +346,6 @@ const app = {
     breadcrumb: "Organizations",
     header: {
       title: "Organizations",
-      description: "Manage and monitor all your organizations in one place.",
       cta: {
         newOrganization: {
           label: "New Organization",
@@ -367,7 +366,6 @@ const app = {
   },
   organizationPage: {
     header: {
-      description: "Manage your organization's feedback and projects.",
       cta: {
         viewAllProjects: {
           label: "View All Projects",
@@ -423,7 +421,7 @@ const app = {
   },
   organizationMembersPage: {
     breadcrumb: "Members",
-    description: "Manage the members and their roles within your organization.",
+    description: "View and manage the organization's members and their roles.",
     filters: {
       search: {
         placeholder: "Search all organization members...",
@@ -472,7 +470,6 @@ const app = {
   },
   organizationSettingsPage: {
     breadcrumb: "Settings",
-    description: "Manage your organization settings.",
     dangerZone: {
       title: "Danger Zone",
       description:
@@ -550,7 +547,7 @@ const app = {
   },
   organizationInvitationsPage: {
     breadcrumb: "Invitations",
-    description: "Manage the members invitations.",
+    description: "View and manage the organization's invitations.",
     invitationsMenu: {
       resend: "Resend",
       delete: "Delete",
@@ -690,8 +687,6 @@ const app = {
     breadcrumb: "Projects",
     header: {
       title: "Projects",
-      description:
-        "Manage and monitor all your organization's projects in one place.",
       cta: {
         newProject: {
           label: "New Project",
@@ -735,8 +730,6 @@ const app = {
   },
   projectSettingsPage: {
     breadcrumb: "Settings",
-    description:
-      "Manage your project settings and handle feedback for your project.",
     dangerZone: {
       title: "Danger Zone",
       description:

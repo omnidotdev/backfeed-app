@@ -113,7 +113,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: app.projectsPage.header.title,
-          description: app.projectsPage.header.description,
           cta: [
             {
               label: app.projectsPage.header.cta.newProject.label,

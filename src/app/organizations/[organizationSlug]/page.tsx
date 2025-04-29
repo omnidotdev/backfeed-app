@@ -113,7 +113,6 @@ const OrganizationPage = async ({ params }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: organization.name!,
-          description: app.organizationPage.header.description,
           cta: [
             {
               label: app.organizationPage.header.cta.viewAllProjects.label,
