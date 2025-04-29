@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack } from "@omnidev/sigil";
+import { Flex, Stack } from "@omnidev/sigil";
 
 import { Link, SkeletonArray } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
@@ -35,7 +35,7 @@ const RecentFeedback = () => {
     <FeedbackSection
       title="Recent Feedback"
       maxH="xl"
-      contentProps={{ overflow: "auto", p: 6 }}
+      contentProps={{ overflow: "auto", p: 2 }}
     >
       {isError ? (
         <ErrorBoundary
@@ -50,20 +50,20 @@ const RecentFeedback = () => {
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
             recentFeedback?.map((feedback) => (
-              <Link
-                key={feedback?.rowId}
-                href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
-              >
-                <Response
-                  feedback={feedback as Partial<Post>}
-                  p={2}
-                  _last={{ mb: 6 }}
-                  _hover={{
-                    bgColor: "background.muted",
-                    borderRadius: "md",
-                  }}
-                />
-              </Link>
+              <Flex key={feedback?.rowId} direction="column" _last={{ pb: 2 }}>
+                <Link
+                  href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
+                >
+                  <Response
+                    feedback={feedback as Partial<Post>}
+                    p={2}
+                    _hover={{
+                      bgColor: "background.muted/40",
+                      borderRadius: "md",
+                    }}
+                  />
+                </Link>
+              </Flex>
             ))
           ) : (
             <EmptyState

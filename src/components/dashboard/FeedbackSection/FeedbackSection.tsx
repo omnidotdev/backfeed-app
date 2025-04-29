@@ -2,13 +2,13 @@
 
 import { Stack, Text } from "@omnidev/sigil";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { FlexProps, StackProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
   /** Section title. */
   title: string;
   /** Props to pass to the main content container. */
-  contentProps?: FlexProps;
+  contentProps?: StackProps;
 }
 
 /**

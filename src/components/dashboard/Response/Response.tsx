@@ -47,7 +47,8 @@ const Response = ({ feedback, ...rest }: Props) => {
         </Text>
       </Stack>
 
-      <HStack gap={3}>
+      {/* TODO: discuss possible issues with responsive design (i.e. long project name and/or long username) */}
+      <HStack gap={2}>
         {[
           { icon: HiOutlineCalendar, text: date },
           { icon: HiOutlineFolder, text: feedback.project?.name },
