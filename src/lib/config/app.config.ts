@@ -143,7 +143,7 @@ const app = {
     description: "Here's what's happening with your feedback today.",
     organizations: {
       title: "Organizations",
-      description: "Quickly view organizations that you are a member of.",
+      description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
         cta: {
