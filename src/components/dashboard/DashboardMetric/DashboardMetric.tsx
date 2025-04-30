@@ -19,15 +19,17 @@ interface Props {
  * Dashboard metric.
  */
 const DashboardMetric = ({ type, value = 0, icon }: Props) => (
-  <Flex align="center" gap={2} wrap="wrap">
+  <Flex
+    direction={{ mdToLg: "column" }}
+    align={{ base: "center", mdToLg: "flex-start" }}
+    gap={2}
+  >
     <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-    <Flex color="foreground.subtle" fontSize="sm" gap={1} wrap="wrap">
+    <Flex color="foreground.subtle" fontSize="sm" gap={1}>
       <Text>{value}</Text>
 
-      <Text display={{ base: "none", sm: "inline" }}>
-        {setSingularOrPlural({ value, label: type })}
-      </Text>
+      <Text>{setSingularOrPlural({ value, label: type })}</Text>
     </Flex>
   </Flex>
 );

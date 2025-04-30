@@ -24,7 +24,7 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
     direction="column"
     bgColor="card-item"
     borderRadius="lg"
-    p={8}
+    p={6}
     {...rest}
   >
     <Button

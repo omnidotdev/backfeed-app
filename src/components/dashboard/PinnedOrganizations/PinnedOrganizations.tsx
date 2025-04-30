@@ -78,8 +78,6 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
               >
                 <OrganizationCard
                   organization={organization as Partial<Organization>}
-                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
-                  h={48}
                 />
               </Link>
             ))
