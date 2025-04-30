@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -8,9 +9,8 @@ import { LuBuilding2 } from "react-icons/lu";
 import { useOrganizationQuery, useProjectBySlugQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
-
-import { useQuery } from "@tanstack/react-query";
 import { subscriptionOptions } from "lib/options";
+
 import type { IconType } from "react-icons";
 
 interface NavItem {

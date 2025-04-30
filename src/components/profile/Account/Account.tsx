@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, Flex, Input, Label, Stack } from "@omnidev/sigil";
+import { app } from "lib/config";
 import { useMemo, useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { app } from "lib/config";
 
 import type { InputProps } from "@omnidev/sigil";
 import type { UserFragment } from "generated/graphql";

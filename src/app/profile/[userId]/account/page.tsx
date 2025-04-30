@@ -4,7 +4,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Account } from "components/profile";
-import { app, AUTH_ISSUER } from "lib/config";
+import { AUTH_ISSUER, app } from "lib/config";
 import { getSdk } from "lib/graphql";
 
 export const metadata = {
