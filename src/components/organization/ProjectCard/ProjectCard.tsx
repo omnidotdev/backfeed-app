@@ -91,20 +91,12 @@ const ProjectCard = ({ project, ...rest }: Props) => {
             <Flex key={type} gap={2} alignItems="center" wrap="wrap">
               <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-              <Flex
-                color="foreground.subtle"
-                fontSize="sm"
-                gap={1}
-                direction="row-reverse"
-                wrap="wrap"
-              >
-                {value && (
-                  <Text display={{ base: "none", sm: "inline" }}>
-                    {setSingularOrPlural({ value, label: type })}
-                  </Text>
-                )}
-
+              <Flex color="foreground.subtle" fontSize="sm" gap={1} wrap="wrap">
                 <Text>{value ?? 0}</Text>
+
+                <Text display={{ base: "none", sm: "inline" }}>
+                  {setSingularOrPlural({ value: value ?? 0, label: type })}
+                </Text>
               </Flex>
             </Flex>
           ))}
