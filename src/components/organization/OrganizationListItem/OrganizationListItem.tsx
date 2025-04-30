@@ -20,12 +20,12 @@ interface Props {
 const OrganizationListItem = ({ organization }: Props) => {
   const AGGREGATES = [
     {
-      type: "Users",
+      type: "user",
       icon: HiOutlineUserGroup,
       value: organization?.members?.totalCount,
     },
     {
-      type: "Projects",
+      type: "project",
       icon: HiOutlineFolder,
       value: organization?.projects?.totalCount,
     },
@@ -83,12 +83,14 @@ const OrganizationListItem = ({ organization }: Props) => {
         {AGGREGATES.map(({ icon, value = 0, type }) => (
           <HStack key={type} gap={1}>
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+
             <Text
               fontSize="sm"
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {value}
+              {/* singular if 1, plural otherwise */}
+              {value} {value === 1 ? type : `${type}s`}
             </Text>
           </HStack>
         ))}
