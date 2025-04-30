@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Project } from "generated/graphql";
@@ -96,10 +97,11 @@ const ProjectCard = ({ project, ...rest }: Props) => {
                 gap={1}
                 direction="row-reverse"
               >
-                <Text display={{ base: "none", sm: "inline" }}>
-                  {/* singular if 1, plural otherwise */}
-                  {value === 1 ? type : `${type}s`}
-                </Text>
+                {value && (
+                  <Text display={{ base: "none", sm: "inline" }}>
+                    {setSingularOrPlural({ value, label: type })}
+                  </Text>
+                )}
 
                 <Text>{value ?? 0}</Text>
               </Flex>

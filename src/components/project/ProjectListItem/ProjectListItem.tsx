@@ -9,6 +9,7 @@ import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Project } from "generated/graphql";
 
@@ -105,8 +106,7 @@ const ProjectListItem = ({
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {/* singular if 1, plural otherwise */}
-              {value} {value === 1 ? type : `${type}s`}
+              {value} {setSingularOrPlural({ value: +value, label: type })}
             </Text>
           </HStack>
         ))}

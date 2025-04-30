@@ -6,6 +6,7 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Organization } from "generated/graphql";
 
@@ -89,8 +90,7 @@ const OrganizationListItem = ({ organization }: Props) => {
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {/* singular if 1, plural otherwise */}
-              {value} {value === 1 ? type : `${type}s`}
+              {value} {setSingularOrPlural({ value, label: type })}
             </Text>
           </HStack>
         ))}

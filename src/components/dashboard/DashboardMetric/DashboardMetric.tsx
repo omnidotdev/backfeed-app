@@ -2,6 +2,8 @@
 
 import { Flex, Icon, Text } from "@omnidev/sigil";
 
+import { setSingularOrPlural } from "lib/util";
+
 import type { IconType } from "react-icons";
 
 interface Props {
@@ -24,8 +26,7 @@ const DashboardMetric = ({ type, value = 0, icon }: Props) => (
       <Text>{value}</Text>
 
       <Text display={{ base: "none", sm: "inline" }}>
-        {/* singular if 1, plural otherwise */}
-        {value === 1 ? type : `${type}s`}
+        {setSingularOrPlural({ value, label: type })}
       </Text>
     </Flex>
   </Flex>
