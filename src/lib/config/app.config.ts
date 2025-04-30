@@ -617,7 +617,8 @@ const app = {
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
-        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+        "Choose the perfect plan for your business. All plans offer a 1-month free trial using our discount code:",
+      discountCode: "1MONTHFREE",
       monthly: "Monthly",
       annual: "Annual",
       savings: "save 25%",
