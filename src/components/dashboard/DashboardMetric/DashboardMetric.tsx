@@ -23,7 +23,7 @@ const DashboardMetric = ({ type, value = 0, icon }: Props) => (
     <Flex color="foreground.subtle" fontSize="sm" gap={1}>
       <Text>{value}</Text>
 
-      <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
+      <Text display={{ base: "none", sm: "inline" }}>
         {/* singular if 1, plural otherwise */}
         {value === 1 ? type : `${type}s`}
       </Text>
