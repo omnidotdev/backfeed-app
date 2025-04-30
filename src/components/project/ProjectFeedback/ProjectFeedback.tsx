@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Grid, Icon, Stack, VStack } from "@omnidev/sigil";
+import { Button, Grid, Icon, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -129,6 +129,9 @@ const ProjectFeedback = ({ projectId }: Props) => {
             overflow="auto"
             p="1px"
             scrollbar="hidden"
+            WebkitMaskImage={
+              allPosts.length ? "var(--scrollable-mask)" : undefined
+            }
           >
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
@@ -176,7 +179,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
                   );
                 })}
 
-                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
+                {hasNextPage ? (
+                  <Spinner ref={loaderRef} my={4} />
+                ) : (
+                  <Text my={5}>{app.projectPage.projectFeedback.endOf}</Text>
+                )}
               </VStack>
             ) : (
               <EmptyState

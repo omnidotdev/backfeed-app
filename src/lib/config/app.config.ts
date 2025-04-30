@@ -874,6 +874,7 @@ const app = {
     },
     projectFeedback: {
       title: "Project Feedback",
+      endOf: "End of Feedback",
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",
@@ -945,6 +946,7 @@ const app = {
       downvote: "Downvote",
     },
     comments: {
+      endOf: "End of Comments",
       createComment: {
         pending: "Adding comment...",
         success: {
