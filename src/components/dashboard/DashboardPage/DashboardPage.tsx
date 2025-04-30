@@ -91,6 +91,7 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
           {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
+            href: "/organizations",
             disabled: !numberOfOrganizations,
           },
           {
