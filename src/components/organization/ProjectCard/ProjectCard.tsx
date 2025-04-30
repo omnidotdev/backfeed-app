@@ -96,12 +96,7 @@ const ProjectCard = ({ project, ...rest }: Props) => {
                 gap={1}
                 direction="row-reverse"
               >
-                <Text
-                  display={{
-                    base: "none",
-                    xl: "inline",
-                  }}
-                >
+                <Text display={{ base: "none", sm: "inline" }}>
                   {/* singular if 1, plural otherwise */}
                   {value === 1 ? type : `${type}s`}
                 </Text>
