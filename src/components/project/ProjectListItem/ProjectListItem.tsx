@@ -96,9 +96,9 @@ const ProjectListItem = ({
         </OverflowText>
       </Stack>
 
-      <HStack gap={4} mt={4} justifySelf="flex-end">
+      <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
         {AGGREGATES.map(({ icon, value, type }) => (
-          <HStack key={type} gap={1}>
+          <HStack key={type} gap={1} flexWrap="wrap">
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
             <Text

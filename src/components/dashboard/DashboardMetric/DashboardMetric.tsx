@@ -19,10 +19,10 @@ interface Props {
  * Dashboard metric.
  */
 const DashboardMetric = ({ type, value = 0, icon }: Props) => (
-  <Flex align="center" gap={2}>
+  <Flex align="center" gap={2} wrap="wrap">
     <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-    <Flex color="foreground.subtle" fontSize="sm" gap={1}>
+    <Flex color="foreground.subtle" fontSize="sm" gap={1} wrap="wrap">
       <Text>{value}</Text>
 
       <Text display={{ base: "none", sm: "inline" }}>
