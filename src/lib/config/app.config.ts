@@ -10,7 +10,6 @@ const app = {
   docsUrl: "https://docs.omni.dev/backfeed/overview",
   organization: {
     name: "Omni",
-    supportEmailDisplayName: "Omni Support",
     supportEmailAddress: "support@omni.dev",
   },
   breadcrumb: "Home",

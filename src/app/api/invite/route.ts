@@ -28,7 +28,7 @@ export const POST = async (req: NextRequest) => {
       (await req.json()) as OrganizationInvitation;
 
     const { data, error } = await resend.emails.send({
-      from: `${app.organization.supportEmailDisplayName} <${FROM_EMAIL_ADDRESS}>`,
+      from: `${app.organization.name} Support <${FROM_EMAIL_ADDRESS}>`,
       to: TO_EMAIL_ADDRESS || recipientEmail,
       subject: `${emailTemplate.subject.value1} ${organizationName} ${emailTemplate.subject.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
