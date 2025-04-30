@@ -31,12 +31,12 @@ const ProjectListItem = ({
 
   const AGGREGATES = [
     {
-      type: "Users",
+      type: "user",
       icon: HiOutlineUserGroup,
       value: posts?.aggregates?.distinctCount?.userId ?? 0,
     },
     {
-      type: "Responses",
+      type: "response",
       icon: HiOutlineChatBubbleLeftRight,
       value: posts?.totalCount ?? 0,
     },
@@ -105,7 +105,8 @@ const ProjectListItem = ({
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {value}
+              {/* singular if 1, plural otherwise */}
+              {value} {value === 1 ? type : `${type}s`}
             </Text>
           </HStack>
         ))}
