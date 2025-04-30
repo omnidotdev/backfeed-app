@@ -145,6 +145,7 @@ const app = {
       description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
+        tooltip: "Your current plan doesn’t support this feature.",
         cta: {
           label: "Create Organization",
         },
