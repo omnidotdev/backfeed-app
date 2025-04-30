@@ -12,7 +12,7 @@ const enableTeamTierPrivilegesFlag = flag({
   identify: dedupeSubscription,
   decide: ({ entities }) => {
     // If we are in a development environment, always return true. Comment out this line to test feature flag behaviors in development.
-    // if (isDevEnv) return true;
+    if (isDevEnv) return true;
 
     if (!entities) return false;
 
