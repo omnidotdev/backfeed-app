@@ -414,11 +414,11 @@ const app = {
         manageTeam: {
           label: "Members",
         },
-        settings: {
-          label: "Settings",
-        },
         invitations: {
           label: "Invitations",
+        },
+        settings: {
+          label: "Settings",
         },
       },
     },

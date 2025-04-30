@@ -44,9 +44,10 @@ const OrganizationActions = ({
 
   const ORGANIZATION_ACTIONS: Action[] = [
     {
-      label: app.organizationPage.actions.cta.settings.label,
-      icon: LuSettings,
-      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
+      label: app.organizationPage.actions.cta.createProject.label,
+      icon: LuCirclePlus,
+      onClick: () => setIsCreateProjectDialogOpen(true),
+      disabled: !canCreateProjects,
     },
     {
       label: app.organizationPage.actions.cta.manageTeam.label,
@@ -61,10 +62,9 @@ const OrganizationActions = ({
       disabled: !hasAdminPrivileges,
     },
     {
-      label: app.organizationPage.actions.cta.createProject.label,
-      icon: LuCirclePlus,
-      onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: !canCreateProjects,
+      label: app.organizationPage.actions.cta.settings.label,
+      icon: LuSettings,
+      onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
     },
   ];
 
