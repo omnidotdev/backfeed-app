@@ -105,7 +105,7 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
       >
         <OrganizationFilters />
 
-        <OrganizationList />
+        <OrganizationList canCreateOrganization={canCreateOrganization} />
 
         {/* dialogs */}
         {canCreateOrganization && (

@@ -16,14 +16,18 @@ import { DialogType } from "store";
 import type { Organization, Project } from "generated/graphql";
 
 interface Props {
-  /** Organization slug. */
+  canCreateProjects: boolean;
+  /** Whether the user has necessary subscription permissions to create projects. */
   organizationSlug: Organization["slug"];
 }
 
 /**
  * Organization projects overview.
  */
-const OrganizationProjects = ({ organizationSlug }: Props) => {
+const OrganizationProjects = ({
+  canCreateProjects,
+  organizationSlug,
+}: Props) => {
   const { isLoading: isAuthLoading } = useAuth();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -90,13 +94,9 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
               action={{
                 label: app.organizationPage.projects.emptyState.cta.label,
                 icon: LuCirclePlus,
-                actionProps: {
-                  variant: "outline",
-                  color: "brand.primary",
-                  borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
-                  disabled: isAuthLoading,
-                },
+                onClick: () => setIsCreateProjectDialogOpen(true),
+                disabled: isAuthLoading || !canCreateProjects,
+                tooltip: app.organizationPage.projects.emptyState.tooltip,
               }}
               h={48}
             />

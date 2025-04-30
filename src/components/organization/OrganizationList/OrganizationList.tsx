@@ -16,10 +16,15 @@ import { DialogType } from "store";
 import type { StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";
 
+interface Props extends StackProps {
+  /** Whether the current user can create organizations. */
+  canCreateOrganization: boolean;
+}
+
 /**
  * Organization list.
  */
-const OrganizationList = ({ ...props }: StackProps) => {
+const OrganizationList = ({ canCreateOrganization, ...rest }: Props) => {
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
 
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
@@ -62,19 +67,16 @@ const OrganizationList = ({ ...props }: StackProps) => {
         action={{
           label: app.organizationsPage.emptyState.cta.label,
           icon: LuCirclePlus,
-          actionProps: {
-            variant: "outline",
-            color: "brand.primary",
-            borderColor: "brand.primary",
-            onClick: () => setIsCreateOrganizationDialogOpen(true),
-          },
+          onClick: () => setIsCreateOrganizationDialogOpen(true),
+          disabled: !canCreateOrganization,
+          tooltip: app.organizationsPage.emptyState.tooltip,
         }}
         minH={64}
       />
     );
 
   return (
-    <Stack align="center" justify="space-between" h="100%" {...props}>
+    <Stack align="center" justify="space-between" h="100%" {...rest}>
       <Stack w="100%">
         {organizations.map((organization) => (
           <OrganizationListItem

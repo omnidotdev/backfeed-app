@@ -124,7 +124,10 @@ const OrganizationPage = async ({ params }: Props) => {
           ],
         }}
       >
-        <OrganizationProjects organizationSlug={organizationSlug} />
+        <OrganizationProjects
+          canCreateProjects={canCreateProjects}
+          organizationSlug={organizationSlug}
+        />
 
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />

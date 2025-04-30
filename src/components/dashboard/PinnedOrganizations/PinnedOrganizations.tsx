@@ -84,24 +84,12 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
           ) : (
             <EmptyState
               message={app.dashboardPage.organizations.emptyState.message}
-              tooltip={app.dashboardPage.organizations.emptyState.tooltip}
               action={{
                 label: app.dashboardPage.organizations.emptyState.cta.label,
+                onClick: () => setIsCreateOrganizationDialogOpen(true),
                 icon: LuCirclePlus,
-                actionProps: {
-                  variant: "outline",
-                  color: "brand.primary",
-                  borderColor: "brand.primary",
-                  bgColor: {
-                    _hover: { base: "brand.primary.50", _dark: "neutral.900" },
-                  },
-                  onClick: () => setIsCreateOrganizationDialogOpen(true),
-                  disabled: !isBasicTier,
-                  _disabled: {
-                    color: "foreground.disabled",
-                    borderColor: "border.disabled",
-                  },
-                },
+                disabled: !isBasicTier,
+                tooltip: app.dashboardPage.organizations.emptyState.tooltip,
               }}
               h={48}
             />

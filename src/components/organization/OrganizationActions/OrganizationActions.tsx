@@ -74,13 +74,15 @@ const OrganizationActions = ({
       description={app.organizationPage.actions.description}
     >
       <Grid gap={4}>
-        {ORGANIZATION_ACTIONS.map(({ label, icon, ...rest }) => (
-          <Button key={label} variant="outline" {...rest}>
-            <Icon src={icon} w={4} h={4} />
+        {ORGANIZATION_ACTIONS.filter(({ disabled }) => !disabled).map(
+          ({ label, icon, ...rest }) => (
+            <Button key={label} variant="outline" {...rest}>
+              <Icon src={icon} w={4} h={4} />
 
-            {label}
-          </Button>
-        ))}
+              {label}
+            </Button>
+          ),
+        )}
       </Grid>
     </SectionContainer>
   );

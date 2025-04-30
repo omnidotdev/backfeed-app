@@ -56,6 +56,9 @@ const ProjectSettings = ({
           excludeRoles: [Role.Member],
         }),
       });
+      queryClient.invalidateQueries({
+        queryKey: ["Projects"],
+      });
     },
   });
 

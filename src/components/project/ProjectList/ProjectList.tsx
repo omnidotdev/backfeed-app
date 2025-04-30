@@ -74,12 +74,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
             ? {
                 label: app.projectsPage.emptyState.cta.label,
                 icon: LuCirclePlus,
-                actionProps: {
-                  variant: "outline",
-                  color: "brand.primary",
-                  borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
-                },
+                onClick: () => setIsCreateProjectDialogOpen(true),
               }
             : undefined
         }
