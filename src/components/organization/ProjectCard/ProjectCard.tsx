@@ -19,7 +19,7 @@ interface ProjectMetric {
   /** Metric value. */
   value: number | undefined;
   /** Metric type. */
-  type: "Responses" | "Users" | "Updated";
+  type: "response" | "user";
 }
 
 interface Props extends FlexProps {
@@ -35,12 +35,12 @@ const ProjectCard = ({ project, ...rest }: Props) => {
     {
       icon: HiOutlineChatBubbleLeftRight,
       value: project?.posts?.totalCount,
-      type: "Responses",
+      type: "response",
     },
     {
       icon: HiOutlineUserGroup,
       value: Number(project?.posts?.aggregates?.distinctCount?.userId),
-      type: "Users",
+      type: "user",
     },
   ];
 
@@ -102,7 +102,8 @@ const ProjectCard = ({ project, ...rest }: Props) => {
                     xl: "inline",
                   }}
                 >
-                  {type}
+                  {/* singular if 1, plural otherwise */}
+                  {value === 1 ? type : `${type}s`}
                 </Text>
 
                 <Text>{value ?? 0}</Text>

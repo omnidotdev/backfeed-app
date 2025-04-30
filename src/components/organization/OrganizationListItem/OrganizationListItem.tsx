@@ -65,7 +65,7 @@ const OrganizationListItem = ({ organization }: Props) => {
               <Text
                 fontSize="sm"
                 color="foreground.muted"
-              >{`Updated: ${dayjs(organization.updatedAt).fromNow()}`}</Text>
+              >{`Updated ${dayjs(organization.updatedAt).fromNow()}`}</Text>
             </Stack>
           </Link>
         </Stack>

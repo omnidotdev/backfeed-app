@@ -6,7 +6,7 @@ import type { IconType } from "react-icons";
 
 interface Props {
   /** Metric type. */
-  type: "Members" | "Projects";
+  type: "member" | "project";
   /** Metric value. */
   value: number | undefined;
   /** Visual icon. */
@@ -24,7 +24,8 @@ const DashboardMetric = ({ type, value = 0, icon }: Props) => (
       <Text>{value}</Text>
 
       <Text display={{ base: "none", smToMd: "inline", xl: "inline" }}>
-        {type}
+        {/* singular if 1, plural otherwise */}
+        {value === 1 ? type : `${type}s`}
       </Text>
     </Flex>
   </Flex>
