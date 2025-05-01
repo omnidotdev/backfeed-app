@@ -1,13 +1,14 @@
 "use client";
 
-import { Button, Flex, Icon, Text, useBreakpointValue } from "@omnidev/sigil";
-import Image from "next/image";
+import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
+import { useViewportSize } from "lib/hooks";
 import type { IconType } from "react-icons";
 
 interface ActionProps extends ButtonProps {
@@ -22,7 +23,7 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
-  const imageWidth = useBreakpointValue({ base: 150, md: 224 });
+  const isMediumViewport = useViewportSize({ minWidth: "48em" });
 
   const actions: ActionProps[] = [
     {
@@ -54,8 +55,9 @@ const Hero = () => {
       <Image
         src="/img/hero.png"
         alt={app.landingPage.hero.imageAlt}
-        width={imageWidth}
-        height={100}
+        priority
+        width={isMediumViewport ? 224 : 150}
+        height={isMediumViewport ? 323 : 216}
       />
 
       <Text

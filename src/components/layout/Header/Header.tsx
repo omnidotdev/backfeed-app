@@ -66,6 +66,7 @@ const Header = () => {
               </Link>
             </Flex>
           )}
+
           <SigilLink
             display={{ base: "none", sm: "flex" }}
             href="https://docs.omni.dev/backfeed/overview"
@@ -75,7 +76,7 @@ const Header = () => {
             textDecoration="none"
           >
             Docs
-            <Icon src={LuExternalLink} />
+            <Icon src={LuExternalLink} h={3} w={3} />
           </SigilLink>
         </Flex>
 
