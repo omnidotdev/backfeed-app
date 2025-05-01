@@ -127,6 +127,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
       onClick: () => handleUpvote(),
+      disabled: !user,
     },
     {
       id: "downvote",
@@ -135,6 +136,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
       icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
       onClick: () => handleDownvote(),
+      disabled: !user,
     },
   ];
 
@@ -172,6 +174,7 @@ const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
               },
               ...rest,
             }}
+            contentProps={{ display: !user ? "none" : undefined }}
           >
             {tooltip}
           </Tooltip>

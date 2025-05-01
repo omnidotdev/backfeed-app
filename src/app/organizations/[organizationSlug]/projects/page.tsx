@@ -119,13 +119,17 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         header={{
           title: app.projectsPage.header.title,
           cta: [
-            {
-              label: app.projectsPage.header.cta.newProject.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <LuCirclePlus />,
-              disabled: !canCreateProjects,
-              dialogType: DialogType.CreateProject,
-            },
+            ...(session
+              ? [
+                  {
+                    label: app.projectsPage.header.cta.newProject.label,
+                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                    icon: <LuCirclePlus />,
+                    disabled: !canCreateProjects,
+                    dialogType: DialogType.CreateProject,
+                  },
+                ]
+              : []),
           ],
         }}
       >

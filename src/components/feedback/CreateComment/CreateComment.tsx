@@ -39,7 +39,7 @@ const createCommentSchema = z.object({
 const CreateComment = () => {
   const queryClient = useQueryClient();
 
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
 
@@ -116,7 +116,7 @@ const CreateComment = () => {
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
-            disabled={isAuthLoading}
+            disabled={!user}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               top: -6,

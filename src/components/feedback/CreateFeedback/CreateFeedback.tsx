@@ -172,6 +172,7 @@ const CreateFeedback = () => {
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
+            disabled={!user}
           />
         )}
       </AppField>
@@ -186,6 +187,7 @@ const CreateFeedback = () => {
             rows={5}
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
+            disabled={!user}
           />
         )}
       </AppField>
