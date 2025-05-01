@@ -4,12 +4,10 @@ import { Button, Grid, Icon } from "@omnidev/sigil";
 import { useParams, useRouter } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { LuCirclePlus, LuSettings } from "react-icons/lu";
+import { LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
-import { useDialogStore } from "lib/hooks/store";
-import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -24,45 +22,30 @@ interface Action extends ButtonProps {
 interface Props {
   /** Whether the user has admin privileges for the organization. */
   hasAdminPrivileges: boolean;
-  /** Whether the user has necessary subscription permissions to create projects. */
-  canCreateProjects: boolean;
 }
 
 /**
- * Organization actions.
+ * Organization management.
  */
-const OrganizationActions = ({
-  hasAdminPrivileges,
-  canCreateProjects,
-}: Props) => {
+const OrganizationManagement = ({ hasAdminPrivileges }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
-  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
-
   const ORGANIZATION_ACTIONS: Action[] = [
     {
-      label: app.organizationPage.actions.cta.createProject.label,
-      icon: LuCirclePlus,
-      onClick: () => setIsCreateProjectDialogOpen(true),
-      disabled: !canCreateProjects,
-    },
-    {
-      label: app.organizationPage.actions.cta.manageTeam.label,
+      label: app.organizationPage.management.cta.manageTeam.label,
       icon: HiOutlineUserGroup,
       onClick: () => router.push(`/organizations/${organizationSlug}/members`),
     },
     {
-      label: app.organizationPage.actions.cta.invitations.label,
+      label: app.organizationPage.management.cta.invitations.label,
       icon: FiUserPlus,
       onClick: () =>
         router.push(`/organizations/${organizationSlug}/invitations`),
       disabled: !hasAdminPrivileges,
     },
     {
-      label: app.organizationPage.actions.cta.settings.label,
+      label: app.organizationPage.management.cta.settings.label,
       icon: LuSettings,
       onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
     },
@@ -70,8 +53,8 @@ const OrganizationActions = ({
 
   return (
     <SectionContainer
-      title={app.organizationPage.actions.title}
-      description={app.organizationPage.actions.description}
+      title={app.organizationPage.management.title}
+      description={app.organizationPage.management.description}
     >
       <Grid gap={4}>
         {ORGANIZATION_ACTIONS.filter(({ disabled }) => !disabled).map(
@@ -88,4 +71,4 @@ const OrganizationActions = ({
   );
 };
 
-export default OrganizationActions;
+export default OrganizationManagement;

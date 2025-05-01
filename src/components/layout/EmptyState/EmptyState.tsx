@@ -65,6 +65,7 @@ const EmptyState = ({ message, action, ...rest }: Props) => (
         triggerProps={{ style: { all: "unset" } }}
         contentProps={{
           display: !action?.disabled || !action.tooltip ? "none" : undefined,
+          fontSize: "sm",
         }}
       >
         {action.tooltip}

@@ -101,7 +101,7 @@ const useSidebarNavigationItems = () => {
             children: [
               {
                 href: `/organizations/${organizationSlug}/projects`,
-                label: app.organizationPage.header.cta.viewAllProjects.label,
+                label: app.organizationPage.header.cta.viewProjects.label,
                 isVisible: true,
                 isActive:
                   pathname === `/organizations/${organizationSlug}/projects`,

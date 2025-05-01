@@ -58,6 +58,7 @@ const Hero = () => {
         priority
         width={isMediumViewport ? 224 : 150}
         height={isMediumViewport ? 323 : 216}
+        draggable={false}
       />
 
       <Text
