@@ -122,6 +122,10 @@ const ProjectPage = async ({ params }: Props) => {
     }),
   ]);
 
+  const hasAdminPrivileges =
+    member &&
+    member.role !== Role.Member;
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -130,7 +134,14 @@ const ProjectPage = async ({ params }: Props) => {
           title: project.name!,
           description: project.description!,
           cta: [
-            ...(member && member.role !== Role.Member
+            {
+              label: app.projectPage.header.cta.viewAllProjects.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <HiOutlineFolder />,
+              variant: "outline",
+              href: `/organizations/${organizationSlug}/projects`,
+            },
+            ...(hasAdminPrivileges
               ? [
                   {
                     label: app.projectPage.header.cta.settings.label,
@@ -140,13 +151,6 @@ const ProjectPage = async ({ params }: Props) => {
                   },
                 ]
               : []),
-            {
-              label: app.projectPage.header.cta.viewAllProjects.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <HiOutlineFolder />,
-              variant: "outline",
-              href: `/organizations/${organizationSlug}/projects`,
-            },
           ],
         }}
       >

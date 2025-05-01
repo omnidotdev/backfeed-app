@@ -91,24 +91,27 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         header={{
           title: app.organizationsPage.header.title,
           cta: [
-            ...(session
-              ? [
-                  {
-                    label:
-                      app.organizationsPage.header.cta.newOrganization.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-                    icon: <LuCirclePlus />,
-                    dialogType: DialogType.CreateOrganization,
-                    disabled: !canCreateOrganization,
-                  },
-                ]
-              : []),
+            {
+              label: app.organizationsPage.header.cta.newOrganization.label,
+              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+              icon: <LuCirclePlus />,
+              dialogType: DialogType.CreateOrganization,
+              disabled: !canCreateOrganization,
+              tooltip: isBasicTier
+                ? app.organizationsPage.header.cta.newOrganization
+                    .basicTierTooltip
+                : app.organizationsPage.header.cta.newOrganization
+                    .noSubscriptionTooltip,
+            },
           ],
         }}
       >
         <OrganizationFilters />
 
-        <OrganizationList canCreateOrganization={canCreateOrganization} />
+        <OrganizationList
+          canCreateOrganization={canCreateOrganization}
+          isBasicTier={isBasicTier}
+        />
 
         {/* dialogs */}
         {canCreateOrganization && (

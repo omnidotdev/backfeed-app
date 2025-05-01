@@ -86,14 +86,17 @@ const app = {
       pricing: {
         label: "Pricing",
       },
+      docs: {
+        label: "Docs",
+      },
     },
   },
   landingPage: {
     hero: {
-      imageAlt: "Hero",
       title: "Transform User Feedback into Actionable Insights",
       description:
         "Collect, analyze, and act on user feedback with our powerful platform. Make data-driven decisions and improve your product faster than ever.",
+      imageAlt: "Hero",
       cta: {
         collect: {
           label: {
@@ -145,7 +148,10 @@ const app = {
       description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
-        tooltip: "Your current plan doesn't support this feature.",
+        basicTierTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+        noSubscriptionTooltip:
+          "Upgrade to a paid plan to create an organization.",
         cta: {
           label: "Create Organization",
         },
@@ -168,6 +174,9 @@ const app = {
       },
     },
     cta: {
+      viewOrganizations: {
+        label: "View All Organizations",
+      },
       newOrganization: {
         action: {
           submit: "Create Organization",
@@ -182,6 +191,10 @@ const app = {
           },
         },
         label: "New Organization",
+        basicTierTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+        noSubscriptionTooltip:
+          "Upgrade to a paid plan to create an organization.",
         description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
@@ -203,6 +216,7 @@ const app = {
           },
         },
       },
+      // TODO: This is not being used on the dashboard page currently. Move to another page location.
       newProject: {
         action: {
           submit: "Create Project",
@@ -261,9 +275,6 @@ const app = {
             duplicate: "Project already exists.",
           },
         },
-      },
-      viewOrganizations: {
-        label: "View All Organizations",
       },
     },
   },
@@ -353,12 +364,19 @@ const app = {
       cta: {
         newOrganization: {
           label: "New Organization",
+          basicTierTooltip:
+            "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+          noSubscriptionTooltip:
+            "Upgrade to a paid plan to create an organization.",
         },
       },
     },
     emptyState: {
       message: "No organizations found. Would you like to create one?",
-      tooltip: "Your current plan doesn't support this feature.",
+      basicTierTooltip:
+        "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+      noSubscriptionTooltip:
+        "Upgrade to a paid plan to create an organization.",
       cta: {
         label: "Create Organization",
       },
@@ -372,11 +390,14 @@ const app = {
   organizationPage: {
     header: {
       cta: {
-        viewAllProjects: {
+        viewProjects: {
           label: "View All Projects",
         },
         newProject: {
           label: "New Project",
+          basicTierTooltip:
+            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         },
       },
     },
@@ -384,8 +405,12 @@ const app = {
       title: "Projects",
       description: "Manage projects across this organization",
       emptyState: {
-        message: "No projects found. Would you like to create one?",
-        tooltip: "Your current plan doesn't support this feature.",
+        organizationOwnerMessage:
+          "No projects found. Would you like to create one?",
+        organizationUserMessage: "No projects found.",
+        basicTierTooltip:
+          "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+        noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         cta: {
           label: "Create Project",
         },
@@ -407,13 +432,10 @@ const app = {
         },
       },
     },
-    actions: {
-      title: "Quick Actions",
-      description: "Common organization details and actions",
+    management: {
+      title: "Organization Management",
+      description: "Manage your organization details, members, are more",
       cta: {
-        createProject: {
-          label: "Create New Project",
-        },
         manageTeam: {
           label: "Members",
         },
@@ -698,6 +720,9 @@ const app = {
       cta: {
         newProject: {
           label: "New Project",
+          basicTierTooltip:
+            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         },
       },
     },

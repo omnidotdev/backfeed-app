@@ -117,7 +117,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         header={{
           title: app.projectsPage.header.title,
           cta: [
-            ...(session
+            ...(hasAdminPrivileges
               ? [
                   {
                     label: app.projectsPage.header.cta.newProject.label,

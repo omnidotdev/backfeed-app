@@ -12,7 +12,7 @@ export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSide
 export { default as Members } from "./Members/Members";
 export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
 export { default as MembershipMenu } from "./MembershipMenu/MembershipMenu";
-export { default as OrganizationActions } from "./OrganizationActions/OrganizationActions";
+export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";
 export { default as OrganizationListItem } from "./OrganizationListItem/OrganizationListItem";

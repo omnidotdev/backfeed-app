@@ -15,6 +15,11 @@ import { DialogType } from "store";
 import type { Organization, Project } from "generated/graphql";
 
 interface Props {
+  /** Whether the user has admin privileges for the organization. */
+  hasAdminPrivileges: boolean;
+  /** Whether the user has basic tier subscription permissions. */
+  isBasicTier: boolean;
+  /** Whether the user has necessary subscription permissions to create projects. */
   canCreateProjects: boolean;
   /** Whether the user has necessary subscription permissions to create projects. */
   organizationSlug: Organization["slug"];
@@ -24,6 +29,8 @@ interface Props {
  * Organization projects overview.
  */
 const OrganizationProjects = ({
+  hasAdminPrivileges,
+  isBasicTier,
   canCreateProjects,
   organizationSlug,
 }: Props) => {
@@ -87,14 +94,28 @@ const OrganizationProjects = ({
             ))
           ) : (
             <EmptyState
-              message={app.organizationPage.projects.emptyState.message}
-              action={{
-                label: app.organizationPage.projects.emptyState.cta.label,
-                icon: LuCirclePlus,
-                onClick: () => setIsCreateProjectDialogOpen(true),
-                disabled: !canCreateProjects,
-                tooltip: app.organizationPage.projects.emptyState.tooltip,
-              }}
+              message={
+                hasAdminPrivileges
+                  ? app.organizationPage.projects.emptyState
+                      .organizationOwnerMessage
+                  : app.organizationPage.projects.emptyState
+                      .organizationUserMessage
+              }
+              action={
+                hasAdminPrivileges
+                  ? {
+                      label: app.organizationPage.projects.emptyState.cta.label,
+                      icon: LuCirclePlus,
+                      onClick: () => setIsCreateProjectDialogOpen(true),
+                      disabled: !canCreateProjects,
+                      tooltip: isBasicTier
+                        ? app.organizationPage.projects.emptyState
+                            .basicTierTooltip
+                        : app.organizationPage.projects.emptyState
+                            .noSubscriptionTooltip,
+                    }
+                  : undefined
+              }
               h={48}
             />
           )}

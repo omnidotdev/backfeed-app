@@ -89,7 +89,10 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
                 onClick: () => setIsCreateOrganizationDialogOpen(true),
                 icon: LuCirclePlus,
                 disabled: !isBasicTier,
-                tooltip: app.dashboardPage.organizations.emptyState.tooltip,
+                tooltip: isBasicTier
+                  ? app.dashboardPage.organizations.emptyState.basicTierTooltip
+                  : app.dashboardPage.organizations.emptyState
+                      .noSubscriptionTooltip,
               }}
               h={48}
             />

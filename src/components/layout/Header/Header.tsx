@@ -68,15 +68,15 @@ const Header = () => {
           )}
 
           <SigilLink
+            href={app.docsUrl}
             display={{ base: "none", sm: "flex" }}
-            href="https://docs.omni.dev/backfeed/overview"
             color="foreground.muted"
             _hover={{ color: "foreground.default" }}
             isExternal
             textDecoration="none"
           >
-            Docs
-            <Icon src={LuExternalLink} h={3} w={3} />
+            {app.header.routes.docs.label}
+            <Icon src={LuExternalLink} />
           </SigilLink>
         </Flex>
 

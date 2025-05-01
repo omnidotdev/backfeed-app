@@ -92,7 +92,6 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
             href: "/organizations",
-            disabled: !numberOfOrganizations,
           },
           {
             label: app.dashboardPage.cta.newOrganization.label,
@@ -100,6 +99,9 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
+            tooltip: isBasicTier
+              ? app.dashboardPage.cta.newOrganization.basicTierTooltip
+              : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
         ],
       }}
