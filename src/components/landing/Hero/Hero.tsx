@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Text,
-  useBreakpointValue,
-} from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, useBreakpointValue } from "@omnidev/sigil";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
