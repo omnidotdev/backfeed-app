@@ -38,7 +38,6 @@ const Header = () => {
       css={css.raw({
         borderBottom: "1px solid",
         borderColor: "border.subtle",
-        backgroundColor: "background.default",
       })}
     >
       <Flex align="center" justify="space-between" w="full" px={4}>

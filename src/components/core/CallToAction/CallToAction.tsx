@@ -71,7 +71,6 @@ const CallToAction = ({ action }: Props) => {
       trigger={
         <Button
           asChild
-          // tabIndex={0}
           size="sm"
           variant={variant}
           disabled={disabled}

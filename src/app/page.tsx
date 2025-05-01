@@ -10,6 +10,7 @@ import {
   OrganizationOrderBy,
   Role,
   useDashboardAggregatesQuery,
+  useInfiniteRecentFeedbackQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
   useWeeklyFeedbackQuery,
@@ -86,9 +87,12 @@ const HomePage = async () => {
         startDate: oneWeekAgo,
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: useInfiniteRecentFeedbackQuery.getKey({
+        userId: session.user.rowId!,
+      }),
       queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
+      initialPageParam: undefined,
     }),
   ]);
 

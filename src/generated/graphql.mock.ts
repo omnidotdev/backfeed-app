@@ -912,7 +912,7 @@ export const mockProjectsQuery = (resolver: GraphQLResponseResolver<Types.Projec
  * @example
  * mockRecentFeedbackQuery(
  *   ({ query, variables }) => {
- *     const { userId } = variables;
+ *     const { userId, after } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })

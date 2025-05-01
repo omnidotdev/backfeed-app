@@ -31,7 +31,14 @@ const Layout = ({ children }: PropsWithChildren) => {
   ) : (
     <>
       {/* NB: needs to be outside of main container in order to stay fixed to top of page, see: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
-      <Flex position="fixed" top={0} zIndex="sticky" h="header" w="full">
+      <Flex
+        position="fixed"
+        top={0}
+        zIndex="sticky"
+        h="header"
+        w="full"
+        style={{ backdropFilter: "blur(12px)" }}
+      >
         <Header />
       </Flex>
 

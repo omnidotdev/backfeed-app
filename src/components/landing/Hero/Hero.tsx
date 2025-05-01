@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
 
@@ -45,13 +45,7 @@ const Hero = () => {
   ];
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      py={{ base: 4, md: 12 }}
-      px={8}
-      maxW="4xl"
-    >
+    <VStack gap={0} py={{ base: 4, md: 12 }} px={8} maxW="4xl">
       <Image
         src="/img/hero.png"
         alt={app.landingPage.hero.imageAlt}
@@ -94,7 +88,7 @@ const Hero = () => {
           </Button>
         ))}
       </Flex>
-    </Flex>
+    </VStack>
   );
 };
 
