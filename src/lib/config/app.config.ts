@@ -922,7 +922,7 @@ const app = {
           },
           description: {
             minLength: "Must be at least 10 characters.",
-            maxLength: "Must be at most 240 characters.",
+            maxLength: "Must be at most 500 characters.",
           },
         },
       },
@@ -987,9 +987,7 @@ const app = {
           description: "An error occurred while adding your comment.",
         },
         errors: {
-          invalid: "Invalid format",
-          minLengthMessage: "Must be at least 10 characters.",
-          maxLengthMessage: "Must be at most 500 characters.",
+          maxLengthMessage: "Must be at most 240 characters.",
         },
       },
       title: "Comments",

@@ -20,7 +20,7 @@ import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
-const MAX_DESCRIPTION_LENGTH = 240;
+const MAX_DESCRIPTION_LENGTH = 500;
 
 const feedbackSchemaErrors =
   app.projectPage.projectFeedback.createFeedback.errors;
