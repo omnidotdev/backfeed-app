@@ -394,6 +394,7 @@ const app = {
       cta: {
         viewProjects: {
           label: "View All Projects",
+          tooltip: "No projects to view.",
         },
         newProject: {
           label: "New Project",
