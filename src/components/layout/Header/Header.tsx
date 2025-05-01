@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, css, sigil } from "@omnidev/sigil";
+import { Flex, Icon, css, sigil } from "@omnidev/sigil";
 import { Link as SigilLink } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
@@ -10,6 +10,7 @@ import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
+import { LuExternalLink } from "react-icons/lu";
 
 /**
  * Layout header.
@@ -65,14 +66,17 @@ const Header = () => {
               </Link>
             </Flex>
           )}
+
           <SigilLink
+            display={{ base: "none", sm: "flex" }}
             href="https://docs.omni.dev/backfeed/overview"
             color="foreground.muted"
             _hover={{ color: "foreground.default" }}
             isExternal
             textDecoration="none"
           >
-            Docs ↗
+            Docs
+            <Icon src={LuExternalLink} h={3} w={3} />
           </SigilLink>
         </Flex>
 

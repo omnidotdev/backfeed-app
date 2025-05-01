@@ -4,9 +4,11 @@ import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
 
+import { Image } from "components/core";
 import { app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
+import { useViewportSize } from "lib/hooks";
 import type { IconType } from "react-icons";
 
 interface ActionProps extends ButtonProps {
@@ -21,6 +23,8 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
+  const isMediumViewport = useViewportSize({ minWidth: "48em" });
+
   const actions: ActionProps[] = [
     {
       label: {
@@ -41,10 +45,25 @@ const Hero = () => {
   ];
 
   return (
-    <Flex direction="column" align="center" gap={4} py={20} px={8} maxW="4xl">
+    <Flex
+      direction="column"
+      align="center"
+      py={{ base: 4, md: 12 }}
+      px={8}
+      maxW="4xl"
+    >
+      <Image
+        src="/img/hero.png"
+        alt={app.landingPage.hero.imageAlt}
+        priority
+        width={isMediumViewport ? 224 : 150}
+        height={isMediumViewport ? 323 : 216}
+      />
+
       <Text
+        my={4}
         as="h1"
-        fontSize={{ base: "4xl", md: "6xl" }}
+        fontSize={{ base: "3xl", md: "6xl" }}
         fontWeight="bold"
         textAlign="center"
         lineHeight={1}
