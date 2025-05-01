@@ -19,7 +19,7 @@ const getProject = cache(
   async ({ organizationSlug, projectSlug }: ProjectOptions) => {
     const session = await getAuthSession();
 
-    if (!session) return null;
+    // if (!session) return null;
 
     const sdk = getSdk({ session });
 

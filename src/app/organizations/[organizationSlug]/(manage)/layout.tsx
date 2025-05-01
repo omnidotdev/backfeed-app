@@ -1,8 +1,6 @@
 import { HStack } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { ManagementSidebar } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { getQueryClient } from "lib/util";
@@ -18,10 +16,6 @@ interface Props extends PropsWithChildren {
  */
 const ManageOrganizationLayout = async ({ params, children }: Props) => {
   const { organizationSlug } = await params;
-
-  const session = await auth();
-
-  if (!session) notFound();
 
   const queryClient = getQueryClient();
 

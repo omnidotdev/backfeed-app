@@ -17,7 +17,7 @@ const getOrganization = cache(
   async ({ organizationSlug }: OrganizationOptions) => {
     const session = await getAuthSession();
 
-    if (!session) return null;
+    // if (!session) return null;
 
     const sdk = getSdk({ session });
 

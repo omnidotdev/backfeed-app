@@ -1,5 +1,4 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
@@ -44,15 +43,17 @@ interface Props {
 const OrganizationsPage = async ({ searchParams }: Props) => {
   const session = await auth();
 
-  if (!session) notFound();
+  // if (!session) notFound();
 
   const sdk = getSdk({ session });
 
   const [{ organizations }, isBasicTier, isTeamTier] = await Promise.all([
     sdk.Organizations({
-      userId: session?.user.rowId!,
+      userId: session?.user.rowId,
       isMember: true,
       excludeRoles: [Role.Member],
+      // NB: only need to determine in there are any number of orgs given the other variables.
+      pageSize: 1,
     }),
     enableBasicTierPrivilegesFlag(),
     enableTeamTierPrivilegesFlag(),

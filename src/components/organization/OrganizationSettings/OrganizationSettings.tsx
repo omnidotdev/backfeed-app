@@ -37,7 +37,7 @@ const joinOrganizationDetails =
 
 interface Props {
   /** User ID. */
-  userId: User["rowId"];
+  userId: User["rowId"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Whether the join organization functionality is enabled. */
@@ -93,7 +93,7 @@ const OrganizationSettings = ({
   const onSettled = () =>
     queryClient.invalidateQueries({
       queryKey: useOrganizationRoleQuery.getKey({
-        userId,
+        userId: userId!,
         organizationId,
       }),
     });
@@ -186,7 +186,7 @@ const OrganizationSettings = ({
       <UpdateOrganization />
 
       {/* NB: if the user is not currently a member, the only action that would be available is to join the organization, which we are currently putting behind a feature flag. */}
-      {(isCurrentMember || isJoinOrganizationEnabled) && (
+      {(isCurrentMember || isJoinOrganizationEnabled) && userId && (
         <SectionContainer
           title={
             isCurrentMember
@@ -230,7 +230,7 @@ const OrganizationSettings = ({
             </Stack>
           )}
 
-          {!isCurrentMember && (
+          {!isCurrentMember && userId && (
             <Button
               fontSize="md"
               colorPalette="green"

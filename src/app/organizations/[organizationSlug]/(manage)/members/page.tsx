@@ -11,11 +11,7 @@ import {
   MembershipFilters,
   Owners,
 } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role, useMembersQuery } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { enableOwnershipTransferFlag } from "lib/flags";
@@ -23,6 +19,7 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { Member } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -54,7 +51,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
+  // if (!session) notFound();
 
   const organization = await getOrganization({
     organizationSlug,
@@ -64,11 +61,16 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
       organizationId: organization.rowId,
     });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const queryClient = getQueryClient();
 
@@ -99,16 +101,21 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         excludeRoles: [Role.Owner],
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
+    // TODO: determine need for prefetching, update client state accordingly
+    // ...(session
+    //   ? [
+    //       queryClient.prefetchQuery({
+    //         queryKey: useOrganizationRoleQuery.getKey({
+    //           organizationId: organization.rowId,
+    //           userId: session.user.rowId!,
+    //         }),
+    //         queryFn: useOrganizationRoleQuery.fetcher({
+    //           organizationId: organization.rowId,
+    //           userId: session.user.rowId!,
+    //         }),
+    //       }),
+    //     ]
+    //   : []),
   ]);
 
   return (

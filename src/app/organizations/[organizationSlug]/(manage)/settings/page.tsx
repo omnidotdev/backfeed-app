@@ -4,11 +4,7 @@ import { notFound } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import {
-  Role,
-  useMembersQuery,
-  useOrganizationRoleQuery,
-} from "generated/graphql";
+import { Role, useMembersQuery } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import {
@@ -48,7 +44,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
+  // if (!session) notFound();
 
   const organization = await getOrganization({ organizationSlug });
 
@@ -57,16 +53,21 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   const queryClient = getQueryClient();
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
+    // TODO: determine need for prefetching, update client state accordingly
+    // ...(session
+    //   ? [
+    //       queryClient.prefetchQuery({
+    //         queryKey: useOrganizationRoleQuery.getKey({
+    //           userId: session.user.rowId!,
+    //           organizationId: organization.rowId,
+    //         }),
+    //         queryFn: useOrganizationRoleQuery.fetcher({
+    //           userId: session.user.rowId!,
+    //           organizationId: organization.rowId,
+    //         }),
+    //       }),
+    //     ]
+    //   : []),
     queryClient.prefetchQuery({
       queryKey: useMembersQuery.getKey({
         organizationId: organization.rowId,
@@ -88,7 +89,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
-          userId={session.user.rowId!}
+          userId={session?.user.rowId}
           organizationId={organization.rowId}
           isJoinOrganizationEnabled={isJoinOrganizationEnabled}
           isOwnershipTransferEnabled={isOwnershipTransferEnabled}

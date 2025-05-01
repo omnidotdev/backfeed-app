@@ -7,18 +7,16 @@ import { Page } from "components/layout";
 import {
   Role,
   useCommentsQuery,
-  useDownvoteQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
-  useOrganizationRoleQuery,
   useProjectStatusesQuery,
-  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Member } from "generated/graphql";
 
 export const metadata = {
   title: app.feedbackPage.breadcrumb,
@@ -41,7 +39,7 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
+  // if (!session) notFound();
 
   const sdk = getSdk({ session });
 
@@ -49,14 +47,18 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!feedback) notFound();
 
-  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-    userId: session.user?.rowId!,
-    organizationId: feedback.project?.organization?.rowId!,
-  });
+  let member: Partial<Member> | null = null;
 
-  const isAdmin =
-    memberByUserIdAndOrganizationId?.role === Role.Admin ||
-    memberByUserIdAndOrganizationId?.role === Role.Owner;
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user?.rowId!,
+      organizationId: feedback.project?.organization?.rowId!,
+    });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
+
+  const isAdmin = member?.role === Role.Admin || member?.role === Role.Owner;
 
   const queryClient = getQueryClient();
 
@@ -100,36 +102,41 @@ const FeedbackPage = async ({ params }: Props) => {
           }),
         ]
       : []),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDownvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useDownvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUpvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useUpvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
+    // TODO: determine need for prefetching, update client state accordingly
+    // ...(session
+    //   ? [
+    //       queryClient.prefetchQuery({
+    //         queryKey: useOrganizationRoleQuery.getKey({
+    //           userId: session.user.rowId!,
+    //           organizationId: feedback.project?.organization?.rowId!,
+    //         }),
+    //         queryFn: useOrganizationRoleQuery.fetcher({
+    //           userId: session.user.rowId!,
+    //           organizationId: feedback.project?.organization?.rowId!,
+    //         }),
+    //       }),
+    //       queryClient.prefetchQuery({
+    //         queryKey: useDownvoteQuery.getKey({
+    //           userId: session?.user?.rowId!,
+    //           feedbackId,
+    //         }),
+    //         queryFn: useDownvoteQuery.fetcher({
+    //           userId: session?.user?.rowId!,
+    //           feedbackId,
+    //         }),
+    //       }),
+    //       queryClient.prefetchQuery({
+    //         queryKey: useUpvoteQuery.getKey({
+    //           userId: session?.user?.rowId!,
+    //           feedbackId,
+    //         }),
+    //         queryFn: useUpvoteQuery.fetcher({
+    //           userId: session?.user?.rowId!,
+    //           feedbackId,
+    //         }),
+    //       }),
+    //     ]
+    //   : []),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
       queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),

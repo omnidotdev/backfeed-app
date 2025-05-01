@@ -7,6 +7,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
+  type Member,
   Role,
   useInfinitePostsQuery,
   usePostsQuery,
@@ -48,7 +49,7 @@ const ProjectPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
+  // if (!session) notFound();
 
   const project = await getProject({ organizationSlug, projectSlug });
 
@@ -56,10 +57,16 @@ const ProjectPage = async ({ params }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-    userId: session.user?.rowId!,
-    organizationId: project.organization?.rowId!,
-  });
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
+      organizationId: project.organization?.rowId!,
+    });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const queryClient = getQueryClient();
 
@@ -125,15 +132,16 @@ const ProjectPage = async ({ params }: Props) => {
           title: project.name!,
           description: project.description!,
           cta: [
-            {
-              label: app.projectPage.header.cta.settings.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <LuSettings />,
-              disabled:
-                !memberByUserIdAndOrganizationId ||
-                memberByUserIdAndOrganizationId.role === Role.Member,
-              href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
-            },
+            ...(member && member.role !== Role.Member
+              ? [
+                  {
+                    label: app.projectPage.header.cta.settings.label,
+                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                    icon: <LuSettings />,
+                    href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
+                  },
+                ]
+              : []),
             {
               label: app.projectPage.header.cta.viewAllProjects.label,
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
