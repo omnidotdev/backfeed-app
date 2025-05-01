@@ -134,8 +134,8 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           py={2}
           ml={{ base: 0, lg: -4 }}
           minH={14}
-          bgColor="background.default"
           gap={2}
+          style={{ backdropFilter: "blur(12px)" }}
         >
           <Button
             variant="icon"
