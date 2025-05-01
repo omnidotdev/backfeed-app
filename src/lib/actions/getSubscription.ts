@@ -5,8 +5,8 @@ import { getCustomer, getProduct } from "lib/actions";
 /**
  * Server action to get subscription details.
  */
-const getSubscription = async (userId: string) => {
-  const customer = await getCustomer(userId);
+const getSubscription = async () => {
+  const customer = await getCustomer();
 
   if (!customer.activeSubscriptions.length) {
     throw new Error("No active subscriptions found");
