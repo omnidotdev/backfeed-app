@@ -90,6 +90,7 @@ const app = {
   },
   landingPage: {
     hero: {
+      imageAlt: "Hero",
       title: "Transform User Feedback into Actionable Insights",
       description:
         "Collect, analyze, and act on user feedback with our powerful platform. Make data-driven decisions and improve your product faster than ever.",

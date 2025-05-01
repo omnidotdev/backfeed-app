@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Text,
+  useBreakpointValue,
+} from "@omnidev/sigil";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
 
@@ -21,6 +29,8 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
+  const imageWidth = useBreakpointValue({ base: 150, md: 224 });
+
   const actions: ActionProps[] = [
     {
       label: {
@@ -41,10 +51,24 @@ const Hero = () => {
   ];
 
   return (
-    <Flex direction="column" align="center" gap={4} py={20} px={8} maxW="4xl">
+    <Flex
+      direction="column"
+      align="center"
+      py={{ base: 4, md: 12 }}
+      px={8}
+      maxW="4xl"
+    >
+      <Image
+        src="/img/hero.png"
+        alt={app.landingPage.hero.imageAlt}
+        width={imageWidth}
+        height={100}
+      />
+
       <Text
+        my={4}
         as="h1"
-        fontSize={{ base: "4xl", md: "6xl" }}
+        fontSize={{ base: "3xl", md: "6xl" }}
         fontWeight="bold"
         textAlign="center"
         lineHeight={1}
