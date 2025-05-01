@@ -1,6 +1,7 @@
 "use client";
 
 import { Flex, css, sigil } from "@omnidev/sigil";
+import { Link as SigilLink } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 
@@ -64,6 +65,15 @@ const Header = () => {
               </Link>
             </Flex>
           )}
+          <SigilLink
+            href="https://docs.omni.dev/backfeed/overview"
+            color="foreground.muted"
+            _hover={{ color: "foreground.default" }}
+            isExternal
+            textDecoration="none"
+          >
+            Docs ↗
+          </SigilLink>
         </Flex>
 
         <HeaderActions />

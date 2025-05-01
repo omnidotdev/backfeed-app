@@ -1,6 +1,6 @@
 "use client";
 
-import { css, sigil } from "@omnidev/sigil";
+import { css, Divider, Link, sigil } from "@omnidev/sigil";
 
 import { app } from "lib/config";
 
@@ -22,6 +22,17 @@ const Footer = () => (
     })}
   >
     &copy; {new Date().getFullYear()} {app.organization.name}
+    <Divider orientation="vertical" p={2} />
+    <Link
+      href="https://docs.omni.dev/backfeed/overview"
+      p={3}
+      isExternal
+      color="foreground.muted"
+      _hover={{ color: "brand.primary" }}
+      textDecoration="none"
+    >
+      Docs
+    </Link>
   </sigil.footer>
 );
 
