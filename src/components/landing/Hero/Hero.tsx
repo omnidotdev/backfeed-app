@@ -2,9 +2,9 @@
 
 import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
 import { FiArrowRight } from "react-icons/fi";
 
+import { Image } from "components/core";
 import { app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
