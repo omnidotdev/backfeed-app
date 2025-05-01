@@ -49,8 +49,6 @@ const ProjectPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  // if (!session) notFound();
-
   const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();

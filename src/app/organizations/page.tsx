@@ -43,8 +43,6 @@ interface Props {
 const OrganizationsPage = async ({ searchParams }: Props) => {
   const session = await auth();
 
-  // if (!session) notFound();
-
   const sdk = getSdk({ session });
 
   const [{ organizations }, isBasicTier, isTeamTier] = await Promise.all([
@@ -82,7 +80,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     queryFn: useOrganizationsQuery.fetcher(variables),
   });
 
-  // TODO: discuss the below. Should the check be strictly scoped to ownership??
   // NB: To create an organization, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited organizations) or that they are not currently an owner/admin of another organization
   const canCreateOrganization =
     isBasicTier && (isTeamTier || !organizations?.totalCount);

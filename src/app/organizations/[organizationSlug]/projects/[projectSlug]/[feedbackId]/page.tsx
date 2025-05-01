@@ -39,8 +39,6 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  // if (!session) notFound();
-
   const sdk = getSdk({ session });
 
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
@@ -102,41 +100,6 @@ const FeedbackPage = async ({ params }: Props) => {
           }),
         ]
       : []),
-    // TODO: determine need for prefetching, update client state accordingly
-    // ...(session
-    //   ? [
-    //       queryClient.prefetchQuery({
-    //         queryKey: useOrganizationRoleQuery.getKey({
-    //           userId: session.user.rowId!,
-    //           organizationId: feedback.project?.organization?.rowId!,
-    //         }),
-    //         queryFn: useOrganizationRoleQuery.fetcher({
-    //           userId: session.user.rowId!,
-    //           organizationId: feedback.project?.organization?.rowId!,
-    //         }),
-    //       }),
-    //       queryClient.prefetchQuery({
-    //         queryKey: useDownvoteQuery.getKey({
-    //           userId: session?.user?.rowId!,
-    //           feedbackId,
-    //         }),
-    //         queryFn: useDownvoteQuery.fetcher({
-    //           userId: session?.user?.rowId!,
-    //           feedbackId,
-    //         }),
-    //       }),
-    //       queryClient.prefetchQuery({
-    //         queryKey: useUpvoteQuery.getKey({
-    //           userId: session?.user?.rowId!,
-    //           feedbackId,
-    //         }),
-    //         queryFn: useUpvoteQuery.fetcher({
-    //           userId: session?.user?.rowId!,
-    //           feedbackId,
-    //         }),
-    //       }),
-    //     ]
-    //   : []),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
       queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),

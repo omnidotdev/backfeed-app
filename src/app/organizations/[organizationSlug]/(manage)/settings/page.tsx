@@ -44,8 +44,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  // if (!session) notFound();
-
   const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
@@ -53,21 +51,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   const queryClient = getQueryClient();
 
   await Promise.all([
-    // TODO: determine need for prefetching, update client state accordingly
-    // ...(session
-    //   ? [
-    //       queryClient.prefetchQuery({
-    //         queryKey: useOrganizationRoleQuery.getKey({
-    //           userId: session.user.rowId!,
-    //           organizationId: organization.rowId,
-    //         }),
-    //         queryFn: useOrganizationRoleQuery.fetcher({
-    //           userId: session.user.rowId!,
-    //           organizationId: organization.rowId,
-    //         }),
-    //       }),
-    //     ]
-    //   : []),
     queryClient.prefetchQuery({
       queryKey: useMembersQuery.getKey({
         organizationId: organization.rowId,

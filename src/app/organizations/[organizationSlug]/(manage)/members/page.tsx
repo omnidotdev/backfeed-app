@@ -51,8 +51,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  // if (!session) notFound();
-
   const organization = await getOrganization({
     organizationSlug,
   });
@@ -101,21 +99,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         excludeRoles: [Role.Owner],
       }),
     }),
-    // TODO: determine need for prefetching, update client state accordingly
-    // ...(session
-    //   ? [
-    //       queryClient.prefetchQuery({
-    //         queryKey: useOrganizationRoleQuery.getKey({
-    //           organizationId: organization.rowId,
-    //           userId: session.user.rowId!,
-    //         }),
-    //         queryFn: useOrganizationRoleQuery.fetcher({
-    //           organizationId: organization.rowId,
-    //           userId: session.user.rowId!,
-    //         }),
-    //       }),
-    //     ]
-    //   : []),
   ]);
 
   return (

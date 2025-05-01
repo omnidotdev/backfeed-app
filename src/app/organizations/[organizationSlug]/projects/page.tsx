@@ -48,8 +48,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  // if (!session) notFound();
-
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
     getOrganization({ organizationSlug }),
     enableBasicTierPrivilegesFlag(),
