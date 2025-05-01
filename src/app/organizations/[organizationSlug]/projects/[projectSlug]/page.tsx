@@ -122,9 +122,7 @@ const ProjectPage = async ({ params }: Props) => {
     }),
   ]);
 
-  const hasAdminPrivileges =
-    member &&
-    member.role !== Role.Member;
+  const hasAdminPrivileges = member && member.role !== Role.Member;
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
