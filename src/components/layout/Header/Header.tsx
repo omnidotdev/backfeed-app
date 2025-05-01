@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Icon, css, sigil } from "@omnidev/sigil";
+import { Flex, HStack, Icon, css, sigil } from "@omnidev/sigil";
 import { Link as SigilLink } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
@@ -45,39 +45,46 @@ const Header = () => {
         <Flex gap={4} alignItems="center">
           <LogoLink width={48} />
 
-          {showPricingLink && (
-            <Flex display={{ base: "none", sm: "flex" }}>
-              <Link href="/pricing" role="group">
-                <Flex
-                  h={10}
-                  px={4}
-                  align="center"
-                  color={{
-                    base: "foreground.muted",
-                    _groupHover: "foreground.default",
-                  }}
-                  bgColor={
-                    pathname === "/pricing" ? "background.muted" : "transparent"
-                  }
-                  borderRadius="md"
-                >
-                  {app.header.routes.pricing.label}
-                </Flex>
-              </Link>
-            </Flex>
-          )}
+          <HStack gap={1}>
+            {showPricingLink && (
+              <Flex display={{ base: "none", sm: "flex" }}>
+                <Link href="/pricing" role="group">
+                  <Flex
+                    h={10}
+                    px={4}
+                    align="center"
+                    color={{
+                      base: "foreground.muted",
+                      _groupHover: "foreground.default",
+                    }}
+                    bgColor={
+                      pathname === "/pricing"
+                        ? "background.muted"
+                        : "transparent"
+                    }
+                    borderRadius="md"
+                  >
+                    {app.header.routes.pricing.label}
+                  </Flex>
+                </Link>
+              </Flex>
+            )}
 
-          <SigilLink
-            href={app.docsUrl}
-            display={{ base: "none", sm: "flex" }}
-            color="foreground.muted"
-            _hover={{ color: "foreground.default" }}
-            isExternal
-            textDecoration="none"
-          >
-            {app.header.routes.docs.label}
-            <Icon src={LuExternalLink} />
-          </SigilLink>
+            <SigilLink
+              href={app.docsUrl}
+              display={{ base: "none", sm: "flex" }}
+              color="foreground.muted"
+              _hover={{ color: "foreground.default" }}
+              isExternal
+              textDecoration="none"
+              h={10}
+              px={4}
+            >
+              {app.header.routes.docs.label}
+
+              <Icon src={LuExternalLink} h={3.5} w={3.5} />
+            </SigilLink>
+          </HStack>
         </Flex>
 
         <HeaderActions />
