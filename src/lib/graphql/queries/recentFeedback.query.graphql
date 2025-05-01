@@ -1,6 +1,7 @@
-query RecentFeedback($userId: UUID!) {
+query RecentFeedback($userId: UUID!, $after: Cursor) {
   posts(
-    first: 5
+    first: 10
+    after: $after
     orderBy: CREATED_AT_DESC
     filter: {
       project: {
@@ -8,26 +9,33 @@ query RecentFeedback($userId: UUID!) {
       }
     }
   ) {
-    nodes {
-      rowId
-      createdAt
-      title
-      description
-      project {
-        name
-        slug
-        organization {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        createdAt
+        title
+        description
+        project {
+          name
           slug
+          organization {
+            slug
+          }
         }
-      }
-      status {
-        rowId
-        status
-        color
-      }
-      user {
-        rowId
-        username
+        status {
+          rowId
+          status
+          color
+        }
+        user {
+          rowId
+          username
+        }
       }
     }
   }

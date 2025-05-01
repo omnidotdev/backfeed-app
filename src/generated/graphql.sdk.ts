@@ -5249,10 +5249,11 @@ export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'P
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5845,32 +5846,40 @@ export const ProjectsDocument = gql`
 }
     `;
 export const RecentFeedbackDocument = gql`
-    query RecentFeedback($userId: UUID!) {
+    query RecentFeedback($userId: UUID!, $after: Cursor) {
   posts(
-    first: 5
+    first: 10
+    after: $after
     orderBy: CREATED_AT_DESC
     filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}}
   ) {
-    nodes {
-      rowId
-      createdAt
-      title
-      description
-      project {
-        name
-        slug
-        organization {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        rowId
+        createdAt
+        title
+        description
+        project {
+          name
           slug
+          organization {
+            slug
+          }
         }
-      }
-      status {
-        rowId
-        status
-        color
-      }
-      user {
-        rowId
-        username
+        status {
+          rowId
+          status
+          color
+        }
+        user {
+          rowId
+          username
+        }
       }
     }
   }
