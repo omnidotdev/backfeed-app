@@ -10,6 +10,7 @@ import { app } from "lib/config";
 import type { ButtonProps } from "@omnidev/sigil";
 import { useViewportSize } from "lib/hooks";
 import type { IconType } from "react-icons";
+import { token } from "generated/panda/tokens";
 
 interface ActionProps extends ButtonProps {
   label: {
@@ -23,7 +24,9 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
-  const isMediumViewport = useViewportSize({ minWidth: "48em" });
+  const isMediumViewport = useViewportSize({
+    minWidth: token("breakpoints.md"),
+  });
 
   const actions: ActionProps[] = [
     {

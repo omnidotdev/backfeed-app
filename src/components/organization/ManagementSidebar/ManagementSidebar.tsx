@@ -15,6 +15,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Breadcrumb } from "components/core";
 import { ManagementNavigation } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
@@ -26,7 +27,9 @@ import type { PropsWithChildren } from "react";
  * Sidebar for organization management. Used for navigation between organization management pages.
  */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
-  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+  const isLargeViewport = useViewportSize({
+    minWidth: token("breakpoints.lg"),
+  });
 
   const segment = useSelectedLayoutSegment();
 

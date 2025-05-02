@@ -170,6 +170,9 @@ const ProjectFeedback = ({ projectId }: Props) => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
+      p={0}
+      px={{ base: 4, sm: 6 }}
+      pt={{ base: 4, sm: 6 }}
     >
       <Stack gap={0}>
         <CreateFeedback />

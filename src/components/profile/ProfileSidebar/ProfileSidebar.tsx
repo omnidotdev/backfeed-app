@@ -14,6 +14,7 @@ import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
+import { token } from "generated/panda/tokens";
 import { useAuth, useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
@@ -24,7 +25,9 @@ import type { PropsWithChildren } from "react";
  * Sidebar for profile page. Used for navigation between profile pages.
  */
 const ProfileSidebar = ({ children }: PropsWithChildren) => {
-  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+  const isLargeViewport = useViewportSize({
+    minWidth: token("breakpoints.lg"),
+  });
   const segment = useSelectedLayoutSegment();
   const { user } = useAuth();
 

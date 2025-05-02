@@ -7,6 +7,7 @@ import {
   useCreateInvitationMutation,
   useInvitationsQuery,
 } from "generated/graphql";
+import { token } from "generated/panda/tokens";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -94,7 +95,9 @@ const createInvitationSchema = baseSchema.superRefine(
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
   const { user } = useAuth();
-  const isSmallViewport = useViewportSize({ minWidth: "40em" });
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.InviteMember,
