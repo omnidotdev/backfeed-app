@@ -35,7 +35,7 @@ const Footer = () => (
       _hover={{ color: "brand.primary" }}
       textDecoration="none"
     >
-      Docs
+      {app.header.routes.docs.label}
     </Link>
   </sigil.footer>
 );
