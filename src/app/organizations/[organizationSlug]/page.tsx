@@ -122,8 +122,6 @@ const OrganizationPage = async ({ params }: Props) => {
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               href: `/organizations/${organizationSlug}/projects`,
-              disabled: !organization.projects.totalCount,
-              tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
             },
             ...(hasAdminPrivileges
               ? [
