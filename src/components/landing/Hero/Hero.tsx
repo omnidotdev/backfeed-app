@@ -5,12 +5,12 @@ import { signIn } from "next-auth/react";
 import { FiArrowRight } from "react-icons/fi";
 
 import { Image } from "components/core";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
+import { useViewportSize } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
-import { useViewportSize } from "lib/hooks";
 import type { IconType } from "react-icons";
-import { token } from "generated/panda/tokens";
 
 interface ActionProps extends ButtonProps {
   label: {
