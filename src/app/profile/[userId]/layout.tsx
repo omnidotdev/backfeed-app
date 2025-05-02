@@ -31,7 +31,7 @@ const ProfileLayout = async ({ children }: PropsWithChildren) => {
   return (
     <HStack h="full" w="full" gap={0}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProfileSidebar>{children}</ProfileSidebar>
+        <ProfileSidebar user={session.user}>{children}</ProfileSidebar>
       </HydrationBoundary>
     </HStack>
   );

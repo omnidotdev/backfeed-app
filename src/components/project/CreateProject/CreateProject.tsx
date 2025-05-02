@@ -4,6 +4,7 @@ import { Dialog, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import {
@@ -133,6 +134,8 @@ const CreateProject = ({
   const queryClient = useQueryClient();
 
   const router = useRouter();
+
+  const isClient = useIsClient();
 
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
@@ -269,6 +272,8 @@ const CreateProject = ({
         },
       ),
   });
+
+  if (!isClient) return null;
 
   return (
     <Dialog

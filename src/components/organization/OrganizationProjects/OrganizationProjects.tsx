@@ -19,9 +19,9 @@ interface Props {
   hasAdminPrivileges: boolean;
   /** Whether the user has basic tier subscription permissions. */
   isBasicTier: boolean;
-  /** Whether the user has necessary subscription permissions to create projects. */
+  /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
-  /** Whether the user has necessary subscription permissions to create projects. */
+  /** Organization slug. */
   organizationSlug: Organization["slug"];
 }
 

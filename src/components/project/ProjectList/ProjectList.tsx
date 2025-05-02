@@ -17,7 +17,7 @@ import { DialogType } from "store";
 import type { Project } from "generated/graphql";
 
 interface Props {
-  /** Whether the user has necessary subscription permissions to create projects. */
+  /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
 }
 

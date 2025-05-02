@@ -1,6 +1,7 @@
 "use client";
 
-import { Divider, Link, Text, css, sigil } from "@omnidev/sigil";
+import { Divider, Icon, Link, Text, css, sigil } from "@omnidev/sigil";
+import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
 
 import { app } from "lib/config";
 
@@ -12,7 +13,7 @@ const Footer = () => (
     display="flex"
     justifyContent="center"
     alignItems="center"
-    gap={2}
+    gap={4}
     p={4}
     bottom={0}
     w="100%"
@@ -29,13 +30,35 @@ const Footer = () => (
     <Divider orientation="vertical" />
 
     <Link
-      href="https://docs.omni.dev/backfeed/overview"
       isExternal
+      href={app.docsUrl}
       color="foreground.muted"
       _hover={{ color: "brand.primary" }}
       textDecoration="none"
     >
-      Docs
+      {app.header.routes.docs.label}
+    </Link>
+
+    <Divider orientation="vertical" />
+
+    <Link
+      isExternal
+      href={app.socials.discord}
+      color="foreground.muted"
+      _hover={{ color: "brand.primary" }}
+      textDecoration="none"
+    >
+      <Icon src={FaDiscord} />
+    </Link>
+
+    <Link
+      isExternal
+      href={app.socials.x}
+      color="foreground.muted"
+      _hover={{ color: "brand.primary" }}
+      textDecoration="none"
+    >
+      <Icon src={FaX} />
     </Link>
   </sigil.footer>
 );
