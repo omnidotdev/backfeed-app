@@ -116,8 +116,6 @@ const ProjectSettingsPage = async ({ params }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: `${project.name!} Settings`,
-          description:
-            "Handle project settings and manage feedback for your project.",
         }}
       >
         <ProjectSettings

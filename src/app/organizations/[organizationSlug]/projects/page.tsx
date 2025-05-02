@@ -113,16 +113,21 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: app.projectsPage.header.title,
-          description: app.projectsPage.header.description,
-          cta: [
-            {
-              label: app.projectsPage.header.cta.newProject.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <LuCirclePlus />,
-              disabled: !canCreateProjects,
-              dialogType: DialogType.CreateProject,
-            },
-          ],
+          cta: hasAdminPrivileges
+            ? [
+                {
+                  label: app.projectsPage.header.cta.newProject.label,
+                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                  icon: <LuCirclePlus />,
+                  disabled: !canCreateProjects,
+                  dialogType: DialogType.CreateProject,
+                  tooltip: isBasicTier
+                    ? app.projectsPage.header.cta.newProject.basicTierTooltip
+                    : app.projectsPage.header.cta.newProject
+                        .noSubscriptionTooltip,
+                },
+              ]
+            : undefined,
         }}
       >
         <ProjectFilters />

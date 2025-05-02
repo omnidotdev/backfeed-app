@@ -9,13 +9,18 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Organization, Project } from "generated/graphql";
 
 interface Props {
+  /** Whether the user has admin privileges for the organization. */
+  hasAdminPrivileges: boolean;
+  /** Whether the user has basic tier subscription permissions. */
+  isBasicTier: boolean;
+  /** Whether the user has necessary permissions to create projects. */
+  canCreateProjects: boolean;
   /** Organization slug. */
   organizationSlug: Organization["slug"];
 }
@@ -23,9 +28,12 @@ interface Props {
 /**
  * Organization projects overview.
  */
-const OrganizationProjects = ({ organizationSlug }: Props) => {
-  const { isLoading: isAuthLoading } = useAuth();
-
+const OrganizationProjects = ({
+  hasAdminPrivileges,
+  isBasicTier,
+  canCreateProjects,
+  organizationSlug,
+}: Props) => {
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -86,18 +94,28 @@ const OrganizationProjects = ({ organizationSlug }: Props) => {
             ))
           ) : (
             <EmptyState
-              message={app.organizationPage.projects.emptyState.message}
-              action={{
-                label: app.organizationPage.projects.emptyState.cta.label,
-                icon: LuCirclePlus,
-                actionProps: {
-                  variant: "outline",
-                  color: "brand.primary",
-                  borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
-                  disabled: isAuthLoading,
-                },
-              }}
+              message={
+                hasAdminPrivileges
+                  ? app.organizationPage.projects.emptyState
+                      .organizationOwnerMessage
+                  : app.organizationPage.projects.emptyState
+                      .organizationUserMessage
+              }
+              action={
+                hasAdminPrivileges
+                  ? {
+                      label: app.organizationPage.projects.emptyState.cta.label,
+                      icon: LuCirclePlus,
+                      onClick: () => setIsCreateProjectDialogOpen(true),
+                      disabled: !canCreateProjects,
+                      tooltip: isBasicTier
+                        ? app.organizationPage.projects.emptyState
+                            .basicTierTooltip
+                        : app.organizationPage.projects.emptyState
+                            .noSubscriptionTooltip,
+                    }
+                  : undefined
+              }
               h={48}
             />
           )}

@@ -21,15 +21,15 @@ import { useAuth, useViewportSize } from "lib/hooks";
 interface Props {
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
-  /** Start of today. */
-  startOfToday: Date;
 }
 
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
-  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+const FeedbackOverview = ({ oneWeekAgo }: Props) => {
+  const isLargeViewport = useViewportSize({
+    minWidth: token("breakpoints.lg"),
+  });
 
   const getFormattedDate = (diff: number) =>
     dayjs(oneWeekAgo).add(diff, "day").format("ddd");
@@ -44,7 +44,6 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
     {
       userId: user?.rowId!,
       startDate: oneWeekAgo,
-      endDate: startOfToday,
     },
     {
       enabled: !!user?.rowId,
@@ -80,7 +79,7 @@ const FeedbackOverview = ({ oneWeekAgo, startOfToday }: Props) => {
       contentProps={{
         align: "center",
         justify: "center",
-        p: 4,
+        p: 2,
       }}
     >
       {!isLoading ? (

@@ -1,15 +1,21 @@
 // TODO: dedupe as much as possible.
 
+/**
+ * Application configuration.
+ */
 const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
-  organization: "Omni",
   productionUrl: "https://backfeed.omni.dev",
-  supportName: "Omni Support",
-  supportEmail: "team@support.omni.dev",
-  identityUrl: "https://identity.omni.dev",
-  forgotPasswordUrl: "https://identity.omni.dev/forgot-password",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
+  socials: {
+    discord: "https://discord.gg/g5PQgNGGzE",
+    x: "https://x.com/omnidotdev",
+  },
+  organization: {
+    name: "Omni",
+    supportEmailAddress: "support@omni.dev",
+  },
   breadcrumb: "Home",
   unsavedChanges: {
     description: "You have unsaved changes.",
@@ -84,6 +90,9 @@ const app = {
       pricing: {
         label: "Pricing",
       },
+      docs: {
+        label: "Docs",
+      },
     },
   },
   landingPage: {
@@ -91,6 +100,7 @@ const app = {
       title: "Transform User Feedback into Actionable Insights",
       description:
         "Collect, analyze, and act on user feedback with our powerful platform. Make data-driven decisions and improve your product faster than ever.",
+      imageAlt: "Hero",
       cta: {
         collect: {
           label: {
@@ -139,15 +149,21 @@ const app = {
     description: "Here's what's happening with your feedback today.",
     organizations: {
       title: "Organizations",
-      description: "Manage your organizations and their feedback projects",
+      description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
+        basicTierTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+        noSubscriptionTooltip:
+          "Upgrade to a paid plan to create an organization.",
         cta: {
           label: "Create Organization",
         },
       },
     },
     recentFeedback: {
+      loadMore: "Load More",
+      endOf: "End of Feedback",
       emptyState: {
         message: "No recent feedback found.",
       },
@@ -164,6 +180,9 @@ const app = {
       },
     },
     cta: {
+      viewOrganizations: {
+        label: "View All Organizations",
+      },
       newOrganization: {
         action: {
           submit: "Create Organization",
@@ -178,6 +197,10 @@ const app = {
           },
         },
         label: "New Organization",
+        basicTierTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+        noSubscriptionTooltip:
+          "Upgrade to a paid plan to create an organization.",
         description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
@@ -199,6 +222,7 @@ const app = {
           },
         },
       },
+      // TODO: This is not being used on the dashboard page currently. Move to another page location.
       newProject: {
         action: {
           submit: "Create Project",
@@ -258,9 +282,6 @@ const app = {
           },
         },
       },
-      viewOrganizations: {
-        label: "View All Organizations",
-      },
     },
   },
   profileAccountPage: {
@@ -286,7 +307,7 @@ const app = {
     },
     cta: {
       updateProfile: {
-        label: "Edit Profile",
+        label: "Manage Profile",
       },
       changePassword: {
         label: "Change Password",
@@ -346,15 +367,22 @@ const app = {
     breadcrumb: "Organizations",
     header: {
       title: "Organizations",
-      description: "Manage and monitor all your organizations in one place.",
       cta: {
         newOrganization: {
           label: "New Organization",
+          basicTierTooltip:
+            "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+          noSubscriptionTooltip:
+            "Upgrade to a paid plan to create an organization.",
         },
       },
     },
     emptyState: {
       message: "No organizations found. Would you like to create one?",
+      basicTierTooltip:
+        "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+      noSubscriptionTooltip:
+        "Upgrade to a paid plan to create an organization.",
       cta: {
         label: "Create Organization",
       },
@@ -367,21 +395,29 @@ const app = {
   },
   organizationPage: {
     header: {
-      description: "Manage your organization's feedback and projects.",
       cta: {
-        viewAllProjects: {
+        viewProjects: {
           label: "View All Projects",
+          tooltip: "No projects to view.",
         },
         newProject: {
           label: "New Project",
+          basicTierTooltip:
+            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         },
       },
     },
     projects: {
       title: "Projects",
-      description: "Manage feedback collection across your applications",
+      description: "Manage projects across this organization",
       emptyState: {
-        message: "No projects found. Would you like to create one?",
+        organizationOwnerMessage:
+          "No projects found. Would you like to create one?",
+        organizationUserMessage: "No projects found.",
+        basicTierTooltip:
+          "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+        noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         cta: {
           label: "Create Project",
         },
@@ -389,7 +425,8 @@ const app = {
     },
     metrics: {
       title: "Organization Metrics",
-      description: "Overview of all projects and feedback",
+      description:
+        "Overview of all projects and feedback within this organization",
       data: {
         totalProjects: {
           title: "Total Projects",
@@ -402,28 +439,25 @@ const app = {
         },
       },
     },
-    actions: {
-      title: "Quick Actions",
-      description: "Common organization details and actions",
+    management: {
+      title: "Organization Management",
+      description: "Manage your organization details, members, are more",
       cta: {
-        createProject: {
-          label: "Create New Project",
-        },
         manageTeam: {
           label: "Members",
         },
-        settings: {
-          label: "Settings",
-        },
         invitations: {
           label: "Invitations",
+        },
+        settings: {
+          label: "Settings",
         },
       },
     },
   },
   organizationMembersPage: {
     breadcrumb: "Members",
-    description: "Manage the members and their roles within your organization.",
+    description: "View and manage the organization's members and their roles.",
     filters: {
       search: {
         placeholder: "Search all organization members...",
@@ -472,7 +506,6 @@ const app = {
   },
   organizationSettingsPage: {
     breadcrumb: "Settings",
-    description: "Manage your organization settings.",
     dangerZone: {
       title: "Danger Zone",
       description:
@@ -550,7 +583,7 @@ const app = {
   },
   organizationInvitationsPage: {
     breadcrumb: "Invitations",
-    description: "Manage the members invitations.",
+    description: "View and manage the organization's invitations.",
     invitationsMenu: {
       resend: "Resend",
       delete: "Delete",
@@ -614,7 +647,8 @@ const app = {
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
-        "Choose the perfect plan for your business. All plans include a 14-day free trial with no credit card required.",
+        "Choose the perfect plan for your business. All plans offer a 1-month free trial using our discount code:",
+      discountCode: "1MONTHFREE",
       monthly: "Monthly",
       annual: "Annual",
       savings: "save 25%",
@@ -690,11 +724,12 @@ const app = {
     breadcrumb: "Projects",
     header: {
       title: "Projects",
-      description:
-        "Manage and monitor all your organization's projects in one place.",
       cta: {
         newProject: {
           label: "New Project",
+          basicTierTooltip:
+            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
+          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
         },
       },
     },
@@ -735,8 +770,6 @@ const app = {
   },
   projectSettingsPage: {
     breadcrumb: "Settings",
-    description:
-      "Manage your project settings and handle feedback for your project.",
     dangerZone: {
       title: "Danger Zone",
       description:
@@ -874,6 +907,17 @@ const app = {
     },
     projectFeedback: {
       title: "Project Feedback",
+      endOf: "End of Feedback",
+      search: {
+        placeholder: "Search feedback...",
+      },
+      sortBy: {
+        label: {
+          id: "sort by",
+          singular: "Sort By",
+          plural: "Sort By",
+        },
+      },
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",
@@ -892,7 +936,7 @@ const app = {
           },
           description: {
             minLength: "Must be at least 10 characters.",
-            maxLength: "Must be at most 240 characters.",
+            maxLength: "Must be at most 500 characters.",
           },
         },
       },
@@ -915,7 +959,7 @@ const app = {
         feedbackLink: "View Feedback",
       },
       emptyState: {
-        message: "No posts found. Add a post to start the conversation.",
+        message: "No posts found based on the selected filters.",
       },
     },
     projectInformation: {
@@ -945,6 +989,7 @@ const app = {
       downvote: "Downvote",
     },
     comments: {
+      endOf: "End of Comments",
       createComment: {
         pending: "Adding comment...",
         success: {
@@ -956,9 +1001,7 @@ const app = {
           description: "An error occurred while adding your comment.",
         },
         errors: {
-          invalid: "Invalid format",
-          minLengthMessage: "Must be at least 10 characters.",
-          maxLengthMessage: "Must be at most 500 characters.",
+          maxLengthMessage: "Must be at most 240 characters.",
         },
       },
       title: "Comments",

@@ -1,24 +1,28 @@
 "use client";
 
-import { Button, Text } from "@omnidev/sigil";
+import { Button, Center, Tooltip } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 
 import { useDialogStore } from "lib/hooks/store";
 
-import type { ButtonProps } from "@omnidev/sigil";
+import type { ButtonVariant } from "generated/panda/recipes";
 import type { ReactNode } from "react";
 import type { DialogType } from "store";
 
-export interface ActionButton extends ButtonProps {
+export interface ActionButton {
   /** Button label. */
   label: string;
   /** Button icon. */
-  icon: ReactNode;
+  icon?: ReactNode;
   /** URL path for navigation. */
   href?: string;
-
+  /** Whether the button is disabled. */
+  disabled?: boolean;
   /** Type of dialog to trigger. */
   dialogType?: DialogType;
+  /** Tooltip text. */
+  tooltip?: string;
+  variant?: ButtonVariant["variant"];
 }
 
 interface Props {
@@ -32,7 +36,15 @@ interface Props {
 const CallToAction = ({ action }: Props) => {
   const router = useRouter();
 
-  const { label, icon, href, dialogType, ...buttonProps } = action;
+  const {
+    label,
+    icon,
+    href,
+    variant = "solid",
+    disabled,
+    dialogType,
+    tooltip,
+  } = action;
 
   const { setIsOpen } = useDialogStore({
     type: dialogType,
@@ -54,16 +66,35 @@ const CallToAction = ({ action }: Props) => {
   };
 
   return (
-    <Button
-      size="sm"
-      width={{ base: "full", md: "auto" }}
-      onClick={handleAction}
-      {...buttonProps}
-    >
-      {icon}
+    <Tooltip
+      hasArrow={false}
+      trigger={
+        <Button
+          asChild
+          size="sm"
+          variant={variant}
+          disabled={disabled}
+          onClick={handleAction}
+        >
+          {/* NB: Wrap content in a single element (Center) to satisfy React.Children.only requirement for asChild rendering. */}
+          <Center>
+            {icon && icon}
 
-      <Text>{label}</Text>
-    </Button>
+            {label}
+          </Center>
+        </Button>
+      }
+      triggerProps={{
+        style: { all: "unset" },
+      }}
+      contentProps={{
+        display: !disabled || !tooltip ? "none" : undefined,
+        zIndex: "foreground",
+        fontSize: "sm",
+      }}
+    >
+      {action.tooltip}
+    </Tooltip>
   );
 };
 

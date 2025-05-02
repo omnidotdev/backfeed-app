@@ -30,19 +30,12 @@ interface Props {
   isTeamTier: boolean;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
-  /** Start of today. */
-  startOfToday: Date;
 }
 
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({
-  isBasicTier,
-  isTeamTier,
-  oneWeekAgo,
-  startOfToday,
-}: Props) => {
+const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
   const { user, isLoading: isAuthLoading } = useAuth();
 
   const {
@@ -96,12 +89,19 @@ const DashboardPage = ({
         description: app.dashboardPage.description,
         cta: [
           {
+            label: app.dashboardPage.cta.viewOrganizations.label,
+            variant: "outline",
+            href: "/organizations",
+          },
+          {
             label: app.dashboardPage.cta.newOrganization.label,
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
-            variant: "outline",
             disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
+            tooltip: isBasicTier
+              ? app.dashboardPage.cta.newOrganization.basicTierTooltip
+              : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
         ],
       }}
@@ -122,7 +122,7 @@ const DashboardPage = ({
       </Grid>
 
       <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
-        <FeedbackOverview oneWeekAgo={oneWeekAgo} startOfToday={startOfToday} />
+        <FeedbackOverview oneWeekAgo={oneWeekAgo} />
 
         <RecentFeedback />
       </Grid>

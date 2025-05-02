@@ -9,6 +9,7 @@ import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Project } from "generated/graphql";
 
@@ -31,12 +32,12 @@ const ProjectListItem = ({
 
   const AGGREGATES = [
     {
-      type: "Users",
+      type: "user",
       icon: HiOutlineUserGroup,
       value: posts?.aggregates?.distinctCount?.userId ?? 0,
     },
     {
-      type: "Responses",
+      type: "response",
       icon: HiOutlineChatBubbleLeftRight,
       value: posts?.totalCount ?? 0,
     },
@@ -95,9 +96,9 @@ const ProjectListItem = ({
         </OverflowText>
       </Stack>
 
-      <HStack gap={4} mt={4} justifySelf="flex-end">
+      <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
         {AGGREGATES.map(({ icon, value, type }) => (
-          <HStack key={type} gap={1}>
+          <HStack key={type} gap={1} flexWrap="wrap">
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
             <Text
@@ -105,7 +106,7 @@ const ProjectListItem = ({
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {value}
+              {value} {setSingularOrPlural({ value: +value, label: type })}
             </Text>
           </HStack>
         ))}

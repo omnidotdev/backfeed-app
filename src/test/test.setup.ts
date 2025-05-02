@@ -6,6 +6,7 @@ import { expect } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import * as rtlDomMatchers from "@testing-library/jest-dom/matchers";
 
+import "__mocks__/nextImage.mock";
 import "__mocks__/nextRouter.mock";
 // import { mswNodeServer } from "test/e2e/util";
 

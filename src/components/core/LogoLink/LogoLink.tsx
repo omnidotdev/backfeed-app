@@ -24,8 +24,10 @@ const LogoLink = ({ width, ...rest }: Props) => {
           height={width / 2}
           priority
           // adjust color based on color theme
-          mixBlendMode="difference"
-          filter="brightness(0) invert(1)"
+          filter={{
+            base: "brightness(0)",
+            _dark: "brightness(0) invert(1)",
+          }}
         />
 
         <Badge

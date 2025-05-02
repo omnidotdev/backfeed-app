@@ -51,6 +51,7 @@ const SubmitForm = ({
           <Button
             type="submit"
             minW="fit-content"
+            tabIndex={0}
             disabled={
               !canSubmit || !isDirty || isSubmitting || isPending || disabled
             }

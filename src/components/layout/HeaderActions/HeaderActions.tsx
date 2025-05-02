@@ -20,6 +20,7 @@ import {
   SidebarNavigation,
   ThemeToggle,
 } from "components/layout";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -29,7 +30,9 @@ import { DialogType } from "store";
  * Header actions.
  */
 const HeaderActions = () => {
-  const isSmallViewport = useViewportSize({ minWidth: "40em" });
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
 
   const { isAuthenticated, isLoading } = useAuth(),
     { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =

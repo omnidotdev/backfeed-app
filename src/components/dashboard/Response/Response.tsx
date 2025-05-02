@@ -1,7 +1,12 @@
 "use client";
 
-import { Flex, Text } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
+import {
+  HiOutlineCalendar,
+  HiOutlineFolder,
+  HiOutlineUser,
+} from "react-icons/hi2";
 
 import { StatusBadge } from "components/core";
 
@@ -17,14 +22,14 @@ interface Props extends FlexProps {
  * Recent feedback response.
  */
 const Response = ({ feedback, ...rest }: Props) => {
-  const date = dayjs(feedback?.createdAt).fromNow();
+  const date = dayjs(feedback?.createdAt).utc().fromNow();
 
   return (
-    <Flex direction="column" gap={4} w="100%" {...rest}>
-      <Flex direction="column" gap={2}>
+    <Stack gap={4} w="100%" {...rest}>
+      <Stack gap={2}>
         <Flex align="center" justify="space-between">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
-            {feedback?.user?.username}
+            {feedback?.title}
           </Text>
 
           <StatusBadge status={feedback?.status!} />
@@ -33,12 +38,24 @@ const Response = ({ feedback, ...rest }: Props) => {
         <Text fontSize="sm" color="foreground.subtle">
           {feedback?.description}
         </Text>
-      </Flex>
+      </Stack>
 
-      <Text fontSize="xs" color="foreground.muted">
-        {date}
-      </Text>
-    </Flex>
+      {/* TODO: discuss possible issues with responsive design (i.e. long project name and/or long username) */}
+      <HStack gap={2}>
+        {[
+          { icon: HiOutlineCalendar, text: date },
+          { icon: HiOutlineFolder, text: feedback.project?.name },
+          { icon: HiOutlineUser, text: feedback.user?.username },
+        ].map((item) => (
+          <HStack key={item.text} gap={1}>
+            <Icon src={item.icon} size="sm" color="foreground.muted" />
+            <Text fontSize="xs" color="foreground.muted">
+              {item.text}
+            </Text>
+          </HStack>
+        ))}
+      </HStack>
+    </Stack>
   );
 };
 

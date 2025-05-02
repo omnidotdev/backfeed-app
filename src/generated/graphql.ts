@@ -5200,6 +5200,8 @@ export type PostsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
+  excludedStatuses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5248,10 +5250,11 @@ export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'P
 
 export type RecentFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
+  after?: InputMaybe<Scalars['Cursor']['input']>;
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5285,7 +5288,6 @@ export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typenam
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
   startDate: Scalars['Datetime']['input'];
-  endDate: Scalars['Datetime']['input'];
 }>;
 
 
@@ -6635,12 +6637,12 @@ useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables)
 useOrganizationsQuery.fetcher = (variables?: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String) {
   posts(
     after: $after
     first: $pageSize
     orderBy: $orderBy
-    filter: {projectId: {equalTo: $projectId}}
+    filter: {projectId: {equalTo: $projectId}, status: {status: {notIn: $excludedStatuses}}, title: {includesInsensitive: $search}}
   ) {
     pageInfo {
       startCursor
@@ -7009,25 +7011,40 @@ useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Proje
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
 
 export const RecentFeedbackDocument = `
-    query RecentFeedback($userId: UUID!) {
+    query RecentFeedback($userId: UUID!, $after: Cursor) {
   posts(
-    first: 5
+    first: 10
+    after: $after
     orderBy: CREATED_AT_DESC
     filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}}
   ) {
-    nodes {
-      rowId
-      createdAt
-      title
-      description
-      status {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
         rowId
-        status
-        color
-      }
-      user {
-        rowId
-        username
+        createdAt
+        title
+        description
+        project {
+          name
+          slug
+          organization {
+            slug
+          }
+        }
+        status {
+          rowId
+          status
+          color
+        }
+        user {
+          rowId
+          username
+        }
       }
     }
   }
@@ -7287,9 +7304,9 @@ useInfiniteUserByEmailQuery.getKey = (variables: UserByEmailQueryVariables) => [
 useUserByEmailQuery.fetcher = (variables: UserByEmailQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByEmailQuery, UserByEmailQueryVariables>(UserByEmailDocument, variables, options);
 
 export const WeeklyFeedbackDocument = `
-    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!, $endDate: Datetime!) {
+    query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
   posts(
-    filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate, lessThan: $endDate}}
+    filter: {project: {organization: {members: {some: {userId: {equalTo: $userId}}}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
       keys

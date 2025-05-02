@@ -10,6 +10,7 @@ import {
   OrganizationOrderBy,
   Role,
   useDashboardAggregatesQuery,
+  useInfiniteRecentFeedbackQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
   useWeeklyFeedbackQuery,
@@ -49,8 +50,7 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  const oneWeekAgo = dayjs().utc().subtract(7, "days").startOf("day").toDate();
-  const startOfToday = dayjs().utc().startOf("day").toDate();
+  const oneWeekAgo = dayjs().utc().subtract(6, "days").startOf("day").toDate();
 
   await Promise.all([
     queryClient.prefetchQuery({
@@ -81,17 +81,18 @@ const HomePage = async () => {
       queryKey: useWeeklyFeedbackQuery.getKey({
         userId: session.user.rowId!,
         startDate: oneWeekAgo,
-        endDate: startOfToday,
       }),
       queryFn: useWeeklyFeedbackQuery.fetcher({
         userId: session.user.rowId!,
         startDate: oneWeekAgo,
-        endDate: startOfToday,
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useRecentFeedbackQuery.getKey({ userId: session.user.rowId! }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: useInfiniteRecentFeedbackQuery.getKey({
+        userId: session.user.rowId!,
+      }),
       queryFn: useRecentFeedbackQuery.fetcher({ userId: session.user.rowId! }),
+      initialPageParam: undefined,
     }),
   ]);
 
@@ -101,7 +102,6 @@ const HomePage = async () => {
         isBasicTier={isBasicTier}
         isTeamTier={isTeamTier}
         oneWeekAgo={oneWeekAgo}
-        startOfToday={startOfToday}
       />
 
       {/* dialogs */}

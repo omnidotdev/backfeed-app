@@ -1,11 +1,12 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuCirclePlus } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
 import {
-  OrganizationActions,
+  OrganizationManagement,
   OrganizationMetrics,
   OrganizationProjects,
 } from "components/organization";
@@ -25,6 +26,7 @@ import {
 } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
+import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 
@@ -113,27 +115,46 @@ const OrganizationPage = async ({ params }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: organization.name!,
-          description: app.organizationPage.header.description,
           cta: [
             {
-              label: app.organizationPage.header.cta.viewAllProjects.label,
+              label: app.organizationPage.header.cta.viewProjects.label,
+              variant: "outline",
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               href: `/organizations/${organizationSlug}/projects`,
-              disabled: !organization.projects.nodes.length,
+              disabled: !organization.projects.totalCount,
+              tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
             },
+            ...(hasAdminPrivileges
+              ? [
+                  {
+                    label: app.organizationPage.header.cta.newProject.label,
+                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                    icon: <LuCirclePlus />,
+                    disabled: !canCreateProjects,
+                    dialogType: DialogType.CreateProject,
+                    tooltip: isBasicTier
+                      ? app.organizationPage.header.cta.newProject
+                          .basicTierTooltip
+                      : app.organizationPage.header.cta.newProject
+                          .noSubscriptionTooltip,
+                  },
+                ]
+              : []),
           ],
         }}
       >
-        <OrganizationProjects organizationSlug={organizationSlug} />
+        <OrganizationProjects
+          hasAdminPrivileges={hasAdminPrivileges}
+          isBasicTier={isBasicTier}
+          canCreateProjects={canCreateProjects}
+          organizationSlug={organizationSlug}
+        />
 
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
 
-          <OrganizationActions
-            hasAdminPrivileges={hasAdminPrivileges}
-            canCreateProjects={canCreateProjects}
-          />
+          <OrganizationManagement hasAdminPrivileges={hasAdminPrivileges} />
         </Grid>
 
         {/* dialogs */}

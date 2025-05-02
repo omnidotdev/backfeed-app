@@ -24,7 +24,7 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
     direction="column"
     bgColor="card-item"
     borderRadius="lg"
-    p={8}
+    p={6}
     {...rest}
   >
     <Button
@@ -53,13 +53,13 @@ const OrganizationCard = ({ organization, ...rest }: Props) => (
 
       <Grid columns={2} w="full" alignItems="start">
         <DashboardMetric
-          type="Members"
+          type="member"
           value={organization?.members?.totalCount}
           icon={HiOutlineUserGroup}
         />
 
         <DashboardMetric
-          type="Projects"
+          type="project"
           value={organization?.projects?.totalCount}
           icon={HiOutlineFolder}
         />

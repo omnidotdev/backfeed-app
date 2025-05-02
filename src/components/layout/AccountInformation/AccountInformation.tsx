@@ -21,6 +21,7 @@ import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
 import { useOnClickOutside } from "usehooks-ts";
 
+import { token } from "generated/panda/tokens";
 import { app, isDevEnv } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -34,7 +35,9 @@ import type { RefObject } from "react";
 const AccountInformation = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const isSmallViewport = useViewportSize({ minWidth: "40em" });
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.md"),
+  });
 
   const userActions = useRef<HTMLDivElement>(null);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
