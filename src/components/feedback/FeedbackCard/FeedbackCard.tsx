@@ -94,6 +94,8 @@ const FeedbackCard = ({
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         });
+
+        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] });
       },
     });
 
