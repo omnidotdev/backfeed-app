@@ -3,6 +3,7 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { Role, useOrganizationsQuery } from "generated/graphql";
@@ -59,6 +60,8 @@ interface Props {
  */
 const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
   const router = useRouter();
+
+  const isClient = useIsClient();
 
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
@@ -151,6 +154,8 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
         },
       ),
   });
+
+  if (!isClient) return null;
 
   return (
     <Dialog
