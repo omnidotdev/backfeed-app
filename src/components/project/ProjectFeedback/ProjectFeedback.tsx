@@ -5,6 +5,7 @@ import {
   Button,
   Grid,
   Icon,
+  Input,
   Select,
   Stack,
   Text,
@@ -26,7 +27,7 @@ import {
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useSearchParams } from "lib/hooks";
+import { useAuth, useHandleSearch, useSearchParams } from "lib/hooks";
 
 import type {
   CreateFeedbackMutationVariables,
@@ -64,7 +65,10 @@ const ProjectFeedback = ({ projectId }: Props) => {
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
-  const [{ excludedStatuses, orderBy }, setSearchParams] = useSearchParams();
+  const [{ excludedStatuses, orderBy, search }, setSearchParams] =
+    useSearchParams();
+
+  const onSearchChange = useHandleSearch();
 
   const { data: defaultStatus } = useProjectStatusesQuery(
     {
@@ -86,6 +90,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
         orderBy: orderBy
           ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
           : undefined,
+        search,
       },
       {
         placeholderData: keepPreviousData,
@@ -140,7 +145,16 @@ const ProjectFeedback = ({ projectId }: Props) => {
     !orderBy;
 
   const allPosts = [
-    ...(showPendingFeedback ? [...pendingFeedback] : []),
+    ...(showPendingFeedback
+      ? [
+          ...pendingFeedback.filter((feedback) =>
+            // NB: search filter is a bit different than the others. If `showPendingFeedback` is true, we only want to optimistically add feedback that would be included with the search
+            feedback.title
+              ?.toLowerCase()
+              .includes(search.toLowerCase()),
+          ),
+        ]
+      : []),
     ...posts,
   ];
 
@@ -160,27 +174,33 @@ const ProjectFeedback = ({ projectId }: Props) => {
       <Stack gap={0}>
         <CreateFeedback />
 
-        <Select
-          placeSelf="flex-start"
-          mt={4}
-          maxW={{ base: undefined, sm: 64 }}
-          label={app.projectPage.projectFeedback.sortBy.label}
-          collection={createListCollection({
-            items: SORT_BY_OPTIONS,
-          })}
-          displayFieldLabel={false}
-          clearTrigger={null}
-          triggerProps={{
-            borderColor: "border.subtle",
-          }}
-          defaultValue={orderBy ? [orderBy] : [PostOrderBy.CreatedAtDesc]}
-          onValueChange={({ value }) => {
-            const updatedValue =
-              value?.[0] === PostOrderBy.CreatedAtDesc ? null : value?.[0];
+        <Stack mt={4} direction={{ base: "column", sm: "row" }}>
+          <Input
+            placeholder={app.projectPage.projectFeedback.search.placeholder}
+            borderColor="border.subtle"
+            onChange={onSearchChange}
+          />
 
-            setSearchParams({ orderBy: updatedValue });
-          }}
-        />
+          <Select
+            maxW={{ base: undefined, sm: 64 }}
+            label={app.projectPage.projectFeedback.sortBy.label}
+            collection={createListCollection({
+              items: SORT_BY_OPTIONS,
+            })}
+            displayFieldLabel={false}
+            clearTrigger={null}
+            triggerProps={{
+              borderColor: "border.subtle",
+            }}
+            defaultValue={orderBy ? [orderBy] : [PostOrderBy.CreatedAtDesc]}
+            onValueChange={({ value }) => {
+              const updatedValue =
+                value?.[0] === PostOrderBy.CreatedAtDesc ? null : value?.[0];
+
+              setSearchParams({ orderBy: updatedValue });
+            }}
+          />
+        </Stack>
 
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" />

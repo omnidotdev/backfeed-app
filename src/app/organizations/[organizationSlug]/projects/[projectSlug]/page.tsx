@@ -65,7 +65,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     organizationId: project.organization?.rowId!,
   });
 
-  const { excludedStatuses, orderBy } =
+  const { excludedStatuses, orderBy, search } =
     await getSearchParams.parse(searchParams);
 
   const queryClient = getQueryClient();
@@ -105,12 +105,14 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
         projectId: project.rowId,
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        search,
       }),
       queryFn: usePostsQuery.fetcher({
         pageSize: 5,
         projectId: project.rowId,
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        search,
       }),
       initialPageParam: undefined,
     }),
