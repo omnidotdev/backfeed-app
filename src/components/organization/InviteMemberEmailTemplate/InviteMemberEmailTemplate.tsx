@@ -110,7 +110,11 @@ const InviteMemberEmailTemplate = ({
           <Hr className="border border-solid border-subtle my-6 mx-0 w-full" />
 
           <Text className="text-muted text-xs leading-6">
-            {inviteMemberDetails.disclaimer}
+            {inviteMemberDetails.supportMessagePrefix}{" "}
+            <a href={`mailto:${inviteMemberDetails.supportEmail}`}>
+              {inviteMemberDetails.supportEmail}
+            </a>
+            {"."}
           </Text>
         </Container>
       </Body>
