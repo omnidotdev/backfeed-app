@@ -14,18 +14,16 @@ interface Params {
  * @returns transformed string
  *
  * @example
- * setSingularOrPlural({ value: 1, label: 'item' }); // 'item'
- * setSingularOrPlural({ value: 2, label: 'item' }); // 'items'
- * setSingularOrPlural({ value: 1, label: 'item', singular: 'one' }); // 'one'
- * setSingularOrPlural({ value: 2, label: 'item', plural: 'many' }); // 'many'
+ * setSingularOrPlural({ value: 1, label: "item" }); // "item"
+ * setSingularOrPlural({ value: 2, label: "item" }); // "items"
+ * setSingularOrPlural({ value: 1, label: "item", singular: "one" }); // "one"
+ * setSingularOrPlural({ value: 2, label: "item", plural: "many" }); // "many"
  */
 const setSingularOrPlural = ({
   value,
   label,
   singular,
   plural,
-}: Params): string => {
-  return value === 1 ? singular || label : plural || `${label}s`;
-};
+}: Params): string => (value === 1 ? singular || label : plural || `${label}s`);
 
 export default setSingularOrPlural;
