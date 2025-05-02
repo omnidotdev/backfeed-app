@@ -8,6 +8,10 @@ const app = {
   description: "Streamlined user feedback 📣",
   productionUrl: "https://backfeed.omni.dev",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
+  socials: {
+    discord: "https://discord.gg/g5PQgNGGzE",
+    x: "https://x.com/omnidotdev",
+  },
   organization: {
     name: "Omni",
     supportEmailAddress: "support@omni.dev",
