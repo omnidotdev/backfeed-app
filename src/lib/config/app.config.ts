@@ -394,6 +394,7 @@ const app = {
       cta: {
         viewProjects: {
           label: "View All Projects",
+          tooltip: "No projects to view.",
         },
         newProject: {
           label: "New Project",
@@ -903,6 +904,13 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
+      sortBy: {
+        label: {
+          id: "sort by",
+          singular: "Sort By",
+          plural: "Sort By",
+        },
+      },
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",
@@ -921,7 +929,7 @@ const app = {
           },
           description: {
             minLength: "Must be at least 10 characters.",
-            maxLength: "Must be at most 240 characters.",
+            maxLength: "Must be at most 500 characters.",
           },
         },
       },
@@ -944,7 +952,7 @@ const app = {
         feedbackLink: "View Feedback",
       },
       emptyState: {
-        message: "No posts found. Add a post to start the conversation.",
+        message: "No posts found based on the selected filters.",
       },
     },
     projectInformation: {
@@ -986,9 +994,7 @@ const app = {
           description: "An error occurred while adding your comment.",
         },
         errors: {
-          invalid: "Invalid format",
-          minLengthMessage: "Must be at least 10 characters.",
-          maxLengthMessage: "Must be at most 500 characters.",
+          maxLengthMessage: "Must be at most 240 characters.",
         },
       },
       title: "Comments",

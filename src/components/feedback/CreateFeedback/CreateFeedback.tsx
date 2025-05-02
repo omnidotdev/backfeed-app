@@ -9,7 +9,6 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
   useProjectQuery,
   useProjectStatusesQuery,
@@ -20,7 +19,7 @@ import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
-const MAX_DESCRIPTION_LENGTH = 240;
+const MAX_DESCRIPTION_LENGTH = 500;
 
 const feedbackSchemaErrors =
   app.projectPage.projectFeedback.createFeedback.errors;
@@ -96,10 +95,7 @@ const CreateFeedback = () => {
       ]);
 
       return queryClient.invalidateQueries({
-        queryKey: useInfinitePostsQuery.getKey({
-          pageSize: 5,
-          projectId: projectId!,
-        }),
+        queryKey: ["Posts.infinite"],
       });
     },
   });
