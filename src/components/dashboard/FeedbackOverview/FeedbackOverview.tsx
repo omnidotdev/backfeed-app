@@ -27,7 +27,9 @@ interface Props {
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
 const FeedbackOverview = ({ oneWeekAgo }: Props) => {
-  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+  const isLargeViewport = useViewportSize({
+    minWidth: token("breakpoints.lg"),
+  });
 
   const getFormattedDate = (diff: number) =>
     dayjs(oneWeekAgo).add(diff, "day").format("ddd");

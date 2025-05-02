@@ -13,6 +13,7 @@ import {
   useOrganizationQuery,
   useOrganizationsQuery,
 } from "generated/graphql";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import {
   DEBOUNCE_TIME,
@@ -133,7 +134,9 @@ const CreateProject = ({
 
   const router = useRouter();
 
-  const isSmallViewport = useViewportSize({ minWidth: "40em" });
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
 
   const { user } = useAuth();
 
