@@ -16,7 +16,11 @@ import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { StatusBadge } from "components/core";
-import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
+import {
+  useFeedbackByIdQuery,
+  useStatusBreakdownQuery,
+  useUpdatePostMutation,
+} from "generated/graphql";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type {
@@ -90,8 +94,18 @@ const FeedbackCard = ({
           },
         );
       },
-      onSettled: () => {
-        queryClient.invalidateQueries({
+      onSettled: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+
+          queryClient.invalidateQueries({
+            queryKey: useStatusBreakdownQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
+          }),
+        ]);
+
+        return queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         });
       },

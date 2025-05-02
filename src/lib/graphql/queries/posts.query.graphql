@@ -4,6 +4,7 @@ query Posts(
   $pageSize: Int
   $orderBy: [PostOrderBy!] = CREATED_AT_DESC
   $excludedStatuses: [String!]
+  $search: String
 ) {
   posts(
     after: $after
@@ -12,6 +13,7 @@ query Posts(
     filter: {
       projectId: { equalTo: $projectId }
       status: { status: { notIn: $excludedStatuses } }
+      title: { includesInsensitive: $search }
     }
   ) {
     pageInfo {

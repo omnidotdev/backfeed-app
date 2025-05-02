@@ -5202,6 +5202,7 @@ export type PostsQueryVariables = Exact<{
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
   excludedStatuses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5731,12 +5732,12 @@ export const OrganizationsDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!]) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String) {
   posts(
     after: $after
     first: $pageSize
     orderBy: $orderBy
-    filter: {projectId: {equalTo: $projectId}, status: {status: {notIn: $excludedStatuses}}}
+    filter: {projectId: {equalTo: $projectId}, status: {status: {notIn: $excludedStatuses}}, title: {includesInsensitive: $search}}
   ) {
     pageInfo {
       startCursor

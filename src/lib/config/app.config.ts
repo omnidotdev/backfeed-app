@@ -904,6 +904,9 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
+      search: {
+        placeholder: "Search feedback...",
+      },
       sortBy: {
         label: {
           id: "sort by",
