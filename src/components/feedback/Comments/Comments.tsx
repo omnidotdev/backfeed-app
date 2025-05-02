@@ -147,6 +147,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
                 message={app.feedbackPage.comments.emptyState.message}
                 h="xs"
                 w="full"
+                mb={4}
               />
             )}
           </Grid>

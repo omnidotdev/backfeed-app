@@ -276,6 +276,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                 message={app.projectPage.projectFeedback.emptyState.message}
                 h="xs"
                 w="full"
+                mb={4}
               />
             )}
           </Grid>
