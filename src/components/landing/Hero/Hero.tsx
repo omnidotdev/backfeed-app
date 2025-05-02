@@ -2,12 +2,10 @@
 
 import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
+import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
 
-import { Image } from "components/core";
-import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
-import { useViewportSize } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -24,10 +22,6 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
-  const isMediumViewport = useViewportSize({
-    minWidth: token("breakpoints.md"),
-  });
-
   const actions: ActionProps[] = [
     {
       label: {
@@ -49,13 +43,13 @@ const Hero = () => {
 
   return (
     <VStack gap={0} py={{ base: 4, md: 12 }} px={8} maxW="4xl">
-      <Image
-        src="/img/hero.png"
-        alt={app.landingPage.hero.imageAlt}
-        priority
-        width={isMediumViewport ? 224 : 150}
-        height={isMediumViewport ? 323 : 216}
-        draggable={false}
+      <Icon
+        src={BsMegaphone}
+        h={{ base: 16, md: 24 }}
+        w={{ base: 16, md: 24 }}
+        my={4}
+        rotate="-12deg"
+        color={{ base: "brand.primary.600", _dark: "brand.primary.800" }}
       />
 
       <Text
