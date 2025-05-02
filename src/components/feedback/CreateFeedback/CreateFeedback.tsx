@@ -9,7 +9,6 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
   useProjectQuery,
   useProjectStatusesQuery,
@@ -96,10 +95,7 @@ const CreateFeedback = () => {
       ]);
 
       return queryClient.invalidateQueries({
-        queryKey: useInfinitePostsQuery.getKey({
-          pageSize: 5,
-          projectId: projectId!,
-        }),
+        queryKey: ["Posts.infinite"],
       });
     },
   });

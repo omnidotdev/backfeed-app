@@ -904,6 +904,13 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
+      sortBy: {
+        label: {
+          id: "sort by",
+          singular: "Sort By",
+          plural: "Sort By",
+        },
+      },
       feedbackTitle: {
         label: "Title",
         placeholder: "This project has been a great success!",
@@ -945,7 +952,7 @@ const app = {
         feedbackLink: "View Feedback",
       },
       emptyState: {
-        message: "No posts found. Add a post to start the conversation.",
+        message: "No posts found based on the selected filters.",
       },
     },
     projectInformation: {
