@@ -1,16 +1,25 @@
 "use client";
 
-import { Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text } from "@omnidev/sigil";
 import { LuChevronRight } from "react-icons/lu";
 
-import { Link } from "components/core";
+import { BreadcrumbTrigger, HoverCard, Link } from "components/core";
 import { app } from "lib/config";
+
+interface SubItemRecord {
+  /** Label for the sub-item. */
+  label: string;
+  /** URL path the sub-item navigates to. */
+  href: `/${string}`;
+}
 
 export interface BreadcrumbRecord {
   /** Label for the breadcrumb. */
   label: string;
   /** URL path the breadcrumb navigates to. */
   href?: `/${string}`;
+  /** Sub-items for the breadcrumb. */
+  subItems?: SubItemRecord[];
 }
 
 interface Props {
@@ -29,7 +38,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
       </Text>
     </Link>
 
-    {breadcrumbs.map(({ label, href }, index) => {
+    {breadcrumbs.map(({ label, href, subItems }, index) => {
       const isLastItem = breadcrumbs.length - 1 === index;
 
       return (
@@ -43,27 +52,37 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
             mx={1.5}
           />
 
-          {href ? (
-            <Link href={href}>
-              <Text
-                display={isLastItem ? "none" : { base: "inline", lg: "none" }}
-                color={{
-                  base: "foreground.subtle",
-                  _hover: "foreground.default",
-                }}
+          {href || subItems ? (
+            subItems?.length ? (
+              <HoverCard
+                openDelay={0}
+                trigger={
+                  <Link href={href}>
+                    <BreadcrumbTrigger
+                      label={label}
+                      isLastItem={isLastItem}
+                      icon={true}
+                    />
+                  </Link>
+                }
               >
-                ...
-              </Text>
-              <Text
-                display={isLastItem ? "inline" : { base: "none", lg: "inline" }}
-                color={{
-                  base: "foreground.subtle",
-                  _hover: "foreground.default",
-                }}
-              >
-                {label}
-              </Text>
-            </Link>
+                <Flex direction="column" p={2} gap={2}>
+                  {subItems?.map(({ label, href }) => (
+                    <Link key={label} href={href}>
+                      <Button variant="ghost" size="xs">
+                        <Text>{label}</Text>
+                      </Button>
+                    </Link>
+                  ))}
+                </Flex>
+              </HoverCard>
+            ) : (
+              href && (
+                <Link href={href}>
+                  <BreadcrumbTrigger label={label} isLastItem={isLastItem} />
+                </Link>
+              )
+            )
           ) : (
             <Text>{label}</Text>
           )}

@@ -1,16 +1,22 @@
 "use client";
 
-import { Flex, HStack, Icon, css, sigil } from "@omnidev/sigil";
-import { Link as SigilLink } from "@omnidev/sigil";
+import {
+  Flex,
+  HStack,
+  Icon,
+  Link as SigilLink,
+  css,
+  sigil,
+} from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
+import { LuExternalLink } from "react-icons/lu";
 
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
-import { LuExternalLink } from "react-icons/lu";
 
 /**
  * Layout header.

@@ -15,14 +15,12 @@ import {
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
-import { getProject } from "lib/actions";
+import { getOrganization, getOrganizations, getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { PostOrderBy } from "generated/graphql";
-import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -40,21 +38,23 @@ export const generateMetadata = async ({ params }: Props) => {
 interface Props {
   /** Project page params. */
   params: Promise<{ organizationSlug: string; projectSlug: string }>;
-  /** Projects page search params. */
-  searchParams: Promise<SearchParams>;
 }
 
 /**
  * Project overview page.
  */
-const ProjectPage = async ({ params, searchParams }: Props) => {
+const ProjectPage = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();
 
   if (!session) notFound();
 
-  const project = await getProject({ organizationSlug, projectSlug });
+  const [project, organizations, organization] = await Promise.all([
+    getProject({ organizationSlug, projectSlug }),
+    getOrganizations(),
+    getOrganization({ organizationSlug }),
+  ]);
 
   if (!project) notFound();
 
@@ -64,9 +64,6 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     userId: session.user?.rowId!,
     organizationId: project.organization?.rowId!,
   });
-
-  const { excludedStatuses, orderBy, search } =
-    await getSearchParams.parse(searchParams);
 
   const queryClient = getQueryClient();
 
@@ -78,6 +75,12 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     {
       label: project.organization?.name ?? organizationSlug,
       href: `/organizations/${organizationSlug}`,
+      subItems: organizations?.length
+        ? organizations.map((organization) => ({
+            label: organization!.name,
+            href: `/organizations/${organization!.slug}`,
+          }))
+        : undefined,
     },
     {
       label: app.projectsPage.breadcrumb,
@@ -85,6 +88,12 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     },
     {
       label: project.name ?? projectSlug,
+      subItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes.map((project) => ({
+            label: project!.name,
+            href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+          }))
+        : undefined,
     },
   ];
 
@@ -103,16 +112,10 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
       queryKey: useInfinitePostsQuery.getKey({
         pageSize: 5,
         projectId: project.rowId,
-        excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
-        search,
       }),
       queryFn: usePostsQuery.fetcher({
         pageSize: 5,
         projectId: project.rowId,
-        excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
-        search,
       }),
       initialPageParam: undefined,
     }),

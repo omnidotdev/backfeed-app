@@ -17,7 +17,7 @@ import {
   useOrganizationQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
-import { getOrganization } from "lib/actions";
+import { getOrganization, getOrganizations } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import {
@@ -57,11 +57,13 @@ const OrganizationPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const [organization, isBasicTier, isTeamTier] = await Promise.all([
-    getOrganization({ organizationSlug }),
-    enableBasicTierPrivilegesFlag(),
-    enableTeamTierPrivilegesFlag(),
-  ]);
+  const [organization, organizations, isBasicTier, isTeamTier] =
+    await Promise.all([
+      getOrganization({ organizationSlug }),
+      getOrganizations(),
+      enableBasicTierPrivilegesFlag(),
+      enableTeamTierPrivilegesFlag(),
+    ]);
 
   if (!organization) notFound();
 
@@ -89,6 +91,12 @@ const OrganizationPage = async ({ params }: Props) => {
     },
     {
       label: organization.name ?? organizationSlug,
+      subItems: organizations?.length
+        ? organizations.map((organization) => ({
+            label: organization?.name!,
+            href: `/organizations/${organization!.slug}`,
+          }))
+        : undefined,
     },
   ];
 
