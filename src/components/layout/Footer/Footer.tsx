@@ -29,8 +29,8 @@ const Footer = () => (
     <Divider orientation="vertical" />
 
     <Link
-      href="https://docs.omni.dev/backfeed/overview"
       isExternal
+      href={app.docsUrl}
       color="foreground.muted"
       _hover={{ color: "brand.primary" }}
       textDecoration="none"
