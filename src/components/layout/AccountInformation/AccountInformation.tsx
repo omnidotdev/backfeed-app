@@ -36,7 +36,7 @@ const AccountInformation = () => {
   const router = useRouter();
   const { user } = useAuth();
   const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.md"),
+    minWidth: token("breakpoints.sm"),
   });
 
   const userActions = useRef<HTMLDivElement>(null);
