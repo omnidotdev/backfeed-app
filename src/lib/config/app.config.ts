@@ -441,7 +441,7 @@ const app = {
     },
     management: {
       title: "Organization Management",
-      description: "Manage your organization details, members, are more",
+      description: "Manage your organization details, members, and more",
       cta: {
         manageTeam: {
           label: "Members",
