@@ -68,6 +68,8 @@ const CallToAction = ({ action }: Props) => {
   return (
     <Tooltip
       hasArrow={false}
+      closeOnClick={false}
+      closeOnPointerDown={false}
       trigger={
         <Button
           asChild
