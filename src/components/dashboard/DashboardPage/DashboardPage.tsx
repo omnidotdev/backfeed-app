@@ -5,7 +5,7 @@ import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-import { LuCirclePlus } from "react-icons/lu";
+import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
 import {
   Aggregate,
@@ -91,6 +91,8 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
           {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
+            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+            icon: <LuBuilding2 />,
             href: "/organizations",
           },
           {
