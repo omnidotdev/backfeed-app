@@ -68,13 +68,15 @@ const CallToAction = ({ action }: Props) => {
   return (
     <Tooltip
       hasArrow={false}
+      closeOnClick={false}
+      closeOnPointerDown={false}
       trigger={
         <Button
           asChild
           size="sm"
           variant={variant}
           disabled={disabled}
-          onClick={handleAction}
+          onClick={!disabled ? handleAction : undefined}
         >
           {/* NB: Wrap content in a single element (Center) to satisfy React.Children.only requirement for asChild rendering. */}
           <Center>
