@@ -171,7 +171,8 @@ const ProjectFeedback = ({ projectId }: Props) => {
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
       p={0}
-      px={{ base: 4, sm: 6 }}
+      pr={{ base: 4, sm: 6 }}
+      pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
       <Stack gap={0}>
