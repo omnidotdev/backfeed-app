@@ -27,13 +27,18 @@ import {
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useHandleSearch, useSearchParams } from "lib/hooks";
+import {
+  useHandleSearch,
+  useOrganizationMembership,
+  useSearchParams,
+} from "lib/hooks";
 
 import type {
   CreateFeedbackMutationVariables,
   FeedbackFragment,
   Project,
 } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const SORT_BY_OPTIONS = [
   {
@@ -51,6 +56,8 @@ const SORT_BY_OPTIONS = [
 ];
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Project ID. */
   projectId: Project["rowId"];
 }
@@ -58,10 +65,8 @@ interface Props {
 /**
  * Project feedback.
  */
-const ProjectFeedback = ({ projectId }: Props) => {
+const ProjectFeedback = ({ user, projectId }: Props) => {
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
@@ -120,6 +125,9 @@ const ProjectFeedback = ({ projectId }: Props) => {
           rowId: input.post.projectId,
           name: "pending",
           slug: "pending",
+          postStatuses: {
+            nodes: [],
+          },
         },
         user: {
           username: user?.username,
@@ -137,6 +145,11 @@ const ProjectFeedback = ({ projectId }: Props) => {
   const posts =
     data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
     [];
+
+  const { isAdmin } = useOrganizationMembership({
+    userId: user.rowId,
+    organizationId: posts?.[0]?.project?.organization?.rowId,
+  });
 
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.
   const showPendingFeedback =
@@ -207,7 +220,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
         </Stack>
 
         {isError ? (
-          <ErrorBoundary message="Error fetching feedback" h="sm" />
+          <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
         ) : (
           <Grid
             gap={2}
@@ -227,12 +240,21 @@ const ProjectFeedback = ({ projectId }: Props) => {
                 {allPosts.map((feedback) => {
                   const isPending = feedback?.rowId === "pending";
 
+                  // TODO: discuss below. The current condition probably could be managed better.
+                  // NB: `canManageStatus` check in `FeedbackCard` is conditionalized on `projectStatuses`. We must validate that a user has admin privileges to allow managing statuses
+                  const projectStatuses = isAdmin
+                    ? feedback?.project?.postStatuses?.nodes?.filter(
+                        (status) => status != null,
+                      )
+                    : undefined;
+
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
                       feedback={feedback!}
                       totalUpvotes={feedback?.upvotes?.totalCount}
                       totalDownvotes={feedback?.downvotes?.totalCount}
+                      projectStatuses={projectStatuses}
                       isPending={isPending}
                       w="full"
                       minH={21}

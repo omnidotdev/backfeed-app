@@ -11,12 +11,15 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { Comment, Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props extends StackProps {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Comment ID. */
@@ -37,6 +40,7 @@ interface Props extends StackProps {
  * Comment card.
  */
 const CommentCard = ({
+  user,
   organizationId,
   commentId,
   senderName,
@@ -46,8 +50,6 @@ const CommentCard = ({
   isSender = false,
   ...rest
 }: Props) => {
-  const { user } = useAuth();
-
   const queryClient = useQueryClient();
 
   const { feedbackId } = useParams<{

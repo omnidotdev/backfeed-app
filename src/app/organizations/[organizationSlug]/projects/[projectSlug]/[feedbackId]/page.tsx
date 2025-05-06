@@ -140,9 +140,10 @@ const FeedbackPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page breadcrumbs={breadcrumbs}>
-        <FeedbackDetails feedbackId={feedbackId} />
+        <FeedbackDetails user={session.user} feedbackId={feedbackId} />
 
         <Comments
+          user={session.user}
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
         />

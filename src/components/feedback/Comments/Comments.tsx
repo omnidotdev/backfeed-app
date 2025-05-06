@@ -13,7 +13,6 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 import type {
   CommentFragment,
@@ -21,8 +20,11 @@ import type {
   Organization,
   Post,
 } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Feedback ID. */
@@ -32,9 +34,7 @@ interface Props {
 /**
  * Feedback comments section.
  */
-const Comments = ({ organizationId, feedbackId }: Props) => {
-  const { user } = useAuth();
-
+const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
@@ -124,6 +124,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
                   return (
                     <CommentCard
                       key={comment?.rowId}
+                      user={user}
                       organizationId={organizationId}
                       commentId={comment?.rowId!}
                       senderName={comment?.user?.username}

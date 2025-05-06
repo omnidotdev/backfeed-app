@@ -16,7 +16,7 @@ import {
   useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type {
   HstackProps,
@@ -28,6 +28,7 @@ import {
   useHandleDownvoteMutation,
   useHandleUpvoteMutation,
 } from "lib/hooks/mutations";
+import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -42,6 +43,8 @@ interface VoteButtonProps extends TooltipTriggerProps {
 }
 
 interface Props extends HstackProps {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Feedback ID. Used to fetch feedback details. */
   feedbackId: Post["rowId"];
 }
@@ -49,9 +52,7 @@ interface Props extends HstackProps {
 /**
  * Feedback details section.
  */
-const FeedbackDetails = ({ feedbackId, ...rest }: Props) => {
-  const { user } = useAuth();
-
+const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
   const { data: feedback } = useFeedbackByIdQuery(
     {
       rowId: feedbackId,

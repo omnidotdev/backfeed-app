@@ -35,7 +35,7 @@ interface ProjectStatus {
   /** Post status. */
   status: PostStatus["status"] | undefined;
   /** Post status color. */
-  color: PostStatus["color"];
+  color?: PostStatus["color"];
 }
 
 interface Props extends HstackProps {
@@ -70,29 +70,33 @@ const FeedbackCard = ({
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
       onMutate: (variables) => {
-        const snapshot = queryClient.getQueryData(
+        const feedbackSnapshot = queryClient.getQueryData(
           useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         ) as FeedbackByIdQuery;
+
+        // TODO: add posts snapshot and handle optimistic update accordingly
 
         const updatedStatus = projectStatuses?.find(
           (status) => status.rowId === variables.patch.statusId,
         );
 
-        queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
-          {
-            post: {
-              ...snapshot?.post,
-              statusId: variables.patch.statusId,
-              statusUpdatedAt: variables.patch.statusUpdatedAt,
-              status: {
-                ...snapshot.post?.status,
-                status: updatedStatus?.status,
-                color: updatedStatus?.color,
+        if (feedbackSnapshot) {
+          queryClient.setQueryData(
+            useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+            {
+              post: {
+                ...feedbackSnapshot.post,
+                statusId: variables.patch.statusId,
+                statusUpdatedAt: variables.patch.statusUpdatedAt,
+                status: {
+                  ...feedbackSnapshot.post?.status,
+                  status: updatedStatus?.status,
+                  color: updatedStatus?.color,
+                },
               },
             },
-          },
-        );
+          );
+        }
       },
       onSettled: async () => {
         await Promise.all([
@@ -177,6 +181,7 @@ const FeedbackCard = ({
                   <StatusBadge
                     status={feedback.status!}
                     cursor={canManageStatus ? "pointer" : "default"}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {canManageStatus && <Icon src={LuChevronDown} />}
                   </StatusBadge>
@@ -196,15 +201,17 @@ const FeedbackCard = ({
                       // NB: Needs to be analyzed at runtime.
                       // TODO: Implement check to validate that the status color is a valid color
                       style={status.color ? { color: status.color } : undefined}
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.stopPropagation();
+
                         updateStatus({
                           rowId: feedback.rowId!,
                           patch: {
                             statusId: status.rowId!,
                             statusUpdatedAt: new Date(),
                           },
-                        })
-                      }
+                        });
+                      }}
                     >
                       {status.status}
 
