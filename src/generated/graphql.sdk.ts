@@ -4918,7 +4918,7 @@ export type UserToManyUpvoteFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
 
 export type InvitationFragment = { __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name: string } | null };
 
@@ -5126,20 +5126,13 @@ export type DashboardAggregatesQueryVariables = Exact<{
 
 export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null, users?: { __typename?: 'UserConnection', totalCount: number } | null };
 
-export type DownvoteQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  feedbackId: Scalars['UUID']['input'];
-}>;
-
-
-export type DownvoteQuery = { __typename?: 'Query', downvoteByPostIdAndUserId?: { __typename?: 'Downvote', rowId: string } | null };
-
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null };
 
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
@@ -5203,10 +5196,11 @@ export type PostsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<PostOrderBy> | PostOrderBy>;
   excludedStatuses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -5263,14 +5257,6 @@ export type StatusBreakdownQueryVariables = Exact<{
 
 
 export type StatusBreakdownQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
-
-export type UpvoteQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  feedbackId: Scalars['UUID']['input'];
-}>;
-
-
-export type UpvoteQuery = { __typename?: 'Query', upvoteByPostIdAndUserId?: { __typename?: 'Upvote', rowId: string } | null };
 
 export type UserQueryVariables = Exact<{
   hidraId: Scalars['UUID']['input'];
@@ -5335,8 +5321,18 @@ export const FeedbackFragmentDoc = gql`
   upvotes {
     totalCount
   }
+  userUpvotes: upvotes(condition: {userId: $userId}) {
+    nodes {
+      rowId
+    }
+  }
   downvotes {
     totalCount
+  }
+  userDownvotes: downvotes(condition: {userId: $userId}) {
+    nodes {
+      rowId
+    }
   }
 }
     `;
@@ -5615,15 +5611,8 @@ export const DashboardAggregatesDocument = gql`
   }
 }
     `;
-export const DownvoteDocument = gql`
-    query Downvote($userId: UUID!, $feedbackId: UUID!) {
-  downvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
-    rowId
-  }
-}
-    `;
 export const FeedbackByIdDocument = gql`
-    query FeedbackById($rowId: UUID!) {
+    query FeedbackById($rowId: UUID!, $userId: UUID) {
   post(rowId: $rowId) {
     ...Feedback
   }
@@ -5732,7 +5721,7 @@ export const OrganizationsDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
   posts(
     after: $after
     first: $pageSize
@@ -5899,13 +5888,6 @@ export const StatusBreakdownDocument = gql`
   }
 }
     `;
-export const UpvoteDocument = gql`
-    query Upvote($userId: UUID!, $feedbackId: UUID!) {
-  upvoteByPostIdAndUserId(postId: $feedbackId, userId: $userId) {
-    rowId
-  }
-}
-    `;
 export const UserDocument = gql`
     query User($hidraId: UUID!) {
   userByHidraId(hidraId: $hidraId) {
@@ -6028,9 +6010,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     DashboardAggregates(variables: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DashboardAggregatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>(DashboardAggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DashboardAggregates', 'query', variables);
     },
-    Downvote(variables: DownvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DownvoteQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DownvoteQuery>(DownvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Downvote', 'query', variables);
-    },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>(FeedbackByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FeedbackById', 'query', variables);
     },
@@ -6075,9 +6054,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     StatusBreakdown(variables: StatusBreakdownQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<StatusBreakdownQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<StatusBreakdownQuery>(StatusBreakdownDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'StatusBreakdown', 'query', variables);
-    },
-    Upvote(variables: UpvoteQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpvoteQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpvoteQuery>(UpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Upvote', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'User', 'query', variables);

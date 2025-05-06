@@ -1,46 +1,15 @@
 "use client";
 
-import { HStack, Icon, Tooltip } from "@omnidev/sigil";
-import {
-  PiArrowFatLineDown,
-  PiArrowFatLineDownFill,
-  PiArrowFatLineUp,
-  PiArrowFatLineUpFill,
-} from "react-icons/pi";
-
 import { FeedbackCard } from "components/feedback";
 import {
-  useDownvoteQuery,
   useFeedbackByIdQuery,
   useProjectStatusesQuery,
-  useUpvoteQuery,
 } from "generated/graphql";
-import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 
-import type {
-  HstackProps,
-  TooltipTriggerProps,
-  VstackProps,
-} from "@omnidev/sigil";
+import type { HstackProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
-import {
-  useHandleDownvoteMutation,
-  useHandleUpvoteMutation,
-} from "lib/hooks/mutations";
 import type { Session } from "next-auth";
-import type { IconType } from "react-icons";
-
-interface VoteButtonProps extends TooltipTriggerProps {
-  /** Number of votes (upvotes or downvotes). */
-  votes: number | undefined;
-  /** Tooltip text. */
-  tooltip: string;
-  /** Visual icon. */
-  icon: IconType;
-  /** Props to pass to the main content container. */
-  contentProps?: VstackProps;
-}
 
 interface Props extends HstackProps {
   /** Authenticated user. */
@@ -82,104 +51,14 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
     },
   );
 
-  const { data: hasUpvoted } = useUpvoteQuery(
-    {
-      userId: user?.rowId!,
-      feedbackId,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.upvoteByPostIdAndUserId,
-    },
-  );
-
-  const { data: hasDownvoted } = useDownvoteQuery(
-    {
-      userId: user?.rowId!,
-      feedbackId,
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.downvoteByPostIdAndUserId,
-    },
-  );
-
-  const { mutate: handleUpvote } = useHandleUpvoteMutation({
-    feedbackId,
-    upvote: hasUpvoted,
-    downvote: hasDownvoted,
-  });
-
-  const { mutate: handleDownvote } = useHandleDownvoteMutation({
-    feedbackId,
-    upvote: hasUpvoted,
-    downvote: hasDownvoted,
-  });
-
-  const totalUpvotes = feedback?.upvotes?.totalCount ?? 0;
-
-  const totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
-
-  const VOTE_BUTTONS: VoteButtonProps[] = [
-    {
-      id: "upvote",
-      votes: totalUpvotes,
-      tooltip: app.feedbackPage.details.upvote,
-      icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
-      color: "brand.tertiary",
-      onClick: () => handleUpvote(),
-    },
-    {
-      id: "downvote",
-      votes: totalDownvotes,
-      tooltip: app.feedbackPage.details.downvote,
-      icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
-      color: "brand.quinary",
-      onClick: () => handleDownvote(),
-    },
-  ];
-
   return (
     <FeedbackCard
       canManageStatus={isAdmin}
       feedback={feedback!}
-      totalUpvotes={totalUpvotes}
-      totalDownvotes={totalDownvotes}
       projectStatuses={projectStatuses}
       boxShadow="card"
       {...rest}
-    >
-      <HStack
-        position="absolute"
-        top={{ base: 1.5, sm: 3.5 }}
-        right={{ base: 4, sm: 6 }}
-      >
-        {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
-          <Tooltip
-            key={id}
-            positioning={{ placement: "top" }}
-            trigger={
-              <HStack gap={2} py={1} fontVariant="tabular-nums">
-                <Icon src={icon} w={5} h={5} />
-                {votes}
-              </HStack>
-            }
-            triggerProps={{
-              variant: "icon",
-              bgColor: "transparent",
-              opacity: {
-                base: 1,
-                _disabled: 0.3,
-                _hover: { base: 0.8, _disabled: 0.3 },
-              },
-              ...rest,
-            }}
-          >
-            {tooltip}
-          </Tooltip>
-        ))}
-      </HStack>
-    </FeedbackCard>
+    />
   );
 };
 export default FeedbackDetails;

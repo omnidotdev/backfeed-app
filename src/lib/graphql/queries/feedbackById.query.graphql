@@ -1,4 +1,4 @@
-query FeedbackById($rowId: UUID!) {
+query FeedbackById($rowId: UUID!, $userId: UUID) {
   post(rowId: $rowId) {
     ...Feedback
   }

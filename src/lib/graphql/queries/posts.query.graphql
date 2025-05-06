@@ -5,6 +5,7 @@ query Posts(
   $orderBy: [PostOrderBy!] = CREATED_AT_DESC
   $excludedStatuses: [String!]
   $search: String
+  $userId: UUID
 ) {
   posts(
     after: $after

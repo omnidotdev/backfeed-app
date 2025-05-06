@@ -7,12 +7,10 @@ import { Page } from "components/layout";
 import {
   Role,
   useCommentsQuery,
-  useDownvoteQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useOrganizationRoleQuery,
   useProjectStatusesQuery,
-  useUpvoteQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -108,26 +106,6 @@ const FeedbackPage = async ({ params }: Props) => {
       queryFn: useOrganizationRoleQuery.fetcher({
         userId: session.user.rowId!,
         organizationId: feedback.project?.organization?.rowId!,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useDownvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useDownvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUpvoteQuery.getKey({
-        userId: session?.user?.rowId!,
-        feedbackId,
-      }),
-      queryFn: useUpvoteQuery.fetcher({
-        userId: session?.user?.rowId!,
-        feedbackId,
       }),
     }),
     queryClient.prefetchInfiniteQuery({

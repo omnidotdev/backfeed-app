@@ -1,19 +1,9 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import {
-  Button,
-  Grid,
-  Icon,
-  Input,
-  Select,
-  Stack,
-  Text,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -132,8 +122,14 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         upvotes: {
           totalCount: 0,
         },
+        userUpvotes: {
+          nodes: [],
+        },
         downvotes: {
           totalCount: 0,
+        },
+        userDownvotes: {
+          nodes: [],
         },
       };
     },
@@ -257,8 +253,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       key={feedback?.rowId}
                       canManageStatus={isAdmin}
                       feedback={feedback!}
-                      totalUpvotes={feedback?.upvotes?.totalCount}
-                      totalDownvotes={feedback?.downvotes?.totalCount}
                       projectStatuses={projectStatuses}
                       isPending={isPending}
                       w="full"
@@ -266,7 +260,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       borderRadius="md"
                       bgColor="card-item"
                       cursor={isPending ? "not-allowed" : "pointer"}
-                      role="group"
+                      _hover={{ boxShadow: "card" }}
                       onClick={() =>
                         !isPending
                           ? router.push(
@@ -274,22 +268,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                             )
                           : undefined
                       }
-                    >
-                      <Button
-                        position="absolute"
-                        top={1}
-                        right={1}
-                        p={2}
-                        variant="icon"
-                        color={{
-                          base: "foreground.muted",
-                          _groupHover: "brand.primary",
-                        }}
-                        bgColor="transparent"
-                      >
-                        <Icon src={FiArrowUpRight} w={5} h={5} />
-                      </Button>
-                    </FeedbackCard>
+                    />
                   );
                 })}
 
