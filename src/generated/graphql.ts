@@ -5110,9 +5110,9 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type CommentsQueryVariables = Exact<{
-  pageSize: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['Cursor']['input']>;
   feedbackId: Scalars['UUID']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
 }>;
 
 
@@ -6052,7 +6052,7 @@ useCreateUserMutation.getKey = () => ['CreateUser'];
 useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
 
 export const CommentsDocument = `
-    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+    query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after
@@ -6583,7 +6583,7 @@ useInfiniteOrganizationsQuery.getKey = (variables?: OrganizationsQueryVariables)
 useOrganizationsQuery.fetcher = (variables?: OrganizationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, variables, options);
 
 export const PostsDocument = `
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
   posts(
     after: $after
     first: $pageSize

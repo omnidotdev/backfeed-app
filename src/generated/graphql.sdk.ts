@@ -5111,9 +5111,9 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type CommentsQueryVariables = Exact<{
-  pageSize: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['Cursor']['input']>;
   feedbackId: Scalars['UUID']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
 }>;
 
 
@@ -5577,7 +5577,7 @@ export const CreateUserDocument = gql`
 }
     `;
 export const CommentsDocument = gql`
-    query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+    query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after
@@ -5721,7 +5721,7 @@ export const OrganizationsDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
   posts(
     after: $after
     first: $pageSize

@@ -38,7 +38,6 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
-        pageSize: 5,
         feedbackId,
       },
       {
@@ -106,7 +105,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
           <Grid
             gap={2}
             mt={4}
-            maxH="sm"
+            maxH="md"
             overflow="auto"
             p="1px"
             scrollbar="hidden"

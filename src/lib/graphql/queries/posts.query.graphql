@@ -1,7 +1,7 @@
 query Posts(
   $projectId: UUID!
   $after: Cursor
-  $pageSize: Int
+  $pageSize: Int = 10
   $orderBy: [PostOrderBy!] = CREATED_AT_DESC
   $excludedStatuses: [String!]
   $search: String

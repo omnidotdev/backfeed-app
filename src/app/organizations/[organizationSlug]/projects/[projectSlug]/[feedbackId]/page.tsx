@@ -109,8 +109,8 @@ const FeedbackPage = async ({ params }: Props) => {
       }),
     }),
     queryClient.prefetchInfiniteQuery({
-      queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
-      queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
+      queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
+      queryFn: useCommentsQuery.fetcher({ feedbackId }),
       initialPageParam: undefined,
     }),
   ]);

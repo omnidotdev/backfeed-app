@@ -85,7 +85,6 @@ const FeedbackCard = ({
         ) as FeedbackByIdQuery;
 
         const postsQueryKey = useInfinitePostsQuery.getKey({
-          pageSize: 5,
           projectId: feedback.project?.rowId!,
           excludedStatuses,
           orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,

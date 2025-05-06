@@ -560,7 +560,7 @@ export const mockCreateUserMutation = (resolver: GraphQLResponseResolver<Types.C
  * @example
  * mockCommentsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, after, feedbackId } = variables;
+ *     const { feedbackId, pageSize, after } = variables;
  *     return HttpResponse.json({
  *       data: { comments }
  *     })

@@ -66,7 +66,6 @@ const CommentCard = ({
       onSettled: () =>
         queryClient.invalidateQueries({
           queryKey: useInfiniteCommentsQuery.getKey({
-            pageSize: 5,
             feedbackId,
           }),
         }),

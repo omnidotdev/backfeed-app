@@ -84,7 +84,6 @@ const useHandleDownvoteMutation = ({
       ) as FeedbackByIdQuery;
 
       const postsQueryKey = useInfinitePostsQuery.getKey({
-        pageSize: 5,
         projectId,
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,

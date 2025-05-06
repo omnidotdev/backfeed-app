@@ -27,8 +27,14 @@ const Response = ({ feedback, ...rest }: Props) => {
   return (
     <Stack gap={4} w="100%" {...rest}>
       <Stack gap={2}>
-        <Flex align="center" justify="space-between">
-          <Text fontWeight="semibold" fontSize="sm" mb={1}>
+        <Flex justify="space-between">
+          <Text
+            fontWeight="semibold"
+            fontSize="sm"
+            mb={1}
+            // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
+            maxW={{ base: "25svw", xl: "md" }}
+          >
             {feedback?.title}
           </Text>
 

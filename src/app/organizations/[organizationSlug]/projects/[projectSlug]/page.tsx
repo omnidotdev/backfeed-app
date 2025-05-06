@@ -102,14 +102,12 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
-        pageSize: 5,
         projectId: project.rowId,
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
         search,
       }),
       queryFn: usePostsQuery.fetcher({
-        pageSize: 5,
         projectId: project.rowId,
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,

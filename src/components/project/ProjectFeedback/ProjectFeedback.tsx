@@ -79,7 +79,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
-        pageSize: 5,
         projectId,
         excludedStatuses,
         orderBy: orderBy
