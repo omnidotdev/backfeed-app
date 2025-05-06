@@ -32,7 +32,7 @@ const Response = ({ feedback, ...rest }: Props) => {
             fontWeight="semibold"
             fontSize="sm"
             mb={1}
-            // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
+            // TODO: figure out container queries for this.
             maxW={{ base: "25svw", xl: "md" }}
           >
             {feedback?.title}
