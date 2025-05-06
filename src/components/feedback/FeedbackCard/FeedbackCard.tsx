@@ -135,10 +135,10 @@ const FeedbackCard = ({
                   if (post?.rowId === variables.rowId) {
                     return {
                       ...post,
-                      statusId: variables.patch.statusId,
                       statusUpdatedAt: variables.patch.statusUpdatedAt,
                       status: {
                         ...post?.status,
+                        rowId: variables.patch.statusId,
                         status: updatedStatus?.status,
                         color: updatedStatus?.color,
                       },
