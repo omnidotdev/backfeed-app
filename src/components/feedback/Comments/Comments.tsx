@@ -92,7 +92,8 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
       description={app.feedbackPage.comments.description}
       icon={LuMessageSquare}
       p={0}
-      px={{ base: 4, sm: 6 }}
+      pr={{ base: 4, sm: 6 }}
+      pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
       <Stack>
@@ -147,6 +148,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
                 message={app.feedbackPage.comments.emptyState.message}
                 h="xs"
                 w="full"
+                mb={4}
               />
             )}
           </Grid>

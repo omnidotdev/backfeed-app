@@ -441,7 +441,7 @@ const app = {
     },
     management: {
       title: "Organization Management",
-      description: "Manage your organization details, members, are more",
+      description: "Manage your organization details, members, and more",
       cta: {
         manageTeam: {
           label: "Members",
@@ -636,8 +636,9 @@ const app = {
           statement:
             "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{organizationName}** on **Backfeed**.",
           cta: "Join the organization",
-          disclaimer:
-            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.",
+          supportMessagePrefix:
+            "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please email us at ",
+          supportEmail: "support@omni.dev",
         },
       },
     },
