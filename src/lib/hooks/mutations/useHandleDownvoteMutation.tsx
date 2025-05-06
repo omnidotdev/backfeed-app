@@ -157,13 +157,14 @@ const useHandleDownvoteMutation = ({
         });
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] });
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
 
-      queryClient.invalidateQueries({
-        queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      });
-    },
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+        }),
+      ]),
     ...mutationOptions,
   });
 };
