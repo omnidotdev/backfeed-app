@@ -15,7 +15,7 @@ import {
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
-import { getOrganization, getOrganizations, getProject } from "lib/actions";
+import { getOrganization, getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
@@ -50,13 +50,12 @@ const ProjectPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const [project, organizations, organization] = await Promise.all([
+  const [project, organization] = await Promise.all([
     getProject({ organizationSlug, projectSlug }),
-    getOrganizations(),
     getOrganization({ organizationSlug }),
   ]);
 
-  if (!project) notFound();
+  if (!project || !organization) notFound();
 
   const sdk = getSdk({ session });
 
@@ -75,12 +74,6 @@ const ProjectPage = async ({ params }: Props) => {
     {
       label: project.organization?.name ?? organizationSlug,
       href: `/organizations/${organizationSlug}`,
-      subItems: organizations?.length
-        ? organizations.map((organization) => ({
-            label: organization!.name,
-            href: `/organizations/${organization!.slug}`,
-          }))
-        : undefined,
     },
     {
       label: app.projectsPage.breadcrumb,
@@ -89,10 +82,12 @@ const ProjectPage = async ({ params }: Props) => {
     {
       label: project.name ?? projectSlug,
       subItems: organization?.projects?.nodes?.length
-        ? organization?.projects?.nodes.map((project) => ({
-            label: project!.name,
-            href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
-          }))
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
         : undefined,
     },
   ];

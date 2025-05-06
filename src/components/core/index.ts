@@ -1,8 +1,4 @@
-export {
-  default as Breadcrumb,
-  type BreadcrumbRecord,
-} from "./Breadcrumb/Breadcrumb";
-export { default as BreadcrumbTrigger } from "./BreadrcumbTrigger/BreadcrumbTrigger";
+export * from "./breadcrumb";
 export {
   default as CallToAction,
   type ActionButton,
@@ -13,7 +9,6 @@ export {
   default as DestructiveAction,
   type Props as DestructiveActionProps,
 } from "./DestructiveAction/DestructiveAction";
-export { default as HoverCard } from "./HoverCard/HoverCard";
 export { default as Image } from "./Image/Image";
 export { default as Link } from "./Link/Link";
 export { default as LogoLink } from "./LogoLink/LogoLink";

@@ -91,12 +91,12 @@ const OrganizationPage = async ({ params }: Props) => {
     },
     {
       label: organization.name ?? organizationSlug,
-      subItems: organizations?.length
-        ? organizations.map((organization) => ({
-            label: organization?.name!,
-            href: `/organizations/${organization!.slug}`,
-          }))
-        : undefined,
+      // subItems: organizations?.length
+      //   ? organizations.map((organization) => ({
+      //       label: organization?.name!,
+      //       href: `/organizations/${organization!.slug}`,
+      //     }))
+      //   : undefined,
     },
   ];
 

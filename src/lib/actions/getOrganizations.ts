@@ -17,7 +17,7 @@ const getOrganizations = cache(async () => {
 
   const { organizations } = await sdk.Organizations({
     userId: session.user?.rowId!,
-    isMember: false,
+    isMember: true,
     excludeRoles: [Role.Member],
   });
 
