@@ -125,9 +125,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           rowId: input.post.projectId,
           name: "pending",
           slug: "pending",
-          postStatuses: {
-            nodes: [],
-          },
         },
         user: {
           username: user?.username,
@@ -150,6 +147,21 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     userId: user.rowId,
     organizationId: posts?.[0]?.project?.organization?.rowId,
   });
+
+  const { data: projectStatuses } = useProjectStatusesQuery(
+    {
+      projectId,
+    },
+    {
+      enabled: isAdmin,
+      select: (data) =>
+        data?.postStatuses?.nodes.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+          color: status?.color,
+        })),
+    },
+  );
 
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.
   const showPendingFeedback =
@@ -239,11 +251,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
               <VStack>
                 {allPosts.map((feedback) => {
                   const isPending = feedback?.rowId === "pending";
-
-                  const projectStatuses =
-                    feedback?.project?.postStatuses?.nodes?.filter(
-                      (status) => status != null,
-                    );
 
                   return (
                     <FeedbackCard

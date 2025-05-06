@@ -14,13 +14,6 @@ fragment Feedback on Post {
       name
       slug
     }
-    postStatuses {
-      nodes {
-        rowId
-        status
-        color
-      }
-    }
   }
   status {
     rowId
