@@ -204,7 +204,7 @@ const FeedbackCard = ({
               fontSize="lg"
               lineHeight={1}
               // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
-              maxW="40svw"
+              maxW={{ base: "40svw", xl: "xl" }}
             >
               {feedback.title}
             </Text>
