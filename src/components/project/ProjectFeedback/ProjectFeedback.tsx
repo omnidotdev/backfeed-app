@@ -240,17 +240,15 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                 {allPosts.map((feedback) => {
                   const isPending = feedback?.rowId === "pending";
 
-                  // TODO: discuss below. The current condition probably could be managed better.
-                  // NB: `canManageStatus` check in `FeedbackCard` is conditionalized on `projectStatuses`. We must validate that a user has admin privileges to allow managing statuses
-                  const projectStatuses = isAdmin
-                    ? feedback?.project?.postStatuses?.nodes?.filter(
-                        (status) => status != null,
-                      )
-                    : undefined;
+                  const projectStatuses =
+                    feedback?.project?.postStatuses?.nodes?.filter(
+                      (status) => status != null,
+                    );
 
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
+                      canManageStatus={isAdmin}
                       feedback={feedback!}
                       totalUpvotes={feedback?.upvotes?.totalCount}
                       totalDownvotes={feedback?.downvotes?.totalCount}

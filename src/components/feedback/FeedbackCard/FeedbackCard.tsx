@@ -39,6 +39,8 @@ interface ProjectStatus {
 }
 
 interface Props extends HstackProps {
+  /** Whether the user has permission to manage statuses. */
+  canManageStatus: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
   /** Total number of upvotes. */
@@ -55,6 +57,7 @@ interface Props extends HstackProps {
  * Feedback card.
  */
 const FeedbackCard = ({
+  canManageStatus,
   feedback,
   totalUpvotes = 0,
   totalDownvotes = 0,
@@ -64,8 +67,6 @@ const FeedbackCard = ({
   ...rest
 }: Props) => {
   const queryClient = useQueryClient();
-
-  const canManageStatus = projectStatuses != null;
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
