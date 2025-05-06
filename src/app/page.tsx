@@ -65,7 +65,9 @@ const HomePage = async () => {
           startDate: oneWeekAgo,
         }),
       ]}
-      infinitePrefetch={[infiniteRecentFeedbackOptions({ userId: session.user.rowId! })]}
+      infinitePrefetch={[
+        infiniteRecentFeedbackOptions({ userId: session.user.rowId! }),
+      ]}
     >
       <DashboardPage
         isBasicTier={isBasicTier}

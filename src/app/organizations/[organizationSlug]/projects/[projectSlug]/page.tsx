@@ -86,8 +86,8 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
   ];
 
   const hasAdminPrivileges =
-  memberByUserIdAndOrganizationId &&
-  memberByUserIdAndOrganizationId.role !== Role.Member;
+    memberByUserIdAndOrganizationId &&
+    memberByUserIdAndOrganizationId.role !== Role.Member;
 
   const commonVariables = { projectId: project.rowId };
 
@@ -108,8 +108,8 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
           pageSize: 5,
           projectId: project.rowId,
           excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
-        search,
+          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+          search,
         }),
       ]}
     >
