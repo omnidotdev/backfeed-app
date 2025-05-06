@@ -41,7 +41,7 @@ interface ProjectStatus {
   /** Post status. */
   status: PostStatus["status"] | undefined;
   /** Post status color. */
-  color?: PostStatus["color"];
+  color: PostStatus["color"];
 }
 
 interface Props extends HstackProps {
