@@ -21,6 +21,7 @@ import {
   useStatusBreakdownQuery,
   useUpdatePostMutation,
 } from "generated/graphql";
+import { useStatusMenuStore } from "lib/hooks/store";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type {
@@ -66,6 +67,13 @@ const FeedbackCard = ({
   children,
   ...rest
 }: Props) => {
+  const { isStatusMenuOpen, setIsStatusMenuOpen } = useStatusMenuStore(
+    ({ isStatusMenuOpen, setIsStatusMenuOpen }) => ({
+      isStatusMenuOpen,
+      setIsStatusMenuOpen,
+    }),
+  );
+
   const queryClient = useQueryClient();
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
@@ -143,6 +151,7 @@ const FeedbackCard = ({
       p={{ base: 4, sm: 6 }}
       opacity={isPending ? 0.5 : 1}
       {...rest}
+      onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
       <Stack w="full">
         <HStack justify="space-between">
@@ -178,6 +187,10 @@ const FeedbackCard = ({
           <HStack justify="space-between">
             <HStack>
               <Menu
+                onOpenChange={({ open }) =>
+                  open ? setIsStatusMenuOpen(true) : undefined
+                }
+                onExitComplete={() => setIsStatusMenuOpen(false)}
                 trigger={
                   <StatusBadge
                     status={feedback.status!}
@@ -202,17 +215,15 @@ const FeedbackCard = ({
                       // NB: Needs to be analyzed at runtime.
                       // TODO: Implement check to validate that the status color is a valid color
                       style={status.color ? { color: status.color } : undefined}
-                      onClick={(e) => {
-                        e.stopPropagation();
-
+                      onClick={() =>
                         updateStatus({
                           rowId: feedback.rowId!,
                           patch: {
                             statusId: status.rowId!,
                             statusUpdatedAt: new Date(),
                           },
-                        });
-                      }}
+                        })
+                      }
                     >
                       {status.status}
 
