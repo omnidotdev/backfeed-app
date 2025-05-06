@@ -100,7 +100,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
         <CreateComment />
 
         {isError ? (
-          <ErrorBoundary message="Error fetching comments" h="xs" />
+          <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
           // NB: the padding is necessary to prevent clipping of the card borders/box shadows
           <Grid
