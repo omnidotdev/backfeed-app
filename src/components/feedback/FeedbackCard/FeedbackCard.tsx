@@ -18,16 +18,21 @@ import { match } from "ts-pattern";
 import { StatusBadge } from "components/core";
 import {
   useFeedbackByIdQuery,
+  useInfinitePostsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
 } from "generated/graphql";
+import { useSearchParams } from "lib/hooks";
 import { useStatusMenuStore } from "lib/hooks/store";
 
 import type { HstackProps } from "@omnidev/sigil";
+import type { InfiniteData } from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
+  PostOrderBy,
   PostStatus,
+  PostsQuery,
 } from "generated/graphql";
 
 interface ProjectStatus {
@@ -74,6 +79,8 @@ const FeedbackCard = ({
     }),
   );
 
+  const [{ excludedStatuses, orderBy, search }] = useSearchParams();
+
   const queryClient = useQueryClient();
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
@@ -83,7 +90,17 @@ const FeedbackCard = ({
           useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         ) as FeedbackByIdQuery;
 
-        // TODO: add posts snapshot and handle optimistic update accordingly
+        const postsQueryKey = useInfinitePostsQuery.getKey({
+          pageSize: 5,
+          projectId: feedback.project?.rowId!,
+          excludedStatuses,
+          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+          search,
+        });
+
+        const postsSnapshot = queryClient.getQueryData(
+          postsQueryKey,
+        ) as InfiniteData<PostsQuery>;
 
         const updatedStatus = projectStatuses?.find(
           (status) => status.rowId === variables.patch.statusId,
@@ -106,9 +123,37 @@ const FeedbackCard = ({
             },
           );
         }
+
+        if (postsSnapshot) {
+          queryClient.setQueryData(postsQueryKey, {
+            ...postsSnapshot,
+            pages: postsSnapshot.pages.map((page) => ({
+              ...page,
+              posts: {
+                ...page.posts,
+                nodes: page.posts?.nodes?.map((post) => {
+                  if (post?.rowId === variables.rowId) {
+                    return {
+                      ...post,
+                      statusId: variables.patch.statusId,
+                      statusUpdatedAt: variables.patch.statusUpdatedAt,
+                      status: {
+                        ...post?.status,
+                        status: updatedStatus?.status,
+                        color: updatedStatus?.color,
+                      },
+                    };
+                  }
+
+                  return post;
+                }),
+              },
+            })),
+          });
+        }
       },
-      onSettled: async () => {
-        await Promise.all([
+      onSettled: async () =>
+        Promise.all([
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
 
           queryClient.invalidateQueries({
@@ -116,12 +161,11 @@ const FeedbackCard = ({
               projectId: feedback.project?.rowId!,
             }),
           }),
-        ]);
 
-        return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
-        });
-      },
+          queryClient.invalidateQueries({
+            queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          }),
+        ]),
     });
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
