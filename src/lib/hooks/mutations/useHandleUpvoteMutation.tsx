@@ -6,6 +6,7 @@ import {
   useDeleteUpvoteMutation,
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
+  useProjectMetricsQuery,
 } from "generated/graphql";
 import { useAuth, useSearchParams } from "lib/hooks";
 
@@ -163,6 +164,10 @@ const useHandleUpvoteMutation = ({
 
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: useProjectMetricsQuery.getKey({ projectId }),
         }),
       ]),
     ...mutationOptions,
