@@ -4,7 +4,7 @@ import type { LinkProps } from "next/link";
 import type { HTMLAttributes } from "react";
 
 interface Props extends LinkProps, HTMLAttributes<HTMLAnchorElement> {
-  /** State to determine if the link is disabled. */
+  /** Whether the link is disabled. */
   disabled?: boolean;
 }
 

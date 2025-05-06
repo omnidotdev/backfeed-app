@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Stack, VStack } from "@omnidev/sigil";
+import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -91,6 +91,10 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
       title={app.feedbackPage.comments.title}
       description={app.feedbackPage.comments.description}
       icon={LuMessageSquare}
+      p={0}
+      pr={{ base: 4, sm: 6 }}
+      pl={{ base: 4, sm: 6 }}
+      pt={{ base: 4, sm: 6 }}
     >
       <Stack>
         <CreateComment />
@@ -106,6 +110,9 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
             overflow="auto"
             p="1px"
             scrollbar="hidden"
+            WebkitMaskImage={
+              allComments?.length ? "var(--scrollable-mask)" : undefined
+            }
           >
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
@@ -130,13 +137,18 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
                   );
                 })}
 
-                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
+                {hasNextPage ? (
+                  <Spinner ref={loaderRef} my={4} />
+                ) : (
+                  <Text my={5}>{app.feedbackPage.comments.endOf}</Text>
+                )}
               </VStack>
             ) : (
               <EmptyState
                 message={app.feedbackPage.comments.emptyState.message}
                 h="xs"
                 w="full"
+                mb={4}
               />
             )}
           </Grid>

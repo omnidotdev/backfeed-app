@@ -61,6 +61,12 @@ const signOut = async (request: NextAuthRequest) => {
  * Middleware function for handling authentication flows on designated routes.
  */
 export const middleware = auth(async (request) => {
+  // NB: Used to bypass preflight checks. See: https://github.com/vercel/next.js/discussions/75668
+  // TODO: look into the security of this as this is a temporary workaround to allow for sign in / sign up flows to work properly in Safari
+  if (request.method === "OPTIONS") {
+    return NextResponse.json({}, { status: 200 });
+  }
+
   // If the user is not authenticated, redirect to the landing page
   if (!request.auth) {
     return redirect(request);

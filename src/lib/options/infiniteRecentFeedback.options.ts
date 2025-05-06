@@ -1,14 +1,18 @@
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions } from "@tanstack/react-query";
 
 import { useRecentFeedbackQuery } from "generated/graphql";
 
 import type { RecentFeedbackQueryVariables } from "generated/graphql";
 
 const recentFeedbackOptions = (variables: RecentFeedbackQueryVariables) =>
-  queryOptions({
+  infiniteQueryOptions({
     queryKey: useRecentFeedbackQuery.getKey(variables),
     queryFn: useRecentFeedbackQuery.fetcher(variables),
-    select: (data) => data?.posts?.nodes,
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage?.posts?.pageInfo?.hasNextPage
+        ? { after: lastPage?.posts?.pageInfo?.endCursor }
+        : undefined,
   });
 
 export default recentFeedbackOptions;

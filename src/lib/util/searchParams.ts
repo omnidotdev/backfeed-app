@@ -27,6 +27,8 @@ const searchParams = {
   pricingModel: parseAsStringEnum<SubscriptionRecurringInterval>(
     Object.values(SubscriptionRecurringInterval),
   ).withDefault(SubscriptionRecurringInterval.Month),
+  excludedStatuses: parseAsArrayOf(parseAsString).withDefault([]),
+  orderBy: parseAsString,
 };
 
 export default searchParams;

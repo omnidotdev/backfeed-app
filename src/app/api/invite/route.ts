@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
-import { app, isDevEnv } from "lib/config";
+import { FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS, app } from "lib/config";
 
 import type { OrganizationInvitation } from "components/organization";
 import type { NextRequest } from "next/server";
@@ -28,8 +28,8 @@ export const POST = async (req: NextRequest) => {
       (await req.json()) as OrganizationInvitation;
 
     const { data, error } = await resend.emails.send({
-      from: `${app.supportName} <${isDevEnv ? "onboarding@resend.dev" : app.supportEmail}>`,
-      to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
+      from: `${app.organization.name} Support <${FROM_EMAIL_ADDRESS}>`,
+      to: TO_EMAIL_ADDRESS || recipientEmail,
       subject: `${emailTemplate.subject.value1} ${organizationName} ${emailTemplate.subject.value2} ${app.name}`,
       react: InviteMemberEmailTemplate({
         inviterUsername,

@@ -1,23 +1,22 @@
 "use client";
 
-import { Flex, Text } from "@omnidev/sigil";
+import { Stack, Text } from "@omnidev/sigil";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { FlexProps, StackProps } from "@omnidev/sigil";
 
 interface Props extends FlexProps {
   /** Section title. */
   title: string;
   /** Props to pass to the main content container. */
-  contentProps?: FlexProps;
+  contentProps?: StackProps;
 }
 
 /**
  * Feedback section.
  */
 const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
-  <Flex
+  <Stack
     position="relative"
-    direction="column"
     flex={1}
     h="100%"
     bgColor="background.default"
@@ -40,10 +39,10 @@ const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
       {title}
     </Text>
 
-    <Flex direction="column" flex={1} mt={16} {...contentProps}>
+    <Stack flex={1} mt={16} {...contentProps}>
       {children}
-    </Flex>
-  </Flex>
+    </Stack>
+  </Stack>
 );
 
 export default FeedbackSection;

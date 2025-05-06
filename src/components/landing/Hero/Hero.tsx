@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Flex, Icon, Text } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
+import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
 
 import { app } from "lib/config";
@@ -41,10 +42,20 @@ const Hero = () => {
   ];
 
   return (
-    <Flex direction="column" align="center" gap={4} py={20} px={8} maxW="4xl">
+    <VStack gap={0} py={{ base: 4, md: 12 }} px={8} maxW="4xl">
+      <Icon
+        src={BsMegaphone}
+        h={{ base: 16, md: 24 }}
+        w={{ base: 16, md: 24 }}
+        my={4}
+        rotate="-12deg"
+        color={{ base: "brand.primary.600", _dark: "brand.primary.800" }}
+      />
+
       <Text
+        my={4}
         as="h1"
-        fontSize={{ base: "4xl", md: "6xl" }}
+        fontSize={{ base: "3xl", md: "6xl" }}
         fontWeight="bold"
         textAlign="center"
         lineHeight={1}
@@ -74,7 +85,7 @@ const Hero = () => {
           </Button>
         ))}
       </Flex>
-    </Flex>
+    </VStack>
   );
 };
 

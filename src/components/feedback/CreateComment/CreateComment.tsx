@@ -16,7 +16,7 @@ import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
-const MAX_COMMENT_LENGTH = 500;
+const MAX_COMMENT_LENGTH = 240;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -27,7 +27,6 @@ const createCommentSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(10, app.feedbackPage.comments.createComment.errors.minLengthMessage)
     .max(
       MAX_COMMENT_LENGTH,
       app.feedbackPage.comments.createComment.errors.maxLengthMessage,

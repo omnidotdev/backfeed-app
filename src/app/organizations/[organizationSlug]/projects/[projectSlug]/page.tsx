@@ -17,8 +17,11 @@ import {
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import { Role } from "generated/graphql";
+import { getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { PostOrderBy } from "generated/graphql";
+import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -36,12 +39,14 @@ export const generateMetadata = async ({ params }: Props) => {
 interface Props {
   /** Project page params. */
   params: Promise<{ organizationSlug: string; projectSlug: string }>;
+  /** Projects page search params. */
+  searchParams: Promise<SearchParams>;
 }
 
 /**
  * Project overview page.
  */
-const ProjectPage = async ({ params }: Props) => {
+const ProjectPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();
@@ -58,6 +63,9 @@ const ProjectPage = async ({ params }: Props) => {
     userId: session.user?.rowId!,
     organizationId: project.organization?.rowId!,
   });
+
+  const { excludedStatuses, orderBy, search } =
+    await getSearchParams.parse(searchParams);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -77,6 +85,10 @@ const ProjectPage = async ({ params }: Props) => {
     },
   ];
 
+  const hasAdminPrivileges =
+  memberByUserIdAndOrganizationId &&
+  memberByUserIdAndOrganizationId.role !== Role.Member;
+
   const commonVariables = { projectId: project.rowId };
 
   return (
@@ -95,6 +107,9 @@ const ProjectPage = async ({ params }: Props) => {
         infinitePostsOptions({
           pageSize: 5,
           projectId: project.rowId,
+          excludedStatuses,
+        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        search,
         }),
       ]}
     >
@@ -105,21 +120,22 @@ const ProjectPage = async ({ params }: Props) => {
           description: project.description!,
           cta: [
             {
-              label: app.projectPage.header.cta.settings.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <LuSettings />,
-              disabled:
-                !memberByUserIdAndOrganizationId ||
-                memberByUserIdAndOrganizationId.role === Role.Member,
-              href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
-            },
-            {
               label: app.projectPage.header.cta.viewAllProjects.label,
               // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               variant: "outline",
               href: `/organizations/${organizationSlug}/projects`,
             },
+            ...(hasAdminPrivileges
+              ? [
+                  {
+                    label: app.projectPage.header.cta.settings.label,
+                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                    icon: <LuSettings />,
+                    href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
+                  },
+                ]
+              : []),
           ],
         }}
       >

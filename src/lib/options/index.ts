@@ -13,7 +13,7 @@ export { default as projectOptions } from "./project.options";
 export { default as projectMetricsOptions } from "./projectMetrics.options";
 export { default as projectsOptions } from "./projects.options";
 export { default as projectStatusesOptions } from "./projectStatuses.options";
-export { default as recentFeedbackOptions } from "./recentFeedback.options";
+export { default as infiniteRecentFeedbackOptions } from "./infiniteRecentFeedback.options";
 export { default as statusBreakdownOptions } from "./statusBreakdown.options";
 export { default as subscriptionOptions } from "./subscription.options";
 export { default as upvoteOptions } from "./upvote.options";

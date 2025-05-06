@@ -780,7 +780,7 @@ export const mockOrganizationsQuery = (resolver: GraphQLResponseResolver<Types.O
  * @example
  * mockPostsQuery(
  *   ({ query, variables }) => {
- *     const { projectId, after, pageSize, orderBy } = variables;
+ *     const { projectId, after, pageSize, orderBy, excludedStatuses, search } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })
@@ -912,7 +912,7 @@ export const mockProjectsQuery = (resolver: GraphQLResponseResolver<Types.Projec
  * @example
  * mockRecentFeedbackQuery(
  *   ({ query, variables }) => {
- *     const { userId } = variables;
+ *     const { userId, after } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })
@@ -1022,7 +1022,7 @@ export const mockUserByEmailQuery = (resolver: GraphQLResponseResolver<Types.Use
  * @example
  * mockWeeklyFeedbackQuery(
  *   ({ query, variables }) => {
- *     const { userId, startDate, endDate } = variables;
+ *     const { userId, startDate } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })

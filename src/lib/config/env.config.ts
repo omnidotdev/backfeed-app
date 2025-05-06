@@ -19,6 +19,10 @@ export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 export const ENABLE_POLAR_SANDBOX =
   process.env.NEXT_PUBLIC_ENABLE_POLAR_SANDBOX === "true";
 
+// emails
+export const FROM_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_FROM_EMAIL_ADDRESS;
+export const TO_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_TO_EMAIL_ADDRESS;
+
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;

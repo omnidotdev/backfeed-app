@@ -17,7 +17,7 @@ import { DialogType } from "store";
 import type { Project } from "generated/graphql";
 
 interface Props {
-  /** Whether the current user can create projects. */
+  /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
 }
 
@@ -74,12 +74,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
             ? {
                 label: app.projectsPage.emptyState.cta.label,
                 icon: LuCirclePlus,
-                actionProps: {
-                  variant: "outline",
-                  color: "brand.primary",
-                  borderColor: "brand.primary",
-                  onClick: () => setIsCreateProjectDialogOpen(true),
-                },
+                onClick: () => setIsCreateProjectDialogOpen(true),
               }
             : undefined
         }

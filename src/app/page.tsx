@@ -10,12 +10,11 @@ import {
   enableBasicTierPrivilegesFlag,
   enableTeamTierPrivilegesFlag,
 } from "lib/flags";
-
 import { Await } from "components/core";
 import {
   dashboardAggregatesOptions,
   organizationsOptions,
-  recentFeedbackOptions,
+  infiniteRecentFeedbackOptions,
   weeklyFeedbackOptions,
 } from "lib/options";
 
@@ -46,8 +45,7 @@ const HomePage = async () => {
     isMember: true,
   };
 
-  const oneWeekAgo = dayjs().utc().subtract(7, "days").startOf("day").toDate();
-  const startOfToday = dayjs().utc().startOf("day").toDate();
+  const oneWeekAgo = dayjs().utc().subtract(6, "days").startOf("day").toDate();
 
   return (
     // TODO: separate concerns for prefetching for loading / error state management
@@ -65,16 +63,14 @@ const HomePage = async () => {
         weeklyFeedbackOptions({
           userId: session.user.rowId!,
           startDate: oneWeekAgo,
-          endDate: startOfToday,
         }),
-        recentFeedbackOptions({ userId: session.user.rowId! }),
       ]}
+      infinitePrefetch={[infiniteRecentFeedbackOptions({ userId: session.user.rowId! })]}
     >
       <DashboardPage
         isBasicTier={isBasicTier}
         isTeamTier={isTeamTier}
         oneWeekAgo={oneWeekAgo}
-        startOfToday={startOfToday}
       />
 
       {/* dialogs */}

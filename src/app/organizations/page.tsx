@@ -82,7 +82,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
         breadcrumbs={breadcrumbs}
         header={{
           title: app.organizationsPage.header.title,
-          description: app.organizationsPage.header.description,
           cta: [
             {
               label: app.organizationsPage.header.cta.newOrganization.label,
@@ -90,13 +89,21 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
               disabled: !canCreateOrganization,
+              tooltip: isBasicTier
+                ? app.organizationsPage.header.cta.newOrganization
+                    .basicTierTooltip
+                : app.organizationsPage.header.cta.newOrganization
+                    .noSubscriptionTooltip,
             },
           ],
         }}
       >
         <OrganizationFilters />
 
-        <OrganizationList />
+        <OrganizationList
+          canCreateOrganization={canCreateOrganization}
+          isBasicTier={isBasicTier}
+        />
 
         {/* dialogs */}
         {canCreateOrganization && (

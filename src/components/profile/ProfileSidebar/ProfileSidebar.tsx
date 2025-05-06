@@ -14,19 +14,27 @@ import { useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
-import { useAuth, useDebounceValue, useViewportSize } from "lib/hooks";
+import { token } from "generated/panda/tokens";
+import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Session } from "next-auth";
 import type { PropsWithChildren } from "react";
+
+interface Props extends PropsWithChildren {
+  /** User derived from the auth session. */
+  user: Session["user"];
+}
 
 /**
  * Sidebar for profile page. Used for navigation between profile pages.
  */
-const ProfileSidebar = ({ children }: PropsWithChildren) => {
-  const isLargeViewport = useViewportSize({ minWidth: "64em" });
+const ProfileSidebar = ({ user, children }: Props) => {
+  const isLargeViewport = useViewportSize({
+    minWidth: token("breakpoints.lg"),
+  });
   const segment = useSelectedLayoutSegment();
-  const { user } = useAuth();
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "profile-management-sidebar",
@@ -75,8 +83,8 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           gap={0}
         >
           <ProfileNavigation
-            username={user?.username}
-            email={user?.email!}
+            username={user.username}
+            email={user.email!}
             isOpen={debouncedIsOpen}
             truncateText={!debouncedIsOpen}
             position="sticky"
@@ -104,8 +112,8 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           }}
         >
           <ProfileNavigation
-            username={user?.username}
-            email={user?.email!}
+            username={user.username}
+            email={user.email!}
             isOpen={isDrawerOpen}
             onClose={onCloseDrawer}
             gap={4}
@@ -134,8 +142,8 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           py={2}
           ml={{ base: 0, lg: -4 }}
           minH={14}
-          bgColor="background.default"
           gap={2}
+          style={{ backdropFilter: "blur(12px)" }}
         >
           <Button
             variant="icon"

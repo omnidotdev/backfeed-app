@@ -6,6 +6,7 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Organization } from "generated/graphql";
 
@@ -20,12 +21,12 @@ interface Props {
 const OrganizationListItem = ({ organization }: Props) => {
   const AGGREGATES = [
     {
-      type: "Users",
+      type: "user",
       icon: HiOutlineUserGroup,
       value: organization?.members?.totalCount,
     },
     {
-      type: "Projects",
+      type: "project",
       icon: HiOutlineFolder,
       value: organization?.projects?.totalCount,
     },
@@ -65,7 +66,7 @@ const OrganizationListItem = ({ organization }: Props) => {
               <Text
                 fontSize="sm"
                 color="foreground.muted"
-              >{`Updated: ${dayjs(organization.updatedAt).fromNow()}`}</Text>
+              >{`Updated ${dayjs(organization.updatedAt).fromNow()}`}</Text>
             </Stack>
           </Link>
         </Stack>
@@ -79,16 +80,17 @@ const OrganizationListItem = ({ organization }: Props) => {
         </Flex>
       </HStack>
 
-      <HStack gap={4} mt={4} justifySelf="flex-end">
+      <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
         {AGGREGATES.map(({ icon, value = 0, type }) => (
-          <HStack key={type} gap={1}>
+          <HStack key={type} gap={1} flexWrap="wrap">
             <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+
             <Text
               fontSize="sm"
               color="foreground.subtle"
               fontVariant="tabular-nums"
             >
-              {value}
+              {value} {setSingularOrPlural({ value, label: type })}
             </Text>
           </HStack>
         ))}

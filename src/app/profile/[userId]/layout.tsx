@@ -25,7 +25,7 @@ const ProfileLayout = async ({ children }: PropsWithChildren) => {
           }),
         ]}
       >
-        <ProfileSidebar>{children}</ProfileSidebar>
+        <ProfileSidebar user={session.user}>{children}</ProfileSidebar>
       </Await>
     </HStack>
   );

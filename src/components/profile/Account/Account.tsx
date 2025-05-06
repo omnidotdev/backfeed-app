@@ -1,11 +1,9 @@
 "use client";
 
-import { Button, Flex, Input, Label, Stack, Text, sigil } from "@omnidev/sigil";
+import { Button, Flex, Input, Label, Stack } from "@omnidev/sigil";
+import { app } from "lib/config";
 import { useMemo, useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-
-import { SectionContainer } from "components/layout";
-import { app } from "lib/config";
 
 import type { InputProps } from "@omnidev/sigil";
 import type { UserFragment } from "generated/graphql";
@@ -94,24 +92,6 @@ const Account = ({ user }: Props) => {
           );
         })}
       </Stack>
-
-      <SectionContainer
-        title={app.profileAccountPage.cta.deleteAccount.title}
-        outline="1px solid"
-        outlineColor="omni.ruby"
-      >
-        <Text
-          color="foreground.subtle"
-          fontSize={{ base: "xs", lg: "sm" }}
-          mt={-3}
-        >
-          {app.profileAccountPage.cta.deleteAccount.description}
-          <sigil.a href={`mailto:${app.supportEmail}`}>
-            <sigil.span color="brand.primary">{app.supportEmail}</sigil.span>
-          </sigil.a>
-          .
-        </Text>
-      </SectionContainer>
     </Stack>
   );
 };

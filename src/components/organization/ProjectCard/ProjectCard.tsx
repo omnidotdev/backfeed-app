@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi2";
 
 import { OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Project } from "generated/graphql";
@@ -19,7 +20,7 @@ interface ProjectMetric {
   /** Metric value. */
   value: number | undefined;
   /** Metric type. */
-  type: "Responses" | "Users" | "Updated";
+  type: "response" | "user";
 }
 
 interface Props extends FlexProps {
@@ -35,12 +36,12 @@ const ProjectCard = ({ project, ...rest }: Props) => {
     {
       icon: HiOutlineChatBubbleLeftRight,
       value: project?.posts?.totalCount,
-      type: "Responses",
+      type: "response",
     },
     {
       icon: HiOutlineUserGroup,
       value: Number(project?.posts?.aggregates?.distinctCount?.userId),
-      type: "Users",
+      type: "user",
     },
   ];
 
@@ -87,25 +88,15 @@ const ProjectCard = ({ project, ...rest }: Props) => {
 
         <Grid columns={2} w="full" alignItems="start">
           {PROJECT_METRICS.map(({ icon, value, type }) => (
-            <Flex key={type} gap={2} alignItems="center">
+            <Flex key={type} gap={2} alignItems="center" wrap="wrap">
               <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-              <Flex
-                color="foreground.subtle"
-                fontSize="sm"
-                gap={1}
-                direction="row-reverse"
-              >
-                <Text
-                  display={{
-                    base: "none",
-                    xl: "inline",
-                  }}
-                >
-                  {type}
-                </Text>
-
+              <Flex color="foreground.subtle" fontSize="sm" gap={1} wrap="wrap">
                 <Text>{value ?? 0}</Text>
+
+                <Text display={{ base: "none", sm: "inline" }}>
+                  {setSingularOrPlural({ value: value ?? 0, label: type })}
+                </Text>
               </Flex>
             </Flex>
           ))}

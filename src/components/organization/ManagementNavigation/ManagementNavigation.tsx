@@ -68,14 +68,6 @@ const ManagementNavigation = ({
       },
     },
     {
-      label: app.organizationSettingsPage.breadcrumb,
-      icon: LuSettings,
-      onClick: () => {
-        onClose?.();
-        router.push(`/organizations/${organizationSlug}/settings`);
-      },
-    },
-    {
       label: app.organizationInvitationsPage.breadcrumb,
       icon: FiUserPlus,
       onClick: () => {
@@ -83,6 +75,14 @@ const ManagementNavigation = ({
         router.push(`/organizations/${organizationSlug}/invitations`);
       },
       disabled: !isAdmin,
+    },
+    {
+      label: app.organizationSettingsPage.breadcrumb,
+      icon: LuSettings,
+      onClick: () => {
+        onClose?.();
+        router.push(`/organizations/${organizationSlug}/settings`);
+      },
     },
   ];
 

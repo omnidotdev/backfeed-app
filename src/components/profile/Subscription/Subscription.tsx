@@ -15,10 +15,10 @@ import {
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { LuSettings } from "react-icons/lu";
 
 import { API_BASE_URL, app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
 import { capitalizeFirstLetter } from "lib/util";
 
@@ -33,7 +33,7 @@ interface Props {
  * Details of the user's subscription.
  */
 const Subscription = ({ customer }: Props) => {
-  const { user } = useAuth();
+  const { userId } = useParams<{ userId: string }>();
 
   const {
     data: subscription,
@@ -43,7 +43,7 @@ const Subscription = ({ customer }: Props) => {
     isLoading,
   } = useQuery(
     subscriptionOptions({
-      hidraId: user?.hidraId,
+      hidraId: userId,
       enabled: customer.status !== "rejected",
     }),
   );

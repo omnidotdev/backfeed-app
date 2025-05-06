@@ -18,8 +18,10 @@ const GlobalErrorPage = () => {
 
         <Text maxW="lg">
           {app.globalError.description}{" "}
-          <sigil.a href={`mailto:${app.supportEmail}`}>
-            <sigil.span color="brand.primary">{app.supportEmail}</sigil.span>
+          <sigil.a href={`mailto:${app.organization.supportEmailAddress}`}>
+            <sigil.span color="brand.primary">
+              {app.organization.supportEmailAddress}
+            </sigil.span>
           </sigil.a>
           .
         </Text>
