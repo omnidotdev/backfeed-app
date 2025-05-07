@@ -1,13 +1,13 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Box, Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
+import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -279,16 +279,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           </Grid>
         )}
 
-        {!!allPosts.length && (
-          <Box
-            position="absolute"
-            bottom={0}
-            h={12}
-            w="full"
-            bgGradient="mask"
-            pointerEvents="none"
-          />
-        )}
+        {!!allPosts.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );

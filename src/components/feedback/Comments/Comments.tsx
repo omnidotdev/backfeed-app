@@ -1,11 +1,11 @@
 "use client";
 
-import { Box, Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -144,16 +144,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
           </Grid>
         )}
 
-        {!!allComments.length && (
-          <Box
-            position="absolute"
-            bottom={0}
-            h={12}
-            w="full"
-            bgGradient="mask"
-            pointerEvents="none"
-          />
-        )}
+        {!!allComments.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );

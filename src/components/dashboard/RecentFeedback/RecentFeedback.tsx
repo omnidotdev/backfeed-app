@@ -1,9 +1,9 @@
 "use client";
 
-import { Box, Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { Link, SkeletonArray, Spinner } from "components/core";
+import { GradientMask, Link, SkeletonArray, Spinner } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
@@ -103,16 +103,7 @@ const RecentFeedback = () => {
             />
           )}
 
-          {!!recentFeedback.length && (
-            <Box
-              position="absolute"
-              bottom={0}
-              h={16}
-              w="full"
-              bgGradient="mask"
-              pointerEvents="none"
-            />
-          )}
+          {!!recentFeedback.length && <GradientMask bottom={0} />}
         </Stack>
       )}
     </FeedbackSection>
