@@ -1,23 +1,13 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import {
-  Button,
-  Grid,
-  Icon,
-  Input,
-  Select,
-  Stack,
-  Text,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -27,13 +17,18 @@ import {
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useHandleSearch, useSearchParams } from "lib/hooks";
+import {
+  useHandleSearch,
+  useOrganizationMembership,
+  useSearchParams,
+} from "lib/hooks";
 
 import type {
   CreateFeedbackMutationVariables,
   FeedbackFragment,
   Project,
 } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const SORT_BY_OPTIONS = [
   {
@@ -51,6 +46,8 @@ const SORT_BY_OPTIONS = [
 ];
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Project ID. */
   projectId: Project["rowId"];
 }
@@ -58,10 +55,8 @@ interface Props {
 /**
  * Project feedback.
  */
-const ProjectFeedback = ({ projectId }: Props) => {
+const ProjectFeedback = ({ user, projectId }: Props) => {
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
@@ -84,7 +79,6 @@ const ProjectFeedback = ({ projectId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
-        pageSize: 5,
         projectId,
         excludedStatuses,
         orderBy: orderBy
@@ -127,8 +121,14 @@ const ProjectFeedback = ({ projectId }: Props) => {
         upvotes: {
           totalCount: 0,
         },
+        userUpvotes: {
+          nodes: [],
+        },
         downvotes: {
           totalCount: 0,
+        },
+        userDownvotes: {
+          nodes: [],
         },
       };
     },
@@ -137,6 +137,26 @@ const ProjectFeedback = ({ projectId }: Props) => {
   const posts =
     data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
     [];
+
+  const { isAdmin } = useOrganizationMembership({
+    userId: user.rowId,
+    organizationId: posts?.[0]?.project?.organization?.rowId,
+  });
+
+  const { data: projectStatuses } = useProjectStatusesQuery(
+    {
+      projectId,
+    },
+    {
+      enabled: isAdmin,
+      select: (data) =>
+        data?.postStatuses?.nodes.map((status) => ({
+          rowId: status?.rowId,
+          status: status?.status,
+          color: status?.color,
+        })),
+    },
+  );
 
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.
   const showPendingFeedback =
@@ -175,7 +195,8 @@ const ProjectFeedback = ({ projectId }: Props) => {
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
-      <Stack gap={0}>
+      {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
+      <Stack gap={0} position="relative" mb="1px">
         <CreateFeedback />
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
@@ -207,18 +228,16 @@ const ProjectFeedback = ({ projectId }: Props) => {
         </Stack>
 
         {isError ? (
-          <ErrorBoundary message="Error fetching feedback" h="sm" />
+          <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
         ) : (
           <Grid
             gap={2}
             mt={4}
             maxH="md"
             overflow="auto"
-            p="1px"
             scrollbar="hidden"
-            WebkitMaskImage={
-              allPosts.length ? "var(--scrollable-mask)" : undefined
-            }
+            // NB: the padding is necessary to prevent clipping of the card borders/box shadows
+            p="1px"
           >
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
@@ -230,16 +249,16 @@ const ProjectFeedback = ({ projectId }: Props) => {
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
+                      canManageStatus={isAdmin}
                       feedback={feedback!}
-                      totalUpvotes={feedback?.upvotes?.totalCount}
-                      totalDownvotes={feedback?.downvotes?.totalCount}
+                      projectStatuses={projectStatuses}
                       isPending={isPending}
                       w="full"
                       minH={21}
                       borderRadius="md"
                       bgColor="card-item"
                       cursor={isPending ? "not-allowed" : "pointer"}
-                      role="group"
+                      _hover={{ boxShadow: "card" }}
                       onClick={() =>
                         !isPending
                           ? router.push(
@@ -247,22 +266,7 @@ const ProjectFeedback = ({ projectId }: Props) => {
                             )
                           : undefined
                       }
-                    >
-                      <Button
-                        position="absolute"
-                        top={1}
-                        right={1}
-                        p={2}
-                        variant="icon"
-                        color={{
-                          base: "foreground.muted",
-                          _groupHover: "brand.primary",
-                        }}
-                        bgColor="transparent"
-                      >
-                        <Icon src={FiArrowUpRight} w={5} h={5} />
-                      </Button>
-                    </FeedbackCard>
+                    />
                   );
                 })}
 
@@ -282,6 +286,8 @@ const ProjectFeedback = ({ projectId }: Props) => {
             )}
           </Grid>
         )}
+
+        {!!allPosts.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );
