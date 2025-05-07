@@ -162,7 +162,6 @@ const app = {
       },
     },
     recentFeedback: {
-      loadMore: "Load More",
       endOf: "End of Feedback",
       emptyState: {
         message: "No recent feedback found.",
