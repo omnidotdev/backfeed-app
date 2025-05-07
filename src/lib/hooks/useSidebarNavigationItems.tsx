@@ -52,7 +52,7 @@ const useSidebarNavigationItems = () => {
         slug: organizationSlug,
       },
       {
-        enabled: isAuthenticated && !!organizationSlug,
+        enabled: !!organizationSlug,
         select: (data) => data?.organizationBySlug,
       },
     ),
@@ -62,7 +62,7 @@ const useSidebarNavigationItems = () => {
         organizationId: organization?.rowId ?? "",
       },
       {
-        enabled: isAuthenticated && !!projectSlug && !!organization,
+        enabled: !!projectSlug && !!organization,
         select: (data) => data?.projectBySlugAndOrganizationId,
       },
     );
@@ -79,7 +79,7 @@ const useSidebarNavigationItems = () => {
         label: app.organizationsPage.breadcrumb,
         icon: LuBuilding2,
         isCollapsible: true,
-        isVisible: isAuthenticated,
+        isVisible: true,
         children: [
           {
             href: "/organizations",
@@ -97,7 +97,7 @@ const useSidebarNavigationItems = () => {
             label: app.projectsPage.breadcrumb,
             icon: HiOutlineFolder,
             isCollapsible: true,
-            isVisible: isAuthenticated && !!organizationSlug,
+            isVisible: !!organizationSlug,
             children: [
               {
                 href: `/organizations/${organizationSlug}/projects`,

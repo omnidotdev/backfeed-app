@@ -90,6 +90,9 @@ const app = {
       pricing: {
         label: "Pricing",
       },
+      organizations: {
+        label: "Organizations",
+      },
       docs: {
         label: "Docs",
       },

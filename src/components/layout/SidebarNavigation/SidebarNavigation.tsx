@@ -55,7 +55,7 @@ const SidebarNavigation = () => {
               <Button
                 justifyContent="space-between"
                 variant="ghost"
-                backgroundColor="background.subtle"
+                backgroundColor="background.muted/70"
                 w="full"
                 color={isActive ? "brand.primary" : "inherit"}
               >
@@ -106,7 +106,7 @@ const SidebarNavigation = () => {
                             <Button
                               justifyContent="space-between"
                               variant="ghost"
-                              backgroundColor="background.subtle"
+                              backgroundColor="background.muted/70"
                               w="full"
                               color={isActive ? "brand.primary" : "inherit"}
                             >
@@ -147,7 +147,6 @@ const SidebarNavigation = () => {
                                       }
                                     >
                                       <Button
-                                        disabled={isActive}
                                         variant="ghost"
                                         tabIndex={-1}
                                         w="full"
@@ -172,7 +171,6 @@ const SidebarNavigation = () => {
                               onClick={() => setIsMobileSidebarOpen(false)}
                             >
                               <Button
-                                disabled={isActive}
                                 variant="ghost"
                                 tabIndex={-1}
                                 justifyContent="left"

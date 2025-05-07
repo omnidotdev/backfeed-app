@@ -30,8 +30,8 @@ import { DialogType } from "store";
  * Header actions.
  */
 const HeaderActions = () => {
-  const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.sm"),
+  const isMediumViewport = useViewportSize({
+    minWidth: token("breakpoints.md"),
   });
 
   const { isAuthenticated, isLoading } = useAuth(),
@@ -45,14 +45,14 @@ const HeaderActions = () => {
   };
 
   useEffect(() => {
-    if (isSmallViewport) {
+    if (isMediumViewport) {
       setIsMobileSidebarOpen(false);
     }
-  }, [isSmallViewport, setIsMobileSidebarOpen]);
+  }, [isMediumViewport, setIsMobileSidebarOpen]);
 
   if (isLoading) return null;
 
-  if (isSmallViewport) {
+  if (isMediumViewport) {
     return (
       <Flex alignItems="center" gap={4}>
         <ThemeToggle />
