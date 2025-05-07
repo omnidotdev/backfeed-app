@@ -75,7 +75,7 @@ const RecentFeedback = () => {
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
-            <VStack gap={0} p={1}>
+            <VStack w="full" gap={0} p={1}>
               {recentFeedback?.map((feedback) => (
                 <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
