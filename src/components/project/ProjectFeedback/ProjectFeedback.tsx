@@ -230,7 +230,15 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
+          <Grid
+            gap={2}
+            mt={4}
+            maxH="md"
+            overflow="auto"
+            scrollbar="hidden"
+            // NB: the padding is necessary to prevent clipping of the card borders/box shadows
+            p="1px"
+          >
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
             ) : allPosts.length ? (
