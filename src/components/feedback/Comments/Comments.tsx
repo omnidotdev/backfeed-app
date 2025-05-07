@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { Box, Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -96,24 +96,14 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
-      <Stack>
+      {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
+      <Stack position="relative" mb="1px">
         <CreateComment />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          // NB: the padding is necessary to prevent clipping of the card borders/box shadows
-          <Grid
-            gap={2}
-            mt={4}
-            maxH="sm"
-            overflow="auto"
-            p="1px"
-            scrollbar="hidden"
-            WebkitMaskImage={
-              allComments?.length ? "var(--scrollable-mask)" : undefined
-            }
-          >
+          <Grid gap={2} mt={4} maxH="sm" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
@@ -153,6 +143,16 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
               />
             )}
           </Grid>
+        )}
+
+        {!!allComments.length && (
+          <Box
+            position="absolute"
+            bottom={0}
+            h={12}
+            w="full"
+            bgGradient="mask"
+          />
         )}
       </Stack>
     </SectionContainer>

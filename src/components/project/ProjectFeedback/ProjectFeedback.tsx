@@ -2,6 +2,7 @@
 
 import { createListCollection } from "@ark-ui/react";
 import {
+  Box,
   Button,
   Grid,
   Icon,
@@ -200,7 +201,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
-      <Stack gap={0}>
+      {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
+      <Stack gap={0} position="relative" mb="1px">
         <CreateFeedback />
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
@@ -234,17 +236,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
         ) : (
-          <Grid
-            gap={2}
-            mt={4}
-            maxH="md"
-            overflow="auto"
-            p="1px"
-            scrollbar="hidden"
-            WebkitMaskImage={
-              allPosts.length ? "var(--scrollable-mask)" : undefined
-            }
-          >
+          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
             ) : allPosts.length ? (
@@ -308,6 +300,16 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
               />
             )}
           </Grid>
+        )}
+
+        {!!allPosts.length && (
+          <Box
+            position="absolute"
+            bottom={0}
+            h={12}
+            w="full"
+            bgGradient="mask"
+          />
         )}
       </Stack>
     </SectionContainer>

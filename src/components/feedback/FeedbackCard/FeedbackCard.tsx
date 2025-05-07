@@ -247,6 +247,7 @@ const FeedbackCard = ({
                 triggerProps={{
                   disabled: !canManageStatus || isUpdateStatusPending,
                 }}
+                positioning={{ strategy: "fixed" }}
               >
                 <MenuItemGroup>
                   {projectStatuses?.map((status) => (

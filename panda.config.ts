@@ -25,12 +25,6 @@ const pandaConfig = defineConfig({
       },
     ],
   },
-  globalVars: {
-    extend: {
-      "--scrollable-mask":
-        "linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0))",
-    },
-  },
   globalCss: {
     extend: {
       html: {
@@ -73,6 +67,12 @@ const pandaConfig = defineConfig({
         },
       },
       tokens: {
+        gradients: {
+          mask: {
+            value:
+              "linear-gradient(to bottom, transparent 5%, {colors.background.default})",
+          },
+        },
         sizes: {
           18: { value: "4.5rem" },
           header: { value: "5rem" },
