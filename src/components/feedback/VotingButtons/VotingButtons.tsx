@@ -14,6 +14,7 @@ import {
 
 import type { TooltipTriggerProps, VstackProps } from "@omnidev/sigil";
 import type { Downvote, Post, Project, Upvote } from "generated/graphql";
+import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
 interface VoteButtonProps extends TooltipTriggerProps {
@@ -28,6 +29,8 @@ interface VoteButtonProps extends TooltipTriggerProps {
 }
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Feedback ID. */
   feedbackId: Post["rowId"];
   /** Project ID. */
@@ -43,6 +46,7 @@ interface Props {
 }
 
 const VotingButtons = ({
+  user,
   feedbackId,
   projectId,
   upvote,
@@ -71,6 +75,7 @@ const VotingButtons = ({
       tooltip: app.feedbackPage.details.upvote,
       icon: upvote ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
+      disabled: !user,
       onClick: (e) => {
         e.stopPropagation();
         handleUpvote();
@@ -82,6 +87,7 @@ const VotingButtons = ({
       tooltip: app.feedbackPage.details.downvote,
       icon: downvote ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
+      disabled: !user,
       onClick: (e) => {
         e.stopPropagation();
         handleDownvote();
@@ -95,7 +101,7 @@ const VotingButtons = ({
       top={{ base: 1.5, sm: 3.5 }}
       right={{ base: 4, sm: 6 }}
     >
-      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, ...rest }) => (
+      {VOTE_BUTTONS.map(({ id, votes, tooltip, icon, disabled, ...rest }) => (
         <Tooltip
           key={id}
           hasArrow={false}
@@ -113,7 +119,11 @@ const VotingButtons = ({
               _disabled: 0.3,
               _hover: { base: 0.8, _disabled: 0.3 },
             },
+            disabled,
             ...rest,
+          }}
+          contentProps={{
+            display: disabled ? "none" : undefined,
           }}
         >
           {tooltip}

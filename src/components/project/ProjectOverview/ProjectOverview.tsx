@@ -16,7 +16,7 @@ import type { Session } from "next-auth";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Project ID. */
   projectId: Project["rowId"];
 }
