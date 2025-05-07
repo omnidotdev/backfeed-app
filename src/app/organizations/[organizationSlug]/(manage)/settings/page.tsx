@@ -11,10 +11,7 @@ import {
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import {
-  enableJoinOrganizationFlag,
-  enableOwnershipTransferFlag,
-} from "lib/flags";
+import { enableOwnershipTransferFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
@@ -41,11 +38,7 @@ interface Props {
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const [isJoinOrganizationEnabled, isOwnershipTransferEnabled] =
-    await Promise.all([
-      enableJoinOrganizationFlag(),
-      enableOwnershipTransferFlag(),
-    ]);
+  const isOwnershipTransferEnabled = await enableOwnershipTransferFlag();
 
   const session = await auth();
 
@@ -100,7 +93,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         <OrganizationSettings
           userId={session.user.rowId!}
           organizationId={organization.rowId}
-          isJoinOrganizationEnabled={isJoinOrganizationEnabled}
           isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
       </Page>
