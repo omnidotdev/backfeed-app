@@ -9,6 +9,7 @@ import {
   useCommentsQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
+  useOrganizationRoleQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -98,6 +99,16 @@ const FeedbackPage = async ({ params }: Props) => {
               projectId: feedback.project?.rowId!,
             }),
           }),
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              userId: session?.user.rowId!,
+              organizationId: feedback.project?.organization?.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              userId: session?.user.rowId!,
+              organizationId: feedback.project?.organization?.rowId!,
+            }),
+          }),
         ]
       : []),
     queryClient.prefetchInfiniteQuery({
@@ -110,12 +121,10 @@ const FeedbackPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page breadcrumbs={breadcrumbs}>
-        {/* TODO: fix type for user, should be optional now */}
-        <FeedbackDetails user={session?.user!} feedbackId={feedbackId} />
+        <FeedbackDetails user={session?.user} feedbackId={feedbackId} />
 
         <Comments
-          // TODO: fix type for user, should be optional now
-          user={session?.user!}
+          user={session?.user}
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
         />

@@ -19,7 +19,7 @@ import type { Session } from "next-auth";
 
 interface Props extends StackProps {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Comment ID. */
