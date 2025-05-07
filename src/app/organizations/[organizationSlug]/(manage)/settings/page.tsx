@@ -4,7 +4,11 @@ import { notFound } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
-import { Role, useMembersQuery } from "generated/graphql";
+import {
+  Role,
+  useMembersQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import {
@@ -61,6 +65,20 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         roles: [Role.Owner],
       }),
     }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              userId: session.user.rowId!,
+              organizationId: organization.rowId,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              userId: session.user.rowId!,
+              organizationId: organization.rowId,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (

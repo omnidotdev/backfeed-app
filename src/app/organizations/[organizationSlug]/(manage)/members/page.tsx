@@ -11,7 +11,11 @@ import {
   MembershipFilters,
   Owners,
 } from "components/organization";
-import { Role, useMembersQuery } from "generated/graphql";
+import {
+  Role,
+  useMembersQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { enableOwnershipTransferFlag } from "lib/flags";
@@ -99,6 +103,20 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         excludeRoles: [Role.Owner],
       }),
     }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
