@@ -13,6 +13,13 @@ const sharedIconStyles = {
   mx: 1.5,
 };
 
+interface NestedItemRecord {
+  /** Label for the sub-item. */
+  label: string;
+  /** URL path the sub-item navigates to. */
+  href: `/${string}`;
+}
+
 interface SubItemRecord {
   /** Label for the sub-item. */
   label: string;
@@ -27,6 +34,8 @@ export interface BreadcrumbRecord {
   href?: `/${string}`;
   /** Sub-items for the breadcrumb. */
   subItems?: SubItemRecord[];
+  /** Nested sub-items for the breadcrumb. */
+  nestedSubItems?: NestedItemRecord[];
 }
 
 interface Props {
@@ -115,7 +124,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
                   trigger={
                     <Flex>
                       <BreadcrumbTrigger
-                        label={lastItem.label}
+                        label={label}
                         isLastItem={isLastItem}
                         icon
                       />

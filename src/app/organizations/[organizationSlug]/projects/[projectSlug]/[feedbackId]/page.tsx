@@ -14,6 +14,7 @@ import {
   useProjectStatusesQuery,
   useUpvoteQuery,
 } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
@@ -42,6 +43,8 @@ const FeedbackPage = async ({ params }: Props) => {
   const session = await auth();
 
   if (!session) notFound();
+
+  const organization = await getOrganization({ organizationSlug });
 
   const sdk = getSdk({ session });
 
@@ -75,7 +78,23 @@ const FeedbackPage = async ({ params }: Props) => {
     },
     {
       label: feedback?.project?.name ?? projectSlug,
-      href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      // href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      subItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+        : undefined,
+      nestedSubItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+        : undefined,
     },
     {
       label: app.feedbackPage.breadcrumb,
