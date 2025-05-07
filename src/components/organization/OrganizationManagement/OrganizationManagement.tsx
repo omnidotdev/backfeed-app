@@ -3,13 +3,16 @@
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import { useParams, useRouter } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
-import { HiOutlineUserGroup } from "react-icons/hi2";
+import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
+import type { Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
 interface Action extends ButtonProps {
@@ -20,41 +23,69 @@ interface Action extends ButtonProps {
 }
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** organization ID. */
+  organizationId: Organization["rowId"];
   /** Whether the user has admin privileges for the organization. */
   hasAdminPrivileges: boolean;
 }
 
+const managementDetails = app.organizationPage.management;
+
 /**
  * Organization management.
  */
-const OrganizationManagement = ({ hasAdminPrivileges }: Props) => {
+const OrganizationManagement = ({
+  user,
+  organizationId,
+  hasAdminPrivileges,
+}: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
   const router = useRouter();
 
+  const { isMember } = useOrganizationMembership({
+    userId: user?.rowId,
+    organizationId,
+  });
+
   const ORGANIZATION_ACTIONS: Action[] = [
     {
-      label: app.organizationPage.management.cta.manageTeam.label,
+      label: managementDetails.cta.manageTeam.label,
       icon: HiOutlineUserGroup,
       onClick: () => router.push(`/organizations/${organizationSlug}/members`),
     },
     {
-      label: app.organizationPage.management.cta.invitations.label,
+      label: managementDetails.cta.invitations.label,
       icon: FiUserPlus,
       onClick: () =>
         router.push(`/organizations/${organizationSlug}/invitations`),
       disabled: !hasAdminPrivileges,
     },
     {
-      label: app.organizationPage.management.cta.settings.label,
+      label: managementDetails.cta.settings.label,
       icon: LuSettings,
       onClick: () => router.push(`/organizations/${organizationSlug}/settings`),
+      disabled: !isMember,
+    },
+    {
+      label: app.organizationPage.header.cta.viewProjects.label,
+      icon: HiOutlineFolder,
+      onClick: () => router.push(`/organizations/${organizationSlug}/projects`),
+      disabled: isMember,
     },
   ];
 
   return (
     <SectionContainer
-      title={app.organizationPage.management.title}
-      description={app.organizationPage.management.description}
+      title={
+        isMember ? managementDetails.title.member : managementDetails.title.anon
+      }
+      description={
+        isMember
+          ? managementDetails.description.member
+          : managementDetails.description.anon
+      }
     >
       <Grid gap={4}>
         {ORGANIZATION_ACTIONS.filter(({ disabled }) => !disabled).map(

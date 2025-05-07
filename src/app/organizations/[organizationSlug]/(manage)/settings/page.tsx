@@ -15,6 +15,7 @@ import {
   enableJoinOrganizationFlag,
   enableOwnershipTransferFlag,
 } from "lib/flags";
+import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -53,6 +54,15 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
+
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user.rowId!,
+    organizationId: organization.rowId,
+  });
+
+  if (!memberByUserIdAndOrganizationId) notFound();
 
   const queryClient = getQueryClient();
 

@@ -439,8 +439,14 @@ const app = {
       },
     },
     management: {
-      title: "Organization Management",
-      description: "Manage your organization details, members, and more",
+      title: {
+        member: "Organization Management",
+        anon: "Organization Details",
+      },
+      description: {
+        member: "Manage organization details, members, and more",
+        anon: "View organization members and projects",
+      },
       cta: {
         manageTeam: {
           label: "Members",

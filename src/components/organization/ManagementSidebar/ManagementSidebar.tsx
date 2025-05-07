@@ -10,7 +10,7 @@ import {
 } from "@omnidev/sigil";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useLocalStorage } from "usehooks-ts";
+import { useIsClient, useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ManagementNavigation } from "components/organization";
@@ -30,6 +30,8 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   const isLargeViewport = useViewportSize({
     minWidth: token("breakpoints.lg"),
   });
+
+  const isClient = useIsClient();
 
   const segment = useSelectedLayoutSegment();
 
@@ -79,6 +81,8 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   ];
 
   const isOpen = isLargeViewport ? isSidebarOpen : isDrawerOpen;
+
+  if (!isClient) return null;
 
   return (
     <>
