@@ -286,6 +286,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
             h={12}
             w="full"
             bgGradient="mask"
+            pointerEvents="none"
           />
         )}
       </Stack>

@@ -111,6 +111,7 @@ const RecentFeedback = () => {
               h={16}
               w="full"
               bgGradient="mask"
+              pointerEvents="none"
             />
           )}
         </Stack>

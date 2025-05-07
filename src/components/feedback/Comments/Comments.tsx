@@ -151,6 +151,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
             h={12}
             w="full"
             bgGradient="mask"
+            pointerEvents="none"
           />
         )}
       </Stack>
