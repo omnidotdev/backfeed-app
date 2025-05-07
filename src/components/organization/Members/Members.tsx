@@ -93,9 +93,10 @@ const Members = ({ organizationId }: Props) => {
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
-            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
+                // TODO: Update Sigil component to support icon toggling in checkbox
                 pointerEvents: "none",
               },
             }}
@@ -130,9 +131,10 @@ const Members = ({ organizationId }: Props) => {
             controlProps={{
               display: isOwner ? "flex" : "none",
             }}
-            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
+                // TODO: Update Sigil component to support icon toggling in checkbox
                 pointerEvents: "none",
               },
             }}

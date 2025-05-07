@@ -1,11 +1,11 @@
 "use client";
 
-import { Box, Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -38,7 +38,6 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
-        pageSize: 5,
         feedbackId,
       },
       {
@@ -103,7 +102,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="sm" overflow="auto" scrollbar="hidden">
+          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
@@ -145,16 +144,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
           </Grid>
         )}
 
-        {!!allComments.length && (
-          <Box
-            position="absolute"
-            bottom={0}
-            h={12}
-            w="full"
-            bgGradient="mask"
-            pointerEvents="none"
-          />
-        )}
+        {!!allComments.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );

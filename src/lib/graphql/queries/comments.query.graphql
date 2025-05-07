@@ -1,4 +1,4 @@
-query Comments($pageSize: Int!, $after: Cursor, $feedbackId: UUID!) {
+query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after

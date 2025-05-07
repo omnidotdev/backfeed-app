@@ -1,9 +1,9 @@
 "use client";
 
-import { Box, Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { Link, SkeletonArray, Spinner } from "components/core";
+import { GradientMask, Link, SkeletonArray, Spinner } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
@@ -52,7 +52,6 @@ const RecentFeedback = () => {
       maxH="xl"
       contentProps={{
         overflow: "auto",
-        p: 2,
         scrollbar: "hidden",
       }}
     >
@@ -69,14 +68,9 @@ const RecentFeedback = () => {
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
-            <VStack>
+            <VStack gap={0} p={1}>
               {recentFeedback?.map((feedback) => (
-                <Flex
-                  key={feedback?.rowId}
-                  direction="column"
-                  w="full"
-                  _last={{ pb: 2 }}
-                >
+                <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
                     href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
                   >
@@ -85,7 +79,7 @@ const RecentFeedback = () => {
                       p={2}
                       _hover={{
                         bgColor: "background.muted/40",
-                        borderRadius: "md",
+                        borderRadius: "sm",
                       }}
                     />
                   </Link>
@@ -109,16 +103,7 @@ const RecentFeedback = () => {
             />
           )}
 
-          {!!recentFeedback.length && (
-            <Box
-              position="absolute"
-              bottom={0}
-              h={12}
-              w="full"
-              bgGradient="mask"
-              pointerEvents="none"
-            />
-          )}
+          {!!recentFeedback.length && <GradientMask bottom={0} />}
         </Stack>
       )}
     </FeedbackSection>

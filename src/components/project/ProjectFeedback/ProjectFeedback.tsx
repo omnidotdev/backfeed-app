@@ -1,24 +1,13 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import {
-  Box,
-  Button,
-  Grid,
-  Icon,
-  Input,
-  Select,
-  Stack,
-  Text,
-  VStack,
-} from "@omnidev/sigil";
+import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -90,7 +79,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfinitePostsQuery(
       {
-        pageSize: 5,
         projectId,
         excludedStatuses,
         orderBy: orderBy
@@ -133,8 +121,14 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         upvotes: {
           totalCount: 0,
         },
+        userUpvotes: {
+          nodes: [],
+        },
         downvotes: {
           totalCount: 0,
+        },
+        userDownvotes: {
+          nodes: [],
         },
       };
     },
@@ -236,7 +230,15 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
+          <Grid
+            gap={2}
+            mt={4}
+            maxH="md"
+            overflow="auto"
+            scrollbar="hidden"
+            // NB: the padding is necessary to prevent clipping of the card borders/box shadows
+            p="1px"
+          >
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
             ) : allPosts.length ? (
@@ -249,8 +251,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       key={feedback?.rowId}
                       canManageStatus={isAdmin}
                       feedback={feedback!}
-                      totalUpvotes={feedback?.upvotes?.totalCount}
-                      totalDownvotes={feedback?.downvotes?.totalCount}
                       projectStatuses={projectStatuses}
                       isPending={isPending}
                       w="full"
@@ -258,7 +258,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       borderRadius="md"
                       bgColor="card-item"
                       cursor={isPending ? "not-allowed" : "pointer"}
-                      role="group"
+                      _hover={{ boxShadow: "card" }}
                       onClick={() =>
                         !isPending
                           ? router.push(
@@ -266,22 +266,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                             )
                           : undefined
                       }
-                    >
-                      <Button
-                        position="absolute"
-                        top={1}
-                        right={1}
-                        p={2}
-                        variant="icon"
-                        color={{
-                          base: "foreground.muted",
-                          _groupHover: "brand.primary",
-                        }}
-                        bgColor="transparent"
-                      >
-                        <Icon src={FiArrowUpRight} w={5} h={5} />
-                      </Button>
-                    </FeedbackCard>
+                    />
                   );
                 })}
 
@@ -302,16 +287,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           </Grid>
         )}
 
-        {!!allPosts.length && (
-          <Box
-            position="absolute"
-            bottom={0}
-            h={12}
-            w="full"
-            bgGradient="mask"
-            pointerEvents="none"
-          />
-        )}
+        {!!allPosts.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );

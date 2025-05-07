@@ -16,6 +16,7 @@ import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { StatusBadge } from "components/core";
+import { VotingButtons } from "components/feedback";
 import {
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
@@ -49,10 +50,6 @@ interface Props extends HstackProps {
   canManageStatus: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
-  /** Total number of upvotes. */
-  totalUpvotes: number | undefined;
-  /** Total number of downvotes. */
-  totalDownvotes: number | undefined;
   /** Whether the feedback is pending. */
   isPending?: boolean;
   /** Project status options. */
@@ -65,11 +62,8 @@ interface Props extends HstackProps {
 const FeedbackCard = ({
   canManageStatus,
   feedback,
-  totalUpvotes = 0,
-  totalDownvotes = 0,
   isPending = false,
   projectStatuses,
-  children,
   ...rest
 }: Props) => {
   const { isStatusMenuOpen, setIsStatusMenuOpen } = useStatusMenuStore(
@@ -91,7 +85,6 @@ const FeedbackCard = ({
         ) as FeedbackByIdQuery;
 
         const postsQueryKey = useInfinitePostsQuery.getKey({
-          pageSize: 5,
           projectId: feedback.project?.rowId!,
           excludedStatuses,
           orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
@@ -168,6 +161,11 @@ const FeedbackCard = ({
         ]),
     });
 
+  const userUpvote = feedback?.userUpvotes?.nodes[0],
+    userDownvote = feedback?.userDownvotes?.nodes[0],
+    totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
+    totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
+
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
   const netVotesColor = match(netTotalVotes)
@@ -204,7 +202,8 @@ const FeedbackCard = ({
               fontWeight="semibold"
               fontSize="lg"
               lineHeight={1}
-              maxW="50svw"
+              // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
+              maxW={{ base: "40svw", xl: "xl" }}
             >
               {feedback.title}
             </Text>
@@ -220,7 +219,14 @@ const FeedbackCard = ({
             </HStack>
           </Stack>
 
-          {children}
+          <VotingButtons
+            feedbackId={feedback.rowId!}
+            projectId={feedback?.project?.rowId!}
+            upvote={userUpvote}
+            downvote={userDownvote}
+            totalUpvotes={totalUpvotes}
+            totalDownvotes={totalDownvotes}
+          />
         </HStack>
 
         <Text wordBreak="break-word" color="foreground.muted">
