@@ -74,6 +74,10 @@ export const middleware = auth(async (request) => {
 
   // Redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
   if (request.nextUrl.pathname.startsWith("/confirmation")) {
+    if (!request.auth) {
+      return redirect(request);
+    }
+
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth?.user?.hidraId}/subscription`,
     );
