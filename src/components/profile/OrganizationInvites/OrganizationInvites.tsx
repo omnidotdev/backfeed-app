@@ -71,9 +71,10 @@ const OrganizationInvites = ({ email }: Props) => {
                 app.profileInvitationsPage.table.headers.organizationName
               )
             }
-            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
+                // TODO: Update Sigil component to support icon toggling in checkbox
                 pointerEvents: "none",
               },
             }}
@@ -98,9 +99,10 @@ const OrganizationInvites = ({ email }: Props) => {
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
             }}
-            // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
+                // TODO: Update Sigil component to support icon toggling in checkbox
                 pointerEvents: "none",
               },
             }}

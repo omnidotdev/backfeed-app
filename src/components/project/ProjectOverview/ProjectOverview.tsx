@@ -12,13 +12,16 @@ import {
 import { useProjectMetricsQuery } from "generated/graphql";
 
 import type { Project } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Project ID. */
   projectId: Project["rowId"];
 }
 
-const ProjectOverview = ({ projectId }: Props) => {
+const ProjectOverview = ({ user, projectId }: Props) => {
   // TODO: look into optimistic updates. Unnecessary for now, but would be nice for synchronous feedback with the details component. See: https://github.com/omnidotdev/backfeed-app/pull/58#issuecomment-2593070248 for more context.
   const { data, isLoading, isError } = useProjectMetricsQuery(
     {
@@ -40,7 +43,7 @@ const ProjectOverview = ({ projectId }: Props) => {
   return (
     <Grid columns={{ lg: 3 }} gap={6}>
       <GridItem colSpan={{ lg: 2 }}>
-        <ProjectFeedback projectId={projectId} />
+        <ProjectFeedback user={user} projectId={projectId} />
       </GridItem>
 
       <GridItem>

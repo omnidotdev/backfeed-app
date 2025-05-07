@@ -62,7 +62,7 @@ const useSidebarNavigationItems = () => {
         organizationId: organization?.rowId ?? "",
       },
       {
-        enabled: isAuthenticated && !!projectSlug,
+        enabled: isAuthenticated && !!projectSlug && !!organization,
         select: (data) => data?.projectBySlugAndOrganizationId,
       },
     );

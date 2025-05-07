@@ -5,7 +5,7 @@ import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { SkeletonArray, Spinner } from "components/core";
+import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
@@ -13,7 +13,6 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 import type {
   CommentFragment,
@@ -21,8 +20,11 @@ import type {
   Organization,
   Post,
 } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Feedback ID. */
@@ -32,13 +34,10 @@ interface Props {
 /**
  * Feedback comments section.
  */
-const Comments = ({ organizationId, feedbackId }: Props) => {
-  const { user } = useAuth();
-
+const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteCommentsQuery(
       {
-        pageSize: 5,
         feedbackId,
       },
       {
@@ -96,24 +95,14 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
-      <Stack>
+      {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
+      <Stack position="relative" mb="1px">
         <CreateComment />
 
         {isError ? (
-          <ErrorBoundary message="Error fetching comments" h="xs" />
+          <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          // NB: the padding is necessary to prevent clipping of the card borders/box shadows
-          <Grid
-            gap={2}
-            mt={4}
-            maxH="sm"
-            overflow="auto"
-            p="1px"
-            scrollbar="hidden"
-            WebkitMaskImage={
-              allComments?.length ? "var(--scrollable-mask)" : undefined
-            }
-          >
+          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
@@ -124,6 +113,7 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
                   return (
                     <CommentCard
                       key={comment?.rowId}
+                      user={user}
                       organizationId={organizationId}
                       commentId={comment?.rowId!}
                       senderName={comment?.user?.username}
@@ -153,6 +143,8 @@ const Comments = ({ organizationId, feedbackId }: Props) => {
             )}
           </Grid>
         )}
+
+        {!!allComments.length && <GradientMask bottom={0} />}
       </Stack>
     </SectionContainer>
   );

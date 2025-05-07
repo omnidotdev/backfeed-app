@@ -101,8 +101,8 @@ const FeedbackPage = async ({ params }: Props) => {
         ]
       : []),
     queryClient.prefetchInfiniteQuery({
-      queryKey: useInfiniteCommentsQuery.getKey({ pageSize: 5, feedbackId }),
-      queryFn: useCommentsQuery.fetcher({ pageSize: 5, feedbackId }),
+      queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
+      queryFn: useCommentsQuery.fetcher({ feedbackId }),
       initialPageParam: undefined,
     }),
   ]);
@@ -110,9 +110,12 @@ const FeedbackPage = async ({ params }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page breadcrumbs={breadcrumbs}>
-        <FeedbackDetails feedbackId={feedbackId} />
+        {/* TODO: fix type for user, should be optional now */}
+        <FeedbackDetails user={session?.user!} feedbackId={feedbackId} />
 
         <Comments
+          // TODO: fix type for user, should be optional now
+          user={session?.user!}
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
         />

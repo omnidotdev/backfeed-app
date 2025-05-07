@@ -49,7 +49,6 @@ const CreateComment = () => {
 
       return queryClient.invalidateQueries({
         queryKey: useInfiniteCommentsQuery.getKey({
-          pageSize: 5,
           feedbackId,
         }),
       });

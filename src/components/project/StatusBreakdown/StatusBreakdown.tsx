@@ -88,10 +88,13 @@ const StatusBreakdown = ({ projectId }: Props) => {
                     });
               }}
               size="sm"
-              // @ts-ignore TODO: Update Sigil component to support icon toggling in checkbox
+              // @ts-ignore TODO: Update Sigil component to remove required `src` prop
               iconProps={{
                 style: {
+                  // TODO: Update Sigil component to support icon toggling in checkbox
                   pointerEvents: "none",
+                  height: 12,
+                  width: 12,
                 },
               }}
             />

@@ -16,17 +16,24 @@ import { LuCheck, LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { StatusBadge } from "components/core";
+import { VotingButtons } from "components/feedback";
 import {
   useFeedbackByIdQuery,
+  useInfinitePostsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
 } from "generated/graphql";
+import { useSearchParams } from "lib/hooks";
+import { useStatusMenuStore } from "lib/hooks/store";
 
 import type { HstackProps } from "@omnidev/sigil";
+import type { InfiniteData } from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
+  PostOrderBy,
   PostStatus,
+  PostsQuery,
 } from "generated/graphql";
 
 interface ProjectStatus {
@@ -39,12 +46,10 @@ interface ProjectStatus {
 }
 
 interface Props extends HstackProps {
+  /** Whether the user has permission to manage statuses. */
+  canManageStatus: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
-  /** Total number of upvotes. */
-  totalUpvotes: number | undefined;
-  /** Total number of downvotes. */
-  totalDownvotes: number | undefined;
   /** Whether the feedback is pending. */
   isPending?: boolean;
   /** Project status options. */
@@ -55,47 +60,93 @@ interface Props extends HstackProps {
  * Feedback card.
  */
 const FeedbackCard = ({
+  canManageStatus,
   feedback,
-  totalUpvotes = 0,
-  totalDownvotes = 0,
   isPending = false,
   projectStatuses,
-  children,
   ...rest
 }: Props) => {
-  const queryClient = useQueryClient();
+  const { isStatusMenuOpen, setIsStatusMenuOpen } = useStatusMenuStore(
+    ({ isStatusMenuOpen, setIsStatusMenuOpen }) => ({
+      isStatusMenuOpen,
+      setIsStatusMenuOpen,
+    }),
+  );
 
-  const canManageStatus = projectStatuses != null;
+  const [{ excludedStatuses, orderBy, search }] = useSearchParams();
+
+  const queryClient = useQueryClient();
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
       onMutate: (variables) => {
-        const snapshot = queryClient.getQueryData(
+        const feedbackSnapshot = queryClient.getQueryData(
           useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
         ) as FeedbackByIdQuery;
+
+        const postsQueryKey = useInfinitePostsQuery.getKey({
+          projectId: feedback.project?.rowId!,
+          excludedStatuses,
+          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+          search,
+        });
+
+        const postsSnapshot = queryClient.getQueryData(
+          postsQueryKey,
+        ) as InfiniteData<PostsQuery>;
 
         const updatedStatus = projectStatuses?.find(
           (status) => status.rowId === variables.patch.statusId,
         );
 
-        queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
-          {
-            post: {
-              ...snapshot?.post,
-              statusId: variables.patch.statusId,
-              statusUpdatedAt: variables.patch.statusUpdatedAt,
-              status: {
-                ...snapshot.post?.status,
-                status: updatedStatus?.status,
-                color: updatedStatus?.color,
+        if (feedbackSnapshot) {
+          queryClient.setQueryData(
+            useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+            {
+              post: {
+                ...feedbackSnapshot.post,
+                statusId: variables.patch.statusId,
+                statusUpdatedAt: variables.patch.statusUpdatedAt,
+                status: {
+                  ...feedbackSnapshot.post?.status,
+                  status: updatedStatus?.status,
+                  color: updatedStatus?.color,
+                },
               },
             },
-          },
-        );
+          );
+        }
+
+        if (postsSnapshot) {
+          queryClient.setQueryData(postsQueryKey, {
+            ...postsSnapshot,
+            pages: postsSnapshot.pages.map((page) => ({
+              ...page,
+              posts: {
+                ...page.posts,
+                nodes: page.posts?.nodes?.map((post) => {
+                  if (post?.rowId === variables.rowId) {
+                    return {
+                      ...post,
+                      statusUpdatedAt: variables.patch.statusUpdatedAt,
+                      status: {
+                        ...post?.status,
+                        rowId: variables.patch.statusId,
+                        status: updatedStatus?.status,
+                        color: updatedStatus?.color,
+                      },
+                    };
+                  }
+
+                  return post;
+                }),
+              },
+            })),
+          });
+        }
       },
-      onSettled: async () => {
-        await Promise.all([
+      onSettled: async () =>
+        Promise.all([
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
 
           queryClient.invalidateQueries({
@@ -103,13 +154,17 @@ const FeedbackCard = ({
               projectId: feedback.project?.rowId!,
             }),
           }),
-        ]);
 
-        return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
-        });
-      },
+          queryClient.invalidateQueries({
+            queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          }),
+        ]),
     });
+
+  const userUpvote = feedback?.userUpvotes?.nodes[0],
+    userDownvote = feedback?.userDownvotes?.nodes[0],
+    totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
+    totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
@@ -138,6 +193,7 @@ const FeedbackCard = ({
       p={{ base: 4, sm: 6 }}
       opacity={isPending ? 0.5 : 1}
       {...rest}
+      onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
       <Stack w="full">
         <HStack justify="space-between">
@@ -146,7 +202,8 @@ const FeedbackCard = ({
               fontWeight="semibold"
               fontSize="lg"
               lineHeight={1}
-              maxW="50svw"
+              // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
+              maxW={{ base: "40svw", xl: "xl" }}
             >
               {feedback.title}
             </Text>
@@ -162,7 +219,14 @@ const FeedbackCard = ({
             </HStack>
           </Stack>
 
-          {children}
+          <VotingButtons
+            feedbackId={feedback.rowId!}
+            projectId={feedback?.project?.rowId!}
+            upvote={userUpvote}
+            downvote={userDownvote}
+            totalUpvotes={totalUpvotes}
+            totalDownvotes={totalDownvotes}
+          />
         </HStack>
 
         <Text wordBreak="break-word" color="foreground.muted">
@@ -173,10 +237,15 @@ const FeedbackCard = ({
           <HStack justify="space-between">
             <HStack>
               <Menu
+                onOpenChange={({ open }) =>
+                  open ? setIsStatusMenuOpen(true) : undefined
+                }
+                onExitComplete={() => setIsStatusMenuOpen(false)}
                 trigger={
                   <StatusBadge
                     status={feedback.status!}
                     cursor={canManageStatus ? "pointer" : "default"}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {canManageStatus && <Icon src={LuChevronDown} />}
                   </StatusBadge>
@@ -184,6 +253,7 @@ const FeedbackCard = ({
                 triggerProps={{
                   disabled: !canManageStatus || isUpdateStatusPending,
                 }}
+                positioning={{ strategy: "fixed" }}
               >
                 <MenuItemGroup>
                   {projectStatuses?.map((status) => (
