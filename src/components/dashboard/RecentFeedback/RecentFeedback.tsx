@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { Link, SkeletonArray } from "components/core";
+import { GradientMask, Link, SkeletonArray, Spinner } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
@@ -37,17 +38,21 @@ const RecentFeedback = () => {
       page?.posts?.edges?.map((edge) => edge?.node),
     ) ?? [];
 
+  const [loaderRef, { rootRef }] = useInfiniteScroll({
+    loading: isLoading,
+    hasNextPage: hasNextPage,
+    onLoadMore: fetchNextPage,
+    disabled: isError,
+  });
+
   return (
     <FeedbackSection
+      ref={rootRef}
       title="Recent Feedback"
       maxH="xl"
       contentProps={{
         overflow: "auto",
-        p: 2,
         scrollbar: "hidden",
-        WebkitMaskImage: recentFeedback?.length
-          ? "var(--scrollable-mask)"
-          : undefined,
       }}
     >
       {isError ? (
@@ -58,18 +63,14 @@ const RecentFeedback = () => {
           w="full"
         />
       ) : (
-        <Stack w="full" gap={2} h="full">
+        // NB: the margin is necessary to prevent clipping of the card borders/box shadows
+        <Stack w="full" gap={2} h="full" mb="1px">
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
-            <VStack>
+            <VStack gap={0} p={1}>
               {recentFeedback?.map((feedback) => (
-                <Flex
-                  key={feedback?.rowId}
-                  direction="column"
-                  w="full"
-                  _last={{ pb: 2 }}
-                >
+                <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
                     href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
                   >
@@ -78,7 +79,7 @@ const RecentFeedback = () => {
                       p={2}
                       _hover={{
                         bgColor: "background.muted/40",
-                        borderRadius: "md",
+                        borderRadius: "sm",
                       }}
                     />
                   </Link>
@@ -86,18 +87,7 @@ const RecentFeedback = () => {
               ))}
 
               {hasNextPage ? (
-                <Button
-                  variant="ghost"
-                  bgColor="transparent"
-                  color={{
-                    base: "foreground.muted",
-                    _hover: "foreground.default",
-                  }}
-                  mb={4}
-                  onClick={() => fetchNextPage()}
-                >
-                  {app.dashboardPage.recentFeedback.loadMore}
-                </Button>
+                <Spinner ref={loaderRef} my={4} />
               ) : (
                 <Text mb={4} py={2} fontSize="sm">
                   {app.dashboardPage.recentFeedback.endOf}
@@ -112,6 +102,8 @@ const RecentFeedback = () => {
               w="full"
             />
           )}
+
+          {!!recentFeedback.length && <GradientMask bottom={0} />}
         </Stack>
       )}
     </FeedbackSection>

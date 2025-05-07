@@ -560,7 +560,7 @@ export const mockCreateUserMutation = (resolver: GraphQLResponseResolver<Types.C
  * @example
  * mockCommentsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, after, feedbackId } = variables;
+ *     const { feedbackId, pageSize, after } = variables;
  *     return HttpResponse.json({
  *       data: { comments }
  *     })
@@ -602,31 +602,9 @@ export const mockDashboardAggregatesQuery = (resolver: GraphQLResponseResolver<T
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockDownvoteQuery(
- *   ({ query, variables }) => {
- *     const { userId, feedbackId } = variables;
- *     return HttpResponse.json({
- *       data: { downvoteByPostIdAndUserId }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockDownvoteQuery = (resolver: GraphQLResponseResolver<Types.DownvoteQuery, Types.DownvoteQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.DownvoteQuery, Types.DownvoteQueryVariables>(
-    'Downvote',
-    resolver,
-    options
-  )
-
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
  * mockFeedbackByIdQuery(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { rowId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { post }
  *     })
@@ -780,7 +758,7 @@ export const mockOrganizationsQuery = (resolver: GraphQLResponseResolver<Types.O
  * @example
  * mockPostsQuery(
  *   ({ query, variables }) => {
- *     const { projectId, after, pageSize, orderBy, excludedStatuses, search } = variables;
+ *     const { projectId, after, pageSize, orderBy, excludedStatuses, search, userId } = variables;
  *     return HttpResponse.json({
  *       data: { posts }
  *     })
@@ -945,28 +923,6 @@ export const mockRecentFeedbackQuery = (resolver: GraphQLResponseResolver<Types.
 export const mockStatusBreakdownQuery = (resolver: GraphQLResponseResolver<Types.StatusBreakdownQuery, Types.StatusBreakdownQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.StatusBreakdownQuery, Types.StatusBreakdownQueryVariables>(
     'StatusBreakdown',
-    resolver,
-    options
-  )
-
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockUpvoteQuery(
- *   ({ query, variables }) => {
- *     const { userId, feedbackId } = variables;
- *     return HttpResponse.json({
- *       data: { upvoteByPostIdAndUserId }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockUpvoteQuery = (resolver: GraphQLResponseResolver<Types.UpvoteQuery, Types.UpvoteQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.UpvoteQuery, Types.UpvoteQueryVariables>(
-    'Upvote',
     resolver,
     options
   )

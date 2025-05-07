@@ -9,6 +9,7 @@ import { ProjectOverview } from "components/project";
 import {
   Role,
   useInfinitePostsQuery,
+  useOrganizationRoleQuery,
   usePostsQuery,
   useProjectMetricsQuery,
   useProjectQuery,
@@ -105,14 +106,22 @@ const ProjectPage = async ({ params }: Props) => {
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
-        pageSize: 5,
         projectId: project.rowId,
       }),
       queryFn: usePostsQuery.fetcher({
-        pageSize: 5,
         projectId: project.rowId,
       }),
       initialPageParam: undefined,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: project.organization?.rowId!,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: project.organization?.rowId!,
+      }),
     }),
     queryClient.prefetchQuery({
       queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
@@ -160,7 +169,7 @@ const ProjectPage = async ({ params }: Props) => {
           ],
         }}
       >
-        <ProjectOverview projectId={project.rowId} />
+        <ProjectOverview user={session.user} projectId={project.rowId} />
       </Page>
     </HydrationBoundary>
   );

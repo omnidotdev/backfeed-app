@@ -27,7 +27,17 @@ fragment Feedback on Post {
   upvotes {
     totalCount
   }
+  userUpvotes: upvotes(condition: { userId: $userId }) {
+    nodes {
+      rowId
+    }
+  }
   downvotes {
     totalCount
+  }
+  userDownvotes: downvotes(condition: { userId: $userId }) {
+    nodes {
+      rowId
+    }
   }
 }
