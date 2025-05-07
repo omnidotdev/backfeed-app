@@ -161,8 +161,8 @@ const FeedbackCard = ({
         ]),
     });
 
-  const hasUpvoted = feedback?.userUpvotes?.nodes[0],
-    hasDownvoted = feedback?.userDownvotes?.nodes[0],
+  const userUpvote = feedback?.userUpvotes?.nodes[0],
+    userDownvote = feedback?.userDownvotes?.nodes[0],
     totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
     totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
@@ -222,8 +222,8 @@ const FeedbackCard = ({
           <VotingButtons
             feedbackId={feedback.rowId!}
             projectId={feedback?.project?.rowId!}
-            hasUpvoted={hasUpvoted}
-            hasDownvoted={hasDownvoted}
+            upvote={userUpvote}
+            downvote={userDownvote}
             totalUpvotes={totalUpvotes}
             totalDownvotes={totalDownvotes}
           />

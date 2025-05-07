@@ -32,10 +32,10 @@ interface Props {
   feedbackId: Post["rowId"];
   /** Project ID. */
   projectId: Project["rowId"];
-  /* Whether the user has upvoted the feedback. */
-  hasUpvoted: Partial<Upvote> | null | undefined;
-  /* Whether the user has downvoted the feedback. */
-  hasDownvoted: Partial<Downvote> | null | undefined;
+  /** Upvote object. Used to determine if the user has already upvoted */
+  upvote: Partial<Upvote> | null | undefined;
+  /** Downvote object. Used to determine if the user has already downvoted */
+  downvote: Partial<Downvote> | null | undefined;
   /** Total number of upvotes. */
   totalUpvotes: number;
   /** Total number of downvotes. */
@@ -45,23 +45,23 @@ interface Props {
 const VotingButtons = ({
   feedbackId,
   projectId,
-  hasUpvoted,
-  hasDownvoted,
+  upvote,
+  downvote,
   totalUpvotes,
   totalDownvotes,
 }: Props) => {
   const { mutate: handleUpvote } = useHandleUpvoteMutation({
     feedbackId,
     projectId,
-    upvote: hasUpvoted,
-    downvote: hasDownvoted,
+    upvote,
+    downvote,
   });
 
   const { mutate: handleDownvote } = useHandleDownvoteMutation({
     feedbackId,
     projectId,
-    upvote: hasUpvoted,
-    downvote: hasDownvoted,
+    upvote,
+    downvote,
   });
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
@@ -69,7 +69,7 @@ const VotingButtons = ({
       id: "upvote",
       votes: totalUpvotes,
       tooltip: app.feedbackPage.details.upvote,
-      icon: hasUpvoted ? PiArrowFatLineUpFill : PiArrowFatLineUp,
+      icon: upvote ? PiArrowFatLineUpFill : PiArrowFatLineUp,
       color: "brand.tertiary",
       onClick: (e) => {
         e.stopPropagation();
@@ -80,7 +80,7 @@ const VotingButtons = ({
       id: "downvote",
       votes: totalDownvotes,
       tooltip: app.feedbackPage.details.downvote,
-      icon: hasDownvoted ? PiArrowFatLineDownFill : PiArrowFatLineDown,
+      icon: downvote ? PiArrowFatLineDownFill : PiArrowFatLineDown,
       color: "brand.quinary",
       onClick: (e) => {
         e.stopPropagation();
