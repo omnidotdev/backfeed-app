@@ -25,7 +25,7 @@ interface Action extends ButtonProps {
 interface Props {
   /** Authenticated user. */
   user: Session["user"] | undefined;
-  /** organization ID. */
+  /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Whether the user has admin privileges for the organization. */
   hasAdminPrivileges: boolean;
