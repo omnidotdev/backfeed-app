@@ -1,7 +1,15 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
+import {
+  Divider,
+  Grid,
+  Input,
+  Select,
+  Stack,
+  Text,
+  VStack,
+} from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -198,6 +206,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
         <CreateFeedback />
+
+        <Divider mt={4} />
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
           <Input
