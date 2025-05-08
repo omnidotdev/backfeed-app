@@ -71,13 +71,6 @@ const VotingButtons = ({
     )
     .otherwise(() => "brand.quinary");
 
-  const netVotesSign = match(netTotalVotes)
-    .when(
-      (net) => net > 0,
-      () => "+",
-    )
-    .otherwise(() => "");
-
   return (
     <HStack gap={1} justify="center" placeSelf="flex-start" mr={-2.5} mt={-2}>
       <Tooltip
@@ -108,7 +101,7 @@ const VotingButtons = ({
         whiteSpace="nowrap"
         fontVariant="tabular-nums"
       >
-        {`${netVotesSign}${netTotalVotes}`}
+        {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
       </Text>
 
       <Tooltip
