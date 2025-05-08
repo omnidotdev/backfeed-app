@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox, Flex, HStack, Text } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
+import { useDebounceCallback } from "usehooks-ts";
 
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
@@ -10,9 +10,20 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
 
-import type { Project } from "generated/graphql";
+import type { CheckboxCheckedChangeDetails } from "@ark-ui/react";
+import type { PostStatus, Project } from "generated/graphql";
+
+interface Status {
+  /** Feedback status ID. */
+  rowId: PostStatus["rowId"] | undefined;
+  /** Feedback status. */
+  status: PostStatus["status"] | undefined;
+  /* Feedback status color. */
+  color: PostStatus["color"];
+}
 
 interface Props {
   /** Project ID. */
@@ -23,9 +34,26 @@ interface Props {
  * Feedback status breakdown for a project.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
-  const queryClient = useQueryClient();
-
   const [{ excludedStatuses }, setSearchParams] = useSearchParams();
+
+  const handleToggleStatus = useDebounceCallback(
+    ({ checked }: CheckboxCheckedChangeDetails, status: Status) => {
+      // NB: we must filter the statuses regardless of checked status to prevent adding duplicates of the same status to the search params.
+      const filteredStatuses = excludedStatuses.filter(
+        (s) => s !== status?.status!,
+      );
+
+      checked
+        ? setSearchParams({
+            excludedStatuses: filteredStatuses,
+          })
+        : setSearchParams({
+            // NB: the sort method is used to stabilize the array order. This helps with query key management to avoid having multiple keys that point to the same data
+            excludedStatuses: [...filteredStatuses, status?.status!].sort(),
+          });
+    },
+    DEBOUNCE_TIME,
+  );
 
   const { data: projectStatuses } = useProjectStatusesQuery(
     {
@@ -69,24 +97,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
           <HStack>
             <Checkbox
               defaultChecked={!excludedStatuses.includes(status?.status!)}
-              onCheckedChange={({ checked }) => {
-                queryClient.invalidateQueries(
-                  {
-                    queryKey: ["Posts.infinite"],
-                  },
-                  { cancelRefetch: false },
-                );
-
-                checked
-                  ? setSearchParams({
-                      excludedStatuses: excludedStatuses.filter(
-                        (s) => s !== status?.status!,
-                      ),
-                    })
-                  : setSearchParams({
-                      excludedStatuses: [...excludedStatuses, status?.status!],
-                    });
-              }}
+              onCheckedChange={(details) => handleToggleStatus(details, status)}
               size="sm"
               // @ts-ignore TODO: Update Sigil component to remove required `src` prop
               iconProps={{
