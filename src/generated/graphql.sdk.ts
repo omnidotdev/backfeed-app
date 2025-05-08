@@ -76,8 +76,13 @@ export type BooleanFilter = {
 
 export type Comment = {
   __typename?: 'Comment';
+  /** Reads and enables pagination through a set of `Comment`. */
+  childComments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   message?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `Comment` that is related to this `Comment`. */
+  parent?: Maybe<Comment>;
+  parentId?: Maybe<Scalars['UUID']['output']>;
   /** Reads a single `Post` that is related to this `Comment`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
@@ -86,6 +91,18 @@ export type Comment = {
   /** Reads a single `User` that is related to this `Comment`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
+};
+
+
+export type CommentChildCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
 };
 
 export type CommentAggregates = {
@@ -109,6 +126,8 @@ export type CommentCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `message` field. */
   message?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `parentId` field. */
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `postId` field. */
   postId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -146,6 +165,7 @@ export type CommentConnectionGroupedAggregatesArgs = {
 export type CommentDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   message?: InputMaybe<BigIntFilter>;
+  parentId?: InputMaybe<BigIntFilter>;
   postId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
@@ -158,6 +178,8 @@ export type CommentDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of message across the matching connection */
   message?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of parentId across the matching connection */
+  parentId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of postId across the matching connection */
   postId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -181,6 +203,10 @@ export type CommentEdge = {
 export type CommentFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `childComments` relation. */
+  childComments?: InputMaybe<CommentToManyCommentFilter>;
+  /** Some related `childComments` exist. */
+  childCommentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `message` field. */
@@ -189,6 +215,12 @@ export type CommentFilter = {
   not?: InputMaybe<CommentFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `parent` relation. */
+  parent?: InputMaybe<CommentFilter>;
+  /** A related `parent` exists. */
+  parentExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `parentId` field. */
+  parentId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `post` relation. */
   post?: InputMaybe<PostFilter>;
   /** Filter by the object’s `postId` field. */
@@ -209,6 +241,7 @@ export enum CommentGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Message = 'MESSAGE',
+  ParentId = 'PARENT_ID',
   PostId = 'POST_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -280,6 +313,7 @@ export type CommentHavingVarianceSampleInput = {
 export type CommentInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   message?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   postId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -288,11 +322,29 @@ export type CommentInput = {
 
 /** Methods to use when ordering `Comment`. */
 export enum CommentOrderBy {
+  ChildCommentsCountAsc = 'CHILD_COMMENTS_COUNT_ASC',
+  ChildCommentsCountDesc = 'CHILD_COMMENTS_COUNT_DESC',
+  ChildCommentsDistinctCountCreatedAtAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChildCommentsDistinctCountCreatedAtDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChildCommentsDistinctCountMessageAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  ChildCommentsDistinctCountMessageDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  ChildCommentsDistinctCountParentIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  ChildCommentsDistinctCountParentIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
+  ChildCommentsDistinctCountPostIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  ChildCommentsDistinctCountPostIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  ChildCommentsDistinctCountRowIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChildCommentsDistinctCountRowIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChildCommentsDistinctCountUpdatedAtAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChildCommentsDistinctCountUpdatedAtDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ChildCommentsDistinctCountUserIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  ChildCommentsDistinctCountUserIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   MessageAsc = 'MESSAGE_ASC',
   MessageDesc = 'MESSAGE_DESC',
   Natural = 'NATURAL',
+  ParentIdAsc = 'PARENT_ID_ASC',
+  ParentIdDesc = 'PARENT_ID_DESC',
   PostIdAsc = 'POST_ID_ASC',
   PostIdDesc = 'POST_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
@@ -309,10 +361,23 @@ export enum CommentOrderBy {
 export type CommentPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   message?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   postId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type CommentToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
 };
 
 /** All input for the create `Comment` mutation. */
@@ -2597,6 +2662,8 @@ export enum PostOrderBy {
   CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
   CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
   CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountParentIdAsc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  CommentsDistinctCountParentIdDesc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
   CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
   CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
   CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -4757,6 +4824,8 @@ export enum UserOrderBy {
   CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
   CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
   CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountParentIdAsc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  CommentsDistinctCountParentIdDesc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
   CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
   CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
   CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
