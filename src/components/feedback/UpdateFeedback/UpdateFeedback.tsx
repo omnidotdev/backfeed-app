@@ -1,0 +1,199 @@
+"use client";
+
+import { Dialog, Icon, Stack, sigil, useDisclosure } from "@omnidev/sigil";
+import { useStore } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { useIsClient } from "usehooks-ts";
+import { z } from "zod";
+
+import { CharacterLimit } from "components/core";
+import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
+import { token } from "generated/panda/tokens";
+import { app } from "lib/config";
+import { DEBOUNCE_TIME, standardRegexSchema } from "lib/constants";
+import { useForm, useViewportSize } from "lib/hooks";
+import { toaster } from "lib/util";
+
+import type { FeedbackFragment } from "generated/graphql";
+import { FiEdit } from "react-icons/fi";
+
+const MAX_DESCRIPTION_LENGTH = 500;
+
+const updateFeedbackDetails = app.projectPage.projectFeedback.updateFeedback;
+
+// TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
+
+/** Schema for defining the shape of the update feedback form fields, as well as validating the form. */
+const updateFeedbackSchema = z.object({
+  title: standardRegexSchema
+    .min(3, updateFeedbackDetails.errors.title.minLength)
+    .max(90, updateFeedbackDetails.errors.title.maxLength),
+  description: z
+    .string()
+    .trim()
+    .min(10, updateFeedbackDetails.errors.description.minLength)
+    .max(
+      MAX_DESCRIPTION_LENGTH,
+      updateFeedbackDetails.errors.description.maxLength,
+    ),
+});
+
+interface Props {
+  /** Feedback details. */
+  feedback: Partial<FeedbackFragment>;
+}
+
+/**
+ * Update feedback form.
+ */
+const UpdateFeedback = ({ feedback }: Props) => {
+  const queryClient = useQueryClient();
+
+  const isClient = useIsClient();
+
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
+
+  const { isOpen, onClose, onToggle } = useDisclosure();
+
+  const { mutateAsync: updateFeedback, isPending } = useUpdatePostMutation({
+    onSettled: async () => {
+      reset();
+
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["Posts.infinite"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+        }),
+      ]);
+    },
+    onSuccess: () => {
+      reset();
+      onClose();
+    },
+  });
+
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
+    {
+      defaultValues: {
+        title: feedback.title ?? "",
+        description: feedback.description ?? "",
+      },
+      asyncDebounceMs: DEBOUNCE_TIME,
+      validators: {
+        onSubmitAsync: updateFeedbackSchema,
+      },
+      onSubmit: async ({ value }) =>
+        toaster.promise(
+          updateFeedback({
+            rowId: feedback.rowId!,
+            patch: {
+              title: value.title,
+              description: value.description,
+              updatedAt: new Date(),
+            },
+          }),
+          updateFeedbackDetails.action,
+        ),
+    },
+  );
+
+  const descriptionLength = useStore(
+    store,
+    (store) => store.values.description.length,
+  );
+
+  if (!isClient) return null;
+
+  return (
+    <Dialog
+      title="Update Feedback"
+      open={isOpen}
+      onOpenChange={() => {
+        reset();
+        onToggle();
+      }}
+      trigger={
+        <Icon
+          cursor="pointer"
+          color="brand.senary"
+          src={FiEdit}
+          h={4.5}
+          w={4.5}
+        />
+      }
+      triggerProps={{
+        onClick: (e) => e.stopPropagation(),
+      }}
+      // TODO: adjust minW upstream in Sigil for mobile viewports
+      contentProps={{
+        onClick: (e) => e.stopPropagation(),
+        style: {
+          minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          cursor: "default",
+        },
+      }}
+    >
+      <sigil.form
+        display="flex"
+        flexDirection="column"
+        gap={2}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await handleSubmit();
+        }}
+      >
+        <AppField name="title">
+          {({ InputField }) => (
+            <InputField
+              label={app.projectPage.projectFeedback.feedbackTitle.label}
+              placeholder={
+                app.projectPage.projectFeedback.feedbackTitle.placeholder
+              }
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </AppField>
+
+        <AppField name="description">
+          {({ TextareaField }) => (
+            <TextareaField
+              label={app.projectPage.projectFeedback.feedbackDescription.label}
+              placeholder={
+                app.projectPage.projectFeedback.feedbackDescription.placeholder
+              }
+              rows={5}
+              minH={32}
+              maxLength={MAX_DESCRIPTION_LENGTH}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </AppField>
+
+        <Stack justify="space-between" direction="row">
+          <CharacterLimit
+            value={descriptionLength}
+            max={MAX_DESCRIPTION_LENGTH}
+            placeSelf="flex-start"
+          />
+
+          <AppForm>
+            <SubmitForm
+              action={updateFeedbackDetails.action}
+              isPending={isPending}
+              w="fit-content"
+              placeSelf="flex-end"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </AppForm>
+        </Stack>
+      </sigil.form>
+    </Dialog>
+  );
+};
+
+export default UpdateFeedback;

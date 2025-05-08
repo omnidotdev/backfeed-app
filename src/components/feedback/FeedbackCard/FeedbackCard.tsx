@@ -12,10 +12,11 @@ import {
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useParams, useRouter } from "next/navigation";
 import { LuCheck, LuChevronDown, LuMessageCircle } from "react-icons/lu";
 
 import { DestructiveAction, StatusBadge } from "components/core";
-import { VotingButtons } from "components/feedback";
+import { UpdateFeedback, VotingButtons } from "components/feedback";
 import {
   useDeletePostMutation,
   useFeedbackByIdQuery,
@@ -36,7 +37,6 @@ import type {
   PostsQuery,
 } from "generated/graphql";
 import type { Session } from "next-auth";
-import { useParams, useRouter } from "next/navigation";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -309,23 +309,27 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <HStack gap={1}>
+            <HStack>
               {isAuthor && (
-                <DestructiveAction
-                  title="Delete Feedback"
-                  description="Are you sure you want to delete this feedback?"
-                  action={{
-                    label: "Delete",
-                    onClick: () => deleteFeedback({ postId: feedback.rowId! }),
-                  }}
-                  triggerProps={{
-                    "aria-label": "Delete Feedback",
-                    color: "omni.ruby",
-                    backgroundColor: "transparent",
-                    // disabled: actionIsPending,
-                    onClick: (e) => e.stopPropagation(),
-                  }}
-                />
+                <HStack>
+                  <UpdateFeedback feedback={feedback} />
+
+                  <DestructiveAction
+                    title="Delete Feedback"
+                    description="Are you sure you want to delete this feedback?"
+                    action={{
+                      label: "Delete",
+                      onClick: () =>
+                        deleteFeedback({ postId: feedback.rowId! }),
+                    }}
+                    triggerProps={{
+                      "aria-label": "Delete Feedback",
+                      color: "omni.ruby",
+                      backgroundColor: "transparent",
+                      onClick: (e) => e.stopPropagation(),
+                    }}
+                  />
+                </HStack>
               )}
 
               <HStack color="foreground.subtle" gap={1}>

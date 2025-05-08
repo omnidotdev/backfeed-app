@@ -940,6 +940,34 @@ const app = {
           },
         },
       },
+      updateFeedback: {
+        errors: {
+          invalid: "Invalid format",
+          title: {
+            minLength: "Must be at least 3 characters.",
+            maxLength: "Must be at most 90 characters.",
+          },
+          description: {
+            minLength: "Must be at least 10 characters.",
+            maxLength: "Must be at most 500 characters.",
+          },
+        },
+        action: {
+          loading: {
+            title: "Updating...",
+          },
+          pending: "Updating...",
+          submit: "Update",
+          success: {
+            title: "Success!",
+            description: "Your feedback has been successfully updated.",
+          },
+          error: {
+            title: "Error",
+            description: "An error occurred while updating your feedback.",
+          },
+        },
+      },
       action: {
         pending: "Submitting...",
         submit: "Submit",
