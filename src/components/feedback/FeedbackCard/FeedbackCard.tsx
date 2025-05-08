@@ -322,7 +322,7 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <HStack>
+            <HStack mr={-2}>
               {isAuthor && (
                 <HStack>
                   <UpdateFeedback feedback={feedback} />
@@ -337,6 +337,7 @@ const FeedbackCard = ({
                     }}
                     triggerProps={{
                       "aria-label": "Delete Feedback",
+                      p: 0,
                       color: "omni.ruby",
                       backgroundColor: "transparent",
                       disabled: feedback.rowId === "pending",
@@ -346,7 +347,7 @@ const FeedbackCard = ({
                 </HStack>
               )}
 
-              <HStack color="foreground.subtle" gap={1}>
+              <HStack color="foreground.subtle" gap={1} h={10} w={10} ml={2}>
                 <Icon src={LuMessageCircle} h={4.5} w={4.5} />
                 {feedback.comments?.totalCount}
               </HStack>

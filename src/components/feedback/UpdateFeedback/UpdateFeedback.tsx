@@ -1,6 +1,13 @@
 "use client";
 
-import { Dialog, Icon, Stack, sigil, useDisclosure } from "@omnidev/sigil";
+import {
+  Button,
+  Dialog,
+  Icon,
+  Stack,
+  sigil,
+  useDisclosure,
+} from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsClient } from "usehooks-ts";
@@ -117,23 +124,25 @@ const UpdateFeedback = ({ feedback }: Props) => {
         onToggle();
       }}
       trigger={
-        <Icon
-          cursor="pointer"
-          color="brand.senary"
-          src={FiEdit}
-          h={4.5}
-          w={4.5}
-        />
+        <Button variant="ghost" bgColor="transparent" p={0}>
+          <Icon
+            cursor="pointer"
+            color="brand.senary"
+            src={FiEdit}
+            h={4.5}
+            w={4.5}
+          />
+        </Button>
       }
       triggerProps={{
         disabled: feedback.rowId === "pending",
         onClick: (e) => e.stopPropagation(),
       }}
-      // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         // NB: `onClick` and `cursor` are to change behavior due to render of dialog being scope to an individual feedback card.
         onClick: (e) => e.stopPropagation(),
         style: {
+          // TODO: adjust minW upstream in Sigil for mobile viewports
           minWidth: isSmallViewport ? token("sizes.md") : "80%",
           cursor: "default",
         },
