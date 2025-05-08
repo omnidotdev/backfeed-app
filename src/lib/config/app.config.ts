@@ -442,8 +442,14 @@ const app = {
       },
     },
     management: {
-      title: "Organization Management",
-      description: "Manage your organization details, members, and more",
+      title: {
+        member: "Organization Management",
+        anon: "Organization Details",
+      },
+      description: {
+        member: "Manage organization details, members, and more",
+        anon: "View organization members and projects",
+      },
       cta: {
         manageTeam: {
           label: "Members",
@@ -574,12 +580,6 @@ const app = {
           description: "Are you sure you want to leave this organization?",
           actionLabel: "Leave",
         },
-      },
-      joinOrganization: {
-        title: "Join Organization",
-        description:
-          "You will be able to collaborate with other members of this organization.",
-        actionLabel: "Join",
       },
     },
   },

@@ -15,6 +15,7 @@ import {
   Role,
   useOrganizationMetricsQuery,
   useOrganizationQuery,
+  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
 import { getOrganization } from "lib/actions";
@@ -111,6 +112,20 @@ const OrganizationPage = async ({ params }: Props) => {
         organizationId: organization.rowId,
       }),
     }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
@@ -158,7 +173,11 @@ const OrganizationPage = async ({ params }: Props) => {
         <Grid columns={{ base: 1, md: 2 }} gap={6}>
           <OrganizationMetrics organizationId={organization.rowId} />
 
-          <OrganizationManagement hasAdminPrivileges={hasAdminPrivileges} />
+          <OrganizationManagement
+            user={session?.user}
+            organizationId={organization.rowId}
+            hasAdminPrivileges={hasAdminPrivileges}
+          />
         </Grid>
 
         {/* dialogs */}

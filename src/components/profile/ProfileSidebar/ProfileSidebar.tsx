@@ -10,7 +10,7 @@ import {
 } from "@omnidev/sigil";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useLocalStorage } from "usehooks-ts";
+import { useIsClient, useLocalStorage } from "usehooks-ts";
 
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
@@ -35,6 +35,8 @@ const ProfileSidebar = ({ user, children }: Props) => {
     minWidth: token("breakpoints.lg"),
   });
   const segment = useSelectedLayoutSegment();
+
+  const isClient = useIsClient();
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "profile-management-sidebar",
@@ -63,6 +65,8 @@ const ProfileSidebar = ({ user, children }: Props) => {
   ];
 
   const isOpen = isLargeViewport ? isSidebarOpen : isDrawerOpen;
+
+  if (!isClient) return null;
 
   return (
     <>

@@ -53,7 +53,7 @@ const ManagementNavigation = ({
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
 
-  const { isAdmin } = useOrganizationMembership({
+  const { isMember, isAdmin } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId,
   });
@@ -83,6 +83,7 @@ const ManagementNavigation = ({
         onClose?.();
         router.push(`/organizations/${organizationSlug}/settings`);
       },
+      disabled: !isMember,
     },
   ];
 
