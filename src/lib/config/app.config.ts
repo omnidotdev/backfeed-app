@@ -608,18 +608,18 @@ const app = {
         },
         toast: {
           loading: {
-            title: "Sending invite link...",
+            title: "Sending invite links...",
           },
           success: {
             title: "Success!",
-            description: "Your invite link has been sent!",
+            description: "Your invite links have been sent!",
           },
           errors: {
             title: "Error",
-            default: "Failed to send invite.",
+            default: "Failed to send invite(s).",
             currentOwner: "You're already a member.",
-            duplicateInvite: "Invite already sent to this email.",
-            currentMember: "User is already a member.",
+            duplicateInvite: "Invite already sent to an email provided.",
+            currentMember: "A user is already a member.",
           },
         },
         emailTemplate: {

@@ -1,6 +1,8 @@
 "use client";
 
 import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
+import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
+import ms from "ms";
 import { z } from "zod";
 
 import { FormFieldError } from "components/form";
@@ -9,7 +11,7 @@ import {
   useInvitationsQuery,
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
-import { app, isDevEnv } from "lib/config";
+import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
@@ -43,6 +45,7 @@ const invitesSchema = z.object({
   invites: z.array(baseSchema).min(1),
 });
 
+// TODO: consider providing clarity for which email(s) throw a validation error. Must be cautious of error message length, or adjust accordingly
 /** Schema for validation of the invite member form. */
 const createInvitationsSchema = invitesSchema.superRefine(
   async ({ invites }, ctx) => {
@@ -114,6 +117,13 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     type: DialogType.InviteMember,
   });
 
+  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
+  const queuer = useAsyncQueuer({
+    concurrency: 2,
+    started: false,
+    wait: ms("1s"),
+  });
+
   const queryClient = getQueryClient();
 
   const onSettled = () =>
@@ -130,6 +140,45 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       setIsOpen(false);
     },
   });
+
+  const sendInvite = async (invite: Invite) => {
+    try {
+      const [sendEmailResponse] = await Promise.all([
+        fetch("/api/invite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            inviterEmail: invite.inviterEmail,
+            inviterUsername: invite.inviterUsername,
+            recipientEmail: invite.email,
+            organizationName,
+          }),
+        }),
+        inviteToOrganization({
+          input: {
+            invitation: {
+              email: invite.email,
+              organizationId,
+            },
+          },
+        }),
+      ]);
+
+      if (!sendEmailResponse.ok) {
+        throw new Error(
+          `${inviteMemberDetails.toast.errors.default} to ${invite.email}`,
+        );
+      }
+    } catch (error) {
+      toaster.error({
+        title: inviteMemberDetails.toast.errors.title,
+        description:
+          error instanceof Error && error.message
+            ? error.message
+            : inviteMemberDetails.toast.errors.default,
+      });
+    }
+  };
 
   const { handleSubmit, Field, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
@@ -150,46 +199,12 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     onSubmit: async ({ value }) => {
       toaster.promise(
         async () => {
-          const sendInvite = async (invite: Invite) => {
-            const [sendEmailResponse] = await Promise.all([
-              fetch("/api/invite", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  inviterEmail: invite.inviterEmail,
-                  inviterUsername: invite.inviterUsername,
-                  recipientEmail: invite.email,
-                  organizationName,
-                }),
-              }),
-              inviteToOrganization({
-                input: {
-                  invitation: {
-                    email: invite.email,
-                    organizationId,
-                  },
-                },
-              }),
-            ]);
+          value.invites.map((invite) =>
+            queuer.addItem(() => sendInvite(invite)),
+          );
 
-            if (!sendEmailResponse.ok) {
-              throw new Error(inviteMemberDetails.toast.errors.default);
-            }
-          };
-
-          try {
-            // TODO: run these through a tanstack pacer queue. Resend default rate limit is 2 requests per second.
-            await Promise.all(
-              value.invites.map((invite) => sendInvite(invite)),
-            );
-
-            reset();
-          } catch (error) {
-            if (isDevEnv) {
-              console.error("Error sending email:", error);
-            }
-            throw error;
-          }
+          await queuer.start();
+          reset();
         },
         {
           loading: {
