@@ -45,7 +45,8 @@ const StatusBreakdown = ({ projectId }: Props) => {
             excludedStatuses: filteredStatuses,
           })
         : setSearchParams({
-            excludedStatuses: [...filteredStatuses, status?.status!],
+            // NB: the sort method is used to stabilize the array order. This helps with query key management to avoid having multiple keys that point to the same data
+            excludedStatuses: [...filteredStatuses, status?.status!].sort(),
           });
     },
     DEBOUNCE_TIME,
