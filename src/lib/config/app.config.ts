@@ -616,7 +616,7 @@ const app = {
           },
           errors: {
             title: "Error",
-            default: "Failed to send invite(s).",
+            default: "Failed to send invite(s)",
             currentOwner: "You're already a member.",
             duplicateInvite: "Invite already sent to an email provided.",
             currentMember: "A user is already a member.",

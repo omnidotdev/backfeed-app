@@ -3,6 +3,7 @@
 import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import ms from "ms";
+import { useRef } from "react";
 import { z } from "zod";
 
 import { FormFieldError } from "components/form";
@@ -11,7 +12,7 @@ import {
   useInvitationsQuery,
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
@@ -24,13 +25,6 @@ import type { Organization } from "generated/graphql";
 
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
-interface Props {
-  /** Organization name. */
-  organizationName: Organization["name"];
-  /** Organization ID. */
-  organizationId: Organization["rowId"];
-}
-
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
   email: z.string().email().trim(),
@@ -39,8 +33,10 @@ const baseSchema = z.object({
   inviterUsername: z.string().trim(),
 });
 
+/** Inferred type of a singular invite. */
 type Invite = z.infer<typeof baseSchema>;
 
+/** Schema for defining the shape of the invites array. */
 const invitesSchema = z.object({
   invites: z.array(baseSchema).min(1),
 });
@@ -107,7 +103,16 @@ const createInvitationsSchema = invitesSchema.superRefine(
   },
 );
 
+interface Props {
+  /** Organization name. */
+  organizationName: Organization["name"];
+  /** Organization ID. */
+  organizationId: Organization["rowId"];
+}
+
 const InviteMember = ({ organizationName, organizationId }: Props) => {
+  const toastId = useRef<string>(undefined);
+
   const { user } = useAuth();
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
@@ -126,24 +131,33 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
 
   const queryClient = getQueryClient();
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useInvitationsQuery.getKey({
-        organizationId,
-      }),
-    });
-
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
-    onSettled,
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: useInvitationsQuery.getKey({
+          organizationId,
+        }),
+      }),
     onSuccess: () => {
-      reset();
-      setIsOpen(false);
+      // Wait until the queue is done processing all requests
+      if (!queuer.getPendingItems().length) {
+        reset();
+        setIsOpen(false);
+
+        if (toastId.current) {
+          toaster.update(toastId.current, {
+            title: inviteMemberDetails.toast.success.title,
+            description: inviteMemberDetails.toast.success.description,
+            type: "success",
+          });
+        }
+      }
     },
   });
 
   const sendInvite = async (invite: Invite) => {
     try {
-      const [sendEmailResponse] = await Promise.all([
+      const responses = await Promise.allSettled([
         fetch("/api/invite", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -164,19 +178,19 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
         }),
       ]);
 
-      if (!sendEmailResponse.ok) {
-        throw new Error(
-          `${inviteMemberDetails.toast.errors.default} to ${invite.email}`,
-        );
+      if (!responses.every((res) => res.status === "fulfilled")) {
+        if (toastId.current) {
+          toaster.update(toastId.current, {
+            title: inviteMemberDetails.toast.errors.title,
+            description: `${inviteMemberDetails.toast.errors.default} to ${invite.email}`,
+            type: "error",
+          });
+        }
       }
     } catch (error) {
-      toaster.error({
-        title: inviteMemberDetails.toast.errors.title,
-        description:
-          error instanceof Error && error.message
-            ? error.message
-            : inviteMemberDetails.toast.errors.default,
-      });
+      if (isDevEnv) {
+        console.error(error);
+      }
     }
   };
 
@@ -197,34 +211,29 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       onSubmitAsync: createInvitationsSchema,
     },
     onSubmit: async ({ value }) => {
-      toaster.promise(
-        async () => {
-          value.invites.map((invite) =>
-            queuer.addItem(() => sendInvite(invite)),
-          );
+      toastId.current = toaster.create({
+        title: inviteMemberDetails.toast.loading.title,
+        type: "loading",
+      });
 
-          await queuer.start();
-          reset();
-        },
-        {
-          loading: {
-            title: inviteMemberDetails.toast.loading.title,
-          },
-          success: {
-            title: inviteMemberDetails.toast.success.title,
-            description: inviteMemberDetails.toast.success.description,
-          },
-          error: (error) => {
-            return {
-              title: inviteMemberDetails.toast.errors.title,
-              description:
-                error instanceof Error && error.message
-                  ? error.message
-                  : inviteMemberDetails.toast.errors.default,
-            };
-          },
-        },
-      );
+      try {
+        value.invites.map((invite) =>
+          queuer.addItem(async () => await sendInvite(invite)),
+        );
+
+        await queuer.start();
+      } catch (error) {
+        if (toastId.current) {
+          toaster.update(toastId.current, {
+            title: inviteMemberDetails.toast.errors.title,
+            description:
+              error instanceof Error && error.message
+                ? error.message
+                : inviteMemberDetails.toast.errors.default,
+            type: "error",
+          });
+        }
+      }
     },
   });
 
