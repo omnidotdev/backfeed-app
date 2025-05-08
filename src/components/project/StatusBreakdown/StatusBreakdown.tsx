@@ -1,7 +1,6 @@
 "use client";
 
 import { Checkbox, Flex, HStack, Text } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { StatusBadge } from "components/core";
@@ -32,8 +31,6 @@ interface Props {
  * Feedback status breakdown for a project.
  */
 const StatusBreakdown = ({ projectId }: Props) => {
-  const queryClient = useQueryClient();
-
   const [{ excludedStatuses }, setSearchParams] = useSearchParams();
 
   const handleToggleStatus = useDebounceCallback(
@@ -41,13 +38,6 @@ const StatusBreakdown = ({ projectId }: Props) => {
       // NB: we must filter the statuses regardless of checked status to prevent adding duplicates of the same status to the search params.
       const filteredStatuses = excludedStatuses.filter(
         (s) => s !== status?.status!,
-      );
-
-      queryClient.invalidateQueries(
-        {
-          queryKey: ["Posts.infinite"],
-        },
-        { cancelRefetch: false },
       );
 
       checked
