@@ -130,6 +130,7 @@ const UpdateFeedback = ({ feedback }: Props) => {
       }}
       // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
+        // NB: `onClick` and `cursor` are to change behavior due to render of dialog being scope to an individual feedback card.
         onClick: (e) => e.stopPropagation(),
         style: {
           minWidth: isSmallViewport ? token("sizes.md") : "80%",
