@@ -248,7 +248,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       <sigil.form
         display="flex"
         flexDirection="column"
-        gap={4}
+        gap={8}
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -288,12 +288,9 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                   )
                 }
                 borderColor="border.subtle"
-                controlProps={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
                 inputProps={{
                   placeholder: "hello@omni.dev",
+                  w: "full",
                 }}
               />
 
