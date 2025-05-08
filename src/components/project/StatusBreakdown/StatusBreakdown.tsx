@@ -14,12 +14,15 @@ import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
 
 import type { CheckboxCheckedChangeDetails } from "@ark-ui/react";
-import type { Project } from "generated/graphql";
+import type { PostStatus, Project } from "generated/graphql";
 
 interface Status {
-  rowId: string | undefined;
-  status: string | undefined;
-  color: string | null | undefined;
+  /** Feedback status ID. */
+  rowId: PostStatus["rowId"];
+  /** Feedback status. */
+  status: PostStatus["status"];
+  /* Feedback status color. */
+  color: PostStatus["color"];
 }
 
 interface Props {
