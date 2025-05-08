@@ -18,9 +18,9 @@ import type { PostStatus, Project } from "generated/graphql";
 
 interface Status {
   /** Feedback status ID. */
-  rowId: PostStatus["rowId"];
+  rowId: PostStatus["rowId"] | undefined;
   /** Feedback status. */
-  status: PostStatus["status"];
+  status: PostStatus["status"] | undefined;
   /* Feedback status color. */
   color: PostStatus["color"];
 }
