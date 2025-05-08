@@ -1,10 +1,9 @@
 import { useDebounceCallback } from "usehooks-ts";
 
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
 
 import type { ChangeEvent } from "react";
-
-const DEFAULT_DELAY = 300;
 
 interface Options {
   /** Debounce delay in milliseconds. */
@@ -14,7 +13,7 @@ interface Options {
 /**
  * Custom hook for handling search input with debounce functionality. Updates search parameters based on user input.
  */
-const useHandleSearch = ({ delay = DEFAULT_DELAY }: Options = {}) => {
+const useHandleSearch = ({ delay = DEBOUNCE_TIME }: Options = {}) => {
   const [, setSearchParams] = useSearchParams();
 
   return useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
