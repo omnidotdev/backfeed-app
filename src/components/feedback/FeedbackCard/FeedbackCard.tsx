@@ -21,6 +21,7 @@ import {
   useDeletePostMutation,
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
+  useProjectMetricsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
 } from "generated/graphql";
@@ -97,7 +98,19 @@ const FeedbackCard = ({
 
   const { mutate: deleteFeedback } = useDeletePostMutation({
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+        queryClient.invalidateQueries({
+          queryKey: useStatusBreakdownQuery.getKey({
+            projectId: feedback.project?.rowId!,
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: useProjectMetricsQuery.getKey({
+            projectId: feedback.project?.rowId!,
+          }),
+        }),
+      ]),
     onSuccess: () => {
       if (isFeedbackRoute) {
         router.replace(
@@ -326,6 +339,7 @@ const FeedbackCard = ({
                       "aria-label": "Delete Feedback",
                       color: "omni.ruby",
                       backgroundColor: "transparent",
+                      disabled: feedback.rowId === "pending",
                       onClick: (e) => e.stopPropagation(),
                     }}
                   />

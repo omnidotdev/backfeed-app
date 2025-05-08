@@ -126,6 +126,7 @@ const UpdateFeedback = ({ feedback }: Props) => {
         />
       }
       triggerProps={{
+        disabled: feedback.rowId === "pending",
         onClick: (e) => e.stopPropagation(),
       }}
       // TODO: adjust minW upstream in Sigil for mobile viewports
