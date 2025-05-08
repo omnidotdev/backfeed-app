@@ -1,8 +1,9 @@
 "use client";
 
-import { Dialog, sigil } from "@omnidev/sigil";
+import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
 import { z } from "zod";
 
+import { FormFieldError } from "components/form";
 import {
   useCreateInvitationMutation,
   useInvitationsQuery,
@@ -36,60 +37,70 @@ const baseSchema = z.object({
   inviterUsername: z.string().trim(),
 });
 
+type Invite = z.infer<typeof baseSchema>;
+
+const invitesSchema = z.object({
+  invites: z.array(baseSchema).min(1),
+});
+
 /** Schema for validation of the invite member form. */
-const createInvitationSchema = baseSchema.superRefine(
-  async ({ email, organizationId }, ctx) => {
+const createInvitationsSchema = invitesSchema.superRefine(
+  async ({ invites }, ctx) => {
     const session = await getAuthSession();
 
-    if (!email.length || !session) return z.NEVER;
+    if (!invites.length || !session) return z.NEVER;
 
     const sdk = getSdk({ session });
 
-    // Prevent self-invitation
-    if (email === session.user.email) {
-      ctx.addIssue({
-        code: "custom",
-        message: inviteMemberDetails.toast.errors.currentOwner,
-        path: ["email"],
-      });
-    }
+    const validateInvite = async ({ email, organizationId }: Invite) => {
+      // Prevent self-invitation
+      if (email === session.user.email) {
+        ctx.addIssue({
+          code: "custom",
+          message: inviteMemberDetails.toast.errors.currentOwner,
+          path: ["invites"],
+        });
+      }
 
-    // Check if an invitation has already been sent
-    const { invitations } = await sdk.Invitations({
-      email,
-      organizationId,
-    });
-
-    if (invitations?.nodes.length) {
-      ctx.addIssue({
-        code: "custom",
-        message: inviteMemberDetails.toast.errors.duplicateInvite,
-        path: ["email"],
-      });
-    }
-
-    // Check if recipient is already a registered user
-    const { userByEmail } = await sdk.userByEmail({
-      email,
-    });
-
-    const userId = userByEmail?.rowId;
-
-    // If user exists, check organization membership
-    if (userId) {
-      const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-        userId,
+      // Check if an invitation has already been sent
+      const { invitations } = await sdk.Invitations({
+        email,
         organizationId,
       });
 
-      if (memberByUserIdAndOrganizationId) {
+      if (invitations?.nodes.length) {
         ctx.addIssue({
           code: "custom",
-          message: inviteMemberDetails.toast.errors.currentMember,
-          path: ["email"],
+          message: inviteMemberDetails.toast.errors.duplicateInvite,
+          path: ["invites"],
         });
       }
-    }
+
+      // Check if recipient is already a registered user
+      const { userByEmail } = await sdk.userByEmail({
+        email,
+      });
+
+      const userId = userByEmail?.rowId;
+
+      // If user exists, check organization membership
+      if (userId) {
+        const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+          userId,
+          organizationId,
+        });
+
+        if (memberByUserIdAndOrganizationId) {
+          ctx.addIssue({
+            code: "custom",
+            message: inviteMemberDetails.toast.errors.currentMember,
+            path: ["invites"],
+          });
+        }
+      }
+    };
+
+    await Promise.all(invites.map((invite) => validateInvite(invite)));
   },
 );
 
@@ -120,37 +131,41 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     },
   });
 
-  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
+  const { handleSubmit, Field, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      email: "",
-      organizationId,
-      inviterEmail: user?.email ?? "",
-      inviterUsername: user?.name ?? "",
+      invites: [
+        {
+          email: "",
+          organizationId,
+          inviterEmail: user?.email ?? "",
+          inviterUsername: user?.name ?? "",
+        },
+      ],
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
-      onChange: baseSchema,
-      onSubmitAsync: createInvitationSchema,
+      onChange: invitesSchema,
+      onSubmitAsync: createInvitationsSchema,
     },
     onSubmit: async ({ value }) => {
       toaster.promise(
         async () => {
-          try {
+          const sendInvite = async (invite: Invite) => {
             const [sendEmailResponse] = await Promise.all([
               fetch("/api/invite", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  inviterEmail: value.inviterEmail,
-                  inviterUsername: value.inviterUsername,
-                  recipientEmail: value.email,
+                  inviterEmail: invite.inviterEmail,
+                  inviterUsername: invite.inviterUsername,
+                  recipientEmail: invite.email,
                   organizationName,
                 }),
               }),
               inviteToOrganization({
                 input: {
                   invitation: {
-                    email: value.email,
+                    email: invite.email,
                     organizationId,
                   },
                 },
@@ -160,6 +175,13 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
             if (!sendEmailResponse.ok) {
               throw new Error(inviteMemberDetails.toast.errors.default);
             }
+          };
+
+          try {
+            // TODO: run these through a tanstack pacer queue. Resend default rate limit is 2 requests per second.
+            await Promise.all(
+              value.invites.map((invite) => sendInvite(invite)),
+            );
 
             reset();
           } catch (error) {
@@ -204,6 +226,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       contentProps={{
         style: {
           minWidth: isSmallViewport ? undefined : "80%",
+          maxWidth: token("sizes.md"),
         },
       }}
     >
@@ -217,14 +240,52 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           await handleSubmit();
         }}
       >
-        <AppField name="email">
-          {({ InputField }) => (
-            <InputField
-              label={inviteMemberDetails.form.email.label}
-              placeholder={inviteMemberDetails.form.email.placeholder}
-            />
+        <Field name="invites">
+          {({ state, handleChange }) => (
+            <Stack position="relative" gap={1.5}>
+              <TagsInput
+                label="Emails"
+                addOnPaste
+                delimiter=","
+                validate={(details) => {
+                  const emails = details.inputValue.split(",");
+
+                  return (
+                    !emails.some((email) => details.value.includes(email)) &&
+                    emails.every(
+                      (email) =>
+                        baseSchema.shape.email.safeParse(email).success,
+                    )
+                  );
+                }}
+                value={state.value
+                  // NB: the filter is simply here to remove the default value when email is still an empty string
+                  .filter((invite) => !!invite.email)
+                  .map((invite) => invite.email)}
+                onValueChange={({ value }) =>
+                  handleChange(
+                    value.map((email) => ({
+                      email,
+                      organizationId,
+                      inviterEmail: user?.email ?? "",
+                      inviterUsername: user?.name ?? "",
+                    })),
+                  )
+                }
+                borderColor="border.subtle"
+                controlProps={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+                inputProps={{
+                  placeholder: "hello@omni.dev",
+                }}
+              />
+
+              <FormFieldError errors={state.meta.errorMap.onSubmit} />
+            </Stack>
           )}
-        </AppField>
+        </Field>
 
         <AppForm>
           <SubmitForm action={inviteMemberDetails.form} flex={{ sm: 1 }} />

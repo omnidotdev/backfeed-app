@@ -595,16 +595,16 @@ const app = {
     },
     cta: {
       inviteMember: {
-        title: "Invite Member",
-        description: "Invite a new member to your organization.",
+        title: "Invite Members",
+        description:
+          "Invite new members to your organization. Enter emails individually, or paste comma separated emails.",
         form: {
           email: {
             label: "Email",
             placeholder: "hello@omni.dev",
           },
-          submit: "Invite Member",
-          pending: "Inviting Member...",
-          cancel: "Cancel",
+          submit: "Invite Members",
+          pending: "Inviting Members...",
         },
         toast: {
           loading: {
