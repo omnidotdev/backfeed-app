@@ -94,13 +94,17 @@ const DestructiveAction = ({
         ? inputValue !== destructiveInput || action.disabled
         : action.disabled,
       onClick: (e) => {
+        e.stopPropagation();
         action.onClick?.(e);
         onClose();
       },
     },
     {
       label: app.actions.cancel.label,
-      onClick: onClose,
+      onClick: (e) => {
+        e.stopPropagation();
+        onClose();
+      },
       variant: "outline",
     },
   ];
