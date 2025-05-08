@@ -41,7 +41,6 @@ const invitesSchema = z.object({
   invites: z.array(baseSchema).min(1),
 });
 
-// TODO: consider providing clarity for which email(s) throw a validation error. Must be cautious of error message length, or adjust accordingly
 /** Schema for validation of the invite member form. */
 const createInvitationsSchema = invitesSchema.superRefine(
   async ({ invites }, ctx) => {
