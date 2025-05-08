@@ -12,8 +12,7 @@ import {
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { LuCheck, LuChevronDown } from "react-icons/lu";
-import { match } from "ts-pattern";
+import { LuCheck, LuChevronDown, LuMessageCircle } from "react-icons/lu";
 
 import { StatusBadge } from "components/core";
 import { VotingButtons } from "components/feedback";
@@ -166,24 +165,6 @@ const FeedbackCard = ({
     totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
     totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
-  const netTotalVotes = totalUpvotes - totalDownvotes;
-
-  const netVotesColor = match(netTotalVotes)
-    .with(0, () => "gray.400")
-    .when(
-      (net) => net > 0,
-      () => "brand.tertiary",
-    )
-    .otherwise(() => "brand.quinary");
-
-  const netVotesSign = match(netTotalVotes)
-    .with(0, () => "+/- ")
-    .when(
-      (net) => net > 0,
-      () => "+",
-    )
-    .otherwise(() => "");
-
   return (
     <HStack
       position="relative"
@@ -295,13 +276,10 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <Text
-              color={netVotesColor}
-              whiteSpace="nowrap"
-              placeSelf="flex-start"
-            >
-              {`${netVotesSign}${netTotalVotes}`}
-            </Text>
+            <HStack color="foreground.subtle">
+              <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+              {feedback.comments?.totalCount}
+            </HStack>
           </HStack>
         </Stack>
       </Stack>

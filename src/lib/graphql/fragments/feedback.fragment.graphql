@@ -24,6 +24,9 @@ fragment Feedback on Post {
   user {
     username
   }
+  comments {
+    totalCount
+  }
   upvotes {
     totalCount
   }
