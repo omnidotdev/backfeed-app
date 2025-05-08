@@ -2,6 +2,7 @@
 
 import { Checkbox, Flex, HStack, Text } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDebounceCallback } from "usehooks-ts";
 
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
@@ -10,9 +11,17 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
 
+import type { CheckboxCheckedChangeDetails } from "@ark-ui/react";
 import type { Project } from "generated/graphql";
+
+interface Status {
+  rowId: string | undefined;
+  status: string | undefined;
+  color: string | null | undefined;
+}
 
 interface Props {
   /** Project ID. */
@@ -26,6 +35,31 @@ const StatusBreakdown = ({ projectId }: Props) => {
   const queryClient = useQueryClient();
 
   const [{ excludedStatuses }, setSearchParams] = useSearchParams();
+
+  const handleToggleStatus = useDebounceCallback(
+    ({ checked }: CheckboxCheckedChangeDetails, status: Status) => {
+      // NB: we must filter the statuses regardless of checked status to prevent adding duplicates of the same status to the search params.
+      const filteredStatuses = excludedStatuses.filter(
+        (s) => s !== status?.status!,
+      );
+
+      queryClient.invalidateQueries(
+        {
+          queryKey: ["Posts.infinite"],
+        },
+        { cancelRefetch: false },
+      );
+
+      checked
+        ? setSearchParams({
+            excludedStatuses: filteredStatuses,
+          })
+        : setSearchParams({
+            excludedStatuses: [...filteredStatuses, status?.status!],
+          });
+    },
+    DEBOUNCE_TIME,
+  );
 
   const { data: projectStatuses } = useProjectStatusesQuery(
     {
@@ -69,24 +103,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
           <HStack>
             <Checkbox
               defaultChecked={!excludedStatuses.includes(status?.status!)}
-              onCheckedChange={({ checked }) => {
-                queryClient.invalidateQueries(
-                  {
-                    queryKey: ["Posts.infinite"],
-                  },
-                  { cancelRefetch: false },
-                );
-
-                checked
-                  ? setSearchParams({
-                      excludedStatuses: excludedStatuses.filter(
-                        (s) => s !== status?.status!,
-                      ),
-                    })
-                  : setSearchParams({
-                      excludedStatuses: [...excludedStatuses, status?.status!],
-                    });
-              }}
+              onCheckedChange={(details) => handleToggleStatus(details, status)}
               size="sm"
               // @ts-ignore TODO: Update Sigil component to remove required `src` prop
               iconProps={{
