@@ -50,19 +50,28 @@ const VotingButtons = ({
   totalUpvotes,
   totalDownvotes,
 }: Props) => {
-  const { mutate: handleUpvote } = useHandleUpvoteMutation({
-    feedbackId,
-    projectId,
-    upvote,
-    downvote,
-  });
+  const { mutate: handleUpvote, isPending: isUpvotePending } =
+    useHandleUpvoteMutation({
+      feedbackId,
+      projectId,
+      upvote,
+      downvote,
+    });
 
-  const { mutate: handleDownvote } = useHandleDownvoteMutation({
-    feedbackId,
-    projectId,
-    upvote,
-    downvote,
-  });
+  const { mutate: handleDownvote, isPending: isDownvotePending } =
+    useHandleDownvoteMutation({
+      feedbackId,
+      projectId,
+      upvote,
+      downvote,
+    });
+
+  // NB: we set `rowId` to `pending` optimistically for these values on occasion. If an attempt at triggering a mutation happens while they are still in this state, the mutation will fail
+  const isOptimistic = [feedbackId, upvote?.rowId, downvote?.rowId].some(
+    (state) => state === "pending",
+  );
+
+  const isVotePending = isUpvotePending || isDownvotePending;
 
   const VOTE_BUTTONS: VoteButtonProps[] = [
     {
@@ -75,6 +84,7 @@ const VotingButtons = ({
         e.stopPropagation();
         handleUpvote();
       },
+      disabled: isVotePending || isOptimistic,
     },
     {
       id: "downvote",
@@ -86,6 +96,7 @@ const VotingButtons = ({
         e.stopPropagation();
         handleDownvote();
       },
+      disabled: isVotePending || isOptimistic,
     },
   ];
 
@@ -108,11 +119,6 @@ const VotingButtons = ({
           triggerProps={{
             variant: "icon",
             bgColor: "transparent",
-            opacity: {
-              base: 1,
-              _disabled: 0.3,
-              _hover: { base: 0.8, _disabled: 0.3 },
-            },
             ...rest,
           }}
         >
