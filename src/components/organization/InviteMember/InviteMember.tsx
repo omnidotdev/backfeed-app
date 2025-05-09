@@ -23,6 +23,8 @@ import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
 
+const MAX_NUMBER_OF_BULK_INVITES = 10;
+
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
 /** Schema for defining the shape of the invite member form fields. */
@@ -38,7 +40,7 @@ type Invite = z.infer<typeof baseSchema>;
 
 /** Schema for defining the shape of the invites array. */
 const invitesSchema = z.object({
-  invites: z.array(baseSchema).min(1),
+  invites: z.array(baseSchema).min(1).max(MAX_NUMBER_OF_BULK_INVITES),
 });
 
 /** Schema for validation of the invite member form. */
@@ -126,6 +128,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     concurrency: 2,
     started: false,
     wait: ms("1s"),
+    maxSize: MAX_NUMBER_OF_BULK_INVITES,
   });
 
   const queryClient = getQueryClient();
@@ -270,6 +273,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                 label="Emails"
                 addOnPaste
                 delimiter=","
+                max={MAX_NUMBER_OF_BULK_INVITES}
                 validate={(details) => {
                   const emails = details.inputValue.split(",");
 
