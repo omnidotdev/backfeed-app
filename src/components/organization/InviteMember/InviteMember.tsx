@@ -16,13 +16,14 @@ import { token } from "generated/panda/tokens";
 import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useViewportSize } from "lib/hooks";
+import { useForm, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { getQueryClient } from "lib/util";
 import { getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const MAX_NUMBER_OF_INVITES = 10;
 
@@ -106,20 +107,19 @@ const createInvitationsSchema = invitesSchema.superRefine(
 );
 
 interface Props {
+  /* Authenticated user. */
+  user: Session["user"];
   /** Organization name. */
   organizationName: Organization["name"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
 }
 
-const InviteMember = ({ organizationName, organizationId }: Props) => {
-  const [numberOfToasts, setNumberOfToasts] = useState(0);
-
+const InviteMember = ({ user, organizationName, organizationId }: Props) => {
   const toastId = useRef<string>(undefined);
 
   const [isSendingInvite, setIsSendingInvite] = useState(false);
-
-  const { user } = useAuth();
+  const [numberOfToasts, setNumberOfToasts] = useState(0);
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
   });
@@ -224,8 +224,8 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
         {
           email: "",
           organizationId,
-          inviterEmail: user?.email ?? "",
-          inviterUsername: user?.name ?? "",
+          inviterEmail: user.email ?? "",
+          inviterUsername: user.name ?? "",
         },
       ],
     },
@@ -345,8 +345,8 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                     value.map((email) => ({
                       email,
                       organizationId,
-                      inviterEmail: user?.email ?? "",
-                      inviterUsername: user?.name ?? "",
+                      inviterEmail: user.email ?? "",
+                      inviterUsername: user.name ?? "",
                     })),
                   )
                 }

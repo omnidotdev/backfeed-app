@@ -8,13 +8,15 @@ import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Whether the user has basic tier subscription permissions. */
   isBasicTier: boolean;
 }
@@ -22,9 +24,7 @@ interface Props {
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = ({ isBasicTier }: Props) => {
-  const { user } = useAuth();
-
+const PinnedOrganizations = ({ user, isBasicTier }: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -38,11 +38,10 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
-      userId: user?.rowId!,
+      userId: user.rowId!,
       isMember: true,
     },
     {
-      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.nodes,
     },
   );

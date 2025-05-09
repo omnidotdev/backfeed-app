@@ -16,9 +16,13 @@ import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
 import { ErrorBoundary } from "components/layout";
 import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
-import { useAuth, useViewportSize } from "lib/hooks";
+import { useViewportSize } from "lib/hooks";
+
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }
@@ -26,7 +30,7 @@ interface Props {
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = ({ oneWeekAgo }: Props) => {
+const FeedbackOverview = ({ user, oneWeekAgo }: Props) => {
   const isLargeViewport = useViewportSize({
     minWidth: token("breakpoints.lg"),
   });
@@ -34,19 +38,16 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
   const getFormattedDate = (diff: number) =>
     dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
-  const { user } = useAuth();
-
   const {
     data: weeklyFeedback,
     isLoading,
     isError,
   } = useWeeklyFeedbackQuery(
     {
-      userId: user?.rowId!,
+      userId: user.rowId!,
       startDate: oneWeekAgo,
     },
     {
-      enabled: !!user?.rowId,
       select: (data) =>
         data?.posts?.groupedAggregates?.map((aggregate) => ({
           name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),

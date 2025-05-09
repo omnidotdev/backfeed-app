@@ -20,10 +20,13 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+import type { Session } from "next-auth";
+
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Whether the user has basic tier subscription permissions. */
   isBasicTier: boolean;
   /** Whether the user has team tier subscription permissions. */
@@ -35,9 +38,12 @@ interface Props {
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
-  const { user, isLoading: isAuthLoading } = useAuth();
-
+const DashboardPage = ({
+  user,
+  isBasicTier,
+  isTeamTier,
+  oneWeekAgo,
+}: Props) => {
   const {
     data: dashboardAggregates,
     isLoading,
@@ -80,8 +86,6 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
     },
   ];
 
-  if (isAuthLoading) return null;
-
   return (
     <Page
       header={{
@@ -108,7 +112,7 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
         ],
       }}
     >
-      <PinnedOrganizations isBasicTier={isBasicTier} />
+      <PinnedOrganizations user={user} isBasicTier={isBasicTier} />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -124,9 +128,9 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
       </Grid>
 
       <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
-        <FeedbackOverview oneWeekAgo={oneWeekAgo} />
+        <FeedbackOverview user={user} oneWeekAgo={oneWeekAgo} />
 
-        <RecentFeedback />
+        <RecentFeedback user={user} />
       </Grid>
     </Page>
   );

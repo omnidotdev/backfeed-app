@@ -15,8 +15,11 @@ import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
 }
@@ -24,7 +27,7 @@ interface Props {
 /**
  * Project list.
  */
-const ProjectList = ({ canCreateProjects }: Props) => {
+const ProjectList = ({ user, canCreateProjects }: Props) => {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
 
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
@@ -86,7 +89,11 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     <Stack align="center" justify="space-between" h="100%">
       <Stack w="100%">
         {projects.map((project) => (
-          <ProjectListItem key={project?.rowId} project={project as Project} />
+          <ProjectListItem
+            key={project?.rowId}
+            user={user}
+            project={project as Project}
+          />
         ))}
       </Stack>
 

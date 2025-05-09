@@ -8,12 +8,16 @@ import {
 import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 import { setSingularOrPlural } from "lib/util";
 
 import type { Project } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** Project details. */
   project: Partial<Project>;
 }
 
@@ -21,10 +25,9 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
+  user,
   project: { slug, organization, name, description, posts },
 }: Props) => {
-  const { user } = useAuth();
-
   const { isAdmin } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId: organization?.rowId,

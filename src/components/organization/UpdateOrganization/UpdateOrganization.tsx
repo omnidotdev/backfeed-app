@@ -17,8 +17,10 @@ import {
   slugSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useOrganizationMembership } from "lib/hooks";
+import { useForm, useOrganizationMembership } from "lib/hooks";
 import { generateSlug, getAuthSession } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -53,16 +55,19 @@ const updateOrganizationSchema = z
     }
   });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
+}
+
 /**
  * Form for updating organization details.
  */
-const UpdateOrganization = () => {
+const UpdateOrganization = ({ user }: Props) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
-
-  const { user } = useAuth();
 
   const { data: organization } = useOrganizationQuery(
     {
@@ -74,7 +79,7 @@ const UpdateOrganization = () => {
   );
 
   const { isAdmin } = useOrganizationMembership({
-    userId: user?.rowId,
+    userId: user.rowId,
     organizationId: organization?.rowId,
   });
 

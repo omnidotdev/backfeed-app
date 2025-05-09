@@ -23,14 +23,17 @@ import { match } from "ts-pattern";
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership, useSearchParams } from "lib/hooks";
+import { useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment, Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const columnHelper = createColumnHelper<MemberFragment>();
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
 }
@@ -38,9 +41,7 @@ interface Props {
 /**
  * Organization members table.
  */
-const Members = ({ organizationId }: Props) => {
-  const { user } = useAuth();
-
+const Members = ({ user, organizationId }: Props) => {
   const { isOwner } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId,

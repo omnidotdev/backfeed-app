@@ -99,6 +99,7 @@ const HomePage = async () => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardPage
+        user={session.user}
         isBasicTier={isBasicTier}
         isTeamTier={isTeamTier}
         oneWeekAgo={oneWeekAgo}
