@@ -600,7 +600,7 @@ const app = {
           "Invite new members to your organization. Enter emails individually, or paste up to 10 comma-separated emails.",
         form: {
           email: {
-            label: "Email",
+            label: "Email(s)",
             placeholder: "hello@omni.dev",
           },
           submit: "Invite Members",

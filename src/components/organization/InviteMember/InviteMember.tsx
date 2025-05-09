@@ -270,7 +270,10 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
           {({ state, handleChange }) => (
             <Stack position="relative" gap={1.5}>
               <TagsInput
-                label="Emails"
+                label={
+                  app.organizationInvitationsPage.cta.inviteMember.form.email
+                    .label
+                }
                 addOnPaste
                 delimiter=","
                 max={MAX_NUMBER_OF_BULK_INVITES}
