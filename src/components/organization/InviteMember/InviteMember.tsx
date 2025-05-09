@@ -3,7 +3,7 @@
 import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import ms from "ms";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { FormFieldError } from "components/form";
@@ -114,6 +114,8 @@ interface Props {
 const InviteMember = ({ organizationName, organizationId }: Props) => {
   const toastId = useRef<string>(undefined);
 
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
+
   const { user } = useAuth();
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
@@ -134,12 +136,20 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
   const queryClient = getQueryClient();
 
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
-    onSettled: () =>
-      queryClient.invalidateQueries({
-        queryKey: useInvitationsQuery.getKey({
-          organizationId,
-        }),
-      }),
+    onMutate: () => {
+      if (!queuer.getPendingItems().length) {
+        setIsSendingInvite(false);
+      }
+    },
+    onSettled: () => {
+      if (!isSendingInvite) {
+        return queryClient.invalidateQueries({
+          queryKey: useInvitationsQuery.getKey({
+            organizationId,
+          }),
+        });
+      }
+    },
     onSuccess: () => {
       // Wait until the queue is done processing all requests
       if (!queuer.getPendingItems().length) {
@@ -181,6 +191,8 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       ]);
 
       if (!responses.every((res) => res.status === "fulfilled")) {
+        setIsSendingInvite(false);
+
         if (toastId.current) {
           toaster.update(toastId.current, {
             title: inviteMemberDetails.toast.errors.title,
@@ -190,6 +202,8 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
         }
       }
     } catch (error) {
+      setIsSendingInvite(false);
+
       if (isDevEnv) {
         console.error(error);
       }
@@ -213,6 +227,8 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
       onSubmitAsync: createInvitationsSchema,
     },
     onSubmit: async ({ value }) => {
+      setIsSendingInvite(true);
+
       toastId.current = toaster.create({
         title: inviteMemberDetails.toast.loading.title,
         type: "loading",
