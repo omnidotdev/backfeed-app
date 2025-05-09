@@ -8,11 +8,12 @@ import { LuSettings } from "react-icons/lu";
 
 import { OverflowText } from "components/core";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";
 import type { IconType } from "react-icons";
+import type { Session } from "next-auth";
 
 interface NavigationItem extends ButtonProps {
   /** Navigation item label. */
@@ -22,6 +23,8 @@ interface NavigationItem extends ButtonProps {
 }
 
 interface Props extends StackProps {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Organization slug. */
@@ -40,6 +43,7 @@ interface Props extends StackProps {
  * Management navigation component.
  */
 const ManagementNavigation = ({
+  user,
   organizationId,
   organizationSlug,
   organizationName,
@@ -48,8 +52,6 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { user } = useAuth();
-
   const router = useRouter(),
     segment = useSelectedLayoutSegment();
 
