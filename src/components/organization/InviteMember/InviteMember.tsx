@@ -2,6 +2,7 @@
 
 import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
+import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -112,6 +113,8 @@ interface Props {
 }
 
 const InviteMember = ({ organizationName, organizationId }: Props) => {
+  const [numberOfToasts, setNumberOfToasts] = useState(0);
+
   const toastId = useRef<string>(undefined);
 
   const [isSendingInvite, setIsSendingInvite] = useState(false);
@@ -131,6 +134,11 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     started: false,
     wait: ms("1s"),
     maxSize: MAX_NUMBER_OF_INVITES,
+  });
+
+  const rateLimiter = useRateLimiter(setNumberOfToasts, {
+    limit: 2,
+    window: ms("1s"),
   });
 
   const queryClient = getQueryClient();
@@ -298,20 +306,28 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
 
                   // fail if more than max number of invites
                   if (emails.length > MAX_NUMBER_OF_INVITES) {
-                    toaster.error({
-                      title: `${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails1} ${MAX_NUMBER_OF_INVITES} ${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails2}`,
-                    });
+                    rateLimiter.maybeExecute(numberOfToasts + 1);
+
+                    if (rateLimiter.getRemainingInWindow()) {
+                      toaster.error({
+                        title: `${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails1} ${MAX_NUMBER_OF_INVITES} ${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails2}`,
+                      });
+                    }
 
                     return false;
                   }
 
                   // fail if email that is currently being pasted or added is a duplicate
                   if (emails.some((email) => details.value.includes(email))) {
-                    toaster.error({
-                      title:
-                        app.organizationInvitationsPage.cta.inviteMember.toast
-                          .errors.alreadyInList,
-                    });
+                    rateLimiter.maybeExecute(numberOfToasts + 1);
+
+                    if (rateLimiter.getRemainingInWindow()) {
+                      toaster.error({
+                        title:
+                          app.organizationInvitationsPage.cta.inviteMember.toast
+                            .errors.alreadyInList,
+                      });
+                    }
 
                     return false;
                   }
