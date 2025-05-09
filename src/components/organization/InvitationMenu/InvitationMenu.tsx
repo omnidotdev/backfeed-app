@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
 import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
@@ -12,9 +14,12 @@ import { useAuth } from "lib/hooks";
 import { getQueryClient, toaster } from "lib/util";
 
 import type { MenuProps } from "@omnidev/sigil";
+import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import type { Row } from "@tanstack/react-table";
 import type { InvitationFragment, Organization } from "generated/graphql";
 import type { JsxStyleProps } from "generated/panda/types";
+import ms from "ms";
+import { useRef, useState } from "react";
 
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
@@ -49,93 +54,145 @@ const InvitationMenu = ({
 }: Props) => {
   const { user } = useAuth();
 
+  const toastId = useRef<string>(undefined);
+
+  const [isResending, setIsResending] = useState(false);
+
   const queryClient = getQueryClient();
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useInvitationsQuery.getKey({
-        organizationId,
-      }),
-    });
+  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
+  const queuer = useAsyncQueuer({
+    concurrency: 2,
+    started: false,
+    wait: ms("1s"),
+  });
 
   const { mutateAsync: deleteInvitation } = useDeleteInvitationMutation({
-    onSettled,
+    onSettled: () => {
+      if (!isResending) {
+        return queryClient.invalidateQueries({
+          queryKey: useInvitationsQuery.getKey({
+            organizationId,
+          }),
+        });
+      }
+    },
   });
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
-    onSettled,
+    onSettled: () => {
+      if (!queuer.getPendingItems().length) {
+        setIsResending(false);
+
+        return queryClient.invalidateQueries({
+          queryKey: useInvitationsQuery.getKey({
+            organizationId,
+          }),
+        });
+      }
+    },
+    onSuccess: () => {
+      // Wait until the queue is done processing all requests
+      if (!queuer.getPendingItems().length) {
+        if (toastId.current) {
+          toaster.update(toastId.current, {
+            title: inviteMemberDetails.toast.success.title,
+            description: inviteMemberDetails.toast.success.description,
+            type: "success",
+          });
+        }
+      }
+    },
   });
 
-  const handleMenuAction = ({ type }: { type: MenuAction }) => {
-    for (const row of selectedRows) {
-      const invitation = row.original;
+  const sendInvite = async (invitation: InvitationFragment) => {
+    try {
+      await deleteInvitation({
+        rowId: invitation.rowId,
+      });
 
-      match(type)
-        .with(MenuAction.ResendInvitation, async () => {
-          await deleteInvitation({
-            rowId: invitation.rowId,
+      const responses = await Promise.allSettled([
+        fetch("/api/invite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            inviterEmail: user?.email,
+            inviterUsername: user?.name,
+            recipientEmail: invitation.email,
+            organizationName: invitation.organization?.name,
+          }),
+        }),
+        inviteToOrganization({
+          input: {
+            invitation: {
+              email: invitation.email,
+              organizationId,
+            },
+          },
+        }),
+      ]);
+
+      if (!responses.every((res) => res.status === "fulfilled")) {
+        setIsResending(false);
+
+        if (toastId.current) {
+          toaster.update(toastId.current, {
+            title: inviteMemberDetails.toast.errors.title,
+            description: `${inviteMemberDetails.toast.errors.default} to ${invitation.email}`,
+            type: "error",
           });
+        }
+      }
+    } catch (error) {
+      setIsResending(false);
 
-          toaster.promise(
-            async () => {
-              try {
-                const [sendEmailResponse] = await Promise.all([
-                  fetch("/api/invite", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      inviterEmail: user?.email,
-                      inviterUsername: user?.name,
-                      recipientEmail: invitation.email,
-                      organizationName: invitation.organization?.name,
-                    }),
-                  }),
-                  inviteToOrganization({
-                    input: {
-                      invitation: {
-                        email: invitation.email,
-                        organizationId,
-                      },
-                    },
-                  }),
-                ]);
-
-                if (!sendEmailResponse.ok) {
-                  throw new Error(inviteMemberDetails.toast.errors.default);
-                }
-              } catch (error) {
-                if (isDevEnv) {
-                  console.error("Error resending invitation:", error);
-                }
-                throw error;
-              }
-            },
-            {
-              loading: {
-                title: inviteMemberDetails.toast.loading.title,
-              },
-              success: {
-                title: inviteMemberDetails.toast.success.title,
-                description: inviteMemberDetails.toast.success.description,
-              },
-              error: (error) => ({
-                title: inviteMemberDetails.toast.errors.title,
-                description:
-                  error instanceof Error && error.message
-                    ? error.message
-                    : inviteMemberDetails.toast.errors.default,
-              }),
-            },
-          );
-        })
-        .with(
-          MenuAction.DeclineInvitation,
-          async () =>
-            await deleteInvitation({
-              rowId: invitation.rowId,
-            }),
-        )
-        .exhaustive();
+      if (isDevEnv) {
+        console.error(error);
+      }
     }
+  };
+
+  const handleMenuAction = ({ type }: { type: MenuAction }) => {
+    match(type)
+      .with(MenuAction.ResendInvitation, async () => {
+        setIsResending(true);
+
+        toastId.current = toaster.create({
+          title: inviteMemberDetails.toast.loading.title,
+          type: "loading",
+        });
+
+        try {
+          selectedRows.map(({ original: invitation }) =>
+            queuer.addItem(async () => await sendInvite(invitation)),
+          );
+
+          await queuer.start();
+        } catch (error) {
+          if (toastId.current) {
+            toaster.update(toastId.current, {
+              title: inviteMemberDetails.toast.errors.title,
+              description:
+                error instanceof Error && error.message
+                  ? error.message
+                  : inviteMemberDetails.toast.errors.default,
+              type: "error",
+            });
+          }
+        }
+      })
+      .with(
+        MenuAction.DeclineInvitation,
+        async () =>
+          await Promise.all(
+            selectedRows.map(
+              async (row) =>
+                await deleteInvitation({
+                  rowId: row.original.rowId,
+                }),
+            ),
+          ),
+      )
+      .exhaustive();
 
     toggleRowSelection(false);
   };

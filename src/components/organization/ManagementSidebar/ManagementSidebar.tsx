@@ -21,12 +21,18 @@ import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Session } from "next-auth";
 import type { PropsWithChildren } from "react";
+
+interface Props extends PropsWithChildren {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+}
 
 /**
  * Sidebar for organization management. Used for navigation between organization management pages.
  */
-const ManagementSidebar = ({ children }: PropsWithChildren) => {
+const ManagementSidebar = ({ user, children }: Props) => {
   const isLargeViewport = useViewportSize({
     minWidth: token("breakpoints.lg"),
   });
@@ -107,6 +113,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
             gap={0}
             top="header"
             zIndex="sticky"
+            user={user}
             organizationId={organization?.rowId!}
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}
@@ -133,6 +140,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           }}
         >
           <ManagementNavigation
+            user={user}
             organizationId={organization?.rowId!}
             organizationSlug={organizationSlug}
             organizationName={organization?.name!}

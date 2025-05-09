@@ -595,31 +595,35 @@ const app = {
     },
     cta: {
       inviteMember: {
-        title: "Invite Member",
-        description: "Invite a new member to your organization.",
+        title: "Invite Members",
+        description:
+          "Invite new members to your organization. Enter emails individually, or paste up to 10 comma-separated emails.",
         form: {
           email: {
-            label: "Email",
+            label: "Email(s)",
             placeholder: "hello@omni.dev",
           },
-          submit: "Invite Member",
-          pending: "Inviting Member...",
-          cancel: "Cancel",
+          submit: "Invite Members",
+          pending: "Inviting Members...",
         },
         toast: {
           loading: {
-            title: "Sending invite link...",
+            title: "Sending invite links...",
           },
           success: {
             title: "Success!",
-            description: "Your invite link has been sent!",
+            description: "Your invite links have been sent!",
           },
           errors: {
             title: "Error",
-            default: "Failed to send invite.",
+            default: "Failed to send invite(s)",
             currentOwner: "You're already a member.",
-            duplicateInvite: "Invite already sent to this email.",
-            currentMember: "User is already a member.",
+            duplicateInvite: "Invite already sent to an email provided.",
+            currentMember: "A user is already a member.",
+            alreadyInList:
+              "At least one email entered or pasted is already in the list",
+            maxEmails1: "Please paste less than",
+            maxEmails2: "emails",
           },
         },
         emailTemplate: {
