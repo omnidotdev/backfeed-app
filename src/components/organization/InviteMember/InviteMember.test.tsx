@@ -5,7 +5,7 @@ describe.todo("invite member", () => {
     // render(<InviteMember />);
   });
 
-  it.todo("enters emails to invite");
+  it.todo("allows typing emails to invite");
 
   it.todo("allows pasting up to max number of invites");
 
