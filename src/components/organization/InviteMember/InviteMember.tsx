@@ -23,7 +23,7 @@ import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
 
-const MAX_NUMBER_OF_BULK_INVITES = 10;
+const MAX_NUMBER_OF_INVITES = 10;
 
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
@@ -40,7 +40,7 @@ type Invite = z.infer<typeof baseSchema>;
 
 /** Schema for defining the shape of the invites array. */
 const invitesSchema = z.object({
-  invites: z.array(baseSchema).min(1).max(MAX_NUMBER_OF_BULK_INVITES),
+  invites: z.array(baseSchema).min(1).max(MAX_NUMBER_OF_INVITES),
 });
 
 /** Schema for validation of the invite member form. */
@@ -128,7 +128,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
     concurrency: 2,
     started: false,
     wait: ms("1s"),
-    maxSize: MAX_NUMBER_OF_BULK_INVITES,
+    maxSize: MAX_NUMBER_OF_INVITES,
   });
 
   const queryClient = getQueryClient();
@@ -276,16 +276,32 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                 }
                 addOnPaste
                 delimiter=","
-                max={MAX_NUMBER_OF_BULK_INVITES}
+                max={MAX_NUMBER_OF_INVITES}
                 validate={(details) => {
                   const emails = details.inputValue.split(",");
 
-                  return (
-                    !emails.some((email) => details.value.includes(email)) &&
-                    emails.every(
-                      (email) =>
-                        baseSchema.shape.email.safeParse(email).success,
-                    )
+                  // fail if more than max number of invites
+                  if (emails.length > MAX_NUMBER_OF_INVITES) {
+                    toaster.error({
+                      title: `${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails1} ${MAX_NUMBER_OF_INVITES} ${app.organizationInvitationsPage.cta.inviteMember.toast.errors.maxEmails2}`,
+                    });
+
+                    return false;
+                  }
+
+                  // fail if email that is currently being pasted or added is a duplicate
+                  if (emails.some((email) => details.value.includes(email))) {
+                    toaster.error({
+                      title:
+                        app.organizationInvitationsPage.cta.inviteMember.toast
+                          .errors.alreadyInList,
+                    });
+
+                    return false;
+                  }
+
+                  return emails.every(
+                    (email) => baseSchema.shape.email.safeParse(email).success,
                   );
                 }}
                 value={state.value
@@ -308,7 +324,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                     app.organizationInvitationsPage.cta.inviteMember.form.email
                       .placeholder,
                   w: "full",
-                  disabled: state.value.length >= MAX_NUMBER_OF_BULK_INVITES,
+                  disabled: state.value.length >= MAX_NUMBER_OF_INVITES,
                 }}
               />
 

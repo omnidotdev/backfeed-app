@@ -620,6 +620,10 @@ const app = {
             currentOwner: "You're already a member.",
             duplicateInvite: "Invite already sent to an email provided.",
             currentMember: "A user is already a member.",
+            alreadyInList:
+              "At least one email entered or pasted is already in the list",
+            maxEmails1: "Please paste less than",
+            maxEmails2: "emails",
           },
         },
         emailTemplate: {
