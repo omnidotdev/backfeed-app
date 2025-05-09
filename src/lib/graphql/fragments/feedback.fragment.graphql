@@ -22,7 +22,11 @@ fragment Feedback on Post {
     color
   }
   user {
+    rowId
     username
+  }
+  comments {
+    totalCount
   }
   upvotes {
     totalCount

@@ -53,6 +53,7 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
 
   return (
     <FeedbackCard
+      user={user}
       canManageStatus={isAdmin}
       feedback={feedback!}
       projectStatuses={projectStatuses}

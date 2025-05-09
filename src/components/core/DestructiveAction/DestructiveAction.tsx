@@ -13,8 +13,11 @@ import {
 } from "@omnidev/sigil";
 import { useState } from "react";
 import { HiOutlineTrash } from "react-icons/hi2";
+import { useIsClient } from "usehooks-ts";
 
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
+import { useViewportSize } from "lib/hooks";
 
 import type {
   ButtonProps,
@@ -85,6 +88,12 @@ const DestructiveAction = ({
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
 
+  const isClient = useIsClient();
+
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
+
   const actions: Action[] = [
     {
       variant: "solid",
@@ -94,16 +103,22 @@ const DestructiveAction = ({
         ? inputValue !== destructiveInput || action.disabled
         : action.disabled,
       onClick: (e) => {
+        e.stopPropagation();
         action.onClick?.(e);
         onClose();
       },
     },
     {
       label: app.actions.cancel.label,
-      onClick: onClose,
+      onClick: (e) => {
+        e.stopPropagation();
+        onClose();
+      },
       variant: "outline",
     },
   ];
+
+  if (!isClient) return null;
 
   return (
     <Dialog
@@ -129,6 +144,15 @@ const DestructiveAction = ({
         </Button>
       }
       triggerProps={triggerProps}
+      contentProps={{
+        // NB: `onClick` and `cursor` are to change behavior due to render of dialog being unknown. We do not want to propagate events.
+        onClick: (e) => e.stopPropagation(),
+        style: {
+          // TODO: adjust minW upstream in Sigil for mobile viewports
+          minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          cursor: "default",
+        },
+      }}
       {...rest}
     >
       {children}
