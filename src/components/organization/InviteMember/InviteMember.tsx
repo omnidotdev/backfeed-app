@@ -29,9 +29,9 @@ const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
-  email: z.string().email().trim(),
+  email: z.string().trim().email(),
   organizationId: uuidSchema,
-  inviterEmail: z.string().email().trim(),
+  inviterEmail: z.string().trim().email(),
   inviterUsername: z.string().trim(),
 });
 
