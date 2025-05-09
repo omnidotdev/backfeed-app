@@ -303,6 +303,7 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                 inputProps={{
                   placeholder: "hello@omni.dev",
                   w: "full",
+                  disabled: state.value.length >= MAX_NUMBER_OF_BULK_INVITES,
                 }}
               />
 
