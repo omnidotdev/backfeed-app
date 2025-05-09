@@ -4984,7 +4984,7 @@ export type UserToManyUpvoteFilter = {
   some?: InputMaybe<UpvoteFilter>;
 };
 
-export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number, nodes: Array<{ __typename?: 'Comment', message?: string | null } | null> } };
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
 
@@ -5185,7 +5185,7 @@ export type CommentsQueryVariables = Exact<{
 }>;
 
 
-export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number, nodes: Array<{ __typename?: 'Comment', message?: string | null } | null> } } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5358,6 +5358,12 @@ export const CommentFragmentDoc = `
     username
   }
   createdAt
+  childComments {
+    totalCount
+    nodes {
+      message
+    }
+  }
 }
     `;
 export const FeedbackFragmentDoc = `
@@ -6126,7 +6132,7 @@ export const CommentsDocument = `
     first: $pageSize
     after: $after
     orderBy: CREATED_AT_DESC
-    condition: {postId: $feedbackId}
+    condition: {postId: $feedbackId, parentId: null}
   ) {
     totalCount
     pageInfo {

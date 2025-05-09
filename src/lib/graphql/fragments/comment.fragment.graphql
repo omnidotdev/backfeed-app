@@ -6,4 +6,10 @@ fragment Comment on Comment {
     username
   }
   createdAt
+  childComments {
+    totalCount
+    nodes {
+      message
+    }
+  }
 }

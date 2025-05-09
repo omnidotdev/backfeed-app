@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState } from "@tanstack/react-query";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -65,6 +65,10 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
           rowId: user?.rowId!,
           username: user?.username,
         },
+        childComments: {
+          totalCount: 0,
+          nodes: [],
+        },
       };
     },
   });
@@ -99,6 +103,8 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
       <Stack position="relative" mb="1px">
         <CreateComment />
 
+        <Divider mt={4} />
+
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
@@ -106,7 +112,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
-              <VStack>
+              <VStack gap={6}>
                 {allComments?.map((comment) => {
                   const isPending = comment?.rowId === "pending";
 
@@ -114,11 +120,9 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
                     <CommentCard
                       key={comment?.rowId}
                       user={user}
+                      comment={comment!}
                       organizationId={organizationId}
-                      commentId={comment?.rowId!}
                       senderName={comment?.user?.username}
-                      message={comment?.message}
-                      createdAt={comment?.createdAt ?? new Date()}
                       isSender={comment?.user?.rowId === user?.rowId}
                       isPending={isPending}
                       w="full"
