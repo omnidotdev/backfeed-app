@@ -55,7 +55,7 @@ const SORT_BY_OPTIONS = [
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Project ID. */
   projectId: Project["rowId"];
 }
@@ -147,7 +147,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     [];
 
   const { isAdmin } = useOrganizationMembership({
-    userId: user.rowId,
+    userId: user?.rowId,
     organizationId: posts?.[0]?.project?.organization?.rowId,
   });
 
@@ -259,6 +259,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
+                      user={user}
                       canManageStatus={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}

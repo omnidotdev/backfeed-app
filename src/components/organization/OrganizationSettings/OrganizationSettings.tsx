@@ -34,7 +34,7 @@ const transferOwnershipDetails =
 
 interface Props {
   /** User ID. */
-  userId: User["rowId"];
+  userId: User["rowId"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Whether the transfer ownership functionality is enabled. */
@@ -87,7 +87,7 @@ const OrganizationSettings = ({
   const onSettled = () =>
     queryClient.invalidateQueries({
       queryKey: useOrganizationRoleQuery.getKey({
-        userId,
+        userId: userId!,
         organizationId,
       }),
     });

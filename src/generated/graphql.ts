@@ -611,39 +611,6 @@ export type CreateUpvotePayloadUpvoteEdgeArgs = {
   orderBy?: Array<UpvoteOrderBy>;
 };
 
-/** All input for the create `User` mutation. */
-export type CreateUserInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `User` to be created by this mutation. */
-  user: UserInput;
-};
-
-/** The output of our create `User` mutation. */
-export type CreateUserPayload = {
-  __typename?: 'CreateUserPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** The `User` that was created by this mutation. */
-  user?: Maybe<User>;
-  /** An edge for our `User`. May be used by Relay 1. */
-  userEdge?: Maybe<UserEdge>;
-};
-
-
-/** The output of our create `User` mutation. */
-export type CreateUserPayloadUserEdgeArgs = {
-  orderBy?: Array<UserOrderBy>;
-};
-
 /** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
 export type DatetimeFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1695,8 +1662,6 @@ export type Mutation = {
   createProject?: Maybe<CreateProjectPayload>;
   /** Creates a single `Upvote`. */
   createUpvote?: Maybe<CreateUpvotePayload>;
-  /** Creates a single `User`. */
-  createUser?: Maybe<CreateUserPayload>;
   /** Deletes a single `Comment` using a unique key. */
   deleteComment?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Downvote` using a unique key. */
@@ -1791,12 +1756,6 @@ export type MutationCreateProjectArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUpvoteArgs = {
   input: CreateUpvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateUserArgs = {
-  input: CreateUserInput;
 };
 
 
@@ -4736,18 +4695,6 @@ export type UserHavingVarianceSampleInput = {
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
-/** An input for mutations affecting `User` */
-export type UserInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  email: Scalars['String']['input'];
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  hidraId: Scalars['UUID']['input'];
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
   CommentsCountAsc = 'COMMENTS_COUNT_ASC',
@@ -5097,17 +5044,6 @@ export type DeleteUpvoteMutationVariables = Exact<{
 
 
 export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
-
-export type CreateUserMutationVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
-  username?: InputMaybe<Scalars['String']['input']>;
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-}>;
-
-
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
 export type CommentsQueryVariables = Exact<{
   feedbackId: Scalars['UUID']['input'];
@@ -6020,36 +5956,6 @@ useDeleteUpvoteMutation.getKey = () => ['DeleteUpvote'];
 
 
 useDeleteUpvoteMutation.fetcher = (variables: DeleteUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables, options);
-
-export const CreateUserDocument = `
-    mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String, $email: String!) {
-  createUser(
-    input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName, email: $email}}
-  ) {
-    user {
-      rowId
-    }
-  }
-}
-    `;
-
-export const useCreateUserMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateUserMutation, TError, CreateUserMutationVariables, TContext>) => {
-    
-    return useMutation<CreateUserMutation, TError, CreateUserMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateUser'],
-    mutationFn: (variables?: CreateUserMutationVariables) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateUserMutation.getKey = () => ['CreateUser'];
-
-
-useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
 
 export const CommentsDocument = `
     query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {

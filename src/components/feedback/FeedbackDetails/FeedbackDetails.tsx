@@ -13,7 +13,7 @@ import type { Session } from "next-auth";
 
 interface Props extends HstackProps {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Feedback ID. Used to fetch feedback details. */
   feedbackId: Post["rowId"];
 }
@@ -53,6 +53,7 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
 
   return (
     <FeedbackCard
+      user={user}
       canManageStatus={isAdmin}
       feedback={feedback!}
       projectStatuses={projectStatuses}

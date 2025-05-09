@@ -18,7 +18,7 @@ import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { ProjectsQueryVariables } from "generated/graphql";
+import type { Member, ProjectsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -48,8 +48,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [organization, isBasicTier, isTeamTier] = await Promise.all([
     getOrganization({ organizationSlug }),
     enableBasicTierPrivilegesFlag(),
@@ -60,11 +58,16 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
       organizationId: organization.rowId,
     });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;

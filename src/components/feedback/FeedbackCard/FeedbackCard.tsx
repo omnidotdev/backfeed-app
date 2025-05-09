@@ -35,6 +35,7 @@ import type {
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -46,6 +47,8 @@ interface ProjectStatus {
 }
 
 interface Props extends HstackProps {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Whether the user has permission to manage statuses. */
   canManageStatus: boolean;
   /** Feedback details. */
@@ -60,6 +63,7 @@ interface Props extends HstackProps {
  * Feedback card.
  */
 const FeedbackCard = ({
+  user,
   canManageStatus,
   feedback,
   isPending = false,
@@ -220,6 +224,7 @@ const FeedbackCard = ({
           </Stack>
 
           <VotingButtons
+            user={user}
             feedbackId={feedback.rowId!}
             projectId={feedback?.project?.rowId!}
             upvote={userUpvote}

@@ -6,15 +6,15 @@ import { polar } from "lib/polar";
 /**
  * Server action to get customer details.
  */
-const getCustomer = async (userId: string) => {
+const getCustomer = async () => {
   const session = await auth();
 
   if (!session) {
-    throw new Error("Unauthorized");
+    throw new Error("No customer found");
   }
 
   return await polar.customers.getStateExternal({
-    externalId: userId,
+    externalId: session.user?.hidraId!,
   });
 };
 

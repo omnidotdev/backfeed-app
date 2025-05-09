@@ -1,6 +1,5 @@
 import { dedupe } from "flags/next";
 
-import { auth } from "auth";
 import { getSubscription } from "lib/actions";
 
 /**
@@ -8,8 +7,7 @@ import { getSubscription } from "lib/actions";
  */
 const dedupeSubscription = dedupe(async () => {
   try {
-    const session = await auth();
-    const subscription = await getSubscription(session?.user?.hidraId!);
+    const subscription = await getSubscription();
 
     return subscription;
   } catch (error) {

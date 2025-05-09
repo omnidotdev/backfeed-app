@@ -40,13 +40,12 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   const isOwnershipTransferEnabled = await enableOwnershipTransferFlag();
 
-  const session = await auth();
+  const [session, organization] = await Promise.all([
+    auth(),
+    getOrganization({ organizationSlug }),
+  ]);
 
-  if (!session) notFound();
-
-  const organization = await getOrganization({ organizationSlug });
-
-  if (!organization) notFound();
+  if (!session || !organization) notFound();
 
   const sdk = getSdk({ session });
 
@@ -61,16 +60,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
 
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
-    queryClient.prefetchQuery({
       queryKey: useMembersQuery.getKey({
         organizationId: organization.rowId,
         roles: [Role.Owner],
@@ -78,6 +67,16 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
       queryFn: useMembersQuery.fetcher({
         organizationId: organization.rowId,
         roles: [Role.Owner],
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
       }),
     }),
   ]);
@@ -91,7 +90,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
-          userId={session.user.rowId!}
+          userId={session?.user.rowId}
           organizationId={organization.rowId}
           isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
