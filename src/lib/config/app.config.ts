@@ -1008,6 +1008,24 @@ const app = {
           maxLengthMessage: "Must be at most 240 characters.",
         },
       },
+      createReply: {
+        pending: "Replying...",
+        success: {
+          title: "Success!",
+          description: "Your reply has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your reply.",
+        },
+        errors: {
+          maxLengthMessage: "Must be at most 240 characters.",
+        },
+        action: {
+          pending: "Replying...",
+          submit: "Reply",
+        },
+      },
       title: "Comments",
       description: "View all feedback comments.",
       textAreaPlaceholder: "I agree! This sounds like a great idea.",

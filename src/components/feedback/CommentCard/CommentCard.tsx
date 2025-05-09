@@ -2,26 +2,33 @@
 
 import {
   Avatar,
+  Button,
   Circle,
   Divider,
   HStack,
   Icon,
   Stack,
   Text,
+  sigil,
+  useDisclosure,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useParams } from "next/navigation";
+import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
+
+import { DestructiveAction } from "components/core";
+import { CreateReply } from "components/feedback";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
+import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
-import { useParams } from "next/navigation";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { CommentFragment, Organization } from "generated/graphql";
 import type { Session } from "next-auth";
-import { LuCirclePlus, LuEllipsis, LuMessageCircle } from "react-icons/lu";
 
 interface Props extends StackProps {
   /** Authenticated user. */
@@ -52,6 +59,11 @@ const CommentCard = ({
 }: Props) => {
   const queryClient = useQueryClient();
 
+  const { isOpen: isReplyFormOpen, onToggle: onToggleReplyForm } =
+    useDisclosure();
+
+  const { isOpen: isRepliesOpen, onToggle: onToggleReplies } = useDisclosure();
+
   const { feedbackId } = useParams<{
     feedbackId: string;
   }>();
@@ -75,21 +87,21 @@ const CommentCard = ({
 
   return (
     <Stack
+      position="relative"
       borderRadius="sm"
       gap={0}
+      p={1}
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
-      <HStack position="relative">
+      <HStack>
         <Stack gap={0} placeSelf="flex-start" h="full" align="center">
           <Avatar name={senderName} size="xs" />
 
-          {/* {!!comment.childComments.totalCount && ( */}
           <Divider orientation="vertical" h="full" />
-          {/* )} */}
         </Stack>
 
-        <Stack flex={1} mt={1}>
+        <Stack mt={1}>
           <HStack>
             <Text fontWeight="semibold">{senderName}</Text>
 
@@ -100,58 +112,89 @@ const CommentCard = ({
             </Text>
           </HStack>
 
-          <Text color="foreground.muted">
+          <Text color="foreground.muted" p={2} wordBreak="break-word">
             {comment.message?.split("\n").map((line, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-              <span key={index}>
+              <sigil.span key={index}>
                 {line}
                 <br />
-              </span>
+              </sigil.span>
             ))}
           </Text>
 
-          <HStack color="foreground.subtle/80" gap={4}>
-            <Icon
-              src={LuCirclePlus}
+          <HStack color="foreground.subtle/80" gap={4} mb="-1px">
+            <Button
               position="absolute"
-              left={1.5}
+              left={0}
               bgColor="background.default"
-            />
+              variant="icon"
+              onClick={onToggleReplies}
+              disabled={!comment.childComments.totalCount}
+              color={{
+                base: "foreground.subtle",
+                _disabled: "foreground.disabled",
+                _hover: {
+                  base: "foreground.muted",
+                  _disabled: "foreground.disabled",
+                },
+              }}
+            >
+              <Icon src={isRepliesOpen ? LuCircleMinus : LuCirclePlus} />
+            </Button>
 
-            <HStack gap={1} fontSize="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              px={0}
+              bgColor="transparent"
+              _hover={{ opacity: 0.8 }}
+              gap={1}
+              fontSize="sm"
+              color="brand.senary"
+              onClick={onToggleReplyForm}
+            >
               <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-              {/* {comment.childComments.totalCount} */}
               Reply
-            </HStack>
+            </Button>
 
-            <Icon src={LuEllipsis} />
+            {!!comment.childComments.totalCount && (
+              <Text fontSize="sm">
+                {comment.childComments.totalCount} Replies
+              </Text>
+            )}
           </HStack>
         </Stack>
       </HStack>
 
-      {/* <HStack>
-        {(isSender || isAdmin) && (
-          <DestructiveAction
-            title={app.feedbackPage.comments.delete.title}
-            description={app.feedbackPage.comments.delete.description}
-            action={{
-              label: app.feedbackPage.comments.delete.action.label,
-              onClick: () => deleteComment({ rowId: comment.rowId }),
-            }}
-            triggerProps={{
-              "aria-label": app.feedbackPage.comments.delete.title,
-              color: "omni.ruby",
-              backgroundColor: "transparent",
-              disabled: actionIsPending,
-            }}
-          />
-        )}
+      {(isSender || isAdmin) && (
+        <DestructiveAction
+          title={app.feedbackPage.comments.delete.title}
+          description={app.feedbackPage.comments.delete.description}
+          action={{
+            label: app.feedbackPage.comments.delete.action.label,
+            onClick: () => deleteComment({ rowId: comment.rowId }),
+          }}
+          triggerProps={{
+            "aria-label": app.feedbackPage.comments.delete.title,
+            color: "omni.ruby",
+            backgroundColor: "transparent",
+            position: "absolute",
+            top: 0,
+            right: 2,
+            disabled: actionIsPending,
+          }}
+        />
+      )}
 
-        <HStack color="foreground.subtle" gap={1} h={10} w={10}>
-          <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-          {comment.childComments.totalCount}
-        </HStack>
-      </HStack> */}
+      {/* <HStack>
+
+
+          <HStack color="foreground.subtle" gap={1} h={10} w={10}>
+            <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+            {comment.childComments.totalCount}
+          </HStack>
+        </HStack> */}
+      <CreateReply commentId={comment.rowId} open={isReplyFormOpen} />
     </Stack>
   );
 };

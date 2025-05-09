@@ -52,6 +52,9 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const pendingComments = useMutationState<CommentFragment>({
     filters: {
       mutationKey: useCreateCommentMutation.getKey(),
+      predicate: (mutation) =>
+        !(mutation.state.variables as CreateCommentMutationVariables).input
+          .comment.parentId,
       status: "pending",
     },
     select: (mutation) => {
