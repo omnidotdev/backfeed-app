@@ -132,7 +132,10 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
       >
         <ProjectFilters />
 
-        <ProjectList canCreateProjects={canCreateProjects} />
+        <ProjectList
+          user={session.user}
+          canCreateProjects={canCreateProjects}
+        />
 
         {/* dialogs */}
         {canCreateProjects && (
