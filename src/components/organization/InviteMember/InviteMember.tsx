@@ -301,7 +301,9 @@ const InviteMember = ({ organizationName, organizationId }: Props) => {
                 }
                 borderColor="border.subtle"
                 inputProps={{
-                  placeholder: "hello@omni.dev",
+                  placeholder:
+                    app.organizationInvitationsPage.cta.inviteMember.form.email
+                      .placeholder,
                   w: "full",
                   disabled: state.value.length >= MAX_NUMBER_OF_BULK_INVITES,
                 }}
