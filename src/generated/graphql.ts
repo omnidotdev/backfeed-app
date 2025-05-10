@@ -4984,13 +4984,15 @@ export type UserToManyUpvoteFilter = {
   some?: InputMaybe<UpvoteFilter>;
 };
 
-export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number, nodes: Array<{ __typename?: 'Comment', message?: string | null } | null> } };
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', username?: string | null } | null, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
 
 export type InvitationFragment = { __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name: string } | null };
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
+
+export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
 
@@ -5185,7 +5187,7 @@ export type CommentsQueryVariables = Exact<{
 }>;
 
 
-export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number, nodes: Array<{ __typename?: 'Comment', message?: string | null } | null> } } | null } | null> } | null };
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5319,6 +5321,15 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
+export type RepliesQueryVariables = Exact<{
+  commentId: Scalars['UUID']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+}>;
+
+
+export type RepliesQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -5360,9 +5371,6 @@ export const CommentFragmentDoc = `
   createdAt
   childComments {
     totalCount
-    nodes {
-      message
-    }
   }
 }
     `;
@@ -5434,6 +5442,18 @@ export const MemberFragmentDoc = `
     lastName
     username
   }
+}
+    `;
+export const ReplyFragmentDoc = `
+    fragment Reply on Comment {
+  rowId
+  parentId
+  message
+  user {
+    rowId
+    username
+  }
+  createdAt
 }
     `;
 export const UserFragmentDoc = `
@@ -7113,6 +7133,70 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 
 
 useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
+
+export const RepliesDocument = `
+    query Replies($commentId: UUID!, $pageSize: Int = 5, $after: Cursor) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {parentId: $commentId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        ...Reply
+      }
+    }
+  }
+}
+    ${ReplyFragmentDoc}`;
+
+export const useRepliesQuery = <
+      TData = RepliesQuery,
+      TError = unknown
+    >(
+      variables: RepliesQueryVariables,
+      options?: Omit<UseQueryOptions<RepliesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RepliesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RepliesQuery, TError, TData>(
+      {
+    queryKey: ['Replies', variables],
+    queryFn: graphqlFetch<RepliesQuery, RepliesQueryVariables>(RepliesDocument, variables),
+    ...options
+  }
+    )};
+
+useRepliesQuery.getKey = (variables: RepliesQueryVariables) => ['Replies', variables];
+
+export const useInfiniteRepliesQuery = <
+      TData = InfiniteData<RepliesQuery>,
+      TError = unknown
+    >(
+      variables: RepliesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<RepliesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<RepliesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<RepliesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Replies.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<RepliesQuery, RepliesQueryVariables>(RepliesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteRepliesQuery.getKey = (variables: RepliesQueryVariables) => ['Replies.infinite', variables];
+
+
+useRepliesQuery.fetcher = (variables: RepliesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RepliesQuery, RepliesQueryVariables>(RepliesDocument, variables, options);
 
 export const StatusBreakdownDocument = `
     query StatusBreakdown($projectId: UUID!) {

@@ -10,6 +10,7 @@ import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
   useInfiniteCommentsQuery,
+  useInfiniteRepliesQuery,
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
@@ -44,7 +45,7 @@ interface Props extends CollapsibleProps {
 }
 
 /**
- * Create comment form.
+ * Create reply form.
  */
 const CreateReply = ({ commentId, ...rest }: Props) => {
   const queryClient = useQueryClient();
@@ -57,11 +58,18 @@ const CreateReply = ({ commentId, ...rest }: Props) => {
     onSettled: () => {
       reset();
 
-      return queryClient.invalidateQueries({
-        queryKey: useInfiniteCommentsQuery.getKey({
-          feedbackId,
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useInfiniteCommentsQuery.getKey({
+            feedbackId,
+          }),
         }),
-      });
+        queryClient.invalidateQueries({
+          queryKey: useInfiniteRepliesQuery.getKey({
+            commentId,
+          }),
+        }),
+      ]);
     },
   });
 

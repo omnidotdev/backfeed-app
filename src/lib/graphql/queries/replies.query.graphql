@@ -1,0 +1,19 @@
+query Replies($commentId: UUID!, $pageSize: Int = 5, $after: Cursor) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: { parentId: $commentId }
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        ...Reply
+      }
+    }
+  }
+}

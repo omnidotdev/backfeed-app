@@ -111,7 +111,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
+          <Grid gap={2} mt={4} maxH="xl" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (

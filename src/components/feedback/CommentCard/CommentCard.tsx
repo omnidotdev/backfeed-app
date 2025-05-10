@@ -18,7 +18,7 @@ import { useParams } from "next/navigation";
 import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
 
 import { DestructiveAction } from "components/core";
-import { CreateReply } from "components/feedback";
+import { CreateReply, Replies } from "components/feedback";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
@@ -112,7 +112,7 @@ const CommentCard = ({
             </Text>
           </HStack>
 
-          <Text color="foreground.muted" p={2} wordBreak="break-word">
+          <Text color="foreground.muted" py={2} pr={4} wordBreak="break-word">
             {comment.message?.split("\n").map((line, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
               <sigil.span key={index}>
@@ -158,7 +158,7 @@ const CommentCard = ({
             </Button>
 
             {!!comment.childComments.totalCount && (
-              <Text fontSize="sm">
+              <Text fontSize="sm" mt="1px">
                 {comment.childComments.totalCount} Replies
               </Text>
             )}
@@ -176,11 +176,12 @@ const CommentCard = ({
           }}
           triggerProps={{
             "aria-label": app.feedbackPage.comments.delete.title,
+            tabIndex: -1,
             color: "omni.ruby",
             backgroundColor: "transparent",
             position: "absolute",
             top: 0,
-            right: 2,
+            right: 0,
             disabled: actionIsPending,
           }}
         />
@@ -195,6 +196,13 @@ const CommentCard = ({
           </HStack>
         </HStack> */}
       <CreateReply commentId={comment.rowId} open={isReplyFormOpen} />
+
+      <Replies
+        user={user}
+        organizationId={organizationId}
+        commentId={comment.rowId}
+        open={isRepliesOpen}
+      />
     </Stack>
   );
 };
