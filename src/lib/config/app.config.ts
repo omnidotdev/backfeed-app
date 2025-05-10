@@ -1026,6 +1026,13 @@ const app = {
           submit: "Reply",
         },
       },
+      deleteReply: {
+        title: "Delete Reply",
+        description: "Are you sure you want to delete this reply?",
+        action: {
+          label: "Delete",
+        },
+      },
       title: "Comments",
       description: "View all feedback comments.",
       textAreaPlaceholder: "I agree! This sounds like a great idea.",

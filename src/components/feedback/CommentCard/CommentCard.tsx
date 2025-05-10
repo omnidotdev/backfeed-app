@@ -187,14 +187,6 @@ const CommentCard = ({
         />
       )}
 
-      {/* <HStack>
-
-
-          <HStack color="foreground.subtle" gap={1} h={10} w={10}>
-            <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-            {comment.childComments.totalCount}
-          </HStack>
-        </HStack> */}
       <CreateReply commentId={comment.rowId} open={isReplyFormOpen} />
 
       <Replies

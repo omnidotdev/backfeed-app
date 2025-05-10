@@ -34,9 +34,9 @@ interface Props extends HstackProps {
 }
 
 /**
- * Comment card.
+ * Reply card.
  */
-const CommentCard = ({
+const ReplyCard = ({
   user,
   reply,
   organizationId,
@@ -113,14 +113,14 @@ const CommentCard = ({
 
       {(isSender || isAdmin) && (
         <DestructiveAction
-          title="Delete Reply"
-          description={app.feedbackPage.comments.delete.description}
+          title={app.feedbackPage.comments.deleteReply.title}
+          description={app.feedbackPage.comments.deleteReply.description}
           action={{
-            label: app.feedbackPage.comments.delete.action.label,
+            label: app.feedbackPage.comments.deleteReply.action.label,
             onClick: () => deleteReply({ rowId: reply.rowId }),
           }}
           triggerProps={{
-            "aria-label": app.feedbackPage.comments.delete.title,
+            "aria-label": app.feedbackPage.comments.deleteReply.title,
             tabIndex: -1,
             color: "omni.ruby",
             backgroundColor: "transparent",
@@ -135,4 +135,4 @@ const CommentCard = ({
   );
 };
 
-export default CommentCard;
+export default ReplyCard;
