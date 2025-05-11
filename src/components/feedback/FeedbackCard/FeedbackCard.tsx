@@ -347,10 +347,15 @@ const FeedbackCard = ({
                 </HStack>
               )}
 
-              <HStack color="foreground.subtle" gap={1} h={10} w={10} ml={2}>
-                <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-                {feedback.comments?.totalCount}
-              </HStack>
+              {feedback.comments?.totalCount && (
+                <HStack color="foreground.subtle" gap={1} h={10} w={10} ml={2}>
+                  <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+                  {/* prevent overflow from large numbers */}
+                  {feedback.comments?.totalCount >= 99
+                    ? "99+"
+                    : feedback.comments?.totalCount}
+                </HStack>
+              )}
             </HStack>
           </HStack>
         </Stack>
