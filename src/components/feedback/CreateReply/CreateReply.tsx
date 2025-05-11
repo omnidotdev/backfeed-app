@@ -97,21 +97,7 @@ const CreateReply = ({ commentId, ...rest }: Props) => {
               },
             },
           }),
-          {
-            loading: {
-              title: app.feedbackPage.comments.createReply.pending,
-            },
-            success: {
-              title: app.feedbackPage.comments.createReply.success.title,
-              description:
-                app.feedbackPage.comments.createReply.success.description,
-            },
-            error: {
-              title: app.feedbackPage.comments.createReply.error.title,
-              description:
-                app.feedbackPage.comments.createReply.error.description,
-            },
-          },
+          app.feedbackPage.comments.createReply,
         ),
     },
   );

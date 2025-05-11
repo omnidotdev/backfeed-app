@@ -1009,7 +1009,9 @@ const app = {
         },
       },
       createReply: {
-        pending: "Replying...",
+        loading: {
+          title: "Replying...",
+        },
         success: {
           title: "Success!",
           description: "Your reply has been successfully added.",
