@@ -5972,7 +5972,7 @@ export const RecentFeedbackDocument = gql`
 }
     `;
 export const RepliesDocument = gql`
-    query Replies($commentId: UUID!, $pageSize: Int = 5, $after: Cursor) {
+    query Replies($commentId: UUID!, $pageSize: Int = 3, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after

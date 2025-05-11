@@ -122,7 +122,7 @@ const CreateReply = ({ commentId, ...rest }: Props) => {
     <Collapsible {...rest}>
       <Stack
         mt={2}
-        ml={10}
+        ml={{ sm: 10 }}
         borderWidth="1px"
         borderRadius="sm"
         borderColor="border.subtle"

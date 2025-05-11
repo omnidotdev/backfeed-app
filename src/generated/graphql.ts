@@ -7135,7 +7135,7 @@ useInfiniteRecentFeedbackQuery.getKey = (variables: RecentFeedbackQueryVariables
 useRecentFeedbackQuery.fetcher = (variables: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
 
 export const RepliesDocument = `
-    query Replies($commentId: UUID!, $pageSize: Int = 5, $after: Cursor) {
+    query Replies($commentId: UUID!, $pageSize: Int = 3, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after

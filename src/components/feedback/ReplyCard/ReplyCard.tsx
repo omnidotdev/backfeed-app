@@ -25,26 +25,12 @@ interface Props extends HstackProps {
   reply: ReplyFragment;
   /** Organization ID. */
   organizationId: Organization["rowId"];
-  /** Reply sender. */
-  senderName: string | null | undefined;
-  /** Whether the reply is pending. */
-  isPending?: boolean;
-  /** Whether the logged in user is the reply sender. */
-  isSender?: boolean;
 }
 
 /**
  * Reply card.
  */
-const ReplyCard = ({
-  user,
-  reply,
-  organizationId,
-  senderName,
-  isPending = false,
-  isSender = false,
-  ...rest
-}: Props) => {
+const ReplyCard = ({ user, reply, organizationId, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const { feedbackId } = useParams<{
@@ -73,7 +59,11 @@ const ReplyCard = ({
         ]),
     });
 
+  const isPending = reply.rowId === "pending";
+
   const actionIsPending = isPending || isDeletePending;
+
+  const isSender = reply.user?.rowId === user?.rowId;
 
   return (
     <HStack
@@ -85,21 +75,32 @@ const ReplyCard = ({
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
-      <HStack>
-        <Avatar name={senderName} size="xs" placeSelf="flex-start" />
+      <HStack pl={{ baseToSm: 2 }}>
+        <Avatar
+          name={reply.user?.username}
+          size="xs"
+          placeSelf="flex-start"
+          display={{ baseToSm: "none" }}
+        />
 
         <Stack mt={1}>
           <HStack>
-            <Text fontWeight="semibold">{senderName}</Text>
+            <Text fontWeight="semibold" fontSize={{ baseToSm: "sm" }}>
+              {reply.user?.username}
+            </Text>
 
             <Circle size={1} bgColor="foreground.subtle" />
 
-            <Text fontSize="sm" color="foreground.muted">
+            <Text fontSize={{ base: "xs", sm: "sm" }} color="foreground.muted">
               {dayjs(reply.createdAt).fromNow()}
             </Text>
           </HStack>
 
-          <Text color="foreground.muted" wordBreak="break-word">
+          <Text
+            color="foreground.muted"
+            wordBreak="break-word"
+            fontSize={{ baseToSm: "sm" }}
+          >
             {reply.message?.split("\n").map((line, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
               <sigil.span key={index}>

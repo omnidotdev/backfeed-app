@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
 
 import { DestructiveAction } from "components/core";
@@ -37,26 +38,14 @@ interface Props extends StackProps {
   comment: CommentFragment;
   /** Organization ID. */
   organizationId: Organization["rowId"];
-  /** Comment sender. */
-  senderName: string | null | undefined;
-  /** Whether the comment is pending. */
-  isPending?: boolean;
-  /** Whether the logged in user is the comment sender. */
-  isSender?: boolean;
 }
 
 /**
  * Comment card.
  */
-const CommentCard = ({
-  user,
-  comment,
-  organizationId,
-  senderName,
-  isPending = false,
-  isSender = false,
-  ...rest
-}: Props) => {
+const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
+  const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
+
   const queryClient = useQueryClient();
 
   const { isOpen: isReplyFormOpen, onToggle: onToggleReplyForm } =
@@ -83,27 +72,37 @@ const CommentCard = ({
         }),
     });
 
+  const isPending = comment.rowId === "pending";
+
   const actionIsPending = isPending || isDeletePending;
+
+  const isSender = comment.user?.rowId === user?.rowId;
 
   return (
     <Stack
       position="relative"
-      borderRadius="sm"
       gap={0}
-      p={1}
+      p={2}
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
     >
       <HStack>
         <Stack gap={0} placeSelf="flex-start" h="full" align="center">
-          <Avatar name={senderName} size="xs" />
+          <Avatar name={comment?.user?.username} size="xs" />
 
-          <Divider orientation="vertical" h="full" />
+          <Divider
+            orientation="vertical"
+            h="full"
+            transitionDuration="normal"
+            transitionProperty="color"
+            transitionTimingFunction="default"
+            color={hoveredRepliesToggle ? "foreground.muted" : undefined}
+          />
         </Stack>
 
-        <Stack mt={1}>
+        <Stack mt={1} gap={1}>
           <HStack>
-            <Text fontWeight="semibold">{senderName}</Text>
+            <Text fontWeight="semibold">{comment?.user?.username}</Text>
 
             <Circle size={1} bgColor="foreground.subtle" />
 
@@ -125,11 +124,13 @@ const CommentCard = ({
           <HStack color="foreground.subtle/80" gap={4} mb="-1px">
             <Button
               position="absolute"
-              left={0}
+              left={1}
               bgColor="background.default"
               variant="icon"
               onClick={onToggleReplies}
-              disabled={!comment.childComments.totalCount}
+              onMouseEnter={() => setHoveredRepliesToggle(true)}
+              onMouseLeave={() => setHoveredRepliesToggle(false)}
+              disabled={!comment.childComments.totalCount || actionIsPending}
               color={{
                 base: "foreground.subtle",
                 _disabled: "foreground.disabled",
@@ -152,6 +153,7 @@ const CommentCard = ({
               fontSize="sm"
               color="brand.senary"
               onClick={onToggleReplyForm}
+              disabled={actionIsPending}
             >
               <Icon src={LuMessageCircle} h={4.5} w={4.5} />
               Reply
@@ -181,7 +183,7 @@ const CommentCard = ({
             backgroundColor: "transparent",
             position: "absolute",
             top: 0,
-            right: 0,
+            right: -1,
             disabled: actionIsPending,
           }}
         />

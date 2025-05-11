@@ -35,19 +35,28 @@ interface Props {
  * Feedback comments section.
  */
 const Comments = ({ user, organizationId, feedbackId }: Props) => {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteCommentsQuery(
-      {
-        feedbackId,
-      },
-      {
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.comments?.pageInfo?.hasNextPage
-            ? { after: lastPage?.comments?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
+  const {
+    data: comments,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteCommentsQuery(
+    {
+      feedbackId,
+    },
+    {
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.comments?.pageInfo?.hasNextPage
+          ? { after: lastPage?.comments?.pageInfo?.endCursor }
+          : undefined,
+      select: (data) =>
+        data?.pages?.flatMap((page) =>
+          page?.comments?.edges?.map((edge) => edge?.node),
+        ),
+    },
+  );
 
   const pendingComments = useMutationState<CommentFragment>({
     filters: {
@@ -76,13 +85,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     },
   });
 
-  // This is not defined within the `select` function in order to preserve type safety.
-  const comments =
-    data?.pages?.flatMap((page) =>
-      page?.comments?.edges?.map((edge) => edge?.node),
-    ) ?? [];
-
-  const allComments = [...pendingComments, ...comments];
+  const allComments = [...pendingComments, ...(comments ?? [])];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -115,24 +118,17 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
-              <VStack gap={6}>
-                {allComments?.map((comment) => {
-                  const isPending = comment?.rowId === "pending";
-
-                  return (
-                    <CommentCard
-                      key={comment?.rowId}
-                      user={user}
-                      comment={comment!}
-                      organizationId={organizationId}
-                      senderName={comment?.user?.username}
-                      isSender={comment?.user?.rowId === user?.rowId}
-                      isPending={isPending}
-                      w="full"
-                      minH={21}
-                    />
-                  );
-                })}
+              <VStack gap={2}>
+                {allComments?.map((comment) => (
+                  <CommentCard
+                    key={comment?.rowId}
+                    user={user}
+                    comment={comment!}
+                    organizationId={organizationId}
+                    w="full"
+                    minH={21}
+                  />
+                ))}
 
                 {hasNextPage ? (
                   <Spinner ref={loaderRef} my={4} />
