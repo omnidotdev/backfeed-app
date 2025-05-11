@@ -79,7 +79,6 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
         },
         childComments: {
           totalCount: 0,
-          nodes: [],
         },
       };
     },
