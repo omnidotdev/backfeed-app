@@ -42,6 +42,8 @@ const createReplySchema = z.object({
 interface Props extends CollapsibleProps {
   /** Comment ID. */
   commentId: Comment["rowId"];
+  /** Whether the user can reply to the comment. */
+  canReply: boolean;
   /** Optional handler to apply when a reply is sent. */
   onReply?: () => void;
 }
@@ -49,7 +51,7 @@ interface Props extends CollapsibleProps {
 /**
  * Create reply form.
  */
-const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
+const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -146,7 +148,7 @@ const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
                   borderBottomColor: "border.subtle",
                   boxShadow: "none",
                 }}
-                disabled={isAuthLoading}
+                disabled={isAuthLoading || !canReply}
                 maxLength={MAX_COMMENT_LENGTH}
                 errorProps={{
                   top: -6,
@@ -175,6 +177,7 @@ const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
                 action={app.feedbackPage.comments.createReply.action}
                 size="sm"
                 isPending={isPending}
+                disabled={!canReply}
               />
             </AppForm>
           </Stack>

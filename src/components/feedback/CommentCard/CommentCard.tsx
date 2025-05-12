@@ -40,12 +40,20 @@ interface Props extends StackProps {
   comment: CommentFragment;
   /** Organization ID. */
   organizationId: Organization["rowId"];
+  /** Whether the user can reply to the comment. */
+  canReply: boolean;
 }
 
 /**
  * Comment card.
  */
-const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
+const CommentCard = ({
+  user,
+  comment,
+  organizationId,
+  canReply,
+  ...rest
+}: Props) => {
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
 
   const queryClient = useQueryClient();
@@ -154,12 +162,12 @@ const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
               size="sm"
               px={0}
               bgColor="transparent"
-              _hover={{ opacity: 0.8 }}
+              opacity={{ _disabled: 0.8, _hover: 0.8 }}
               gap={1}
               fontSize="sm"
               color="brand.senary"
               onClick={onToggleReplyForm}
-              disabled={actionIsPending}
+              disabled={actionIsPending || !canReply}
             >
               <Icon src={LuMessageCircle} h={4.5} w={4.5} />
               Reply
@@ -223,6 +231,7 @@ const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
       <CreateReply
         commentId={comment.rowId}
         open={isReplyFormOpen}
+        canReply={canReply}
         onReply={onOpenReplies}
       />
 

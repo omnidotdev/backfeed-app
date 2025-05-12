@@ -58,12 +58,14 @@ interface Props {
   user: Session["user"];
   /** Project ID. */
   projectId: Project["rowId"];
+  /** Whether the project has unlimited feedback. */
+  canCreateFeedback: boolean;
 }
 
 /**
  * Project feedback.
  */
-const ProjectFeedback = ({ user, projectId }: Props) => {
+const ProjectFeedback = ({ user, projectId, canCreateFeedback }: Props) => {
   const router = useRouter();
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
@@ -132,6 +134,9 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         },
         user: {
           username: user?.username,
+        },
+        comments: {
+          totalCount: 0,
         },
         upvotes: {
           totalCount: 0,
@@ -208,7 +213,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
-        <CreateFeedback />
+        <CreateFeedback canCreateFeedback={canCreateFeedback} />
 
         <Divider mt={4} />
 

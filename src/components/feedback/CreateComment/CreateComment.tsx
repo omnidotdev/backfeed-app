@@ -33,10 +33,15 @@ const createCommentSchema = z.object({
     ),
 });
 
+interface Props {
+  /** Whether the user can create a comment. */
+  canCreateComment: boolean;
+}
+
 /**
  * Create comment form.
  */
-const CreateComment = () => {
+const CreateComment = ({ canCreateComment }: Props) => {
   const queryClient = useQueryClient();
 
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -115,7 +120,7 @@ const CreateComment = () => {
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
-            disabled={isAuthLoading}
+            disabled={isAuthLoading || !canCreateComment}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               top: -6,
@@ -135,6 +140,7 @@ const CreateComment = () => {
           <SubmitForm
             action={app.feedbackPage.comments.action}
             isPending={isPending}
+            disabled={!canCreateComment}
           />
         </AppForm>
       </Stack>

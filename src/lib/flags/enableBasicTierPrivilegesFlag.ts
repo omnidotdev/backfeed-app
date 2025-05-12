@@ -1,5 +1,6 @@
 import { flag } from "flags/next";
 
+import { Tier } from "generated/graphql.sdk";
 import { isDevEnv } from "lib/config";
 import { dedupeSubscription } from "lib/flags/identity";
 
@@ -13,8 +14,8 @@ const enableBasicTierPrivilegesFlag = flag({
     // If we are in a development environment, always return true. Comment out this line to test feature flag behaviors in development.
     if (isDevEnv) return true;
 
-    // NB: If `entities` exist, the user has a subscription, and therefore has basic tier privileges.
-    return !!entities;
+    // NB: If `entities` exist, the user has a subscription, and we validate that they are not on the free tier.
+    return !!entities && entities.product.metadata?.title !== Tier.Free;
   },
 });
 

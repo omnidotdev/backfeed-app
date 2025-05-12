@@ -16,7 +16,9 @@ const enableTeamTierPrivilegesFlag = flag({
 
     if (!entities) return false;
 
-    return entities.product.metadata?.title !== Tier.Basic;
+    return ![Tier.Free, Tier.Basic].includes(
+      entities.product.metadata?.title as Tier,
+    );
   },
 });
 

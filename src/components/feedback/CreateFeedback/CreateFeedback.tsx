@@ -41,10 +41,15 @@ const createFeedbackSchema = z.object({
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
+interface Props {
+  /** Whether a user is allowed to provide feedback. Based on subscription tier of project owner. */
+  canCreateFeedback: boolean;
+}
+
 /**
  * Create feedback form.
  */
-const CreateFeedback = () => {
+const CreateFeedback = ({ canCreateFeedback }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -168,6 +173,7 @@ const CreateFeedback = () => {
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
+            disabled={!canCreateFeedback}
           />
         )}
       </AppField>
@@ -182,6 +188,7 @@ const CreateFeedback = () => {
             rows={5}
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
+            disabled={!canCreateFeedback}
           />
         )}
       </AppField>
@@ -199,6 +206,7 @@ const CreateFeedback = () => {
             isPending={isPending}
             w="fit-content"
             placeSelf="flex-end"
+            disabled={!canCreateFeedback}
           />
         </AppForm>
       </Stack>

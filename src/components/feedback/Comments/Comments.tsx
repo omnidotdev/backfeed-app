@@ -29,12 +29,19 @@ interface Props {
   organizationId: Organization["rowId"];
   /** Feedback ID. */
   feedbackId: Post["rowId"];
+  /** Whether the user can create a comment. */
+  canCreateComment: boolean;
 }
 
 /**
  * Feedback comments section.
  */
-const Comments = ({ user, organizationId, feedbackId }: Props) => {
+const Comments = ({
+  user,
+  organizationId,
+  feedbackId,
+  canCreateComment,
+}: Props) => {
   const {
     data: comments,
     isLoading,
@@ -106,7 +113,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack position="relative" mb="1px">
-        <CreateComment />
+        <CreateComment canCreateComment={canCreateComment} />
 
         <Divider mt={4} />
 
@@ -124,6 +131,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
                     user={user}
                     comment={comment!}
                     organizationId={organizationId}
+                    canReply={canCreateComment}
                     w="full"
                     minH={21}
                   />

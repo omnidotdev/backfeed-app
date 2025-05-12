@@ -23,7 +23,11 @@ const getProject = cache(
 
     const sdk = getSdk({ session });
 
-    const { projects } = await sdk.Project({ projectSlug, organizationSlug });
+    const { projects } = await sdk.Project({
+      projectSlug,
+      organizationSlug,
+      userId: session.user.rowId!,
+    });
 
     return projects?.nodes?.[0];
   },
