@@ -12,20 +12,23 @@ import {
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { LuCheck, LuChevronDown } from "react-icons/lu";
-import { match } from "ts-pattern";
+import { useParams, useRouter } from "next/navigation";
+import { LuCheck, LuChevronDown, LuMessageCircle } from "react-icons/lu";
 
-import { StatusBadge } from "components/core";
-import { VotingButtons } from "components/feedback";
+import { DestructiveAction, StatusBadge } from "components/core";
+import { UpdateFeedback, VotingButtons } from "components/feedback";
 import {
+  useDeletePostMutation,
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
+  useProjectMetricsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
 } from "generated/graphql";
 import { useSearchParams } from "lib/hooks";
 import { useStatusMenuStore } from "lib/hooks/store";
 
+import { Format } from "@ark-ui/react";
 import type { HstackProps } from "@omnidev/sigil";
 import type { InfiniteData } from "@tanstack/react-query";
 import type {
@@ -35,6 +38,8 @@ import type {
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
+import { app } from "lib/config";
+import type { Session } from "next-auth";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -46,8 +51,10 @@ interface ProjectStatus {
 }
 
 interface Props extends HstackProps {
-  /** Whether the user has permission to manage statuses. */
-  canManageStatus: boolean;
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** Whether the user has permission to manage statuses or delete feedback. */
+  canManageFeedback: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
   /** Whether the feedback is pending. */
@@ -60,7 +67,8 @@ interface Props extends HstackProps {
  * Feedback card.
  */
 const FeedbackCard = ({
-  canManageStatus,
+  user,
+  canManageFeedback,
   feedback,
   isPending = false,
   projectStatuses,
@@ -73,9 +81,46 @@ const FeedbackCard = ({
     }),
   );
 
+  const router = useRouter();
+
+  const {
+    organizationSlug,
+    projectSlug,
+    // Renamed because we only need to check for the existence of this to determine if we are on the dynamic feedback route for the `deleteFeedback` mutation. This is to limit confusion with `feedback.rowId` from the provided props
+    feedbackId: isFeedbackRoute,
+  } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+    feedbackId?: string;
+  }>();
+
   const [{ excludedStatuses, orderBy, search }] = useSearchParams();
 
   const queryClient = useQueryClient();
+
+  const { mutate: deleteFeedback } = useDeletePostMutation({
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+        queryClient.invalidateQueries({
+          queryKey: useStatusBreakdownQuery.getKey({
+            projectId: feedback.project?.rowId!,
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: useProjectMetricsQuery.getKey({
+            projectId: feedback.project?.rowId!,
+          }),
+        }),
+      ]),
+    onSuccess: () => {
+      if (isFeedbackRoute) {
+        router.replace(
+          `/organizations/${organizationSlug}/projects/${projectSlug}`,
+        );
+      }
+    },
+  });
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
@@ -166,23 +211,7 @@ const FeedbackCard = ({
     totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
     totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
-  const netTotalVotes = totalUpvotes - totalDownvotes;
-
-  const netVotesColor = match(netTotalVotes)
-    .with(0, () => "gray.400")
-    .when(
-      (net) => net > 0,
-      () => "brand.tertiary",
-    )
-    .otherwise(() => "brand.quinary");
-
-  const netVotesSign = match(netTotalVotes)
-    .with(0, () => "+/- ")
-    .when(
-      (net) => net > 0,
-      () => "+",
-    )
-    .otherwise(() => "");
+  const isAuthor = user?.rowId === feedback.user?.rowId;
 
   return (
     <HStack
@@ -208,15 +237,24 @@ const FeedbackCard = ({
               {feedback.title}
             </Text>
 
-            <HStack fontSize="sm" gap={{ base: 1, sm: 2 }}>
+            <Stack
+              direction={{ base: "column", sm: "row" }}
+              fontSize="sm"
+              gap={{ base: 1, sm: 2 }}
+            >
               <Text color="foreground.subtle">{feedback.user?.username}</Text>
 
-              <Circle size={1} bgColor="foreground.subtle" placeSelf="center" />
+              <Circle
+                size={1}
+                bgColor="foreground.subtle"
+                placeSelf="center"
+                display={{ baseToSm: "none" }}
+              />
 
               <Text color="foreground.subtle">
                 {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
               </Text>
-            </HStack>
+            </Stack>
           </Stack>
 
           <VotingButtons
@@ -244,14 +282,14 @@ const FeedbackCard = ({
                 trigger={
                   <StatusBadge
                     status={feedback.status!}
-                    cursor={canManageStatus ? "pointer" : "default"}
-                    onClick={(e) => e.stopPropagation()}
+                    cursor={canManageFeedback ? "pointer" : "default"}
+                    onClick={(evt) => evt.stopPropagation()}
                   >
-                    {canManageStatus && <Icon src={LuChevronDown} />}
+                    {canManageFeedback && <Icon src={LuChevronDown} />}
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageStatus || isUpdateStatusPending,
+                  disabled: !canManageFeedback || isUpdateStatusPending,
                 }}
                 positioning={{ strategy: "fixed" }}
               >
@@ -295,13 +333,52 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <Text
-              color={netVotesColor}
-              whiteSpace="nowrap"
-              placeSelf="flex-start"
-            >
-              {`${netVotesSign}${netTotalVotes}`}
-            </Text>
+            <HStack>
+              <HStack>
+                {isAuthor && (
+                  <UpdateFeedback
+                    feedback={feedback}
+                    triggerProps={{
+                      onClick: (evt) => evt.stopPropagation(),
+                    }}
+                  />
+                )}
+
+                {(isAuthor || canManageFeedback) && (
+                  <DestructiveAction
+                    title={app.projectPage.projectFeedback.deleteFeedback.title}
+                    description={
+                      app.projectPage.projectFeedback.deleteFeedback.description
+                    }
+                    action={{
+                      label:
+                        app.projectPage.projectFeedback.deleteFeedback.action
+                          .label,
+                      onClick: () =>
+                        deleteFeedback({ postId: feedback.rowId! }),
+                    }}
+                    triggerProps={{
+                      "aria-label":
+                        app.projectPage.projectFeedback.deleteFeedback.title,
+                      px: 2,
+                      color: "omni.ruby",
+                      backgroundColor: "transparent",
+                      disabled: feedback.rowId === "pending",
+                      onClick: (evt) => evt.stopPropagation(),
+                    }}
+                  />
+                )}
+              </HStack>
+
+              <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
+                <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+
+                <Format.Number
+                  value={feedback.comments?.totalCount ?? 0}
+                  notation="compact"
+                />
+              </HStack>
+            </HStack>
           </HStack>
         </Stack>
       </Stack>

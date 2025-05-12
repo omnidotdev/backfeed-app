@@ -53,7 +53,8 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
 
   return (
     <FeedbackCard
-      canManageStatus={isAdmin}
+      user={user}
+      canManageFeedback={isAdmin}
       feedback={feedback!}
       projectStatuses={projectStatuses}
       boxShadow="card"
