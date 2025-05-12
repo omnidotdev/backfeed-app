@@ -38,6 +38,7 @@ import type {
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
+import { app } from "lib/config";
 import type { Session } from "next-auth";
 
 interface ProjectStatus {
@@ -273,7 +274,7 @@ const FeedbackCard = ({
                   <StatusBadge
                     status={feedback.status!}
                     cursor={canManageStatus ? "pointer" : "default"}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(evt) => evt.stopPropagation()}
                   >
                     {canManageStatus && <Icon src={LuChevronDown} />}
                   </StatusBadge>
@@ -323,36 +324,51 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <HStack mr={2}>
+            <HStack>
               {isAuthor && (
                 <HStack>
-                  <UpdateFeedback feedback={feedback} />
+                  <UpdateFeedback
+                    feedback={feedback}
+                    triggerProps={{
+                      justifyContent: "flex-end",
+                      onClick: (evt) => evt.stopPropagation(),
+                    }}
+                  />
 
                   <DestructiveAction
-                    title="Delete Feedback"
-                    description="Are you sure you want to delete this feedback?"
+                    title={app.projectPage.projectFeedback.deleteFeedback.title}
+                    description={
+                      app.projectPage.projectFeedback.deleteFeedback.description
+                    }
                     action={{
-                      label: "Delete",
+                      label:
+                        app.projectPage.projectFeedback.deleteFeedback.action
+                          .label,
                       onClick: () =>
                         deleteFeedback({ postId: feedback.rowId! }),
                     }}
                     triggerProps={{
-                      "aria-label": "Delete Feedback",
+                      justifyContent: "flex-end",
+                      "aria-label":
+                        app.projectPage.projectFeedback.deleteFeedback.title,
                       p: 0,
                       color: "omni.ruby",
                       backgroundColor: "transparent",
                       disabled: feedback.rowId === "pending",
-                      onClick: (e) => e.stopPropagation(),
+                      onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
                 </HStack>
               )}
 
-              {feedback.comments?.totalCount && (
-                <HStack color="foreground.subtle" gap={1} h={10} w={10} ml={2}>
+              {!!feedback.comments?.totalCount && (
+                <HStack color="foreground.subtle" gap={1} ml={4}>
                   <Icon src={LuMessageCircle} h={4.5} w={4.5} />
 
-                  <Format.Number value={1200000} notation="compact" />
+                  <Format.Number
+                    value={feedback.comments?.totalCount}
+                    notation="compact"
+                  />
                 </HStack>
               )}
             </HStack>

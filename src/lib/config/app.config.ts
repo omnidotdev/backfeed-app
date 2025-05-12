@@ -972,6 +972,13 @@ const app = {
           },
         },
       },
+      deleteFeedback: {
+        title: "Delete Feedback",
+        description: "Are you sure you want to delete this feedback?",
+        action: {
+          label: "Delete",
+        },
+      },
       action: {
         pending: "Submitting...",
         submit: "Submit",

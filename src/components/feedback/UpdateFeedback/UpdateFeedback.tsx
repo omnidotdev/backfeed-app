@@ -3,6 +3,7 @@
 import {
   Button,
   Dialog,
+  DialogProps,
   Icon,
   Stack,
   sigil,
@@ -45,7 +46,7 @@ const updateFeedbackSchema = z.object({
     ),
 });
 
-interface Props {
+interface Props extends DialogProps {
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
 }
@@ -53,7 +54,7 @@ interface Props {
 /**
  * Update feedback form.
  */
-const UpdateFeedback = ({ feedback }: Props) => {
+const UpdateFeedback = ({ feedback, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const isClient = useIsClient();
@@ -136,25 +137,26 @@ const UpdateFeedback = ({ feedback }: Props) => {
       }
       triggerProps={{
         disabled: feedback.rowId === "pending",
-        onClick: (e) => e.stopPropagation(),
+        onClick: (evt) => evt.stopPropagation(),
       }}
       contentProps={{
         // NB: `onClick` and `cursor` are to change behavior due to render of dialog being scope to an individual feedback card.
-        onClick: (e) => e.stopPropagation(),
+        onClick: (evt) => evt.stopPropagation(),
         style: {
           // TODO: adjust minW upstream in Sigil for mobile viewports
           minWidth: isSmallViewport ? token("sizes.md") : "80%",
           cursor: "default",
         },
       }}
+      {...rest}
     >
       <sigil.form
         display="flex"
         flexDirection="column"
         gap={2}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
+        onSubmit={async (evt) => {
+          evt.preventDefault();
+          evt.stopPropagation();
           await handleSubmit();
         }}
       >
@@ -165,7 +167,7 @@ const UpdateFeedback = ({ feedback }: Props) => {
               placeholder={
                 app.projectPage.projectFeedback.feedbackTitle.placeholder
               }
-              onClick={(e) => e.stopPropagation()}
+              onClick={(evt) => evt.stopPropagation()}
             />
           )}
         </AppField>
@@ -180,7 +182,7 @@ const UpdateFeedback = ({ feedback }: Props) => {
               rows={5}
               minH={32}
               maxLength={MAX_DESCRIPTION_LENGTH}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(evt) => evt.stopPropagation()}
             />
           )}
         </AppField>
@@ -198,7 +200,7 @@ const UpdateFeedback = ({ feedback }: Props) => {
               isPending={isPending}
               w="fit-content"
               placeSelf="flex-end"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(evt) => evt.stopPropagation()}
             />
           </AppForm>
         </Stack>
