@@ -237,15 +237,24 @@ const FeedbackCard = ({
               {feedback.title}
             </Text>
 
-            <HStack fontSize="sm" gap={{ base: 1, sm: 2 }}>
+            <Stack
+              direction={{ base: "column", sm: "row" }}
+              fontSize="sm"
+              gap={{ base: 1, sm: 2 }}
+            >
               <Text color="foreground.subtle">{feedback.user?.username}</Text>
 
-              <Circle size={1} bgColor="foreground.subtle" placeSelf="center" />
+              <Circle
+                size={1}
+                bgColor="foreground.subtle"
+                placeSelf="center"
+                display={{ baseToSm: "none" }}
+              />
 
               <Text color="foreground.subtle">
                 {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
               </Text>
-            </HStack>
+            </Stack>
           </Stack>
 
           <VotingButtons
