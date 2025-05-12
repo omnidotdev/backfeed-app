@@ -213,6 +213,8 @@ const FeedbackCard = ({
 
   const isAuthor = user?.rowId === feedback.user?.rowId;
 
+  const canAdjustFeedback = isAuthor || canManageFeedback;
+
   return (
     <HStack
       position="relative"
@@ -334,17 +336,15 @@ const FeedbackCard = ({
             </HStack>
 
             <HStack>
-              <HStack>
-                {isAuthor && (
+              {canAdjustFeedback && (
+                <HStack>
                   <UpdateFeedback
                     feedback={feedback}
                     triggerProps={{
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
-                )}
 
-                {(isAuthor || canManageFeedback) && (
                   <DestructiveAction
                     title={app.projectPage.projectFeedback.deleteFeedback.title}
                     description={
@@ -367,8 +367,8 @@ const FeedbackCard = ({
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
-                )}
-              </HStack>
+                </HStack>
+              )}
 
               <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
                 <Icon src={LuMessageCircle} h={4.5} w={4.5} />
