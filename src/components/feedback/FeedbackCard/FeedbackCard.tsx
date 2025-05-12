@@ -330,7 +330,6 @@ const FeedbackCard = ({
                   <UpdateFeedback
                     feedback={feedback}
                     triggerProps={{
-                      justifyContent: "flex-end",
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
@@ -348,10 +347,9 @@ const FeedbackCard = ({
                         deleteFeedback({ postId: feedback.rowId! }),
                     }}
                     triggerProps={{
-                      justifyContent: "flex-end",
                       "aria-label":
                         app.projectPage.projectFeedback.deleteFeedback.title,
-                      p: 0,
+                      px: 2,
                       color: "omni.ruby",
                       backgroundColor: "transparent",
                       disabled: feedback.rowId === "pending",
@@ -361,16 +359,14 @@ const FeedbackCard = ({
                 </HStack>
               )}
 
-              {!!feedback.comments?.totalCount && (
-                <HStack color="foreground.subtle" gap={1} ml={4}>
-                  <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+              <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
+                <Icon src={LuMessageCircle} h={4.5} w={4.5} />
 
-                  <Format.Number
-                    value={feedback.comments?.totalCount}
-                    notation="compact"
-                  />
-                </HStack>
-              )}
+                <Format.Number
+                  value={feedback.comments?.totalCount ?? 0}
+                  notation="compact"
+                />
+              </HStack>
             </HStack>
           </HStack>
         </Stack>
