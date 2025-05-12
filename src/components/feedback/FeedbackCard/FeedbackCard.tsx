@@ -28,6 +28,7 @@ import {
 import { useSearchParams } from "lib/hooks";
 import { useStatusMenuStore } from "lib/hooks/store";
 
+import { Format } from "@ark-ui/react";
 import type { HstackProps } from "@omnidev/sigil";
 import type { InfiniteData } from "@tanstack/react-query";
 import type {
@@ -322,7 +323,7 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <HStack mr={-2}>
+            <HStack mr={2}>
               {isAuthor && (
                 <HStack>
                   <UpdateFeedback feedback={feedback} />
@@ -350,10 +351,8 @@ const FeedbackCard = ({
               {feedback.comments?.totalCount && (
                 <HStack color="foreground.subtle" gap={1} h={10} w={10} ml={2}>
                   <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-                  {/* prevent overflow from large numbers */}
-                  {feedback.comments?.totalCount >= 99
-                    ? "99+"
-                    : feedback.comments?.totalCount}
+
+                  <Format.Number value={1200000} notation="compact" />
                 </HStack>
               )}
             </HStack>
