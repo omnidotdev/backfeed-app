@@ -284,9 +284,9 @@ const CreateProject = ({
         reset();
         setIsOpen(open);
       }}
-      // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
+          // TODO: adjust minW upstream in Sigil for mobile viewports
           minWidth: isSmallViewport ? undefined : "80%",
         },
       }}

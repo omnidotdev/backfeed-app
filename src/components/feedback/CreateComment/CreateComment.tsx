@@ -9,6 +9,7 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
+  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -52,11 +53,17 @@ const CreateComment = ({ user }: Props) => {
     onSettled: () => {
       reset();
 
-      return queryClient.invalidateQueries({
-        queryKey: useInfiniteCommentsQuery.getKey({
-          feedbackId,
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useInfiniteCommentsQuery.getKey({
+            feedbackId,
+          }),
         }),
-      });
+        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+        }),
+      ]);
     },
   });
 
