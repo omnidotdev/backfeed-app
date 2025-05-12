@@ -3,7 +3,6 @@
 import {
   Button,
   Dialog,
-  DialogProps,
   Icon,
   Stack,
   sigil,
@@ -11,6 +10,7 @@ import {
 } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
+import { FiEdit } from "react-icons/fi";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
@@ -22,8 +22,8 @@ import { DEBOUNCE_TIME, standardRegexSchema } from "lib/constants";
 import { useForm, useViewportSize } from "lib/hooks";
 import { toaster } from "lib/util";
 
+import type { DialogProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
-import { FiEdit } from "react-icons/fi";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
