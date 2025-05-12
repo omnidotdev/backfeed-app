@@ -2,20 +2,31 @@
 
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import { CharacterLimit } from "components/core";
 import {
+  Tier,
   useCreateFeedbackMutation,
   useProjectMetricsQuery,
   useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
+import { getProject } from "lib/actions";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
+import {
+  DEBOUNCE_TIME,
+  MAX_UNIQUE_USERS_FOR_FEEDBACK,
+  standardRegexSchema,
+  uuidSchema,
+} from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -41,21 +52,59 @@ const createFeedbackSchema = z.object({
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
-interface Props {
-  /** Whether a user is allowed to provide feedback. Based on subscription tier of project owner. */
-  canCreateFeedback: boolean;
-}
-
 /**
  * Create feedback form.
  */
-const CreateFeedback = ({ canCreateFeedback }: Props) => {
+const CreateFeedback = () => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
   }>();
+
+  const { data: canCreateFeedback } = useQuery({
+    queryKey: ["FreeTierFeedback", { organizationSlug, projectSlug }],
+    queryFn: async () => {
+      try {
+        const project = await getProject({ organizationSlug, projectSlug });
+
+        if (!project) return null;
+
+        const subscriptionTier =
+          project.organization?.members.nodes[0]?.user?.tier;
+
+        const activeUserCount = Number(
+          project.posts.aggregates?.distinctCount?.userId ?? 0,
+        );
+
+        const hasUserSubmittedFeedback = !!project.userPosts.nodes.length;
+
+        return {
+          subscriptionTier,
+          activeUserCount,
+          hasUserSubmittedFeedback,
+        };
+      } catch (error) {
+        return null;
+      }
+    },
+    placeholderData: keepPreviousData,
+    select: (data) => {
+      if (!data?.subscriptionTier) {
+        return false;
+      }
+
+      if (data.subscriptionTier === Tier.Free) {
+        return (
+          data.hasUserSubmittedFeedback ||
+          data.activeUserCount < MAX_UNIQUE_USERS_FOR_FEEDBACK
+        );
+      }
+
+      return true;
+    },
+  });
 
   const { user } = useAuth();
 
@@ -91,11 +140,13 @@ const CreateFeedback = ({ canCreateFeedback }: Props) => {
             projectId: projectId!,
           }),
         }),
-
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({
             projectId: projectId!,
           }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["FreeTierFeedback", { organizationSlug, projectSlug }],
         }),
       ]);
 

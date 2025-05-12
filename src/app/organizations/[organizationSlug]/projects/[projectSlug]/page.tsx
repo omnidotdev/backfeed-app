@@ -18,7 +18,6 @@ import {
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
-import { enableFeedbackFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 
@@ -56,35 +55,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const [project, canCreateFeedback] = await Promise.all([
-    getProject({ organizationSlug, projectSlug }),
-    enableFeedbackFlag.run({
-      identify: async () => {
-        try {
-          const project = await getProject({ organizationSlug, projectSlug });
-
-          if (!project) return null;
-
-          const subscriptionTier =
-            project.organization?.members.nodes[0]?.user?.tier;
-
-          const activeUserCount = Number(
-            project.posts.aggregates?.distinctCount?.userId ?? 0,
-          );
-
-          const hasUserSubmittedFeedback = !!project.userPosts.nodes.length;
-
-          return {
-            subscriptionTier,
-            activeUserCount,
-            hasUserSubmittedFeedback,
-          };
-        } catch (error) {
-          return null;
-        }
-      },
-    }),
-  ]);
+  const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();
 
@@ -200,11 +171,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
           ],
         }}
       >
-        <ProjectOverview
-          user={session.user}
-          projectId={project.rowId}
-          canCreateFeedback={canCreateFeedback}
-        />
+        <ProjectOverview user={session.user} projectId={project.rowId} />
       </Page>
     </HydrationBoundary>
   );

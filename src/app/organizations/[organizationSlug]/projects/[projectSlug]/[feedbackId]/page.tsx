@@ -17,8 +17,6 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import { getProject } from "lib/actions";
-import { enableCommentFlag } from "lib/flags";
 
 export const metadata = {
   title: app.feedbackPage.breadcrumb,
@@ -49,34 +47,10 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!feedback) notFound();
 
-  const [{ memberByUserIdAndOrganizationId }, canCreateComment] =
-    await Promise.all([
-      sdk.OrganizationRole({
-        userId: session.user?.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-      enableCommentFlag.run({
-        identify: async () => {
-          try {
-            const project = await getProject({ organizationSlug, projectSlug });
-
-            if (!project) return null;
-
-            const subscriptionTier =
-              project.organization?.members.nodes[0]?.user?.tier;
-
-            const totalComments = feedback.comments.totalCount;
-
-            return {
-              subscriptionTier,
-              totalComments,
-            };
-          } catch (error) {
-            return null;
-          }
-        },
-      }),
-    ]);
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user?.rowId!,
+    organizationId: feedback.project?.organization?.rowId!,
+  });
 
   const isAdmin =
     memberByUserIdAndOrganizationId?.role === Role.Admin ||
@@ -150,7 +124,6 @@ const FeedbackPage = async ({ params }: Props) => {
           user={session.user}
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
-          canCreateComment={canCreateComment}
         />
       </Page>
     </HydrationBoundary>

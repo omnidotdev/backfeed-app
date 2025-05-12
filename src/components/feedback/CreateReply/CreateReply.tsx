@@ -9,6 +9,7 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
+  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useInfiniteRepliesQuery,
 } from "generated/graphql";
@@ -56,7 +57,11 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
 
   const { user, isLoading: isAuthLoading } = useAuth();
 
-  const { feedbackId } = useParams<{ feedbackId: string }>();
+  const { organizationSlug, projectSlug, feedbackId } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+    feedbackId: string;
+  }>();
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
     onMutate: () => onReply?.(),
@@ -73,6 +78,14 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
           queryKey: useInfiniteRepliesQuery.getKey({
             commentId,
           }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["FreeTierComments", { organizationSlug, projectSlug }],
         }),
       ]);
     },

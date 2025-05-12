@@ -1,7 +1,12 @@
 "use client";
 
 import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
-import { useMutationState } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutationState,
+  useQuery,
+} from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -9,10 +14,14 @@ import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
+  Tier,
   useCreateCommentMutation,
+  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
+import { getProject } from "lib/actions";
 import { app } from "lib/config";
+import { MAX_FREE_TIER_COMMENTS } from "lib/constants";
 
 import type {
   CommentFragment,
@@ -29,19 +38,62 @@ interface Props {
   organizationId: Organization["rowId"];
   /** Feedback ID. */
   feedbackId: Post["rowId"];
-  /** Whether the user can create a comment. */
-  canCreateComment: boolean;
 }
 
 /**
  * Feedback comments section.
  */
-const Comments = ({
-  user,
-  organizationId,
-  feedbackId,
-  canCreateComment,
-}: Props) => {
+const Comments = ({ user, organizationId, feedbackId }: Props) => {
+  const { organizationSlug, projectSlug } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+  }>();
+
+  const { data: feedback } = useFeedbackByIdQuery(
+    {
+      rowId: feedbackId,
+    },
+    {
+      select: (data) => data?.post,
+    },
+  );
+
+  const { data: canCreateComment } = useQuery({
+    queryKey: ["FreeTierComments", { organizationSlug, projectSlug }],
+    queryFn: async () => {
+      try {
+        const project = await getProject({ organizationSlug, projectSlug });
+
+        if (!project) return null;
+
+        const subscriptionTier =
+          project.organization?.members.nodes[0]?.user?.tier;
+
+        const totalComments = feedback?.comments.totalCount;
+
+        return {
+          subscriptionTier,
+          totalComments,
+        };
+      } catch (error) {
+        return null;
+      }
+    },
+    enabled: !!feedback,
+    placeholderData: keepPreviousData,
+    select: (data) => {
+      if (!data?.subscriptionTier || data?.totalComments == null) {
+        return false;
+      }
+
+      if (data.subscriptionTier === Tier.Free) {
+        return data.totalComments < MAX_FREE_TIER_COMMENTS;
+      }
+
+      return true;
+    },
+  });
+
   const {
     data: comments,
     isLoading,
@@ -113,7 +165,7 @@ const Comments = ({
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack position="relative" mb="1px">
-        <CreateComment canCreateComment={canCreateComment} />
+        <CreateComment canCreateComment={canCreateComment ?? false} />
 
         <Divider mt={4} />
 
@@ -131,7 +183,7 @@ const Comments = ({
                     user={user}
                     comment={comment!}
                     organizationId={organizationId}
-                    canReply={canCreateComment}
+                    canReply={canCreateComment ?? false}
                     w="full"
                     minH={21}
                   />
