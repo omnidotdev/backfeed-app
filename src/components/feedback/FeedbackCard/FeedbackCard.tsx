@@ -53,8 +53,8 @@ interface ProjectStatus {
 interface Props extends HstackProps {
   /** Authenticated user. */
   user: Session["user"] | undefined;
-  /** Whether the user has permission to manage statuses. */
-  canManageStatus: boolean;
+  /** Whether the user has permission to manage statuses or delete feedback. */
+  canManageFeedback: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
   /** Whether the feedback is pending. */
@@ -68,7 +68,7 @@ interface Props extends HstackProps {
  */
 const FeedbackCard = ({
   user,
-  canManageStatus,
+  canManageFeedback,
   feedback,
   isPending = false,
   projectStatuses,
@@ -282,14 +282,14 @@ const FeedbackCard = ({
                 trigger={
                   <StatusBadge
                     status={feedback.status!}
-                    cursor={canManageStatus ? "pointer" : "default"}
+                    cursor={canManageFeedback ? "pointer" : "default"}
                     onClick={(evt) => evt.stopPropagation()}
                   >
-                    {canManageStatus && <Icon src={LuChevronDown} />}
+                    {canManageFeedback && <Icon src={LuChevronDown} />}
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageStatus || isUpdateStatusPending,
+                  disabled: !canManageFeedback || isUpdateStatusPending,
                 }}
                 positioning={{ strategy: "fixed" }}
               >
@@ -334,15 +334,17 @@ const FeedbackCard = ({
             </HStack>
 
             <HStack>
-              {isAuthor && (
-                <HStack>
+              <HStack>
+                {isAuthor && (
                   <UpdateFeedback
                     feedback={feedback}
                     triggerProps={{
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
+                )}
 
+                {(isAuthor || canManageFeedback) && (
                   <DestructiveAction
                     title={app.projectPage.projectFeedback.deleteFeedback.title}
                     description={
@@ -365,8 +367,8 @@ const FeedbackCard = ({
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
-                </HStack>
-              )}
+                )}
+              </HStack>
 
               <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
                 <Icon src={LuMessageCircle} h={4.5} w={4.5} />

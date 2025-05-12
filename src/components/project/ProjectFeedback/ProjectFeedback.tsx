@@ -264,7 +264,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                     <FeedbackCard
                       key={feedback?.rowId}
                       user={user}
-                      canManageStatus={isAdmin}
+                      canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
                       isPending={isPending}
