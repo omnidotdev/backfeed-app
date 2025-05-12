@@ -7,4 +7,5 @@ export { default as FeedbackCard } from "./FeedbackCard/FeedbackCard";
 export { default as FeedbackDetails } from "./FeedbackDetails/FeedbackDetails";
 export { default as Replies } from "./Replies/Replies";
 export { default as ReplyCard } from "./ReplyCard/ReplyCard";
+export { default as UpdateFeedback } from "./UpdateFeedback/UpdateFeedback";
 export { default as VotingButtons } from "./VotingButtons/VotingButtons";
