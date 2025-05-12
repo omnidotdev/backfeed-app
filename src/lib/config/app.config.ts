@@ -651,8 +651,7 @@ const app = {
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
-        "Choose the perfect plan for your business. All plans offer a 1-month free trial using our discount code:",
-      discountCode: "1MONTHFREE",
+        "Start for free. As your business grows, upgrade at anytime to fit your needs.",
       monthly: "Monthly",
       annual: "Annual",
       savings: "save 25%",
@@ -698,11 +697,6 @@ const app = {
     pricingFaq: {
       FAQ: "Frequently Asked Questions",
       items: [
-        {
-          title: "How does the 14-day trial work?",
-          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
-          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe to continue using Backfeed.",
-        },
         {
           title: "Can I switch plans later?",
           // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)

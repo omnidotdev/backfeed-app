@@ -23,6 +23,7 @@ import { API_BASE_URL, app } from "lib/config";
 import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
+import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
@@ -37,9 +38,33 @@ const COMING_SOON = "coming soon";
  */
 const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
   if (price.amountType !== "fixed" || isEnterpriseTier)
-    return app.pricingPage.pricingCard.customPricing;
+    return price.amountType === "free"
+      ? 0
+      : app.pricingPage.pricingCard.customPricing;
 
   return price.priceAmount / 100;
+};
+
+const sortBenefits = (benefits: Benefit[]) => {
+  const everythingInPrefix = "Everything in";
+  let everythingInBenefit: Benefit | undefined;
+  const otherBenefits: Benefit[] = [];
+
+  // Separate "Everything in..." benefit and other benefits
+  for (const benefit of benefits) {
+    if (benefit.description.startsWith(everythingInPrefix)) {
+      everythingInBenefit = benefit;
+    } else {
+      otherBenefits.push(benefit);
+    }
+  }
+
+  // Construct the new array with "Everything in..." at the front (if present)
+  if (everythingInBenefit) {
+    return [everythingInBenefit, ...otherBenefits];
+  }
+
+  return otherBenefits;
 };
 
 interface Props extends CardProps {
@@ -72,8 +97,8 @@ const PricingCard = ({ product, ...rest }: Props) => {
     <Card
       gap={4}
       w="full"
-      maxW={{ base: "2xl", lg: "xs" }}
-      h={{ lg: "2xl" }}
+      maxW={{ base: "2xl", xl: "xs" }}
+      h={{ xl: "2xl" }}
       outline={isRecommendedTier ? "solid 2px" : undefined}
       outlineColor="brand.primary"
       outlineOffset={1.5}
@@ -178,7 +203,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
-            {product.benefits.map((feature) => {
+            {sortBenefits(product.benefits).map((feature) => {
               const isComingSoon = (
                 feature.properties as BenefitCustomProperties
               ).note
