@@ -1,5 +1,6 @@
 "use client";
 
+import { Format } from "@ark-ui/react";
 import {
   Avatar,
   Button,
@@ -26,6 +27,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
+import { setSingularOrPlural } from "lib/util";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { CommentFragment, Organization } from "generated/graphql";
@@ -51,7 +53,11 @@ const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
   const { isOpen: isReplyFormOpen, onToggle: onToggleReplyForm } =
     useDisclosure();
 
-  const { isOpen: isRepliesOpen, onToggle: onToggleReplies } = useDisclosure();
+  const {
+    isOpen: isRepliesOpen,
+    onOpen: onOpenReplies,
+    onToggle: onToggleReplies,
+  } = useDisclosure();
 
   const { feedbackId } = useParams<{
     feedbackId: string;
@@ -160,9 +166,34 @@ const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
             </Button>
 
             {!!comment.childComments.totalCount && (
-              <Text fontSize="sm" mt="1px">
-                {comment.childComments.totalCount} Replies
-              </Text>
+              <Button
+                gap={0.5}
+                variant="ghost"
+                bgColor="transparent"
+                px={0}
+                onClick={onToggleReplies}
+                color={{
+                  base: "foreground.subtle",
+                  _disabled: "foreground.disabled",
+                  _hover: {
+                    base: "foreground.muted",
+                    _disabled: "foreground.disabled",
+                  },
+                }}
+              >
+                <Format.Number
+                  value={comment.childComments.totalCount}
+                  notation="compact"
+                />
+
+                <Text fontSize="sm" mt="1px">
+                  {setSingularOrPlural({
+                    value: comment.childComments.totalCount,
+                    label: "Reply",
+                    plural: "Replies",
+                  })}
+                </Text>
+              </Button>
             )}
           </HStack>
         </Stack>
@@ -189,7 +220,11 @@ const CommentCard = ({ user, comment, organizationId, ...rest }: Props) => {
         />
       )}
 
-      <CreateReply commentId={comment.rowId} open={isReplyFormOpen} />
+      <CreateReply
+        commentId={comment.rowId}
+        open={isReplyFormOpen}
+        onReply={onOpenReplies}
+      />
 
       <Replies
         user={user}

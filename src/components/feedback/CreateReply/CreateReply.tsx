@@ -42,12 +42,14 @@ const createReplySchema = z.object({
 interface Props extends CollapsibleProps {
   /** Comment ID. */
   commentId: Comment["rowId"];
+  /** Optional handler to apply when a reply is sent. */
+  onReply?: () => void;
 }
 
 /**
  * Create reply form.
  */
-const CreateReply = ({ commentId, ...rest }: Props) => {
+const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -55,6 +57,7 @@ const CreateReply = ({ commentId, ...rest }: Props) => {
   const { feedbackId } = useParams<{ feedbackId: string }>();
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
+    onMutate: () => onReply?.(),
     onSettled: () => {
       reset();
 
