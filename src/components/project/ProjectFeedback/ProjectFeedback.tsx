@@ -131,6 +131,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           slug: "pending",
         },
         user: {
+          rowId: user?.rowId ?? "",
           username: user?.username,
         },
         comments: {
@@ -265,7 +266,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
-                      canManageStatus={isAdmin}
+                      user={user}
+                      canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
                       isPending={isPending}
