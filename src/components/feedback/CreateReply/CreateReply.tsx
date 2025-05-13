@@ -58,21 +58,20 @@ const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
     onMutate: () => onReply?.(),
-    onSettled: () => {
+    onSettled: async () => {
       reset();
 
-      return Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: useInfiniteCommentsQuery.getKey({
-            feedbackId,
-          }),
+      await queryClient.invalidateQueries({
+        queryKey: useInfiniteCommentsQuery.getKey({
+          feedbackId,
         }),
-        queryClient.invalidateQueries({
-          queryKey: useInfiniteRepliesQuery.getKey({
-            commentId,
-          }),
+      });
+
+      return queryClient.invalidateQueries({
+        queryKey: useInfiniteRepliesQuery.getKey({
+          commentId,
         }),
-      ]);
+      });
     },
   });
 
