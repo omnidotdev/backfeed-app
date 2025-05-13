@@ -1,11 +1,7 @@
 "use client";
 
 import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
-import {
-  keepPreviousData,
-  useMutationState,
-  useQuery,
-} from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -14,14 +10,11 @@ import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
-  Tier,
   useCreateCommentMutation,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
-import { getProject } from "lib/actions";
 import { app } from "lib/config";
-import { MAX_FREE_TIER_COMMENTS } from "lib/constants";
+import { freeTierCommentsOptions } from "lib/options";
 
 import type {
   CommentFragment,
@@ -49,50 +42,9 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     projectSlug: string;
   }>();
 
-  const { data: feedback } = useFeedbackByIdQuery(
-    {
-      rowId: feedbackId,
-    },
-    {
-      select: (data) => data?.post,
-    },
+  const { data: canCreateComment } = useQuery(
+    freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
   );
-
-  const { data: canCreateComment } = useQuery({
-    queryKey: ["FreeTierComments", { organizationSlug, projectSlug }],
-    queryFn: async () => {
-      try {
-        const project = await getProject({ organizationSlug, projectSlug });
-
-        if (!project) return null;
-
-        const subscriptionTier =
-          project.organization?.members.nodes[0]?.user?.tier;
-
-        const totalComments = feedback?.comments.totalCount;
-
-        return {
-          subscriptionTier,
-          totalComments,
-        };
-      } catch (error) {
-        return null;
-      }
-    },
-    enabled: !!feedback,
-    placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data?.subscriptionTier || data?.totalComments == null) {
-        return false;
-      }
-
-      if (data.subscriptionTier === Tier.Free) {
-        return data.totalComments < MAX_FREE_TIER_COMMENTS;
-      }
-
-      return true;
-    },
-  });
 
   const {
     data: comments,

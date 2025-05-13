@@ -17,6 +17,7 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { CollapsibleProps } from "@omnidev/sigil";
@@ -84,9 +85,13 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
             rowId: feedbackId,
           }),
         }),
-        queryClient.invalidateQueries({
-          queryKey: ["FreeTierComments", { organizationSlug, projectSlug }],
-        }),
+        queryClient.invalidateQueries(
+          freeTierCommentsOptions({
+            organizationSlug,
+            projectSlug,
+            feedbackId,
+          }),
+        ),
       ]);
     },
   });

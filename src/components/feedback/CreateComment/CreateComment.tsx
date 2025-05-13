@@ -15,6 +15,7 @@ import {
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 const MAX_COMMENT_LENGTH = 240;
@@ -68,9 +69,13 @@ const CreateComment = ({ canCreateComment }: Props) => {
             rowId: feedbackId,
           }),
         }),
-        queryClient.invalidateQueries({
-          queryKey: ["FreeTierComments", { organizationSlug, projectSlug }],
-        }),
+        queryClient.invalidateQueries(
+          freeTierCommentsOptions({
+            organizationSlug,
+            projectSlug,
+            feedbackId,
+          }),
+        ),
       ]);
     },
   });

@@ -11,7 +11,7 @@ interface Props extends InputProps {
   label?: string;
   /** Additional props for the error component. */
   errorProps?: Partial<FormFieldErrorProps>;
-  /** Content to display for tooltip. */
+  /** Content to display for tooltip when input is disabled. */
   tooltip?: string;
 }
 

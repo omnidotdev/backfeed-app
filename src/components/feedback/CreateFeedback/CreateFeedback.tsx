@@ -2,32 +2,22 @@
 
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import { CharacterLimit } from "components/core";
 import {
-  Tier,
   useCreateFeedbackMutation,
   useProjectMetricsQuery,
   useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
-import { getProject } from "lib/actions";
 import { app } from "lib/config";
-import {
-  DEBOUNCE_TIME,
-  MAX_UNIQUE_USERS_FOR_FEEDBACK,
-  standardRegexSchema,
-  uuidSchema,
-} from "lib/constants";
+import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { freeTierFeedbackOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 500;
@@ -63,48 +53,9 @@ const CreateFeedback = () => {
     projectSlug: string;
   }>();
 
-  const { data: canCreateFeedback } = useQuery({
-    queryKey: ["FreeTierFeedback", { organizationSlug, projectSlug }],
-    queryFn: async () => {
-      try {
-        const project = await getProject({ organizationSlug, projectSlug });
-
-        if (!project) return null;
-
-        const subscriptionTier =
-          project.organization?.members.nodes[0]?.user?.tier;
-
-        const activeUserCount = Number(
-          project.posts.aggregates?.distinctCount?.userId ?? 0,
-        );
-
-        const hasUserSubmittedFeedback = !!project.userPosts.nodes.length;
-
-        return {
-          subscriptionTier,
-          activeUserCount,
-          hasUserSubmittedFeedback,
-        };
-      } catch (error) {
-        return null;
-      }
-    },
-    placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data?.subscriptionTier) {
-        return false;
-      }
-
-      if (data.subscriptionTier === Tier.Free) {
-        return (
-          data.hasUserSubmittedFeedback ||
-          data.activeUserCount < MAX_UNIQUE_USERS_FOR_FEEDBACK
-        );
-      }
-
-      return true;
-    },
-  });
+  const { data: canCreateFeedback } = useQuery(
+    freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+  );
 
   const { user } = useAuth();
 
@@ -145,9 +96,9 @@ const CreateFeedback = () => {
             projectId: projectId!,
           }),
         }),
-        queryClient.invalidateQueries({
-          queryKey: ["FreeTierFeedback", { organizationSlug, projectSlug }],
-        }),
+        queryClient.invalidateQueries(
+          freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+        ),
       ]);
 
       return queryClient.invalidateQueries({
