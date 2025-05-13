@@ -647,7 +647,7 @@ const app = {
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
-        "Start for free. As your business grows, upgrade at anytime to fit your needs.",
+        "Start for free. As your business grows, upgrade to fit your needs.",
       monthly: "Monthly",
       annual: "Annual",
       savings: "save 25%",
