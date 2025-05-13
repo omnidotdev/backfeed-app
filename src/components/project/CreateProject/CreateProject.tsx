@@ -63,25 +63,16 @@ const DEFAULT_POST_STATUSES = [
 /** Schema for defining the shape of the create project form fields, as well as validating the form. */
 const createProjectSchema = z
   .object({
-    canCreateProjects: z.boolean(),
     organizationId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
   })
-  .superRefine(async ({ canCreateProjects, organizationId, name }, ctx) => {
+  .superRefine(async ({ organizationId, name }, ctx) => {
     const session = await getAuthSession();
 
     const slug = generateSlug(name);
 
     if (!organizationId.length || !slug?.length || !session) return z.NEVER;
-
-    if (!canCreateProjects) {
-      ctx.addIssue({
-        code: "custom",
-        message: app.dashboardPage.cta.newProject.organizationId.error.max,
-        path: ["organizationId"],
-      });
-    }
 
     const sdk = getSdk({ session });
 
@@ -100,8 +91,6 @@ const createProjectSchema = z
   });
 
 interface Props {
-  /** Whether the authenticated user can create additional projects. */
-  canCreateProjects: boolean;
   /** Slug of the organization to create the project under. */
   organizationSlug: string;
 }
@@ -109,7 +98,7 @@ interface Props {
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ canCreateProjects, organizationSlug }: Props) => {
+const CreateProject = ({ organizationSlug }: Props) => {
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -140,9 +129,6 @@ const CreateProject = ({ canCreateProjects, organizationSlug }: Props) => {
     },
   );
 
-  // NB: must be subscribed and have admin privileges (validated in `canCreateProjects`). If the user has team tier privileges, enabled. Otherwise, check the number of projects for the organization
-  const isCreateProjectEnabled = !!organization && canCreateProjects;
-
   useHotkeys(
     "mod+p",
     () => {
@@ -150,13 +136,13 @@ const CreateProject = ({ canCreateProjects, organizationSlug }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateOrganizationDialogOpen && isCreateProjectEnabled,
+      enabled: !isCreateOrganizationDialogOpen && !!organization,
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [isOpen, isCreateOrganizationDialogOpen, isCreateProjectEnabled],
+    [isOpen, isCreateOrganizationDialogOpen, organization],
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
@@ -177,7 +163,6 @@ const CreateProject = ({ canCreateProjects, organizationSlug }: Props) => {
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      canCreateProjects,
       organizationId: organization?.rowId ?? "",
       name: "",
       description: "",

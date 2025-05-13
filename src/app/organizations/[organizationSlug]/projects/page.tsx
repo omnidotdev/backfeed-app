@@ -137,10 +137,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
         {/* dialogs */}
         {canCreateProjects && (
-          <CreateProject
-            canCreateProjects={canCreateProjects}
-            organizationSlug={organizationSlug}
-          />
+          <CreateProject organizationSlug={organizationSlug} />
         )}
       </Page>
     </HydrationBoundary>
