@@ -50,6 +50,7 @@ const TextareaField = ({
           evt.preventDefault();
           evt.stopPropagation();
         },
+        tabIndex: -1,
         style: {
           all: "unset",
         },
