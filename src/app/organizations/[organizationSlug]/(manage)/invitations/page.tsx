@@ -90,6 +90,7 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
         {/* dialogs */}
         <InviteMember
+          user={session.user}
           organizationName={organization.name!}
           organizationId={organization.rowId}
         />

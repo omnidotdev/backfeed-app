@@ -23,7 +23,8 @@ import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
-import type { Organization, User } from "generated/graphql";
+import type { Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -33,8 +34,8 @@ const transferOwnershipDetails =
   app.organizationSettingsPage.cta.transferOwnership;
 
 interface Props {
-  /** User ID. */
-  userId: User["rowId"] | undefined;
+  /** Authenticated user. */
+  user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Whether the transfer ownership functionality is enabled. */
@@ -43,7 +44,7 @@ interface Props {
 
 /** Organization settings. */
 const OrganizationSettings = ({
-  userId,
+  user,
   organizationId,
   isOwnershipTransferEnabled,
 }: Props) => {
@@ -80,14 +81,14 @@ const OrganizationSettings = ({
   );
 
   const { isOwner, membershipId } = useOrganizationMembership({
-    userId,
+    userId: user.rowId,
     organizationId,
   });
 
   const onSettled = () =>
     queryClient.invalidateQueries({
       queryKey: useOrganizationRoleQuery.getKey({
-        userId: userId!,
+        userId: user.rowId!,
         organizationId,
       }),
     });
@@ -166,7 +167,7 @@ const OrganizationSettings = ({
 
   return (
     <Stack gap={6}>
-      <UpdateOrganization />
+      <UpdateOrganization user={user} />
 
       <SectionContainer
         title={app.organizationSettingsPage.dangerZone.title}

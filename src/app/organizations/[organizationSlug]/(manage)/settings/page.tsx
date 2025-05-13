@@ -90,7 +90,7 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
-          userId={session?.user.rowId}
+          user={session.user}
           organizationId={organization.rowId}
           isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />

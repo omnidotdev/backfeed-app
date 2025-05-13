@@ -14,8 +14,10 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_COMMENT_LENGTH = 240;
 
@@ -34,13 +36,16 @@ const createCommentSchema = z.object({
     ),
 });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+}
+
 /**
  * Create comment form.
  */
-const CreateComment = () => {
+const CreateComment = ({ user }: Props) => {
   const queryClient = useQueryClient();
-
-  const { user } = useAuth();
 
   const { feedbackId } = useParams<{ feedbackId: string }>();
 

@@ -16,8 +16,10 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -41,18 +43,21 @@ const createFeedbackSchema = z.object({
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+}
+
 /**
  * Create feedback form.
  */
-const CreateFeedback = () => {
+const CreateFeedback = ({ user }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
   }>();
-
-  const { user } = useAuth();
 
   const { data: projectId } = useProjectQuery(
     {
