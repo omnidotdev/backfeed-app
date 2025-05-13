@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, sigil } from "@omnidev/sigil";
+import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -17,7 +17,9 @@ import {
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
 import { toaster } from "lib/util";
+import { DialogType } from "store";
 
 import type { Session } from "next-auth";
 
@@ -58,6 +60,11 @@ const CreateFeedback = ({ user }: Props) => {
     organizationSlug: string;
     projectSlug: string;
   }>();
+
+  // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
+  const { isOpen, setIsOpen } = useDialogStore({
+    type: DialogType.CreateFeedback,
+  });
 
   const { data: projectId } = useProjectQuery(
     {
@@ -156,60 +163,68 @@ const CreateFeedback = ({ user }: Props) => {
   );
 
   return (
-    <sigil.form
-      display="flex"
-      flexDirection="column"
-      gap={2}
-      onSubmit={async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        await handleSubmit();
+    <Collapsible
+      onOpenChange={({ open }) => {
+        reset();
+        setIsOpen(open);
       }}
+      open={isOpen}
     >
-      <AppField name="title">
-        {({ InputField }) => (
-          <InputField
-            label={app.projectPage.projectFeedback.feedbackTitle.label}
-            placeholder={
-              app.projectPage.projectFeedback.feedbackTitle.placeholder
-            }
-            disabled={!user}
-          />
-        )}
-      </AppField>
+      <sigil.form
+        display="flex"
+        flexDirection="column"
+        gap={2}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await handleSubmit();
+        }}
+      >
+        <AppField name="title">
+          {({ InputField }) => (
+            <InputField
+              label={app.projectPage.projectFeedback.feedbackTitle.label}
+              placeholder={
+                app.projectPage.projectFeedback.feedbackTitle.placeholder
+              }
+              disabled={!user}
+            />
+          )}
+        </AppField>
 
-      <AppField name="description">
-        {({ TextareaField }) => (
-          <TextareaField
-            label={app.projectPage.projectFeedback.feedbackDescription.label}
-            placeholder={
-              app.projectPage.projectFeedback.feedbackDescription.placeholder
-            }
-            rows={5}
-            minH={32}
-            maxLength={MAX_DESCRIPTION_LENGTH}
-            disabled={!user}
-          />
-        )}
-      </AppField>
+        <AppField name="description">
+          {({ TextareaField }) => (
+            <TextareaField
+              label={app.projectPage.projectFeedback.feedbackDescription.label}
+              placeholder={
+                app.projectPage.projectFeedback.feedbackDescription.placeholder
+              }
+              rows={5}
+              minH={32}
+              maxLength={MAX_DESCRIPTION_LENGTH}
+              disabled={!user}
+            />
+          )}
+        </AppField>
 
-      <Stack justify="space-between" direction="row">
-        <CharacterLimit
-          value={descriptionLength}
-          max={MAX_DESCRIPTION_LENGTH}
-          placeSelf="flex-start"
-        />
-
-        <AppForm>
-          <SubmitForm
-            action={app.projectPage.projectFeedback.action}
-            isPending={isPending}
-            w="fit-content"
-            placeSelf="flex-end"
+        <Stack justify="space-between" direction="row">
+          <CharacterLimit
+            value={descriptionLength}
+            max={MAX_DESCRIPTION_LENGTH}
+            placeSelf="flex-start"
           />
-        </AppForm>
-      </Stack>
-    </sigil.form>
+
+          <AppForm>
+            <SubmitForm
+              action={app.projectPage.projectFeedback.action}
+              isPending={isPending}
+              w="fit-content"
+              placeSelf="flex-end"
+            />
+          </AppForm>
+        </Stack>
+      </sigil.form>
+    </Collapsible>
   );
 };
 

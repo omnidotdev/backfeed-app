@@ -216,15 +216,14 @@ const FeedbackCard = ({
   return (
     <HStack
       position="relative"
-      gap={8}
       bgColor="background.default"
       borderRadius="lg"
-      p={{ base: 4, sm: 6 }}
+      p={4}
       opacity={isPending ? 0.5 : 1}
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
-      <Stack w="full">
+      <Stack w="full" gap={0}>
         <HStack justify="space-between">
           <Stack gap={1}>
             <Text
@@ -333,7 +332,7 @@ const FeedbackCard = ({
               </Text>
             </HStack>
 
-            <HStack>
+            <HStack mb={-2}>
               <HStack>
                 {isAuthor && (
                   <UpdateFeedback

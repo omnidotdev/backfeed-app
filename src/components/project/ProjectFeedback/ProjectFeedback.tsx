@@ -2,7 +2,7 @@
 
 import { createListCollection } from "@ark-ui/react";
 import {
-  Divider,
+  Button,
   Grid,
   Input,
   Select,
@@ -26,6 +26,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
+  useDebounceValue,
   useHandleSearch,
   useOrganizationMembership,
   useSearchParams,
@@ -36,7 +37,9 @@ import type {
   FeedbackFragment,
   Project,
 } from "generated/graphql";
+import { useDialogStore } from "lib/hooks/store";
 import type { Session } from "next-auth";
+import { DialogType } from "store";
 
 const SORT_BY_OPTIONS = [
   {
@@ -55,7 +58,7 @@ const SORT_BY_OPTIONS = [
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Project ID. */
   projectId: Project["rowId"];
 }
@@ -151,8 +154,19 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     [];
 
   const { isAdmin } = useOrganizationMembership({
-    userId: user.rowId,
+    userId: user?.rowId,
     organizationId: posts?.[0]?.project?.organization?.rowId,
+  });
+
+  const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
+    useDialogStore({
+      type: DialogType.CreateFeedback,
+    });
+
+  // debounced value is to allow for collapse animation to finish prior to changing maxH of scrollable container (prevent potential layout shit on larger viewports)
+  const [debouncedIsCreateFeedbackOpen] = useDebounceValue({
+    value: isCreateFeedbackOpen,
+    delay: 250,
   });
 
   const { data: projectStatuses } = useProjectStatusesQuery(
@@ -207,11 +221,23 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
+      {user && (
+        <Button
+          position="absolute"
+          size="sm"
+          top={{ base: 4, sm: 6 }}
+          right={{ base: 4, sm: 6 }}
+          variant="outline"
+          colorPalette="brand.primary"
+          onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
+        >
+          {app.projectPage.projectFeedback.createFeedback.title}
+        </Button>
+      )}
+
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
-        <CreateFeedback user={user} />
-
-        <Divider mt={4} />
+        {user && <CreateFeedback user={user} />}
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
           <Input
@@ -247,7 +273,14 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           <Grid
             gap={2}
             mt={4}
-            maxH="md"
+            maxH={
+              isCreateFeedbackOpen
+                ? "md"
+                : debouncedIsCreateFeedbackOpen
+                  ? "md"
+                  : { base: "xl", md: "3xl" }
+            }
+            transitionTimingFunction="default"
             overflow="auto"
             scrollbar="hidden"
             // NB: the padding is necessary to prevent clipping of the card borders/box shadows
