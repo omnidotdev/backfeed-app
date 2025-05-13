@@ -164,7 +164,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 css={css.raw({ ml: -1.5 })}
                 color="foreground.subtle"
               >
-                /{app.pricingPage.pricingCard.user}/
+                /
                 {isPerMonthPricing
                   ? app.pricingPage.pricingCard.month
                   : app.pricingPage.pricingCard.year}
