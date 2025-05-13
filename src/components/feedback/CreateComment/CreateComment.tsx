@@ -136,6 +136,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
             fontSize="sm"
             minH={16}
             disabled={isAuthLoading || !canCreateComment}
+            tooltip={app.feedbackPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               top: -6,

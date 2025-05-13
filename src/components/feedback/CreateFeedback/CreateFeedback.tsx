@@ -225,6 +225,7 @@ const CreateFeedback = () => {
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
             disabled={!canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>
@@ -240,6 +241,7 @@ const CreateFeedback = () => {
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
             disabled={!canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>

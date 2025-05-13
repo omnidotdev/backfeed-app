@@ -270,7 +270,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
-                      isPending={isPending}
                       w="full"
                       minH={21}
                       borderRadius="md"

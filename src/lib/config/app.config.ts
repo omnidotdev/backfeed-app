@@ -906,6 +906,7 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
+      disabled: "Maximum amount of feedback reached.",
       search: {
         placeholder: "Search feedback...",
       },
@@ -1023,6 +1024,7 @@ const app = {
     },
     comments: {
       endOf: "End of Comments",
+      disabled: "Maximum number of comments reached.",
       createComment: {
         pending: "Adding comment...",
         success: {
