@@ -49,7 +49,7 @@ const freeTierCommentsOptions = ({
     },
     placeholderData: keepPreviousData,
     select: (data) => {
-      if (!data?.subscriptionTier || data?.totalComments == null) {
+      if (!data?.subscriptionTier) {
         return false;
       }
 
