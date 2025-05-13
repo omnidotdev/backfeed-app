@@ -65,7 +65,7 @@
     "@tanstack/react-table": "^8.21.2",
     "@theme-toggles/react": "^4.1.0",
     "dayjs": "^1.11.13",
-    "flags": "^3.2.0",
+    "flags": "^4.0.0",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
     "ms": "^2.1.3",
