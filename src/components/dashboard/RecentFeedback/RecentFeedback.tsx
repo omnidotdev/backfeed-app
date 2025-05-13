@@ -8,16 +8,19 @@ import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 import type { Post } from "generated/graphql";
+import type { Session } from "next-auth";
+
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
+}
 
 /**
  * Recent feedback section.
  */
-const RecentFeedback = () => {
-  const { user } = useAuth();
-
+const RecentFeedback = ({ user }: Props) => {
   const {
     data: recentFeedback,
     isLoading,
@@ -26,7 +29,7 @@ const RecentFeedback = () => {
     fetchNextPage,
   } = useInfiniteRecentFeedbackQuery(
     {
-      userId: user?.rowId!,
+      userId: user.rowId!,
     },
     {
       initialPageParam: undefined,

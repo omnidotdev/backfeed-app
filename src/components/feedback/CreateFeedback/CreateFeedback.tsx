@@ -16,9 +16,11 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { freeTierFeedbackOptions } from "lib/options";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -42,10 +44,15 @@ const createFeedbackSchema = z.object({
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+}
+
 /**
  * Create feedback form.
  */
-const CreateFeedback = () => {
+const CreateFeedback = ({ user }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -56,8 +63,6 @@ const CreateFeedback = () => {
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({ organizationSlug, projectSlug }),
   );
-
-  const { user } = useAuth();
 
   const { data: projectId } = useProjectQuery(
     {
@@ -175,7 +180,7 @@ const CreateFeedback = () => {
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
-            disabled={!canCreateFeedback}
+            disabled={!user || !canCreateFeedback}
             tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
@@ -191,7 +196,7 @@ const CreateFeedback = () => {
             rows={5}
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
-            disabled={!canCreateFeedback}
+            disabled={!user || !canCreateFeedback}
             tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
@@ -210,7 +215,7 @@ const CreateFeedback = () => {
             isPending={isPending}
             w="fit-content"
             placeSelf="flex-end"
-            disabled={!canCreateFeedback}
+            disabled={!user || !canCreateFeedback}
           />
         </AppForm>
       </Stack>

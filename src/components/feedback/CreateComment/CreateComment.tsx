@@ -14,9 +14,11 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_COMMENT_LENGTH = 240;
 
@@ -36,6 +38,8 @@ const createCommentSchema = z.object({
 });
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Whether the user can create a comment. */
   canCreateComment: boolean;
 }
@@ -43,10 +47,8 @@ interface Props {
 /**
  * Create comment form.
  */
-const CreateComment = ({ canCreateComment }: Props) => {
+const CreateComment = ({ user, canCreateComment }: Props) => {
   const queryClient = useQueryClient();
-
-  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { organizationSlug, projectSlug, feedbackId } = useParams<{
     organizationSlug: string;
@@ -140,7 +142,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
-            disabled={isAuthLoading || !canCreateComment}
+            disabled={!user || !canCreateComment}
             tooltip={app.feedbackPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
@@ -161,7 +163,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
           <SubmitForm
             action={app.feedbackPage.comments.action}
             isPending={isPending}
-            disabled={!canCreateComment}
+            disabled={!user || !canCreateComment}
           />
         </AppForm>
       </Stack>

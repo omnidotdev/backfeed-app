@@ -215,7 +215,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
-        <CreateFeedback />
+        <CreateFeedback user={user} />
 
         <Divider mt={4} />
 

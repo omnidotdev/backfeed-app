@@ -117,7 +117,10 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack position="relative" mb="1px">
-        <CreateComment canCreateComment={canCreateComment ?? false} />
+        <CreateComment
+          user={user}
+          canCreateComment={canCreateComment ?? false}
+        />
 
         <Divider mt={4} />
 

@@ -6,7 +6,6 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   AddOwner,
-  InviteMember,
   Members,
   MembershipFilters,
   Owners,
@@ -136,18 +135,13 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
         <MembershipFilters />
 
-        <Members organizationId={organization.rowId} />
+        <Members user={session.user} organizationId={organization.rowId} />
 
         {/* dialogs */}
         {/* TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now. */}
         {isOwnershipTransferEnabled && (
           <AddOwner organizationId={organization.rowId} />
         )}
-
-        <InviteMember
-          organizationName={organization.name!}
-          organizationId={organization.rowId}
-        />
       </Page>
     </HydrationBoundary>
   );
