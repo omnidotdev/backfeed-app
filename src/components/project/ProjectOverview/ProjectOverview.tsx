@@ -34,6 +34,7 @@ const ProjectOverview = ({ user, projectId }: Props) => {
           data?.project?.posts.aggregates?.distinctCount?.userId,
         ),
         totalFeedback: data?.project?.posts.totalCount,
+        // TODO: discuss adjusting this. Could include comments + replies, would have to add appropriate invalidations as well
         totalEngagement:
           (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
       }),
