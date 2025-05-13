@@ -12,6 +12,7 @@ import {
   useOrganizationRoleQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
+import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { freeTierCommentsOptions } from "lib/options";
@@ -44,7 +45,7 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
+  const feedback = await getFeedback({ feedbackId });
 
   if (!feedback) notFound();
 
