@@ -21,6 +21,9 @@ interface Props {
   projectId: Project["rowId"];
 }
 
+/**
+ * Project overview.
+ */
 const ProjectOverview = ({ user, projectId }: Props) => {
   // TODO: look into optimistic updates. Unnecessary for now, but would be nice for synchronous feedback with the details component. See: https://github.com/omnidotdev/backfeed-app/pull/58#issuecomment-2593070248 for more context.
   const { data, isLoading, isError } = useProjectMetricsQuery(
