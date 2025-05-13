@@ -137,6 +137,9 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         comments: {
           totalCount: 0,
         },
+        commentsWithReplies: {
+          totalCount: 0,
+        },
         upvotes: {
           totalCount: 0,
         },
