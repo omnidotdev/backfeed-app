@@ -6,7 +6,6 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   AddOwner,
-  InviteMember,
   Members,
   MembershipFilters,
   Owners,
@@ -143,12 +142,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         {isOwnershipTransferEnabled && (
           <AddOwner organizationId={organization.rowId} />
         )}
-
-        <InviteMember
-          user={session.user}
-          organizationName={organization.name!}
-          organizationId={organization.rowId}
-        />
       </Page>
     </HydrationBoundary>
   );
