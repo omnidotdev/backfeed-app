@@ -25,7 +25,10 @@ fragment Feedback on Post {
     rowId
     username
   }
-  comments {
+  comments(condition: { parentId: null }) {
+    totalCount
+  }
+  commentsWithReplies: comments {
     totalCount
   }
   upvotes {

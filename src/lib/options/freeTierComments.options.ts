@@ -41,7 +41,7 @@ const freeTierCommentsOptions = ({
 
         return {
           subscriptionTier,
-          totalComments: feedback?.comments.totalCount ?? 0,
+          totalComments: feedback?.commentsWithReplies.totalCount ?? 0,
         };
       } catch (error) {
         return null;
