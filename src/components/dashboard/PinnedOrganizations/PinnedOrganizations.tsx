@@ -17,7 +17,7 @@ import type { Session } from "next-auth";
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Whether the authenticated user can create an organizations. */
+  /** Whether the authenticated user can create organizations. */
   canCreateOrganizations: boolean;
   /** Whether the authenticated user is subscribed. */
   isSubscribed: boolean;
