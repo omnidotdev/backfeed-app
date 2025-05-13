@@ -18,18 +18,12 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import {
   DEBOUNCE_TIME,
-  MAX_NUMBER_OF_PROJECTS,
   projectDescriptionSchema,
   projectNameSchema,
   uuidSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import {
-  useAuth,
-  useForm,
-  useOrganizationMembership,
-  useViewportSize,
-} from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
 import { DialogType } from "store";
@@ -69,41 +63,32 @@ const DEFAULT_POST_STATUSES = [
 /** Schema for defining the shape of the create project form fields, as well as validating the form. */
 const createProjectSchema = z
   .object({
-    isTeamTier: z.boolean(),
+    canCreateProjects: z.boolean(),
     organizationId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
   })
-  .superRefine(async ({ isTeamTier, organizationId, name }, ctx) => {
+  .superRefine(async ({ canCreateProjects, organizationId, name }, ctx) => {
     const session = await getAuthSession();
 
     const slug = generateSlug(name);
 
     if (!organizationId.length || !slug?.length || !session) return z.NEVER;
 
-    const sdk = getSdk({ session });
-
-    const [{ organizations }, { projectBySlugAndOrganizationId }] =
-      await Promise.all([
-        sdk.Organizations({
-          organizationId,
-        }),
-        sdk.ProjectBySlug({
-          organizationId,
-          slug,
-        }),
-      ]);
-
-    const numberOfProjects =
-      organizations?.nodes?.[0]?.projects?.totalCount ?? 0;
-
-    if (!isTeamTier && numberOfProjects >= MAX_NUMBER_OF_PROJECTS) {
+    if (!canCreateProjects) {
       ctx.addIssue({
         code: "custom",
         message: app.dashboardPage.cta.newProject.organizationId.error.max,
         path: ["organizationId"],
       });
     }
+
+    const sdk = getSdk({ session });
+
+    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
+      organizationId,
+      slug,
+    });
 
     if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
@@ -115,10 +100,8 @@ const createProjectSchema = z
   });
 
 interface Props {
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
-  /** Whether the user has team tier subscription permissions. */
-  isTeamTier: boolean;
+  /** Whether the authenticated user can create additional projects. */
+  canCreateProjects: boolean;
   /** Slug of the organization to create the project under. */
   organizationSlug: string;
 }
@@ -126,11 +109,7 @@ interface Props {
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({
-  isBasicTier,
-  isTeamTier,
-  organizationSlug,
-}: Props) => {
+const CreateProject = ({ canCreateProjects, organizationSlug }: Props) => {
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -161,17 +140,8 @@ const CreateProject = ({
     },
   );
 
-  const { isAdmin } = useOrganizationMembership({
-    organizationId: organization?.rowId,
-    userId: user?.rowId,
-  });
-
-  // NB: must be subscribed and have admin privileges. If the user has team tier privileges, enabled. Otherwise, check the number of projects for the organization
-  const isCreateProjectEnabled =
-    !!organization &&
-    isBasicTier &&
-    isAdmin &&
-    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
+  // NB: must be subscribed and have admin privileges (validated in `canCreateProjects`). If the user has team tier privileges, enabled. Otherwise, check the number of projects for the organization
+  const isCreateProjectEnabled = !!organization && canCreateProjects;
 
   useHotkeys(
     "mod+p",
@@ -207,7 +177,7 @@ const CreateProject = ({
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      isTeamTier,
+      canCreateProjects,
       organizationId: organization?.rowId ?? "",
       name: "",
       description: "",

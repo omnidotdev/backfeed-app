@@ -16,7 +16,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
-  enableBasicTierPrivilegesFlag,
+  enableFreeTierPrivilegesFlag,
   enableTeamTierPrivilegesFlag,
 } from "lib/flags";
 import { getSdk } from "lib/graphql";
@@ -48,15 +48,19 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const [{ organizations }, isBasicTier, isTeamTier] = await Promise.all([
+  const [{ organizations }, isFreeTier, isTeamTier] = await Promise.all([
     sdk.Organizations({
-      userId: session?.user.rowId!,
-      isMember: true,
-      excludeRoles: [Role.Member],
+      pageSize: 1,
+      userId: session.user.rowId,
+      excludeRoles: [Role.Member, Role.Admin],
     }),
-    enableBasicTierPrivilegesFlag(),
+    enableFreeTierPrivilegesFlag(),
     enableTeamTierPrivilegesFlag(),
   ]);
+
+  // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
+  const canCreateOrganization =
+    isTeamTier || (isFreeTier && !!organizations && !organizations?.totalCount);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -81,11 +85,6 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
     queryFn: useOrganizationsQuery.fetcher(variables),
   });
 
-  // TODO: discuss the below. Should the check be strictly scoped to ownership??
-  // NB: To create an organization, user must be subscribed. If they are subscribed, we validate that they are either on the team tier subscription (unlimited organizations) or that they are not currently an owner/admin of another organization
-  const canCreateOrganization =
-    isBasicTier && (isTeamTier || !organizations?.totalCount);
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
@@ -99,9 +98,9 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
               icon: <LuCirclePlus />,
               dialogType: DialogType.CreateOrganization,
               disabled: !canCreateOrganization,
-              tooltip: isBasicTier
+              tooltip: isFreeTier
                 ? app.organizationsPage.header.cta.newOrganization
-                    .basicTierTooltip
+                    .subscribedTooltip
                 : app.organizationsPage.header.cta.newOrganization
                     .noSubscriptionTooltip,
             },
@@ -112,16 +111,11 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
 
         <OrganizationList
           canCreateOrganization={canCreateOrganization}
-          isBasicTier={isBasicTier}
+          isSubscribed={isFreeTier}
         />
 
         {/* dialogs */}
-        {canCreateOrganization && (
-          <CreateOrganization
-            isBasicTier={isBasicTier}
-            isTeamTier={isTeamTier}
-          />
-        )}
+        {canCreateOrganization && <CreateOrganization />}
       </Page>
     </HydrationBoundary>
   );
