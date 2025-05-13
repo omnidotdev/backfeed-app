@@ -21,23 +21,28 @@ interface Props {
  * Recent feedback section.
  */
 const RecentFeedback = ({ user }: Props) => {
-  const { data: recentFeedback, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteRecentFeedbackQuery(
-      {
-        userId: user.rowId!,
-      },
-      {
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.posts?.pageInfo?.hasNextPage
-            ? { after: lastPage?.posts?.pageInfo?.endCursor }
-            : undefined,
-            select: (data) =>
-              data?.pages?.flatMap((page) =>
-                page?.posts?.edges?.map((edge) => edge?.node),
-              ),
-      },
-    );
+  const {
+    data: recentFeedback,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteRecentFeedbackQuery(
+    {
+      userId: user.rowId!,
+    },
+    {
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.posts?.pageInfo?.hasNextPage
+          ? { after: lastPage?.posts?.pageInfo?.endCursor }
+          : undefined,
+      select: (data) =>
+        data?.pages?.flatMap((page) =>
+          page?.posts?.edges?.map((edge) => edge?.node),
+        ),
+    },
+  );
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
