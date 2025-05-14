@@ -46,7 +46,7 @@ const InvitationMenu = ({
 
   const queryClient = getQueryClient();
 
-  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now apart of
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
   const onSettled = async () => queryClient.invalidateQueries();
 
   const { mutate: acceptInvitation } = useCreateMemberMutation({
