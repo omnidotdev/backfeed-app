@@ -5,3 +5,4 @@ export { default as getOwnerTier } from "./getOwnerTier";
 export { default as getProduct } from "./getProduct";
 export { default as getProject } from "./getProject";
 export { default as getSubscription } from "./getSubscription";
+export { default as revalidatePath } from "./revalidatePath";
