@@ -89,12 +89,7 @@ const CreateOrganization = () => {
     useCreateOrganizationMutation({
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
-      onSuccess: (data) => {
-        // TODO: Discuss. With the path revalidations, I believe this gets purged, so the navigation doesnt occur. Is it necessary to navigate?
-        router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
-        );
-
+      onSuccess: () => {
         revalidatePath("/", "layout");
 
         setIsOpen(false);
