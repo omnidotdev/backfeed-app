@@ -12,8 +12,10 @@ import {
   useOrganizationRoleQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
+import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -43,7 +45,7 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
+  const feedback = await getFeedback({ feedbackId });
 
   if (!feedback) notFound();
 
@@ -85,19 +87,9 @@ const FeedbackPage = async ({ params }: Props) => {
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
     }),
-    // ! NB: only prefetch the project statuses if the user is an admin
-    ...(isAdmin
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: feedback.project?.rowId!,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: feedback.project?.rowId!,
-            }),
-          }),
-        ]
-      : []),
+    queryClient.prefetchQuery(
+      freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+    ),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
@@ -113,6 +105,19 @@ const FeedbackPage = async ({ params }: Props) => {
       queryFn: useCommentsQuery.fetcher({ feedbackId }),
       initialPageParam: undefined,
     }),
+    // ! NB: only prefetch the project statuses if the user is an admin
+    ...(isAdmin
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useProjectStatusesQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
+            queryFn: useProjectStatusesQuery.fetcher({
+              projectId: feedback.project?.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (

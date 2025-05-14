@@ -3892,6 +3892,7 @@ export type StringFilter = {
 export enum Tier {
   Basic = 'basic',
   Enterprise = 'enterprise',
+  Free = 'free',
   Team = 'team'
 }
 
@@ -4986,7 +4987,7 @@ export type UserToManyUpvoteFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
 
 export type InvitationFragment = { __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name: string } | null };
 
@@ -5202,7 +5203,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null };
 
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
@@ -5227,7 +5228,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name: string, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name: string, slug: string, updatedAt?: Date | null, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -5270,15 +5271,16 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
   organizationSlug: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string } | null } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -5402,7 +5404,10 @@ export const FeedbackFragmentDoc = `
     rowId
     username
   }
-  comments {
+  comments(condition: {parentId: null}) {
+    totalCount
+  }
+  commentsWithReplies: comments {
     totalCount
   }
   upvotes {
@@ -6441,6 +6446,13 @@ export const OrganizationDocument = `
     name
     slug
     updatedAt
+    members(first: 1, condition: {role: owner}) {
+      nodes {
+        user {
+          tier
+        }
+      }
+    }
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {
@@ -6746,7 +6758,7 @@ useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infin
 usePostsQuery.fetcher = (variables: PostsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, variables, options);
 
 export const ProjectDocument = `
-    query Project($projectSlug: String!, $organizationSlug: String!) {
+    query Project($projectSlug: String!, $organizationSlug: String!, $userId: UUID) {
   projects(
     first: 1
     condition: {slug: $projectSlug}
@@ -6760,6 +6772,25 @@ export const ProjectDocument = `
       organization {
         rowId
         name
+        members(first: 1, condition: {role: owner}) {
+          nodes {
+            user {
+              tier
+            }
+          }
+        }
+      }
+      posts {
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
+      userPosts: posts(first: 1, condition: {userId: $userId}) {
+        nodes {
+          rowId
+        }
       }
     }
   }

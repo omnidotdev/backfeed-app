@@ -16,12 +16,13 @@ import {
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
 import {
-  enableBasicTierPrivilegesFlag,
+  enableFreeTierPrivilegesFlag,
   enableTeamTierPrivilegesFlag,
 } from "lib/flags";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
+import { getSdk } from "lib/graphql";
 
 dayjs.extend(utc);
 
@@ -35,10 +36,21 @@ const HomePage = async () => {
 
   if (!session) return <LandingPage />;
 
-  const [isBasicTier, isTeamTier] = await Promise.all([
-    enableBasicTierPrivilegesFlag(),
+  const sdk = getSdk({ session });
+
+  const [{ organizations }, isFreeTier, isTeamTier] = await Promise.all([
+    sdk.Organizations({
+      pageSize: 1,
+      userId: session.user.rowId,
+      excludeRoles: [Role.Member, Role.Admin],
+    }),
+    enableFreeTierPrivilegesFlag(),
     enableTeamTierPrivilegesFlag(),
   ]);
+
+  // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
+  const canCreateOrganization =
+    isTeamTier || (isFreeTier && !!organizations && !organizations?.totalCount);
 
   const queryClient = getQueryClient();
 
@@ -100,15 +112,13 @@ const HomePage = async () => {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardPage
         user={session.user}
-        isBasicTier={isBasicTier}
-        isTeamTier={isTeamTier}
+        canCreateOrganizations={canCreateOrganization}
+        isSubscribed={isFreeTier}
         oneWeekAgo={oneWeekAgo}
       />
 
       {/* dialogs */}
-      {isBasicTier && (
-        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
-      )}
+      {canCreateOrganization && <CreateOrganization />}
     </HydrationBoundary>
   );
 };

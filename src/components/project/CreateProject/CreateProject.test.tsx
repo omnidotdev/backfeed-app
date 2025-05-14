@@ -7,7 +7,7 @@ import CreateProject from "./CreateProject";
 describe("create project", () => {
   describe("no subscription", () => {
     beforeEach(() => {
-      render(<CreateProject isBasicTier={false} isTeamTier={false} />);
+      render(<CreateProject organizationSlug="" />);
     });
 
     it.todo("user can not create a project", () => {});
@@ -15,7 +15,7 @@ describe("create project", () => {
 
   describe("basic tier subscription", () => {
     beforeEach(() => {
-      render(<CreateProject isBasicTier={true} isTeamTier={false} />);
+      render(<CreateProject organizationSlug="" />);
     });
 
     it.todo("user (non admin) can not create a single project", () => {});
@@ -30,7 +30,7 @@ describe("create project", () => {
 
   describe("team tier subscription", () => {
     beforeEach(() => {
-      render(<CreateProject isBasicTier={true} isTeamTier={true} />);
+      render(<CreateProject organizationSlug="" />);
     });
 
     it.todo("user (non admin) can not create a single project", () => {});

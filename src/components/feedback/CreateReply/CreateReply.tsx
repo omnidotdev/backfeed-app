@@ -9,6 +9,7 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
+  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useInfiniteRepliesQuery,
 } from "generated/graphql";
@@ -16,6 +17,7 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
+import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { CollapsibleProps } from "@omnidev/sigil";
@@ -42,6 +44,8 @@ const createReplySchema = z.object({
 interface Props extends CollapsibleProps {
   /** Comment ID. */
   commentId: Comment["rowId"];
+  /** Whether the user can reply to the comment. */
+  canReply: boolean;
   /** Optional handler to apply when a reply is sent. */
   onReply?: () => void;
 }
@@ -49,23 +53,41 @@ interface Props extends CollapsibleProps {
 /**
  * Create reply form.
  */
-const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
+const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const { user, isLoading: isAuthLoading } = useAuth();
 
-  const { feedbackId } = useParams<{ feedbackId: string }>();
+  const { organizationSlug, projectSlug, feedbackId } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+    feedbackId: string;
+  }>();
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
     onMutate: () => onReply?.(),
     onSettled: async () => {
       reset();
 
-      await queryClient.invalidateQueries({
-        queryKey: useInfiniteCommentsQuery.getKey({
-          feedbackId,
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: useInfiniteCommentsQuery.getKey({
+            feedbackId,
+          }),
         }),
-      });
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+          }),
+        }),
+        queryClient.invalidateQueries(
+          freeTierCommentsOptions({
+            organizationSlug,
+            projectSlug,
+            feedbackId,
+          }),
+        ),
+      ]);
 
       return queryClient.invalidateQueries({
         queryKey: useInfiniteRepliesQuery.getKey({
@@ -145,7 +167,7 @@ const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
                   borderBottomColor: "border.subtle",
                   boxShadow: "none",
                 }}
-                disabled={isAuthLoading}
+                disabled={isAuthLoading || !canReply}
                 maxLength={MAX_COMMENT_LENGTH}
                 errorProps={{
                   top: -6,
@@ -174,6 +196,7 @@ const CreateReply = ({ commentId, onReply, ...rest }: Props) => {
                 action={app.feedbackPage.comments.createReply.action}
                 size="sm"
                 isPending={isPending}
+                disabled={!canReply}
               />
             </AppForm>
           </Stack>

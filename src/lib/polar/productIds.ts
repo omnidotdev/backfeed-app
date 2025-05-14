@@ -6,6 +6,10 @@ type ProductIds = ProductsListRequest["id"];
  * Polar sandbox Product IDs.
  */
 const sandboxProductIds = [
+  // Backfeed Free (Monthly)
+  "e9a12f96-e207-4394-bc53-a1aca41208b0",
+  // Backfeed Free (Yearly)
+  "9895e940-47d4-4deb-957d-86159f992aa7",
   // Backfeed Basic (Monthly)
   "9fdf9d78-f4f7-4222-93ed-55ae60d996e4",
   // Backfeed Basic (Yearly)

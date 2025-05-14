@@ -137,6 +137,9 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         comments: {
           totalCount: 0,
         },
+        commentsWithReplies: {
+          totalCount: 0,
+        },
         upvotes: {
           totalCount: 0,
         },
@@ -270,7 +273,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
-                      isPending={isPending}
                       w="full"
                       minH={21}
                       borderRadius="md"

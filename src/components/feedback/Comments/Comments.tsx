@@ -1,7 +1,8 @@
 "use client";
 
 import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -13,6 +14,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { freeTierCommentsOptions } from "lib/options";
 
 import type {
   CommentFragment,
@@ -35,6 +37,15 @@ interface Props {
  * Feedback comments section.
  */
 const Comments = ({ user, organizationId, feedbackId }: Props) => {
+  const { organizationSlug, projectSlug } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+  }>();
+
+  const { data: canCreateComment } = useQuery(
+    freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+  );
+
   const {
     data: comments,
     isLoading,
@@ -106,7 +117,10 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack position="relative" mb="1px">
-        <CreateComment user={user} />
+        <CreateComment
+          user={user}
+          canCreateComment={canCreateComment ?? false}
+        />
 
         <Divider mt={4} />
 
@@ -124,6 +138,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
                     user={user}
                     comment={comment!}
                     organizationId={organizationId}
+                    canReply={canCreateComment ?? false}
                     w="full"
                     minH={21}
                   />
