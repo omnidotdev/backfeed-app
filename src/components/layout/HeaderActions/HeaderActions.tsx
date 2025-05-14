@@ -25,6 +25,7 @@ import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
+import { NotificationCenter } from "components/notifications";
 
 /**
  * Header actions.
@@ -58,7 +59,10 @@ const HeaderActions = () => {
         <ThemeToggle />
 
         {isAuthenticated ? (
-          <AccountInformation />
+          <HStack>
+            <NotificationCenter />
+            <AccountInformation />
+          </HStack>
         ) : (
           <HStack>
             <Button variant="outline" onClick={() => signIn("omni")}>
