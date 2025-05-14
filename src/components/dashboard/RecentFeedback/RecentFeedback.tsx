@@ -21,25 +21,28 @@ interface Props {
  * Recent feedback section.
  */
 const RecentFeedback = ({ user }: Props) => {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteRecentFeedbackQuery(
-      {
-        userId: user.rowId!,
-      },
-      {
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.posts?.pageInfo?.hasNextPage
-            ? { after: lastPage?.posts?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
-
-  // This is not defined within the `select` function in order to preserve type safety.
-  const recentFeedback =
-    data?.pages?.flatMap((page) =>
-      page?.posts?.edges?.map((edge) => edge?.node),
-    ) ?? [];
+  const {
+    data: recentFeedback,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteRecentFeedbackQuery(
+    {
+      userId: user.rowId!,
+    },
+    {
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.posts?.pageInfo?.hasNextPage
+          ? { after: lastPage?.posts?.pageInfo?.endCursor }
+          : undefined,
+      select: (data) =>
+        data?.pages?.flatMap((page) =>
+          page?.posts?.edges?.map((edge) => edge?.node),
+        ),
+    },
+  );
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -113,7 +116,7 @@ const RecentFeedback = ({ user }: Props) => {
             />
           )}
 
-          {!!recentFeedback.length && (
+          {!!recentFeedback?.length && (
             // NB: the width override is necessary to prevent the mask from clipping box shadows
             <GradientMask bottom={0} borderBottomRadius="lg" w="99%" />
           )}

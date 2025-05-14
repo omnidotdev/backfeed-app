@@ -13,7 +13,7 @@ interface ProjectOptions {
 }
 
 /**
- * Helper function to fetch a project's details. Cached for deduping requests.
+ * Fetch a project's details. Cached for deduping requests.
  */
 const getProject = cache(
   async ({ organizationSlug, projectSlug }: ProjectOptions) => {
@@ -21,7 +21,11 @@ const getProject = cache(
 
     const sdk = getSdk({ session });
 
-    const { projects } = await sdk.Project({ projectSlug, organizationSlug });
+    const { projects } = await sdk.Project({
+      projectSlug,
+      organizationSlug,
+      userId: session?.user.rowId,
+    });
 
     return projects?.nodes?.[0];
   },

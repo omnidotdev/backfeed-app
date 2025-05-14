@@ -76,8 +76,13 @@ export type BooleanFilter = {
 
 export type Comment = {
   __typename?: 'Comment';
+  /** Reads and enables pagination through a set of `Comment`. */
+  childComments: CommentConnection;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   message?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `Comment` that is related to this `Comment`. */
+  parent?: Maybe<Comment>;
+  parentId?: Maybe<Scalars['UUID']['output']>;
   /** Reads a single `Post` that is related to this `Comment`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
@@ -86,6 +91,18 @@ export type Comment = {
   /** Reads a single `User` that is related to this `Comment`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
+};
+
+
+export type CommentChildCommentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CommentCondition>;
+  filter?: InputMaybe<CommentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CommentOrderBy>>;
 };
 
 export type CommentAggregates = {
@@ -109,6 +126,8 @@ export type CommentCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `message` field. */
   message?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `parentId` field. */
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `postId` field. */
   postId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -146,6 +165,7 @@ export type CommentConnectionGroupedAggregatesArgs = {
 export type CommentDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   message?: InputMaybe<BigIntFilter>;
+  parentId?: InputMaybe<BigIntFilter>;
   postId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
@@ -158,6 +178,8 @@ export type CommentDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of message across the matching connection */
   message?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of parentId across the matching connection */
+  parentId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of postId across the matching connection */
   postId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -181,6 +203,10 @@ export type CommentEdge = {
 export type CommentFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `childComments` relation. */
+  childComments?: InputMaybe<CommentToManyCommentFilter>;
+  /** Some related `childComments` exist. */
+  childCommentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `message` field. */
@@ -189,6 +215,12 @@ export type CommentFilter = {
   not?: InputMaybe<CommentFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<CommentFilter>>;
+  /** Filter by the object’s `parent` relation. */
+  parent?: InputMaybe<CommentFilter>;
+  /** A related `parent` exists. */
+  parentExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `parentId` field. */
+  parentId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `post` relation. */
   post?: InputMaybe<PostFilter>;
   /** Filter by the object’s `postId` field. */
@@ -209,6 +241,7 @@ export enum CommentGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Message = 'MESSAGE',
+  ParentId = 'PARENT_ID',
   PostId = 'POST_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -280,6 +313,7 @@ export type CommentHavingVarianceSampleInput = {
 export type CommentInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   message?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   postId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -288,11 +322,29 @@ export type CommentInput = {
 
 /** Methods to use when ordering `Comment`. */
 export enum CommentOrderBy {
+  ChildCommentsCountAsc = 'CHILD_COMMENTS_COUNT_ASC',
+  ChildCommentsCountDesc = 'CHILD_COMMENTS_COUNT_DESC',
+  ChildCommentsDistinctCountCreatedAtAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChildCommentsDistinctCountCreatedAtDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChildCommentsDistinctCountMessageAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
+  ChildCommentsDistinctCountMessageDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  ChildCommentsDistinctCountParentIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  ChildCommentsDistinctCountParentIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
+  ChildCommentsDistinctCountPostIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  ChildCommentsDistinctCountPostIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  ChildCommentsDistinctCountRowIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChildCommentsDistinctCountRowIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChildCommentsDistinctCountUpdatedAtAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChildCommentsDistinctCountUpdatedAtDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ChildCommentsDistinctCountUserIdAsc = 'CHILD_COMMENTS_DISTINCT_COUNT_USER_ID_ASC',
+  ChildCommentsDistinctCountUserIdDesc = 'CHILD_COMMENTS_DISTINCT_COUNT_USER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   MessageAsc = 'MESSAGE_ASC',
   MessageDesc = 'MESSAGE_DESC',
   Natural = 'NATURAL',
+  ParentIdAsc = 'PARENT_ID_ASC',
+  ParentIdDesc = 'PARENT_ID_DESC',
   PostIdAsc = 'POST_ID_ASC',
   PostIdDesc = 'POST_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
@@ -309,10 +361,23 @@ export enum CommentOrderBy {
 export type CommentPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   message?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   postId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
+export type CommentToManyCommentFilter = {
+  /** Aggregates across related `Comment` match the filter criteria. */
+  aggregates?: InputMaybe<CommentAggregatesFilter>;
+  /** Every related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<CommentFilter>;
+  /** No related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<CommentFilter>;
+  /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<CommentFilter>;
 };
 
 /** All input for the create `Comment` mutation. */
@@ -2556,6 +2621,8 @@ export enum PostOrderBy {
   CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
   CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
   CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountParentIdAsc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  CommentsDistinctCountParentIdDesc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
   CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
   CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
   CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -3785,6 +3852,7 @@ export type StringFilter = {
 export enum Tier {
   Basic = 'basic',
   Enterprise = 'enterprise',
+  Free = 'free',
   Team = 'team'
 }
 
@@ -4704,6 +4772,8 @@ export enum UserOrderBy {
   CommentsDistinctCountCreatedAtDesc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
   CommentsDistinctCountMessageAsc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_ASC',
   CommentsDistinctCountMessageDesc = 'COMMENTS_DISTINCT_COUNT_MESSAGE_DESC',
+  CommentsDistinctCountParentIdAsc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  CommentsDistinctCountParentIdDesc = 'COMMENTS_DISTINCT_COUNT_PARENT_ID_DESC',
   CommentsDistinctCountPostIdAsc = 'COMMENTS_DISTINCT_COUNT_POST_ID_ASC',
   CommentsDistinctCountPostIdDesc = 'COMMENTS_DISTINCT_COUNT_POST_ID_DESC',
   CommentsDistinctCountRowIdAsc = 'COMMENTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -4863,13 +4933,15 @@ export type UserToManyUpvoteFilter = {
   some?: InputMaybe<UpvoteFilter>;
 };
 
-export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } };
 
 export type InvitationFragment = { __typename?: 'Invitation', rowId: string, email: string, organizationId: string, createdAt?: Date | null, updatedAt?: Date | null, organization?: { __typename?: 'Organization', name: string } | null };
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
+
+export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
 
@@ -5053,7 +5125,7 @@ export type CommentsQueryVariables = Exact<{
 }>;
 
 
-export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5068,7 +5140,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null };
 
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
@@ -5093,7 +5165,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name: string, slug: string, updatedAt?: Date | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name: string, slug: string, updatedAt?: Date | null, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -5136,15 +5208,16 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt?: Date | null, createdAt?: Date | null, updatedAt?: Date | null, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'UpvoteConnection', totalCount: number }, userUpvotes: { __typename?: 'UpvoteConnection', nodes: Array<{ __typename?: 'Upvote', rowId: string } | null> }, downvotes: { __typename?: 'DownvoteConnection', totalCount: number }, userDownvotes: { __typename?: 'DownvoteConnection', nodes: Array<{ __typename?: 'Downvote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
   organizationSlug: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string } | null } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -5187,6 +5260,15 @@ export type RecentFeedbackQueryVariables = Exact<{
 
 export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt?: Date | null, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organization?: { __typename?: 'Organization', slug: string } | null } | null, status?: { __typename?: 'PostStatus', rowId: string, status: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
+export type RepliesQueryVariables = Exact<{
+  commentId: Scalars['UUID']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+}>;
+
+
+export type RepliesQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -5225,6 +5307,9 @@ export const CommentFragmentDoc = gql`
     username
   }
   createdAt
+  childComments {
+    totalCount
+  }
 }
     `;
 export const FeedbackFragmentDoc = gql`
@@ -5255,7 +5340,10 @@ export const FeedbackFragmentDoc = gql`
     rowId
     username
   }
-  comments {
+  comments(condition: {parentId: null}) {
+    totalCount
+  }
+  commentsWithReplies: comments {
     totalCount
   }
   upvotes {
@@ -5299,6 +5387,18 @@ export const MemberFragmentDoc = gql`
     lastName
     username
   }
+}
+    `;
+export const ReplyFragmentDoc = gql`
+    fragment Reply on Comment {
+  rowId
+  parentId
+  message
+  user {
+    rowId
+    username
+  }
+  createdAt
 }
     `;
 export const UserFragmentDoc = gql`
@@ -5511,7 +5611,7 @@ export const CommentsDocument = gql`
     first: $pageSize
     after: $after
     orderBy: CREATED_AT_DESC
-    condition: {postId: $feedbackId}
+    condition: {postId: $feedbackId, parentId: null}
   ) {
     totalCount
     pageInfo {
@@ -5581,6 +5681,13 @@ export const OrganizationDocument = gql`
     name
     slug
     updatedAt
+    members(first: 1, condition: {role: owner}) {
+      nodes {
+        user {
+          tier
+        }
+      }
+    }
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {
@@ -5671,7 +5778,7 @@ export const PostsDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const ProjectDocument = gql`
-    query Project($projectSlug: String!, $organizationSlug: String!) {
+    query Project($projectSlug: String!, $organizationSlug: String!, $userId: UUID) {
   projects(
     first: 1
     condition: {slug: $projectSlug}
@@ -5685,6 +5792,25 @@ export const ProjectDocument = gql`
       organization {
         rowId
         name
+        members(first: 1, condition: {role: owner}) {
+          nodes {
+            user {
+              tier
+            }
+          }
+        }
+      }
+      posts {
+        aggregates {
+          distinctCount {
+            userId
+          }
+        }
+      }
+      userPosts: posts(first: 1, condition: {userId: $userId}) {
+        nodes {
+          rowId
+        }
       }
     }
   }
@@ -5805,6 +5931,27 @@ export const RecentFeedbackDocument = gql`
   }
 }
     `;
+export const RepliesDocument = gql`
+    query Replies($commentId: UUID!, $pageSize: Int = 3, $after: Cursor) {
+  comments(
+    first: $pageSize
+    after: $after
+    orderBy: CREATED_AT_DESC
+    condition: {parentId: $commentId}
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        ...Reply
+      }
+    }
+  }
+}
+    ${ReplyFragmentDoc}`;
 export const StatusBreakdownDocument = gql`
     query StatusBreakdown($projectId: UUID!) {
   posts(condition: {projectId: $projectId}) {
@@ -5977,6 +6124,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     RecentFeedback(variables: RecentFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecentFeedbackQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<RecentFeedbackQuery>(RecentFeedbackDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RecentFeedback', 'query', variables);
+    },
+    Replies(variables: RepliesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RepliesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RepliesQuery>(RepliesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Replies', 'query', variables);
     },
     StatusBreakdown(variables: StatusBreakdownQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<StatusBreakdownQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<StatusBreakdownQuery>(StatusBreakdownDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'StatusBreakdown', 'query', variables);

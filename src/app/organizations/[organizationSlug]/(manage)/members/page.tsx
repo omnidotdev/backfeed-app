@@ -143,7 +143,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
         <MembershipFilters />
 
-        <Members user={session.user} organizationId={organization.rowId} />
+        <Members user={session?.user} organizationId={organization.rowId} />
 
         {/* dialogs */}
         {/* TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now. */}

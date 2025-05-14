@@ -5,31 +5,25 @@ import { standardRegexSchema } from "lib/constants";
 describe("Schema Validation", () => {
   describe("Regex Schema", () => {
     it("fails for most special characters", () => {
-      const input1 = "Test@";
-      const input2 = "Test#";
-      const input3 = "Test$";
-      const input4 = "Test%";
+      const inputs = ["Test@", "Test#", "Test$", "Test%"];
 
-      expect(standardRegexSchema.safeParse(input1).success).toBe(false);
-      expect(standardRegexSchema.safeParse(input2).success).toBe(false);
-      expect(standardRegexSchema.safeParse(input3).success).toBe(false);
-      expect(standardRegexSchema.safeParse(input4).success).toBe(false);
+      for (const input of inputs)
+        expect(standardRegexSchema.safeParse(input).success).toBe(false);
     });
 
-    it("passes for certain special characters (!, ., -, ', ?)", () => {
-      const input1 = "Test!";
-      const input2 = "Test.";
-      const input3 = "Test-Test";
-      const input4 = "I'm Testing";
-      const input5 = "Test, Test";
-      const input6 = "Test?";
+    it("passes for certain special characters (!, ., -, ', ?, parentheses)", () => {
+      const inputs = [
+        "Test!",
+        "Test.",
+        "Test-Test",
+        "I'm Testing",
+        "Test, Test",
+        "Test?",
+        "Test()",
+      ];
 
-      expect(standardRegexSchema.safeParse(input1).success).toBe(true);
-      expect(standardRegexSchema.safeParse(input2).success).toBe(true);
-      expect(standardRegexSchema.safeParse(input3).success).toBe(true);
-      expect(standardRegexSchema.safeParse(input4).success).toBe(true);
-      expect(standardRegexSchema.safeParse(input5).success).toBe(true);
-      expect(standardRegexSchema.safeParse(input6).success).toBe(true);
+      for (const input of inputs)
+        expect(standardRegexSchema.safeParse(input).success).toBe(true);
     });
 
     it("passes for accented characters", () => {

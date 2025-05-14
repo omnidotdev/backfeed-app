@@ -12,8 +12,10 @@ import {
   useOrganizationRoleQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
+import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -40,15 +42,15 @@ const FeedbackPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  const sdk = getSdk({ session });
-
-  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
+  const feedback = await getFeedback({ feedbackId });
 
   if (!feedback) notFound();
 
   let member: Partial<Member> | null = null;
 
   if (session) {
+    const sdk = getSdk({ session });
+
     const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
       userId: session?.user?.rowId!,
       organizationId: feedback.project?.organization?.rowId!,
@@ -88,6 +90,14 @@ const FeedbackPage = async ({ params }: Props) => {
       queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
       queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
     }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
+      queryFn: useCommentsQuery.fetcher({ feedbackId }),
+      initialPageParam: undefined,
+    }),
+    queryClient.prefetchQuery(
+      freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+    ),
     // ! NB: only prefetch the project statuses if the user is an admin
     ...(isAdmin
       ? [
@@ -111,11 +121,6 @@ const FeedbackPage = async ({ params }: Props) => {
           }),
         ]
       : []),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
-      queryFn: useCommentsQuery.fetcher({ feedbackId }),
-      initialPageParam: undefined,
-    }),
   ]);
 
   return (
