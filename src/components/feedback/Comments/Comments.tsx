@@ -72,6 +72,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
   const pendingComments = useMutationState<CommentFragment>({
     filters: {
       mutationKey: useCreateCommentMutation.getKey(),
+      // make sure only top-level comments are counted towards pending comments
       predicate: (mutation) =>
         !(mutation.state.variables as CreateCommentMutationVariables).input
           .comment.parentId,
