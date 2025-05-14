@@ -14,11 +14,7 @@ import {
   RecentFeedback,
 } from "components/dashboard";
 import { Page } from "components/layout";
-import {
-  Role,
-  useDashboardAggregatesQuery,
-  useOrganizationsQuery,
-} from "generated/graphql";
+import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { DialogType } from "store";
 
@@ -27,10 +23,10 @@ import type { Session } from "next-auth";
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
-  /** Whether the user has team tier subscription permissions. */
-  isTeamTier: boolean;
+  /** Whether the authenticated user can create organizations. */
+  canCreateOrganizations: boolean;
+  /** Whether the authenticated user is subscribed. */
+  isSubscribed: boolean;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }
@@ -40,8 +36,8 @@ interface Props {
  */
 const DashboardPage = ({
   user,
-  isBasicTier,
-  isTeamTier,
+  canCreateOrganizations,
+  isSubscribed,
   oneWeekAgo,
 }: Props) => {
   const {
@@ -58,18 +54,6 @@ const DashboardPage = ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
       }),
-    },
-  );
-
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
-    {
-      userId: user?.rowId!,
-      isMember: true,
-      excludeRoles: [Role.Member],
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
     },
   );
 
@@ -104,15 +88,19 @@ const DashboardPage = ({
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
-            disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
-            tooltip: isBasicTier
-              ? app.dashboardPage.cta.newOrganization.basicTierTooltip
+            disabled: !canCreateOrganizations,
+            tooltip: isSubscribed
+              ? app.dashboardPage.cta.newOrganization.subscribedTooltip
               : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
         ],
       }}
     >
-      <PinnedOrganizations user={user} isBasicTier={isBasicTier} />
+      <PinnedOrganizations
+        user={user}
+        canCreateOrganizations={canCreateOrganizations}
+        isSubscribed={isSubscribed}
+      />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (

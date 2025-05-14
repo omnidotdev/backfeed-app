@@ -2,7 +2,7 @@
 
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
@@ -15,8 +15,9 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
+import { freeTierFeedbackOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { Session } from "next-auth";
@@ -33,7 +34,9 @@ const createFeedbackSchema = z.object({
   statusId: uuidSchema,
   projectId: uuidSchema,
   userId: uuidSchema,
-  title: standardRegexSchema
+  title: z
+    .string()
+    .trim()
     .min(3, feedbackSchemaErrors.title.minLength)
     .max(90, feedbackSchemaErrors.title.maxLength),
   description: z
@@ -58,6 +61,10 @@ const CreateFeedback = ({ user }: Props) => {
     organizationSlug: string;
     projectSlug: string;
   }>();
+
+  const { data: canCreateFeedback } = useQuery(
+    freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+  );
 
   const { data: projectId } = useProjectQuery(
     {
@@ -91,12 +98,14 @@ const CreateFeedback = ({ user }: Props) => {
             projectId: projectId!,
           }),
         }),
-
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({
             projectId: projectId!,
           }),
         }),
+        queryClient.invalidateQueries(
+          freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+        ),
       ]);
 
       return queryClient.invalidateQueries({
@@ -173,7 +182,8 @@ const CreateFeedback = ({ user }: Props) => {
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
-            disabled={!user}
+            disabled={!user || !canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>
@@ -188,7 +198,8 @@ const CreateFeedback = ({ user }: Props) => {
             rows={5}
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
-            disabled={!user}
+            disabled={!user || !canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>
@@ -206,6 +217,7 @@ const CreateFeedback = ({ user }: Props) => {
             isPending={isPending}
             w="fit-content"
             placeSelf="flex-end"
+            disabled={!user || !canCreateFeedback}
           />
         </AppForm>
       </Stack>

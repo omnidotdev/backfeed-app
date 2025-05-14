@@ -1,12 +1,10 @@
-fragment Comment on Comment {
+fragment Reply on Comment {
   rowId
+  parentId
   message
   user {
     rowId
     username
   }
   createdAt
-  childComments {
-    totalCount
-  }
 }

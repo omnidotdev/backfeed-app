@@ -6,13 +6,9 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
 import { Role, useProjectsQuery } from "generated/graphql";
-import { getOrganization } from "lib/actions";
+import { getOrganization, getOwnerTier } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
-import {
-  enableBasicTierPrivilegesFlag,
-  enableTeamTierPrivilegesFlag,
-} from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -50,10 +46,12 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const [organization, isBasicTier, isTeamTier] = await Promise.all([
+  const [
+    organization,
+    { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
+  ] = await Promise.all([
     getOrganization({ organizationSlug }),
-    enableBasicTierPrivilegesFlag(),
-    enableTeamTierPrivilegesFlag(),
+    getOwnerTier({ organizationSlug }),
   ]);
 
   if (!organization) notFound();
@@ -69,11 +67,14 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
 
-  // NB: To create projects, user must be subscribed and have administrative privileges. If so, we validate that they are either on the team tier subscription (unlimited projects) or the current number of projects for the organization has not reached its limit
+  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and has appropriate tier to create an additional project
   const canCreateProjects =
-    isBasicTier &&
     hasAdminPrivileges &&
-    (isTeamTier || organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS);
+    isOwnerSubscribed &&
+    (hasBasicTierPrivileges
+      ? hasTeamTierPrivileges ||
+        organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS
+      : !organization.projects.totalCount);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -121,10 +122,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
                   icon: <LuCirclePlus />,
                   disabled: !canCreateProjects,
                   dialogType: DialogType.CreateProject,
-                  tooltip: isBasicTier
-                    ? app.projectsPage.header.cta.newProject.basicTierTooltip
-                    : app.projectsPage.header.cta.newProject
-                        .noSubscriptionTooltip,
+                  tooltip: app.projectsPage.header.cta.newProject.tooltip,
                 },
               ]
             : undefined,
@@ -139,11 +137,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
         {/* dialogs */}
         {canCreateProjects && (
-          <CreateProject
-            isBasicTier={isBasicTier}
-            isTeamTier={isTeamTier}
-            organizationSlug={organizationSlug}
-          />
+          <CreateProject organizationSlug={organizationSlug} />
         )}
       </Page>
     </HydrationBoundary>

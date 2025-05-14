@@ -6,6 +6,10 @@ type ProductIds = ProductsListRequest["id"];
  * Polar sandbox Product IDs.
  */
 const sandboxProductIds = [
+  // Backfeed Free (Monthly)
+  "e9a12f96-e207-4394-bc53-a1aca41208b0",
+  // Backfeed Free (Yearly)
+  "9895e940-47d4-4deb-957d-86159f992aa7",
   // Backfeed Basic (Monthly)
   "9fdf9d78-f4f7-4222-93ed-55ae60d996e4",
   // Backfeed Basic (Yearly)
@@ -24,6 +28,10 @@ const sandboxProductIds = [
  * Polar production product IDs.
  */
 const productionProductIds = [
+  // Backfeed Free (Monthly)
+  "b43cb695-0762-492b-be29-3320725ac4c6",
+  // Backfeed Free (Yearly)
+  "62685a4c-04dd-4dcd-989b-7d2e933827a8",
   // Backfeed Basic (Monthly)
   "768e1aee-fc38-46fa-91d9-1c15b71375dd",
   // Backfeed Basic (Yearly)

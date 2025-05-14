@@ -6,7 +6,6 @@ import {
   Role,
   useCreateMemberMutation,
   useDeleteInvitationMutation,
-  useInvitationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
@@ -47,12 +46,8 @@ const InvitationMenu = ({
 
   const queryClient = getQueryClient();
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useInvitationsQuery.getKey({
-        email: user?.email!,
-      }),
-    });
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
+  const onSettled = async () => queryClient.invalidateQueries();
 
   const { mutate: acceptInvitation } = useCreateMemberMutation({
     onSettled,

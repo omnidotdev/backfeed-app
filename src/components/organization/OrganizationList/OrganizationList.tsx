@@ -19,8 +19,8 @@ import type { Organization } from "generated/graphql";
 interface Props extends StackProps {
   /** Whether the current user can create organizations. */
   canCreateOrganization: boolean;
-  /** Whether the current user is on a basic subscription tier. */
-  isBasicTier?: boolean;
+  /** Whether the authenticated user is subscribed. */
+  isSubscribed: boolean;
 }
 
 /**
@@ -28,7 +28,7 @@ interface Props extends StackProps {
  */
 const OrganizationList = ({
   canCreateOrganization,
-  isBasicTier,
+  isSubscribed,
   ...rest
 }: Props) => {
   const [{ page, pageSize, search }, setSearchParams] = useSearchParams();
@@ -75,8 +75,8 @@ const OrganizationList = ({
           icon: LuCirclePlus,
           onClick: () => setIsCreateOrganizationDialogOpen(true),
           disabled: !canCreateOrganization,
-          tooltip: isBasicTier
-            ? app.organizationsPage.emptyState.basicTierTooltip
+          tooltip: isSubscribed
+            ? app.organizationsPage.emptyState.subscribedTooltip
             : app.organizationsPage.emptyState.noSubscriptionTooltip,
         }}
         minH={64}
