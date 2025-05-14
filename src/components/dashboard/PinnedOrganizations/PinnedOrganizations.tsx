@@ -17,14 +17,20 @@ import type { Session } from "next-auth";
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
+  /** Whether the authenticated user can create organizations. */
+  canCreateOrganizations: boolean;
+  /** Whether the authenticated user is subscribed. */
+  isSubscribed: boolean;
 }
 
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = ({ user, isBasicTier }: Props) => {
+const PinnedOrganizations = ({
+  user,
+  canCreateOrganizations,
+  isSubscribed,
+}: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -87,9 +93,9 @@ const PinnedOrganizations = ({ user, isBasicTier }: Props) => {
                 label: app.dashboardPage.organizations.emptyState.cta.label,
                 onClick: () => setIsCreateOrganizationDialogOpen(true),
                 icon: LuCirclePlus,
-                disabled: !isBasicTier,
-                tooltip: isBasicTier
-                  ? app.dashboardPage.organizations.emptyState.basicTierTooltip
+                disabled: !canCreateOrganizations,
+                tooltip: isSubscribed
+                  ? app.dashboardPage.organizations.emptyState.subscribedTooltip
                   : app.dashboardPage.organizations.emptyState
                       .noSubscriptionTooltip,
               }}

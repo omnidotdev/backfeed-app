@@ -108,7 +108,7 @@ const PricingOverview = ({ products }: Props) => {
 
       <Flex
         w="full"
-        direction={{ base: "column", lg: "row" }}
+        direction={{ base: "column", xl: "row" }}
         align="center"
         justify="center"
         gap={4}

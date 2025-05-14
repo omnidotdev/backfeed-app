@@ -57,8 +57,6 @@ interface Props extends HstackProps {
   canManageFeedback: boolean;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
-  /** Whether the feedback is pending. */
-  isPending?: boolean;
   /** Project status options. */
   projectStatuses?: ProjectStatus[];
 }
@@ -70,7 +68,6 @@ const FeedbackCard = ({
   user,
   canManageFeedback,
   feedback,
-  isPending = false,
   projectStatuses,
   ...rest
 }: Props) => {
@@ -98,29 +95,30 @@ const FeedbackCard = ({
 
   const queryClient = useQueryClient();
 
-  const { mutate: deleteFeedback } = useDeletePostMutation({
-    onSettled: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
-        queryClient.invalidateQueries({
-          queryKey: useStatusBreakdownQuery.getKey({
-            projectId: feedback.project?.rowId!,
+  const { mutate: deleteFeedback, isPending: isDeleteFeedbackPending } =
+    useDeletePostMutation({
+      onSettled: () =>
+        Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+          queryClient.invalidateQueries({
+            queryKey: useStatusBreakdownQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
           }),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: useProjectMetricsQuery.getKey({
-            projectId: feedback.project?.rowId!,
+          queryClient.invalidateQueries({
+            queryKey: useProjectMetricsQuery.getKey({
+              projectId: feedback.project?.rowId!,
+            }),
           }),
-        }),
-      ]),
-    onSuccess: () => {
-      if (isFeedbackRoute) {
-        router.replace(
-          `/organizations/${organizationSlug}/projects/${projectSlug}`,
-        );
-      }
-    },
-  });
+        ]),
+      onSuccess: () => {
+        if (isFeedbackRoute) {
+          router.replace(
+            `/organizations/${organizationSlug}/projects/${projectSlug}`,
+          );
+        }
+      },
+    });
 
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
@@ -213,13 +211,22 @@ const FeedbackCard = ({
 
   const isAuthor = user?.rowId === feedback.user?.rowId;
 
+  const canAdjustFeedback = isAuthor || canManageFeedback;
+
+  const isPending = feedback.rowId === "pending";
+
+  const actionIsPending =
+    feedback.rowId === "pending" ||
+    isDeleteFeedbackPending ||
+    isUpdateStatusPending;
+
   return (
     <HStack
       position="relative"
       bgColor="background.default"
       borderRadius="lg"
       p={4}
-      opacity={isPending ? 0.5 : 1}
+      opacity={actionIsPending ? 0.5 : 1}
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
@@ -288,7 +295,7 @@ const FeedbackCard = ({
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageFeedback || isUpdateStatusPending,
+                  disabled: !canManageFeedback || actionIsPending,
                 }}
                 positioning={{ strategy: "fixed" }}
               >
@@ -333,17 +340,16 @@ const FeedbackCard = ({
             </HStack>
 
             <HStack mb={-2}>
-              <HStack>
-                {isAuthor && (
+              {canAdjustFeedback && (
+                <HStack>
                   <UpdateFeedback
                     feedback={feedback}
                     triggerProps={{
+                      disabled: actionIsPending,
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
-                )}
 
-                {(isAuthor || canManageFeedback) && (
                   <DestructiveAction
                     title={app.projectPage.projectFeedback.deleteFeedback.title}
                     description={
@@ -362,12 +368,12 @@ const FeedbackCard = ({
                       px: 2,
                       color: "omni.ruby",
                       backgroundColor: "transparent",
-                      disabled: feedback.rowId === "pending",
+                      disabled: actionIsPending,
                       onClick: (evt) => evt.stopPropagation(),
                     }}
                   />
-                )}
-              </HStack>
+                </HStack>
+              )}
 
               <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
                 <Icon src={LuMessageCircle} h={4.5} w={4.5} />

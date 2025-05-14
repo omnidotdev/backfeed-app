@@ -19,6 +19,7 @@ import {
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -100,6 +101,9 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
         organizationSlug,
       }),
     }),
+    queryClient.prefetchQuery(
+      freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+    ),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         projectId: project.rowId,

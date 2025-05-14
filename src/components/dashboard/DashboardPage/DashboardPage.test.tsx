@@ -15,8 +15,8 @@ describe("dashboard page", () => {
       <DashboardPage
         // TODO: mock user
         user={{}}
-        isBasicTier
-        isTeamTier
+        canCreateOrganizations
+        isSubscribed
         oneWeekAgo={oneWeekAgo}
       />,
     );
