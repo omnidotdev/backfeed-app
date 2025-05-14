@@ -17,13 +17,13 @@ import {
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
+import { revalidatePath } from "lib/actions";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization } from "generated/graphql";
-import { revalidatePath } from "lib/actions";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
