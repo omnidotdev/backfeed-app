@@ -12,8 +12,8 @@ import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";
-import type { IconType } from "react-icons";
 import type { Session } from "next-auth";
+import type { IconType } from "react-icons";
 
 interface NavigationItem extends ButtonProps {
   /** Navigation item label. */

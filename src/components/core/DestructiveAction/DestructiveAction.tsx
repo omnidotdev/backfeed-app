@@ -161,7 +161,14 @@ const DestructiveAction = ({
 
       {destructiveInput && (
         <Stack gap={2}>
-          <Label>{`Type "${destructiveInput}" below to confirm`}</Label>
+          <Label
+            _selection={{
+              backgroundColor: "red",
+            }}
+          >
+            {`Type "${destructiveInput}" below to confirm`}
+          </Label>
+
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

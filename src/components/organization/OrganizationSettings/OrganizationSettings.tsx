@@ -23,6 +23,7 @@ import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization } from "generated/graphql";
+import { revalidatePath } from "lib/actions";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
@@ -84,15 +85,15 @@ const OrganizationSettings = ({
     organizationId,
   });
 
-  const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
+  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
       // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
-      onSettled: () => queryClient.invalidateQueries(),
+      onSettled: async () => queryClient.invalidateQueries(),
     }),
-    { mutate: leaveOrganization } = useLeaveOrganizationMutation({
+    { mutateAsync: leaveOrganization } = useLeaveOrganizationMutation({
       onMutate: () => router.replace("/"),
       // NB: when a user leaves an organization, we want to invalidate all queries as any of them could have data for said org associated with the user
-      onSettled: () => queryClient.invalidateQueries(),
+      onSettled: async () => queryClient.invalidateQueries(),
     }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId,
@@ -107,7 +108,11 @@ const OrganizationSettings = ({
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organizationId }),
+      onClick: async () => {
+        await deleteOrganization({ rowId: organizationId });
+
+        revalidatePath("/", "page");
+      },
     },
   };
 
@@ -118,10 +123,13 @@ const OrganizationSettings = ({
     icon: RiUserSharedLine,
     action: {
       label: leaveOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () =>
-        leaveOrganization({
+      onClick: async () => {
+        await leaveOrganization({
           rowId: membershipId!,
-        }),
+        });
+
+        revalidatePath("/", "page");
+      },
     },
   };
 
