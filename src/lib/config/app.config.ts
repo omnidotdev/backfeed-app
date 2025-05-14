@@ -153,7 +153,7 @@ const app = {
       emptyState: {
         message: "No organizations found. Would you like to create one?",
         subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+          "Your plan only allows you to create 1 organization. Upgrade your plan to create more organizations.",
         noSubscriptionTooltip: "Subscribe to create an organization.",
         cta: {
           label: "Create Organization",
@@ -196,7 +196,7 @@ const app = {
         },
         label: "New Organization",
         subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+          "Your plan only allows you to create 1 organization. Upgrade your plan to create more organizations.",
         noSubscriptionTooltip: "Subscribe to create an organization.",
         description: "Create a new organization",
         organizationName: {
@@ -368,7 +368,7 @@ const app = {
         newOrganization: {
           label: "New Organization",
           subscribedTooltip:
-            "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+            "Your plan only allows you to create 1 organization. Upgrade your plan to create more organizations.",
           noSubscriptionTooltip: "Subscribe to create an organization.",
         },
       },
@@ -376,7 +376,7 @@ const app = {
     emptyState: {
       message: "No organizations found. Would you like to create one?",
       subscribedTooltip:
-        "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
+        "Your plan only allows you to create 1 organization. Upgrade your plan to create more organizations.",
       noSubscriptionTooltip: "Subscribe to create an organization.",
       cta: {
         label: "Create Organization",
@@ -397,7 +397,7 @@ const app = {
         },
         newProject: {
           label: "New Project",
-          tooltip: "Upgrade plan to create more projects.",
+          tooltip: "Upgrade your plan to create more projects.",
         },
       },
     },
@@ -408,7 +408,7 @@ const app = {
         organizationOwnerMessage:
           "No projects found. Would you like to create one?",
         organizationUserMessage: "No projects found.",
-        tooltip: "Upgrade to a paid plan to create a project.",
+        tooltip: "Upgrade your plan to create a project.",
         cta: {
           label: "Create Project",
         },
@@ -717,7 +717,7 @@ const app = {
       cta: {
         newProject: {
           label: "New Project",
-          tooltip: "Upgrade plan to create more projects.",
+          tooltip: "Upgrade your plan to create more projects.",
         },
       },
     },
