@@ -99,6 +99,7 @@ const DestructiveAction = ({
       variant: "solid",
       ...destructiveButtonStyles,
       ...action,
+      tabIndex: 0,
       disabled: destructiveInput
         ? inputValue !== destructiveInput || action.disabled
         : action.disabled,
@@ -110,6 +111,7 @@ const DestructiveAction = ({
     },
     {
       label: app.actions.cancel.label,
+      tabIndex: 0,
       onClick: (e) => {
         e.stopPropagation();
         onClose();

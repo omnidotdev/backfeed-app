@@ -16,7 +16,6 @@ import {
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
-  useOrganizationRoleQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
@@ -85,19 +84,15 @@ const OrganizationSettings = ({
     organizationId,
   });
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: user.rowId!,
-        organizationId,
-      }),
-    });
-
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
+      // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
+      onSettled: () => queryClient.invalidateQueries(),
     }),
     { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onSettled,
+      onMutate: () => router.replace("/"),
+      // NB: when a user leaves an organization, we want to invalidate all queries as any of them could have data for said org associated with the user
+      onSettled: () => queryClient.invalidateQueries(),
     }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId,
