@@ -111,7 +111,7 @@ const OrganizationSettings = ({
       onClick: async () => {
         await deleteOrganization({ rowId: organizationId });
 
-        revalidatePath("/", "page");
+        revalidatePath("/", "layout");
       },
     },
   };
@@ -128,7 +128,7 @@ const OrganizationSettings = ({
           rowId: membershipId!,
         });
 
-        revalidatePath("/", "page");
+        revalidatePath("/", "layout");
       },
     },
   };

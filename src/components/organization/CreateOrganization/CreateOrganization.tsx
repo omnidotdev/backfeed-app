@@ -95,8 +95,7 @@ const CreateOrganization = () => {
           `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
 
-        revalidatePath("/", "page");
-        revalidatePath("/organizations", "page");
+        revalidatePath("/", "layout");
 
         setIsOpen(false);
         reset();
