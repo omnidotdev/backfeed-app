@@ -30,6 +30,7 @@ const useProductMetadata = ({ product }: Options) => {
 
   const actionIcon = match(metadata)
     .with({ isRecommended: P.nonNullable }, () => HiSparkles)
+    .with({ isFree: P.nonNullable }, () => undefined)
     .with({ isEnterprise: P.nonNullable }, () => undefined)
     .otherwise(() => HiLockOpen);
 

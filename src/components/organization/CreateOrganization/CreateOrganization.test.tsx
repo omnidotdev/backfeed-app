@@ -7,7 +7,7 @@ import CreateOrganization from "./CreateOrganization";
 describe("create organization", () => {
   describe("no subscription", () => {
     beforeEach(() => {
-      render(<CreateOrganization isBasicTier={false} isTeamTier={false} />);
+      render(<CreateOrganization />);
     });
 
     it.todo("user can not create an organization", () => {});
@@ -15,7 +15,7 @@ describe("create organization", () => {
 
   describe("basic tier subscription", () => {
     beforeEach(() => {
-      render(<CreateOrganization isBasicTier={true} isTeamTier={false} />);
+      render(<CreateOrganization />);
     });
 
     it.todo("user can create a single organization", () => {});
@@ -25,7 +25,7 @@ describe("create organization", () => {
 
   describe("team tier subscription", () => {
     beforeEach(() => {
-      render(<CreateOrganization isBasicTier={true} isTeamTier={true} />);
+      render(<CreateOrganization />);
     });
 
     it.todo("user can create multiple organizations", () => {});

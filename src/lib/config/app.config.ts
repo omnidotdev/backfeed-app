@@ -152,10 +152,9 @@ const app = {
       description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
-        basicTierTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
-        noSubscriptionTooltip:
-          "Upgrade to a paid plan to create an organization.",
+        subscribedTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
+        noSubscriptionTooltip: "Subscribe to create an organization.",
         cta: {
           label: "Create Organization",
         },
@@ -196,10 +195,9 @@ const app = {
           },
         },
         label: "New Organization",
-        basicTierTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
-        noSubscriptionTooltip:
-          "Upgrade to a paid plan to create an organization.",
+        subscribedTooltip:
+          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
+        noSubscriptionTooltip: "Subscribe to create an organization.",
         description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
@@ -369,19 +367,17 @@ const app = {
       cta: {
         newOrganization: {
           label: "New Organization",
-          basicTierTooltip:
-            "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
-          noSubscriptionTooltip:
-            "Upgrade to a paid plan to create an organization.",
+          subscribedTooltip:
+            "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
+          noSubscriptionTooltip: "Subscribe to create an organization.",
         },
       },
     },
     emptyState: {
       message: "No organizations found. Would you like to create one?",
-      basicTierTooltip:
-        "Your plan only allows you to create 1 organization. Upgrade to the Team plan to create unlimited organizations.",
-      noSubscriptionTooltip:
-        "Upgrade to a paid plan to create an organization.",
+      subscribedTooltip:
+        "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
+      noSubscriptionTooltip: "Subscribe to create an organization.",
       cta: {
         label: "Create Organization",
       },
@@ -401,9 +397,7 @@ const app = {
         },
         newProject: {
           label: "New Project",
-          basicTierTooltip:
-            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
-          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
+          tooltip: "Upgrade your plan to create more projects.",
         },
       },
     },
@@ -414,9 +408,7 @@ const app = {
         organizationOwnerMessage:
           "No projects found. Would you like to create one?",
         organizationUserMessage: "No projects found.",
-        basicTierTooltip:
-          "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
-        noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
+        tooltip: "Upgrade your plan to create a project.",
         cta: {
           label: "Create Project",
         },
@@ -651,8 +643,7 @@ const app = {
     pricingHeader: {
       title: "Simple, transparent pricing",
       description:
-        "Choose the perfect plan for your business. All plans offer a 1-month free trial using our discount code:",
-      discountCode: "1MONTHFREE",
+        "Start for free. As your business grows, upgrade to fit your needs.",
       monthly: "Monthly",
       annual: "Annual",
       savings: "save 25%",
@@ -699,11 +690,6 @@ const app = {
       FAQ: "Frequently Asked Questions",
       items: [
         {
-          title: "How does the 14-day trial work?",
-          // TODO extract to `app.name` after i18n copy moved to locale JSON (https://linear.app/omnidev/issue/OMNI-233/extract-i18n-copy-outside-of-appconfigts-into-locale-json)
-          body: "You can try any plan free for 14 days with no credit card required. At the end of your trial, you can choose to subscribe to continue using Backfeed.",
-        },
-        {
           title: "Can I switch plans later?",
           // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)
           body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
@@ -731,9 +717,7 @@ const app = {
       cta: {
         newProject: {
           label: "New Project",
-          basicTierTooltip:
-            "Your plan only allows you to create 3 projects. Upgrade to the Team plan to create unlimited projects.",
-          noSubscriptionTooltip: "Upgrade to a paid plan to create a project.",
+          tooltip: "Upgrade your plan to create more projects.",
         },
       },
     },
@@ -912,6 +896,7 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
+      disabled: "Maximum amount of feedback reached.",
       search: {
         placeholder: "Search feedback...",
       },
@@ -1029,6 +1014,7 @@ const app = {
     },
     comments: {
       endOf: "End of Comments",
+      disabled: "Maximum number of comments reached.",
       createComment: {
         pending: "Adding comment...",
         success: {
@@ -1041,6 +1027,33 @@ const app = {
         },
         errors: {
           maxLengthMessage: "Must be at most 240 characters.",
+        },
+      },
+      createReply: {
+        loading: {
+          title: "Replying...",
+        },
+        success: {
+          title: "Success!",
+          description: "Your reply has been successfully added.",
+        },
+        error: {
+          title: "Error",
+          description: "An error occurred while adding your reply.",
+        },
+        errors: {
+          maxLengthMessage: "Must be at most 240 characters.",
+        },
+        action: {
+          pending: "Replying...",
+          submit: "Reply",
+        },
+      },
+      deleteReply: {
+        title: "Delete Reply",
+        description: "Are you sure you want to delete this reply?",
+        action: {
+          label: "Delete",
         },
       },
       title: "Comments",

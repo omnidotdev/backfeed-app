@@ -1,9 +1,9 @@
-query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
+query Replies($commentId: UUID!, $pageSize: Int = 3, $after: Cursor) {
   comments(
     first: $pageSize
     after: $after
     orderBy: CREATED_AT_DESC
-    condition: { postId: $feedbackId, parentId: null }
+    condition: { parentId: $commentId }
   ) {
     totalCount
     pageInfo {
@@ -12,7 +12,7 @@ query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
     }
     edges {
       node {
-        ...Comment
+        ...Reply
       }
     }
   }

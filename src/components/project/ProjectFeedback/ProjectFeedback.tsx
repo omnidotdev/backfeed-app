@@ -84,25 +84,32 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     },
   );
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfinitePostsQuery(
-      {
-        projectId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+  const {
+    data: posts,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfinitePostsQuery(
+    {
+      projectId,
+      excludedStatuses,
+      orderBy: orderBy
+        ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+        : undefined,
+      search,
+    },
+    {
+      placeholderData: keepPreviousData,
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.posts?.pageInfo?.hasNextPage
+          ? { after: lastPage?.posts?.pageInfo?.endCursor }
           : undefined,
-        search,
-      },
-      {
-        placeholderData: keepPreviousData,
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.posts?.pageInfo?.hasNextPage
-            ? { after: lastPage?.posts?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
+      select: (data) =>
+        data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
+    },
+  );
 
   const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
@@ -130,6 +137,9 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         comments: {
           totalCount: 0,
         },
+        commentsWithReplies: {
+          totalCount: 0,
+        },
         upvotes: {
           totalCount: 0,
         },
@@ -145,10 +155,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       };
     },
   });
-
-  const posts =
-    data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
-    [];
 
   const { isAdmin } = useOrganizationMembership({
     userId: user.rowId,
@@ -187,7 +193,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           ),
         ]
       : []),
-    ...posts,
+    ...(posts ?? []),
   ];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
@@ -267,7 +273,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                       canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
-                      isPending={isPending}
                       w="full"
                       minH={21}
                       borderRadius="md"
