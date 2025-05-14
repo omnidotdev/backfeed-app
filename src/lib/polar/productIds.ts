@@ -28,6 +28,10 @@ const sandboxProductIds = [
  * Polar production product IDs.
  */
 const productionProductIds = [
+  // Backfeed Free (Monthly)
+  "b43cb695-0762-492b-be29-3320725ac4c6",
+  // Backfeed Free (Yearly)
+  "62685a4c-04dd-4dcd-989b-7d2e933827a8",
   // Backfeed Basic (Monthly)
   "768e1aee-fc38-46fa-91d9-1c15b71375dd",
   // Backfeed Basic (Yearly)
