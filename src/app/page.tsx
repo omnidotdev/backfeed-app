@@ -19,10 +19,10 @@ import {
   enableFreeTierPrivilegesFlag,
   enableTeamTierPrivilegesFlag,
 } from "lib/flags";
+import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
-import { getSdk } from "lib/graphql";
 
 dayjs.extend(utc);
 

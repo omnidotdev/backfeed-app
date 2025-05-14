@@ -6,6 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
@@ -53,6 +54,8 @@ const createOrganizationSchema = z
 const CreateOrganization = () => {
   const router = useRouter();
 
+  const queryClient = useQueryClient();
+
   const isClient = useIsClient();
 
   const isSmallViewport = useViewportSize({
@@ -83,6 +86,8 @@ const CreateOrganization = () => {
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
+      onSettled: () =>
+        queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: (data) => {
         router.push(
           `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
