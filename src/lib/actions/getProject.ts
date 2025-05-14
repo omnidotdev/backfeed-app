@@ -13,7 +13,7 @@ interface ProjectOptions {
 }
 
 /**
- * Helper function to fetch a project's details. Cached for deduping requests.
+ * Fetch a project's details. Cached for deduping requests.
  */
 const getProject = cache(
   async ({ organizationSlug, projectSlug }: ProjectOptions) => {

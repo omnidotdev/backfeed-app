@@ -11,7 +11,7 @@ interface OrganizationOptions {
 }
 
 /**
- * Helper function to fetch feedback details. Cached for deduping requests.
+ * Fetch feedback details. Cached for deduping requests.
  */
 const getFeedback = cache(async ({ feedbackId }: OrganizationOptions) => {
   const session = await getAuthSession();

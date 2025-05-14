@@ -10,7 +10,7 @@ interface Options {
 }
 
 /**
- * Helper function to fetch an organization owner's tier details. Cached for deduping requests.
+ * Fetch an organization owner's tier details. Cached for deduping requests.
  */
 const getOwnerTier = async ({ organizationSlug }: Options) => {
   const organization = await getOrganization({ organizationSlug });
