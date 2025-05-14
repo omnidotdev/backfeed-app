@@ -57,20 +57,10 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
   }>();
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
-    onSettled: () => {
+    onSettled: async () => {
       reset();
 
-      return Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: useInfiniteCommentsQuery.getKey({
-            feedbackId,
-          }),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-          }),
-        }),
+      await Promise.all([
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
             organizationSlug,
@@ -78,7 +68,18 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
             feedbackId,
           }),
         ),
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+          }),
+        }),
       ]);
+
+      return queryClient.invalidateQueries({
+        queryKey: useInfiniteCommentsQuery.getKey({
+          feedbackId,
+        }),
+      });
     },
   });
 
