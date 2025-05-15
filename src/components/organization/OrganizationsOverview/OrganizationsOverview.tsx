@@ -61,8 +61,7 @@ const OrganizationsOverview = ({ user }: Props) => {
           isSubscribed: isFreeTier,
           // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
           canCreateOrganizations:
-            isTeamTier ||
-            (isFreeTier && !!organizations && !organizations?.totalCount),
+            isTeamTier || (isFreeTier && !organizations?.totalCount),
         };
       },
     },
