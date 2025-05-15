@@ -183,7 +183,11 @@ const CreateFeedback = ({ user }: Props) => {
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
             disabled={!user || !canCreateFeedback}
-            tooltip={app.projectPage.projectFeedback.disabled}
+            tooltip={
+              user
+                ? app.projectPage.projectFeedback.disabled.signedIn
+                : app.projectPage.projectFeedback.disabled.signedOut
+            }
           />
         )}
       </AppField>
@@ -199,7 +203,11 @@ const CreateFeedback = ({ user }: Props) => {
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
             disabled={!user || !canCreateFeedback}
-            tooltip={app.projectPage.projectFeedback.disabled}
+            tooltip={
+              user
+                ? app.projectPage.projectFeedback.disabled.signedIn
+                : app.projectPage.projectFeedback.disabled.signedOut
+            }
           />
         )}
       </AppField>

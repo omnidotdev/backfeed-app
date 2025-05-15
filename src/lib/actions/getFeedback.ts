@@ -16,8 +16,6 @@ interface OrganizationOptions {
 const getFeedback = cache(async ({ feedbackId }: OrganizationOptions) => {
   const session = await getAuthSession();
 
-  if (!session) return null;
-
   const sdk = getSdk({ session });
 
   const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });

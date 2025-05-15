@@ -139,7 +139,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
                     user={user}
                     comment={comment!}
                     organizationId={organizationId}
-                    canReply={canCreateComment ?? false}
+                    canReply={!!user && !!canCreateComment}
                     w="full"
                     minH={21}
                   />

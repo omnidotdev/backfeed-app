@@ -44,8 +44,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [
     organization,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
@@ -106,12 +104,10 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
     search,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectsQuery.getKey(variables),
-      queryFn: useProjectsQuery.fetcher(variables),
-    }),
-  ]);
+  await queryClient.prefetchQuery({
+    queryKey: useProjectsQuery.getKey(variables),
+    queryFn: useProjectsQuery.fetcher(variables),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -136,7 +132,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         <ProjectFilters />
 
         <ProjectList
-          user={session.user}
+          user={session?.user}
           canCreateProjects={canCreateProjects}
         />
 
