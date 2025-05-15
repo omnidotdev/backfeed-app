@@ -88,7 +88,10 @@ const CommentCard = ({
           }),
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
           queryClient.invalidateQueries({
-            queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+            queryKey: useFeedbackByIdQuery.getKey({
+              rowId: feedbackId,
+              userId: user?.rowId,
+            }),
           }),
         ]),
     });

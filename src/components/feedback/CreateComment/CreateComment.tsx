@@ -71,6 +71,7 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
+            userId: user?.rowId,
           }),
         }),
       ]);
