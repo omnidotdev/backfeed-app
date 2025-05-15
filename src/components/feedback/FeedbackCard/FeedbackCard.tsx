@@ -280,6 +280,7 @@ const FeedbackCard = ({
             downvote={userDownvote}
             totalUpvotes={totalUpvotes}
             totalDownvotes={totalDownvotes}
+            isFeedbackRoute={!!isFeedbackRoute}
           />
         </HStack>
 

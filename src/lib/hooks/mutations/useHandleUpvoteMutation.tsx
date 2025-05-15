@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
+  PostOrderBy,
   useCreateUpvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
@@ -15,7 +16,6 @@ import type {
   Downvote,
   FeedbackByIdQuery,
   Post,
-  PostOrderBy,
   PostsQuery,
   Project,
   Upvote,
@@ -30,6 +30,8 @@ interface Options {
   upvote: Partial<Upvote> | null | undefined;
   /** Downvote object. Used to determine if the user has already downvoted */
   downvote: Partial<Downvote> | null | undefined;
+  /** Whether voting is being handled from the dynamic feedback route. */
+  isFeedbackRoute: boolean;
   /** mutation options */
   mutationOptions?: UseMutationOptions;
 }
@@ -42,6 +44,7 @@ const useHandleUpvoteMutation = ({
   projectId,
   upvote,
   downvote,
+  isFeedbackRoute,
   mutationOptions,
 }: Options) => {
   const queryClient = useQueryClient();
@@ -86,7 +89,9 @@ const useHandleUpvoteMutation = ({
       const postsQueryKey = useInfinitePostsQuery.getKey({
         projectId,
         excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        orderBy: orderBy
+          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+          : undefined,
         search,
         userId: user?.rowId,
       });
@@ -161,21 +166,37 @@ const useHandleUpvoteMutation = ({
         });
       }
     },
-    onSettled: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+    onSettled: async () => {
+      if (isFeedbackRoute) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+          queryClient.invalidateQueries({
+            queryKey: useProjectMetricsQuery.getKey({ projectId }),
+          }),
+        ]);
 
+        return queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+            userId: user?.rowId,
+          }),
+        });
+      }
+
+      await Promise.all([
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
             userId: user?.rowId,
           }),
         }),
-
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({ projectId }),
         }),
-      ]),
+      ]);
+
+      return queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] });
+    },
     ...mutationOptions,
   });
 };
