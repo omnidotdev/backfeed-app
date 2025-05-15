@@ -7,9 +7,9 @@ import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { SectionContainer } from "components/layout";
+import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
-import { useOrganizationQuery } from "generated/graphql";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";
