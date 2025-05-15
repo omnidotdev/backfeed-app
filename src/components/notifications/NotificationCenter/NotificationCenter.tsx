@@ -20,12 +20,11 @@ import {
 } from "generated/graphql";
 import { useAuth } from "lib/hooks";
 import { getQueryClient } from "lib/util";
+import { useState } from "react";
 
 const NotificationCenter = () => {
   const { user } = useAuth();
-
   const router = useRouter();
-
   const queryClient = getQueryClient();
 
   const { data: notifications } = useNotificationsQuery(
@@ -33,27 +32,26 @@ const NotificationCenter = () => {
     {
       enabled: !!user?.email,
       select: (data) =>
-        data?.invitations?.nodes.map((inv, index) => ({
-          id: `${index}-${inv?.organization?.name}`,
-          rowId: inv?.rowId,
-          email: inv?.email,
-          organizationId: inv?.organizationId,
+        data?.invitations?.nodes.map((inv) => ({
+          rowId: inv?.rowId!,
+          organizationId: inv?.organizationId!,
           message: `You've been invited to join ${inv?.organization?.name}`,
-        })),
+        })) ?? [],
     },
   );
 
   const notificationNumber = notifications?.length || 0;
 
-  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
-  const onSettled = async () => queryClient.invalidateQueries();
+  const onSettled = async () => {
+    await queryClient.invalidateQueries();
+  };
 
-  const { mutate: acceptInvitation } = useCreateMemberMutation({
-    onSettled,
-  });
+  const { mutate: acceptInvitation } = useCreateMemberMutation({ onSettled });
   const { mutate: deleteInvitation } = useDeleteInvitationMutation({
     onSettled,
   });
+
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
     <Popover
@@ -61,7 +59,6 @@ const NotificationCenter = () => {
       trigger={
         <Box position="relative" cursor="pointer">
           <Icon src={IoNotifications} />
-
           {notificationNumber > 0 && (
             <Circle
               position="absolute"
@@ -92,58 +89,65 @@ const NotificationCenter = () => {
           </Text>
         </Stack>
       ) : (
-        <VStack gap={2}>
-          <Stack>
-            {notifications.map((n) => (
-              <Box key={n.id}>
-                <Card
-                  key={n.id}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  w="full"
-                  _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
-                  onClick={() =>
-                    router.push(`/profile/${user?.hidraId}/invitations`)
-                  }
-                >
-                  <Text fontSize="sm">{n.message}</Text>
-                </Card>
+        <VStack gap={2} p={2}>
+          {notifications.map((n) => (
+            <Box key={n.rowId}>
+              <Card
+                display="flex"
+                flexDirection="column"
+                alignItems="flex-start"
+                justifyContent="center"
+                w="full"
+                p={3}
+                _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
+                onMouseEnter={() => setHoveredId(n.rowId)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() =>
+                  router.push(`/profile/${user?.hidraId}/invitations`)
+                }
+              >
+                <Text fontSize="sm" mb={2}>
+                  {n.message}
+                </Text>
 
-                <Button
-                  onClick={(evt) => {
-                    evt.stopPropagation();
-
-                    acceptInvitation({
-                      input: {
-                        member: {
-                          userId: user?.rowId!,
-                          organizationId: n.organizationId!,
-                          role: Role.Member,
-                        },
-                      },
-                    });
-
-                    deleteInvitation({
-                      rowId: n.rowId!,
-                    });
-                  }}
-                >
-                  Accept
-                </Button>
-
-                <Button
-                  onClick={(evt) => {
-                    evt.stopPropagation();
-
-                    deleteInvitation({ rowId: n.rowId! });
-                  }}
-                >
-                  Decline
-                </Button>
-              </Box>
-            ))}
-          </Stack>
+                {hoveredId === n.rowId && (
+                  <Stack direction="row" gap={2}>
+                    <Button
+                      size="sm"
+                      bg="green"
+                      _hover={{ bg: "green.700" }}
+                      onClick={(evt) => {
+                        evt.stopPropagation();
+                        acceptInvitation({
+                          input: {
+                            member: {
+                              userId: user?.rowId!,
+                              organizationId: n.organizationId,
+                              role: Role.Member,
+                            },
+                          },
+                        });
+                        deleteInvitation({ rowId: n.rowId });
+                      }}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      size="sm"
+                      bg="red"
+                      _hover={{ bg: "red.700" }}
+                      onClick={(evt) => {
+                        evt.stopPropagation();
+                        deleteInvitation({ rowId: n.rowId });
+                      }}
+                    >
+                      Decline
+                    </Button>
+                  </Stack>
+                )}
+              </Card>
+            </Box>
+          ))}
         </VStack>
       )}
     </Popover>
