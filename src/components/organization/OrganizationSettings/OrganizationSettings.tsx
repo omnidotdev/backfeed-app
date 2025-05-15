@@ -16,9 +16,8 @@ import {
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
-  useOrganizationRoleQuery,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
@@ -38,16 +37,10 @@ interface Props {
   user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
-  /** Whether the transfer ownership functionality is enabled. */
-  isOwnershipTransferEnabled: boolean;
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({
-  user,
-  organizationId,
-  isOwnershipTransferEnabled,
-}: Props) => {
+const OrganizationSettings = ({ user, organizationId }: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
@@ -85,19 +78,15 @@ const OrganizationSettings = ({
     organizationId,
   });
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: user.rowId!,
-        organizationId,
-      }),
-    });
-
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
+      // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
+      onSettled: async () => queryClient.invalidateQueries(),
     }),
     { mutate: leaveOrganization } = useLeaveOrganizationMutation({
-      onSettled,
+      onMutate: () => router.replace("/"),
+      // NB: when a user leaves an organization, we want to invalidate all queries as any of them could have data for said org associated with the user
+      onSettled: async () => queryClient.invalidateQueries(),
     }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
       organizationId,
@@ -187,8 +176,8 @@ const OrganizationSettings = ({
 
         {isOwner && (
           <Stack gap={6}>
-            {/* TODO: remove `isOwnershipTransferEnabled` flag when functionality for ownership transfers is resolved. */}
-            {isOnlyOwner && isOwnershipTransferEnabled && (
+            {/* TODO: remove development environment check when functionality for ownership transfers is resolved. */}
+            {isOnlyOwner && isDevEnv && (
               <DangerZoneAction
                 title={transferOwnershipDetails.title}
                 description={transferOwnershipDetails.description}

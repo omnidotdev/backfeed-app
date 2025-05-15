@@ -18,9 +18,9 @@ interface Props {
   /** Authenticated user. */
   user: Session["user"];
   /** Whether the authenticated user can create organizations. */
-  canCreateOrganizations: boolean;
+  canCreateOrganizations: boolean | undefined;
   /** Whether the authenticated user is subscribed. */
-  isSubscribed: boolean;
+  isSubscribed: boolean | undefined;
 }
 
 /**

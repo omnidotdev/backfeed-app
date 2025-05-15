@@ -7,6 +7,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
+  PostOrderBy,
   Role,
   useInfinitePostsQuery,
   useOrganizationRoleQuery,
@@ -23,7 +24,6 @@ import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { PostOrderBy } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -108,14 +108,20 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
       queryKey: useInfinitePostsQuery.getKey({
         projectId: project.rowId,
         excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        orderBy: orderBy
+          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+          : undefined,
         search,
+        userId: session.user.rowId,
       }),
       queryFn: usePostsQuery.fetcher({
         projectId: project.rowId,
         excludedStatuses,
-        orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+        orderBy: orderBy
+          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+          : undefined,
         search,
+        userId: session.user.rowId,
       }),
       initialPageParam: undefined,
     }),

@@ -57,15 +57,10 @@ const updateProjectSchema = z
     }
   });
 
-interface Props {
-  /** If the user has permission to edit the project statuses. */
-  canEditStatuses: boolean;
-}
-
 /**
  * Form for updating project details.
  */
-const UpdateProject = ({ canEditStatuses }: Props) => {
+const UpdateProject = () => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -231,9 +226,10 @@ const UpdateProject = ({ canEditStatuses }: Props) => {
         </AppForm>
       </sigil.form>
 
-      <Divider display={canEditStatuses ? "inline" : "none"} />
+      {/* TODO: when ready to implement for production, remove the development environment check */}
+      <Divider display={isDevEnv ? "inline" : "none"} />
 
-      <UpdateStatuses projectId={project?.rowId!} canEdit={canEditStatuses} />
+      <UpdateStatuses projectId={project?.rowId!} />
     </SectionContainer>
   );
 };

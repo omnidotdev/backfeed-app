@@ -101,6 +101,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
         ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
         : undefined,
       search,
+      userId: user?.rowId,
     },
     {
       placeholderData: keepPreviousData,

@@ -14,19 +14,22 @@ import {
   RecentFeedback,
 } from "components/dashboard";
 import { Page } from "components/layout";
-import { useDashboardAggregatesQuery } from "generated/graphql";
+import {
+  Role,
+  Tier,
+  useDashboardAggregatesQuery,
+  useOrganizationsQuery,
+  useUserQuery,
+} from "generated/graphql";
 import { app } from "lib/config";
 import { DialogType } from "store";
 
+import { CreateOrganization } from "components/organization";
 import type { Session } from "next-auth";
 
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Whether the authenticated user can create organizations. */
-  canCreateOrganizations: boolean;
-  /** Whether the authenticated user is subscribed. */
-  isSubscribed: boolean;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }
@@ -34,12 +37,7 @@ interface Props {
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({
-  user,
-  canCreateOrganizations,
-  isSubscribed,
-  oneWeekAgo,
-}: Props) => {
+const DashboardPage = ({ user, oneWeekAgo }: Props) => {
   const {
     data: dashboardAggregates,
     isLoading,
@@ -54,6 +52,40 @@ const DashboardPage = ({
         totalFeedback: data?.posts?.totalCount,
         totalUsers: data?.users?.totalCount,
       }),
+    },
+  );
+
+  const { data: organizations } = useOrganizationsQuery(
+    {
+      pageSize: 1,
+      userId: user.rowId,
+      excludeRoles: [Role.Member, Role.Admin],
+    },
+    {
+      select: (data) => data?.organizations,
+    },
+  );
+
+  const { data: tierRestrictions } = useUserQuery(
+    {
+      hidraId: user.hidraId!,
+    },
+    {
+      enabled: !!organizations,
+      select: (data) => {
+        const userTier = data?.userByHidraId?.tier;
+
+        const isTeamTier =
+          userTier && ![Tier.Free, Tier.Basic].includes(userTier);
+        const isFreeTier = !!userTier;
+
+        return {
+          isSubscribed: isFreeTier,
+          // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
+          canCreateOrganizations:
+            isTeamTier || (isFreeTier && !organizations?.totalCount),
+        };
+      },
     },
   );
 
@@ -88,8 +120,8 @@ const DashboardPage = ({
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
-            disabled: !canCreateOrganizations,
-            tooltip: isSubscribed
+            disabled: !tierRestrictions?.canCreateOrganizations,
+            tooltip: tierRestrictions?.isSubscribed
               ? app.dashboardPage.cta.newOrganization.subscribedTooltip
               : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
@@ -98,8 +130,8 @@ const DashboardPage = ({
     >
       <PinnedOrganizations
         user={user}
-        canCreateOrganizations={canCreateOrganizations}
-        isSubscribed={isSubscribed}
+        canCreateOrganizations={tierRestrictions?.canCreateOrganizations}
+        isSubscribed={tierRestrictions?.isSubscribed}
       />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
@@ -120,6 +152,9 @@ const DashboardPage = ({
 
         <RecentFeedback user={user} />
       </Grid>
+
+      {/* dialogs */}
+      {tierRestrictions?.canCreateOrganizations && <CreateOrganization />}
     </Page>
   );
 };
