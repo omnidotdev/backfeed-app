@@ -11,10 +11,7 @@ import {
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import {
-  enableJoinOrganizationFlag,
-  enableOwnershipTransferFlag,
-} from "lib/flags";
+import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -40,12 +37,6 @@ interface Props {
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
 
-  const [isJoinOrganizationEnabled, isOwnershipTransferEnabled] =
-    await Promise.all([
-      enableJoinOrganizationFlag(),
-      enableOwnershipTransferFlag(),
-    ]);
-
   const session = await auth();
 
   if (!session) notFound();
@@ -53,6 +44,15 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
   const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
+
+  const sdk = getSdk({ session });
+
+  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+    userId: session.user.rowId!,
+    organizationId: organization.rowId,
+  });
+
+  if (!memberByUserIdAndOrganizationId) notFound();
 
   const queryClient = getQueryClient();
 
@@ -88,10 +88,8 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         pt={0}
       >
         <OrganizationSettings
-          userId={session.user.rowId!}
+          user={session.user}
           organizationId={organization.rowId}
-          isJoinOrganizationEnabled={isJoinOrganizationEnabled}
-          isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
       </Page>
     </HydrationBoundary>

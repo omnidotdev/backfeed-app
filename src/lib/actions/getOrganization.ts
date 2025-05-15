@@ -11,7 +11,7 @@ interface OrganizationOptions {
 }
 
 /**
- * Helper function to fetch an organization's details. Cached for deduping requests.
+ * Fetch an organization's details. Cached for deduping requests.
  */
 const getOrganization = cache(
   async ({ organizationSlug }: OrganizationOptions) => {

@@ -7,6 +7,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
+  PostOrderBy,
   Role,
   useInfinitePostsQuery,
   useOrganizationRoleQuery,
@@ -19,9 +20,11 @@ import {
 import { getOrganization, getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { freeTierFeedbackOptions } from "lib/options";
+import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -39,12 +42,14 @@ export const generateMetadata = async ({ params }: Props) => {
 interface Props {
   /** Project page params. */
   params: Promise<{ organizationSlug: string; projectSlug: string }>;
+  /** Projects page search params. */
+  searchParams: Promise<SearchParams>;
 }
 
 /**
  * Project overview page.
  */
-const ProjectPage = async ({ params }: Props) => {
+const ProjectPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();
@@ -64,6 +69,9 @@ const ProjectPage = async ({ params }: Props) => {
     userId: session.user?.rowId!,
     organizationId: project.organization?.rowId!,
   });
+
+  const { excludedStatuses, orderBy, search } =
+    await getSearchParams.parse(searchParams);
 
   const queryClient = getQueryClient();
 
@@ -104,12 +112,27 @@ const ProjectPage = async ({ params }: Props) => {
         organizationSlug,
       }),
     }),
+    queryClient.prefetchQuery(
+      freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+    ),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfinitePostsQuery.getKey({
         projectId: project.rowId,
+        excludedStatuses,
+        orderBy: orderBy
+          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+          : undefined,
+        search,
+        userId: session.user.rowId,
       }),
       queryFn: usePostsQuery.fetcher({
         projectId: project.rowId,
+        excludedStatuses,
+        orderBy: orderBy
+          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+          : undefined,
+        search,
+        userId: session.user.rowId,
       }),
       initialPageParam: undefined,
     }),

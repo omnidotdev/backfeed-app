@@ -3,7 +3,7 @@ query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
     first: $pageSize
     after: $after
     orderBy: CREATED_AT_DESC
-    condition: { postId: $feedbackId }
+    condition: { postId: $feedbackId, parentId: null }
   ) {
     totalCount
     pageInfo {

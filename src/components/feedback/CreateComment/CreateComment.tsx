@@ -9,12 +9,16 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
+  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
+import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_COMMENT_LENGTH = 240;
 
@@ -33,19 +37,44 @@ const createCommentSchema = z.object({
     ),
 });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** Whether the user can create a comment. */
+  canCreateComment: boolean;
+}
+
 /**
  * Create comment form.
  */
-const CreateComment = () => {
+const CreateComment = ({ user, canCreateComment }: Props) => {
   const queryClient = useQueryClient();
 
-  const { user, isLoading: isAuthLoading } = useAuth();
-
-  const { feedbackId } = useParams<{ feedbackId: string }>();
+  const { organizationSlug, projectSlug, feedbackId } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+    feedbackId: string;
+  }>();
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
-    onSettled: () => {
+    onSettled: async () => {
       reset();
+
+      await Promise.all([
+        queryClient.invalidateQueries(
+          freeTierCommentsOptions({
+            organizationSlug,
+            projectSlug,
+            feedbackId,
+          }),
+        ),
+        queryClient.invalidateQueries({
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+            userId: user?.rowId,
+          }),
+        }),
+      ]);
 
       return queryClient.invalidateQueries({
         queryKey: useInfiniteCommentsQuery.getKey({
@@ -115,7 +144,8 @@ const CreateComment = () => {
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
-            disabled={isAuthLoading}
+            disabled={!user || !canCreateComment}
+            tooltip={app.feedbackPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               top: -6,
@@ -135,6 +165,7 @@ const CreateComment = () => {
           <SubmitForm
             action={app.feedbackPage.comments.action}
             isPending={isPending}
+            disabled={!user || !canCreateComment}
           />
         </AppForm>
       </Stack>

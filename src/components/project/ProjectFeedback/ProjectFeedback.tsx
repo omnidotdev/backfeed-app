@@ -1,7 +1,15 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Grid, Input, Select, Stack, Text, VStack } from "@omnidev/sigil";
+import {
+  Divider,
+  Grid,
+  Input,
+  Select,
+  Stack,
+  Text,
+  VStack,
+} from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -76,25 +84,33 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     },
   );
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfinitePostsQuery(
-      {
-        projectId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+  const {
+    data: posts,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfinitePostsQuery(
+    {
+      projectId,
+      excludedStatuses,
+      orderBy: orderBy
+        ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
+        : undefined,
+      search,
+      userId: user?.rowId,
+    },
+    {
+      placeholderData: keepPreviousData,
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.posts?.pageInfo?.hasNextPage
+          ? { after: lastPage?.posts?.pageInfo?.endCursor }
           : undefined,
-        search,
-      },
-      {
-        placeholderData: keepPreviousData,
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.posts?.pageInfo?.hasNextPage
-            ? { after: lastPage?.posts?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
+      select: (data) =>
+        data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
+    },
+  );
 
   const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {
@@ -116,7 +132,14 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           slug: "pending",
         },
         user: {
+          rowId: user?.rowId ?? "",
           username: user?.username,
+        },
+        comments: {
+          totalCount: 0,
+        },
+        commentsWithReplies: {
+          totalCount: 0,
         },
         upvotes: {
           totalCount: 0,
@@ -133,10 +156,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       };
     },
   });
-
-  const posts =
-    data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)) ??
-    [];
 
   const { isAdmin } = useOrganizationMembership({
     userId: user.rowId,
@@ -175,7 +194,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           ),
         ]
       : []),
-    ...posts,
+    ...(posts ?? []),
   ];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
@@ -197,7 +216,9 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
-        <CreateFeedback />
+        <CreateFeedback user={user} />
+
+        <Divider mt={4} />
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
           <Input
@@ -249,10 +270,10 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                   return (
                     <FeedbackCard
                       key={feedback?.rowId}
-                      canManageStatus={isAdmin}
+                      user={user}
+                      canManageFeedback={isAdmin}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
-                      isPending={isPending}
                       w="full"
                       minH={21}
                       borderRadius="md"

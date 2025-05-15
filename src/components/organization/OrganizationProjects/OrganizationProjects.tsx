@@ -17,8 +17,6 @@ import type { Organization, Project } from "generated/graphql";
 interface Props {
   /** Whether the user has admin privileges for the organization. */
   hasAdminPrivileges: boolean;
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
   /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
   /** Organization slug. */
@@ -30,7 +28,6 @@ interface Props {
  */
 const OrganizationProjects = ({
   hasAdminPrivileges,
-  isBasicTier,
   canCreateProjects,
   organizationSlug,
 }: Props) => {
@@ -108,11 +105,7 @@ const OrganizationProjects = ({
                       icon: LuCirclePlus,
                       onClick: () => setIsCreateProjectDialogOpen(true),
                       disabled: !canCreateProjects,
-                      tooltip: isBasicTier
-                        ? app.organizationPage.projects.emptyState
-                            .basicTierTooltip
-                        : app.organizationPage.projects.emptyState
-                            .noSubscriptionTooltip,
+                      tooltip: app.organizationPage.projects.emptyState.tooltip,
                     }
                   : undefined
               }

@@ -13,8 +13,11 @@ import {
 } from "@omnidev/sigil";
 import { useState } from "react";
 import { HiOutlineTrash } from "react-icons/hi2";
+import { useIsClient } from "usehooks-ts";
 
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
+import { useViewportSize } from "lib/hooks";
 
 import type {
   ButtonProps,
@@ -85,25 +88,39 @@ const DestructiveAction = ({
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
 
+  const isClient = useIsClient();
+
+  const isSmallViewport = useViewportSize({
+    minWidth: token("breakpoints.sm"),
+  });
+
   const actions: Action[] = [
     {
       variant: "solid",
       ...destructiveButtonStyles,
       ...action,
+      tabIndex: 0,
       disabled: destructiveInput
         ? inputValue !== destructiveInput || action.disabled
         : action.disabled,
       onClick: (e) => {
+        e.stopPropagation();
         action.onClick?.(e);
         onClose();
       },
     },
     {
       label: app.actions.cancel.label,
-      onClick: onClose,
+      tabIndex: 0,
+      onClick: (e) => {
+        e.stopPropagation();
+        onClose();
+      },
       variant: "outline",
     },
   ];
+
+  if (!isClient) return null;
 
   return (
     <Dialog
@@ -129,13 +146,29 @@ const DestructiveAction = ({
         </Button>
       }
       triggerProps={triggerProps}
+      contentProps={{
+        // NB: `onClick` and `cursor` are to change behavior due to render of dialog being unknown. We do not want to propagate events.
+        onClick: (e) => e.stopPropagation(),
+        style: {
+          // TODO: adjust minW upstream in Sigil for mobile viewports
+          minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          cursor: "default",
+        },
+      }}
       {...rest}
     >
       {children}
 
       {destructiveInput && (
         <Stack gap={2}>
-          <Label>{`Type "${destructiveInput}" below to confirm`}</Label>
+          <Label
+            _selection={{
+              backgroundColor: "red",
+            }}
+          >
+            {`Type "${destructiveInput}" below to confirm`}
+          </Label>
+
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

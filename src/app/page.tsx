@@ -5,7 +5,6 @@ import utc from "dayjs/plugin/utc";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
-import { CreateOrganization } from "components/organization";
 import {
   OrganizationOrderBy,
   Role,
@@ -13,12 +12,9 @@ import {
   useInfiniteRecentFeedbackQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
+  useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import {
-  enableBasicTierPrivilegesFlag,
-  enableTeamTierPrivilegesFlag,
-} from "lib/flags";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
@@ -34,11 +30,6 @@ const HomePage = async () => {
   const session = await auth();
 
   if (!session) return <LandingPage />;
-
-  const [isBasicTier, isTeamTier] = await Promise.all([
-    enableBasicTierPrivilegesFlag(),
-    enableTeamTierPrivilegesFlag(),
-  ]);
 
   const queryClient = getQueryClient();
 
@@ -70,6 +61,22 @@ const HomePage = async () => {
       }),
     }),
     queryClient.prefetchQuery({
+      queryKey: useOrganizationsQuery.getKey({
+        pageSize: 1,
+        userId: organizationsQueryVariables.userId,
+        excludeRoles: [Role.Member, Role.Admin],
+      }),
+      queryFn: useOrganizationsQuery.fetcher({
+        pageSize: 1,
+        userId: organizationsQueryVariables.userId,
+        excludeRoles: [Role.Member, Role.Admin],
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
+      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
+    }),
+    queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({
         userId: session.user.rowId!,
       }),
@@ -98,16 +105,7 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage
-        isBasicTier={isBasicTier}
-        isTeamTier={isTeamTier}
-        oneWeekAgo={oneWeekAgo}
-      />
-
-      {/* dialogs */}
-      {isBasicTier && (
-        <CreateOrganization isBasicTier={isBasicTier} isTeamTier={isTeamTier} />
-      )}
+      <DashboardPage user={session.user} oneWeekAgo={oneWeekAgo} />
     </HydrationBoundary>
   );
 };

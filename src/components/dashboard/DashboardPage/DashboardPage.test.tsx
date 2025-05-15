@@ -11,7 +11,15 @@ const oneWeekAgo = dayjs().utc().subtract(6, "days").startOf("day").toDate();
 describe("dashboard page", () => {
   beforeEach(() => {
     // TODO: add tests for different tier level renders (i.e. disabled create org button, etc)
-    render(<DashboardPage isBasicTier isTeamTier oneWeekAgo={oneWeekAgo} />);
+    render(
+      <DashboardPage
+        // TODO: mock user
+        user={{}}
+        canCreateOrganizations
+        isSubscribed
+        oneWeekAgo={oneWeekAgo}
+      />,
+    );
   });
 
   // TODO enable below, blocked by MSW integration (see test setup file for corresponding TODO) which is further blocked by https://github.com/oven-sh/bun/issues/13072

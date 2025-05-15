@@ -5,16 +5,14 @@ import { auth } from "auth";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
-  Role,
   useCommentsQuery,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useOrganizationRoleQuery,
-  useProjectStatusesQuery,
 } from "generated/graphql";
-import { getOrganization } from "lib/actions";
+import { getFeedback, getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import { getSdk } from "lib/graphql";
+import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -42,22 +40,12 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ organizationSlug });
-
-  const sdk = getSdk({ session });
-
-  const { post: feedback } = await sdk.FeedbackById({ rowId: feedbackId });
+  const [organization, feedback] = await Promise.all([
+    getOrganization({ organizationSlug }),
+    getFeedback({ feedbackId }),
+  ]);
 
   if (!feedback) notFound();
-
-  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-    userId: session.user?.rowId!,
-    organizationId: feedback.project?.organization?.rowId!,
-  });
-
-  const isAdmin =
-    memberByUserIdAndOrganizationId?.role === Role.Admin ||
-    memberByUserIdAndOrganizationId?.role === Role.Owner;
 
   const queryClient = getQueryClient();
 
@@ -101,22 +89,18 @@ const FeedbackPage = async ({ params }: Props) => {
 
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
+      queryKey: useFeedbackByIdQuery.getKey({
+        rowId: feedbackId,
+        userId: session.user.rowId,
+      }),
+      queryFn: useFeedbackByIdQuery.fetcher({
+        rowId: feedbackId,
+        userId: session.user.rowId,
+      }),
     }),
-    // ! NB: only prefetch the project statuses if the user is an admin
-    ...(isAdmin
-      ? [
-          queryClient.prefetchQuery({
-            queryKey: useProjectStatusesQuery.getKey({
-              projectId: feedback.project?.rowId!,
-            }),
-            queryFn: useProjectStatusesQuery.fetcher({
-              projectId: feedback.project?.rowId!,
-            }),
-          }),
-        ]
-      : []),
+    queryClient.prefetchQuery(
+      freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+    ),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,

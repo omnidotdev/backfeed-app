@@ -22,7 +22,14 @@ fragment Feedback on Post {
     color
   }
   user {
+    rowId
     username
+  }
+  comments(condition: { parentId: null }) {
+    totalCount
+  }
+  commentsWithReplies: comments {
+    totalCount
   }
   upvotes {
     totalCount

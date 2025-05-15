@@ -1,7 +1,8 @@
 "use client";
 
-import { Grid, Stack, Text, VStack } from "@omnidev/sigil";
-import { useMutationState } from "@tanstack/react-query";
+import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -13,6 +14,7 @@ import {
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { freeTierCommentsOptions } from "lib/options";
 
 import type {
   CommentFragment,
@@ -35,23 +37,45 @@ interface Props {
  * Feedback comments section.
  */
 const Comments = ({ user, organizationId, feedbackId }: Props) => {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteCommentsQuery(
-      {
-        feedbackId,
-      },
-      {
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.comments?.pageInfo?.hasNextPage
-            ? { after: lastPage?.comments?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
+  const { organizationSlug, projectSlug } = useParams<{
+    organizationSlug: string;
+    projectSlug: string;
+  }>();
+
+  const { data: canCreateComment } = useQuery(
+    freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+  );
+
+  const {
+    data: comments,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteCommentsQuery(
+    {
+      feedbackId,
+    },
+    {
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.comments?.pageInfo?.hasNextPage
+          ? { after: lastPage?.comments?.pageInfo?.endCursor }
+          : undefined,
+      select: (data) =>
+        data?.pages?.flatMap((page) =>
+          page?.comments?.edges?.map((edge) => edge?.node),
+        ),
+    },
+  );
 
   const pendingComments = useMutationState<CommentFragment>({
     filters: {
       mutationKey: useCreateCommentMutation.getKey(),
+      // make sure only top-level comments are counted towards pending comments
+      predicate: (mutation) =>
+        !(mutation.state.variables as CreateCommentMutationVariables).input
+          .comment.parentId,
       status: "pending",
     },
     select: (mutation) => {
@@ -65,17 +89,14 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
           rowId: user?.rowId!,
           username: user?.username,
         },
+        childComments: {
+          totalCount: 0,
+        },
       };
     },
   });
 
-  // This is not defined within the `select` function in order to preserve type safety.
-  const comments =
-    data?.pages?.flatMap((page) =>
-      page?.comments?.edges?.map((edge) => edge?.node),
-    ) ?? [];
-
-  const allComments = [...pendingComments, ...comments];
+  const allComments = [...pendingComments, ...(comments ?? [])];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -97,35 +118,32 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack position="relative" mb="1px">
-        <CreateComment />
+        <CreateComment
+          user={user}
+          canCreateComment={canCreateComment ?? false}
+        />
+
+        <Divider mt={4} />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="md" overflow="auto" scrollbar="hidden">
+          <Grid gap={2} mt={4} maxH="xl" overflow="auto" scrollbar="hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
-              <VStack>
-                {allComments?.map((comment) => {
-                  const isPending = comment?.rowId === "pending";
-
-                  return (
-                    <CommentCard
-                      key={comment?.rowId}
-                      user={user}
-                      organizationId={organizationId}
-                      commentId={comment?.rowId!}
-                      senderName={comment?.user?.username}
-                      message={comment?.message}
-                      createdAt={comment?.createdAt ?? new Date()}
-                      isSender={comment?.user?.rowId === user?.rowId}
-                      isPending={isPending}
-                      w="full"
-                      minH={21}
-                    />
-                  );
-                })}
+              <VStack gap={2}>
+                {allComments?.map((comment) => (
+                  <CommentCard
+                    key={comment?.rowId}
+                    user={user}
+                    comment={comment!}
+                    organizationId={organizationId}
+                    canReply={canCreateComment ?? false}
+                    w="full"
+                    minH={21}
+                  />
+                ))}
 
                 {hasNextPage ? (
                   <Spinner ref={loaderRef} my={4} />

@@ -25,6 +25,7 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
   const { data: feedback } = useFeedbackByIdQuery(
     {
       rowId: feedbackId,
+      userId: user?.rowId,
     },
     {
       select: (data) => data?.post,
@@ -53,7 +54,8 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
 
   return (
     <FeedbackCard
-      canManageStatus={isAdmin}
+      user={user}
+      canManageFeedback={isAdmin}
       feedback={feedback!}
       projectStatuses={projectStatuses}
       boxShadow="card"

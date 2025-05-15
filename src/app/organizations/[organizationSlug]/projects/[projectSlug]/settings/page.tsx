@@ -11,7 +11,6 @@ import {
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
-import { enableTeamTierPrivilegesFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
@@ -62,10 +61,6 @@ const ProjectSettingsPage = async ({ params }: Props) => {
 
   if (!isAdmin) notFound();
 
-  // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
-  // TODO: when ready to implement for production, remove the development environment check
-  const canEditStatuses = isDevEnv && (await enableTeamTierPrivilegesFlag());
-
   const queryClient = getQueryClient();
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -95,8 +90,8 @@ const ProjectSettingsPage = async ({ params }: Props) => {
       queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
       queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
     }),
-    // ! NB: only prefetch the project statuses if the user can edit statuses
-    ...(canEditStatuses
+    // TODO: when ready to implement for production, remove the development environment check
+    ...(isDevEnv
       ? [
           queryClient.prefetchQuery({
             queryKey: useProjectStatusesQuery.getKey({
@@ -119,9 +114,9 @@ const ProjectSettingsPage = async ({ params }: Props) => {
         }}
       >
         <ProjectSettings
+          user={session.user}
           projectId={project.rowId}
           organizationSlug={organizationSlug}
-          canEditStatuses={canEditStatuses}
         />
       </Page>
     </HydrationBoundary>

@@ -57,7 +57,7 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: useInvitationsQuery.getKey({
       organizationId: organization.rowId,
     }),
@@ -86,10 +86,11 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
         }}
         pt={0}
       >
-        <Invitations organizationId={organization.rowId} />
+        <Invitations user={session.user} organizationId={organization.rowId} />
 
         {/* dialogs */}
         <InviteMember
+          user={session.user}
           organizationName={organization.name!}
           organizationId={organization.rowId}
         />

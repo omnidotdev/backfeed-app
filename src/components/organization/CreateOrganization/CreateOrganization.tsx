@@ -6,12 +6,12 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
-import { Role, useOrganizationsQuery } from "generated/graphql";
+import { useQueryClient } from "@tanstack/react-query";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useViewportSize } from "lib/hooks";
+import { useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { useDialogStore } from "lib/hooks/store";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
@@ -48,38 +48,19 @@ const createOrganizationSchema = z
     }
   });
 
-interface Props {
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
-  /** Whether the user has team tier subscription permissions. */
-  isTeamTier: boolean;
-}
-
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
+const CreateOrganization = () => {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const isClient = useIsClient();
 
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
   });
-
-  const { user } = useAuth();
-
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
-    {
-      userId: user?.rowId!,
-      isMember: true,
-      excludeRoles: [Role.Member],
-    },
-    {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
-    },
-  );
 
   const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -89,10 +70,6 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
     type: DialogType.CreateOrganization,
   });
 
-  // Validate user has a subscription, and validate that the subscription is a team tier subscription *or* that they are not an admin/owner of another organization
-  const canCreateOrganization =
-    isBasicTier && (isTeamTier || !numberOfOrganizations);
-
   useHotkeys(
     "mod+o",
     () => {
@@ -100,15 +77,17 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateProjectDialogOpen && canCreateOrganization,
+      enabled: !isCreateProjectDialogOpen,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [isOpen, isCreateProjectDialogOpen, canCreateOrganization],
+    [isOpen, isCreateProjectDialogOpen],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
+      onSettled: async () =>
+        queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: (data) => {
         router.push(
           `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
@@ -166,9 +145,9 @@ const CreateOrganization = ({ isBasicTier, isTeamTier }: Props) => {
         reset();
         setIsOpen(open);
       }}
-      // TODO: adjust minW upstream in Sigil for mobile viewports
       contentProps={{
         style: {
+          // TODO: adjust minW upstream in Sigil for mobile viewports
           minWidth: isSmallViewport ? undefined : "80%",
         },
       }}

@@ -16,18 +16,20 @@ import {
 import { Page } from "components/layout";
 import {
   Role,
+  Tier,
   useDashboardAggregatesQuery,
   useOrganizationsQuery,
+  useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { DialogType } from "store";
 
+import { CreateOrganization } from "components/organization";
+import type { Session } from "next-auth";
+
 interface Props {
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
-  /** Whether the user has team tier subscription permissions. */
-  isTeamTier: boolean;
+  /** Authenticated user. */
+  user: Session["user"];
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }
@@ -35,9 +37,7 @@ interface Props {
 /**
  * Dashboard page. This provides the main layout for the home page when the user is authenticated.
  */
-const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
-  const { user, isLoading: isAuthLoading } = useAuth();
-
+const DashboardPage = ({ user, oneWeekAgo }: Props) => {
   const {
     data: dashboardAggregates,
     isLoading,
@@ -55,15 +55,37 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
     },
   );
 
-  const { data: numberOfOrganizations } = useOrganizationsQuery(
+  const { data: organizations } = useOrganizationsQuery(
     {
-      userId: user?.rowId!,
-      isMember: true,
-      excludeRoles: [Role.Member],
+      pageSize: 1,
+      userId: user.rowId,
+      excludeRoles: [Role.Member, Role.Admin],
     },
     {
-      enabled: !!user?.rowId,
-      select: (data) => data?.organizations?.totalCount,
+      select: (data) => data?.organizations,
+    },
+  );
+
+  const { data: tierRestrictions } = useUserQuery(
+    {
+      hidraId: user.hidraId!,
+    },
+    {
+      enabled: !!organizations,
+      select: (data) => {
+        const userTier = data?.userByHidraId?.tier;
+
+        const isTeamTier =
+          userTier && ![Tier.Free, Tier.Basic].includes(userTier);
+        const isFreeTier = !!userTier;
+
+        return {
+          isSubscribed: isFreeTier,
+          // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
+          canCreateOrganizations:
+            isTeamTier || (isFreeTier && !organizations?.totalCount),
+        };
+      },
     },
   );
 
@@ -79,8 +101,6 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
       icon: HiOutlineUserGroup,
     },
   ];
-
-  if (isAuthLoading) return null;
 
   return (
     <Page
@@ -100,15 +120,19 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
             // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
-            disabled: !isBasicTier || (!isTeamTier && !!numberOfOrganizations),
-            tooltip: isBasicTier
-              ? app.dashboardPage.cta.newOrganization.basicTierTooltip
+            disabled: !tierRestrictions?.canCreateOrganizations,
+            tooltip: tierRestrictions?.isSubscribed
+              ? app.dashboardPage.cta.newOrganization.subscribedTooltip
               : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
         ],
       }}
     >
-      <PinnedOrganizations isBasicTier={isBasicTier} />
+      <PinnedOrganizations
+        user={user}
+        canCreateOrganizations={tierRestrictions?.canCreateOrganizations}
+        isSubscribed={tierRestrictions?.isSubscribed}
+      />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -124,10 +148,13 @@ const DashboardPage = ({ isBasicTier, isTeamTier, oneWeekAgo }: Props) => {
       </Grid>
 
       <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
-        <FeedbackOverview oneWeekAgo={oneWeekAgo} />
+        <FeedbackOverview user={user} oneWeekAgo={oneWeekAgo} />
 
-        <RecentFeedback />
+        <RecentFeedback user={user} />
       </Grid>
+
+      {/* dialogs */}
+      {tierRestrictions?.canCreateOrganizations && <CreateOrganization />}
     </Page>
   );
 };

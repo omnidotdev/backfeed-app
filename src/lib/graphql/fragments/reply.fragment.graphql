@@ -1,0 +1,10 @@
+fragment Reply on Comment {
+  rowId
+  parentId
+  message
+  user {
+    rowId
+    username
+  }
+  createdAt
+}

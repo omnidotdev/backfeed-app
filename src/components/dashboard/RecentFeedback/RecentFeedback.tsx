@@ -8,35 +8,41 @@ import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 import type { Post } from "generated/graphql";
+import type { Session } from "next-auth";
+
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
+}
 
 /**
  * Recent feedback section.
  */
-const RecentFeedback = () => {
-  const { user } = useAuth();
-
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteRecentFeedbackQuery(
-      {
-        userId: user?.rowId!,
-      },
-      {
-        initialPageParam: undefined,
-        getNextPageParam: (lastPage) =>
-          lastPage?.posts?.pageInfo?.hasNextPage
-            ? { after: lastPage?.posts?.pageInfo?.endCursor }
-            : undefined,
-      },
-    );
-
-  // This is not defined within the `select` function in order to preserve type safety.
-  const recentFeedback =
-    data?.pages?.flatMap((page) =>
-      page?.posts?.edges?.map((edge) => edge?.node),
-    ) ?? [];
+const RecentFeedback = ({ user }: Props) => {
+  const {
+    data: recentFeedback,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteRecentFeedbackQuery(
+    {
+      userId: user.rowId!,
+    },
+    {
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage?.posts?.pageInfo?.hasNextPage
+          ? { after: lastPage?.posts?.pageInfo?.endCursor }
+          : undefined,
+      select: (data) =>
+        data?.pages?.flatMap((page) =>
+          page?.posts?.edges?.map((edge) => edge?.node),
+        ),
+    },
+  );
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -103,7 +109,7 @@ const RecentFeedback = () => {
             />
           )}
 
-          {!!recentFeedback.length && <GradientMask bottom={0} />}
+          {!!recentFeedback?.length && <GradientMask bottom={0} />}
         </Stack>
       )}
     </FeedbackSection>

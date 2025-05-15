@@ -2,7 +2,7 @@
 
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 
@@ -15,9 +15,12 @@ import {
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
+import { useForm } from "lib/hooks";
+import { freeTierFeedbackOptions } from "lib/options";
 import { toaster } from "lib/util";
+
+import type { Session } from "next-auth";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -31,7 +34,9 @@ const createFeedbackSchema = z.object({
   statusId: uuidSchema,
   projectId: uuidSchema,
   userId: uuidSchema,
-  title: standardRegexSchema
+  title: z
+    .string()
+    .trim()
     .min(3, feedbackSchemaErrors.title.minLength)
     .max(90, feedbackSchemaErrors.title.maxLength),
   description: z
@@ -41,10 +46,15 @@ const createFeedbackSchema = z.object({
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+}
+
 /**
  * Create feedback form.
  */
-const CreateFeedback = () => {
+const CreateFeedback = ({ user }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -52,7 +62,9 @@ const CreateFeedback = () => {
     projectSlug: string;
   }>();
 
-  const { user } = useAuth();
+  const { data: canCreateFeedback } = useQuery(
+    freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+  );
 
   const { data: projectId } = useProjectQuery(
     {
@@ -86,12 +98,14 @@ const CreateFeedback = () => {
             projectId: projectId!,
           }),
         }),
-
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({
             projectId: projectId!,
           }),
         }),
+        queryClient.invalidateQueries(
+          freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+        ),
       ]);
 
       return queryClient.invalidateQueries({
@@ -168,6 +182,8 @@ const CreateFeedback = () => {
             placeholder={
               app.projectPage.projectFeedback.feedbackTitle.placeholder
             }
+            disabled={!user || !canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>
@@ -182,6 +198,8 @@ const CreateFeedback = () => {
             rows={5}
             minH={32}
             maxLength={MAX_DESCRIPTION_LENGTH}
+            disabled={!user || !canCreateFeedback}
+            tooltip={app.projectPage.projectFeedback.disabled}
           />
         )}
       </AppField>
@@ -199,6 +217,7 @@ const CreateFeedback = () => {
             isPending={isPending}
             w="fit-content"
             placeSelf="flex-end"
+            disabled={!user || !canCreateFeedback}
           />
         </AppForm>
       </Stack>

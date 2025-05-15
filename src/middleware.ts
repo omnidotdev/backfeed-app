@@ -19,7 +19,7 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
   : SESSION_COOKIE_PREFIX;
 
 /**
- * Redirect helper function. This helper function is used to redirect the user's request.
+ * Redirect the user's request.
  * NB: need to use rewrite instead of redirect to avoid infinite redirect loop if the user is already on the redirect path
  */
 const redirect = (request: NextAuthRequest, init?: ResponseInit) => {
@@ -37,7 +37,7 @@ const redirect = (request: NextAuthRequest, init?: ResponseInit) => {
 };
 
 /**
- * Sign out handler. This helper function is used to sign out the user from the application.
+ * Sign out handler used to sign out the user from the application.
  */
 const signOut = async (request: NextAuthRequest) => {
   // Delete session cookie on request as server-side auth will read from the request headers

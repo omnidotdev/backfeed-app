@@ -1,9 +1,8 @@
 "use client";
 
-import { Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
-import { LuSettings } from "react-icons/lu";
 
 import { Link, OverflowText } from "components/core";
 import { setSingularOrPlural } from "lib/util";
@@ -70,14 +69,6 @@ const OrganizationListItem = ({ organization }: Props) => {
             </Stack>
           </Link>
         </Stack>
-
-        <Flex position="absolute" right={0} top={0} m={2}>
-          <Link href={`${`/organizations/${organization.slug}/settings`}`}>
-            <Button variant="ghost" p={0}>
-              <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
-            </Button>
-          </Link>
-        </Flex>
       </HStack>
 
       <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">

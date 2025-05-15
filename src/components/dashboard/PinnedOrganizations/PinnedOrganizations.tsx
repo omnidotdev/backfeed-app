@@ -8,23 +8,29 @@ import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
-  /** Whether the user has basic tier subscription permissions. */
-  isBasicTier: boolean;
+  /** Authenticated user. */
+  user: Session["user"];
+  /** Whether the authenticated user can create organizations. */
+  canCreateOrganizations: boolean | undefined;
+  /** Whether the authenticated user is subscribed. */
+  isSubscribed: boolean | undefined;
 }
 
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = ({ isBasicTier }: Props) => {
-  const { user } = useAuth();
-
+const PinnedOrganizations = ({
+  user,
+  canCreateOrganizations,
+  isSubscribed,
+}: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -38,11 +44,10 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
-      userId: user?.rowId!,
+      userId: user.rowId!,
       isMember: true,
     },
     {
-      enabled: !!user?.rowId,
       select: (data) => data?.organizations?.nodes,
     },
   );
@@ -88,9 +93,9 @@ const PinnedOrganizations = ({ isBasicTier }: Props) => {
                 label: app.dashboardPage.organizations.emptyState.cta.label,
                 onClick: () => setIsCreateOrganizationDialogOpen(true),
                 icon: LuCirclePlus,
-                disabled: !isBasicTier,
-                tooltip: isBasicTier
-                  ? app.dashboardPage.organizations.emptyState.basicTierTooltip
+                disabled: !canCreateOrganizations,
+                tooltip: isSubscribed
+                  ? app.dashboardPage.organizations.emptyState.subscribedTooltip
                   : app.dashboardPage.organizations.emptyState
                       .noSubscriptionTooltip,
               }}

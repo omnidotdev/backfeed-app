@@ -4,7 +4,11 @@ import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { ManagementSidebar } from "components/organization";
-import { useOrganizationQuery } from "generated/graphql";
+import {
+  useOrganizationQuery,
+  useOrganizationRoleQuery,
+} from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { getQueryClient } from "lib/util";
 
 import type { PropsWithChildren } from "react";
@@ -23,17 +27,33 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
 
   if (!session) notFound();
 
+  const organization = await getOrganization({ organizationSlug });
+
+  if (!organization) notFound();
+
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
-    queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
+      queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useOrganizationRoleQuery.getKey({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+      queryFn: useOrganizationRoleQuery.fetcher({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      }),
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <HStack h="full" w="full" gap={0}>
-        <ManagementSidebar>{children}</ManagementSidebar>
+        <ManagementSidebar user={session.user}>{children}</ManagementSidebar>
       </HStack>
     </HydrationBoundary>
   );

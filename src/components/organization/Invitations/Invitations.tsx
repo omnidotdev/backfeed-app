@@ -20,15 +20,18 @@ import { useMemo } from "react";
 import { InvitationMenu } from "components/organization";
 import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth, useOrganizationMembership } from "lib/hooks";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type { InvitationFragment, Organization } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const columnHelper = createColumnHelper<InvitationFragment>();
 
 const organizationInviteDetails = app.organizationInvitationsPage;
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
 }
@@ -36,9 +39,7 @@ interface Props {
 /**
  * Organization invitations table.
  */
-const Invitations = ({ organizationId }: Props) => {
-  const { user } = useAuth();
-
+const Invitations = ({ user, organizationId }: Props) => {
   const { isOwner } = useOrganizationMembership({
     userId: user?.rowId,
     organizationId,

@@ -6,7 +6,6 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import {
   AddOwner,
-  InviteMember,
   Members,
   MembershipFilters,
   Owners,
@@ -17,8 +16,7 @@ import {
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
-import { app } from "lib/config";
-import { enableOwnershipTransferFlag } from "lib/flags";
+import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
@@ -49,8 +47,6 @@ interface Props {
  */
 const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
   const { organizationSlug } = await params;
-
-  const isOwnershipTransferEnabled = await enableOwnershipTransferFlag();
 
   const session = await auth();
 
@@ -119,7 +115,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
           description: app.organizationMembersPage.description,
           cta:
             // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.
-            member?.role === Role.Owner && isOwnershipTransferEnabled
+            member?.role === Role.Owner && isDevEnv
               ? [
                   {
                     label: app.organizationMembersPage.cta.addOwner.label,
@@ -136,18 +132,11 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
         <MembershipFilters />
 
-        <Members organizationId={organization.rowId} />
+        <Members user={session.user} organizationId={organization.rowId} />
 
         {/* dialogs */}
         {/* TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now. */}
-        {isOwnershipTransferEnabled && (
-          <AddOwner organizationId={organization.rowId} />
-        )}
-
-        <InviteMember
-          organizationName={organization.name!}
-          organizationId={organization.rowId}
-        />
+        {isDevEnv && <AddOwner organizationId={organization.rowId} />}
       </Page>
     </HydrationBoundary>
   );

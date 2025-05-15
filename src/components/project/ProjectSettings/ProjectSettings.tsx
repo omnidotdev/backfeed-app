@@ -13,32 +13,26 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization, Project } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
   /** Project ID. */
   projectId: Project["rowId"];
   /** Organization slug. */
   organizationSlug: Organization["slug"];
-  /** If the user has permission to edit the project statuses. */
-  canEditStatuses: boolean;
 }
 
 /**
  * Project settings.
  */
-const ProjectSettings = ({
-  projectId,
-  organizationSlug,
-  canEditStatuses,
-}: Props) => {
-  const { user } = useAuth();
-
+const ProjectSettings = ({ user, projectId, organizationSlug }: Props) => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -50,7 +44,7 @@ const ProjectSettings = ({
       // ! NB: needed to invalidate the number of projects for an organization in the `CreateProject` dialog
       queryClient.invalidateQueries({
         queryKey: useOrganizationsQuery.getKey({
-          userId: user?.rowId!,
+          userId: user.rowId!,
           isMember: true,
           slug: organizationSlug,
           excludeRoles: [Role.Member],
@@ -75,7 +69,7 @@ const ProjectSettings = ({
 
   return (
     <Stack gap={6}>
-      <UpdateProject canEditStatuses={canEditStatuses} />
+      <UpdateProject />
 
       <SectionContainer
         title={app.projectSettingsPage.dangerZone.title}
