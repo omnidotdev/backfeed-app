@@ -5229,7 +5229,7 @@ export type NotificationsQueryVariables = Exact<{
 }>;
 
 
-export type NotificationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', organization?: { __typename?: 'Organization', name: string } | null } | null> } | null };
+export type NotificationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', rowId: string, email: string, organizationId: string, organization?: { __typename?: 'Organization', name: string } | null } | null> } | null };
 
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -5762,6 +5762,9 @@ export const NotificationsDocument = gql`
   invitations(condition: {email: $email}) {
     totalCount
     nodes {
+      rowId
+      email
+      organizationId
       organization {
         name
       }

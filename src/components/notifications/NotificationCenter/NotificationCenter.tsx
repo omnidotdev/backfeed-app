@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   Circle,
   Icon,
@@ -10,22 +11,32 @@ import {
 } from "@omnidev/sigil";
 import { IoNotifications } from "react-icons/io5";
 import { useAuth } from "lib/hooks";
-import { useNotificationsQuery } from "generated/graphql";
+import {
+  useCreateMemberMutation,
+  useDeleteInvitationMutation,
+  useNotificationsQuery,
+} from "generated/graphql";
 
 const NotificationCenter = () => {
   const { user } = useAuth();
   const email = user?.email;
   if (!email) return null;
 
-  const { data } = useNotificationsQuery({ email });
+  const { data, refetch } = useNotificationsQuery({ email });
 
   const notifications =
     data?.invitations?.nodes.map((inv, index) => ({
       id: `${index}-${inv?.organization?.name}`,
+      rowId: inv?.rowId,
+      email: inv?.email,
+      organizationId: inv?.organizationId,
       message: `You've been invited to join ${inv?.organization?.name}`,
     })) ?? [];
 
-  const notificationNumber = notifications.length;
+  const notificationNumber = notifications.length || 0;
+
+  const createMember = useCreateMemberMutation();
+  const deleteInvitation = useDeleteInvitationMutation();
 
   return (
     <Popover
@@ -65,21 +76,27 @@ const NotificationCenter = () => {
         </Stack>
       ) : (
         <VStack gap={2}>
-          {notifications.map((n) => (
-            <Card
-              key={n.id}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="full"
-              _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
-              onClick={() => {
-                window.location.href = `/profile/${user.hidraId}/invitations`;
-              }}
-            >
-              <Text fontSize="sm">{n.message}</Text>
-            </Card>
-          ))}
+          <Stack>
+            {notifications.map((n) => (
+              <Box key={n.id}>
+                <Card
+                  key={n.id}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  w="full"
+                  _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
+                  onClick={() => {
+                    window.location.href = `/profile/${user.hidraId}/invitations`;
+                  }}
+                >
+                  <Text fontSize="sm">{n.message}</Text>
+                </Card>
+                <Button onClick={() => createMember()}>Accept</Button>
+                <Button onClick={() => deleteInvitation()}>Decline</Button>
+              </Box>
+            ))}
+          </Stack>
         </VStack>
       )}
     </Popover>
