@@ -226,9 +226,7 @@ const FeedbackCard = ({
   const isPending = feedback.rowId === "pending";
 
   const actionIsPending =
-    feedback.rowId === "pending" ||
-    isDeleteFeedbackPending ||
-    isUpdateStatusPending;
+    feedback.rowId === "pending" || isDeleteFeedbackPending;
 
   return (
     <HStack
@@ -306,7 +304,10 @@ const FeedbackCard = ({
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageFeedback || actionIsPending,
+                  disabled:
+                    !canManageFeedback ||
+                    actionIsPending ||
+                    isUpdateStatusPending,
                 }}
                 positioning={{ strategy: "fixed" }}
               >
