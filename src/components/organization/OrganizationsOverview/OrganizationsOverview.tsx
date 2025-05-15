@@ -29,6 +29,9 @@ interface Props {
   user: Session["user"];
 }
 
+/**
+ * Organizations page overview.
+ */
 const OrganizationsOverview = ({ user }: Props) => {
   const { data: organizations } = useOrganizationsQuery(
     {
