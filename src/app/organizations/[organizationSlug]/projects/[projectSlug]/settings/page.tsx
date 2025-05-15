@@ -4,14 +4,11 @@ import { notFound } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
-import {
-  Role,
-  useProjectQuery,
-  useProjectStatusesQuery,
-} from "generated/graphql";
+import { Role, useProjectStatusesQuery } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { projectOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -86,10 +83,13 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   ];
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({ projectSlug, organizationSlug }),
-      queryFn: useProjectQuery.fetcher({ projectSlug, organizationSlug }),
-    }),
+    queryClient.prefetchQuery(
+      projectOptions({
+        projectSlug,
+        organizationSlug,
+        userId: session?.user.rowId,
+      }),
+    ),
     // TODO: when ready to implement for production, remove the development environment check
     ...(isDevEnv
       ? [

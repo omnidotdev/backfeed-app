@@ -10,14 +10,17 @@ import {
   Role,
   useOrganizationRoleQuery,
   useProjectMetricsQuery,
-  useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { freeTierFeedbackOptions, infinitePostsOptions } from "lib/options";
+import {
+  freeTierFeedbackOptions,
+  infinitePostsOptions,
+  projectOptions,
+} from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -93,16 +96,13 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
   ];
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({
+    queryClient.prefetchQuery(
+      projectOptions({
         projectSlug,
         organizationSlug,
+        userId: session?.user.rowId,
       }),
-      queryFn: useProjectQuery.fetcher({
-        projectSlug,
-        organizationSlug,
-      }),
-    }),
+    ),
     queryClient.prefetchQuery(
       freeTierFeedbackOptions({ organizationSlug, projectSlug }),
     ),

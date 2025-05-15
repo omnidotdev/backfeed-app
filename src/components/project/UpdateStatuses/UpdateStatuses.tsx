@@ -39,6 +39,8 @@ import { toaster } from "lib/util";
 
 import type { Project } from "generated/graphql";
 
+// TODO: handle loading states properly for when an admin updates project name and gets rerouted based on updated slug
+
 interface FieldInfo {
   info?: string;
 }
@@ -110,7 +112,8 @@ const UpdateStatuses = ({ projectId }: Props) => {
       projectId,
     },
     {
-      enabled: isDevEnv,
+      // NB: if a project name is updated and the slug changes, `projectId` will initially be undefined as `router.replace` will just perform a client side navigation and the "new project" is not prefetched
+      enabled: isDevEnv && !!projectId,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
