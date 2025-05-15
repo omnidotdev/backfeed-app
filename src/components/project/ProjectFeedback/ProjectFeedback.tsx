@@ -10,7 +10,11 @@ import {
   Text,
   VStack,
 } from "@omnidev/sigil";
-import { keepPreviousData, useMutationState } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutationState,
+} from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -21,7 +25,6 @@ import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import {
   PostOrderBy,
   useCreateFeedbackMutation,
-  useInfinitePostsQuery,
   useProjectStatusesQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
@@ -30,6 +33,7 @@ import {
   useOrganizationMembership,
   useSearchParams,
 } from "lib/hooks";
+import { infinitePostsOptions } from "lib/options";
 
 import type {
   CreateFeedbackMutationVariables,
@@ -90,27 +94,18 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     isError,
     hasNextPage,
     fetchNextPage,
-  } = useInfinitePostsQuery(
-    {
+  } = useInfiniteQuery({
+    ...infinitePostsOptions({
       projectId,
-      excludedStatuses,
-      orderBy: orderBy
-        ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-        : undefined,
-      search,
       userId: user?.rowId,
-    },
-    {
-      placeholderData: keepPreviousData,
-      initialPageParam: undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage?.posts?.pageInfo?.hasNextPage
-          ? { after: lastPage?.posts?.pageInfo?.endCursor }
-          : undefined,
-      select: (data) =>
-        data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
-    },
-  );
+      excludedStatuses,
+      orderBy,
+      search,
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) =>
+      data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
+  });
 
   const pendingFeedback = useMutationState<FeedbackFragment>({
     filters: {

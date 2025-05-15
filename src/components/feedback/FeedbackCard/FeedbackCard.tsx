@@ -20,7 +20,6 @@ import { UpdateFeedback, VotingButtons } from "components/feedback";
 import {
   useDeletePostMutation,
   useFeedbackByIdQuery,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
@@ -34,11 +33,12 @@ import type { InfiniteData } from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
-  PostOrderBy,
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { infinitePostsOptions } from "lib/options";
+
 import type { Session } from "next-auth";
 
 interface ProjectStatus {
@@ -130,17 +130,16 @@ const FeedbackCard = ({
           }),
         ) as FeedbackByIdQuery;
 
-        const postsQueryKey = useInfinitePostsQuery.getKey({
+        const postsQueryKey = infinitePostsOptions({
           projectId: feedback.project?.rowId!,
-          excludedStatuses,
-          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
-          search,
           userId: user?.rowId,
-        });
+          excludedStatuses,
+          orderBy,
+          search,
+        }).queryKey;
 
-        const postsSnapshot = queryClient.getQueryData(
-          postsQueryKey,
-        ) as InfiniteData<PostsQuery>;
+        const postsSnapshot =
+          queryClient.getQueryData<InfiniteData<PostsQuery>>(postsQueryKey);
 
         const updatedStatus = projectStatuses?.find(
           (status) => status.rowId === variables.patch.statusId,
@@ -168,31 +167,38 @@ const FeedbackCard = ({
         }
 
         if (postsSnapshot) {
-          queryClient.setQueryData(postsQueryKey, {
-            ...postsSnapshot,
-            pages: postsSnapshot.pages.map((page) => ({
-              ...page,
-              posts: {
-                ...page.posts,
-                nodes: page.posts?.nodes?.map((post) => {
-                  if (post?.rowId === variables.rowId) {
-                    return {
-                      ...post,
-                      statusUpdatedAt: variables.patch.statusUpdatedAt,
-                      status: {
-                        ...post?.status,
-                        rowId: variables.patch.statusId,
-                        status: updatedStatus?.status,
-                        color: updatedStatus?.color,
-                      },
-                    };
-                  }
+          queryClient.setQueryData<InfiniteData<PostsQuery>>(
+            postsQueryKey,
+            (snapshot) => {
+              const updatedPosts = snapshot?.pages.map((page) => ({
+                ...page,
+                posts: {
+                  ...page.posts,
+                  nodes: page.posts?.nodes?.map((post) => {
+                    if (post?.rowId === variables.rowId) {
+                      return {
+                        ...post,
+                        statusUpdatedAt: variables.patch.statusUpdatedAt,
+                        status: {
+                          ...post?.status,
+                          rowId: variables.patch.statusId,
+                          status: updatedStatus?.status,
+                          color: updatedStatus?.color,
+                        },
+                      };
+                    }
 
-                  return post;
-                }),
-              },
-            })),
-          });
+                    return post;
+                  }),
+                },
+              }));
+
+              return {
+                ...snapshot,
+                pages: updatedPosts,
+              } as InfiniteData<PostsQuery>;
+            },
+          );
         }
       },
       onSettled: async () =>

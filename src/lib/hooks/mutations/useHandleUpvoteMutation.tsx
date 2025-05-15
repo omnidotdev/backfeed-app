@@ -1,15 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
-  PostOrderBy,
   useCreateUpvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
   useFeedbackByIdQuery,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
 } from "generated/graphql";
 import { useAuth, useSearchParams } from "lib/hooks";
+import { infinitePostsOptions } from "lib/options";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -86,19 +85,16 @@ const useHandleUpvoteMutation = ({
         useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
       ) as FeedbackByIdQuery;
 
-      const postsQueryKey = useInfinitePostsQuery.getKey({
+      const postsQueryKey = infinitePostsOptions({
         projectId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
-        search,
         userId: user?.rowId,
-      });
+        excludedStatuses,
+        orderBy,
+        search,
+      }).queryKey;
 
-      const postsSnapshot = queryClient.getQueryData(
-        postsQueryKey,
-      ) as InfiniteData<PostsQuery>;
+      const postsSnapshot =
+        queryClient.getQueryData<InfiniteData<PostsQuery>>(postsQueryKey);
 
       if (feedbackSnapshot) {
         queryClient.setQueryData(
@@ -133,37 +129,44 @@ const useHandleUpvoteMutation = ({
       }
 
       if (postsSnapshot) {
-        queryClient.setQueryData(postsQueryKey, {
-          ...postsSnapshot,
-          pages: postsSnapshot.pages.map((page) => ({
-            ...page,
-            posts: {
-              ...page.posts,
-              nodes: page.posts?.nodes?.map((post) => {
-                if (post?.rowId === feedbackId) {
-                  return {
-                    ...post,
-                    userUpvotes: {
-                      nodes: upvote ? [] : [{ rowId: "pending" }],
-                    },
-                    userDownvotes: {
-                      nodes: upvote ? post.userDownvotes : [],
-                    },
-                    upvotes: {
-                      totalCount: post.upvotes.totalCount + (upvote ? -1 : 1),
-                    },
-                    downvotes: {
-                      totalCount:
-                        post.downvotes.totalCount + (downvote ? -1 : 0),
-                    },
-                  };
-                }
+        queryClient.setQueryData<InfiniteData<PostsQuery>>(
+          postsQueryKey,
+          (snapshot) => {
+            const updatedPosts = snapshot?.pages.map((page) => ({
+              ...page,
+              posts: {
+                ...page.posts,
+                nodes: page.posts?.nodes?.map((post) => {
+                  if (post?.rowId === feedbackId) {
+                    return {
+                      ...post,
+                      userUpvotes: {
+                        nodes: upvote ? [] : [{ rowId: "pending" }],
+                      },
+                      userDownvotes: {
+                        nodes: upvote ? post.userDownvotes : [],
+                      },
+                      upvotes: {
+                        totalCount: post.upvotes.totalCount + (upvote ? -1 : 1),
+                      },
+                      downvotes: {
+                        totalCount:
+                          post.downvotes.totalCount + (downvote ? -1 : 0),
+                      },
+                    };
+                  }
 
-                return post;
-              }),
-            },
-          })),
-        });
+                  return post;
+                }),
+              },
+            }));
+
+            return {
+              ...snapshot,
+              pages: updatedPosts,
+            } as InfiniteData<PostsQuery>;
+          },
+        );
       }
     },
     onSettled: async () => {
