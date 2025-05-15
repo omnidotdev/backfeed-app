@@ -11,7 +11,6 @@ import {
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
-import { enableTeamTierPrivilegesFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
@@ -63,8 +62,8 @@ const ProjectSettingsPage = async ({ params }: Props) => {
   if (!isAdmin) notFound();
 
   // ! NB: At this point, we know that the user has access to edit the project through the settings page. This feature flag validates that the user has the necessary subscription to customize the project's statuses.
-  // TODO: when ready to implement for production, remove the development environment check
-  const canEditStatuses = isDevEnv && (await enableTeamTierPrivilegesFlag());
+  // TODO: when ready to implement for production, remove the development environment check and validate that the user is on a team tier subscription or higher
+  const canEditStatuses = isDevEnv;
 
   const queryClient = getQueryClient();
 

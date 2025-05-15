@@ -8,7 +8,6 @@ import { z } from "zod";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { token } from "generated/panda/tokens";
-import { revalidatePath } from "lib/actions";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -89,8 +88,11 @@ const CreateOrganization = () => {
     useCreateOrganizationMutation({
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
-      onSuccess: () => {
-        revalidatePath("/", "layout");
+      onSuccess: (data) => {
+        // TODO: Discuss. With the path revalidations, I believe this gets purged, so the navigation doesnt occur. Is it necessary to navigate?
+        router.push(
+          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
+        );
 
         setIsOpen(false);
         reset();
