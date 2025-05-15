@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
-  PostOrderBy,
   useCreateDownvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
-  useFeedbackByIdQuery,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
 } from "generated/graphql";
 import { useAuth, useSearchParams } from "lib/hooks";
+import { feedbackByIdOptions, infinitePostsOptions } from "lib/options";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -82,88 +80,91 @@ const useHandleDownvoteMutation = ({
       }
     },
     onMutate: async () => {
+      const feedbackQueryKey = feedbackByIdOptions({
+        rowId: feedbackId,
+        userId: user?.rowId,
+      }).queryKey;
+
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
+        feedbackQueryKey,
       ) as FeedbackByIdQuery;
 
-      const postsQueryKey = useInfinitePostsQuery.getKey({
+      const postsQueryKey = infinitePostsOptions({
         projectId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
-        search,
         userId: user?.rowId,
-      });
+        excludedStatuses,
+        orderBy,
+        search,
+      }).queryKey;
 
-      const postsSnapshot = queryClient.getQueryData(
-        postsQueryKey,
-      ) as InfiniteData<PostsQuery>;
+      const postsSnapshot =
+        queryClient.getQueryData<InfiniteData<PostsQuery>>(postsQueryKey);
 
       if (feedbackSnapshot) {
-        queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-          {
-            post: {
-              ...feedbackSnapshot?.post,
-              userDownvotes: {
-                nodes: downvote ? [] : [{ rowId: "pending" }],
-              },
-              userUpvotes: {
-                nodes: downvote ? feedbackSnapshot?.post?.userUpvotes : [],
-              },
-              downvotes: {
-                ...feedbackSnapshot?.post?.downvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
-                  (downvote ? -1 : 1),
-              },
-              upvotes: {
-                ...feedbackSnapshot?.post?.upvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
-                  (upvote ? -1 : 0),
-              },
+        queryClient.setQueryData(feedbackQueryKey, {
+          post: {
+            ...feedbackSnapshot?.post,
+            userDownvotes: {
+              nodes: downvote ? [] : [{ rowId: "pending" }],
+            },
+            userUpvotes: {
+              nodes: downvote ? feedbackSnapshot?.post?.userUpvotes : [],
+            },
+            downvotes: {
+              ...feedbackSnapshot?.post?.downvotes,
+              totalCount:
+                (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
+                (downvote ? -1 : 1),
+            },
+            upvotes: {
+              ...feedbackSnapshot?.post?.upvotes,
+              totalCount:
+                (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
+                (upvote ? -1 : 0),
             },
           },
-        );
+        } as FeedbackByIdQuery);
       }
 
       if (postsSnapshot) {
-        queryClient.setQueryData(postsQueryKey, {
-          ...postsSnapshot,
-          pages: postsSnapshot.pages.map((page) => ({
-            ...page,
-            posts: {
-              ...page.posts,
-              nodes: page.posts?.nodes?.map((post) => {
-                if (post?.rowId === feedbackId) {
-                  return {
-                    ...post,
-                    userDownvotes: {
-                      nodes: downvote ? [] : [{ rowId: "pending" }],
-                    },
-                    userUpvotes: {
-                      nodes: downvote ? post.userUpvotes : [],
-                    },
-                    upvotes: {
-                      totalCount: post.upvotes.totalCount + (upvote ? -1 : 0),
-                    },
-                    downvotes: {
-                      totalCount:
-                        post.downvotes.totalCount + (downvote ? -1 : 1),
-                    },
-                  };
-                }
+        queryClient.setQueryData<InfiniteData<PostsQuery>>(
+          postsQueryKey,
+          (snapshot) => {
+            const updatedPosts = snapshot!.pages.map((page) => ({
+              ...page,
+              posts: {
+                ...page.posts,
+                nodes: page.posts?.nodes?.map((post) => {
+                  if (post?.rowId === feedbackId) {
+                    return {
+                      ...post,
+                      userDownvotes: {
+                        nodes: downvote ? [] : [{ rowId: "pending" }],
+                      },
+                      userUpvotes: {
+                        nodes: downvote ? post.userUpvotes : [],
+                      },
+                      upvotes: {
+                        totalCount: post.upvotes.totalCount + (upvote ? -1 : 0),
+                      },
+                      downvotes: {
+                        totalCount:
+                          post.downvotes.totalCount + (downvote ? -1 : 1),
+                      },
+                    };
+                  }
 
-                return post;
-              }),
-            },
-          })),
-        });
+                  return post;
+                }),
+              },
+            }));
+
+            return {
+              ...snapshot,
+              pages: updatedPosts,
+            } as InfiniteData<PostsQuery>;
+          },
+        );
       }
     },
     onSettled: async () => {
@@ -175,21 +176,15 @@ const useHandleDownvoteMutation = ({
           }),
         ]);
 
-        return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-        });
+        return queryClient.invalidateQueries(
+          feedbackByIdOptions({ rowId: feedbackId, userId: user?.rowId }),
+        );
       }
 
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-        }),
+        queryClient.invalidateQueries(
+          feedbackByIdOptions({ rowId: feedbackId, userId: user?.rowId }),
+        ),
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({ projectId }),
         }),

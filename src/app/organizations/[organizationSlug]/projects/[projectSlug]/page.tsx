@@ -7,20 +7,20 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
-  PostOrderBy,
   Role,
-  useInfinitePostsQuery,
   useOrganizationRoleQuery,
-  usePostsQuery,
   useProjectMetricsQuery,
-  useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { freeTierFeedbackOptions } from "lib/options";
+import {
+  freeTierFeedbackOptions,
+  infinitePostsOptions,
+  projectOptions,
+} from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -96,40 +96,25 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
   ];
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({
+    queryClient.prefetchQuery(
+      projectOptions({
         projectSlug,
         organizationSlug,
+        userId: session?.user.rowId,
       }),
-      queryFn: useProjectQuery.fetcher({
-        projectSlug,
-        organizationSlug,
-      }),
-    }),
+    ),
     queryClient.prefetchQuery(
       freeTierFeedbackOptions({ organizationSlug, projectSlug }),
     ),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfinitePostsQuery.getKey({
+    queryClient.prefetchInfiniteQuery(
+      infinitePostsOptions({
         projectId: project.rowId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
-        search,
         userId: session?.user.rowId,
-      }),
-      queryFn: usePostsQuery.fetcher({
-        projectId: project.rowId,
         excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
+        orderBy,
         search,
-        userId: session?.user.rowId,
       }),
-      initialPageParam: undefined,
-    }),
+    ),
     ...(session
       ? [
           queryClient.prefetchQuery({

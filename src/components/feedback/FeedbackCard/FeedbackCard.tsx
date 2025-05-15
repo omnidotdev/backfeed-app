@@ -19,8 +19,6 @@ import { DestructiveAction, StatusBadge } from "components/core";
 import { UpdateFeedback, VotingButtons } from "components/feedback";
 import {
   useDeletePostMutation,
-  useFeedbackByIdQuery,
-  useInfinitePostsQuery,
   useProjectMetricsQuery,
   useStatusBreakdownQuery,
   useUpdatePostMutation,
@@ -34,11 +32,12 @@ import type { InfiniteData } from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
-  PostOrderBy,
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { feedbackByIdOptions, infinitePostsOptions } from "lib/options";
+
 import type { Session } from "next-auth";
 
 interface ProjectStatus {
@@ -123,76 +122,78 @@ const FeedbackCard = ({
   const { mutate: updateStatus, isPending: isUpdateStatusPending } =
     useUpdatePostMutation({
       onMutate: (variables) => {
+        const feedbackKey = feedbackByIdOptions({
+          rowId: feedback.rowId!,
+          userId: user?.rowId,
+        }).queryKey;
+
         const feedbackSnapshot = queryClient.getQueryData(
-          useFeedbackByIdQuery.getKey({
-            rowId: feedback.rowId!,
-            userId: user?.rowId,
-          }),
+          feedbackKey,
         ) as FeedbackByIdQuery;
 
-        const postsQueryKey = useInfinitePostsQuery.getKey({
+        const postsQueryKey = infinitePostsOptions({
           projectId: feedback.project?.rowId!,
-          excludedStatuses,
-          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
-          search,
           userId: user?.rowId,
-        });
+          excludedStatuses,
+          orderBy,
+          search,
+        }).queryKey;
 
-        const postsSnapshot = queryClient.getQueryData(
-          postsQueryKey,
-        ) as InfiniteData<PostsQuery>;
+        const postsSnapshot =
+          queryClient.getQueryData<InfiniteData<PostsQuery>>(postsQueryKey);
 
         const updatedStatus = projectStatuses?.find(
           (status) => status.rowId === variables.patch.statusId,
         );
 
         if (feedbackSnapshot) {
-          queryClient.setQueryData(
-            useFeedbackByIdQuery.getKey({
-              rowId: feedback.rowId!,
-              userId: user?.rowId,
-            }),
-            {
-              post: {
-                ...feedbackSnapshot.post,
-                statusId: variables.patch.statusId,
-                statusUpdatedAt: variables.patch.statusUpdatedAt,
-                status: {
-                  ...feedbackSnapshot.post?.status,
-                  status: updatedStatus?.status,
-                  color: updatedStatus?.color,
-                },
+          queryClient.setQueryData(feedbackKey, {
+            post: {
+              ...feedbackSnapshot.post,
+              statusId: variables.patch.statusId,
+              statusUpdatedAt: variables.patch.statusUpdatedAt,
+              status: {
+                ...feedbackSnapshot.post?.status,
+                status: updatedStatus?.status,
+                color: updatedStatus?.color,
               },
             },
-          );
+          } as FeedbackByIdQuery);
         }
 
         if (postsSnapshot) {
-          queryClient.setQueryData(postsQueryKey, {
-            ...postsSnapshot,
-            pages: postsSnapshot.pages.map((page) => ({
-              ...page,
-              posts: {
-                ...page.posts,
-                nodes: page.posts?.nodes?.map((post) => {
-                  if (post?.rowId === variables.rowId) {
-                    return {
-                      ...post,
-                      statusUpdatedAt: variables.patch.statusUpdatedAt,
-                      status: {
-                        ...post?.status,
-                        rowId: variables.patch.statusId,
-                        status: updatedStatus?.status,
-                        color: updatedStatus?.color,
-                      },
-                    };
-                  }
+          queryClient.setQueryData<InfiniteData<PostsQuery>>(
+            postsQueryKey,
+            (snapshot) => {
+              const updatedPosts = snapshot?.pages.map((page) => ({
+                ...page,
+                posts: {
+                  ...page.posts,
+                  nodes: page.posts?.nodes?.map((post) => {
+                    if (post?.rowId === variables.rowId) {
+                      return {
+                        ...post,
+                        statusUpdatedAt: variables.patch.statusUpdatedAt,
+                        status: {
+                          ...post?.status,
+                          rowId: variables.patch.statusId,
+                          status: updatedStatus?.status,
+                          color: updatedStatus?.color,
+                        },
+                      };
+                    }
 
-                  return post;
-                }),
-              },
-            })),
-          });
+                    return post;
+                  }),
+                },
+              }));
+
+              return {
+                ...snapshot,
+                pages: updatedPosts,
+              } as InfiniteData<PostsQuery>;
+            },
+          );
         }
       },
       onSettled: async () =>
@@ -205,12 +206,12 @@ const FeedbackCard = ({
             }),
           }),
 
-          queryClient.invalidateQueries({
-            queryKey: useFeedbackByIdQuery.getKey({
+          queryClient.invalidateQueries(
+            feedbackByIdOptions({
               rowId: feedback.rowId!,
               userId: user?.rowId,
             }),
-          }),
+          ),
         ]),
     });
 

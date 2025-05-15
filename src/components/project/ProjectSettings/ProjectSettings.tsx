@@ -69,7 +69,7 @@ const ProjectSettings = ({ user, projectId, organizationSlug }: Props) => {
 
   return (
     <Stack gap={6}>
-      <UpdateProject />
+      <UpdateProject user={user} />
 
       <SectionContainer
         title={app.projectSettingsPage.dangerZone.title}

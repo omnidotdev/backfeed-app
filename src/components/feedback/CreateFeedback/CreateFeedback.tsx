@@ -10,14 +10,13 @@ import { CharacterLimit } from "components/core";
 import {
   useCreateFeedbackMutation,
   useProjectMetricsQuery,
-  useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
-import { freeTierFeedbackOptions } from "lib/options";
+import { freeTierFeedbackOptions, projectOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { Session } from "next-auth";
@@ -66,16 +65,15 @@ const CreateFeedback = ({ user }: Props) => {
     freeTierFeedbackOptions({ organizationSlug, projectSlug }),
   );
 
-  const { data: projectId } = useProjectQuery(
-    {
+  const { data: projectId } = useQuery({
+    ...projectOptions({
       projectSlug,
       organizationSlug,
-    },
-    {
-      enabled: !!projectSlug && !!organizationSlug,
-      select: (data) => data?.projects?.nodes?.[0]?.rowId,
-    },
-  );
+      userId: user?.rowId,
+    }),
+    enabled: !!projectSlug && !!organizationSlug,
+    select: (data) => data?.projects?.nodes?.[0]?.rowId,
+  });
 
   const { data: defaultStatusId } = useProjectStatusesQuery(
     {
