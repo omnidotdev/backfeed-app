@@ -11,7 +11,7 @@ import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
-import type { Organization } from "generated/graphql";
+import { type Organization, useOrganizationQuery } from "generated/graphql";
 import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
@@ -20,6 +20,8 @@ interface Action extends ButtonProps {
   label: string;
   /** Visual icon. */
   icon: IconType;
+  /** Alias for disabled. Used to render action but still apply disabled state. */
+  isDisabled?: boolean;
 }
 
 interface Props {
@@ -49,6 +51,15 @@ const OrganizationManagement = ({
     organizationId,
   });
 
+  const { data: organization } = useOrganizationQuery(
+    {
+      slug: organizationSlug,
+    },
+    {
+      select: (data) => data.organizationBySlug,
+    },
+  );
+
   const ORGANIZATION_ACTIONS: Action[] = [
     {
       label: managementDetails.cta.manageTeam.label,
@@ -73,6 +84,7 @@ const OrganizationManagement = ({
       icon: HiOutlineFolder,
       onClick: () => router.push(`/organizations/${organizationSlug}/projects`),
       disabled: isMember,
+      isDisabled: !organization?.projects.totalCount,
     },
   ];
 
@@ -89,8 +101,13 @@ const OrganizationManagement = ({
     >
       <Grid gap={4}>
         {ORGANIZATION_ACTIONS.filter(({ disabled }) => !disabled).map(
-          ({ label, icon, ...rest }) => (
-            <Button key={label} variant="outline" {...rest}>
+          ({ label, icon, disabled, isDisabled, ...rest }) => (
+            <Button
+              key={label}
+              variant="outline"
+              disabled={disabled || isDisabled}
+              {...rest}
+            >
               <Icon src={icon} w={4} h={4} />
 
               {label}
