@@ -124,7 +124,10 @@ const FeedbackCard = ({
     useUpdatePostMutation({
       onMutate: (variables) => {
         const feedbackSnapshot = queryClient.getQueryData(
-          useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          useFeedbackByIdQuery.getKey({
+            rowId: feedback.rowId!,
+            userId: user?.rowId,
+          }),
         ) as FeedbackByIdQuery;
 
         const postsQueryKey = useInfinitePostsQuery.getKey({
@@ -132,6 +135,7 @@ const FeedbackCard = ({
           excludedStatuses,
           orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
           search,
+          userId: user?.rowId,
         });
 
         const postsSnapshot = queryClient.getQueryData(
@@ -144,7 +148,10 @@ const FeedbackCard = ({
 
         if (feedbackSnapshot) {
           queryClient.setQueryData(
-            useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+            useFeedbackByIdQuery.getKey({
+              rowId: feedback.rowId!,
+              userId: user?.rowId,
+            }),
             {
               post: {
                 ...feedbackSnapshot.post,
@@ -199,13 +206,16 @@ const FeedbackCard = ({
           }),
 
           queryClient.invalidateQueries({
-            queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+            queryKey: useFeedbackByIdQuery.getKey({
+              rowId: feedback.rowId!,
+              userId: user?.rowId,
+            }),
           }),
         ]),
     });
 
-  const userUpvote = feedback?.userUpvotes?.nodes[0],
-    userDownvote = feedback?.userDownvotes?.nodes[0],
+  const userUpvote = user ? feedback?.userUpvotes?.nodes[0] : null,
+    userDownvote = user ? feedback?.userDownvotes?.nodes[0] : null,
     totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
     totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
@@ -213,12 +223,9 @@ const FeedbackCard = ({
 
   const canAdjustFeedback = isAuthor || canManageFeedback;
 
-  const isPending = feedback.rowId === "pending";
+  const isFeedbackPending = feedback.rowId === "pending";
 
-  const actionIsPending =
-    feedback.rowId === "pending" ||
-    isDeleteFeedbackPending ||
-    isUpdateStatusPending;
+  const actionIsPending = isFeedbackPending || isDeleteFeedbackPending;
 
   return (
     <HStack
@@ -259,7 +266,9 @@ const FeedbackCard = ({
               />
 
               <Text color="foreground.subtle">
-                {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
+                {dayjs(
+                  isFeedbackPending ? new Date() : feedback.createdAt,
+                ).fromNow()}
               </Text>
             </Stack>
           </Stack>
@@ -271,6 +280,7 @@ const FeedbackCard = ({
             downvote={userDownvote}
             totalUpvotes={totalUpvotes}
             totalDownvotes={totalDownvotes}
+            isFeedbackRoute={!!isFeedbackRoute}
           />
         </HStack>
 
@@ -296,7 +306,10 @@ const FeedbackCard = ({
                   </StatusBadge>
                 }
                 triggerProps={{
-                  disabled: !canManageFeedback || actionIsPending,
+                  disabled:
+                    !canManageFeedback ||
+                    actionIsPending ||
+                    isUpdateStatusPending,
                 }}
                 positioning={{ strategy: "fixed" }}
               >
@@ -336,7 +349,7 @@ const FeedbackCard = ({
                 fontSize="sm"
                 color="foreground.subtle"
               >
-                {`Updated ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+                {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
               </Text>
             </HStack>
 
@@ -344,6 +357,7 @@ const FeedbackCard = ({
               {canAdjustFeedback && (
                 <HStack>
                   <UpdateFeedback
+                    user={user}
                     feedback={feedback}
                     triggerProps={{
                       disabled: actionIsPending,

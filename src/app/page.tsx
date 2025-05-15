@@ -5,7 +5,6 @@ import utc from "dayjs/plugin/utc";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
-import { CreateOrganization } from "components/organization";
 import {
   OrganizationOrderBy,
   Role,
@@ -13,16 +12,12 @@ import {
   useInfiniteRecentFeedbackQuery,
   useOrganizationsQuery,
   useRecentFeedbackQuery,
+  useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import {
-  enableFreeTierPrivilegesFlag,
-  enableTeamTierPrivilegesFlag,
-} from "lib/flags";
 import { getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
-import { getSdk } from "lib/graphql";
 
 dayjs.extend(utc);
 
@@ -35,22 +30,6 @@ const HomePage = async () => {
   const session = await auth();
 
   if (!session) return <LandingPage />;
-
-  const sdk = getSdk({ session });
-
-  const [{ organizations }, isFreeTier, isTeamTier] = await Promise.all([
-    sdk.Organizations({
-      pageSize: 1,
-      userId: session.user.rowId,
-      excludeRoles: [Role.Member, Role.Admin],
-    }),
-    enableFreeTierPrivilegesFlag(),
-    enableTeamTierPrivilegesFlag(),
-  ]);
-
-  // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
-  const canCreateOrganization =
-    isTeamTier || (isFreeTier && !!organizations && !organizations?.totalCount);
 
   const queryClient = getQueryClient();
 
@@ -82,6 +61,22 @@ const HomePage = async () => {
       }),
     }),
     queryClient.prefetchQuery({
+      queryKey: useOrganizationsQuery.getKey({
+        pageSize: 1,
+        userId: organizationsQueryVariables.userId,
+        excludeRoles: [Role.Member, Role.Admin],
+      }),
+      queryFn: useOrganizationsQuery.fetcher({
+        pageSize: 1,
+        userId: organizationsQueryVariables.userId,
+        excludeRoles: [Role.Member, Role.Admin],
+      }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
+      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
+    }),
+    queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({
         userId: session.user.rowId!,
       }),
@@ -110,15 +105,7 @@ const HomePage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage
-        user={session.user}
-        canCreateOrganizations={canCreateOrganization}
-        isSubscribed={isFreeTier}
-        oneWeekAgo={oneWeekAgo}
-      />
-
-      {/* dialogs */}
-      {canCreateOrganization && <CreateOrganization />}
+      <DashboardPage user={session.user} oneWeekAgo={oneWeekAgo} />
     </HydrationBoundary>
   );
 };

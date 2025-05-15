@@ -24,6 +24,7 @@ import { toaster } from "lib/util";
 
 import type { DialogProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -47,6 +48,8 @@ const updateFeedbackSchema = z.object({
 });
 
 interface Props extends DialogProps {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
 }
@@ -54,7 +57,7 @@ interface Props extends DialogProps {
 /**
  * Update feedback form.
  */
-const UpdateFeedback = ({ feedback, ...rest }: Props) => {
+const UpdateFeedback = ({ user, feedback, ...rest }: Props) => {
   const queryClient = useQueryClient();
 
   const isClient = useIsClient();
@@ -74,7 +77,10 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
           queryKey: ["Posts.infinite"],
         }),
         queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedback.rowId! }),
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedback.rowId!,
+            userId: user?.rowId,
+          }),
         }),
       ]);
     },
