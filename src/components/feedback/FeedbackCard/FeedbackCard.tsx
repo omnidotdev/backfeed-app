@@ -223,10 +223,9 @@ const FeedbackCard = ({
 
   const canAdjustFeedback = isAuthor || canManageFeedback;
 
-  const isPending = feedback.rowId === "pending";
+  const isFeedbackPending = feedback.rowId === "pending";
 
-  const actionIsPending =
-    feedback.rowId === "pending" || isDeleteFeedbackPending;
+  const actionIsPending = isFeedbackPending || isDeleteFeedbackPending;
 
   return (
     <HStack
@@ -267,7 +266,9 @@ const FeedbackCard = ({
               />
 
               <Text color="foreground.subtle">
-                {dayjs(isPending ? new Date() : feedback.createdAt).fromNow()}
+                {dayjs(
+                  isFeedbackPending ? new Date() : feedback.createdAt,
+                ).fromNow()}
               </Text>
             </Stack>
           </Stack>
@@ -347,7 +348,7 @@ const FeedbackCard = ({
                 fontSize="sm"
                 color="foreground.subtle"
               >
-                {`Updated ${dayjs(isPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+                {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
               </Text>
             </HStack>
 
