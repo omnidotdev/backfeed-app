@@ -101,6 +101,7 @@ const HeaderActions = () => {
       >
         <Flex justifyContent="space-between">
           <ThemeToggle />
+          {isAuthenticated && <NotificationCenter />}
 
           <DrawerCloseTrigger asChild>
             <Button
