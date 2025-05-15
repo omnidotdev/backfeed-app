@@ -28,6 +28,8 @@ interface Props {
   totalUpvotes: number;
   /** Total number of downvotes. */
   totalDownvotes: number;
+  /** Whether voting is being handled from the dynamic feedback route. */
+  isFeedbackRoute: boolean;
 }
 
 const VotingButtons = ({
@@ -37,6 +39,7 @@ const VotingButtons = ({
   downvote,
   totalUpvotes,
   totalDownvotes,
+  isFeedbackRoute,
 }: Props) => {
   const { mutate: handleUpvote, isPending: isUpvotePending } =
     useHandleUpvoteMutation({
@@ -44,6 +47,7 @@ const VotingButtons = ({
       projectId,
       upvote,
       downvote,
+      isFeedbackRoute,
     });
 
   const { mutate: handleDownvote, isPending: isDownvotePending } =
@@ -52,6 +56,7 @@ const VotingButtons = ({
       projectId,
       upvote,
       downvote,
+      isFeedbackRoute,
     });
 
   // NB: we set `rowId` to `pending` optimistically for these values on occasion. If an attempt at triggering a mutation happens while they are still in this state, the mutation will fail

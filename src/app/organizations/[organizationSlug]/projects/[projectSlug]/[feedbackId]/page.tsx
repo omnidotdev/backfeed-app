@@ -70,8 +70,14 @@ const FeedbackPage = async ({ params }: Props) => {
 
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
-      queryFn: useFeedbackByIdQuery.fetcher({ rowId: feedbackId }),
+      queryKey: useFeedbackByIdQuery.getKey({
+        rowId: feedbackId,
+        userId: session.user.rowId,
+      }),
+      queryFn: useFeedbackByIdQuery.fetcher({
+        rowId: feedbackId,
+        userId: session.user.rowId,
+      }),
     }),
     queryClient.prefetchQuery(
       freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
