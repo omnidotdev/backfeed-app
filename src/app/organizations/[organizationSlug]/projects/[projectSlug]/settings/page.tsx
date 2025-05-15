@@ -121,7 +121,6 @@ const ProjectSettingsPage = async ({ params }: Props) => {
           user={session.user}
           projectId={project.rowId}
           organizationSlug={organizationSlug}
-          canEditStatuses={canEditStatuses}
         />
       </Page>
     </HydrationBoundary>

@@ -27,19 +27,12 @@ interface Props {
   projectId: Project["rowId"];
   /** Organization slug. */
   organizationSlug: Organization["slug"];
-  /** If the user has permission to edit the project statuses. */
-  canEditStatuses: boolean;
 }
 
 /**
  * Project settings.
  */
-const ProjectSettings = ({
-  user,
-  projectId,
-  organizationSlug,
-  canEditStatuses,
-}: Props) => {
+const ProjectSettings = ({ user, projectId, organizationSlug }: Props) => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -76,7 +69,7 @@ const ProjectSettings = ({
 
   return (
     <Stack gap={6}>
-      <UpdateProject canEditStatuses={canEditStatuses} />
+      <UpdateProject />
 
       <SectionContainer
         title={app.projectSettingsPage.dangerZone.title}
