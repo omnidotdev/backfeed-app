@@ -1015,6 +1015,7 @@ const app = {
   feedbackPage: {
     breadcrumb: "Feedback",
     details: {
+      signedOut: "Sign in to vote",
       upvote: "Upvote",
       downvote: "Downvote",
     },

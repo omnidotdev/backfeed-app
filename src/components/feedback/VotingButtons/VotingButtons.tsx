@@ -95,15 +95,19 @@ const VotingButtons = ({
             handleUpvote();
           },
           disabled: !user || isVotePending || isOptimistic,
+          opacity: !user ? 0.5 : 1,
         }}
       >
-        {app.feedbackPage.details.upvote}
+        {!user
+          ? app.feedbackPage.details.signedOut
+          : app.feedbackPage.details.upvote}
       </Tooltip>
 
       <Text
         color={netVotesColor}
         whiteSpace="nowrap"
         fontVariant="tabular-nums"
+        opacity={!user ? 0.5 : 1}
       >
         {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
       </Text>
@@ -126,9 +130,12 @@ const VotingButtons = ({
             handleDownvote();
           },
           disabled: !user || isVotePending || isOptimistic,
+          opacity: !user ? 0.5 : 1,
         }}
       >
-        {app.feedbackPage.details.downvote}
+        {!user
+          ? app.feedbackPage.details.signedOut
+          : app.feedbackPage.details.downvote}
       </Tooltip>
     </HStack>
   );
