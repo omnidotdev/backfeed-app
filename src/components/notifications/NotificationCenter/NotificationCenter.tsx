@@ -83,70 +83,76 @@ const NotificationCenter = () => {
       }
     >
       {!notifications?.length ? (
-        <Stack p={4} alignSelf="center">
-          <Text textAlign="center" color="muted">
-            No new notifications
-          </Text>
-        </Stack>
+        <Text textAlign="center" color="muted">
+          No new notifications
+        </Text>
       ) : (
-        <VStack gap={2} p={2}>
+        <VStack gap={3} p={3}>
           {notifications.map((n) => (
-            <Box key={n.rowId}>
-              <Card
-                display="flex"
-                flexDirection="column"
-                alignItems="flex-start"
-                justifyContent="center"
-                w="full"
-                p={3}
-                _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
-                onMouseEnter={() => setHoveredId(n.rowId)}
-                onMouseLeave={() => setHoveredId(null)}
-                onClick={() =>
-                  router.push(`/profile/${user?.hidraId}/invitations`)
-                }
-              >
-                <Text fontSize="sm" mb={2}>
-                  {n.message}
-                </Text>
+            <Card
+              key={n.rowId}
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="center"
+              w="full"
+              h={"48"}
+              p={3}
+              gap={3}
+              _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
+              onMouseEnter={() => setHoveredId(n.rowId)}
+              onMouseLeave={() => setHoveredId(null)}
+              onClick={() =>
+                router.push(`/profile/${user?.hidraId}/invitations`)
+              }
+            >
+              <Text fontSize="sm" mb={2}>
+                {n.message}
+              </Text>
 
-                {hoveredId === n.rowId && (
-                  <Stack direction="row" gap={2}>
-                    <Button
-                      size="sm"
-                      bg="green"
-                      _hover={{ bg: "green.700" }}
-                      onClick={(evt) => {
-                        evt.stopPropagation();
-                        acceptInvitation({
-                          input: {
-                            member: {
-                              userId: user?.rowId!,
-                              organizationId: n.organizationId,
-                              role: Role.Member,
-                            },
+              {hoveredId === n.rowId && (
+                <Stack
+                  direction="row"
+                  gap={2}
+                  visibility={hoveredId === n.rowId ? "visible" : "hidden"}
+                  justifyContent={"center"}
+                >
+                  <Button
+                    size="sm"
+                    bg="green"
+                    borderRadius={"md"}
+                    _hover={{ bg: "green.700" }}
+                    onClick={(evt) => {
+                      evt.stopPropagation();
+                      acceptInvitation({
+                        input: {
+                          member: {
+                            userId: user?.rowId!,
+                            organizationId: n.organizationId,
+                            role: Role.Member,
                           },
-                        });
-                        deleteInvitation({ rowId: n.rowId });
-                      }}
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      size="sm"
-                      bg="red"
-                      _hover={{ bg: "red.700" }}
-                      onClick={(evt) => {
-                        evt.stopPropagation();
-                        deleteInvitation({ rowId: n.rowId });
-                      }}
-                    >
-                      Decline
-                    </Button>
-                  </Stack>
-                )}
-              </Card>
-            </Box>
+                        },
+                      });
+                      deleteInvitation({ rowId: n.rowId });
+                    }}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    size="sm"
+                    bg="red"
+                    borderRadius={"md"}
+                    _hover={{ bg: "red.700" }}
+                    onClick={(evt) => {
+                      evt.stopPropagation();
+                      deleteInvitation({ rowId: n.rowId });
+                    }}
+                  >
+                    Decline
+                  </Button>
+                </Stack>
+              )}
+            </Card>
           ))}
         </VStack>
       )}
