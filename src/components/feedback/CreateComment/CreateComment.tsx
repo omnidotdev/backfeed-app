@@ -9,13 +9,12 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
-import { freeTierCommentsOptions } from "lib/options";
+import { feedbackByIdOptions, freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { Session } from "next-auth";
@@ -68,12 +67,12 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
             feedbackId,
           }),
         ),
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+        queryClient.invalidateQueries(
+          feedbackByIdOptions({
             rowId: feedbackId,
             userId: user?.rowId,
           }),
-        }),
+        ),
       ]);
 
       return queryClient.invalidateQueries({

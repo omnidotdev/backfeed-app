@@ -1,3 +1,4 @@
+export { default as feedbackByIdOptions } from "./feedbackById.options";
 export { default as freeTierCommentsOptions } from "./freeTierComments.options";
 export { default as freeTierFeedbackOptions } from "./freeTierFeedback.options";
 export { default as infinitePostsOptions } from "./infinitePosts.options";

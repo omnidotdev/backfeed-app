@@ -23,11 +23,11 @@ import { DestructiveAction } from "components/core";
 import { CreateReply, Replies } from "components/feedback";
 import {
   useDeleteCommentMutation,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
+import { feedbackByIdOptions } from "lib/options";
 import { setSingularOrPlural } from "lib/util";
 
 import type { StackProps } from "@omnidev/sigil";
@@ -87,12 +87,12 @@ const CommentCard = ({
             }),
           }),
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
-          queryClient.invalidateQueries({
-            queryKey: useFeedbackByIdQuery.getKey({
+          queryClient.invalidateQueries(
+            feedbackByIdOptions({
               rowId: feedbackId,
               userId: user?.rowId,
             }),
-          }),
+          ),
         ]),
     });
 

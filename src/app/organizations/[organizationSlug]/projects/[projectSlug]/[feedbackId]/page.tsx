@@ -7,7 +7,6 @@ import { Page } from "components/layout";
 import {
   Role,
   useCommentsQuery,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useOrganizationRoleQuery,
   useProjectStatusesQuery,
@@ -15,7 +14,7 @@ import {
 import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { freeTierCommentsOptions } from "lib/options";
+import { feedbackByIdOptions, freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -86,16 +85,12 @@ const FeedbackPage = async ({ params }: Props) => {
   ];
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useFeedbackByIdQuery.getKey({
+    queryClient.prefetchQuery(
+      feedbackByIdOptions({
         rowId: feedbackId,
         userId: session?.user.rowId,
       }),
-      queryFn: useFeedbackByIdQuery.fetcher({
-        rowId: feedbackId,
-        userId: session?.user.rowId,
-      }),
-    }),
+    ),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
       queryFn: useCommentsQuery.fetcher({ feedbackId }),

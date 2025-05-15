@@ -4,11 +4,10 @@ import {
   useCreateDownvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
-  useFeedbackByIdQuery,
   useProjectMetricsQuery,
 } from "generated/graphql";
 import { useAuth, useSearchParams } from "lib/hooks";
-import { infinitePostsOptions } from "lib/options";
+import { feedbackByIdOptions, infinitePostsOptions } from "lib/options";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -81,8 +80,13 @@ const useHandleDownvoteMutation = ({
       }
     },
     onMutate: async () => {
+      const feedbackQueryKey = feedbackByIdOptions({
+        rowId: feedbackId,
+        userId: user?.rowId,
+      }).queryKey;
+
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
+        feedbackQueryKey,
       ) as FeedbackByIdQuery;
 
       const postsQueryKey = infinitePostsOptions({
@@ -97,35 +101,29 @@ const useHandleDownvoteMutation = ({
         queryClient.getQueryData<InfiniteData<PostsQuery>>(postsQueryKey);
 
       if (feedbackSnapshot) {
-        queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-          {
-            post: {
-              ...feedbackSnapshot?.post,
-              userDownvotes: {
-                nodes: downvote ? [] : [{ rowId: "pending" }],
-              },
-              userUpvotes: {
-                nodes: downvote ? feedbackSnapshot?.post?.userUpvotes : [],
-              },
-              downvotes: {
-                ...feedbackSnapshot?.post?.downvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
-                  (downvote ? -1 : 1),
-              },
-              upvotes: {
-                ...feedbackSnapshot?.post?.upvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
-                  (upvote ? -1 : 0),
-              },
+        queryClient.setQueryData(feedbackQueryKey, {
+          post: {
+            ...feedbackSnapshot?.post,
+            userDownvotes: {
+              nodes: downvote ? [] : [{ rowId: "pending" }],
+            },
+            userUpvotes: {
+              nodes: downvote ? feedbackSnapshot?.post?.userUpvotes : [],
+            },
+            downvotes: {
+              ...feedbackSnapshot?.post?.downvotes,
+              totalCount:
+                (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
+                (downvote ? -1 : 1),
+            },
+            upvotes: {
+              ...feedbackSnapshot?.post?.upvotes,
+              totalCount:
+                (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
+                (upvote ? -1 : 0),
             },
           },
-        );
+        } as FeedbackByIdQuery);
       }
 
       if (postsSnapshot) {
@@ -178,21 +176,15 @@ const useHandleDownvoteMutation = ({
           }),
         ]);
 
-        return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-        });
+        return queryClient.invalidateQueries(
+          feedbackByIdOptions({ rowId: feedbackId, userId: user?.rowId }),
+        );
       }
 
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
-            rowId: feedbackId,
-            userId: user?.rowId,
-          }),
-        }),
+        queryClient.invalidateQueries(
+          feedbackByIdOptions({ rowId: feedbackId, userId: user?.rowId }),
+        ),
         queryClient.invalidateQueries({
           queryKey: useProjectMetricsQuery.getKey({ projectId }),
         }),
