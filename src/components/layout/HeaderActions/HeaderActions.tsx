@@ -79,6 +79,7 @@ const HeaderActions = () => {
   return (
     <Flex alignItems="center" gap={4}>
       <ThemeToggle />
+      {isAuthenticated && <NotificationCenter />}
 
       <Drawer
         open={isMobileSidebarOpen}
@@ -101,7 +102,6 @@ const HeaderActions = () => {
       >
         <Flex justifyContent="space-between">
           <ThemeToggle />
-          {isAuthenticated && <NotificationCenter />}
 
           <DrawerCloseTrigger asChild>
             <Button
