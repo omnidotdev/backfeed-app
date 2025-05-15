@@ -57,9 +57,9 @@ const OrganizationsOverview = ({ user }: Props) => {
           userTier && ![Tier.Free, Tier.Basic].includes(userTier);
         const isFreeTier = !!userTier;
 
-        // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
         return {
           isSubscribed: isFreeTier,
+          // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
           canCreateOrganizations:
             isTeamTier ||
             (isFreeTier && !!organizations && !organizations?.totalCount),
