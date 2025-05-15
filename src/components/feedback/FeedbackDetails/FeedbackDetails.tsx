@@ -25,6 +25,7 @@ const FeedbackDetails = ({ user, feedbackId, ...rest }: Props) => {
   const { data: feedback } = useFeedbackByIdQuery(
     {
       rowId: feedbackId,
+      userId: user?.rowId,
     },
     {
       select: (data) => data?.post,

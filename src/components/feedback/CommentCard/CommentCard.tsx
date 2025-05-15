@@ -36,7 +36,7 @@ import type { Session } from "next-auth";
 
 interface Props extends StackProps {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Comment. */
   comment: CommentFragment;
   /** Organization ID. */
@@ -88,7 +88,10 @@ const CommentCard = ({
           }),
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
           queryClient.invalidateQueries({
-            queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+            queryKey: useFeedbackByIdQuery.getKey({
+              rowId: feedbackId,
+              userId: user?.rowId,
+            }),
           }),
         ]),
     });

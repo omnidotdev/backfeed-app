@@ -78,6 +78,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
+            userId: user?.rowId,
           }),
         }),
         queryClient.invalidateQueries(

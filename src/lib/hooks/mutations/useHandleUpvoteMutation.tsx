@@ -80,7 +80,7 @@ const useHandleUpvoteMutation = ({
     },
     onMutate: async () => {
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+        useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
       ) as FeedbackByIdQuery;
 
       const postsQueryKey = useInfinitePostsQuery.getKey({
@@ -88,6 +88,7 @@ const useHandleUpvoteMutation = ({
         excludedStatuses,
         orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
         search,
+        userId: user?.rowId,
       });
 
       const postsSnapshot = queryClient.getQueryData(
@@ -96,7 +97,10 @@ const useHandleUpvoteMutation = ({
 
       if (feedbackSnapshot) {
         queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+          useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+            userId: user?.rowId,
+          }),
           {
             post: {
               ...feedbackSnapshot?.post,
@@ -162,7 +166,10 @@ const useHandleUpvoteMutation = ({
         queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
 
         queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({ rowId: feedbackId }),
+          queryKey: useFeedbackByIdQuery.getKey({
+            rowId: feedbackId,
+            userId: user?.rowId,
+          }),
         }),
 
         queryClient.invalidateQueries({
