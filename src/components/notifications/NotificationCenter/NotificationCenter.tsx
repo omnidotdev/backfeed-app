@@ -9,34 +9,51 @@ import {
   Text,
   VStack,
 } from "@omnidev/sigil";
+import { useRouter } from "next/navigation";
 import { IoNotifications } from "react-icons/io5";
-import { useAuth } from "lib/hooks";
+
 import {
+  Role,
   useCreateMemberMutation,
   useDeleteInvitationMutation,
   useNotificationsQuery,
 } from "generated/graphql";
+import { useAuth } from "lib/hooks";
+import { getQueryClient } from "lib/util";
 
 const NotificationCenter = () => {
   const { user } = useAuth();
-  const email = user?.email;
-  if (!email) return null;
 
-  const { data, refetch } = useNotificationsQuery({ email });
+  const router = useRouter();
 
-  const notifications =
-    data?.invitations?.nodes.map((inv, index) => ({
-      id: `${index}-${inv?.organization?.name}`,
-      rowId: inv?.rowId,
-      email: inv?.email,
-      organizationId: inv?.organizationId,
-      message: `You've been invited to join ${inv?.organization?.name}`,
-    })) ?? [];
+  const queryClient = getQueryClient();
 
-  const notificationNumber = notifications.length || 0;
+  const { data: notifications } = useNotificationsQuery(
+    { email: user?.email! },
+    {
+      enabled: !!user?.email,
+      select: (data) =>
+        data?.invitations?.nodes.map((inv, index) => ({
+          id: `${index}-${inv?.organization?.name}`,
+          rowId: inv?.rowId,
+          email: inv?.email,
+          organizationId: inv?.organizationId,
+          message: `You've been invited to join ${inv?.organization?.name}`,
+        })),
+    },
+  );
 
-  const createMember = useCreateMemberMutation();
-  const deleteInvitation = useDeleteInvitationMutation();
+  const notificationNumber = notifications?.length || 0;
+
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
+  const onSettled = async () => queryClient.invalidateQueries();
+
+  const { mutate: acceptInvitation } = useCreateMemberMutation({
+    onSettled,
+  });
+  const { mutate: deleteInvitation } = useDeleteInvitationMutation({
+    onSettled,
+  });
 
   return (
     <Popover
@@ -68,7 +85,7 @@ const NotificationCenter = () => {
         </Box>
       }
     >
-      {notifications.length === 0 ? (
+      {!notifications?.length ? (
         <Stack p={4} alignSelf="center">
           <Text textAlign="center" color="muted">
             No new notifications
@@ -86,14 +103,44 @@ const NotificationCenter = () => {
                   justifyContent="center"
                   w="full"
                   _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
-                  onClick={() => {
-                    window.location.href = `/profile/${user.hidraId}/invitations`;
-                  }}
+                  onClick={() =>
+                    router.push(`/profile/${user?.hidraId}/invitations`)
+                  }
                 >
                   <Text fontSize="sm">{n.message}</Text>
                 </Card>
-                <Button onClick={() => createMember()}>Accept</Button>
-                <Button onClick={() => deleteInvitation()}>Decline</Button>
+
+                <Button
+                  onClick={(evt) => {
+                    evt.stopPropagation();
+
+                    acceptInvitation({
+                      input: {
+                        member: {
+                          userId: user?.rowId!,
+                          organizationId: n.organizationId!,
+                          role: Role.Member,
+                        },
+                      },
+                    });
+
+                    deleteInvitation({
+                      rowId: n.rowId!,
+                    });
+                  }}
+                >
+                  Accept
+                </Button>
+
+                <Button
+                  onClick={(evt) => {
+                    evt.stopPropagation();
+
+                    deleteInvitation({ rowId: n.rowId! });
+                  }}
+                >
+                  Decline
+                </Button>
               </Box>
             ))}
           </Stack>
