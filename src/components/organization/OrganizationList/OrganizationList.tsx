@@ -18,9 +18,9 @@ import type { Organization } from "generated/graphql";
 
 interface Props extends StackProps {
   /** Whether the current user can create organizations. */
-  canCreateOrganization: boolean;
+  canCreateOrganization: boolean | undefined;
   /** Whether the authenticated user is subscribed. */
-  isSubscribed: boolean;
+  isSubscribed: boolean | undefined;
 }
 
 /**

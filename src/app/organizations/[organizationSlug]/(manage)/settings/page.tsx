@@ -11,7 +11,6 @@ import {
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
-import { enableOwnershipTransferFlag } from "lib/flags";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
@@ -37,8 +36,6 @@ interface Props {
  */
 const OrganizationSettingsPage = async ({ params }: Props) => {
   const { organizationSlug } = await params;
-
-  const isOwnershipTransferEnabled = await enableOwnershipTransferFlag();
 
   const [session, organization] = await Promise.all([
     auth(),
@@ -92,7 +89,6 @@ const OrganizationSettingsPage = async ({ params }: Props) => {
         <OrganizationSettings
           user={session.user}
           organizationId={organization.rowId}
-          isOwnershipTransferEnabled={isOwnershipTransferEnabled}
         />
       </Page>
     </HydrationBoundary>

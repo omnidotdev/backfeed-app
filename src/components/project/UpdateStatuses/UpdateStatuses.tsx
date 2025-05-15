@@ -32,7 +32,7 @@ import {
   useProjectStatusesQuery,
   useUpdatePostStatusMutation,
 } from "generated/graphql";
-import { app } from "lib/config";
+import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
@@ -97,14 +97,12 @@ const updateStatusesSchema = z.object({
 interface Props {
   /* Project ID. */
   projectId: Project["rowId"];
-  /** If the user has permissions to edit project statuses. */
-  canEdit: boolean;
 }
 
 /**
  * Form to update project statuses.
  */
-const UpdateStatuses = ({ projectId, canEdit }: Props) => {
+const UpdateStatuses = ({ projectId }: Props) => {
   const queryClient = useQueryClient();
 
   const { data: statuses } = useProjectStatusesQuery(
@@ -112,7 +110,7 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       projectId,
     },
     {
-      enabled: canEdit,
+      enabled: isDevEnv,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
@@ -202,7 +200,8 @@ const UpdateStatuses = ({ projectId, canEdit }: Props) => {
       }, updateProjectStatuses.actions.update.toast),
   });
 
-  if (!canEdit) return null;
+  // TODO: when ready to implement for production, remove the development environment check and validate that the user is on a team tier subscription or higher
+  if (!isDevEnv) return null;
 
   return (
     <SectionContainer
