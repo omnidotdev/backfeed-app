@@ -99,6 +99,7 @@ const DestructiveAction = ({
       variant: "solid",
       ...destructiveButtonStyles,
       ...action,
+      tabIndex: 0,
       disabled: destructiveInput
         ? inputValue !== destructiveInput || action.disabled
         : action.disabled,
@@ -110,6 +111,7 @@ const DestructiveAction = ({
     },
     {
       label: app.actions.cancel.label,
+      tabIndex: 0,
       onClick: (e) => {
         e.stopPropagation();
         onClose();
@@ -159,7 +161,14 @@ const DestructiveAction = ({
 
       {destructiveInput && (
         <Stack gap={2}>
-          <Label>{`Type "${destructiveInput}" below to confirm`}</Label>
+          <Label
+            _selection={{
+              backgroundColor: "red",
+            }}
+          >
+            {`Type "${destructiveInput}" below to confirm`}
+          </Label>
+
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
