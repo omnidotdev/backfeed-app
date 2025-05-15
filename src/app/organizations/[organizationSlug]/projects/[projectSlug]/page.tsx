@@ -17,7 +17,7 @@ import {
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
-import { getProject } from "lib/actions";
+import { getOrganization, getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { freeTierFeedbackOptions } from "lib/options";
@@ -56,9 +56,12 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
 
   if (!session) notFound();
 
-  const project = await getProject({ organizationSlug, projectSlug });
+  const [project, organization] = await Promise.all([
+    getProject({ organizationSlug, projectSlug }),
+    getOrganization({ organizationSlug }),
+  ]);
 
-  if (!project) notFound();
+  if (!project || !organization) notFound();
 
   const sdk = getSdk({ session });
 
@@ -87,6 +90,14 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     },
     {
       label: project.name ?? projectSlug,
+      subItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+        : undefined,
     },
   ];
 

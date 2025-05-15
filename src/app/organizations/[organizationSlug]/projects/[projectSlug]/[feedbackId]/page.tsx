@@ -10,7 +10,7 @@ import {
   useInfiniteCommentsQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getFeedback } from "lib/actions";
+import { getFeedback, getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
@@ -40,7 +40,10 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const feedback = await getFeedback({ feedbackId });
+  const [organization, feedback] = await Promise.all([
+    getOrganization({ organizationSlug }),
+    getFeedback({ feedbackId }),
+  ]);
 
   if (!feedback) notFound();
 
@@ -61,7 +64,23 @@ const FeedbackPage = async ({ params }: Props) => {
     },
     {
       label: feedback?.project?.name ?? projectSlug,
-      href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      // href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      subItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+        : undefined,
+      nestedSubItems: organization?.projects?.nodes?.length
+        ? organization?.projects?.nodes
+            .filter((p) => p?.slug !== projectSlug)
+            .map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+        : undefined,
     },
     {
       label: app.feedbackPage.breadcrumb,

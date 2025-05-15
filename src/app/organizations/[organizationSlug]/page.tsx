@@ -18,7 +18,7 @@ import {
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
-import { getOrganization, getOwnerTier } from "lib/actions";
+import { getOrganization, getOrganizations, getOwnerTier } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -56,9 +56,11 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const [
     organization,
+    organizations,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
   ] = await Promise.all([
     getOrganization({ organizationSlug }),
+    getOrganizations(),
     getOwnerTier({ organizationSlug }),
   ]);
 
@@ -91,6 +93,12 @@ const OrganizationPage = async ({ params }: Props) => {
     },
     {
       label: organization.name ?? organizationSlug,
+      // subItems: organizations?.length
+      //   ? organizations.map((organization) => ({
+      //       label: organization?.name!,
+      //       href: `/organizations/${organization!.slug}`,
+      //     }))
+      //   : undefined,
     },
   ];
 
