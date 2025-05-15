@@ -9,9 +9,10 @@ import { LuSettings } from "react-icons/lu";
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
+import { useOrganizationQuery } from "generated/graphql";
 
 import type { ButtonProps } from "@omnidev/sigil";
-import { type Organization, useOrganizationQuery } from "generated/graphql";
+import type { Organization } from "generated/graphql";
 import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
