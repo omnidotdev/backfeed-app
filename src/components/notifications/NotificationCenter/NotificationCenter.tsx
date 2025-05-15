@@ -1,4 +1,13 @@
-import { Box, Card, Circle, Icon, Popover, Text, VStack } from "@omnidev/sigil";
+import {
+  Box,
+  Card,
+  Circle,
+  Icon,
+  Popover,
+  Stack,
+  Text,
+  VStack,
+} from "@omnidev/sigil";
 import { IoNotifications } from "react-icons/io5";
 import { useAuth } from "lib/hooks";
 import { useNotificationsQuery } from "generated/graphql";
@@ -20,6 +29,7 @@ const NotificationCenter = () => {
 
   return (
     <Popover
+      closeTrigger={null}
       trigger={
         <Box position="relative" cursor="pointer">
           <Icon src={IoNotifications} />
@@ -48,9 +58,11 @@ const NotificationCenter = () => {
       }
     >
       {notifications.length === 0 ? (
-        <Text textAlign="center" color="muted">
-          No new notifications
-        </Text>
+        <Stack p={4} alignSelf="center">
+          <Text textAlign="center" color="muted">
+            No new notifications
+          </Text>
+        </Stack>
       ) : (
         <VStack gap={2}>
           {notifications.map((n) => (
