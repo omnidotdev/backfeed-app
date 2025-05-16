@@ -6,23 +6,20 @@ import {
   Flex,
   Grid,
   GridItem,
-  Icon,
   Input,
   Select,
   Stack,
   Text,
-  ToggleGroup,
-  ToggleGroupItem,
 } from "@omnidev/sigil";
 import { keepPreviousData, useMutationState } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { LuLayoutGrid, LuList } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
+import { SwitchFeedbackView } from "components/project";
 import {
   PostOrderBy,
   useCreateFeedbackMutation,
@@ -241,26 +238,7 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
-      headerActions={
-        <ToggleGroup
-          size="sm"
-          variant="ghost"
-          ml={2}
-          value={[viewState]}
-          onValueChange={({ value }) =>
-            // NB: length check prevents deselecting a selected value
-            value.length && setViewState(value[0] as ViewState)
-          }
-        >
-          <ToggleGroupItem value={ViewState.List} h={7} minW={7}>
-            <Icon src={LuList} size="sm" />
-          </ToggleGroupItem>
-
-          <ToggleGroupItem value={ViewState.Grid} h={7} minW={7}>
-            <Icon src={LuLayoutGrid} size="sm" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-      }
+      headerActions={<SwitchFeedbackView />}
       p={0}
       gap={2}
       pr={{ base: 4, sm: 6 }}
