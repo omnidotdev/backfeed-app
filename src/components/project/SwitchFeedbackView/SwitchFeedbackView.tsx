@@ -4,10 +4,12 @@ import { useIsClient } from "usehooks-ts";
 
 import { ViewState, useProjectViewStore } from "lib/hooks/store";
 
+import type { ToggleGroupProps } from "@omnidev/sigil";
+
 /**
  * Switch for project feedback layout.
  */
-const SwitchFeedbackView = () => {
+const SwitchFeedbackView = (props: ToggleGroupProps) => {
   const isClient = useIsClient();
 
   const { viewState, setViewState } = useProjectViewStore(
@@ -23,12 +25,14 @@ const SwitchFeedbackView = () => {
     <ToggleGroup
       size="sm"
       variant="ghost"
-      ml={2}
+      mb={-1}
+      ml={1}
       value={[viewState]}
       onValueChange={({ value }) =>
         // NB: length check prevents deselecting a selected value
         value.length && setViewState(value[0] as ViewState)
       }
+      {...props}
     >
       <ToggleGroupItem value={ViewState.List} h={7} minW={7}>
         <Icon src={LuList} size="sm" />

@@ -238,7 +238,12 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
-      headerActions={<SwitchFeedbackView />}
+      headerActions={
+        <SwitchFeedbackView
+          position={{ baseToSm: "absolute" }}
+          right={{ baseToSm: 4 }}
+        />
+      }
       p={0}
       gap={2}
       pr={{ base: 4, sm: 6 }}
