@@ -1027,7 +1027,7 @@ const app = {
           description: "An error occurred while adding your comment.",
         },
         errors: {
-          maxLengthMessage: "Must be at most 240 characters.",
+          maxLengthMessage: "Must be at most 500 characters.",
         },
       },
       createReply: {
