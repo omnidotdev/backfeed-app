@@ -12,7 +12,7 @@ interface Options {
 const subscriptionOptions = ({ hidraId, enabled = true }: Options) =>
   queryOptions({
     queryKey: ["Subscription", { hidraId }],
-    queryFn: async () => getSubscription(hidraId!),
+    queryFn: async () => getSubscription(),
     enabled: enabled && !!hidraId,
     retry: false,
   });

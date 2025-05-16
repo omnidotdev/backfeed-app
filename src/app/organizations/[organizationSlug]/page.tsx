@@ -26,6 +26,7 @@ import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Member } from "generated/graphql";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;
@@ -52,8 +53,6 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [
     organization,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
@@ -66,11 +65,16 @@ const OrganizationPage = async ({ params }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
       organizationId: organization.rowId,
     });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
@@ -109,16 +113,20 @@ const OrganizationPage = async ({ params }: Props) => {
         organizationId: organization.rowId,
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
@@ -162,7 +170,7 @@ const OrganizationPage = async ({ params }: Props) => {
           <OrganizationMetrics organizationId={organization.rowId} />
 
           <OrganizationManagement
-            user={session.user}
+            user={session?.user}
             organizationId={organization.rowId}
             hasAdminPrivileges={hasAdminPrivileges}
           />

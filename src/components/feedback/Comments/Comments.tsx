@@ -26,7 +26,7 @@ import type { Session } from "next-auth";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Feedback ID. */
@@ -139,7 +139,7 @@ const Comments = ({ user, organizationId, feedbackId }: Props) => {
                     user={user}
                     comment={comment!}
                     organizationId={organizationId}
-                    canReply={canCreateComment ?? false}
+                    canReply={!!user && !!canCreateComment}
                     w="full"
                     minH={21}
                   />

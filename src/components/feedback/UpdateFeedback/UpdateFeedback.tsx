@@ -15,12 +15,13 @@ import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { CharacterLimit } from "components/core";
-import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
+import { useUpdatePostMutation } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema } from "lib/constants";
 import { useForm, useViewportSize } from "lib/hooks";
 import { toaster } from "lib/util";
+import { feedbackByIdOptions } from "lib/options";
 
 import type { DialogProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
@@ -76,12 +77,12 @@ const UpdateFeedback = ({ user, feedback, ...rest }: Props) => {
         queryClient.invalidateQueries({
           queryKey: ["Posts.infinite"],
         }),
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+        queryClient.invalidateQueries(
+          feedbackByIdOptions({
             rowId: feedback.rowId!,
             userId: user?.rowId,
           }),
-        }),
+        ),
       ]);
     },
     onSuccess: () => {

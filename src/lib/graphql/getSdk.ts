@@ -7,7 +7,7 @@ import type { Session } from "next-auth";
 
 interface Options {
   /** Auth session required to retrieve the appropriate `accessToken`.  */
-  session: Session;
+  session: Session | null;
 }
 
 /**
@@ -16,7 +16,7 @@ interface Options {
 const getSdk = ({ session }: Options) => {
   const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
     headers: {
-      Authorization: `Bearer ${session.accessToken}`,
+      Authorization: `Bearer ${session?.accessToken ?? ""}`,
     },
   });
 
