@@ -917,6 +917,7 @@ const app = {
           "I really enjoy working with this project. It helped me learn a lot about the industry.",
       },
       createFeedback: {
+        title: "Provide Feedback",
         errors: {
           invalid: "Invalid format",
           title: {
@@ -1026,7 +1027,7 @@ const app = {
           description: "An error occurred while adding your comment.",
         },
         errors: {
-          maxLengthMessage: "Must be at most 240 characters.",
+          maxLengthMessage: "Must be at most 500 characters.",
         },
       },
       createReply: {
