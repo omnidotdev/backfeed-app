@@ -60,6 +60,8 @@ interface Props extends HstackProps {
   feedback: Partial<FeedbackFragment>;
   /** Project status options. */
   projectStatuses?: ProjectStatus[];
+  /** Title props. */
+  titleProps?: TextProps;
   /** Description props. */
   descriptionProps?: TextProps;
 }
@@ -72,6 +74,7 @@ const FeedbackCard = ({
   canManageFeedback,
   feedback,
   projectStatuses,
+  titleProps,
   descriptionProps,
   ...rest
 }: Props) => {
@@ -245,11 +248,12 @@ const FeedbackCard = ({
         <HStack justify="space-between">
           <Stack gap={1}>
             <Text
+              wordBreak="break-word"
               fontWeight="semibold"
               fontSize="lg"
-              lineHeight={1}
               // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
               maxW={{ base: "40svw", xl: "xl" }}
+              {...titleProps}
             >
               {feedback.title}
             </Text>

@@ -336,6 +336,15 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
                         h="full"
                         w="full"
                         minH={21}
+                        titleProps={
+                          viewState === ViewState.Grid
+                            ? {
+                                // TODO: figure out how to expand this beyond line clamp of 2
+                                lineClamp: 2,
+                                overflow: "hidden",
+                              }
+                            : undefined
+                        }
                         descriptionProps={
                           viewState === ViewState.Grid
                             ? {
