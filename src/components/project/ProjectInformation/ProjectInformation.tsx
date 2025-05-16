@@ -41,17 +41,22 @@ const ProjectInformation = ({
   ];
 
   return (
-    <SectionContainer title={app.projectPage.projectInformation.title}>
+    <SectionContainer
+      title={app.projectPage.projectInformation.title}
+      titleProps={{ fontSize: "md" }}
+    >
       {information.map(({ title, icon, value }) => (
         <Flex key={title} justify="space-between" align="center">
           <Flex gap={2} align="center">
             <Icon src={icon} />
 
-            <Text color="foreground.muted">{title}</Text>
+            <Text color="foreground.muted" fontSize="sm">
+              {title}
+            </Text>
           </Flex>
 
           <Skeleton isLoaded={isLoaded} minW={8}>
-            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+            <Text fontSize="sm" textAlign="right">
               {isError ? 0 : value}
             </Text>
           </Skeleton>

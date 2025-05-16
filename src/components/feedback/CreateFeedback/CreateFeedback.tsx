@@ -182,6 +182,7 @@ const CreateFeedback = ({ user }: Props) => {
         display="flex"
         flexDirection="column"
         gap={2}
+        p={1}
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -207,8 +208,7 @@ const CreateFeedback = ({ user }: Props) => {
               placeholder={
                 app.projectPage.projectFeedback.feedbackDescription.placeholder
               }
-              rows={5}
-              minH={32}
+              rows={3}
               maxLength={MAX_DESCRIPTION_LENGTH}
               disabled={!user || !canCreateFeedback}
             />
