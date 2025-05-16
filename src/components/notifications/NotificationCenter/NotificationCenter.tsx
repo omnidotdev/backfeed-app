@@ -106,14 +106,20 @@ const NotificationCenter = () => {
           No new notifications
         </Text>
       ) : (
-        <VStack
-          minW={{ base: 64, sm: 80 }}
-          bgColor={{ base: "background.subtle", _dark: "background.subtle/30" }}
-          p={2}
-          borderRadius="sm"
-        >
+        <VStack>
           {notifications.map((notification) => (
-            <HStack key={notification.rowId} justify="space-between" w="full">
+            <HStack
+              key={notification.rowId}
+              justify="space-between"
+              w="full"
+              bgColor={{
+                base: "background.subtle",
+                _dark: "background.subtle/30",
+              }}
+              minW={{ base: 64, sm: 80 }}
+              p={2}
+              borderRadius="sm"
+            >
               <Text fontSize="sm">{notification.message}</Text>
 
               <HStack gap={0} justify="center">
