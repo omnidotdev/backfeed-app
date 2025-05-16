@@ -1,16 +1,16 @@
 import {
-  Box,
   Button,
-  Card,
   Circle,
+  HStack,
   Icon,
   Popover,
-  Stack,
+  PopoverCloseTrigger,
   Text,
   VStack,
 } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { IoNotifications } from "react-icons/io5";
+import { LuCheck, LuExternalLink, LuX } from "react-icons/lu";
 
 import {
   Role,
@@ -20,7 +20,6 @@ import {
 } from "generated/graphql";
 import { useAuth } from "lib/hooks";
 import { getQueryClient } from "lib/util";
-import { useState } from "react";
 
 const NotificationCenter = () => {
   const { user } = useAuth();
@@ -35,124 +34,128 @@ const NotificationCenter = () => {
         data?.invitations?.nodes.map((inv) => ({
           rowId: inv?.rowId!,
           organizationId: inv?.organizationId!,
-          message: `You've been invited to join ${inv?.organization?.name}`,
+          // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
+          message: `Join ${inv?.organization?.name}`,
         })) ?? [],
     },
   );
 
-  const notificationNumber = notifications?.length || 0;
-
-  const onSettled = async () => {
-    await queryClient.invalidateQueries();
-  };
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
+  const onSettled = async () => queryClient.invalidateQueries();
 
   const { mutate: acceptInvitation } = useCreateMemberMutation({ onSettled });
   const { mutate: deleteInvitation } = useDeleteInvitationMutation({
     onSettled,
   });
 
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   return (
     <Popover
+      title={
+        <PopoverCloseTrigger
+          display="flex"
+          gap={1}
+          alignItems="center"
+          disabled={!notifications?.length}
+          cursor={notifications?.length ? "pointer" : "default"}
+          onClick={() => router.push(`/profile/${user?.hidraId}/invitations`)}
+        >
+          Notifications
+          {/* TODO: this icon src should be changed. Not an external link, but should still signal "view all" */}
+          {!!notifications?.length && <Icon src={LuExternalLink} size="xs" />}
+        </PopoverCloseTrigger>
+      }
+      // TODO: update when we provide notifications for more than just invites
+      description="Take action on organization invites."
       closeTrigger={null}
       trigger={
-        <Box position="relative" cursor="pointer">
+        <Button position="relative" variant="ghost" bgColor="transparent">
           <Icon src={IoNotifications} />
-          {notificationNumber > 0 && (
+
+          {!!notifications?.length && (
             <Circle
               position="absolute"
-              top="0"
-              right="0"
-              transform="translate(40%, -40%)"
-              bg="red.500"
-              borderRadius="full"
-              minW="16px"
-              h="16px"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              fontSize="xs"
-              color="white"
-              pointerEvents="none"
-            >
-              <Text lineHeight="none">{notificationNumber}</Text>
-            </Circle>
+              top={1}
+              right={3}
+              h={3}
+              w={3}
+              bgColor="red"
+            />
           )}
-        </Box>
+        </Button>
       }
+      triggerProps={{
+        asChild: true,
+      }}
+      contentProps={{
+        p: 3,
+      }}
+      titleProps={{
+        fontSize: "md",
+      }}
+      descriptionProps={{
+        color: "foreground.subtle",
+      }}
     >
       {!notifications?.length ? (
-        <Text textAlign="center" color="muted">
+        <Text
+          textAlign="center"
+          color="muted"
+          py={2}
+          minW={{ base: 64, sm: 80 }}
+        >
           No new notifications
         </Text>
       ) : (
-        <VStack gap={3} p={3}>
-          {notifications.map((n) => (
-            <Card
-              key={n.rowId}
-              display="flex"
-              flexDirection="column"
-              alignItems="flex-start"
-              justifyContent="center"
-              w="full"
-              h={"48"}
-              p={3}
-              gap={3}
-              _hover={{ bg: "foreground.disabled", cursor: "pointer" }}
-              onMouseEnter={() => setHoveredId(n.rowId)}
-              onMouseLeave={() => setHoveredId(null)}
-              onClick={() =>
-                router.push(`/profile/${user?.hidraId}/invitations`)
-              }
-            >
-              <Text fontSize="sm" mb={2}>
-                {n.message}
-              </Text>
+        <VStack
+          minW={{ base: 64, sm: 80 }}
+          bgColor={{ base: "background.subtle", _dark: "background.subtle/30" }}
+          p={2}
+          borderRadius="sm"
+        >
+          {notifications.map((notification) => (
+            <HStack key={notification.rowId} justify="space-between" w="full">
+              <Text fontSize="sm">{notification.message}</Text>
 
-              {hoveredId === n.rowId && (
-                <Stack
-                  direction="row"
-                  gap={2}
-                  visibility={hoveredId === n.rowId ? "visible" : "hidden"}
-                  justifyContent={"center"}
-                >
-                  <Button
-                    size="sm"
-                    bg="green"
-                    borderRadius={"md"}
-                    _hover={{ bg: "green.700" }}
-                    onClick={(evt) => {
-                      evt.stopPropagation();
-                      acceptInvitation({
-                        input: {
-                          member: {
-                            userId: user?.rowId!,
-                            organizationId: n.organizationId,
-                            role: Role.Member,
-                          },
+              <HStack gap={0} justify="center">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  bgColor="transparent"
+                  color="green"
+                  opacity={{ _hover: 0.8 }}
+                  px={0}
+                  onClick={() => {
+                    acceptInvitation({
+                      input: {
+                        member: {
+                          userId: user?.rowId!,
+                          organizationId: notification.organizationId,
+                          role: Role.Member,
                         },
-                      });
-                      deleteInvitation({ rowId: n.rowId });
-                    }}
-                  >
-                    Accept
-                  </Button>
-                  <Button
-                    size="sm"
-                    bg="red"
-                    borderRadius={"md"}
-                    _hover={{ bg: "red.700" }}
-                    onClick={(evt) => {
-                      evt.stopPropagation();
-                      deleteInvitation({ rowId: n.rowId });
-                    }}
-                  >
-                    Decline
-                  </Button>
-                </Stack>
-              )}
-            </Card>
+                      },
+                    });
+
+                    deleteInvitation({ rowId: notification.rowId });
+                  }}
+                >
+                  <Icon src={LuCheck} />
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  bgColor="transparent"
+                  color="red"
+                  opacity={{ _hover: 0.8 }}
+                  px={0}
+                  onClick={() =>
+                    deleteInvitation({ rowId: notification.rowId })
+                  }
+                >
+                  <Icon src={LuX} />
+                </Button>
+              </HStack>
+            </HStack>
           ))}
         </VStack>
       )}
