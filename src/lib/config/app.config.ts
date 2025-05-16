@@ -917,7 +917,7 @@ const app = {
           "I really enjoy working with this project. It helped me learn a lot about the industry.",
       },
       createFeedback: {
-        title: "Submit Feedback",
+        title: "Provide Feedback",
         errors: {
           invalid: "Invalid format",
           title: {
