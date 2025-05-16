@@ -3,6 +3,7 @@
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { FlexProps, TextProps } from "@omnidev/sigil";
+import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
 interface Props extends FlexProps {
@@ -16,6 +17,8 @@ interface Props extends FlexProps {
   titleProps?: FlexProps;
   /** Additional props for the description container. */
   descriptionProps?: TextProps;
+  /** Header actions. */
+  headerActions?: ReactNode;
 }
 
 /**
@@ -28,6 +31,7 @@ const SectionContainer = ({
   icon,
   titleProps,
   descriptionProps,
+  headerActions,
   ...rest
 }: Props) => (
   <Stack
@@ -40,16 +44,19 @@ const SectionContainer = ({
     {...rest}
   >
     <Stack>
-      <Flex align="center" gap={2} {...titleProps}>
+      <Flex
+        align="center"
+        gap={2}
+        fontSize={{ base: "xl", lg: "2xl" }}
+        {...titleProps}
+      >
         {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
 
-        <Text
-          fontSize={{ base: "xl", lg: "2xl" }}
-          fontWeight="semibold"
-          lineHeight={1.2}
-        >
+        <Text fontWeight="semibold" lineHeight={1.2}>
           {title}
         </Text>
+
+        {headerActions && headerActions}
       </Flex>
 
       {description && (

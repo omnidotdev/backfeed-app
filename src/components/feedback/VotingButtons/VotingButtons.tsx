@@ -81,7 +81,13 @@ const VotingButtons = ({
     .otherwise(() => "brand.quinary");
 
   return (
-    <HStack gap={1} justify="center" placeSelf="flex-start" mr={-2.5} mt={-2}>
+    <HStack
+      gap={1}
+      justify="center"
+      placeSelf="flex-start"
+      mr={-2.5}
+      mt={isFeedbackRoute ? -2 : -1}
+    >
       <Tooltip
         hasArrow={false}
         trigger={

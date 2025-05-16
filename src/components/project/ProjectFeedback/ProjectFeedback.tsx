@@ -2,13 +2,14 @@
 
 import { createListCollection } from "@ark-ui/react";
 import {
-  Divider,
+  Button,
+  Flex,
   Grid,
+  GridItem,
   Input,
   Select,
   Stack,
   Text,
-  VStack,
 } from "@omnidev/sigil";
 import {
   keepPreviousData,
@@ -22,6 +23,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CreateFeedback, FeedbackCard } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
+import { SwitchFeedbackView } from "components/project";
 import {
   PostOrderBy,
   useCreateFeedbackMutation,
@@ -29,11 +31,18 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
+  useDebounceValue,
   useHandleSearch,
   useOrganizationMembership,
   useSearchParams,
 } from "lib/hooks";
 import { infinitePostsOptions } from "lib/options";
+import {
+  ViewState,
+  useDialogStore,
+  useProjectViewStore,
+} from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type {
   CreateFeedbackMutationVariables,
@@ -41,6 +50,8 @@ import type {
   Project,
 } from "generated/graphql";
 import type { Session } from "next-auth";
+
+// TODO: figure out how to properly handle refresh for view state management.
 
 const SORT_BY_OPTIONS = [
   {
@@ -69,6 +80,13 @@ interface Props {
  */
 const ProjectFeedback = ({ user, projectId }: Props) => {
   const router = useRouter();
+
+  const { viewState, setViewState } = useProjectViewStore(
+    ({ viewState, setViewState }) => ({
+      viewState,
+      setViewState,
+    }),
+  );
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
@@ -157,6 +175,17 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     organizationId: posts?.[0]?.project?.organization?.rowId,
   });
 
+  const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
+    useDialogStore({
+      type: DialogType.CreateFeedback,
+    });
+
+  // debounced value is to allow for collapse animation to finish prior to changing maxH of scrollable container (prevent potential layout shit on larger viewports)
+  const [debouncedIsCreateFeedbackOpen] = useDebounceValue({
+    value: isCreateFeedbackOpen,
+    delay: 250,
+  });
+
   const { data: projectStatuses } = useProjectStatusesQuery(
     {
       projectId,
@@ -204,16 +233,40 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       ref={rootRef}
       title={app.projectPage.projectFeedback.title}
       icon={HiOutlineFolder}
+      headerActions={
+        <SwitchFeedbackView
+          position={{ baseToSm: "absolute" }}
+          right={{ baseToSm: 4 }}
+        />
+      }
       p={0}
+      gap={2}
       pr={{ base: 4, sm: 6 }}
       pl={{ base: 4, sm: 6 }}
       pt={{ base: 4, sm: 6 }}
     >
+      {user && (
+        <Button
+          position={{ base: undefined, sm: "absolute" }}
+          size="sm"
+          top={{ base: 4, sm: 6 }}
+          right={{ base: 4, sm: 6 }}
+          variant="outline"
+          colorPalette="brand.primary"
+          color="brand.primary"
+          mt={{ base: 2, sm: 0 }}
+          bgColor={{
+            _hover: { base: "brand.primary.50", _dark: "brand.primary.950/30" },
+          }}
+          onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
+        >
+          {app.projectPage.projectFeedback.createFeedback.title}
+        </Button>
+      )}
+
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <Stack gap={0} position="relative" mb="1px">
-        <CreateFeedback user={user} />
-
-        <Divider mt={4} />
+        {user && <CreateFeedback user={user} />}
 
         <Stack mt={4} direction={{ base: "column", sm: "row" }}>
           <Input
@@ -249,7 +302,15 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           <Grid
             gap={2}
             mt={4}
-            maxH="md"
+            columns={{ base: 1, lg: viewState === ViewState.List ? 1 : 2 }}
+            maxH={
+              isCreateFeedbackOpen || debouncedIsCreateFeedbackOpen
+                ? "xl"
+                : { base: "xl", md: "3xl" }
+            }
+            transitionDuration={isCreateFeedbackOpen ? "0ms" : "250ms"}
+            transitionProperty="max-height"
+            transitionTimingFunction="default"
             overflow="auto"
             scrollbar="hidden"
             // NB: the padding is necessary to prevent clipping of the card borders/box shadows
@@ -258,47 +319,85 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
             {isLoading ? (
               <SkeletonArray count={5} h={21} />
             ) : allPosts.length ? (
-              <VStack>
+              <>
                 {allPosts.map((feedback) => {
                   const isPending = feedback?.rowId === "pending";
 
                   return (
-                    <FeedbackCard
+                    <GridItem
                       key={feedback?.rowId}
-                      user={user}
-                      canManageFeedback={isAdmin}
-                      feedback={feedback!}
-                      projectStatuses={projectStatuses}
-                      w="full"
-                      minH={21}
-                      borderRadius="md"
-                      bgColor="card-item"
-                      cursor={isPending ? "not-allowed" : "pointer"}
-                      _hover={{ boxShadow: "card" }}
-                      onClick={() =>
-                        !isPending
-                          ? router.push(
-                              `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`,
-                            )
-                          : undefined
-                      }
-                    />
+                      colSpan={{ base: 1, lg: allPosts.length === 1 ? 2 : 1 }}
+                    >
+                      <FeedbackCard
+                        user={user}
+                        canManageFeedback={isAdmin}
+                        feedback={feedback!}
+                        projectStatuses={projectStatuses}
+                        h="full"
+                        w="full"
+                        minH={21}
+                        titleProps={
+                          viewState === ViewState.Grid
+                            ? {
+                                // TODO: figure out how to expand this beyond line clamp of 2
+                                lineClamp: 2,
+                                overflow: "hidden",
+                              }
+                            : undefined
+                        }
+                        descriptionProps={
+                          viewState === ViewState.Grid
+                            ? {
+                                // TODO: figure out how to expand this beyond line clamp of 2
+                                lineClamp: 2,
+                                overflow: "hidden",
+                              }
+                            : undefined
+                        }
+                        borderRadius="md"
+                        bgColor="card-item"
+                        cursor={isPending ? "not-allowed" : "pointer"}
+                        _hover={{ boxShadow: "card" }}
+                        onClick={() =>
+                          !isPending
+                            ? router.push(
+                                `/organizations/${params.organizationSlug}/projects/${params.projectSlug}/${feedback?.rowId}`,
+                              )
+                            : undefined
+                        }
+                      />
+                    </GridItem>
                   );
                 })}
 
-                {hasNextPage ? (
-                  <Spinner ref={loaderRef} my={4} />
-                ) : (
-                  <Text my={5}>{app.projectPage.projectFeedback.endOf}</Text>
-                )}
-              </VStack>
+                <GridItem
+                  colSpan={{
+                    base: 1,
+                    lg:
+                      allPosts.length === 1 || viewState === ViewState.Grid
+                        ? 2
+                        : 1,
+                  }}
+                  my={5}
+                >
+                  <Flex justify="center">
+                    {hasNextPage ? (
+                      <Spinner ref={loaderRef} />
+                    ) : (
+                      <Text>{app.projectPage.projectFeedback.endOf}</Text>
+                    )}
+                  </Flex>
+                </GridItem>
+              </>
             ) : (
-              <EmptyState
-                message={app.projectPage.projectFeedback.emptyState.message}
-                h="xs"
-                w="full"
-                mb={4}
-              />
+              <GridItem colSpan={viewState === ViewState.Grid ? 2 : 1}>
+                <EmptyState
+                  message={app.projectPage.projectFeedback.emptyState.message}
+                  h="xs"
+                  w="full"
+                  mb={4}
+                />
+              </GridItem>
             )}
           </Grid>
         )}

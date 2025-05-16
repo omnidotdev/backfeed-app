@@ -1,5 +1,6 @@
 "use client";
 
+import { Format } from "@ark-ui/react";
 import {
   Circle,
   HStack,
@@ -9,6 +10,7 @@ import {
   MenuItemGroup,
   Stack,
   Text,
+  sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -26,8 +28,7 @@ import {
 import { useSearchParams } from "lib/hooks";
 import { useStatusMenuStore } from "lib/hooks/store";
 
-import { Format } from "@ark-ui/react";
-import type { HstackProps } from "@omnidev/sigil";
+import type { HstackProps, TextProps } from "@omnidev/sigil";
 import type { InfiniteData } from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
@@ -58,6 +59,10 @@ interface Props extends HstackProps {
   feedback: Partial<FeedbackFragment>;
   /** Project status options. */
   projectStatuses?: ProjectStatus[];
+  /** Title props. */
+  titleProps?: TextProps;
+  /** Description props. */
+  descriptionProps?: TextProps;
 }
 
 /**
@@ -68,6 +73,8 @@ const FeedbackCard = ({
   canManageFeedback,
   feedback,
   projectStatuses,
+  titleProps,
+  descriptionProps,
   ...rest
 }: Props) => {
   const { isStatusMenuOpen, setIsStatusMenuOpen } = useStatusMenuStore(
@@ -231,23 +238,23 @@ const FeedbackCard = ({
   return (
     <HStack
       position="relative"
-      gap={8}
       bgColor="background.default"
       borderRadius="lg"
-      p={{ base: 4, sm: 6 }}
+      p={4}
       opacity={actionIsPending ? 0.5 : 1}
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
-      <Stack w="full">
+      <Stack h="full" w="full" gap={2}>
         <HStack justify="space-between">
           <Stack gap={1}>
             <Text
+              wordBreak="break-word"
               fontWeight="semibold"
               fontSize="lg"
-              lineHeight={1}
               // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
               maxW={{ base: "40svw", xl: "xl" }}
+              {...titleProps}
             >
               {feedback.title}
             </Text>
@@ -286,8 +293,19 @@ const FeedbackCard = ({
           />
         </HStack>
 
-        <Text wordBreak="break-word" color="foreground.muted">
-          {feedback.description}
+        <Text
+          wordBreak="break-word"
+          color="foreground.muted"
+          flex={1}
+          {...descriptionProps}
+        >
+          {feedback.description?.split("\n").map((line, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
+            <sigil.span key={index}>
+              {line}
+              <br />
+            </sigil.span>
+          ))}
         </Text>
 
         <Stack justify="space-between" gap={4} mt={2}>
@@ -346,16 +364,18 @@ const FeedbackCard = ({
                 </MenuItemGroup>
               </Menu>
 
-              <Text
-                display={{ base: "none", sm: "inline-flex" }}
-                fontSize="sm"
-                color="foreground.subtle"
-              >
-                {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
-              </Text>
+              {isFeedbackRoute && (
+                <Text
+                  display={{ base: "none", sm: "inline-flex" }}
+                  fontSize="sm"
+                  color="foreground.subtle"
+                >
+                  {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+                </Text>
+              )}
             </HStack>
 
-            <HStack>
+            <HStack mb={-2}>
               {canAdjustFeedback && (
                 <HStack>
                   <UpdateFeedback
