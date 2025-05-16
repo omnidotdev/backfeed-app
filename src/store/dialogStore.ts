@@ -5,6 +5,8 @@ export enum DialogType {
   CreateOrganization = "createOrganization",
   /** Dialog for creating a new project. */
   CreateProject = "createProject",
+  /** Dialog for creating feedback. */
+  CreateFeedback = "createFeedback",
   /** Dialog for adding an owner to an organization. */
   AddOwner = "addOwner",
   /** Dialog for managing the mobile sidebar navigation and actions. */

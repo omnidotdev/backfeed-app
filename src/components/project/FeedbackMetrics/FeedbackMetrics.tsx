@@ -41,17 +41,22 @@ const FeedbackMetrics = ({
   ];
 
   return (
-    <SectionContainer title={app.projectPage.feedbackMetrics.title}>
+    <SectionContainer
+      title={app.projectPage.feedbackMetrics.title}
+      titleProps={{ fontSize: "md" }}
+    >
       {metrics.map(({ title, icon, value }) => (
         <Flex key={title} justify="space-between" align="center">
           <Flex gap={2} align="center">
             <Icon src={icon} />
 
-            <Text color="foreground.muted">{title}</Text>
+            <Text color="foreground.muted" fontSize="sm">
+              {title}
+            </Text>
           </Flex>
 
           <Skeleton isLoaded={isLoaded} minW={8}>
-            <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+            <Text fontSize="sm" textAlign="right">
               {isError ? 0 : value}
             </Text>
           </Skeleton>
