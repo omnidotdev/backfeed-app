@@ -1,11 +1,20 @@
 "use client";
 
-import { Flex, Stack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Link, Stack, Text } from "@omnidev/sigil";
+import { LuLink } from "react-icons/lu";
 
 import { Breadcrumb, CallToAction } from "components/core";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { ActionButton, BreadcrumbRecord } from "components/core";
+import type { ReactNode } from "react";
+
+interface ProjectLink {
+  /** External url. */
+  href: string;
+  /** Icon for the link. */
+  icon?: ReactNode;
+}
 
 interface Props extends StackProps {
   /** Page breadcrumbs for navigation. */
@@ -16,6 +25,8 @@ interface Props extends StackProps {
     title: string;
     /** Header section description. */
     description?: string;
+    /** Project links (i.e. website or socials). */
+    projectLinks?: ProjectLink[];
     /** Header section call to action buttons. */
     cta?: ActionButton[];
     /** Props to pass to the header section. */
@@ -49,9 +60,29 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
           gap={4}
         >
           <Stack>
-            <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
-              {header.title}
-            </Text>
+            <HStack gap={1}>
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="semibold"
+                lineHeight={1.3}
+              >
+                {header.title}
+              </Text>
+
+              {header.projectLinks?.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  isExternal
+                  color="brand.primary"
+                  fontSize="xl"
+                  p={2}
+                >
+                  {link.icon ?? <LuLink />}
+                </Link>
+              ))}
+            </HStack>
 
             {header.description && (
               <Text
@@ -69,6 +100,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
             gap={4}
             width={{ base: "full", md: "auto" }}
             direction={{ base: "column", sm: "row" }}
+            placeSelf="flex-start"
           >
             {header.cta?.map((action) => (
               <CallToAction key={action.label} action={action} />

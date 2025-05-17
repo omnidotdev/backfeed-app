@@ -25,6 +25,7 @@ import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { SearchParams } from "nuqs/server";
+import { TbWorld } from "react-icons/tb";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -160,6 +161,16 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
         header={{
           title: project.name!,
           description: project.description!,
+          projectLinks: [
+            ...(project.website
+              ? [
+                  {
+                    href: project.website,
+                    icon: <TbWorld />,
+                  },
+                ]
+              : []),
+          ],
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,

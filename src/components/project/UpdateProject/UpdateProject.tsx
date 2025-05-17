@@ -11,6 +11,7 @@ import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import {
   DEBOUNCE_TIME,
+  emptyStringAsUndefined,
   projectDescriptionSchema,
   projectNameSchema,
   slugSchema,
@@ -30,6 +31,7 @@ const updateProjectSchema = z
   .object({
     name: projectNameSchema,
     description: projectDescriptionSchema,
+    website: emptyStringAsUndefined.or(z.string().url().min(1).max(255)),
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
   })
@@ -81,7 +83,6 @@ const UpdateProject = () => {
     },
   );
 
-  // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
     onMutate: (variables) => {
       const { name, description, slug } = variables.patch;
@@ -163,6 +164,7 @@ const UpdateProject = () => {
     defaultValues: {
       name: project?.name ?? "",
       description: project?.description ?? "",
+      website: project?.website ?? "",
       organizationSlug,
       currentSlug: project?.slug ?? "",
     },
@@ -178,6 +180,7 @@ const UpdateProject = () => {
             name: value.name,
             description: value.description,
             slug: generateSlug(value.name)!,
+            website: value.website ?? undefined,
             updatedAt: new Date(),
           },
         });
@@ -212,6 +215,15 @@ const UpdateProject = () => {
             {({ InputField }) => (
               <InputField
                 label={updateProjectDetails.fields.projectDescription.label}
+              />
+            )}
+          </AppField>
+
+          <AppField name="website">
+            {({ InputField }) => (
+              <InputField
+                label="Website"
+                placeholder="https://backfeed.omni.dev"
               />
             )}
           </AppField>

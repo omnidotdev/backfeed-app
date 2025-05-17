@@ -5,7 +5,7 @@ import { app } from "lib/config";
 const organizationErrors = app.forms.errors.organization;
 const projectErrors = app.forms.errors.project;
 
-const emptyStringAsUndefined = z.literal("").transform(() => undefined);
+export const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
 export const slugSchema = z
   .string()

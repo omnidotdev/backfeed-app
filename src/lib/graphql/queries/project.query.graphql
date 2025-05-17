@@ -13,6 +13,7 @@ query Project(
       name
       description
       slug
+      website
       organization {
         rowId
         name
