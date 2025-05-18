@@ -30,6 +30,7 @@ import { useProjectFormOptions } from "lib/hooks/form";
 import { generateSlug, getAuthSession } from "lib/util";
 
 import type { ProjectQuery } from "generated/graphql";
+import { BiWorld } from "react-icons/bi";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
@@ -276,19 +277,18 @@ const UpdateProject = () => {
             </AppField>
 
             <AppField name="website">
-              {({ InputField }) => (
-                <InputField
+              {({ UrlField }) => (
+                <UrlField
+                  icon={BiWorld}
                   label="Website"
-                  placeholder="https://backfeed.omni.dev"
+                  placeholder="backfeed.omni.dev"
+                  displayRemoveTrigger={false}
                 />
               )}
             </AppField>
           </Stack>
 
-          <UpdateSocials
-            // NB: only required part of for in this case is `Field`
-            form={{ Field }}
-          />
+          <UpdateSocials form={{ Field, AppField }} />
         </Grid>
 
         <AppForm>
