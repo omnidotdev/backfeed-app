@@ -96,36 +96,146 @@ const UpdateProject = () => {
     },
   );
 
-  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation();
-  const { mutateAsync: updateProjectSocial } = useUpdateProjectSocialMutation();
-  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation();
+  const currentProjectQueryKey = useProjectQuery.getKey({
+    projectSlug,
+    organizationSlug,
+  });
 
-  const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
-    onMutate: (variables) => {
-      const { name, description, slug } = variables.patch;
+  const onSettled = () => {
+    reset();
+
+    return queryClient.invalidateQueries({ queryKey: ["Project"] });
+  };
+
+  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation({
+    onSettled,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["Project"] });
 
       const snapshot = queryClient.getQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
+        currentProjectQueryKey,
       ) as ProjectQuery;
 
       const project = snapshot.projects?.nodes?.[0];
 
-      queryClient.setQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
-        {
-          projects: {
-            ...snapshot.projects,
-            nodes: [
-              {
-                ...project,
-                name,
-                description,
-                slug,
+      queryClient.setQueryData(currentProjectQueryKey, {
+        projects: {
+          ...snapshot?.projects,
+          nodes: [
+            {
+              ...project,
+              projectSocials: {
+                nodes: [
+                  ...(project?.projectSocials?.nodes ?? []),
+                  {
+                    rowId: "pending",
+                    projectId: project?.rowId,
+                    url: variables.input.projectSocial.url,
+                  },
+                ],
               },
-            ],
-          },
+            },
+          ],
         },
-      );
+      });
+    },
+  });
+
+  const { mutateAsync: updateProjectSocial } = useUpdateProjectSocialMutation({
+    onSettled,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["Project"] });
+
+      const updatedId = variables.rowId;
+
+      const snapshot = queryClient.getQueryData(
+        currentProjectQueryKey,
+      ) as ProjectQuery;
+
+      const project = snapshot.projects?.nodes?.[0];
+
+      const updatedProject = {
+        ...project,
+        projectSocials: {
+          ...project?.projectSocials,
+          nodes: project?.projectSocials?.nodes?.map((social) => {
+            if (social?.rowId === updatedId) {
+              return {
+                ...social,
+                ...variables.patch,
+              };
+            }
+            return social;
+          }),
+        },
+      };
+
+      queryClient.setQueryData(currentProjectQueryKey, {
+        projects: {
+          ...snapshot?.projects,
+          nodes: [updatedProject],
+        },
+      });
+    },
+  });
+
+  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation({
+    onSettled,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["Project"] });
+
+      const deletedId = variables.socialId;
+
+      const snapshot = queryClient.getQueryData(
+        currentProjectQueryKey,
+      ) as ProjectQuery;
+
+      const project = snapshot.projects?.nodes?.[0];
+
+      queryClient.setQueryData(currentProjectQueryKey, {
+        projects: {
+          ...snapshot?.projects,
+          nodes: [
+            {
+              ...project,
+              projectSocials: {
+                ...project?.projectSocials,
+                nodes: project?.projectSocials?.nodes?.filter(
+                  (social) => social?.rowId !== deletedId,
+                ),
+              },
+            },
+          ],
+        },
+      });
+    },
+  });
+
+  const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["Project"] });
+
+      const { name, description, slug } = variables.patch;
+
+      const snapshot = queryClient.getQueryData(
+        currentProjectQueryKey,
+      ) as ProjectQuery;
+
+      const project = snapshot.projects?.nodes?.[0];
+
+      queryClient.setQueryData(currentProjectQueryKey, {
+        projects: {
+          ...snapshot.projects,
+          nodes: [
+            {
+              ...project,
+              name,
+              description,
+              slug,
+            },
+          ],
+        },
+      });
 
       // ! NB: if the slug has been updated, optimistically update the query data for that slug
       if (slug !== projectSlug) {
@@ -147,34 +257,7 @@ const UpdateProject = () => {
         );
       }
     },
-    onSettled: (data) => {
-      const updatedSlug = data?.updateProject?.project?.slug;
-
-      if (updatedSlug) {
-        queryClient.invalidateQueries({
-          queryKey: useProjectQuery.getKey({
-            projectSlug: updatedSlug,
-            organizationSlug,
-          }),
-        });
-
-        // NB: If the project slug was updated, we need to invalidate the query for the old slug due to the optimistic updates from `onMutate`
-        if (updatedSlug !== projectSlug) {
-          queryClient.invalidateQueries({
-            queryKey: useProjectQuery.getKey({
-              projectSlug,
-              organizationSlug,
-            }),
-          });
-        }
-
-        router.replace(
-          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`,
-        );
-
-        reset();
-      }
-    },
+    onSettled,
   });
 
   const { handleSubmit, Field, AppField, AppForm, SubmitForm, reset } = useForm(
@@ -239,6 +322,10 @@ const UpdateProject = () => {
               }
             }),
           ]);
+
+          router.replace(
+            `/organizations/${organizationSlug}/projects/${generateSlug(value.name)}/settings`,
+          );
         } catch (err) {
           if (isDevEnv) console.error(err);
         }
@@ -258,7 +345,7 @@ const UpdateProject = () => {
           await handleSubmit();
         }}
       >
-        <Grid columns={{ base: 1, lg: 2 }} gap={8}>
+        <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
           <Stack gap={4}>
             <AppField name="name">
               {({ InputField }) => (
@@ -303,6 +390,7 @@ const UpdateProject = () => {
       {/* TODO: when ready to implement for production, remove the development environment check */}
       <Divider display={isDevEnv ? "inline" : "none"} />
 
+      {/* TODO: move form logic up to provide just one `Update Project` submit button. Use `withForm` to create child form */}
       <UpdateStatuses projectId={project?.rowId!} />
     </SectionContainer>
   );
