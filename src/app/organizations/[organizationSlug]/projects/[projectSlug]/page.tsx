@@ -25,7 +25,7 @@ import { getQueryClient, getSearchParams } from "lib/util";
 
 import { SocialMediaIcon, type BreadcrumbRecord } from "components/core";
 import type { SearchParams } from "nuqs/server";
-import { TbWorld } from "react-icons/tb";
+import { BiWorld } from "react-icons/bi";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;
@@ -166,7 +166,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
               ? [
                   {
                     href: project.website,
-                    icon: <TbWorld />,
+                    icon: <BiWorld />,
                   },
                 ]
               : []),

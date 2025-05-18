@@ -7,6 +7,20 @@ const projectErrors = app.forms.errors.project;
 
 export const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
+// NB: there is currently an issue with `z.string().url()`. This is a workaround to handle it a bit more verbosely. See: https://github.com/colinhacks/zod/issues/2236#issuecomment-2722654510
+export const urlSchema = z.string().refine((value) => {
+  const urlPattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i", // fragment locator
+  );
+  return urlPattern.test(value);
+}, "Invalid URL");
+
 export const slugSchema = z
   .string()
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, app.forms.errors.slug.regex)
@@ -35,8 +49,8 @@ export const projectDescriptionSchema = emptyStringAsUndefined.or(
 export const projectSocialSchema = z.object({
   rowId: uuidSchema.or(z.literal("pending")),
   projectId: uuidSchema,
-  // NB: need to allow an empty url for inital `pending` placeholder. These are filtered out below hwoever in `updateProjectSchema` to avoid triggering mutations
-  url: z.string().url().min(1).max(255).or(z.literal("")),
+  // NB: need to allow an empty url for inital `pending` placeholder, this allows users to update other aspects of the form without needing to add a project social.
+  url: urlSchema.or(z.literal("")),
 });
 
 export type ProjectSocial = z.infer<typeof projectSocialSchema>;

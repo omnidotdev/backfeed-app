@@ -25,23 +25,8 @@ const UpdateSocials = ({ form }: { form: any }) => {
     render: ({ form: { Field } }) => (
       <Field name="projectSocials" mode="array">
         {({ state: arrayState, pushValue, removeValue }) => (
-          <Stack>
-            <HStack justify="space-between" mb={2}>
-              <Label>Social Media</Label>
-
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={arrayState.value.length >= MAX_PROJECT_SOCIALS}
-                onClick={(evt) => {
-                  evt.preventDefault();
-                  pushValue(DEFAULT_PENDING_SOCIAL);
-                }}
-              >
-                <Icon src={FiPlus} />
-                Add
-              </Button>
-            </HStack>
+          <Stack gap={5}>
+            <Label mb={-4}>Social Media</Label>
 
             {/* TODO: extract logic into custom `UrlField` component that can be reused across forms */}
             {/* TODO: add functionality to reorder these socials. Should update the array order for project page */}
@@ -51,7 +36,7 @@ const UpdateSocials = ({ form }: { form: any }) => {
                 name={`projectSocials[${i}].url`}
               >
                 {({ state, handleChange, setValue }) => (
-                  <HStack position="relative" my={1.5}>
+                  <HStack position="relative">
                     <Icon src={getSocialMediaIcon(state.value)} />
 
                     <HStack
@@ -106,12 +91,15 @@ const UpdateSocials = ({ form }: { form: any }) => {
                         },
                       }}
                       opacity={{ _disabled: 0.8 }}
-                      // NB: disallow removing the initial field if it is in a pending state (i.e. no project socials have been created)
-                      disabled={social?.rowId === "pending" && i === 0}
+                      // NB: disallow removing the initial field if it is in a pending state (i.e. no project socials have been created) or has been cleared
+                      disabled={
+                        (social?.rowId === "pending" || !state.value.length) &&
+                        i === 0
+                      }
                       onClick={(evt) => {
                         evt.preventDefault();
 
-                        // NB: if there is one one social, just reset the value to disallow removing the full field
+                        // NB: if there is only one social, just reset the value to disallow removing the full field
                         social?.rowId !== "pending" &&
                         arrayState.value.length === 1
                           ? setValue("")
@@ -130,6 +118,21 @@ const UpdateSocials = ({ form }: { form: any }) => {
                 )}
               </Field>
             ))}
+
+            {arrayState.value.length < MAX_PROJECT_SOCIALS && (
+              <Button
+                size="sm"
+                variant="outline"
+                w="fit"
+                onClick={(evt) => {
+                  evt.preventDefault();
+                  pushValue(DEFAULT_PENDING_SOCIAL);
+                }}
+              >
+                <Icon src={FiPlus} />
+                Add
+              </Button>
+            )}
           </Stack>
         )}
       </Field>

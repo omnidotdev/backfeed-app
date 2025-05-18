@@ -22,6 +22,7 @@ import {
   projectNameSchema,
   projectSocialSchema,
   slugSchema,
+  urlSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
@@ -39,11 +40,8 @@ const updateProjectSchema = z
   .object({
     name: projectNameSchema,
     description: projectDescriptionSchema,
-    website: emptyStringAsUndefined.or(z.string().url().min(1).max(255)),
-    // Filter out socials that don't have a URL (i.e. initial pending social)
-    projectSocials: z
-      .array(projectSocialSchema)
-      .refine((socials) => socials.filter((social) => !!social.url.length)),
+    website: emptyStringAsUndefined.or(urlSchema),
+    projectSocials: z.array(projectSocialSchema),
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
   })
@@ -186,7 +184,10 @@ const UpdateProject = () => {
         onSubmitAsync: updateProjectSchema,
       },
       onSubmit: async ({ value }) => {
-        const currentSocials = value.projectSocials;
+        // NB: filter out any socials that were reset
+        const currentSocials = value.projectSocials.filter(
+          (social) => !!social.url.length,
+        );
 
         const removedSocials = project?.projectSocials.nodes.filter(
           (social) =>

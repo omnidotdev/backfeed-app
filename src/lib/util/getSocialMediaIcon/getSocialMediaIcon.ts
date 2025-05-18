@@ -1,4 +1,4 @@
-import { BiWorld } from "react-icons/bi";
+import { HiOutlineLink } from "react-icons/hi2";
 
 import { SOCIAL_MEDIA_ICONS } from "lib/constants";
 
@@ -7,7 +7,7 @@ const getSocialMediaIcon = (url: string) => {
     url.includes(`https://${key}`),
   )?.[1];
 
-  return icon ? icon : BiWorld;
+  return icon ? icon : HiOutlineLink;
 };
 
 export default getSocialMediaIcon;
