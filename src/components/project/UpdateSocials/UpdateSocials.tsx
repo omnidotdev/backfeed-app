@@ -4,7 +4,7 @@ import { useProjectFormOptions } from "lib/hooks/form";
 import { getSocialMediaIcon } from "lib/util";
 import { FiPlus } from "react-icons/fi";
 
-// biome-ignore lint/suspicious/noExplicitAny: TODO figure out how to pass types appropriately. Everything is type safe within `withForm`, but generic handling in this case is extremely verbose
+// biome-ignore lint/suspicious/noExplicitAny: Everything is type safe within `withForm` due to `formOptions`, but generic handling in this case is extremely verbose
 const UpdateSocials = ({ form }: { form: any }) => {
   const { formOptions, DEFAULT_PENDING_SOCIAL, MAX_PROJECT_SOCIALS } =
     useProjectFormOptions();
