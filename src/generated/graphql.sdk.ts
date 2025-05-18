@@ -5594,6 +5594,21 @@ export type CreateProjectSocialMutationVariables = Exact<{
 
 export type CreateProjectSocialMutation = { __typename?: 'Mutation', createProjectSocial?: { __typename?: 'CreateProjectSocialPayload', clientMutationId?: string | null } | null };
 
+export type DeleteProjectSocialMutationVariables = Exact<{
+  socialId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteProjectSocialMutation = { __typename?: 'Mutation', deleteProjectSocial?: { __typename?: 'DeleteProjectSocialPayload', clientMutationId?: string | null } | null };
+
+export type UpdateProjectSocialMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectSocialPatch;
+}>;
+
+
+export type UpdateProjectSocialMutation = { __typename?: 'Mutation', updateProjectSocial?: { __typename?: 'UpdateProjectSocialPayload', clientMutationId?: string | null } | null };
+
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -5718,7 +5733,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -6100,6 +6115,20 @@ export const CreateProjectSocialDocument = gql`
   }
 }
     `;
+export const DeleteProjectSocialDocument = gql`
+    mutation DeleteProjectSocial($socialId: UUID!) {
+  deleteProjectSocial(input: {rowId: $socialId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdateProjectSocialDocument = gql`
+    mutation UpdateProjectSocial($rowId: UUID!, $patch: ProjectSocialPatch!) {
+  updateProjectSocial(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateUpvoteDocument = gql`
     mutation CreateUpvote($input: CreateUpvoteInput!) {
   createUpvote(input: $input) {
@@ -6319,6 +6348,13 @@ export const ProjectDocument = gql`
               tier
             }
           }
+        }
+      }
+      projectSocials {
+        nodes {
+          rowId
+          projectId
+          url
         }
       }
       posts {
@@ -6594,6 +6630,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreateProjectSocial(variables: CreateProjectSocialMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateProjectSocialMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectSocialMutation>(CreateProjectSocialDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateProjectSocial', 'mutation', variables);
+    },
+    DeleteProjectSocial(variables: DeleteProjectSocialMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<DeleteProjectSocialMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteProjectSocialMutation>(DeleteProjectSocialDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteProjectSocial', 'mutation', variables);
+    },
+    UpdateProjectSocial(variables: UpdateProjectSocialMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateProjectSocialMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectSocialMutation>(UpdateProjectSocialDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateProjectSocial', 'mutation', variables);
     },
     CreateUpvote(variables: CreateUpvoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateUpvoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUpvoteMutation>(CreateUpvoteDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUpvote', 'mutation', variables);

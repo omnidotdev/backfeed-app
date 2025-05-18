@@ -23,7 +23,7 @@ import { getSdk } from "lib/graphql";
 import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
-import type { BreadcrumbRecord } from "components/core";
+import { SocialMediaIcon, type BreadcrumbRecord } from "components/core";
 import type { SearchParams } from "nuqs/server";
 import { TbWorld } from "react-icons/tb";
 
@@ -169,6 +169,12 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
                     icon: <TbWorld />,
                   },
                 ]
+              : []),
+            ...(project.projectSocials.nodes.length
+              ? project.projectSocials.nodes.map((social) => ({
+                  href: social?.url!,
+                  icon: <SocialMediaIcon url={social?.url!} />,
+                }))
               : []),
           ],
           cta: [

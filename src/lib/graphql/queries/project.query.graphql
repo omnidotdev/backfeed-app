@@ -25,6 +25,13 @@ query Project(
           }
         }
       }
+      projectSocials {
+        nodes {
+          rowId
+          projectId
+          url
+        }
+      }
       posts {
         aggregates {
           distinctCount {

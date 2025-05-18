@@ -5593,6 +5593,21 @@ export type CreateProjectSocialMutationVariables = Exact<{
 
 export type CreateProjectSocialMutation = { __typename?: 'Mutation', createProjectSocial?: { __typename?: 'CreateProjectSocialPayload', clientMutationId?: string | null } | null };
 
+export type DeleteProjectSocialMutationVariables = Exact<{
+  socialId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteProjectSocialMutation = { __typename?: 'Mutation', deleteProjectSocial?: { __typename?: 'DeleteProjectSocialPayload', clientMutationId?: string | null } | null };
+
+export type UpdateProjectSocialMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectSocialPatch;
+}>;
+
+
+export type UpdateProjectSocialMutation = { __typename?: 'Mutation', updateProjectSocial?: { __typename?: 'UpdateProjectSocialPayload', clientMutationId?: string | null } | null };
+
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -5717,7 +5732,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -6537,6 +6552,58 @@ useCreateProjectSocialMutation.getKey = () => ['CreateProjectSocial'];
 
 useCreateProjectSocialMutation.fetcher = (variables: CreateProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectSocialMutation, CreateProjectSocialMutationVariables>(CreateProjectSocialDocument, variables, options);
 
+export const DeleteProjectSocialDocument = `
+    mutation DeleteProjectSocial($socialId: UUID!) {
+  deleteProjectSocial(input: {rowId: $socialId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteProjectSocialMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteProjectSocialMutation, TError, DeleteProjectSocialMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteProjectSocialMutation, TError, DeleteProjectSocialMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteProjectSocial'],
+    mutationFn: (variables?: DeleteProjectSocialMutationVariables) => graphqlFetch<DeleteProjectSocialMutation, DeleteProjectSocialMutationVariables>(DeleteProjectSocialDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteProjectSocialMutation.getKey = () => ['DeleteProjectSocial'];
+
+
+useDeleteProjectSocialMutation.fetcher = (variables: DeleteProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectSocialMutation, DeleteProjectSocialMutationVariables>(DeleteProjectSocialDocument, variables, options);
+
+export const UpdateProjectSocialDocument = `
+    mutation UpdateProjectSocial($rowId: UUID!, $patch: ProjectSocialPatch!) {
+  updateProjectSocial(input: {rowId: $rowId, patch: $patch}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateProjectSocialMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateProjectSocialMutation, TError, UpdateProjectSocialMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateProjectSocialMutation, TError, UpdateProjectSocialMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateProjectSocial'],
+    mutationFn: (variables?: UpdateProjectSocialMutationVariables) => graphqlFetch<UpdateProjectSocialMutation, UpdateProjectSocialMutationVariables>(UpdateProjectSocialDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateProjectSocialMutation.getKey = () => ['UpdateProjectSocial'];
+
+
+useUpdateProjectSocialMutation.fetcher = (variables: UpdateProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectSocialMutation, UpdateProjectSocialMutationVariables>(UpdateProjectSocialDocument, variables, options);
+
 export const CreateUpvoteDocument = `
     mutation CreateUpvote($input: CreateUpvoteInput!) {
   createUpvote(input: $input) {
@@ -7243,6 +7310,13 @@ export const ProjectDocument = `
               tier
             }
           }
+        }
+      }
+      projectSocials {
+        nodes {
+          rowId
+          projectId
+          url
         }
       }
       posts {

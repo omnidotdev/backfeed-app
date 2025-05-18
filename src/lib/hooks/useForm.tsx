@@ -15,7 +15,7 @@ const { fieldContext, formContext, useFieldContext, useFormContext } =
 /**
  * Custom hook to manage form state, validation, and submission.
  */
-const { useAppForm: useForm } = createFormHook({
+const { useAppForm: useForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
@@ -28,6 +28,11 @@ const { useAppForm: useForm } = createFormHook({
   },
 });
 
-export { useFieldContext, useFormContext };
+export {
+  useFieldContext,
+  useFormContext,
+  /** @knipignore */
+  withForm,
+};
 
 export default useForm;
