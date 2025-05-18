@@ -31,3 +31,12 @@ export const projectNameSchema = standardRegexSchema
 export const projectDescriptionSchema = emptyStringAsUndefined.or(
   z.string().trim().max(240, projectErrors.description.maxLength),
 );
+
+export const projectSocialSchema = z.object({
+  rowId: uuidSchema.or(z.literal("pending")),
+  projectId: uuidSchema,
+  // NB: need to allow an empty url for inital `pending` placeholder. These are filtered out below hwoever in `updateProjectSchema` to avoid triggering mutations
+  url: z.string().url().min(1).max(255).or(z.literal("")),
+});
+
+export type ProjectSocial = z.infer<typeof projectSocialSchema>;

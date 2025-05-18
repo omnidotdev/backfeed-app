@@ -10,4 +10,5 @@ export { default as ProjectSettings } from "./ProjectSettings/ProjectSettings";
 export { default as StatusBreakdown } from "./StatusBreakdown/StatusBreakdown";
 export { default as SwitchFeedbackView } from "./SwitchFeedbackView/SwitchFeedbackView";
 export { default as UpdateProject } from "./UpdateProject/UpdateProject";
+export { default as UpdateSocials } from "./UpdateSocials/UpdateSocials";
 export { default as UpdateStatuses } from "./UpdateStatuses/UpdateStatuses";

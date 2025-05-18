@@ -1,23 +1,12 @@
 "use client";
 
-import {
-  Button,
-  Divider,
-  Grid,
-  HStack,
-  Icon,
-  Input,
-  Label,
-  Stack,
-  Text,
-  sigil,
-} from "@omnidev/sigil";
+import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
-import { UpdateStatuses } from "components/project";
+import { UpdateSocials, UpdateStatuses } from "components/project";
 import {
   useCreateProjectSocialMutation,
   useDeleteProjectSocialMutation,
@@ -31,32 +20,19 @@ import {
   emptyStringAsUndefined,
   projectDescriptionSchema,
   projectNameSchema,
+  projectSocialSchema,
   slugSchema,
-  uuidSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
-import { generateSlug, getAuthSession, getSocialMediaIcon } from "lib/util";
+import { useProjectFormOptions } from "lib/hooks/form";
+import { generateSlug, getAuthSession } from "lib/util";
 
-import { FormFieldError } from "components/form";
 import type { ProjectQuery } from "generated/graphql";
-import { token } from "generated/panda/tokens";
-import { FiPlus, FiX } from "react-icons/fi";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
-const MAX_PROJECT_SOCIALS = 3;
-
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
-
-const projectSocialSchema = z.object({
-  rowId: uuidSchema.or(z.literal("pending")),
-  projectId: uuidSchema,
-  // NB: need to allow an empty url for inital `pending` placeholder. These are filtered out below hwoever in `updateProjectSchema` to avoid triggering mutations
-  url: z.string().url().min(1).max(255).or(z.literal("")),
-});
-
-type ProjectSocial = z.infer<typeof projectSocialSchema>;
 
 /** Schema for defining the shape of the update project form fields, as well as validating the form. */
 const updateProjectSchema = z
@@ -101,6 +77,8 @@ const updateProjectSchema = z
 const UpdateProject = () => {
   const queryClient = useQueryClient();
 
+  const { formOptions } = useProjectFormOptions();
+
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
@@ -118,12 +96,6 @@ const UpdateProject = () => {
       select: (data) => data.projects?.nodes?.[0],
     },
   );
-
-  const DEFAULT_PENDING_SOCIAL: ProjectSocial = {
-    rowId: "pending",
-    projectId: project?.rowId ?? "",
-    url: "",
-  };
 
   const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation();
   const { mutateAsync: updateProjectSocial } = useUpdateProjectSocialMutation();
@@ -208,16 +180,7 @@ const UpdateProject = () => {
 
   const { handleSubmit, Field, AppField, AppForm, SubmitForm, reset } = useForm(
     {
-      defaultValues: {
-        name: project?.name ?? "",
-        description: project?.description ?? "",
-        website: project?.website ?? "",
-        projectSocials: (project?.projectSocials?.nodes?.length
-          ? project?.projectSocials?.nodes
-          : [DEFAULT_PENDING_SOCIAL]) as ProjectSocial[],
-        organizationSlug,
-        currentSlug: project?.slug ?? "",
-      },
+      ...formOptions,
       asyncDebounceMs: DEBOUNCE_TIME,
       validators: {
         onSubmitAsync: updateProjectSchema,
@@ -321,117 +284,10 @@ const UpdateProject = () => {
             </AppField>
           </Stack>
 
-          {/* TODO: extract with `withForm` to reduce scope of this file */}
-          <Field name="projectSocials" mode="array">
-            {({ state: arrayState, pushValue, removeValue }) => (
-              <Stack>
-                <HStack justify="space-between" mb={2}>
-                  <Label>Social Media</Label>
-
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={arrayState.value.length >= MAX_PROJECT_SOCIALS}
-                    onClick={(evt) => {
-                      evt.preventDefault();
-                      pushValue(DEFAULT_PENDING_SOCIAL);
-                    }}
-                  >
-                    <Icon src={FiPlus} />
-                    Add
-                  </Button>
-                </HStack>
-
-                {/* TODO: extract logic into custom `UrlField` component that can be reused across forms */}
-                {/* TODO: add functionality to reorder these socials. Should update the array order for project page */}
-                {arrayState.value.map((social, i) => (
-                  <Field
-                    key={`${social?.rowId}-${i}`}
-                    name={`projectSocials[${i}].url`}
-                  >
-                    {({ state, handleChange, setValue }) => (
-                      <HStack position="relative" my={1.5}>
-                        <Icon src={getSocialMediaIcon(state.value)} />
-
-                        <HStack
-                          gap={0}
-                          flex={1}
-                          overflow="hidden"
-                          borderWidth="1px"
-                          borderRadius="sm"
-                          borderColor="border.subtle"
-                          transitionDuration="normal"
-                          transitionProperty="box-shadow, border-color"
-                          transitionTimingFunction="default"
-                          _focusWithin={{
-                            borderColor: "accent.default",
-                            boxShadow: `0 0 0 1px ${token("colors.accent.default")}`,
-                          }}
-                        >
-                          <Text p={2} bgColor="background.subtle">
-                            https://
-                          </Text>
-
-                          <Input
-                            placeholder="twitter.com/..."
-                            value={state.value.replace(
-                              /^(https:\/\/|http:\/\/)/i,
-                              "",
-                            )}
-                            onChange={(evt) => {
-                              const updatedValue = evt.target.value.replace(
-                                /^(https:\/\/|http:\/\/)/i,
-                                "",
-                              );
-
-                              handleChange(`https://${updatedValue}`);
-                            }}
-                            borderLeftRadius={0}
-                            borderWidth={0}
-                            _focus={{
-                              boxShadow: "none",
-                            }}
-                          />
-                        </HStack>
-
-                        <Button
-                          variant="icon"
-                          bgColor="transparent"
-                          color={{
-                            base: "foreground.subtle",
-                            _hover: {
-                              base: "omni.ruby",
-                              _disabled: "foreground.subtle",
-                            },
-                          }}
-                          opacity={{ _disabled: 0.8 }}
-                          // NB: disallow removing the initial field if it is in a pending state (i.e. no project socials have been created)
-                          disabled={social?.rowId === "pending" && i === 0}
-                          onClick={(evt) => {
-                            evt.preventDefault();
-
-                            // NB: if there is one one social, just reset the value to disallow removing the full field
-                            social?.rowId !== "pending" &&
-                            arrayState.value.length === 1
-                              ? setValue("")
-                              : removeValue(i);
-                          }}
-                        >
-                          <Icon src={FiX} />
-                        </Button>
-
-                        <FormFieldError
-                          errors={state.meta.errorMap.onSubmit}
-                          top={-5}
-                          right={12}
-                        />
-                      </HStack>
-                    )}
-                  </Field>
-                ))}
-              </Stack>
-            )}
-          </Field>
+          <UpdateSocials
+            // NB: only required part of for in this case is `Field`
+            form={{ Field }}
+          />
         </Grid>
 
         <AppForm>
