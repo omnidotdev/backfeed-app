@@ -39,6 +39,8 @@ import { toaster } from "lib/util";
 
 import type { Project } from "generated/graphql";
 
+// TODO: refactor to use `withForm`. Include status changes within a single update project mutation
+
 interface FieldInfo {
   info?: string;
 }
