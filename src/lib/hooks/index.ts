@@ -4,7 +4,6 @@ export {
   default as useForm,
   useFieldContext,
   useFormContext,
-  /** @knipignore */
   withForm,
 } from "./useForm";
 export { default as useHandleSearch } from "./useHandleSearch";

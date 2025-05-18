@@ -28,11 +28,6 @@ const { useAppForm: useForm, withForm } = createFormHook({
   },
 });
 
-export {
-  useFieldContext,
-  useFormContext,
-  /** @knipignore */
-  withForm,
-};
+export { useFieldContext, useFormContext, withForm };
 
 export default useForm;
