@@ -93,6 +93,12 @@ const app = {
       docs: {
         label: "Docs",
       },
+      invitations: {
+        label: "Invitations",
+        noInvites: "No new invitations",
+        description: "Take action on organization invites.",
+        join: "Join",
+      },
     },
   },
   landingPage: {

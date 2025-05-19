@@ -20,6 +20,9 @@ import {
 } from "generated/graphql";
 import { useAuth } from "lib/hooks";
 import { getQueryClient } from "lib/util";
+import { app } from "lib/config";
+
+const invitations = app.header.routes.invitations;
 
 const NotificationCenter = () => {
   const { user } = useAuth();
@@ -35,7 +38,7 @@ const NotificationCenter = () => {
           rowId: inv?.rowId!,
           organizationId: inv?.organizationId!,
           // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
-          message: `Join ${inv?.organization?.name}`,
+          message: `${invitations.join} ${inv?.organization?.name}`,
         })) ?? [],
     },
   );
@@ -59,13 +62,13 @@ const NotificationCenter = () => {
           cursor={notifications?.length ? "pointer" : "default"}
           onClick={() => router.push(`/profile/${user?.hidraId}/invitations`)}
         >
-          Notifications
+          {invitations.label}
           {/* TODO: this icon src should be changed. Not an external link, but should still signal "view all" */}
           {!!notifications?.length && <Icon src={LuExternalLink} size="xs" />}
         </PopoverCloseTrigger>
       }
       // TODO: update when we provide notifications for more than just invites
-      description="Take action on organization invites."
+      description={invitations.description}
       closeTrigger={null}
       trigger={
         <Button position="relative" variant="ghost" bgColor="transparent">
@@ -103,7 +106,7 @@ const NotificationCenter = () => {
           py={2}
           minW={{ base: 64, sm: 80 }}
         >
-          No new notifications
+          {invitations.noInvites}
         </Text>
       ) : (
         <VStack>
