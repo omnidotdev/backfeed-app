@@ -91,7 +91,10 @@ const StatusBreakdown = ({ projectId }: Props) => {
   );
 
   return (
-    <SectionContainer title={app.projectPage.statusBreakdown.title}>
+    <SectionContainer
+      title={app.projectPage.statusBreakdown.title}
+      titleProps={{ fontSize: "md" }}
+    >
       {breakdown?.map(({ status, count }) => (
         <Flex key={status?.rowId} justifyContent="space-between" align="center">
           <HStack>
@@ -113,7 +116,7 @@ const StatusBreakdown = ({ projectId }: Props) => {
             <StatusBadge status={status!} />
           </HStack>
 
-          <Text>{count}</Text>
+          <Text fontSize="sm">{count}</Text>
         </Flex>
       ))}
     </SectionContainer>

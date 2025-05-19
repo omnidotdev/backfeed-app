@@ -45,12 +45,12 @@ const ProjectOverview = ({ user, projectId }: Props) => {
   );
 
   return (
-    <Grid columns={{ lg: 3 }} gap={6}>
-      <GridItem colSpan={{ lg: 2 }}>
+    <Grid columns={{ lg: 8 }} gap={6}>
+      <GridItem colSpan={{ lg: 6 }}>
         <ProjectFeedback user={user} projectId={projectId} />
       </GridItem>
 
-      <GridItem>
+      <GridItem colSpan={{ lg: 2 }}>
         <Stack gap={6}>
           <ProjectInformation
             createdAt={data?.createdAt}
