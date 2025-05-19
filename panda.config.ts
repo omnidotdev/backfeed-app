@@ -35,7 +35,7 @@ const pandaConfig = defineConfig({
         // On `html` for Firefox and Safari, on `body` for Chrome
         overscrollBehaviorY: "none",
         scrollbarGutter: "stable both-edges",
-        // TODO: reduce / eliminate delay on theme toggle
+        // TODO: reduce / eliminate delay on theme toggle. Look into styling scrollbar for Safari
         scrollbarColor: "var(--colors-brand-primary) var(--colors-transparent)",
       },
       body: {
