@@ -34,6 +34,9 @@ const pandaConfig = defineConfig({
         // NB: prevents overscroll bouncing. Helps `sticky` elements not to bounce unexpectedly, and provides a more uniform UX across browsers.
         // On `html` for Firefox and Safari, on `body` for Chrome
         overscrollBehaviorY: "none",
+        scrollbarGutter: "stable both-edges",
+        // TODO: reduce / eliminate delay on theme toggle
+        scrollbarColor: "var(--colors-brand-primary) var(--colors-transparent)",
       },
       body: {
         overscrollBehaviorY: "none",
