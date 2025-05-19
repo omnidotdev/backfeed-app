@@ -60,7 +60,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
         </Text>
       </Link>
 
-      {/* Large breakpoint and above hidden */}
+      {/* base viewport */}
       <Flex align="center" display={{ base: "flex", lg: "none" }}>
         <Icon src={LuChevronRight} {...sharedIconStyles} />
 
@@ -109,7 +109,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
         )}
       </Flex>
 
-      {/* Mobile hidden */}
+      {/* Large viewport */}
       <Flex display={{ base: "none", lg: "flex" }}>
         {breadcrumbs.map(({ label, href, subItems }, index) => {
           const isLastItem = breadcrumbs.length - 1 === index;

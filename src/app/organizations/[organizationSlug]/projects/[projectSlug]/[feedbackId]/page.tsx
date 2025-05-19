@@ -45,6 +45,8 @@ const FeedbackPage = async ({ params }: Props) => {
     getFeedback({ feedbackId }),
   ]);
 
+  const numberOfProjects = organization?.projects?.nodes?.length ?? 0;
+
   if (!feedback) notFound();
 
   const queryClient = getQueryClient();
@@ -64,23 +66,24 @@ const FeedbackPage = async ({ params }: Props) => {
     },
     {
       label: feedback?.project?.name ?? projectSlug,
-      // href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
-      subItems: organization?.projects?.nodes?.length
-        ? organization?.projects?.nodes
-            .filter((p) => p?.slug !== projectSlug)
-            .map((project) => ({
+      href:
+        numberOfProjects <= 2
+          ? `/organizations/${organizationSlug}/projects/${projectSlug}`
+          : undefined,
+      subItems:
+        numberOfProjects > 1
+          ? organization?.projects?.nodes.map((project) => ({
               label: project!.name,
               href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
             }))
-        : undefined,
-      nestedSubItems: organization?.projects?.nodes?.length
-        ? organization?.projects?.nodes
-            .filter((p) => p?.slug !== projectSlug)
-            .map((project) => ({
+          : undefined,
+      nestedSubItems:
+        numberOfProjects > 1
+          ? organization?.projects?.nodes.map((project) => ({
               label: project!.name,
               href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
             }))
-        : undefined,
+          : undefined,
     },
     {
       label: app.feedbackPage.breadcrumb,
