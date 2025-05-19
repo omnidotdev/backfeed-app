@@ -30,7 +30,7 @@ const UpdateSocials = withForm({
           <Stack gap={5}>
             <Label mb={-4}>Social Media</Label>
 
-            {/* TODO: add functionality to reorder these socials. Should update the array order for project page */}
+            {/* TODO: add functionality to reorder these socials. Should update the array order for project page. Currently, if a user tries to do this by just adjusting the urls in project settings, a duplicate key value graphql error is thrown */}
             {arrayState.value.map((social, i) => (
               <AppField
                 key={`${social?.rowId}-${i}`}

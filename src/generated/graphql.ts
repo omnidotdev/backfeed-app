@@ -5926,7 +5926,7 @@ export const ProjectFragmentDoc = `
       }
     }
   }
-  projectSocials {
+  projectSocials(orderBy: CREATED_AT_ASC) {
     nodes {
       rowId
       projectId

@@ -16,7 +16,7 @@ fragment Project on Project {
       }
     }
   }
-  projectSocials {
+  projectSocials(orderBy: CREATED_AT_ASC) {
     nodes {
       rowId
       projectId
