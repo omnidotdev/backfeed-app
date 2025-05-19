@@ -394,7 +394,7 @@ const UpdateProject = () => {
         </form.AppForm>
       </sigil.form>
 
-      {/* TODO: when ready to implement for production, remove the development environment check */}
+      {/* TODO: when ready to implement `UpdateStatuses` for production, remove the development environment check */}
       <Divider display={isDevEnv ? "inline" : "none"} />
 
       {/* TODO: move form logic up to provide just one `Update Project` submit button. Use `withForm` to create child form */}
