@@ -10,7 +10,8 @@ import {
 } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { IoNotifications } from "react-icons/io5";
-import { LuCheck, LuExternalLink, LuX } from "react-icons/lu";
+import { LuCheck, LuX } from "react-icons/lu";
+import { FaLink } from "react-icons/fa6";
 
 import {
   Role,
@@ -64,7 +65,7 @@ const NotificationCenter = () => {
         >
           {invitations.label}
           {/* TODO: this icon src should be changed. Not an external link, but should still signal "view all" */}
-          {!!notifications?.length && <Icon src={LuExternalLink} size="xs" />}
+          {!!notifications?.length && <Icon src={FaLink} size="sm" />}
         </PopoverCloseTrigger>
       }
       // TODO: update when we provide notifications for more than just invites
