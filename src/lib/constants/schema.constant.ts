@@ -45,12 +45,3 @@ export const projectNameSchema = standardRegexSchema
 export const projectDescriptionSchema = emptyStringAsUndefined.or(
   z.string().trim().max(240, projectErrors.description.maxLength),
 );
-
-export const projectSocialSchema = z.object({
-  rowId: uuidSchema.or(z.literal("pending")),
-  projectId: uuidSchema,
-  // NB: need to allow an empty url for inital `pending` placeholder, this allows users to update other aspects of the form without needing to add a project social.
-  url: urlSchema.or(z.literal("")),
-});
-
-export type ProjectSocial = z.infer<typeof projectSocialSchema>;

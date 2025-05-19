@@ -1,0 +1,38 @@
+fragment Project on Project {
+  rowId
+  name
+  description
+  slug
+  website
+  organization {
+    rowId
+    name
+    slug
+    members(first: 1, condition: { role: owner }) {
+      nodes {
+        user {
+          tier
+        }
+      }
+    }
+  }
+  projectSocials {
+    nodes {
+      rowId
+      projectId
+      url
+    }
+  }
+  posts {
+    aggregates {
+      distinctCount {
+        userId
+      }
+    }
+  }
+  userPosts: posts(first: 1, condition: { userId: $userId }) {
+    nodes {
+      rowId
+    }
+  }
+}

@@ -5424,6 +5424,8 @@ export type InvitationFragment = { __typename?: 'Invitation', rowId: string, ema
 
 export type MemberFragment = { __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null };
 
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string, tier?: Tier | null };
@@ -5733,7 +5735,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organization?: { __typename?: 'Organization', rowId: string, name: string, slug: string, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', user?: { __typename?: 'User', tier?: Tier | null } | null } | null> } } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -5902,6 +5904,46 @@ export const MemberFragmentDoc = gql`
     firstName
     lastName
     username
+  }
+}
+    `;
+export const ProjectFragmentDoc = gql`
+    fragment Project on Project {
+  rowId
+  name
+  description
+  slug
+  website
+  organization {
+    rowId
+    name
+    slug
+    members(first: 1, condition: {role: owner}) {
+      nodes {
+        user {
+          tier
+        }
+      }
+    }
+  }
+  projectSocials {
+    nodes {
+      rowId
+      projectId
+      url
+    }
+  }
+  posts {
+    aggregates {
+      distinctCount {
+        userId
+      }
+    }
+  }
+  userPosts: posts(first: 1, condition: {userId: $userId}) {
+    nodes {
+      rowId
+    }
   }
 }
     `;
@@ -6334,45 +6376,11 @@ export const ProjectDocument = gql`
     filter: {organization: {slug: {equalTo: $organizationSlug}}}
   ) {
     nodes {
-      rowId
-      name
-      description
-      slug
-      website
-      organization {
-        rowId
-        name
-        members(first: 1, condition: {role: owner}) {
-          nodes {
-            user {
-              tier
-            }
-          }
-        }
-      }
-      projectSocials {
-        nodes {
-          rowId
-          projectId
-          url
-        }
-      }
-      posts {
-        aggregates {
-          distinctCount {
-            userId
-          }
-        }
-      }
-      userPosts: posts(first: 1, condition: {userId: $userId}) {
-        nodes {
-          rowId
-        }
-      }
+      ...Project
     }
   }
 }
-    `;
+    ${ProjectFragmentDoc}`;
 export const ProjectBySlugDocument = gql`
     query ProjectBySlug($slug: String!, $organizationId: UUID!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {

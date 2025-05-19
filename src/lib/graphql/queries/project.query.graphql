@@ -9,41 +9,7 @@ query Project(
     filter: { organization: { slug: { equalTo: $organizationSlug } } }
   ) {
     nodes {
-      rowId
-      name
-      description
-      slug
-      website
-      organization {
-        rowId
-        name
-        members(first: 1, condition: { role: owner }) {
-          nodes {
-            user {
-              tier
-            }
-          }
-        }
-      }
-      projectSocials {
-        nodes {
-          rowId
-          projectId
-          url
-        }
-      }
-      posts {
-        aggregates {
-          distinctCount {
-            userId
-          }
-        }
-      }
-      userPosts: posts(first: 1, condition: { userId: $userId }) {
-        nodes {
-          rowId
-        }
-      }
+      ...Project
     }
   }
 }

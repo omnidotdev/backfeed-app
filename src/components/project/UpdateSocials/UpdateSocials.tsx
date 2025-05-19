@@ -1,17 +1,30 @@
+"use client";
+
 import { Button, Icon, Label, Stack } from "@omnidev/sigil";
-import { withForm } from "lib/hooks";
-import { useProjectFormOptions } from "lib/hooks/form";
-import { getSocialMediaIcon } from "lib/util";
 import { FiPlus } from "react-icons/fi";
 
-// biome-ignore lint/suspicious/noExplicitAny: Everything is type safe within `withForm` due to `formOptions`, but generic handling in this case is extremely verbose
-const UpdateSocials = ({ form }: { form: any }) => {
-  const { formOptions, DEFAULT_PENDING_SOCIAL, MAX_PROJECT_SOCIALS } =
-    useProjectFormOptions();
+import { withForm } from "lib/hooks";
+import { updateProjectFormOptions } from "lib/options/form";
+import { getSocialMediaIcon } from "lib/util";
 
-  return withForm({
-    ...formOptions,
-    render: ({ form: { Field, AppField } }) => (
+const MAX_PROJECT_SOCIALS = 3;
+
+/**
+ * Update Socials form. This is a child form for Update Project and expects the same shape form default values.
+ */
+const UpdateSocials = withForm({
+  ...updateProjectFormOptions(),
+  props: {
+    projectId: "",
+  },
+  render: ({ form: { Field, AppField }, projectId }) => {
+    const DEFAULT_PENDING_SOCIAL = {
+      rowId: "pending",
+      projectId,
+      url: "",
+    };
+
+    return (
       <Field name="projectSocials" mode="array">
         {({ state: arrayState, pushValue, removeValue }) => (
           <Stack gap={5}>
@@ -67,8 +80,8 @@ const UpdateSocials = ({ form }: { form: any }) => {
           </Stack>
         )}
       </Field>
-    ),
-  })({ form });
-};
+    );
+  },
+});
 
 export default UpdateSocials;

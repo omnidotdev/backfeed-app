@@ -112,7 +112,7 @@ const UpdateStatuses = ({ projectId }: Props) => {
       projectId,
     },
     {
-      enabled: isDevEnv,
+      enabled: isDevEnv && !!projectId,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,

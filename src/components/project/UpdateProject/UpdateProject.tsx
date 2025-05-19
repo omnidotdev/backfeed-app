@@ -3,6 +3,7 @@
 import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
+import { BiWorld } from "react-icons/bi";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
@@ -20,17 +21,25 @@ import {
   emptyStringAsUndefined,
   projectDescriptionSchema,
   projectNameSchema,
-  projectSocialSchema,
   slugSchema,
   urlSchema,
+  uuidSchema,
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
-import { useProjectFormOptions } from "lib/hooks/form";
+import { updateProjectFormOptions } from "lib/options/form";
 import { generateSlug, getAuthSession } from "lib/util";
 
 import type { ProjectQuery } from "generated/graphql";
-import { BiWorld } from "react-icons/bi";
+
+const projectSocialSchema = z.object({
+  rowId: uuidSchema.or(z.literal("pending")),
+  projectId: uuidSchema,
+  // NB: need to allow an empty url for inital `pending` placeholder, this allows users to update other aspects of the form without needing to add a project social.
+  url: urlSchema.or(z.literal("")),
+});
+
+export type ProjectSocial = z.infer<typeof projectSocialSchema>;
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
@@ -76,8 +85,6 @@ const updateProjectSchema = z
 const UpdateProject = () => {
   const queryClient = useQueryClient();
 
-  const { formOptions } = useProjectFormOptions();
-
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
@@ -102,7 +109,7 @@ const UpdateProject = () => {
   });
 
   const onSettled = () => {
-    reset();
+    form.reset();
 
     return queryClient.invalidateQueries({ queryKey: ["Project"] });
   };
@@ -260,78 +267,77 @@ const UpdateProject = () => {
     onSettled,
   });
 
-  const { handleSubmit, Field, AppField, AppForm, SubmitForm, reset } = useForm(
-    {
-      ...formOptions,
-      asyncDebounceMs: DEBOUNCE_TIME,
-      validators: {
-        onSubmitAsync: updateProjectSchema,
-      },
-      onSubmit: async ({ value }) => {
-        // NB: filter out any socials that were reset
-        const currentSocials = value.projectSocials.filter(
-          (social) => !!social.url.length,
-        );
+  const form = useForm({
+    ...updateProjectFormOptions({ project: project ?? undefined }),
+    asyncDebounceMs: DEBOUNCE_TIME,
+    validators: {
+      onSubmitAsync: updateProjectSchema,
+    },
+    onSubmit: async ({ value }) => {
+      // NB: filter out any socials that were reset
+      const currentSocials = value.projectSocials.filter(
+        (social) => !!social.url.length,
+      );
 
-        const removedSocials = project?.projectSocials.nodes.filter(
-          (social) =>
-            !currentSocials.some(
-              (currentSocial) => currentSocial.rowId === social?.rowId,
+      const removedSocials = project?.projectSocials.nodes.filter(
+        (social) =>
+          !currentSocials.some(
+            (currentSocial) => currentSocial.rowId === social?.rowId,
+          ),
+      );
+
+      try {
+        if (removedSocials?.length) {
+          await Promise.all(
+            removedSocials.map((social) =>
+              deleteProjectSocial({
+                socialId: social?.rowId!,
+              }),
             ),
-        );
+          );
+        }
 
-        try {
-          if (removedSocials?.length) {
-            await Promise.all(
-              removedSocials.map((social) =>
-                deleteProjectSocial({
-                  socialId: social?.rowId!,
-                }),
-              ),
-            );
-          }
-
-          await Promise.all([
-            updateProject({
-              rowId: project?.rowId!,
-              patch: {
-                name: value.name,
-                description: value.description,
-                slug: generateSlug(value.name)!,
-                website: value.website ?? undefined,
-                updatedAt: new Date(),
-              },
-            }),
-            currentSocials.map((social) => {
-              if (social.rowId === "pending") {
-                createProjectSocial({
-                  input: {
-                    projectSocial: {
-                      projectId: social.projectId,
-                      url: social.url,
-                    },
-                  },
-                });
-              } else {
-                updateProjectSocial({
-                  rowId: social.rowId,
-                  patch: {
+        await Promise.all([
+          updateProject({
+            rowId: project?.rowId!,
+            patch: {
+              name: value.name,
+              description: value.description,
+              slug: generateSlug(value.name)!,
+              website: value.website ?? undefined,
+              updatedAt: new Date(),
+            },
+          }),
+          currentSocials.map((social) => {
+            if (social.rowId === "pending") {
+              createProjectSocial({
+                input: {
+                  projectSocial: {
+                    projectId: social.projectId,
                     url: social.url,
                   },
-                });
-              }
-            }),
-          ]);
+                },
+              });
+            } else {
+              updateProjectSocial({
+                rowId: social.rowId,
+                patch: {
+                  url: social.url,
+                },
+              });
+            }
+          }),
+        ]);
 
-          router.replace(
-            `/organizations/${organizationSlug}/projects/${generateSlug(value.name)}/settings`,
-          );
-        } catch (err) {
-          if (isDevEnv) console.error(err);
-        }
-      },
+        // TODO: discuss. Although this properly replaces the current entry in the browser's history stack, clicking back button from browser can still send you to wrong project page (properly 404s)
+        router.replace(
+          `/organizations/${organizationSlug}/projects/${generateSlug(value.name)}/settings`,
+        );
+      } catch (err) {
+        if (isDevEnv) console.error(err);
+      }
     },
-  );
+  });
 
   return (
     <SectionContainer
@@ -342,28 +348,28 @@ const UpdateProject = () => {
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          await handleSubmit();
+          await form.handleSubmit();
         }}
       >
         <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
           <Stack gap={4}>
-            <AppField name="name">
+            <form.AppField name="name">
               {({ InputField }) => (
                 <InputField
                   label={updateProjectDetails.fields.projectName.label}
                 />
               )}
-            </AppField>
+            </form.AppField>
 
-            <AppField name="description">
+            <form.AppField name="description">
               {({ InputField }) => (
                 <InputField
                   label={updateProjectDetails.fields.projectDescription.label}
                 />
               )}
-            </AppField>
+            </form.AppField>
 
-            <AppField name="website">
+            <form.AppField name="website">
               {({ UrlField }) => (
                 <UrlField
                   icon={BiWorld}
@@ -372,19 +378,20 @@ const UpdateProject = () => {
                   displayRemoveTrigger={false}
                 />
               )}
-            </AppField>
+            </form.AppField>
           </Stack>
 
-          <UpdateSocials form={{ Field, AppField }} />
+          {/* @ts-ignore `defaultValues` mismatch because they are dynamic for the form above. Only used for type-checking though when extracted with `formOptions`, see: https://tanstack.com/form/latest/docs/framework/react/guides/form-composition#breaking-big-forms-into-smaller-pieces */}
+          <UpdateSocials form={form} projectId={project?.rowId ?? ""} />
         </Grid>
 
-        <AppForm>
-          <SubmitForm
+        <form.AppForm>
+          <form.SubmitForm
             action={updateProjectDetails.action}
             isPending={isPending}
             mt={4}
           />
-        </AppForm>
+        </form.AppForm>
       </sigil.form>
 
       {/* TODO: when ready to implement for production, remove the development environment check */}
