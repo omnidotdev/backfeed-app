@@ -63,7 +63,7 @@ const UrlField = ({
 
           <Input
             id={name}
-            placeholder="twitter.com/..."
+            placeholder="github.com/..."
             value={state.value.replace(/^(https:\/\/|http:\/\/)/i, "")}
             onChange={(evt) => {
               const updatedValue = evt.target.value.replace(
