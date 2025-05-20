@@ -54,29 +54,47 @@ const updateProjectSchema = z
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
   })
-  .superRefine(async ({ name, organizationSlug, currentSlug }, ctx) => {
-    const session = await getAuthSession();
+  .superRefine(
+    async ({ name, organizationSlug, currentSlug, projectSocials }, ctx) => {
+      const uniqueSocials = new Set();
 
-    const updatedSlug = generateSlug(name);
+      for (const social of projectSocials) {
+        const url = social.url;
 
-    if (!updatedSlug?.length || currentSlug === updatedSlug || !session)
-      return z.NEVER;
+        if (uniqueSocials.has(url)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: updateProjectDetails.fields.projectSocials.errors.unique,
+            path: ["projectSocials", projectSocials.indexOf(social), "url"],
+          });
+        } else {
+          uniqueSocials.add(url);
+        }
+      }
 
-    const sdk = getSdk({ session });
+      const session = await getAuthSession();
 
-    const { projects } = await sdk.Project({
-      projectSlug: updatedSlug,
-      organizationSlug,
-    });
+      const updatedSlug = generateSlug(name);
 
-    if (projects?.nodes?.length) {
-      ctx.addIssue({
-        code: "custom",
-        message: updateProjectDetails.fields.projectSlug.errors.duplicate,
-        path: ["name"],
+      if (!updatedSlug?.length || currentSlug === updatedSlug || !session)
+        return z.NEVER;
+
+      const sdk = getSdk({ session });
+
+      const { projects } = await sdk.Project({
+        projectSlug: updatedSlug,
+        organizationSlug,
       });
-    }
-  });
+
+      if (projects?.nodes?.length) {
+        ctx.addIssue({
+          code: "custom",
+          message: updateProjectDetails.fields.projectSlug.errors.duplicate,
+          path: ["name"],
+        });
+      }
+    },
+  );
 
 /**
  * Form for updating project details.

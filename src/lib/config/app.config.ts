@@ -796,6 +796,11 @@ const app = {
               duplicate: "Project already exists.",
             },
           },
+          projectSocials: {
+            errors: {
+              unique: "URLs must be unique.",
+            },
+          },
         },
       },
       updateProjectStatuses: {
