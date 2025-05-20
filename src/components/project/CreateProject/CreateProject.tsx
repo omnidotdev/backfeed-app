@@ -18,7 +18,6 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import {
   DEBOUNCE_TIME,
-  emptyStringAsUndefined,
   projectDescriptionSchema,
   projectNameSchema,
   uuidSchema,
@@ -67,7 +66,6 @@ const createProjectSchema = z
     organizationId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
-    website: emptyStringAsUndefined.or(z.string().url().min(1).max(255)),
   })
   .superRefine(async ({ organizationId, name }, ctx) => {
     const session = await getAuthSession();
@@ -168,7 +166,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
       organizationId: organization?.rowId ?? "",
       name: "",
       description: "",
-      website: "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
@@ -277,15 +274,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
               placeholder={
                 app.dashboardPage.cta.newProject.projectDescription.placeholder
               }
-            />
-          )}
-        </AppField>
-
-        <AppField name="website">
-          {({ InputField }) => (
-            <InputField
-              label="Website"
-              placeholder="https://backfeed.omni.dev"
             />
           )}
         </AppField>
