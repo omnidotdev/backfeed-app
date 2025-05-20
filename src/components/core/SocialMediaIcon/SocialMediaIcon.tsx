@@ -4,7 +4,9 @@ import { Icon } from "@omnidev/sigil";
 
 import { getSocialMediaIcon } from "lib/util";
 
-interface Props {
+import type { IconProps } from "@omnidev/sigil";
+
+interface Props extends Omit<IconProps, "src"> {
   /** URL to dynamically determine icon src. */
   url: string;
 }
@@ -12,8 +14,8 @@ interface Props {
 /**
  * Social media icon component. Dynamically determined based on the url provided.
  */
-const SocialMediaIcon = ({ url }: Props) => (
-  <Icon src={getSocialMediaIcon(url)} />
+const SocialMediaIcon = ({ url, ...rest }: Props) => (
+  <Icon src={getSocialMediaIcon(url)} {...rest} />
 );
 
 export default SocialMediaIcon;

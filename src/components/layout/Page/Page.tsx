@@ -1,20 +1,11 @@
 "use client";
 
-import { Flex, HStack, Link, Stack, Text } from "@omnidev/sigil";
-import { LuLink } from "react-icons/lu";
+import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
 
 import { Breadcrumb, CallToAction } from "components/core";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { ActionButton, BreadcrumbRecord } from "components/core";
-import type { ReactNode } from "react";
-
-interface ProjectLink {
-  /** External url. */
-  href: string;
-  /** Icon for the link. */
-  icon?: ReactNode;
-}
 
 interface Props extends StackProps {
   /** Page breadcrumbs for navigation. */
@@ -25,8 +16,6 @@ interface Props extends StackProps {
     title: string;
     /** Header section description. */
     description?: string;
-    /** Project links (i.e. website or socials). */
-    projectLinks?: ProjectLink[];
     /** Header section call to action buttons. */
     cta?: ActionButton[];
     /** Props to pass to the header section. */
@@ -70,18 +59,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
                 {header.title}
               </Text>
 
-              {header.projectLinks?.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  isExternal
-                  color="brand.primary"
-                  fontSize="xl"
-                  p={2}
-                >
-                  {link.icon ?? <LuLink />}
-                </Link>
-              ))}
+              {header.headerProps?.children}
             </HStack>
 
             {header.description && (

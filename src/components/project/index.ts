@@ -3,6 +3,7 @@ export { default as FeedbackMetrics } from "./FeedbackMetrics/FeedbackMetrics";
 export { default as ProjectFeedback } from "./ProjectFeedback/ProjectFeedback";
 export { default as ProjectFilters } from "./ProjectFilters/ProjectFilters";
 export { default as ProjectInformation } from "./ProjectInformation/ProjectInformation";
+export { default as ProjectLinks } from "./ProjectLinks/ProjectLinks";
 export { default as ProjectList } from "./ProjectList/ProjectList";
 export { default as ProjectListItem } from "./ProjectListItem/ProjectListItem";
 export { default as ProjectOverview } from "./ProjectOverview/ProjectOverview";

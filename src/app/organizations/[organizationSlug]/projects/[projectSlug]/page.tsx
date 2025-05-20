@@ -1,13 +1,11 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { BiWorld } from "react-icons/bi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { auth } from "auth";
-import { SocialMediaIcon } from "components/core";
 import { Page } from "components/layout";
-import { ProjectOverview } from "components/project";
+import { ProjectLinks, ProjectOverview } from "components/project";
 import {
   PostOrderBy,
   Role,
@@ -162,22 +160,9 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
         header={{
           title: project.name!,
           description: project.description!,
-          projectLinks: [
-            ...(project.website
-              ? [
-                  {
-                    href: project.website,
-                    icon: <BiWorld />,
-                  },
-                ]
-              : []),
-            ...(project.projectSocials.nodes.length
-              ? project.projectSocials.nodes.map((social) => ({
-                  href: social?.url!,
-                  icon: <SocialMediaIcon url={social?.url!} />,
-                }))
-              : []),
-          ],
+          headerProps: {
+            children: <ProjectLinks project={project} />,
+          },
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,

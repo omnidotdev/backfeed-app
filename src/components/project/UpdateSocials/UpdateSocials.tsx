@@ -7,7 +7,7 @@ import { withForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { getSocialMediaIcon } from "lib/util";
 
-const MAX_PROJECT_SOCIALS = 3;
+const MAX_PROJECT_SOCIALS = 4;
 
 /**
  * Update Socials form. This is a child form for Update Project and expects the same shape for default values.
