@@ -71,7 +71,9 @@ const UrlField = ({
                 "",
               );
 
-              handleChange(`https://${updatedValue}`);
+              updatedValue.length
+                ? handleChange(`https://${updatedValue}`)
+                : handleChange("");
             }}
             borderLeftRadius={0}
             borderWidth={0}

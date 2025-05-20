@@ -1,9 +1,11 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { BiWorld } from "react-icons/bi";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import { auth } from "auth";
+import { SocialMediaIcon } from "components/core";
 import { Page } from "components/layout";
 import { ProjectOverview } from "components/project";
 import {
@@ -23,9 +25,8 @@ import { getSdk } from "lib/graphql";
 import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
-import { SocialMediaIcon, type BreadcrumbRecord } from "components/core";
+import type { BreadcrumbRecord } from "components/core";
 import type { SearchParams } from "nuqs/server";
-import { BiWorld } from "react-icons/bi";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug, projectSlug } = await params;

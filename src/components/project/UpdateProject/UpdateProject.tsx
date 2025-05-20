@@ -18,7 +18,6 @@ import {
 import { app, isDevEnv } from "lib/config";
 import {
   DEBOUNCE_TIME,
-  emptyStringAsUndefined,
   projectDescriptionSchema,
   projectNameSchema,
   slugSchema,
@@ -50,7 +49,7 @@ const updateProjectSchema = z
   .object({
     name: projectNameSchema,
     description: projectDescriptionSchema,
-    website: emptyStringAsUndefined.or(urlSchema),
+    website: urlSchema.or(z.literal("")),
     projectSocials: z.array(projectSocialSchema),
     organizationSlug: slugSchema,
     currentSlug: slugSchema,
@@ -222,7 +221,7 @@ const UpdateProject = () => {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: ["Project"] });
 
-      const { name, description, slug } = variables.patch;
+      const { name, description, slug, website } = variables.patch;
 
       const snapshot = queryClient.getQueryData(
         currentProjectQueryKey,
@@ -239,6 +238,7 @@ const UpdateProject = () => {
               name,
               description,
               slug,
+              website,
             },
           ],
         },
@@ -304,7 +304,7 @@ const UpdateProject = () => {
               name: value.name,
               description: value.description,
               slug: generateSlug(value.name)!,
-              website: value.website ?? undefined,
+              website: value.website || null,
               updatedAt: new Date(),
             },
           }),
