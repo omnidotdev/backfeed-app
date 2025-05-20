@@ -10,7 +10,7 @@ import { getSocialMediaIcon } from "lib/util";
 const MAX_PROJECT_SOCIALS = 3;
 
 /**
- * Update Socials form. This is a child form for Update Project and expects the same shape form default values.
+ * Update Socials form. This is a child form for Update Project and expects the same shape for default values.
  */
 const UpdateSocials = withForm({
   ...updateProjectFormOptions(),

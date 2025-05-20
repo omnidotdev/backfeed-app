@@ -4,9 +4,13 @@ import type { ProjectSocial } from "components/project";
 import type { ProjectFragment } from "generated/graphql";
 
 interface Options {
+  /** Project to define default values from. */
   project?: ProjectFragment;
 }
 
+/**
+ * Default options for the update project form.
+ */
 const updateProjectFormOptions = ({ project }: Options = {}) => {
   const DEFAULT_PENDING_SOCIAL: ProjectSocial = {
     rowId: "pending",
