@@ -64,7 +64,6 @@ const NotificationCenter = () => {
           onClick={() => router.push(`/profile/${user?.hidraId}/invitations`)}
         >
           {invitations.label}
-          {/* TODO: this icon src should be changed. Not an external link, but should still signal "view all" */}
           {!!notifications?.length && <Icon src={FaLink} size="sm" />}
         </PopoverCloseTrigger>
       }
