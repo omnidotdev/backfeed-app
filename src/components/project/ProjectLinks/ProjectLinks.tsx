@@ -41,10 +41,9 @@ const ProjectLinks = ({ project }: Props) => {
               href={project.website}
               isExternal
               color="foreground.default"
-              fontSize="xl"
               p={2}
             >
-              <Icon src={FaGlobe} h={5} w={5} />
+              <Icon src={FaGlobe} h={4} w={4} />
             </Link>
           }
           triggerProps={{
@@ -67,10 +66,9 @@ const ProjectLinks = ({ project }: Props) => {
               href={firstSocial.url}
               isExternal
               color="foreground.default"
-              fontSize="xl"
               p={2}
             >
-              <SocialMediaIcon url={firstSocial.url} h={5} w={5} />
+              <SocialMediaIcon url={firstSocial.url} h={4} w={4} />
             </Link>
           }
           triggerProps={{
@@ -93,7 +91,7 @@ const ProjectLinks = ({ project }: Props) => {
               bgColor="transparent"
               color="foreground.default"
             >
-              <Icon src={HiDotsHorizontal} />
+              <Icon src={HiDotsHorizontal} h={4} w={4} />
             </Button>
           }
         >
