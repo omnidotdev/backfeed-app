@@ -163,6 +163,7 @@ const UpdateProject = () => {
                 projectSocial: {
                   projectId: social.projectId,
                   url: social.url,
+                  // ! NB: we use the created by date to order project statuses throughout the app. This ensures that the created by date will line up with the order defined from the form
                   createdAt: dayjs(new Date()).add(index, "minutes").toDate(),
                 },
               },
