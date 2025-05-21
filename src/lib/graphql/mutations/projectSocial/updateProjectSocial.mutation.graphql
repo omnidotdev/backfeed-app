@@ -1,5 +1,0 @@
-mutation UpdateProjectSocial($rowId: UUID!, $patch: ProjectSocialPatch!) {
-  updateProjectSocial(input: { rowId: $rowId, patch: $patch }) {
-    clientMutationId
-  }
-}

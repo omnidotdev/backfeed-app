@@ -3858,6 +3858,8 @@ export type Query = Node & {
   post?: Maybe<Post>;
   /** Get a single `PostStatus`. */
   postStatus?: Maybe<PostStatus>;
+  /** Get a single `PostStatus`. */
+  postStatusByStatusAndProjectId?: Maybe<PostStatus>;
   /** Reads and enables pagination through a set of `PostStatus`. */
   postStatuses?: Maybe<PostStatusConnection>;
   /** Reads and enables pagination through a set of `Post`. */
@@ -3868,6 +3870,8 @@ export type Query = Node & {
   projectBySlugAndOrganizationId?: Maybe<Project>;
   /** Get a single `ProjectSocial`. */
   projectSocial?: Maybe<ProjectSocial>;
+  /** Get a single `ProjectSocial`. */
+  projectSocialByUrlAndProjectId?: Maybe<ProjectSocial>;
   /** Reads and enables pagination through a set of `ProjectSocial`. */
   projectSocials?: Maybe<ProjectSocialConnection>;
   /** Reads and enables pagination through a set of `Project`. */
@@ -4043,6 +4047,13 @@ export type QueryPostStatusArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryPostStatusByStatusAndProjectIdArgs = {
+  projectId: Scalars['UUID']['input'];
+  status: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryPostStatusesArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -4084,6 +4095,13 @@ export type QueryProjectBySlugAndOrganizationIdArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectSocialArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectSocialByUrlAndProjectIdArgs = {
+  projectId: Scalars['UUID']['input'];
+  url: Scalars['String']['input'];
 };
 
 
@@ -5602,14 +5620,6 @@ export type DeleteProjectSocialMutationVariables = Exact<{
 
 export type DeleteProjectSocialMutation = { __typename?: 'Mutation', deleteProjectSocial?: { __typename?: 'DeleteProjectSocialPayload', clientMutationId?: string | null } | null };
 
-export type UpdateProjectSocialMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-  patch: ProjectSocialPatch;
-}>;
-
-
-export type UpdateProjectSocialMutation = { __typename?: 'Mutation', updateProjectSocial?: { __typename?: 'UpdateProjectSocialPayload', clientMutationId?: string | null } | null };
-
 export type CreateUpvoteMutationVariables = Exact<{
   input: CreateUpvoteInput;
 }>;
@@ -6619,32 +6629,6 @@ useDeleteProjectSocialMutation.getKey = () => ['DeleteProjectSocial'];
 
 
 useDeleteProjectSocialMutation.fetcher = (variables: DeleteProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectSocialMutation, DeleteProjectSocialMutationVariables>(DeleteProjectSocialDocument, variables, options);
-
-export const UpdateProjectSocialDocument = `
-    mutation UpdateProjectSocial($rowId: UUID!, $patch: ProjectSocialPatch!) {
-  updateProjectSocial(input: {rowId: $rowId, patch: $patch}) {
-    clientMutationId
-  }
-}
-    `;
-
-export const useUpdateProjectSocialMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateProjectSocialMutation, TError, UpdateProjectSocialMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateProjectSocialMutation, TError, UpdateProjectSocialMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateProjectSocial'],
-    mutationFn: (variables?: UpdateProjectSocialMutationVariables) => graphqlFetch<UpdateProjectSocialMutation, UpdateProjectSocialMutationVariables>(UpdateProjectSocialDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateProjectSocialMutation.getKey = () => ['UpdateProjectSocial'];
-
-
-useUpdateProjectSocialMutation.fetcher = (variables: UpdateProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectSocialMutation, UpdateProjectSocialMutationVariables>(UpdateProjectSocialDocument, variables, options);
 
 export const CreateUpvoteDocument = `
     mutation CreateUpvote($input: CreateUpvoteInput!) {

@@ -2,6 +2,7 @@
 
 import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { FaGlobe } from "react-icons/fa6";
 import { z } from "zod";
@@ -13,7 +14,6 @@ import {
   useDeleteProjectSocialMutation,
   useProjectQuery,
   useUpdateProjectMutation,
-  useUpdateProjectSocialMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import {
@@ -28,8 +28,6 @@ import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { generateSlug, getAuthSession } from "lib/util";
-
-import type { ProjectQuery } from "generated/graphql";
 
 const projectSocialSchema = z.object({
   rowId: uuidSchema.or(z.literal("pending")),
@@ -120,170 +118,9 @@ const UpdateProject = () => {
     },
   );
 
-  const currentProjectQueryKey = useProjectQuery.getKey({
-    projectSlug,
-    organizationSlug,
-  });
-
-  const onSettled = () => {
-    form.reset();
-
-    return queryClient.invalidateQueries({ queryKey: ["Project"] });
-  };
-
-  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation({
-    onSettled,
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ["Project"] });
-
-      const snapshot = queryClient.getQueryData(
-        currentProjectQueryKey,
-      ) as ProjectQuery;
-
-      const project = snapshot.projects?.nodes?.[0];
-
-      queryClient.setQueryData(currentProjectQueryKey, {
-        projects: {
-          ...snapshot?.projects,
-          nodes: [
-            {
-              ...project,
-              projectSocials: {
-                nodes: [
-                  ...(project?.projectSocials?.nodes ?? []),
-                  {
-                    rowId: "pending",
-                    projectId: project?.rowId,
-                    url: variables.input.projectSocial.url,
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      });
-    },
-  });
-
-  const { mutateAsync: updateProjectSocial } = useUpdateProjectSocialMutation({
-    onSettled,
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ["Project"] });
-
-      const updatedId = variables.rowId;
-
-      const snapshot = queryClient.getQueryData(
-        currentProjectQueryKey,
-      ) as ProjectQuery;
-
-      const project = snapshot.projects?.nodes?.[0];
-
-      const updatedProject = {
-        ...project,
-        projectSocials: {
-          ...project?.projectSocials,
-          nodes: project?.projectSocials?.nodes?.map((social) => {
-            if (social?.rowId === updatedId) {
-              return {
-                ...social,
-                ...variables.patch,
-              };
-            }
-            return social;
-          }),
-        },
-      };
-
-      queryClient.setQueryData(currentProjectQueryKey, {
-        projects: {
-          ...snapshot?.projects,
-          nodes: [updatedProject],
-        },
-      });
-    },
-  });
-
-  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation({
-    onSettled,
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ["Project"] });
-
-      const deletedId = variables.socialId;
-
-      const snapshot = queryClient.getQueryData(
-        currentProjectQueryKey,
-      ) as ProjectQuery;
-
-      const project = snapshot.projects?.nodes?.[0];
-
-      queryClient.setQueryData(currentProjectQueryKey, {
-        projects: {
-          ...snapshot?.projects,
-          nodes: [
-            {
-              ...project,
-              projectSocials: {
-                ...project?.projectSocials,
-                nodes: project?.projectSocials?.nodes?.filter(
-                  (social) => social?.rowId !== deletedId,
-                ),
-              },
-            },
-          ],
-        },
-      });
-    },
-  });
-
-  const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ["Project"] });
-
-      const { name, description, slug, website } = variables.patch;
-
-      const snapshot = queryClient.getQueryData(
-        currentProjectQueryKey,
-      ) as ProjectQuery;
-
-      const project = snapshot.projects?.nodes?.[0];
-
-      queryClient.setQueryData(currentProjectQueryKey, {
-        projects: {
-          ...snapshot.projects,
-          nodes: [
-            {
-              ...project,
-              name,
-              description,
-              slug,
-              website,
-            },
-          ],
-        },
-      });
-
-      // ! NB: if the slug has been updated, optimistically update the query data for that slug
-      if (slug !== projectSlug) {
-        queryClient.setQueryData(
-          useProjectQuery.getKey({ projectSlug: slug!, organizationSlug }),
-          {
-            projects: {
-              ...snapshot.projects,
-              nodes: [
-                {
-                  ...project,
-                  name,
-                  description,
-                  slug,
-                },
-              ],
-            },
-          },
-        );
-      }
-    },
-    onSettled,
-  });
+  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation();
+  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation();
+  const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation();
 
   const form = useForm({
     ...updateProjectFormOptions({ project: project ?? undefined }),
@@ -297,17 +134,11 @@ const UpdateProject = () => {
         (social) => !!social.url.length,
       );
 
-      const removedSocials = project?.projectSocials.nodes.filter(
-        (social) =>
-          !currentSocials.some(
-            (currentSocial) => currentSocial.rowId === social?.rowId,
-          ),
-      );
-
       try {
-        if (removedSocials?.length) {
+        // NB: for project socials we always want to delete existing socials, then create new ones with a dynamic `createdAt` date for proper ordering and eliminating potential duplicate key errors when reordering / updating
+        if (project?.projectSocials.nodes.length) {
           await Promise.all(
-            removedSocials.map((social) =>
+            project?.projectSocials.nodes?.map((social) =>
               deleteProjectSocial({
                 socialId: social?.rowId!,
               }),
@@ -326,26 +157,20 @@ const UpdateProject = () => {
               updatedAt: new Date(),
             },
           }),
-          currentSocials.map((social) => {
-            if (social.rowId === "pending") {
-              createProjectSocial({
-                input: {
-                  projectSocial: {
-                    projectId: social.projectId,
-                    url: social.url,
-                  },
-                },
-              });
-            } else {
-              updateProjectSocial({
-                rowId: social.rowId,
-                patch: {
+          currentSocials.map((social, index) =>
+            createProjectSocial({
+              input: {
+                projectSocial: {
+                  projectId: social.projectId,
                   url: social.url,
+                  createdAt: dayjs(new Date()).add(index, "minutes").toDate(),
                 },
-              });
-            }
-          }),
+              },
+            }),
+          ),
         ]);
+
+        await queryClient.invalidateQueries({ queryKey: ["Project"] });
 
         // TODO: discuss. Although this properly replaces the current entry in the browser's history stack, clicking back button from browser can still send you to wrong project page (properly 404s)
         router.replace(
@@ -367,6 +192,7 @@ const UpdateProject = () => {
           e.preventDefault();
           e.stopPropagation();
           await form.handleSubmit();
+          form.reset();
         }}
       >
         <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
