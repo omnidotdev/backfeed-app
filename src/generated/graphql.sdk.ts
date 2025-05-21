@@ -644,6 +644,39 @@ export type CreateProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
 };
 
+/** All input for the create `ProjectSocial` mutation. */
+export type CreateProjectSocialInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `ProjectSocial` to be created by this mutation. */
+  projectSocial: ProjectSocialInput;
+};
+
+/** The output of our create `ProjectSocial` mutation. */
+export type CreateProjectSocialPayload = {
+  __typename?: 'CreateProjectSocialPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectSocial` that was created by this mutation. */
+  projectSocial?: Maybe<ProjectSocial>;
+  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
+  projectSocialEdge?: Maybe<ProjectSocialEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `ProjectSocial` mutation. */
+export type CreateProjectSocialPayloadProjectSocialEdgeArgs = {
+  orderBy?: Array<ProjectSocialOrderBy>;
+};
+
 /** All input for the create `Upvote` mutation. */
 export type CreateUpvoteInput = {
   /**
@@ -990,6 +1023,38 @@ export type DeleteProjectPayload = {
 /** The output of our delete `Project` mutation. */
 export type DeleteProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
+};
+
+/** All input for the `deleteProjectSocial` mutation. */
+export type DeleteProjectSocialInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `ProjectSocial` mutation. */
+export type DeleteProjectSocialPayload = {
+  __typename?: 'DeleteProjectSocialPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectSocial` that was deleted by this mutation. */
+  projectSocial?: Maybe<ProjectSocial>;
+  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
+  projectSocialEdge?: Maybe<ProjectSocialEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `ProjectSocial` mutation. */
+export type DeleteProjectSocialPayloadProjectSocialEdgeArgs = {
+  orderBy?: Array<ProjectSocialOrderBy>;
 };
 
 /** All input for the `deleteUpvote` mutation. */
@@ -1759,6 +1824,8 @@ export type Mutation = {
   createPostStatus?: Maybe<CreatePostStatusPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
+  /** Creates a single `ProjectSocial`. */
+  createProjectSocial?: Maybe<CreateProjectSocialPayload>;
   /** Creates a single `Upvote`. */
   createUpvote?: Maybe<CreateUpvotePayload>;
   /** Creates a single `User`. */
@@ -1779,6 +1846,8 @@ export type Mutation = {
   deletePostStatus?: Maybe<DeletePostStatusPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProject?: Maybe<DeleteProjectPayload>;
+  /** Deletes a single `ProjectSocial` using a unique key. */
+  deleteProjectSocial?: Maybe<DeleteProjectSocialPayload>;
   /** Deletes a single `Upvote` using a unique key. */
   deleteUpvote?: Maybe<DeleteUpvotePayload>;
   /** Deletes a single `User` using a unique key. */
@@ -1799,6 +1868,8 @@ export type Mutation = {
   updatePostStatus?: Maybe<UpdatePostStatusPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProject?: Maybe<UpdateProjectPayload>;
+  /** Updates a single `ProjectSocial` using a unique key and a patch. */
+  updateProjectSocial?: Maybe<UpdateProjectSocialPayload>;
   /** Updates a single `Upvote` using a unique key and a patch. */
   updateUpvote?: Maybe<UpdateUpvotePayload>;
   /** Updates a single `User` using a unique key and a patch. */
@@ -1851,6 +1922,12 @@ export type MutationCreatePostStatusArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateProjectArgs = {
   input: CreateProjectInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateProjectSocialArgs = {
+  input: CreateProjectSocialInput;
 };
 
 
@@ -1915,6 +1992,12 @@ export type MutationDeleteProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteProjectSocialArgs = {
+  input: DeleteProjectSocialInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUpvoteArgs = {
   input: DeleteUpvoteInput;
 };
@@ -1971,6 +2054,12 @@ export type MutationUpdatePostStatusArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateProjectSocialArgs = {
+  input: UpdateProjectSocialInput;
 };
 
 
@@ -2275,6 +2364,8 @@ export enum OrganizationOrderBy {
   ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
   ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ProjectsDistinctCountWebsiteAsc = 'PROJECTS_DISTINCT_COUNT_WEBSITE_ASC',
+  ProjectsDistinctCountWebsiteDesc = 'PROJECTS_DISTINCT_COUNT_WEBSITE_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
@@ -3097,9 +3188,12 @@ export type Project = {
   postStatuses: PostStatusConnection;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
+  /** Reads and enables pagination through a set of `ProjectSocial`. */
+  projectSocials: ProjectSocialConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -3124,6 +3218,18 @@ export type ProjectPostsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type ProjectProjectSocialsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ProjectSocialCondition>;
+  filter?: InputMaybe<ProjectSocialFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProjectSocialOrderBy>>;
 };
 
 export type ProjectAggregates = {
@@ -3159,6 +3265,8 @@ export type ProjectCondition = {
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `website` field. */
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A connection to a list of `Project` values. */
@@ -3194,6 +3302,7 @@ export type ProjectDistinctCountAggregateFilter = {
   rowId?: InputMaybe<BigIntFilter>;
   slug?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
+  website?: InputMaybe<BigIntFilter>;
 };
 
 export type ProjectDistinctCountAggregates = {
@@ -3214,6 +3323,8 @@ export type ProjectDistinctCountAggregates = {
   slug?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of website across the matching connection */
+  website?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Project` edge in the connection. */
@@ -3253,12 +3364,18 @@ export type ProjectFilter = {
   posts?: InputMaybe<ProjectToManyPostFilter>;
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `projectSocials` relation. */
+  projectSocials?: InputMaybe<ProjectToManyProjectSocialFilter>;
+  /** Some related `projectSocials` exist. */
+  projectSocialsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `website` field. */
+  website?: InputMaybe<StringFilter>;
 };
 
 /** Grouping methods for `Project` for usage during aggregation. */
@@ -3273,7 +3390,8 @@ export enum ProjectGroupBy {
   Slug = 'SLUG',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  Website = 'WEBSITE'
 }
 
 export type ProjectHavingAverageInput = {
@@ -3346,6 +3464,7 @@ export type ProjectInput = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Methods to use when ordering `Project`. */
@@ -3401,12 +3520,26 @@ export enum ProjectOrderBy {
   PostStatusesDistinctCountUpdatedAtDesc = 'POST_STATUSES_DISTINCT_COUNT_UPDATED_AT_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectSocialsCountAsc = 'PROJECT_SOCIALS_COUNT_ASC',
+  ProjectSocialsCountDesc = 'PROJECT_SOCIALS_COUNT_DESC',
+  ProjectSocialsDistinctCountCreatedAtAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ProjectSocialsDistinctCountCreatedAtDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ProjectSocialsDistinctCountProjectIdAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  ProjectSocialsDistinctCountProjectIdDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  ProjectSocialsDistinctCountRowIdAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_ROW_ID_ASC',
+  ProjectSocialsDistinctCountRowIdDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectSocialsDistinctCountUpdatedAtAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ProjectSocialsDistinctCountUpdatedAtDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ProjectSocialsDistinctCountUrlAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_URL_ASC',
+  ProjectSocialsDistinctCountUrlDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_URL_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  WebsiteAsc = 'WEBSITE_ASC',
+  WebsiteDesc = 'WEBSITE_DESC'
 }
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
@@ -3419,6 +3552,234 @@ export type ProjectPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ProjectSocial = {
+  __typename?: 'ProjectSocial';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** Reads a single `Project` that is related to this `ProjectSocial`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  url: Scalars['String']['output'];
+};
+
+export type ProjectSocialAggregates = {
+  __typename?: 'ProjectSocialAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ProjectSocialDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `ProjectSocial` object types. */
+export type ProjectSocialAggregatesFilter = {
+  /** Distinct count aggregate over matching `ProjectSocial` objects. */
+  distinctCount?: InputMaybe<ProjectSocialDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `ProjectSocial` object to be included within the aggregate. */
+  filter?: InputMaybe<ProjectSocialFilter>;
+};
+
+/**
+ * A condition to be used against `ProjectSocial` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ProjectSocialCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `url` field. */
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A connection to a list of `ProjectSocial` values. */
+export type ProjectSocialConnection = {
+  __typename?: 'ProjectSocialConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ProjectSocialAggregates>;
+  /** A list of edges which contains the `ProjectSocial` and cursor to aid in pagination. */
+  edges: Array<Maybe<ProjectSocialEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ProjectSocialAggregates>>;
+  /** A list of `ProjectSocial` objects. */
+  nodes: Array<Maybe<ProjectSocial>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ProjectSocial` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `ProjectSocial` values. */
+export type ProjectSocialConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ProjectSocialGroupBy>;
+  having?: InputMaybe<ProjectSocialHavingInput>;
+};
+
+export type ProjectSocialDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  url?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectSocialDistinctCountAggregates = {
+  __typename?: 'ProjectSocialDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of url across the matching connection */
+  url?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `ProjectSocial` edge in the connection. */
+export type ProjectSocialEdge = {
+  __typename?: 'ProjectSocialEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `ProjectSocial` at the end of the edge. */
+  node?: Maybe<ProjectSocial>;
+};
+
+/** A filter to be used against `ProjectSocial` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectSocialFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ProjectSocialFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ProjectSocialFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ProjectSocialFilter>>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `url` field. */
+  url?: InputMaybe<StringFilter>;
+};
+
+/** Grouping methods for `ProjectSocial` for usage during aggregation. */
+export enum ProjectSocialGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  ProjectId = 'PROJECT_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  Url = 'URL'
+}
+
+export type ProjectSocialHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `ProjectSocial` aggregates. */
+export type ProjectSocialHavingInput = {
+  AND?: InputMaybe<Array<ProjectSocialHavingInput>>;
+  OR?: InputMaybe<Array<ProjectSocialHavingInput>>;
+  average?: InputMaybe<ProjectSocialHavingAverageInput>;
+  distinctCount?: InputMaybe<ProjectSocialHavingDistinctCountInput>;
+  max?: InputMaybe<ProjectSocialHavingMaxInput>;
+  min?: InputMaybe<ProjectSocialHavingMinInput>;
+  stddevPopulation?: InputMaybe<ProjectSocialHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ProjectSocialHavingStddevSampleInput>;
+  sum?: InputMaybe<ProjectSocialHavingSumInput>;
+  variancePopulation?: InputMaybe<ProjectSocialHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ProjectSocialHavingVarianceSampleInput>;
+};
+
+export type ProjectSocialHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectSocialHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `ProjectSocial` */
+export type ProjectSocialInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  url: Scalars['String']['input'];
+};
+
+/** Methods to use when ordering `ProjectSocial`. */
+export enum ProjectSocialOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UrlAsc = 'URL_ASC',
+  UrlDesc = 'URL_DESC'
+}
+
+/** Represents an update to a `ProjectSocial`. Fields that are set will be updated. */
+export type ProjectSocialPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
@@ -3443,6 +3804,18 @@ export type ProjectToManyPostStatusFilter = {
   none?: InputMaybe<PostStatusFilter>;
   /** Some related `PostStatus` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostStatusFilter>;
+};
+
+/** A filter to be used against many `ProjectSocial` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyProjectSocialFilter = {
+  /** Aggregates across related `ProjectSocial` match the filter criteria. */
+  aggregates?: InputMaybe<ProjectSocialAggregatesFilter>;
+  /** Every related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ProjectSocialFilter>;
+  /** No related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ProjectSocialFilter>;
+  /** Some related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ProjectSocialFilter>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -3494,6 +3867,10 @@ export type Query = Node & {
   project?: Maybe<Project>;
   /** Get a single `Project`. */
   projectBySlugAndOrganizationId?: Maybe<Project>;
+  /** Get a single `ProjectSocial`. */
+  projectSocial?: Maybe<ProjectSocial>;
+  /** Reads and enables pagination through a set of `ProjectSocial`. */
+  projectSocials?: Maybe<ProjectSocialConnection>;
   /** Reads and enables pagination through a set of `Project`. */
   projects?: Maybe<ProjectConnection>;
   /**
@@ -3702,6 +4079,25 @@ export type QueryProjectArgs = {
 export type QueryProjectBySlugAndOrganizationIdArgs = {
   organizationId: Scalars['UUID']['input'];
   slug: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectSocialArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectSocialsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ProjectSocialCondition>;
+  filter?: InputMaybe<ProjectSocialFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProjectSocialOrderBy>>;
 };
 
 
@@ -4219,6 +4615,40 @@ export type UpdateProjectPayload = {
 /** The output of our update `Project` mutation. */
 export type UpdateProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
+};
+
+/** All input for the `updateProjectSocial` mutation. */
+export type UpdateProjectSocialInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `ProjectSocial` being updated. */
+  patch: ProjectSocialPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `ProjectSocial` mutation. */
+export type UpdateProjectSocialPayload = {
+  __typename?: 'UpdateProjectSocialPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectSocial` that was updated by this mutation. */
+  projectSocial?: Maybe<ProjectSocial>;
+  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
+  projectSocialEdge?: Maybe<ProjectSocialEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `ProjectSocial` mutation. */
+export type UpdateProjectSocialPayloadProjectSocialEdgeArgs = {
+  orderBy?: Array<ProjectSocialOrderBy>;
 };
 
 /** All input for the `updateUpvote` mutation. */
