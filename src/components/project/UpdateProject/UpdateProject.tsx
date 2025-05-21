@@ -3,7 +3,7 @@
 import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { BiWorld } from "react-icons/bi";
+import { FaGlobe } from "react-icons/fa6";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
@@ -390,7 +390,7 @@ const UpdateProject = () => {
             <form.AppField name="website">
               {({ UrlField }) => (
                 <UrlField
-                  icon={BiWorld}
+                  icon={FaGlobe}
                   label="Website"
                   placeholder="backfeed.omni.dev"
                   displayRemoveTrigger={false}

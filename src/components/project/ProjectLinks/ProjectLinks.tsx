@@ -11,7 +11,7 @@ import {
   Text,
   Tooltip,
 } from "@omnidev/sigil";
-import { BiWorld } from "react-icons/bi";
+import { FaGlobe } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 
 import { SocialMediaIcon } from "components/core";
@@ -44,7 +44,7 @@ const ProjectLinks = ({ project }: Props) => {
               fontSize="xl"
               p={2}
             >
-              <Icon src={BiWorld} h={5} w={5} />
+              <Icon src={FaGlobe} h={5} w={5} />
             </Link>
           }
           triggerProps={{
