@@ -8,7 +8,15 @@ const getSocialMediaIcon = (url: string) => {
     new RegExp(`\\b${key}\\b`, "i").test(url),
   )?.[1].label;
 
-  return label ? label : undefined;
+  const getApexDomain = () => {
+    const regex =
+      /^(?:https?:\/\/)?(?:www\.)?([^\/:]+?\.(?:[a-z]{2,}(?:\.[a-z]{2})?|com|org|net))(?:\/.*)?$/i;
+    const match = url.match(regex);
+
+    return match ? match[1] : "Unknown URL";
+  };
+
+  return label ? label : getApexDomain();
 };
 
 export default getSocialMediaIcon;
