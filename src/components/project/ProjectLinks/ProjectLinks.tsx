@@ -99,7 +99,7 @@ const ProjectLinks = ({ project }: Props) => {
             {remainingSocials.map((social) => (
               <MenuItem key={social?.rowId} value={social?.url!} asChild>
                 <Link href={social?.url} isExternal p={2} textDecoration="none">
-                  <SocialMediaIcon url={social?.url!} h={5} w={5} />
+                  <SocialMediaIcon url={social?.url!} h={4} w={4} />
 
                   <Text color="foreground.subtle">
                     {getSocialMediaLabel(social?.url!)}
