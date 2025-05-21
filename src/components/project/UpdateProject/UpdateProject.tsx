@@ -3,7 +3,6 @@
 import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
 import {
   keepPreviousData,
-  useIsFetching,
   useIsMutating,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -105,8 +104,7 @@ const updateProjectSchema = z
 const UpdateProject = () => {
   const queryClient = useQueryClient();
 
-  const isFetchingProject = useIsFetching({ queryKey: ["Project"] });
-  const isMutatingProject = useIsMutating({ mutationKey: ["Project"] });
+  const isUpdatingProject = useIsMutating({ mutationKey: ["Project"] });
 
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
@@ -248,7 +246,7 @@ const UpdateProject = () => {
         <form.AppForm>
           <form.SubmitForm
             action={updateProjectDetails.action}
-            isPending={!!isFetchingProject || !!isMutatingProject}
+            isPending={!!isUpdatingProject}
             mt={4}
           />
         </form.AppForm>
