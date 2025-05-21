@@ -1,7 +1,12 @@
 "use client";
 
 import { Divider, Grid, Stack, sigil } from "@omnidev/sigil";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useIsFetching,
+  useIsMutating,
+  useQueryClient,
+} from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { FaGlobe } from "react-icons/fa6";
@@ -100,6 +105,9 @@ const updateProjectSchema = z
 const UpdateProject = () => {
   const queryClient = useQueryClient();
 
+  const isFetchingProject = useIsFetching({ queryKey: ["Project"] });
+  const isMutatingProject = useIsMutating({ mutationKey: ["Project"] });
+
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
@@ -118,9 +126,15 @@ const UpdateProject = () => {
     },
   );
 
-  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation();
-  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation();
-  const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation();
+  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation({
+    mutationKey: ["Project", "CreateProjectSocial"],
+  });
+  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation({
+    mutationKey: ["Project", "DeleteProjectSocial"],
+  });
+  const { mutateAsync: updateProject } = useUpdateProjectMutation({
+    mutationKey: ["Project", "UpdateProject"],
+  });
 
   const form = useForm({
     ...updateProjectFormOptions({ project: project ?? undefined }),
@@ -128,7 +142,7 @@ const UpdateProject = () => {
     validators: {
       onSubmitAsync: updateProjectSchema,
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       // NB: filter out any socials that were reset
       const currentSocials = value.projectSocials.filter(
         (social) => !!social.url.length,
@@ -173,6 +187,8 @@ const UpdateProject = () => {
 
         await queryClient.invalidateQueries({ queryKey: ["Project"] });
 
+        formApi.reset();
+
         // TODO: discuss. Although this properly replaces the current entry in the browser's history stack, clicking back button from browser can still send you to wrong project page (properly 404s)
         router.replace(
           `/organizations/${organizationSlug}/projects/${generateSlug(value.name)}/settings`,
@@ -193,7 +209,6 @@ const UpdateProject = () => {
           e.preventDefault();
           e.stopPropagation();
           await form.handleSubmit();
-          form.reset();
         }}
       >
         <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
@@ -233,7 +248,7 @@ const UpdateProject = () => {
         <form.AppForm>
           <form.SubmitForm
             action={updateProjectDetails.action}
-            isPending={isPending}
+            isPending={!!isFetchingProject || !!isMutatingProject}
             mt={4}
           />
         </form.AppForm>
