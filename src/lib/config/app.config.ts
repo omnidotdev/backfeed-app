@@ -94,7 +94,7 @@ const app = {
         label: "Docs",
       },
       invitations: {
-        label: "Invitations",
+        title: "Invitations",
         noInvites: "No new invitations",
         description: "Take action on organization invites.",
         join: "Join",

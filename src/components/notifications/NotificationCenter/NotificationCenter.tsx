@@ -63,7 +63,7 @@ const NotificationCenter = () => {
           cursor={notifications?.length ? "pointer" : "default"}
           onClick={() => router.push(`/profile/${user?.hidraId}/invitations`)}
         >
-          {invitations.label}
+          {invitations.title}
           {!!notifications?.length && <Icon src={FaLink} size="sm" />}
         </PopoverCloseTrigger>
       }
@@ -143,7 +143,7 @@ const NotificationCenter = () => {
                         },
                       },
                     });
-
+                    // deletes the invitation after accepting it
                     deleteInvitation({ rowId: notification.rowId });
                   }}
                 >
