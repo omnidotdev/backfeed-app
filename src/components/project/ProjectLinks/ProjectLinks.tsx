@@ -79,7 +79,6 @@ const ProjectLinks = ({ project }: Props) => {
           contentProps={{
             zIndex: "foreground",
             fontSize: "sm",
-            display: getSocialMediaLabel(firstSocial.url) ? undefined : "none",
           }}
         >
           {getSocialMediaLabel(firstSocial.url)}
