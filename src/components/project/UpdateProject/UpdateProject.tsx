@@ -33,6 +33,10 @@ import { useForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { generateSlug, getAuthSession } from "lib/util";
 
+const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
+
+// TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
+
 const projectSocialSchema = z.object({
   rowId: uuidSchema.or(z.literal("pending")),
   projectId: uuidSchema,
@@ -41,10 +45,6 @@ const projectSocialSchema = z.object({
 });
 
 export type ProjectSocial = z.infer<typeof projectSocialSchema>;
-
-const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
-
-// TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
 /** Schema for defining the shape of the update project form fields, as well as validating the form. */
 const updateProjectSchema = z
