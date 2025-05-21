@@ -11,6 +11,7 @@ import {
   Text,
   Tooltip,
 } from "@omnidev/sigil";
+import { useState } from "react";
 import { FaGlobe } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 
@@ -28,6 +29,8 @@ interface Props {
  * Project links component.
  */
 const ProjectLinks = ({ project }: Props) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const firstSocial = project?.projectSocials?.nodes?.[0];
   const remainingSocials = project?.projectSocials?.nodes?.slice(1);
 
@@ -42,6 +45,7 @@ const ProjectLinks = ({ project }: Props) => {
               isExternal
               color="foreground.default"
               p={2}
+              opacity={{ _hover: 0.8 }}
             >
               <Icon src={FaGlobe} h={4} w={4} />
             </Link>
@@ -52,6 +56,7 @@ const ProjectLinks = ({ project }: Props) => {
           contentProps={{
             zIndex: "foreground",
             fontSize: "sm",
+            display: isMenuOpen ? "none" : undefined,
           }}
         >
           Website
@@ -67,6 +72,7 @@ const ProjectLinks = ({ project }: Props) => {
               isExternal
               color="foreground.default"
               p={2}
+              opacity={{ _hover: 0.8 }}
             >
               <SocialMediaIcon url={firstSocial.url} h={4} w={4} />
             </Link>
@@ -77,6 +83,7 @@ const ProjectLinks = ({ project }: Props) => {
           contentProps={{
             zIndex: "foreground",
             fontSize: "sm",
+            display: isMenuOpen ? "none" : undefined,
           }}
         >
           {getSocialMediaLabel(firstSocial.url)}
@@ -85,15 +92,20 @@ const ProjectLinks = ({ project }: Props) => {
 
       {!!remainingSocials.length && (
         <Menu
+          open={isMenuOpen}
+          onOpenChange={({ open }) => setIsMenuOpen(open)}
           trigger={
             <Button
               variant="icon"
               bgColor="transparent"
               color="foreground.default"
+              opacity={{ _hover: 0.8 }}
+              _focusVisible={{ outlineColor: "transparent" }}
             >
               <Icon src={HiDotsHorizontal} h={4} w={4} />
             </Button>
           }
+          positioning={{ gutter: -4, shift: 8 }}
         >
           <MenuItemGroup>
             {remainingSocials.map((social) => (
