@@ -5,6 +5,9 @@ import { PiDotsSixVerticalBold } from "react-icons/pi";
 
 import type { ComponentProps } from "react";
 
+/**
+ * Reorder item component. Internally manages state for element's drag position.
+ */
 const ReorderItem = <T,>({
   children,
   ...rest
