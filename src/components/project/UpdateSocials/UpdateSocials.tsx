@@ -1,8 +1,10 @@
 "use client";
 
 import { Button, Icon, Label, Stack } from "@omnidev/sigil";
+import { Reorder } from "motion/react";
 import { FiPlus } from "react-icons/fi";
 
+import { ReorderItem } from "components/core";
 import { withForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { getSocialMediaIcon } from "lib/util";
@@ -26,41 +28,61 @@ const UpdateSocials = withForm({
 
     return (
       <Field name="projectSocials" mode="array">
-        {({ state: arrayState, pushValue, removeValue }) => (
+        {({ state: arrayState, pushValue, removeValue, setValue }) => (
           <Stack gap={5}>
             <Label mb={-4}>Social Media</Label>
 
-            {arrayState.value.map((social, i) => (
-              <AppField
-                key={`${social?.rowId}-${i}`}
-                name={`projectSocials[${i}].url`}
-              >
-                {({ UrlField, state, setValue }) => (
-                  <UrlField
-                    icon={getSocialMediaIcon(state.value)}
-                    removeFieldProps={{
-                      // NB: disallow removing the initial field if it is in a pending state (i.e. no project socials have been created) or has been cleared
-                      disabled:
-                        (social?.rowId === "pending" || !state.value.length) &&
-                        i === 0,
-                      onClick: (evt) => {
-                        evt.preventDefault();
+            <Reorder.Group
+              values={arrayState.value}
+              onReorder={setValue}
+              style={{
+                display: "grid",
+                gap: 16,
+              }}
+            >
+              {arrayState.value.map((social, i) => (
+                <ReorderItem
+                  key={`${social?.rowId}-${i}`}
+                  value={social}
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <AppField name={`projectSocials[${i}].url`}>
+                    {({ UrlField, state, setValue }) => (
+                      <UrlField
+                        icon={getSocialMediaIcon(state.value)}
+                        containerProps={{
+                          flex: 1,
+                        }}
+                        removeFieldProps={{
+                          // NB: disallow removing the initial field if it is in a pending state (i.e. no project socials have been created) or has been cleared
+                          disabled:
+                            (social?.rowId === "pending" ||
+                              !state.value.length) &&
+                            i === 0,
+                          onClick: (evt) => {
+                            evt.preventDefault();
 
-                        // NB: if there is only one social, just reset the value to disallow removing the full field
-                        social?.rowId !== "pending" &&
-                        arrayState.value.length === 1
-                          ? setValue("")
-                          : removeValue(i);
-                      },
-                    }}
-                    errorProps={{
-                      top: -5,
-                      right: 12,
-                    }}
-                  />
-                )}
-              </AppField>
-            ))}
+                            // NB: if there is only one social, just reset the value to disallow removing the full field
+                            social?.rowId !== "pending" &&
+                            arrayState.value.length === 1
+                              ? setValue("")
+                              : removeValue(i);
+                          },
+                        }}
+                        errorProps={{
+                          top: -5,
+                          right: 12,
+                        }}
+                      />
+                    )}
+                  </AppField>
+                </ReorderItem>
+              ))}
+            </Reorder.Group>
 
             {arrayState.value.length < MAX_PROJECT_SOCIALS && (
               <Button

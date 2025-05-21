@@ -17,6 +17,7 @@ export { default as Image } from "./Image/Image";
 export { default as Link } from "./Link/Link";
 export { default as LogoLink } from "./LogoLink/LogoLink";
 export { default as OverflowText } from "./OverflowText/OverflowText";
+export { default as ReorderItem } from "./ReorderItem/ReorderItem";
 export { default as SkeletonArray } from "./SkeletonArray/SkeletonArray";
 export { default as SocialMediaIcon } from "./SocialMediaIcon/SocialMediaIcon";
 export { default as Spinner } from "./Spinner/Spinner";

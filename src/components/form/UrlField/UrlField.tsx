@@ -5,7 +5,7 @@ import { Field } from "components/form";
 import { token } from "generated/panda/tokens";
 import { useFieldContext } from "lib/hooks";
 
-import type { ButtonProps, InputProps } from "@omnidev/sigil";
+import type { ButtonProps, InputProps, StackProps } from "@omnidev/sigil";
 import type { FormFieldErrorProps } from "components/form";
 import type { IconType } from "react-icons";
 
@@ -14,6 +14,8 @@ interface Props extends InputProps {
   icon: IconType;
   /** Label for the input field. */
   label?: string;
+  /** Field container props. */
+  containerProps?: StackProps;
   /** Additional props for the error component. */
   errorProps?: Partial<FormFieldErrorProps>;
   /** Whether to display the remove field trigger. */
@@ -28,6 +30,7 @@ interface Props extends InputProps {
 const UrlField = ({
   icon,
   label,
+  containerProps,
   errorProps,
   displayRemoveTrigger = true,
   removeFieldProps,
@@ -36,7 +39,7 @@ const UrlField = ({
   const { handleChange, state, name } = useFieldContext<string>();
 
   return (
-    <Field errorProps={errorProps}>
+    <Field errorProps={errorProps} {...containerProps}>
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <HStack>
