@@ -1,0 +1,13 @@
+query Notifications($email: String!) {
+  invitations(condition: { email: $email }) {
+    totalCount
+    nodes {
+      rowId
+      email
+      organizationId
+      organization {
+        name
+      }
+    }
+  }
+}
