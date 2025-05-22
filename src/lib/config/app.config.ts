@@ -772,7 +772,7 @@ const app = {
     cta: {
       updateProject: {
         title: "Update Project",
-        description: "Edit core details and project information.",
+        description: "Edit project details.",
         memberTitle: "Project Details",
         action: {
           submit: "Update Project",
