@@ -5,7 +5,7 @@ import { app } from "lib/config";
 const organizationErrors = app.forms.errors.organization;
 const projectErrors = app.forms.errors.project;
 
-export const emptyStringAsUndefined = z.literal("").transform(() => undefined);
+const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
 // NB: there is currently an issue with `z.string().url()`. This is a workaround to handle it a bit more verbosely. See: https://github.com/colinhacks/zod/issues/2236#issuecomment-2722654510
 export const urlSchema = z.string().refine((value) => {
