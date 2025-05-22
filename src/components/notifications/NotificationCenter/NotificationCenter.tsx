@@ -69,8 +69,8 @@ const NotificationCenter = () => {
           {!!notifications?.length && (
             <Circle
               position="absolute"
-              top={1}
-              right={3}
+              top={1.5}
+              right={2}
               h={3}
               w={3}
               bgColor="red"
