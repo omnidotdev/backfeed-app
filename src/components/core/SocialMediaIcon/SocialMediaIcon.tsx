@@ -12,7 +12,7 @@ interface Props extends Omit<IconProps, "src"> {
 }
 
 /**
- * Social media icon component. Dynamically determined based on the url provided.
+ * Social media icon, dynamically determined based on the provided URL.
  */
 const SocialMediaIcon = ({ url, ...rest }: Props) => (
   <Icon src={getSocialMediaIcon(url)} {...rest} />
