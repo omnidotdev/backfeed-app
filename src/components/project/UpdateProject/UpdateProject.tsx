@@ -1,13 +1,17 @@
 "use client";
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { SectionContainer } from "components/layout";
 import { UpdateStatuses } from "components/project";
-import { useProjectQuery, useUpdateProjectMutation } from "generated/graphql";
+import { useUpdateProjectMutation } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
 import {
   DEBOUNCE_TIME,
@@ -17,9 +21,11 @@ import {
 } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
+import { projectOptions } from "lib/options";
 import { generateSlug, getAuthSession } from "lib/util";
 
 import type { ProjectQuery } from "generated/graphql";
+import type { Session } from "next-auth";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
@@ -57,10 +63,15 @@ const updateProjectSchema = z
     }
   });
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
+}
+
 /**
  * Form for updating project details.
  */
-const UpdateProject = () => {
+const UpdateProject = ({ user }: Props) => {
   const queryClient = useQueryClient();
 
   const { organizationSlug, projectSlug } = useParams<{
@@ -70,49 +81,59 @@ const UpdateProject = () => {
 
   const router = useRouter();
 
-  const { data: project } = useProjectQuery(
-    {
+  const { data: project } = useQuery({
+    ...projectOptions({
       projectSlug,
       organizationSlug,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => data.projects?.nodes?.[0],
-    },
-  );
+      userId: user?.rowId,
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) => data.projects?.nodes?.[0],
+  });
 
   // TODO: figure out flash of `undefined` for `project` upon successful update when slug is changed (believe it is due to client side navigation with router.replace)
   const { mutateAsync: updateProject, isPending } = useUpdateProjectMutation({
     onMutate: (variables) => {
       const { name, description, slug } = variables.patch;
 
+      router.prefetch(
+        `/organizations/${organizationSlug}/projects/${slug}/settings`,
+      );
+
+      const projectQueryKey = projectOptions({
+        projectSlug,
+        organizationSlug,
+        userId: user?.rowId,
+      }).queryKey;
+
       const snapshot = queryClient.getQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
+        projectQueryKey,
       ) as ProjectQuery;
 
       const project = snapshot.projects?.nodes?.[0];
 
-      queryClient.setQueryData(
-        useProjectQuery.getKey({ projectSlug, organizationSlug }),
-        {
-          projects: {
-            ...snapshot.projects,
-            nodes: [
-              {
-                ...project,
-                name,
-                description,
-                slug,
-              },
-            ],
-          },
+      queryClient.setQueryData(projectQueryKey, {
+        projects: {
+          ...snapshot.projects,
+          nodes: [
+            {
+              ...project,
+              name,
+              description,
+              slug,
+            },
+          ],
         },
-      );
+      } as ProjectQuery);
 
       // ! NB: if the slug has been updated, optimistically update the query data for that slug
       if (slug !== projectSlug) {
         queryClient.setQueryData(
-          useProjectQuery.getKey({ projectSlug: slug!, organizationSlug }),
+          projectOptions({
+            projectSlug: slug!,
+            organizationSlug,
+            userId: user?.rowId,
+          }).queryKey,
           {
             projects: {
               ...snapshot.projects,
@@ -125,7 +146,7 @@ const UpdateProject = () => {
                 },
               ],
             },
-          },
+          } as ProjectQuery,
         );
       }
     },
@@ -133,29 +154,34 @@ const UpdateProject = () => {
       const updatedSlug = data?.updateProject?.project?.slug;
 
       if (updatedSlug) {
-        queryClient.invalidateQueries({
-          queryKey: useProjectQuery.getKey({
+        queryClient.invalidateQueries(
+          projectOptions({
             projectSlug: updatedSlug,
             organizationSlug,
+            userId: user?.rowId,
           }),
-        });
+        );
 
         // NB: If the project slug was updated, we need to invalidate the query for the old slug due to the optimistic updates from `onMutate`
         if (updatedSlug !== projectSlug) {
-          queryClient.invalidateQueries({
-            queryKey: useProjectQuery.getKey({
+          queryClient.invalidateQueries(
+            projectOptions({
               projectSlug,
               organizationSlug,
+              userId: user?.rowId,
             }),
-          });
+          );
         }
-
-        router.replace(
-          `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`,
-        );
 
         reset();
       }
+    },
+    onSuccess: (data) => {
+      const updatedSlug = data?.updateProject?.project?.slug;
+
+      router.replace(
+        `/organizations/${organizationSlug}/projects/${updatedSlug}/settings`,
+      );
     },
   });
 

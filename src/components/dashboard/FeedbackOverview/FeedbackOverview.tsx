@@ -76,7 +76,6 @@ const FeedbackOverview = ({ user, oneWeekAgo }: Props) => {
   return (
     <FeedbackSection
       title="Feedback Overview"
-      maxH="xl"
       contentProps={{
         align: "center",
         justify: "center",

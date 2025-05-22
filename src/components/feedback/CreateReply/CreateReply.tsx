@@ -9,7 +9,6 @@ import { z } from "zod";
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useInfiniteRepliesQuery,
 } from "generated/graphql";
@@ -17,7 +16,7 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useAuth, useForm } from "lib/hooks";
-import { freeTierCommentsOptions } from "lib/options";
+import { feedbackByIdOptions, freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { CollapsibleProps } from "@omnidev/sigil";
@@ -75,12 +74,12 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
             feedbackId,
           }),
         }),
-        queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+        queryClient.invalidateQueries(
+          feedbackByIdOptions({
             rowId: feedbackId,
             userId: user?.rowId,
           }),
-        }),
+        ),
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
             organizationSlug,

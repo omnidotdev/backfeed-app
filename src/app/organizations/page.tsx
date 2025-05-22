@@ -1,5 +1,4 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { OrganizationsOverview } from "components/organization";
@@ -32,8 +31,6 @@ interface Props {
 const OrganizationsPage = async ({ searchParams }: Props) => {
   const session = await auth();
 
-  if (!session) notFound();
-
   const queryClient = getQueryClient();
 
   const { page, pageSize, search } = await getSearchParams.parse(searchParams);
@@ -51,27 +48,31 @@ const OrganizationsPage = async ({ searchParams }: Props) => {
       queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
       queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey({
-        pageSize: 1,
-        userId: organizationsQueryVariables.userId,
-        excludeRoles: [Role.Member, Role.Admin],
-      }),
-      queryFn: useOrganizationsQuery.fetcher({
-        pageSize: 1,
-        userId: organizationsQueryVariables.userId,
-        excludeRoles: [Role.Member, Role.Admin],
-      }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationsQuery.getKey({
+              pageSize: 1,
+              userId: session?.user.rowId,
+              excludeRoles: [Role.Member, Role.Admin],
+            }),
+            queryFn: useOrganizationsQuery.fetcher({
+              pageSize: 1,
+              userId: session?.user.rowId,
+              excludeRoles: [Role.Member, Role.Admin],
+            }),
+          }),
+          queryClient.prefetchQuery({
+            queryKey: useUserQuery.getKey({ hidraId: session?.user.hidraId! }),
+            queryFn: useUserQuery.fetcher({ hidraId: session?.user.hidraId! }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <OrganizationsOverview user={session.user} />
+      <OrganizationsOverview user={session?.user} />
     </HydrationBoundary>
   );
 };

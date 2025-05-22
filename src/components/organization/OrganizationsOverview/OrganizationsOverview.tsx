@@ -26,7 +26,7 @@ const breadcrumbs: BreadcrumbRecord[] = [
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: Session["user"] | undefined;
 }
 
 /**
@@ -36,7 +36,7 @@ const OrganizationsOverview = ({ user }: Props) => {
   const { data: organizations } = useOrganizationsQuery(
     {
       pageSize: 1,
-      userId: user.rowId,
+      userId: user?.rowId,
       excludeRoles: [Role.Member, Role.Admin],
     },
     {
@@ -46,10 +46,10 @@ const OrganizationsOverview = ({ user }: Props) => {
 
   const { data: tierRestrictions } = useUserQuery(
     {
-      hidraId: user.hidraId!,
+      hidraId: user?.hidraId!,
     },
     {
-      enabled: !!organizations,
+      enabled: !!organizations && !!user?.hidraId,
       select: (data) => {
         const userTier = data?.userByHidraId?.tier;
 

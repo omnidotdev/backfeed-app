@@ -28,6 +28,8 @@ const Header = () => {
   const showPricingLink =
     !isLoading && (!isAuthenticated || subscriptionNotFound);
 
+  const showOrganizationsLink = !isLoading && !isAuthenticated;
+
   return (
     <sigil.header
       display="flex"
@@ -46,7 +48,7 @@ const Header = () => {
 
           <HStack gap={1}>
             {showPricingLink && (
-              <Flex display={{ base: "none", sm: "flex" }}>
+              <Flex display={{ base: "none", md: "flex" }}>
                 <Link href="/pricing" role="group">
                   <Flex
                     h={10}
@@ -69,9 +71,33 @@ const Header = () => {
               </Flex>
             )}
 
+            {showOrganizationsLink && (
+              <Flex display={{ base: "none", md: "flex" }}>
+                <Link href="/organizations" role="group">
+                  <Flex
+                    h={10}
+                    px={4}
+                    align="center"
+                    color={{
+                      base: "foreground.muted",
+                      _groupHover: "foreground.default",
+                    }}
+                    bgColor={
+                      pathname === "/organizations"
+                        ? "background.muted"
+                        : "transparent"
+                    }
+                    borderRadius="md"
+                  >
+                    {app.header.routes.organizations.label}
+                  </Flex>
+                </Link>
+              </Flex>
+            )}
+
             <SigilLink
               href={app.docsUrl}
-              display={{ base: "none", sm: "flex" }}
+              display={{ base: "none", md: "flex" }}
               color="foreground.muted"
               _hover={{ color: "foreground.default" }}
               isExternal

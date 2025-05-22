@@ -17,12 +17,9 @@ interface Props extends FlexProps {
 const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
   <Stack
     position="relative"
-    flex={1}
-    h="100%"
     bgColor="background.default"
     borderRadius="lg"
     boxShadow="card"
-    overflow="auto"
     {...rest}
   >
     <Text
@@ -30,6 +27,7 @@ const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
       top={0}
       w="full"
       backgroundColor="background.subtle"
+      borderTopRadius="lg"
       fontSize="2xl"
       fontWeight="semibold"
       boxShadow="xs"

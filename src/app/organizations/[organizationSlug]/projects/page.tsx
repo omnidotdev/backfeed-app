@@ -14,7 +14,7 @@ import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { ProjectsQueryVariables } from "generated/graphql";
+import type { Member, ProjectsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -44,8 +44,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [
     organization,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
@@ -58,11 +56,16 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
       organizationId: organization.rowId,
     });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
@@ -101,12 +104,10 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
     search,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectsQuery.getKey(variables),
-      queryFn: useProjectsQuery.fetcher(variables),
-    }),
-  ]);
+  await queryClient.prefetchQuery({
+    queryKey: useProjectsQuery.getKey(variables),
+    queryFn: useProjectsQuery.fetcher(variables),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -131,7 +132,7 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
         <ProjectFilters />
 
         <ProjectList
-          user={session.user}
+          user={session?.user}
           canCreateProjects={canCreateProjects}
         />
 
