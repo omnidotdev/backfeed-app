@@ -1,14 +1,10 @@
 "use client";
 
-import { sigil } from "@omnidev/sigil";
-import { Expand } from "@theme-toggles/react";
+import { Button, Icon } from "@omnidev/sigil";
 import { useTheme } from "next-themes";
 import { useHotkeys } from "react-hotkeys-hook";
+import { PiMoonFill as Moon, PiSunFill as Sun } from "react-icons/pi";
 import { useIsClient } from "usehooks-ts";
-
-import "@theme-toggles/react/css/Expand.css";
-
-const PandaExpand = sigil(Expand);
 
 /**
  * Toggle application color mode.
@@ -32,18 +28,16 @@ const ThemeToggle = () => {
   if (!isClient) return null;
 
   return (
-    // @ts-ignore ignore missing props
-    <PandaExpand
-      onToggle={toggleTheme}
-      toggled={resolvedTheme === "light"}
-      css={{
-        p: 2.5,
-        "& svg": {
-          w: 5,
-          h: 5,
-        },
-      }}
-    />
+    <Button
+      variant="icon"
+      aria-label="Toggle theme"
+      bgColor="transparent"
+      color="foreground.default"
+      onClick={toggleTheme}
+    >
+      {<Icon src={Sun} _light={{ display: "none" }} />}
+      {<Icon src={Moon} _dark={{ display: "none" }} />}
+    </Button>
   );
 };
 

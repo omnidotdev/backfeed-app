@@ -5687,6 +5687,13 @@ export type MembersQueryVariables = Exact<{
 
 export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', totalCount: number, nodes: Array<{ __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
+export type NotificationsQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', rowId: string, email: string, organizationId: string, organization?: { __typename?: 'Organization', name: string } | null } | null> } | null };
+
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
@@ -6995,6 +7002,64 @@ useInfiniteMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members
 
 
 useMembersQuery.fetcher = (variables: MembersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables, options);
+
+export const NotificationsDocument = `
+    query Notifications($email: String!) {
+  invitations(condition: {email: $email}) {
+    totalCount
+    nodes {
+      rowId
+      email
+      organizationId
+      organization {
+        name
+      }
+    }
+  }
+}
+    `;
+
+export const useNotificationsQuery = <
+      TData = NotificationsQuery,
+      TError = unknown
+    >(
+      variables: NotificationsQueryVariables,
+      options?: Omit<UseQueryOptions<NotificationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<NotificationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<NotificationsQuery, TError, TData>(
+      {
+    queryKey: ['Notifications', variables],
+    queryFn: graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, variables),
+    ...options
+  }
+    )};
+
+useNotificationsQuery.getKey = (variables: NotificationsQueryVariables) => ['Notifications', variables];
+
+export const useInfiniteNotificationsQuery = <
+      TData = InfiniteData<NotificationsQuery>,
+      TError = unknown
+    >(
+      variables: NotificationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<NotificationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<NotificationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<NotificationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Notifications.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteNotificationsQuery.getKey = (variables: NotificationsQueryVariables) => ['Notifications.infinite', variables];
+
+
+useNotificationsQuery.fetcher = (variables: NotificationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, variables, options);
 
 export const OrganizationDocument = `
     query Organization($slug: String!) {

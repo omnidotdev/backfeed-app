@@ -5688,6 +5688,13 @@ export type MembersQueryVariables = Exact<{
 
 export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', totalCount: number, nodes: Array<{ __typename?: 'Member', rowId: string, organizationId: string, userId: string, role: Role, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, username?: string | null } | null } | null> } | null };
 
+export type NotificationsQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', totalCount: number, nodes: Array<{ __typename?: 'Invitation', rowId: string, email: string, organizationId: string, organization?: { __typename?: 'Organization', name: string } | null } | null> } | null };
+
 export type OrganizationQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
@@ -6268,6 +6275,21 @@ export const MembersDocument = gql`
   }
 }
     ${MemberFragmentDoc}`;
+export const NotificationsDocument = gql`
+    query Notifications($email: String!) {
+  invitations(condition: {email: $email}) {
+    totalCount
+    nodes {
+      rowId
+      email
+      organizationId
+      organization {
+        name
+      }
+    }
+  }
+}
+    `;
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
@@ -6668,6 +6690,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Members(variables: MembersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<MembersQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MembersQuery>(MembersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Members', 'query', variables);
+    },
+    Notifications(variables: NotificationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<NotificationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NotificationsQuery>(NotificationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Notifications', 'query', variables);
     },
     Organization(variables: OrganizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<OrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OrganizationQuery>(OrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Organization', 'query', variables);
