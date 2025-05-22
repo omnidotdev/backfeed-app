@@ -96,6 +96,12 @@ const app = {
       docs: {
         label: "Docs",
       },
+      invitations: {
+        title: "Invitations",
+        noInvites: "No new invitations",
+        description: "You’ve been invited to join these organizations.",
+        join: "Join",
+      },
     },
   },
   landingPage: {
