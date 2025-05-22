@@ -23,6 +23,7 @@ export const urlSchema = z.string().refine((value) => {
       "(\\#[-a-z\\d_]*)?$",
     "i",
   );
+
   return urlPattern.test(value);
 }, "Invalid URL");
 
