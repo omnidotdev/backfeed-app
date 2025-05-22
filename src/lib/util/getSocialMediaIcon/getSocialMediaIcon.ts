@@ -3,7 +3,7 @@ import { HiOutlineLink } from "react-icons/hi2";
 import { SOCIAL_MEDIA_ICONS } from "lib/constants";
 
 /**
- * Get the icon associated with a social media url.
+ * Get the icon associated with a social media URL.
  */
 const getSocialMediaIcon = (url: string) => {
   const icon = Object.entries(SOCIAL_MEDIA_ICONS).find(([key]) =>

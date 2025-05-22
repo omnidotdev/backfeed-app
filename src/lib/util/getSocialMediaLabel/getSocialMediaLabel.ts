@@ -1,7 +1,7 @@
 import { SOCIAL_MEDIA_ICONS } from "lib/constants";
 
 /**
- * Get the label associated with a social media url.
+ * Get the label associated with a social media URL.
  */
 const getSocialMediaIcon = (url: string) => {
   const label = Object.entries(SOCIAL_MEDIA_ICONS).find(([key]) =>
