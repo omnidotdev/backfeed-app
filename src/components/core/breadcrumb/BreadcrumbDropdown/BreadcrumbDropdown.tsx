@@ -7,10 +7,10 @@ import {
   Flex,
 } from "@omnidev/sigil";
 import { LuChevronRight } from "react-icons/lu";
+import { useRouter } from "next/navigation";
 
 import type { BreadcrumbRecord } from "components/core/breadcrumb";
 import type { MenuProps } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
 
 interface Props extends MenuProps {
   /** Array of navigation breadcrumbs. */
@@ -26,10 +26,13 @@ const BreadcrumbDropdown = ({ breadcrumbs, trigger, ...rest }: Props) => {
   return (
     <Menu trigger={trigger} {...rest}>
       <MenuItemGroup minW={32} w="full">
-        {breadcrumbs.map(({ label, href, nestedSubItems }, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-          <Flex key={index} w="full">
-            {nestedSubItems?.length ? (
+        {breadcrumbs.map(({ label, href, children }, index) => (
+          <Flex
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            key={`${label}-${index}`}
+            w="full"
+          >
+            {children?.length ? (
               <Menu
                 trigger={
                   <MenuItem
@@ -38,7 +41,6 @@ const BreadcrumbDropdown = ({ breadcrumbs, trigger, ...rest }: Props) => {
                     justifyContent="space-between"
                   >
                     <Text>{label}</Text>
-
                     <Icon
                       src={LuChevronRight}
                       color="foreground.subtle"
@@ -48,27 +50,23 @@ const BreadcrumbDropdown = ({ breadcrumbs, trigger, ...rest }: Props) => {
                   </MenuItem>
                 }
               >
-                <MenuItemGroup minW={32} autoFocus={false}>
-                  {nestedSubItems.map(
-                    ({ label: nestedLabel, href: nestedHref }) => (
-                      <MenuItem
-                        display="block"
-                        key={nestedLabel}
-                        value={nestedLabel}
-                        onSelect={() => nestedHref && router.push(nestedHref)}
-                      >
-                        <Flex alignItems="center" w="full" h="full">
-                          {nestedLabel}
-                        </Flex>
-                      </MenuItem>
-                    ),
-                  )}
+                <MenuItemGroup minW={32}>
+                  {children.map(({ label: childLabel, href: childHref }) => (
+                    <MenuItem
+                      key={childLabel}
+                      value={childLabel}
+                      onSelect={() => childHref && router.push(childHref)}
+                    >
+                      <Flex alignItems="center" w="full" h="full">
+                        {childLabel}
+                      </Flex>
+                    </MenuItem>
+                  ))}
                 </MenuItemGroup>
               </Menu>
             ) : (
               <MenuItem
                 value={label}
-                display="block"
                 w="full"
                 onSelect={() => href && router.push(href)}
               >

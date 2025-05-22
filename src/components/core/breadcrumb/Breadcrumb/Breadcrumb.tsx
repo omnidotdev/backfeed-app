@@ -13,29 +13,14 @@ const sharedIconStyles = {
   mx: 1.5,
 };
 
-interface NestedItemRecord {
-  /** Label for the sub-item. */
-  label: string;
-  /** URL path the sub-item navigates to. */
-  href: `/${string}`;
-}
-
-interface SubItemRecord {
-  /** Label for the sub-item. */
-  label: string;
-  /** URL path the sub-item navigates to. */
-  href: `/${string}`;
-}
-
 export interface BreadcrumbRecord {
-  /** Label for the breadcrumb. */
   label: string;
-  /** URL path the breadcrumb navigates to. */
   href?: `/${string}`;
-  /** Sub-items for the breadcrumb. */
-  subItems?: SubItemRecord[];
-  /** Nested sub-items for the breadcrumb. */
-  nestedSubItems?: NestedItemRecord[];
+  /** Sub-items or nested dropdown items (unified) */
+  children?: {
+    label: string;
+    href?: `/${string}`;
+  }[];
 }
 
 interface Props {
@@ -91,7 +76,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
           </Flex>
         )}
 
-        {lastItem.subItems?.length ? (
+        {lastItem.children?.length ? (
           <BreadcrumbDropdown
             trigger={
               <Flex>
@@ -102,7 +87,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
                 />
               </Flex>
             }
-            breadcrumbs={lastItem.subItems}
+            breadcrumbs={lastItem.children}
           />
         ) : (
           <BreadcrumbTrigger label={lastItem.label} isLastItem={true} />
@@ -111,15 +96,18 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
 
       {/* Large viewport */}
       <Flex display={{ base: "none", lg: "flex" }}>
-        {breadcrumbs.map(({ label, href, subItems }, index) => {
+        {breadcrumbs.map(({ label, href, children }, index) => {
           const isLastItem = breadcrumbs.length - 1 === index;
 
           return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: index used in the key in case an organization and project have the same label
-            <Flex key={`${label}-${index}`} align="center">
+            <Flex
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+              key={`${label}-${index}`}
+              align="center"
+            >
               <Icon src={LuChevronRight} {...sharedIconStyles} />
 
-              {subItems?.length ? (
+              {children?.length ? (
                 <BreadcrumbDropdown
                   trigger={
                     <Flex>
@@ -130,7 +118,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => {
                       />
                     </Flex>
                   }
-                  breadcrumbs={subItems}
+                  breadcrumbs={children}
                 />
               ) : href ? (
                 <Link href={href}>

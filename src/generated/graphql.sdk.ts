@@ -5737,10 +5737,11 @@ export type ProjectStatusesQueryVariables = Exact<{
 export type ProjectStatusesQuery = { __typename?: 'Query', postStatuses?: { __typename?: 'PostStatusConnection', nodes: Array<{ __typename?: 'PostStatus', rowId: string, status: string, description?: string | null, color?: string | null, isDefault: boolean } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  pageSize: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   organizationSlug: Scalars['String']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  excludeProjects?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
@@ -6368,12 +6369,12 @@ export const ProjectStatusesDocument = gql`
 }
     `;
 export const ProjectsDocument = gql`
-    query Projects($pageSize: Int!, $offset: Int!, $organizationSlug: String!, $search: String) {
+    query Projects($pageSize: Int, $offset: Int, $organizationSlug: String!, $search: String, $excludeProjects: [String!]) {
   projects(
     orderBy: POSTS_COUNT_DESC
     first: $pageSize
     offset: $offset
-    filter: {name: {includesInsensitive: $search}, organization: {slug: {equalTo: $organizationSlug}}}
+    filter: {name: {includesInsensitive: $search}, organization: {slug: {equalTo: $organizationSlug}}, slug: {notIn: $excludeProjects}}
   ) {
     totalCount
     nodes {
