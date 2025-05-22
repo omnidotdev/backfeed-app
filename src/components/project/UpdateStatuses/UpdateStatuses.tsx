@@ -39,6 +39,8 @@ import { toaster } from "lib/util";
 
 import type { Project } from "generated/graphql";
 
+// TODO: refactor to use `withForm`. Include status changes within a single update project mutation
+
 interface FieldInfo {
   info?: string;
 }
@@ -110,7 +112,10 @@ const UpdateStatuses = ({ projectId }: Props) => {
       projectId,
     },
     {
-      enabled: isDevEnv,
+      enabled:
+        isDevEnv &&
+        // prevent thrown errors if a `router.replace` occurs from updating the project name (i.e. generates a new slug)
+        !!projectId,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
