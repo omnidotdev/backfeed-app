@@ -228,8 +228,8 @@ const UpdateProject = () => {
             </form.AppField>
 
             <form.AppField name="website">
-              {({ UrlField }) => (
-                <UrlField
+              {({ URLField }) => (
+                <URLField
                   icon={FaGlobe}
                   label="Website"
                   placeholder="backfeed.omni.dev"

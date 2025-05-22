@@ -7,7 +7,7 @@ import {
   SingularComboboxField,
   SubmitForm,
   TextareaField,
-  UrlField,
+  URLField,
 } from "components/form";
 
 const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -23,7 +23,7 @@ const { useAppForm: useForm, withForm } = createFormHook({
     SingularComboboxField,
     TextareaField,
     InputField,
-    UrlField,
+    URLField,
   },
   formComponents: {
     SubmitForm,

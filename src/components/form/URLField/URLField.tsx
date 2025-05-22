@@ -27,7 +27,7 @@ interface Props extends InputProps {
 /**
  * URL field component for form inputs.
  */
-const UrlField = ({
+const URLField = ({
   icon,
   label,
   containerProps,
@@ -109,4 +109,4 @@ const UrlField = ({
   );
 };
 
-export default UrlField;
+export default URLField;

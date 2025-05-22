@@ -51,8 +51,8 @@ const UpdateSocials = withForm({
                   }}
                 >
                   <AppField name={`projectSocials[${i}].url`}>
-                    {({ UrlField, state, setValue }) => (
-                      <UrlField
+                    {({ URLField, state, setValue }) => (
+                      <URLField
                         icon={getSocialMediaIcon(state.value)}
                         containerProps={{
                           flex: 1,
