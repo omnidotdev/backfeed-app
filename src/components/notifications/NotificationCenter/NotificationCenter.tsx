@@ -4,14 +4,12 @@ import {
   HStack,
   Icon,
   Popover,
-  PopoverCloseTrigger,
   Text,
   VStack,
 } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { IoNotifications } from "react-icons/io5";
 import { LuCheck, LuX } from "react-icons/lu";
-import { FaLink } from "react-icons/fa6";
 
 import {
   Role,
@@ -19,9 +17,9 @@ import {
   useDeleteInvitationMutation,
   useNotificationsQuery,
 } from "generated/graphql";
+import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { getQueryClient } from "lib/util";
-import { app } from "lib/config";
 
 const invitations = app.header.routes.invitations;
 
@@ -54,24 +52,18 @@ const NotificationCenter = () => {
 
   return (
     <Popover
-      title={
-        <PopoverCloseTrigger
-          display="flex"
-          gap={1}
-          alignItems="center"
-          disabled={!notifications?.length}
-          cursor={notifications?.length ? "pointer" : "default"}
-          onClick={() => router.push(`/profile/${user?.hidraId}/invitations`)}
-        >
-          {invitations.title}
-          {!!notifications?.length && <Icon src={FaLink} size="sm" />}
-        </PopoverCloseTrigger>
-      }
+      title={invitations.title}
       // TODO: update when we provide notifications for more than just invites
       description={invitations.description}
       closeTrigger={null}
       trigger={
-        <Button position="relative" variant="ghost" bgColor="transparent">
+        <Button
+          position="relative"
+          variant="icon"
+          aria-label="Notifications"
+          bgColor="transparent"
+          color="foreground.default"
+        >
           <Icon src={IoNotifications} />
 
           {!!notifications?.length && (

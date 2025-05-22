@@ -29,9 +29,10 @@ const ThemeToggle = () => {
 
   return (
     <Button
-      variant="ghost"
+      variant="icon"
       aria-label="Toggle theme"
       bgColor="transparent"
+      color="foreground.default"
       onClick={toggleTheme}
     >
       {<Icon src={Sun} _light={{ display: "none" }} />}

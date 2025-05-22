@@ -96,7 +96,7 @@ const app = {
       invitations: {
         title: "Invitations",
         noInvites: "No new invitations",
-        description: "Take action on organization invites.",
+        description: "You’ve been invited to join these organizations.",
         join: "Join",
       },
     },
