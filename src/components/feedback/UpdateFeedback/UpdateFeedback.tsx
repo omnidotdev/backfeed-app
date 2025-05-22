@@ -175,7 +175,10 @@ const UpdateFeedback = ({ user, feedback, ...rest }: Props) => {
               placeholder={
                 app.projectPage.projectFeedback.feedbackTitle.placeholder
               }
-              onClick={(evt) => evt.stopPropagation()}
+              onClick={(evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+              }}
             />
           )}
         </AppField>
@@ -190,7 +193,10 @@ const UpdateFeedback = ({ user, feedback, ...rest }: Props) => {
               rows={5}
               minH={32}
               maxLength={MAX_DESCRIPTION_LENGTH}
-              onClick={(evt) => evt.stopPropagation()}
+              onClick={(evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+              }}
             />
           )}
         </AppField>
