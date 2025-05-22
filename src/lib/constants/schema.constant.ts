@@ -10,13 +10,18 @@ const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 // NB: there is currently an issue with `z.string().url()`. This is a workaround to handle it a bit more verbosely. See: https://github.com/colinhacks/zod/issues/2236#issuecomment-2722654510
 export const urlSchema = z.string().refine((value) => {
   const urlPattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+    // protocol
+    "^(https?:\\/\\/)?" +
+      // domain name or IPv4 address
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+      "((\\d{1,3}\\.){3}\\d{1,3}))" +
+      // port and path
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+      // query string
+      "(\\?[;&a-z\\d%_.~+=-]*)?" +
+      // fragment locator
       "(\\#[-a-z\\d_]*)?$",
-    "i", // fragment locator
+    "i",
   );
   return urlPattern.test(value);
 }, "Invalid URL");
