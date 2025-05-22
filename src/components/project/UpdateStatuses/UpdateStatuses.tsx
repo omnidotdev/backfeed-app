@@ -112,7 +112,10 @@ const UpdateStatuses = ({ projectId }: Props) => {
       projectId,
     },
     {
-      enabled: isDevEnv && !!projectId,
+      enabled:
+        isDevEnv &&
+        // prevent thrown errors if a `router.replace` occurs from updating the project name (i.e. generates a new slug)
+        !!projectId,
       select: (data) =>
         data.postStatuses?.nodes?.map((status) => ({
           rowId: status?.rowId,
