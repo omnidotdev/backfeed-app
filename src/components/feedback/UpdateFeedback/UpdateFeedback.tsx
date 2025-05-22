@@ -18,7 +18,7 @@ import { CharacterLimit } from "components/core";
 import { useFeedbackByIdQuery, useUpdatePostMutation } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
-import { DEBOUNCE_TIME, standardRegexSchema } from "lib/constants";
+import { DEBOUNCE_TIME } from "lib/constants";
 import { useForm, useViewportSize } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -34,7 +34,9 @@ const updateFeedbackDetails = app.projectPage.projectFeedback.updateFeedback;
 
 /** Schema for defining the shape of the update feedback form fields, as well as validating the form. */
 const updateFeedbackSchema = z.object({
-  title: standardRegexSchema
+  title: z
+    .string()
+    .trim()
     .min(3, updateFeedbackDetails.errors.title.minLength)
     .max(90, updateFeedbackDetails.errors.title.maxLength),
   description: z
