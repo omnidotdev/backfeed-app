@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@omnidev/sigil";
 import { Reorder, useDragControls } from "motion/react";
 import { useState } from "react";
