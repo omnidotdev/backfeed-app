@@ -868,7 +868,7 @@ export const mockProjectStatusesQuery = (resolver: GraphQLResponseResolver<Types
  * @example
  * mockProjectsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, offset, organizationSlug, search } = variables;
+ *     const { pageSize, offset, organizationSlug, search, excludeProjects } = variables;
  *     return HttpResponse.json({
  *       data: { projects }
  *     })

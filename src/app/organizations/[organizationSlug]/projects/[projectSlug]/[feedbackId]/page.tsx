@@ -10,7 +10,7 @@ import {
   useInfiniteCommentsQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getFeedback } from "lib/actions";
+import { getFeedback, getOrganizationProjects } from "lib/actions";
 import { app } from "lib/config";
 import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
@@ -40,7 +40,12 @@ const FeedbackPage = async ({ params }: Props) => {
 
   if (!session) notFound();
 
-  const feedback = await getFeedback({ feedbackId });
+  const [organizationProjects, feedback] = await Promise.all([
+    getOrganizationProjects({ organizationSlug }),
+    getFeedback({ feedbackId }),
+  ]);
+
+  const numberOfProjects = organizationProjects?.nodes?.length ?? 0;
 
   if (!feedback) notFound();
 
@@ -61,7 +66,17 @@ const FeedbackPage = async ({ params }: Props) => {
     },
     {
       label: feedback?.project?.name ?? projectSlug,
-      href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+      href:
+        numberOfProjects === 1
+          ? `/organizations/${organizationSlug}/projects/${projectSlug}`
+          : undefined,
+      children:
+        numberOfProjects > 1
+          ? organizationProjects?.nodes.map((project) => ({
+              label: project!.name,
+              href: `/organizations/${organizationSlug}/projects/${project!.slug}`,
+            }))
+          : undefined,
     },
     {
       label: app.feedbackPage.breadcrumb,

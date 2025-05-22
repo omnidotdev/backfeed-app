@@ -1,7 +1,4 @@
-export {
-  default as Breadcrumb,
-  type BreadcrumbRecord,
-} from "./Breadcrumb/Breadcrumb";
+export * from "./breadcrumb";
 export {
   default as CallToAction,
   type ActionButton,

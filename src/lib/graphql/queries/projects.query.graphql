@@ -1,8 +1,9 @@
 query Projects(
-  $pageSize: Int!
-  $offset: Int!
+  $pageSize: Int
+  $offset: Int
   $organizationSlug: String!
   $search: String
+  $excludeProjects: [String!]
 ) {
   projects(
     orderBy: POSTS_COUNT_DESC
@@ -11,6 +12,7 @@ query Projects(
     filter: {
       name: { includesInsensitive: $search }
       organization: { slug: { equalTo: $organizationSlug } }
+      slug: { notIn: $excludeProjects }
     }
   ) {
     totalCount
