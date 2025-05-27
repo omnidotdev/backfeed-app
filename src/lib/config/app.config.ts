@@ -775,8 +775,7 @@ const app = {
     cta: {
       updateProject: {
         title: "Update Project",
-        description:
-          "Edit core details and project information (i.e. name, description, slug).",
+        description: "Edit project details.",
         memberTitle: "Project Details",
         action: {
           submit: "Update Project",
@@ -804,6 +803,11 @@ const app = {
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 50 characters.",
               duplicate: "Project already exists.",
+            },
+          },
+          projectSocials: {
+            errors: {
+              unique: "URLs must be unique.",
             },
           },
         },
@@ -929,7 +933,7 @@ const app = {
           "I really enjoy working with this project. It helped me learn a lot about the industry.",
       },
       createFeedback: {
-        title: "Provide Feedback",
+        title: "New Feedback",
         errors: {
           invalid: "Invalid format",
           title: {

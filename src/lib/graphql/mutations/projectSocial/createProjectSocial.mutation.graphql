@@ -1,0 +1,5 @@
+mutation CreateProjectSocial($input: CreateProjectSocialInput!) {
+  createProjectSocial(input: $input) {
+    clientMutationId
+  }
+}

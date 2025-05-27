@@ -6,6 +6,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Icon,
   Input,
   Select,
   Stack,
@@ -18,6 +19,7 @@ import {
 } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { GradientMask, SkeletonArray, Spinner } from "components/core";
@@ -31,7 +33,6 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import {
-  useDebounceValue,
   useHandleSearch,
   useOrganizationMembership,
   useSearchParams,
@@ -81,12 +82,9 @@ interface Props {
 const ProjectFeedback = ({ user, projectId }: Props) => {
   const router = useRouter();
 
-  const { viewState, setViewState } = useProjectViewStore(
-    ({ viewState, setViewState }) => ({
-      viewState,
-      setViewState,
-    }),
-  );
+  const { viewState } = useProjectViewStore(({ viewState }) => ({
+    viewState,
+  }));
 
   const params = useParams<{ organizationSlug: string; projectSlug: string }>();
 
@@ -180,12 +178,6 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
       type: DialogType.CreateFeedback,
     });
 
-  // debounced value is to allow for collapse animation to finish prior to changing maxH of scrollable container (prevent potential layout shit on larger viewports)
-  const [debouncedIsCreateFeedbackOpen] = useDebounceValue({
-    value: isCreateFeedbackOpen,
-    delay: 250,
-  });
-
   const { data: projectStatuses } = useProjectStatusesQuery(
     {
       projectId,
@@ -260,6 +252,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
           }}
           onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
         >
+          <Icon src={LuPlus} />
+
           {app.projectPage.projectFeedback.createFeedback.title}
         </Button>
       )}
@@ -303,12 +297,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
             gap={2}
             mt={4}
             columns={{ base: 1, lg: viewState === ViewState.List ? 1 : 2 }}
-            maxH={
-              isCreateFeedbackOpen || debouncedIsCreateFeedbackOpen
-                ? "xl"
-                : { base: "xl", md: "3xl" }
-            }
-            transitionDuration={isCreateFeedbackOpen ? "0ms" : "250ms"}
+            maxH={isCreateFeedbackOpen ? "xl" : { base: "xl", md: "3xl" }}
+            transitionDuration="250ms"
             transitionProperty="max-height"
             transitionTimingFunction="default"
             overflow="auto"
