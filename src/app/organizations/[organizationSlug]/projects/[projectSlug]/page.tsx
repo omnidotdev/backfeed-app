@@ -5,7 +5,7 @@ import { LuSettings } from "react-icons/lu";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { ProjectOverview } from "components/project";
+import { ProjectLinks, ProjectOverview } from "components/project";
 import {
   PostOrderBy,
   Role,
@@ -160,6 +160,9 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
         header={{
           title: project.name!,
           description: project.description!,
+          headerProps: {
+            children: <ProjectLinks project={project} />,
+          },
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,

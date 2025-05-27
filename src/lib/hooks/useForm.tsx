@@ -7,6 +7,7 @@ import {
   SingularComboboxField,
   SubmitForm,
   TextareaField,
+  URLField,
 } from "components/form";
 
 const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -15,19 +16,20 @@ const { fieldContext, formContext, useFieldContext, useFormContext } =
 /**
  * Custom hook to manage form state, validation, and submission.
  */
-const { useAppForm: useForm } = createFormHook({
+const { useAppForm: useForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
     SingularComboboxField,
     TextareaField,
     InputField,
+    URLField,
   },
   formComponents: {
     SubmitForm,
   },
 });
 
-export { useFieldContext, useFormContext };
+export { useFieldContext, useFormContext, withForm };
 
 export default useForm;

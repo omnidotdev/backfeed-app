@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Stack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
 
 import { Breadcrumb, CallToAction } from "components/core";
 
@@ -49,9 +49,18 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
           gap={4}
         >
           <Stack>
-            <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
-              {header.title}
-            </Text>
+            <HStack gap={1}>
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="semibold"
+                lineHeight={1.3}
+              >
+                {header.title}
+              </Text>
+
+              {header.headerProps?.children}
+            </HStack>
 
             {header.description && (
               <Text
@@ -69,6 +78,7 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
             gap={4}
             width={{ base: "full", md: "auto" }}
             direction={{ base: "column", sm: "row" }}
+            placeSelf="flex-start"
           >
             {header.cta?.map((action) => (
               <CallToAction key={action.label} action={action} />

@@ -30,7 +30,15 @@ const Layout = ({ children }: PropsWithChildren) => (
       <Header />
     </Flex>
 
-    <Flex direction="column" position="relative" w="100%" h="100dvh" gap={0}>
+    <Flex
+      direction="column"
+      position="relative"
+      w="100%"
+      h="100dvh"
+      gap={0}
+      // ! NB: This helps prevent CLS on pages when the content size is dynamic, and therefore the scrollbar may or may not be visible. See: https://stackoverflow.com/a/30293718
+      paddingLeft="calc(100vw - 100%)"
+    >
       {/* TODO fix styles not appropriately being applied (https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues) */}
       <sigil.main w="full" flex={1} css={css.raw({ mt: "header" })}>
         {children}
