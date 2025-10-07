@@ -11,3 +11,9 @@ local_resource(
     deps=["package.json"],
     labels=[project_name],
 )
+
+local_resource(
+    "dev-%s" % project_name,
+    serve_cmd="bun dev",
+    labels=[project_name],
+)
