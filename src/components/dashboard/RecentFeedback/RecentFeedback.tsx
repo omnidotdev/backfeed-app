@@ -55,10 +55,10 @@ const RecentFeedback = ({ user }: Props) => {
     <FeedbackSection
       ref={rootRef}
       title="Recent Feedback"
-      maxH="xl"
       contentProps={{
-        overflow: "auto",
-        scrollbar: "hidden",
+        position: "relative",
+        // NB: the margin is necessary to prevent the mask from clipping box shadows
+        mb: "1px",
       }}
     >
       {isError ? (
@@ -69,12 +69,19 @@ const RecentFeedback = ({ user }: Props) => {
           w="full"
         />
       ) : (
-        // NB: the margin is necessary to prevent clipping of the card borders/box shadows
-        <Stack w="full" gap={2} h="full" mb="1px">
+        <Stack
+          w="full"
+          // NB: necessary to prevent the mask from clipping box shadows. Must be centered within this parent container.
+          align="center"
+          maxH="lg"
+          overflow="auto"
+          scrollbar="hidden"
+          gap={2}
+        >
           {isLoading ? (
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
-            <VStack gap={0} p={1}>
+            <VStack w="full" gap={0} p={1}>
               {recentFeedback?.map((feedback) => (
                 <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
@@ -109,7 +116,10 @@ const RecentFeedback = ({ user }: Props) => {
             />
           )}
 
-          {!!recentFeedback?.length && <GradientMask bottom={0} />}
+          {!!recentFeedback?.length && (
+            // NB: the width override is necessary to prevent the mask from clipping box shadows
+            <GradientMask bottom={0} borderBottomRadius="lg" w="99%" />
+          )}
         </Stack>
       )}
     </FeedbackSection>

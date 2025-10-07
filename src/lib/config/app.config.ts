@@ -90,6 +90,9 @@ const app = {
       pricing: {
         label: "Pricing",
       },
+      organizations: {
+        label: "Organizations",
+      },
       docs: {
         label: "Docs",
       },
@@ -906,7 +909,10 @@ const app = {
     projectFeedback: {
       title: "Project Feedback",
       endOf: "End of Feedback",
-      disabled: "Maximum amount of feedback reached.",
+      disabled: {
+        signedIn: "Maximum amount of feedback reached.",
+        signedOut: "Please sign in to submit feedback.",
+      },
       search: {
         placeholder: "Search feedback...",
       },
@@ -1020,12 +1026,16 @@ const app = {
   feedbackPage: {
     breadcrumb: "Feedback",
     details: {
+      signedOut: "Sign in to vote",
       upvote: "Upvote",
       downvote: "Downvote",
     },
     comments: {
       endOf: "End of Comments",
-      disabled: "Maximum number of comments reached.",
+      disabled: {
+        signedIn: "Maximum number of comments reached.",
+        signedOut: "Please sign in to comment.",
+      },
       createComment: {
         pending: "Adding comment...",
         success: {

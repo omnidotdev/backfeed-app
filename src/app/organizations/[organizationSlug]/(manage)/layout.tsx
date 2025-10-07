@@ -25,8 +25,6 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const organization = await getOrganization({ organizationSlug });
 
   if (!organization) notFound();
@@ -38,22 +36,26 @@ const ManageOrganizationLayout = async ({ params, children }: Props) => {
       queryKey: useOrganizationQuery.getKey({ slug: organizationSlug }),
       queryFn: useOrganizationQuery.fetcher({ slug: organizationSlug }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: organization.rowId,
-      }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              userId: session.user.rowId!,
+              organizationId: organization.rowId,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              userId: session.user.rowId!,
+              organizationId: organization.rowId,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <HStack h="full" w="full" gap={0}>
-        <ManagementSidebar user={session.user}>{children}</ManagementSidebar>
+        <ManagementSidebar user={session?.user}>{children}</ManagementSidebar>
       </HStack>
     </HydrationBoundary>
   );

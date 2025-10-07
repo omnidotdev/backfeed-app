@@ -7,23 +7,24 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectLinks, ProjectOverview } from "components/project";
 import {
-  PostOrderBy,
   Role,
-  useInfinitePostsQuery,
   useOrganizationRoleQuery,
-  usePostsQuery,
   useProjectMetricsQuery,
-  useProjectQuery,
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { freeTierFeedbackOptions } from "lib/options";
+import {
+  freeTierFeedbackOptions,
+  infinitePostsOptions,
+  projectOptions,
+} from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Member } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -54,18 +55,22 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const project = await getProject({ organizationSlug, projectSlug });
 
   if (!project) notFound();
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
-    userId: session.user?.rowId!,
-    organizationId: project.organization?.rowId!,
-  });
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
+      organizationId: project.organization?.rowId!,
+    });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const { excludedStatuses, orderBy, search } =
     await getSearchParams.parse(searchParams);
@@ -91,50 +96,39 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
   ];
 
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: useProjectQuery.getKey({
+    queryClient.prefetchQuery(
+      projectOptions({
         projectSlug,
         organizationSlug,
+        userId: session?.user.rowId,
       }),
-      queryFn: useProjectQuery.fetcher({
-        projectSlug,
-        organizationSlug,
-      }),
-    }),
+    ),
     queryClient.prefetchQuery(
       freeTierFeedbackOptions({ organizationSlug, projectSlug }),
     ),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: useInfinitePostsQuery.getKey({
+    queryClient.prefetchInfiniteQuery(
+      infinitePostsOptions({
         projectId: project.rowId,
+        userId: session?.user.rowId,
         excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
+        orderBy,
         search,
-        userId: session.user.rowId,
       }),
-      queryFn: usePostsQuery.fetcher({
-        projectId: project.rowId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
-        search,
-        userId: session.user.rowId,
-      }),
-      initialPageParam: undefined,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: project.organization?.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: project.organization?.rowId!,
-      }),
-    }),
+    ),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              userId: session.user.rowId!,
+              organizationId: project.organization?.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              userId: session.user.rowId!,
+              organizationId: project.organization?.rowId!,
+            }),
+          }),
+        ]
+      : []),
     queryClient.prefetchQuery({
       queryKey: useProjectMetricsQuery.getKey({ projectId: project.rowId }),
       queryFn: useProjectMetricsQuery.fetcher({ projectId: project.rowId }),
@@ -149,9 +143,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
     }),
   ]);
 
-  const hasAdminPrivileges =
-    memberByUserIdAndOrganizationId &&
-    memberByUserIdAndOrganizationId.role !== Role.Member;
+  const hasAdminPrivileges = member && member.role !== Role.Member;
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -184,7 +176,7 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
           ],
         }}
       >
-        <ProjectOverview user={session.user} projectId={project.rowId} />
+        <ProjectOverview user={session?.user} projectId={project.rowId} />
       </Page>
     </HydrationBoundary>
   );

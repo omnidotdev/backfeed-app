@@ -14,8 +14,11 @@ import {
 } from "lib/hooks/mutations";
 
 import type { Downvote, Post, Project, Upvote } from "generated/graphql";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
   /** Feedback ID. */
   feedbackId: Post["rowId"];
   /** Project ID. */
@@ -33,6 +36,7 @@ interface Props {
 }
 
 const VotingButtons = ({
+  user,
   feedbackId,
   projectId,
   upvote,
@@ -101,16 +105,20 @@ const VotingButtons = ({
             e.stopPropagation();
             handleUpvote();
           },
-          disabled: isVotePending || isOptimistic,
+          disabled: !user || isVotePending || isOptimistic,
+          opacity: !user ? 0.5 : 1,
         }}
       >
-        {app.feedbackPage.details.upvote}
+        {!user
+          ? app.feedbackPage.details.signedOut
+          : app.feedbackPage.details.upvote}
       </Tooltip>
 
       <Text
         color={netVotesColor}
         whiteSpace="nowrap"
         fontVariant="tabular-nums"
+        opacity={!user ? 0.5 : 1}
       >
         {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
       </Text>
@@ -132,10 +140,13 @@ const VotingButtons = ({
             e.stopPropagation();
             handleDownvote();
           },
-          disabled: isVotePending || isOptimistic,
+          disabled: !user || isVotePending || isOptimistic,
+          opacity: !user ? 0.5 : 1,
         }}
       >
-        {app.feedbackPage.details.downvote}
+        {!user
+          ? app.feedbackPage.details.signedOut
+          : app.feedbackPage.details.downvote}
       </Tooltip>
     </HStack>
   );

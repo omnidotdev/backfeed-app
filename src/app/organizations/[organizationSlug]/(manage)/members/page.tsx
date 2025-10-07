@@ -21,6 +21,7 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { Member } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -50,8 +51,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const organization = await getOrganization({
     organizationSlug,
   });
@@ -60,11 +59,16 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
+  let member: Partial<Member> | null = null;
+
+  if (session) {
+    const { memberByUserIdAndOrganizationId } = await sdk.OrganizationRole({
+      userId: session?.user.rowId!,
       organizationId: organization.rowId,
     });
+
+    member = memberByUserIdAndOrganizationId ?? null;
+  }
 
   const queryClient = getQueryClient();
 
@@ -95,16 +99,20 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
         excludeRoles: [Role.Owner],
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
@@ -132,7 +140,7 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
 
         <MembershipFilters />
 
-        <Members user={session.user} organizationId={organization.rowId} />
+        <Members user={session?.user} organizationId={organization.rowId} />
 
         {/* dialogs */}
         {/* TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now. */}

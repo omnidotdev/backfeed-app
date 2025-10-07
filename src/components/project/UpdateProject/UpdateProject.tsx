@@ -16,7 +16,6 @@ import { UpdateSocials, UpdateStatuses } from "components/project";
 import {
   useCreateProjectSocialMutation,
   useDeleteProjectSocialMutation,
-  useProjectQuery,
   useUpdateProjectMutation,
 } from "generated/graphql";
 import { app, isDevEnv } from "lib/config";
@@ -98,10 +97,15 @@ const updateProjectSchema = z
     },
   );
 
+interface Props {
+  /** Authenticated user. */
+  user: Session["user"];
+}
+
 /**
  * Form for updating project details.
  */
-const UpdateProject = () => {
+const UpdateProject = ({ user }: Props) => {
   const queryClient = useQueryClient();
 
   const isUpdatingProject = useIsMutating({ mutationKey: ["Project"] });
@@ -113,16 +117,15 @@ const UpdateProject = () => {
 
   const router = useRouter();
 
-  const { data: project } = useProjectQuery(
-    {
+  const { data: project } = useQuery({
+    ...projectOptions({
       projectSlug,
       organizationSlug,
-    },
-    {
-      placeholderData: keepPreviousData,
-      select: (data) => data.projects?.nodes?.[0],
-    },
-  );
+      userId: user?.rowId,
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) => data.projects?.nodes?.[0],
+  });
 
   const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation({
     mutationKey: ["Project", "CreateProjectSocial"],
