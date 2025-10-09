@@ -65,7 +65,7 @@ const updateProjectSchema = z
 
         if (uniqueSocials.has(url)) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: updateProjectDetails.fields.projectSocials.errors.unique,
             path: ["projectSocials", projectSocials.indexOf(social), "url"],
           });
