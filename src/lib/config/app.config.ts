@@ -9,7 +9,7 @@ const app = {
   productionUrl: "https://backfeed.omni.dev",
   docsUrl: "https://docs.omni.dev/backfeed/overview",
   socials: {
-    discord: "https://discord.gg/g5PQgNGGzE",
+    discord: "https://discord.gg/omnidotdev",
     x: "https://x.com/omnidotdev",
   },
   organization: {
