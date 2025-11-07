@@ -1,11 +1,10 @@
 "use client";
 
 import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { TbHeartbeat } from "react-icons/tb";
-
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { TbHeartbeat } from "react-icons/tb";
 
 interface Props {
   /** Total feedback for the project. */

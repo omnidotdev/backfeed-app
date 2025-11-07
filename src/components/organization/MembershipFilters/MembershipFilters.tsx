@@ -2,7 +2,6 @@
 
 import { createListCollection } from "@ark-ui/react";
 import { Grid, GridItem, Input, Select } from "@omnidev/sigil";
-
 import { Role } from "generated/graphql";
 import { app } from "lib/config";
 import { useHandleSearch, useSearchParams } from "lib/hooks";

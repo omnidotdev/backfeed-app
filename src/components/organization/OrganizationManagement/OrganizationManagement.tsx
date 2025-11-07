@@ -1,14 +1,13 @@
 "use client";
 
 import { Button, Grid, Icon } from "@omnidev/sigil";
+import { SectionContainer } from "components/layout";
+import { app } from "lib/config";
+import { useOrganizationMembership } from "lib/hooks";
 import { useParams, useRouter } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
-
-import { SectionContainer } from "components/layout";
-import { app } from "lib/config";
-import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";

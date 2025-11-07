@@ -1,5 +1,4 @@
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
-
 import { Tier } from "generated/graphql";
 import { getProject } from "lib/actions";
 import { MAX_UNIQUE_USERS_FOR_FEEDBACK } from "lib/constants";

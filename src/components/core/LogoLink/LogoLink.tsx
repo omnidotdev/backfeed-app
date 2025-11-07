@@ -1,5 +1,4 @@
 import { Badge, Flex } from "@omnidev/sigil";
-
 import { Image, Link } from "components/core";
 import { app } from "lib/config";
 

@@ -1,6 +1,5 @@
-import { getOrganization } from "lib/actions";
-
 import { Tier } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 
 import type { Organization } from "generated/graphql";
 

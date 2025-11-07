@@ -1,4 +1,5 @@
 "use client";
+
 import { Page } from "components/layout";
 import {
   CreateOrganization,

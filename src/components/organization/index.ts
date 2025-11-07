@@ -12,10 +12,10 @@ export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSide
 export { default as Members } from "./Members/Members";
 export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
 export { default as MembershipMenu } from "./MembershipMenu/MembershipMenu";
-export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";
 export { default as OrganizationListItem } from "./OrganizationListItem/OrganizationListItem";
+export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export { default as OrganizationProjects } from "./OrganizationProjects/OrganizationProjects";
 export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";

@@ -14,13 +14,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import dayjs from "dayjs";
-import { useMemo } from "react";
-
 import { InvitationMenu } from "components/organization";
+import dayjs from "dayjs";
 import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
+import { useMemo } from "react";
 
 import type { InvitationFragment, Organization } from "generated/graphql";
 import type { Session } from "next-auth";
@@ -86,7 +85,7 @@ const Invitations = ({ user, organizationId }: Props) => {
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
+            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
                 // TODO: Update Sigil component to support icon toggling in checkbox
@@ -118,7 +117,7 @@ const Invitations = ({ user, organizationId }: Props) => {
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
+            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
                 // TODO: Update Sigil component to support icon toggling in checkbox

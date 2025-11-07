@@ -1,11 +1,10 @@
 import { HStack } from "@omnidev/sigil";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { ProfileSidebar } from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
 import { getQueryClient } from "lib/util";
+import { notFound } from "next/navigation";
 
 import type { PropsWithChildren } from "react";
 

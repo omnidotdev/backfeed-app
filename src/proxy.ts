@@ -1,9 +1,8 @@
+import { auth } from "auth";
 import { NextResponse } from "next/server";
 
-import { auth } from "auth";
-
-import type { Session } from "next-auth";
 import type { NextRequest } from "next/server";
+import type { Session } from "next-auth";
 
 interface NextAuthRequest extends NextRequest {
   auth: Session | null;
@@ -58,9 +57,9 @@ const signOut = async (request: NextAuthRequest) => {
 };
 
 /**
- * Middleware function for handling authentication flows on designated routes.
+ * Proxy function for handling authentication flows on designated routes.
  */
-export const middleware = auth(async (request) => {
+export const proxy = auth(async (request) => {
   // NB: Used to bypass preflight checks. See: https://github.com/vercel/next.js/discussions/75668
   // TODO: look into the security of this as this is a temporary workaround to allow for sign in / sign up flows to work properly in Safari
   if (request.method === "OPTIONS") {

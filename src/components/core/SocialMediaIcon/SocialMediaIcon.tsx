@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@omnidev/sigil";
-
 import { getSocialMediaIcon } from "lib/util";
 
 import type { IconProps } from "@omnidev/sigil";

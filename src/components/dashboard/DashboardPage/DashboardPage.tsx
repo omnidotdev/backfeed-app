@@ -2,18 +2,13 @@
 
 import { Grid } from "@omnidev/sigil";
 import {
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
-import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
-
-import {
   Aggregate,
   FeedbackOverview,
   PinnedOrganizations,
   RecentFeedback,
 } from "components/dashboard";
 import { Page } from "components/layout";
+import { CreateOrganization } from "components/organization";
 import {
   Role,
   Tier,
@@ -22,9 +17,13 @@ import {
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import {
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineUserGroup,
+} from "react-icons/hi2";
+import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
-import { CreateOrganization } from "components/organization";
 import type { Session } from "next-auth";
 
 interface Props {

@@ -7,10 +7,6 @@ import {
   Text,
   VStack,
 } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
-import { IoNotifications } from "react-icons/io5";
-import { LuCheck, LuX } from "react-icons/lu";
-
 import {
   Role,
   useCreateMemberMutation,
@@ -20,6 +16,9 @@ import {
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { getQueryClient } from "lib/util";
+import { useRouter } from "next/navigation";
+import { IoNotifications } from "react-icons/io5";
+import { LuCheck, LuX } from "react-icons/lu";
 
 const invitations = app.header.routes.invitations;
 

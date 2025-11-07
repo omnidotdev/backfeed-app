@@ -1,7 +1,6 @@
 "use client";
 
 import { Flex } from "@omnidev/sigil";
-
 import { Features, Hero } from "components/landing";
 
 /**

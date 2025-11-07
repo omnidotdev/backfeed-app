@@ -1,6 +1,5 @@
-import { HttpResponse } from "msw";
-
 import { mockCreateUserMutation } from "generated/graphql.mock";
+import { HttpResponse } from "msw";
 
 /**
  * Create user mutation (success) mock.

@@ -1,7 +1,12 @@
 "use client";
 
 import { Skeleton } from "@omnidev/sigil";
+import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
+import { ErrorBoundary } from "components/layout";
 import dayjs from "dayjs";
+import { useWeeklyFeedbackQuery } from "generated/graphql";
+import { token } from "generated/panda/tokens";
+import { useViewportSize } from "lib/hooks";
 import { useMemo } from "react";
 import {
   Bar,
@@ -11,12 +16,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
-import { ErrorBoundary } from "components/layout";
-import { useWeeklyFeedbackQuery } from "generated/graphql";
-import { token } from "generated/panda/tokens";
-import { useViewportSize } from "lib/hooks";
 
 import type { Session } from "next-auth";
 

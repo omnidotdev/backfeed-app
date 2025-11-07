@@ -2,8 +2,6 @@
 
 import { Divider, Stack } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateProject } from "components/project";
@@ -13,6 +11,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
+import { useRouter } from "next/navigation";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization, Project } from "generated/graphql";

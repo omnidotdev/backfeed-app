@@ -1,6 +1,4 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
@@ -13,6 +11,7 @@ import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
+import { notFound } from "next/navigation";
 
 export const generateMetadata = async ({ params }: Props) => {
   const { organizationSlug } = await params;

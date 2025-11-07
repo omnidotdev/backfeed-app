@@ -1,14 +1,13 @@
 "use client";
 
 import { Grid, GridItem, Stack } from "@omnidev/sigil";
-import dayjs from "dayjs";
-
 import {
   FeedbackMetrics,
   ProjectFeedback,
   ProjectInformation,
   StatusBreakdown,
 } from "components/project";
+import dayjs from "dayjs";
 import { useProjectMetricsQuery } from "generated/graphql";
 
 import type { Project } from "generated/graphql";

@@ -1,14 +1,13 @@
 "use client";
 
 import { Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { StatusBadge } from "components/core";
 import dayjs from "dayjs";
 import {
   HiOutlineCalendar,
   HiOutlineFolder,
   HiOutlineUser,
 } from "react-icons/hi2";
-
-import { StatusBadge } from "components/core";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";

@@ -10,21 +10,13 @@ import {
   Popover,
   Stack,
   Switch,
+  sigil,
   Table,
   TableCell,
   TableRow,
   Text,
-  sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  HiOutlineInformationCircle,
-  HiOutlineTrash,
-  HiPlus,
-} from "react-icons/hi2";
-import { LuUndo2 } from "react-icons/lu";
-import { z } from "zod";
-
 import { SectionContainer } from "components/layout";
 import {
   useCreatePostStatusMutation,
@@ -36,6 +28,13 @@ import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
+import {
+  HiOutlineInformationCircle,
+  HiOutlineTrash,
+  HiPlus,
+} from "react-icons/hi2";
+import { LuUndo2 } from "react-icons/lu";
+import { z } from "zod";
 
 import type { Project } from "generated/graphql";
 
@@ -363,7 +362,7 @@ const UpdateStatuses = ({ projectId }: Props) => {
                               controlProps={{
                                 minW: 40,
                               }}
-                              // @ts-ignore Omit `channel` from upstream types. It is defined internally.
+                              // @ts-expect-error Omit `channel` from upstream types. It is defined internally.
                               channelInputProps={{
                                 borderColor: "border.subtle",
                               }}
@@ -371,7 +370,7 @@ const UpdateStatuses = ({ projectId }: Props) => {
                                 borderColor: "transparent",
                                 p: 0,
                               }}
-                              // @ts-ignore TODO: omit `value` upstream. It is defined internally.
+                              // @ts-expect-error TODO: omit `value` upstream. It is defined internally.
                               swatchProps={{
                                 h: "full",
                                 w: "full",

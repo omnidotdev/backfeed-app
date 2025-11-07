@@ -14,12 +14,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import dayjs from "dayjs";
-import { useMemo } from "react";
-
 import { InvitationMenu } from "components/profile";
+import dayjs from "dayjs";
 import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
+import { useMemo } from "react";
 
 import type { InvitationFragment } from "generated/graphql";
 
@@ -71,7 +70,7 @@ const OrganizationInvites = ({ email }: Props) => {
                 app.profileInvitationsPage.table.headers.organizationName
               )
             }
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
+            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
                 // TODO: Update Sigil component to support icon toggling in checkbox
@@ -99,7 +98,7 @@ const OrganizationInvites = ({ email }: Props) => {
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
             }}
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
+            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
             iconProps={{
               style: {
                 // TODO: Update Sigil component to support icon toggling in checkbox

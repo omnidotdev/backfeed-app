@@ -1,16 +1,15 @@
 "use client";
 
 import { Avatar, Badge, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { OverflowText } from "components/core";
+import { useInvitationsQuery } from "generated/graphql";
+import { app } from "lib/config";
 import {
   useParams,
   useRouter,
   useSelectedLayoutSegment,
 } from "next/navigation";
 import { PiCreditCardLight, PiUserCircle, PiUserPlus } from "react-icons/pi";
-
-import { OverflowText } from "components/core";
-import { useInvitationsQuery } from "generated/graphql";
-import { app } from "lib/config";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { User } from "generated/graphql";

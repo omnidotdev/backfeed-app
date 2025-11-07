@@ -2,10 +2,6 @@
 
 import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
 import { useMutationState, useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { LuMessageSquare } from "react-icons/lu";
-import useInfiniteScroll from "react-infinite-scroll-hook";
-
 import { GradientMask, SkeletonArray, Spinner } from "components/core";
 import { CommentCard, CreateComment } from "components/feedback";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
@@ -15,6 +11,9 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { freeTierCommentsOptions } from "lib/options";
+import { useParams } from "next/navigation";
+import { LuMessageSquare } from "react-icons/lu";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import type {
   CommentFragment,

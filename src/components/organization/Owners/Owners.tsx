@@ -15,7 +15,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Role, useMembersQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";

@@ -10,7 +10,7 @@ const getSocialMediaIcon = (url: string) => {
 
   const getApexDomain = () => {
     const regex =
-      /^(?:https?:\/\/)?(?:www\.)?([^\/:]+?\.(?:[a-z]{2,}(?:\.[a-z]{2})?|com|org|net))(?:\/.*)?$/i;
+      /^(?:https?:\/\/)?(?:www\.)?([^/:]+?\.(?:[a-z]{2,}(?:\.[a-z]{2})?|com|org|net))(?:\/.*)?$/i;
     const match = url.match(regex);
 
     return match ? match[1] : "Unknown URL";

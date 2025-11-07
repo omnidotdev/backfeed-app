@@ -4,23 +4,22 @@ import {
   Badge,
   Button,
   Card,
+  css,
   Grid,
   GridItem,
   HStack,
   Icon,
   Stack,
-  Text,
-  css,
   sigil,
+  Text,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { LuCheck, LuClockAlert } from "react-icons/lu";
-import { match } from "ts-pattern";
-
 import { API_BASE_URL, app } from "lib/config";
 import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
+import { match } from "ts-pattern";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Benefit } from "@polar-sh/sdk/models/components/benefit";

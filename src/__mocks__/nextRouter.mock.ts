@@ -1,4 +1,5 @@
 import { beforeEach, jest, mock } from "bun:test";
+
 import mockRouter from "next-router-mock";
 
 // TODO replace mocks below with updated implementation from `next-router-mock` that supports app router (track https://github.com/scottrippey/next-router-mock/pull/103)

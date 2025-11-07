@@ -1,9 +1,8 @@
 import { Button, HStack, Icon, Input, Label, Text } from "@omnidev/sigil";
-import { FiX } from "react-icons/fi";
-
 import { Field } from "components/form";
 import { token } from "generated/panda/tokens";
 import { useFieldContext } from "lib/hooks";
+import { FiX } from "react-icons/fi";
 
 import type { ButtonProps, InputProps, StackProps } from "@omnidev/sigil";
 import type { FormFieldErrorProps } from "components/form";

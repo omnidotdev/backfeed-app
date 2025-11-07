@@ -1,15 +1,14 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuCirclePlus } from "react-icons/lu";
-
 import { Link, SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { ProjectCard } from "components/organization";
 import { useOrganizationQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { Organization, Project } from "generated/graphql";

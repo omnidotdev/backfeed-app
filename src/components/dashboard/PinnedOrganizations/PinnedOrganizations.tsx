@@ -1,14 +1,13 @@
 "use client";
 
 import { Grid } from "@omnidev/sigil";
-import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
-
 import { Link, SkeletonArray } from "components/core";
 import { OrganizationCard } from "components/dashboard";
 import { EmptyState, ErrorBoundary, SectionContainer } from "components/layout";
 import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
+import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";

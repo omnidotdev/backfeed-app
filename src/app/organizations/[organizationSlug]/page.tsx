@@ -1,8 +1,4 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuCirclePlus } from "react-icons/lu";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import {
@@ -23,6 +19,9 @@ import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
+import { notFound } from "next/navigation";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";

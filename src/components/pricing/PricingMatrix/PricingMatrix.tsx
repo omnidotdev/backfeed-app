@@ -6,11 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from "@omnidev/sigil";
-import { FaCheck, FaX } from "react-icons/fa6";
-import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
-
 import { Tooltip } from "components/core";
 import { app } from "lib/config";
+import { FaCheck, FaX } from "react-icons/fa6";
+import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 
 import type { TableProps } from "@omnidev/sigil";
 

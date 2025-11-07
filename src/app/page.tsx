@@ -1,10 +1,9 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import {
   OrganizationOrderBy,
   Role,

@@ -1,14 +1,13 @@
 "use client";
 
 import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
+import { OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 import { FiArrowUpRight } from "react-icons/fi";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
-
-import { OverflowText } from "components/core";
-import { setSingularOrPlural } from "lib/util";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { Project } from "generated/graphql";

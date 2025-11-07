@@ -1,9 +1,8 @@
-import { notFound } from "next/navigation";
-
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationInvites } from "components/profile";
 import { app } from "lib/config";
+import { notFound } from "next/navigation";
 
 export const metadata = {
   title: app.profileInvitationsPage.breadcrumb,

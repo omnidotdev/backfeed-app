@@ -1,9 +1,8 @@
-import { redirect } from "next/navigation";
-
 import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,5 @@
-import { HiOutlineLink } from "react-icons/hi2";
-
 import { SOCIAL_MEDIA_ICONS } from "lib/constants";
+import { HiOutlineLink } from "react-icons/hi2";
 
 /**
  * Get the icon associated with a social media URL.

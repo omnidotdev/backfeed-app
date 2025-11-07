@@ -1,7 +1,4 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-import { LuCirclePlus } from "react-icons/lu";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import {
@@ -19,6 +16,8 @@ import { getOrganization } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
+import { notFound } from "next/navigation";
+import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { SearchParams } from "nuqs/server";

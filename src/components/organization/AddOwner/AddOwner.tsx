@@ -2,8 +2,6 @@
 
 import { Dialog, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-
 import {
   Role,
   useMembersQuery,
@@ -14,6 +12,7 @@ import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
+import { z } from "zod";
 
 const addOwnerDetails = app.organizationMembersPage.cta.addOwner;
 

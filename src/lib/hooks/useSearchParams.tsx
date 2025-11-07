@@ -1,6 +1,5 @@
-import { useQueryStates } from "nuqs";
-
 import { searchParams } from "lib/util";
+import { useQueryStates } from "nuqs";
 
 /**
  * Access and update search paramaters from the client.

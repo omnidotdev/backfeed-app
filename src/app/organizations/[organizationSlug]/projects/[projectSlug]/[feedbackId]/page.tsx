@@ -1,6 +1,4 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
@@ -14,6 +12,7 @@ import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
+import { notFound } from "next/navigation";
 
 import type { BreadcrumbRecord } from "components/core";
 

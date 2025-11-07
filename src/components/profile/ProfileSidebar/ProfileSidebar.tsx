@@ -8,15 +8,14 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useSelectedLayoutSegment } from "next/navigation";
-import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useIsClient, useLocalStorage } from "usehooks-ts";
-
 import { Breadcrumb } from "components/core";
 import { ProfileNavigation } from "components/profile";
 import { token } from "generated/panda/tokens";
 import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
+import { useSelectedLayoutSegment } from "next/navigation";
+import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
+import { useIsClient, useLocalStorage } from "usehooks-ts";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Session } from "next-auth";

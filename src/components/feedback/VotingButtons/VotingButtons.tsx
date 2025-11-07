@@ -1,4 +1,9 @@
 import { HStack, Icon, Text, Tooltip } from "@omnidev/sigil";
+import { app } from "lib/config";
+import {
+  useHandleDownvoteMutation,
+  useHandleUpvoteMutation,
+} from "lib/hooks/mutations";
 import {
   PiArrowFatLineDown,
   PiArrowFatLineDownFill,
@@ -6,12 +11,6 @@ import {
   PiArrowFatLineUpFill,
 } from "react-icons/pi";
 import { match } from "ts-pattern";
-
-import { app } from "lib/config";
-import {
-  useHandleDownvoteMutation,
-  useHandleUpvoteMutation,
-} from "lib/hooks/mutations";
 
 import type { Downvote, Post, Project, Upvote } from "generated/graphql";
 

@@ -1,6 +1,5 @@
-import { z } from "zod";
-
 import { app } from "lib/config";
+import { z } from "zod";
 
 const organizationErrors = app.forms.errors.organization;
 const projectErrors = app.forms.errors.project;
@@ -38,7 +37,7 @@ export const uuidSchema = z.string().uuid(app.forms.errors.id.format);
 export const standardRegexSchema = z
   .string()
   .trim()
-  .regex(/^[\p{L}\p{N}\s,!'?.\-\(\)]+$/u, app.forms.errors.regex.invalid);
+  .regex(/^[\p{L}\p{N}\s,!'?.\-()]+$/u, app.forms.errors.regex.invalid);
 
 export const organizationNameSchema = standardRegexSchema
   .min(3, organizationErrors.name.minLength)

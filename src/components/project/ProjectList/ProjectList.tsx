@@ -2,9 +2,6 @@
 
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { LuCirclePlus } from "react-icons/lu";
-
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
@@ -12,6 +9,8 @@ import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { useParams } from "next/navigation";
+import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
@@ -98,11 +97,11 @@ const ProjectList = ({ user, canCreateProjects }: Props) => {
       </Stack>
 
       <Pagination
-        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
+        // @ts-expect-error: TODO: fix prop definition upstream (omit `index`)
         ellipsisProps={{
           display: { base: "none", sm: "flex" },
         }}
-        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
+        // @ts-expect-error: TODO: fix prop definition upstream (omit `type` and `value`)
         itemProps={{
           display: { base: "none", sm: "flex" },
         }}

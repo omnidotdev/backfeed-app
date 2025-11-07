@@ -1,6 +1,4 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
@@ -13,6 +11,7 @@ import { getProject } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
+import { notFound } from "next/navigation";
 
 import type { BreadcrumbRecord } from "components/core";
 

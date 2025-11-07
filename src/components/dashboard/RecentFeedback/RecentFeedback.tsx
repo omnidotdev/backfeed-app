@@ -1,13 +1,12 @@
 "use client";
 
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
-import useInfiniteScroll from "react-infinite-scroll-hook";
-
 import { GradientMask, Link, SkeletonArray, Spinner } from "components/core";
 import { FeedbackSection, Response } from "components/dashboard";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import type { Post } from "generated/graphql";
 import type { Session } from "next-auth";

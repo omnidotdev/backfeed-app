@@ -1,7 +1,6 @@
-import { useDebounceCallback } from "usehooks-ts";
-
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
+import { useDebounceCallback } from "usehooks-ts";
 
 import type { ChangeEvent } from "react";
 

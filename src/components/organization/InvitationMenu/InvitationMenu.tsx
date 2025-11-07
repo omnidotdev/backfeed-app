@@ -1,9 +1,7 @@
 "use client";
 
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
-import { LuChevronDown } from "react-icons/lu";
-import { match } from "ts-pattern";
-
+import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import {
   useCreateInvitationMutation,
   useDeleteInvitationMutation,
@@ -12,14 +10,15 @@ import {
 import { app, isDevEnv } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { getQueryClient, toaster } from "lib/util";
+import ms from "ms";
+import { useRef, useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
+import { match } from "ts-pattern";
 
 import type { MenuProps } from "@omnidev/sigil";
-import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import type { Row } from "@tanstack/react-table";
 import type { InvitationFragment, Organization } from "generated/graphql";
 import type { JsxStyleProps } from "generated/panda/types";
-import ms from "ms";
-import { useRef, useState } from "react";
 
 const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 

@@ -2,8 +2,6 @@
 
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
-import { LuCirclePlus } from "react-icons/lu";
-
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
@@ -11,6 +9,7 @@ import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
+import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";
@@ -95,11 +94,11 @@ const OrganizationList = ({
       </Stack>
 
       <Pagination
-        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
+        // @ts-expect-error: TODO: fix prop definition upstream (omit `index`)
         ellipsisProps={{
           display: { base: "none", sm: "flex" },
         }}
-        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
+        // @ts-expect-error: TODO: fix prop definition upstream (omit `type` and `value`)
         itemProps={{
           display: { base: "none", sm: "flex" },
         }}

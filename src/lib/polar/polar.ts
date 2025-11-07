@@ -1,5 +1,4 @@
 import { Polar } from "@polar-sh/sdk";
-
 import { ENABLE_POLAR_SANDBOX } from "lib/config";
 
 /**

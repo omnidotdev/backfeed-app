@@ -1,10 +1,10 @@
 export {
-  default as Breadcrumb,
   type BreadcrumbRecord,
+  default as Breadcrumb,
 } from "./Breadcrumb/Breadcrumb";
 export {
-  default as CallToAction,
   type ActionButton,
+  default as CallToAction,
 } from "./CallToAction/CallToAction";
 export { default as CharacterLimit } from "./CharacterLimit/CharacterLimit";
 export { default as DangerZoneAction } from "./DangerZoneAction/DangerZoneAction";

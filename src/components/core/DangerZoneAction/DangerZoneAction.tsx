@@ -1,5 +1,4 @@
 import { HStack, Stack, Text } from "@omnidev/sigil";
-
 import { DestructiveAction } from "components/core";
 
 import type { DestructiveActionProps } from "components/core";

@@ -25,7 +25,7 @@ const ReorderItem = <T,>({
         cursor={{ _hover: isGrabbing ? "grabbing" : "grab" }}
         touchAction="none"
         onPointerUp={() => setIsGrabbing(false)}
-        // @ts-ignore: TODO fix implicit any type upstream in Sigil
+        // @ts-expect-error: TODO fix implicit any type upstream in Sigil
         onPointerDown={(evt) => {
           evt.preventDefault();
           controls.start(evt);

@@ -1,11 +1,10 @@
 "use client";
 
 import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { IoCalendarOutline } from "react-icons/io5";
-
 import { SectionContainer } from "components/layout";
 import { app } from "lib/config";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { IoCalendarOutline } from "react-icons/io5";
 
 interface Props {
   /** Date the project was created. */

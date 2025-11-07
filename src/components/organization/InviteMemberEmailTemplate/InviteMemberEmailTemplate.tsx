@@ -12,7 +12,6 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
-
 import { app } from "lib/config";
 
 const inviteMemberDetails =

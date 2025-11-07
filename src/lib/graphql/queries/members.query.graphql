@@ -6,7 +6,8 @@ query Members(
 ) {
   # TODO: add conditional filter to validate that members are not already an owner of another organizaion *if* they are not on a team level subscription tier (deals with ownership transfers)
   members(
-    orderBy: ROLE_ASC
+    # TODO: check with API. Updates to the packages may have caused issue with some of the plugins
+    # orderBy: ROLE_ASC
     condition: { organizationId: $organizationId }
     filter: {
       role: { in: $roles, notIn: $excludeRoles }

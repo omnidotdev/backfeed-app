@@ -1,11 +1,9 @@
 "use client";
 
-import { Avatar, Circle, HStack, Stack, Text, sigil } from "@omnidev/sigil";
+import { Avatar, Circle, HStack, Stack, sigil, Text } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import { useParams } from "next/navigation";
-
 import { DestructiveAction } from "components/core";
+import dayjs from "dayjs";
 import {
   useDeleteCommentMutation,
   useInfiniteCommentsQuery,
@@ -13,6 +11,7 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
+import { useParams } from "next/navigation";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type { Organization, ReplyFragment } from "generated/graphql";

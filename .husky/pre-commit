@@ -1,2 +1,1 @@
-# TODO remove `--organize-imports-enabled` flag after custom import organization implemented 
-bun knip && bun biome check --write --staged --no-errors-on-unmatched --organize-imports-enabled=false src
+bun knip && bun biome check --staged --no-errors-on-unmatched

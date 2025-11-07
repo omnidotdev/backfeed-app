@@ -1,11 +1,10 @@
 "use client";
 
 import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
+import { app } from "lib/config";
 import { signIn } from "next-auth/react";
 import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
-
-import { app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
