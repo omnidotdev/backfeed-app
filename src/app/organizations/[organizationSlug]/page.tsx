@@ -27,7 +27,9 @@ import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -39,15 +41,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization page params. */
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Organization overview page.
  */
-const OrganizationPage = async ({ params }: Props) => {
+const OrganizationPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();

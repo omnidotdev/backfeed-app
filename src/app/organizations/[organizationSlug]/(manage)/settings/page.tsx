@@ -14,7 +14,9 @@ import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/settings">) => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -26,15 +28,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization page params. */
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Organization settings page.
  */
-const OrganizationSettingsPage = async ({ params }: Props) => {
+const OrganizationSettingsPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/settings">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();

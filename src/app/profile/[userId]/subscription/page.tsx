@@ -13,15 +13,12 @@ export const metadata = {
   title: app.profileSubscriptionPage.breadcrumb,
 };
 
-interface Props {
-  /** Params for the profile subscription page. */
-  params: Promise<{ userId: string }>;
-}
-
 /**
  * Profile subscription page.
  */
-const ProfileSubscriptionPage = async ({ params }: Props) => {
+const ProfileSubscriptionPage = async ({
+  params,
+}: PageProps<"/profile/[userId]/subscription">) => {
   const { userId } = await params;
 
   const [session, customer] = await Promise.allSettled([

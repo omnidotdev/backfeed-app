@@ -11,15 +11,12 @@ export const metadata = {
   title: app.profileAccountPage.breadcrumb,
 };
 
-interface Props {
-  /** Params for the profile account page. */
-  params: Promise<{ userId: string }>;
-}
-
 /**
  * Profile account page.
  */
-const ProfileAccountPage = async ({ params }: Props) => {
+const ProfileAccountPage = async ({
+  params,
+}: PageProps<"/profile/[userId]/account">) => {
   const { userId } = await params;
 
   const session = await auth();

@@ -12,7 +12,9 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/invitations">) => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -24,15 +26,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization invitations page parameters. */
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Organization invitations page.
  */
-const OrganizationInvitationsPage = async ({ params }: Props) => {
+const OrganizationInvitationsPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/invitations">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();

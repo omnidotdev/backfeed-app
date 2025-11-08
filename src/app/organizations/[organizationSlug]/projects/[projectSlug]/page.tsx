@@ -24,9 +24,10 @@ import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { SearchParams } from "nuqs/server";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">) => {
   const { organizationSlug, projectSlug } = await params;
 
   const project = await getProject({
@@ -39,17 +40,13 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Project page params. */
-  params: Promise<{ organizationSlug: string; projectSlug: string }>;
-  /** Projects page search params. */
-  searchParams: Promise<SearchParams>;
-}
-
 /**
  * Project overview page.
  */
-const ProjectPage = async ({ params, searchParams }: Props) => {
+const ProjectPage = async ({
+  params,
+  searchParams,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();

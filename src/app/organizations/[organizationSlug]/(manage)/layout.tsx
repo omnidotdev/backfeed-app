@@ -11,16 +11,13 @@ import {
 import { getOrganization } from "lib/actions";
 import { getQueryClient } from "lib/util";
 
-import type { PropsWithChildren } from "react";
-
-interface Props extends PropsWithChildren {
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Manage organization layout.
  */
-const ManageOrganizationLayout = async ({ params, children }: Props) => {
+const ManageOrganizationLayout = async ({
+  params,
+  children,
+}: LayoutProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();

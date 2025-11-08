@@ -6,8 +6,6 @@ import { Layout } from "components/layout";
 import { app, ENABLE_MSW, isDevEnv, NEXT_RUNTIME } from "lib/config";
 import { mswNodeServer } from "test/e2e/util";
 
-import type { ReactNode } from "react";
-
 import "lib/styles/main.css";
 
 // set up mock service worker (MSW) fixtures if enabled
@@ -36,7 +34,7 @@ export const metadata = {
 /**
  * Root layout.
  */
-const RootLayout = ({ children }: { children: ReactNode }) => (
+const RootLayout = ({ children }: LayoutProps<"/">) => (
   // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
   <html lang="en" suppressHydrationWarning>
     <body>

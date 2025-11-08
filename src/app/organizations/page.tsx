@@ -13,7 +13,6 @@ import { app } from "lib/config";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
-import type { SearchParams } from "nuqs/server";
 
 export const dynamic = "force-dynamic";
 
@@ -21,15 +20,12 @@ export const metadata = {
   title: app.organizationsPage.breadcrumb,
 };
 
-interface Props {
-  /** Organizations page search params. */
-  searchParams: Promise<SearchParams>;
-}
-
 /**
  * Organizations overview page.
  */
-const OrganizationsPage = async ({ searchParams }: Props) => {
+const OrganizationsPage = async ({
+  searchParams,
+}: PageProps<"/organizations">) => {
   const session = await auth();
 
   if (!session) notFound();

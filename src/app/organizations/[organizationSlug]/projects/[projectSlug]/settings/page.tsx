@@ -16,7 +16,9 @@ import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]/settings">) => {
   const { organizationSlug, projectSlug } = await params;
 
   const project = await getProject({
@@ -29,15 +31,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Project settings page params. */
-  params: Promise<{ organizationSlug: string; projectSlug: string }>;
-}
-
 /**
  * Project settings page.
  */
-const ProjectSettingsPage = async ({ params }: Props) => {
+const ProjectSettingsPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]/settings">) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();
