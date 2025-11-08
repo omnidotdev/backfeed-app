@@ -6,7 +6,7 @@
       "dependencies": {
         "@ark-ui/react": "^5.27.1",
         "@auth/core": "^0.34.3",
-        "@omnidev/sigil": "^0.15.3",
+        "@omnidev/sigil": "https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@64fb464",
         "@polar-sh/sdk": "^0.41.1",
         "@react-email/components": "^1.0.0",
         "@tanstack/react-form": "^1.23.8",
@@ -498,7 +498,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
-    "@omnidev/sigil": ["@omnidev/sigil@0.15.3", "", { "peerDependencies": { "@ark-ui/react": ">=5.6.0", "@pandacss/dev": ">=0.53.0", "@pandacss/types": ">=0.53.0", "react": ">=19.1.0", "react-dom": ">=19.1.0", "react-icons": ">=5.5.0" } }, "sha512-o1ARgerSJRxRsKDoXlKysEK9AtldOAmKvly8jqMOs466jhEwZQIwynK1imkRjtz6m6Re7v+2C7Zw9uw85/Fy1Q=="],
+    "@omnidev/sigil": ["@omnidev/sigil@https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@64fb464", { "peerDependencies": { "@ark-ui/react": ">=5.27.1", "@pandacss/dev": ">=1.4.3", "@pandacss/types": ">=1.4.3", "react": ">=19.2.0", "react-dom": ">=19.2.0", "react-icons": ">=5.5.0" } }],
 
     "@open-draft/deferred-promise": ["@open-draft/deferred-promise@2.2.0", "", {}, "sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA=="],
 

@@ -98,11 +98,9 @@ const ProjectList = ({ user, canCreateProjects }: Props) => {
       </Stack>
 
       <Pagination
-        // @ts-expect-error: TODO: fix prop definition upstream (omit `index`)
         ellipsisProps={{
           display: { base: "none", sm: "flex" },
         }}
-        // @ts-expect-error: TODO: fix prop definition upstream (omit `type` and `value`)
         itemProps={{
           display: { base: "none", sm: "flex" },
         }}

@@ -94,13 +94,6 @@ const Members = ({ user, organizationId }: Props) => {
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
-            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
-            iconProps={{
-              style: {
-                // TODO: Update Sigil component to support icon toggling in checkbox
-                pointerEvents: "none",
-              },
-            }}
             checked={
               table.getIsAllRowsSelected()
                 ? true
@@ -131,13 +124,6 @@ const Members = ({ user, organizationId }: Props) => {
             }
             controlProps={{
               display: isOwner ? "flex" : "none",
-            }}
-            // @ts-expect-error TODO: Update Sigil component to remove required `src` prop
-            iconProps={{
-              style: {
-                // TODO: Update Sigil component to support icon toggling in checkbox
-                pointerEvents: "none",
-              },
             }}
             disabled={!isOwner}
             checked={row.getIsSelected()}
