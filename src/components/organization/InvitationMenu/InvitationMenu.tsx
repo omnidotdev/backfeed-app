@@ -60,13 +60,6 @@ const InvitationMenu = ({
 
   const queryClient = getQueryClient();
 
-  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
-  const queuer = useAsyncQueuer({
-    concurrency: 2,
-    started: false,
-    wait: ms("1s"),
-  });
-
   const { mutateAsync: deleteInvitation } = useDeleteInvitationMutation({
     onSettled: () => {
       if (!isResending) {
@@ -80,7 +73,7 @@ const InvitationMenu = ({
   });
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
     onSettled: () => {
-      if (!queuer.getPendingItems().length) {
+      if (!queuer.peekPendingItems().length) {
         setIsResending(false);
 
         return queryClient.invalidateQueries({
@@ -92,7 +85,7 @@ const InvitationMenu = ({
     },
     onSuccess: () => {
       // Wait until the queue is done processing all requests
-      if (!queuer.getPendingItems().length) {
+      if (!queuer.peekPendingItems().length) {
         if (toastId.current) {
           toaster.update(toastId.current, {
             title: inviteMemberDetails.toast.success.title,
@@ -151,6 +144,13 @@ const InvitationMenu = ({
     }
   };
 
+  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
+  const queuer = useAsyncQueuer(sendInvite, {
+    concurrency: 2,
+    started: false,
+    wait: ms("1s"),
+  });
+
   const handleMenuAction = ({ type }: { type: MenuAction }) => {
     match(type)
       .with(MenuAction.ResendInvitation, async () => {
@@ -163,10 +163,10 @@ const InvitationMenu = ({
 
         try {
           selectedRows.map(({ original: invitation }) =>
-            queuer.addItem(async () => await sendInvite(invitation)),
+            queuer.addItem(invitation),
           );
 
-          await queuer.start();
+          queuer.start();
         } catch (error) {
           if (toastId.current) {
             toaster.update(toastId.current, {
