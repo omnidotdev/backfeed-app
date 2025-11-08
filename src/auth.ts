@@ -93,6 +93,7 @@ export const { handlers, auth } = NextAuth({
     pkceCodeVerifier: cookieOptions,
   },
   providers: [
+    // @ts-expect-error TODO: `HS256` not a valid option for response_alg.
     {
       // hint encryption algorithms from IDP; currently not correctly broadcast by Better Auth (https://github.com/better-auth/better-auth/pull/2326)
       client: {
