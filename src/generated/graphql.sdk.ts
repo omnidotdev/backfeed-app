@@ -1788,6 +1788,8 @@ export enum MemberOrderBy {
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RoleAsc = 'ROLE_ASC',
+  RoleDesc = 'ROLE_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UserIdAsc = 'USER_ID_ASC',
@@ -6242,6 +6244,7 @@ export const InvitationsDocument = gql`
 export const MembersDocument = gql`
     query Members($organizationId: UUID!, $roles: [Role!], $search: String, $excludeRoles: [Role!]) {
   members(
+    orderBy: ROLE_ASC
     condition: {organizationId: $organizationId}
     filter: {role: {in: $roles, notIn: $excludeRoles}, user: {or: [{firstName: {includesInsensitive: $search}}, {lastName: {includesInsensitive: $search}}, {username: {includesInsensitive: $search}}]}}
   ) {
