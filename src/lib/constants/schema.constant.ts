@@ -33,7 +33,7 @@ export const slugSchema = z
   .min(3, app.forms.errors.slug.minLength)
   .max(50, app.forms.errors.slug.maxLength);
 
-export const uuidSchema = z.string().uuid(app.forms.errors.id.format);
+export const uuidSchema = z.guid(app.forms.errors.id.format);
 
 export const standardRegexSchema = z
   .string()
