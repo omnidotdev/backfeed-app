@@ -1,4 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound, redirect } from "next/navigation";
+
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscription } from "components/profile";
@@ -6,7 +8,6 @@ import { app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
-import { notFound, redirect } from "next/navigation";
 
 export const metadata = {
   title: app.profileSubscriptionPage.breadcrumb,

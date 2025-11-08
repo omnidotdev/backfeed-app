@@ -8,6 +8,8 @@ import {
   ToggleGroupItem,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
+import { useMemo } from "react";
+
 import {
   PricingCard,
   PricingFAQ,
@@ -16,7 +18,6 @@ import {
 } from "components/pricing";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
-import { useMemo } from "react";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
 

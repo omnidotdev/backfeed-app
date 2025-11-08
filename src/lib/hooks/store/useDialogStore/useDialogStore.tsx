@@ -1,8 +1,9 @@
 "use client";
 
-import { getDialogStore } from "store";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
+
+import { getDialogStore } from "store";
 
 import type { DialogType } from "store";
 

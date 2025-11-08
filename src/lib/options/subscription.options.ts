@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+
 import { getSubscription } from "lib/actions";
 
 import type { User } from "generated/graphql";

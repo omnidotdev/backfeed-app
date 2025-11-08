@@ -14,12 +14,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { InvitationMenu } from "components/organization";
 import dayjs from "dayjs";
+import { useMemo } from "react";
+
+import { InvitationMenu } from "components/organization";
 import { useInvitationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
-import { useMemo } from "react";
 
 import type { InvitationFragment, Organization } from "generated/graphql";
 import type { Session } from "next-auth";

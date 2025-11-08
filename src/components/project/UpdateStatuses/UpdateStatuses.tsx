@@ -17,6 +17,14 @@ import {
   Text,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  HiOutlineInformationCircle,
+  HiOutlineTrash,
+  HiPlus,
+} from "react-icons/hi2";
+import { LuUndo2 } from "react-icons/lu";
+import { z } from "zod";
+
 import { SectionContainer } from "components/layout";
 import {
   useCreatePostStatusMutation,
@@ -28,13 +36,6 @@ import { app, isDevEnv } from "lib/config";
 import { DEBOUNCE_TIME, standardRegexSchema, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { toaster } from "lib/util";
-import {
-  HiOutlineInformationCircle,
-  HiOutlineTrash,
-  HiPlus,
-} from "react-icons/hi2";
-import { LuUndo2 } from "react-icons/lu";
-import { z } from "zod";
 
 import type { Project } from "generated/graphql";
 

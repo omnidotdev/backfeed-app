@@ -1,5 +1,6 @@
-import { getSdk as getGraphQLSdk } from "generated/graphql.sdk";
 import { GraphQLClient } from "graphql-request";
+
+import { getSdk as getGraphQLSdk } from "generated/graphql.sdk";
 import { API_GRAPHQL_URL } from "lib/config";
 
 import type { Session } from "next-auth";

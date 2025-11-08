@@ -1,14 +1,15 @@
 "use client";
 
 import { Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import { Link, OverflowText } from "components/core";
-import { useOrganizationMembership } from "lib/hooks";
-import { setSingularOrPlural } from "lib/util";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+
+import { Link, OverflowText } from "components/core";
+import { useOrganizationMembership } from "lib/hooks";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Project } from "generated/graphql";
 import type { Session } from "next-auth";

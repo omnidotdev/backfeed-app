@@ -1,5 +1,6 @@
 import { QueryClientProvider as ReactQueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import { getQueryClient } from "lib/util";
 
 import type { PropsWithChildren } from "react";

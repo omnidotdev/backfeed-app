@@ -1,4 +1,7 @@
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
+import { LuChevronDown } from "react-icons/lu";
+import { match } from "ts-pattern";
+
 import {
   Role,
   useRemoveMemberMutation,
@@ -7,8 +10,6 @@ import {
 import { app } from "lib/config";
 import { useAuth, useOrganizationMembership } from "lib/hooks";
 import { getQueryClient } from "lib/util";
-import { LuChevronDown } from "react-icons/lu";
-import { match } from "ts-pattern";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";

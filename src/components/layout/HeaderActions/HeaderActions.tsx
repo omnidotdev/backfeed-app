@@ -9,6 +9,11 @@ import {
   Icon,
   Stack,
 } from "@omnidev/sigil";
+import { signIn } from "next-auth/react";
+import { useEffect } from "react";
+import { FiX } from "react-icons/fi";
+import { RiMenu3Fill } from "react-icons/ri";
+
 import { LogoLink } from "components/core";
 import {
   AccountInformation,
@@ -20,10 +25,6 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { signIn } from "next-auth/react";
-import { useEffect } from "react";
-import { FiX } from "react-icons/fi";
-import { RiMenu3Fill } from "react-icons/ri";
 import { DialogType } from "store";
 
 /**

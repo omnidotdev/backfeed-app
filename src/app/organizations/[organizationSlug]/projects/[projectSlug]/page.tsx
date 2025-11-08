@@ -1,4 +1,8 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { LuSettings } from "react-icons/lu";
+
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectLinks, ProjectOverview } from "components/project";
@@ -18,9 +22,6 @@ import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
-import { notFound } from "next/navigation";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuSettings } from "react-icons/lu";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { SearchParams } from "nuqs/server";

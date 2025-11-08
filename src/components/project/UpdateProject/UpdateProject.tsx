@@ -6,9 +6,13 @@ import {
   useIsMutating,
   useQueryClient,
 } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { useParams, useRouter } from "next/navigation";
+import { FaGlobe } from "react-icons/fa6";
+import { z } from "zod";
+
 import { SectionContainer } from "components/layout";
 import { UpdateSocials, UpdateStatuses } from "components/project";
-import dayjs from "dayjs";
 import {
   useCreateProjectSocialMutation,
   useDeleteProjectSocialMutation,
@@ -28,9 +32,6 @@ import { getSdk } from "lib/graphql";
 import { useForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { generateSlug, getAuthSession } from "lib/util";
-import { useParams, useRouter } from "next/navigation";
-import { FaGlobe } from "react-icons/fa6";
-import { z } from "zod";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 

@@ -1,5 +1,6 @@
-import { mockUserQuery } from "generated/graphql.mock";
 import { HttpResponse } from "msw";
+
+import { mockUserQuery } from "generated/graphql.mock";
 
 /**
  * User query (success) mock.

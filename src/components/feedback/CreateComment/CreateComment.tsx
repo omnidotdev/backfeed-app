@@ -3,6 +3,9 @@
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { z } from "zod";
+
 import { CharacterLimit } from "components/core";
 import {
   useCreateCommentMutation,
@@ -14,8 +17,6 @@ import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { useForm } from "lib/hooks";
 import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
-import { useParams } from "next/navigation";
-import { z } from "zod";
 
 import type { Session } from "next-auth";
 

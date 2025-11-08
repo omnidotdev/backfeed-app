@@ -1,4 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
+
 import { auth } from "auth";
 import { OrganizationsOverview } from "components/organization";
 import {
@@ -9,7 +11,6 @@ import {
 } from "generated/graphql";
 import { app } from "lib/config";
 import { getQueryClient, getSearchParams } from "lib/util";
-import { notFound } from "next/navigation";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { SearchParams } from "nuqs/server";

@@ -2,6 +2,12 @@
 
 import { Grid } from "@omnidev/sigil";
 import {
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineUserGroup,
+} from "react-icons/hi2";
+import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
+
+import {
   Aggregate,
   FeedbackOverview,
   PinnedOrganizations,
@@ -17,11 +23,6 @@ import {
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import {
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
-import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { Session } from "next-auth";

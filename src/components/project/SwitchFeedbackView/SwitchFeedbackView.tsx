@@ -1,7 +1,8 @@
 import { Icon, ToggleGroup, ToggleGroupItem } from "@omnidev/sigil";
-import { useProjectViewStore, ViewState } from "lib/hooks/store";
 import { LuLayoutGrid, LuList } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
+
+import { useProjectViewStore, ViewState } from "lib/hooks/store";
 
 import type { ToggleGroupProps } from "@omnidev/sigil";
 

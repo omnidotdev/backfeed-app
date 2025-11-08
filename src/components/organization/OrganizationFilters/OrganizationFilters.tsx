@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid, GridItem, Input } from "@omnidev/sigil";
+
 import { app } from "lib/config";
 import { useHandleSearch, useSearchParams } from "lib/hooks";
 

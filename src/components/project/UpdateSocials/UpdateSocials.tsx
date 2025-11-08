@@ -1,12 +1,13 @@
 "use client";
 
 import { Button, Icon, Label, Stack } from "@omnidev/sigil";
+import { Reorder } from "motion/react";
+import { FiPlus } from "react-icons/fi";
+
 import { ReorderItem } from "components/core";
 import { withForm } from "lib/hooks";
 import { updateProjectFormOptions } from "lib/options/form";
 import { getSocialMediaIcon } from "lib/util";
-import { Reorder } from "motion/react";
-import { FiPlus } from "react-icons/fi";
 
 const MAX_PROJECT_SOCIALS = 4;
 

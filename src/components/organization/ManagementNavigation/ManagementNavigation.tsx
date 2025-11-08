@@ -1,13 +1,14 @@
 "use client";
 
 import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
-import { OverflowText } from "components/core";
-import { app } from "lib/config";
-import { useOrganizationMembership } from "lib/hooks";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+
+import { OverflowText } from "components/core";
+import { app } from "lib/config";
+import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";

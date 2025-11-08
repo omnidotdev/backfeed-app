@@ -1,14 +1,15 @@
 "use client";
 
 import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
-import { SectionContainer } from "components/layout";
-import { useOrganizationMetricsQuery } from "generated/graphql";
-import { app } from "lib/config";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineFolder,
   HiOutlineUserGroup,
 } from "react-icons/hi2";
+
+import { SectionContainer } from "components/layout";
+import { useOrganizationMetricsQuery } from "generated/graphql";
+import { app } from "lib/config";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";

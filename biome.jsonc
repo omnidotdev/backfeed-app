@@ -20,7 +20,20 @@
               ":BLANK_LINE:",
               {
                 "type": false,
-                "source": [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"]
+                "source": [
+                  ":PACKAGE:",
+                  ":PACKAGE_WITH_PROTOCOL:",
+                  "!app/**",
+                  "!components/**",
+                  "!generated/**",
+                  "!lib/**",
+                  "!providers/**",
+                  "!store",
+                  "!store/**",
+                  "!auth",
+                  "!test/**",
+                  "!__mocks__/**"
+                ]
               },
               ":BLANK_LINE:",
               { "type": false, "source": ["**"] },

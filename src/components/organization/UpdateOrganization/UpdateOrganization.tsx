@@ -2,6 +2,9 @@
 
 import { Divider, Stack, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { z } from "zod";
+
 import { SectionContainer } from "components/layout";
 import {
   useOrganizationQuery,
@@ -16,8 +19,6 @@ import {
 import { getSdk } from "lib/graphql";
 import { useForm, useOrganizationMembership } from "lib/hooks";
 import { generateSlug, getAuthSession } from "lib/util";
-import { useParams, useRouter } from "next/navigation";
-import { z } from "zod";
 
 import type { Session } from "next-auth";
 

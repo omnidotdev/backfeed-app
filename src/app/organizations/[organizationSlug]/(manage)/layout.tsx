@@ -1,5 +1,7 @@
 import { HStack } from "@omnidev/sigil";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
+
 import { auth } from "auth";
 import { ManagementSidebar } from "components/organization";
 import {
@@ -8,7 +10,6 @@ import {
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
 import { getQueryClient } from "lib/util";
-import { notFound } from "next/navigation";
 
 import type { PropsWithChildren } from "react";
 

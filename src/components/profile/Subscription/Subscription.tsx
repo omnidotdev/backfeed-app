@@ -14,12 +14,13 @@ import {
   TableRow,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { API_BASE_URL, app } from "lib/config";
-import { subscriptionOptions } from "lib/options";
-import { capitalizeFirstLetter } from "lib/util";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { LuSettings } from "react-icons/lu";
+
+import { API_BASE_URL, app } from "lib/config";
+import { subscriptionOptions } from "lib/options";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { CustomerState } from "@polar-sh/sdk/models/components/customerstate";
 

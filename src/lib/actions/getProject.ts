@@ -1,6 +1,7 @@
+import { cache } from "react";
+
 import { getSdk } from "lib/graphql";
 import { getAuthSession } from "lib/util";
-import { cache } from "react";
 
 import type { Organization, Project } from "generated/graphql";
 

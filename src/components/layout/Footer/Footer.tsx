@@ -1,9 +1,10 @@
 "use client";
 
 import { Divider, Icon, Link, sigil, Text } from "@omnidev/sigil";
+import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
+
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
-import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
 
 /**
  * Layout footer.

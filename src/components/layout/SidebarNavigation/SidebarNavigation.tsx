@@ -11,10 +11,11 @@ import {
   Text,
   useDisclosure,
 } from "@omnidev/sigil";
+import { FiChevronRight } from "react-icons/fi";
+
 import { Link } from "components/core";
 import { useSidebarNavigationItems } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { FiChevronRight } from "react-icons/fi";
 import { DialogType } from "store";
 
 /**

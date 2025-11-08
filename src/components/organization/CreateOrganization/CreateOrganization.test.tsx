@@ -1,7 +1,6 @@
 import { beforeEach, describe, it } from "bun:test";
 
 import { render } from "test/unit/util";
-
 import CreateOrganization from "./CreateOrganization";
 
 // TODO fill out the `todo` tests

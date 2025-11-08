@@ -17,13 +17,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo } from "react";
+import { match } from "ts-pattern";
+
 import { MembershipMenu } from "components/organization";
 import { Role, useMembersQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
-import { useMemo } from "react";
-import { match } from "ts-pattern";
 
 import type { MemberFragment, Organization } from "generated/graphql";
 import type { Session } from "next-auth";

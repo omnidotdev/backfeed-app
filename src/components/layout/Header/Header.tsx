@@ -2,14 +2,15 @@
 
 import { Flex, HStack, Icon, Link as SigilLink, sigil } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { LuExternalLink } from "react-icons/lu";
+
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
-import { usePathname } from "next/navigation";
-import { LuExternalLink } from "react-icons/lu";
 
 /**
  * Layout header.

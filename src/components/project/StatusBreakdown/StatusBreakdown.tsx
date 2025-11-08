@@ -1,6 +1,8 @@
 "use client";
 
 import { Checkbox, Flex, HStack, Text } from "@omnidev/sigil";
+import { useDebounceCallback } from "usehooks-ts";
+
 import { StatusBadge } from "components/core";
 import { SectionContainer } from "components/layout";
 import {
@@ -10,7 +12,6 @@ import {
 import { app } from "lib/config";
 import { DEBOUNCE_TIME } from "lib/constants";
 import { useSearchParams } from "lib/hooks";
-import { useDebounceCallback } from "usehooks-ts";
 
 import type { CheckboxCheckedChangeDetails } from "@ark-ui/react";
 import type { PostStatus, Project } from "generated/graphql";

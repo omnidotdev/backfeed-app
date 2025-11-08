@@ -1,5 +1,6 @@
-import { auth } from "auth";
 import { NextResponse } from "next/server";
+
+import { auth } from "auth";
 
 import type { NextRequest } from "next/server";
 import type { Session } from "next-auth";

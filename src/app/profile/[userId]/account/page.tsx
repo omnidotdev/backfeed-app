@@ -1,10 +1,11 @@
+import { notFound } from "next/navigation";
+import { FaRegEdit } from "react-icons/fa";
+
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Account } from "components/profile";
 import { AUTH_ISSUER, app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { notFound } from "next/navigation";
-import { FaRegEdit } from "react-icons/fa";
 
 export const metadata = {
   title: app.profileAccountPage.breadcrumb,

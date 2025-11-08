@@ -1,4 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
+import { FiUserPlus } from "react-icons/fi";
+
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Invitations, InviteMember } from "components/organization";
@@ -7,8 +10,6 @@ import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
-import { notFound } from "next/navigation";
-import { FiUserPlus } from "react-icons/fi";
 import { DialogType } from "store";
 
 export const generateMetadata = async ({ params }: Props) => {

@@ -1,7 +1,8 @@
 "use server";
 
-import { auth } from "auth";
 import { cache } from "react";
+
+import { auth } from "auth";
 
 /**
  * Get a cached authentication session from the server.

@@ -2,6 +2,8 @@
 
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
+import { LuCirclePlus } from "react-icons/lu";
+
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { OrganizationListItem } from "components/organization";
@@ -9,7 +11,6 @@ import { OrganizationOrderBy, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { StackProps } from "@omnidev/sigil";

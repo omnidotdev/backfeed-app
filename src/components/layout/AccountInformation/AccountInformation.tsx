@@ -14,17 +14,18 @@ import {
   Stack,
   Text,
 } from "@omnidev/sigil";
-import { token } from "generated/panda/tokens";
-import { app, isDevEnv } from "lib/config";
-import { useAuth, useViewportSize } from "lib/hooks";
-import { useDialogStore } from "lib/hooks/store";
 import { redirect, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
-import { DialogType } from "store";
 import { useOnClickOutside } from "usehooks-ts";
+
+import { token } from "generated/panda/tokens";
+import { app, isDevEnv } from "lib/config";
+import { useAuth, useViewportSize } from "lib/hooks";
+import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { RefObject } from "react";
 

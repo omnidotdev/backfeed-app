@@ -2,6 +2,9 @@
 
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { LuCirclePlus } from "react-icons/lu";
+
 import { SkeletonArray } from "components/core";
 import { EmptyState, ErrorBoundary } from "components/layout";
 import { ProjectListItem } from "components/project";
@@ -9,8 +12,6 @@ import { useProjectsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { useParams } from "next/navigation";
-import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";

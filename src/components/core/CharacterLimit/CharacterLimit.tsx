@@ -5,8 +5,9 @@ import {
   ProgressRoot,
   Text,
 } from "@omnidev/sigil";
-import { token } from "generated/panda/tokens";
 import { match } from "ts-pattern";
+
+import { token } from "generated/panda/tokens";
 
 import type { ProgressProps } from "@omnidev/sigil";
 

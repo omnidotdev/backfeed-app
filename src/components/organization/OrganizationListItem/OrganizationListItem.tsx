@@ -1,10 +1,11 @@
 "use client";
 
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import { Link, OverflowText } from "components/core";
 import dayjs from "dayjs";
-import { setSingularOrPlural } from "lib/util";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
+
+import { Link, OverflowText } from "components/core";
+import { setSingularOrPlural } from "lib/util";
 
 import type { Organization } from "generated/graphql";
 

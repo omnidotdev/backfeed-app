@@ -11,11 +11,12 @@ import {
   Text,
   Tooltip,
 } from "@omnidev/sigil";
-import { SocialMediaIcon } from "components/core";
-import { getSocialMediaLabel } from "lib/util";
 import { useState } from "react";
 import { FaGlobe } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
+
+import { SocialMediaIcon } from "components/core";
+import { getSocialMediaLabel } from "lib/util";
 
 import type { ProjectFragment } from "generated/graphql";
 

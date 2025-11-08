@@ -1,6 +1,7 @@
 "use client";
 
 import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
+
 import { Breadcrumb, CallToAction } from "components/core";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";

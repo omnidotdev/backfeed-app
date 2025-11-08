@@ -1,9 +1,10 @@
 "use client";
 
 import { Button, Icon, sigil, Text, VStack } from "@omnidev/sigil";
-import { app } from "lib/config";
 import { useRouter } from "next/navigation";
 import { LuArrowLeft } from "react-icons/lu";
+
+import { app } from "lib/config";
 
 const GlobalErrorPage = () => {
   const router = useRouter();

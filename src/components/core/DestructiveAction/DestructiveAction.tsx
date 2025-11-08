@@ -11,12 +11,13 @@ import {
   Text,
   useDisclosure,
 } from "@omnidev/sigil";
-import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
-import { useViewportSize } from "lib/hooks";
 import { useState } from "react";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { useIsClient } from "usehooks-ts";
+
+import { token } from "generated/panda/tokens";
+import { app } from "lib/config";
+import { useViewportSize } from "lib/hooks";
 
 import type {
   ButtonProps,
