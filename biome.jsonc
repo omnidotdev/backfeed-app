@@ -45,7 +45,7 @@
         "useSemanticElements": "off"
       },
       "correctness": {
-        "noUnusedImports": "error"
+        "noUnusedImports": { "fix": "safe", "level": "error" }
       },
       "style": {
         "noNonNullAssertion": "off",
