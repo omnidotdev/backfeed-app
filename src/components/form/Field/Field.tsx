@@ -1,27 +1,42 @@
-import { Stack } from "@omnidev/sigil";
+import { Stack, Text } from "@omnidev/sigil";
 
-import { FormFieldError } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
-import type { StackProps } from "@omnidev/sigil";
-import type { FormFieldErrorProps } from "components/form";
+import type { StackProps, TextProps } from "@omnidev/sigil";
+import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 
 interface Props extends StackProps {
-  /** Props for the form field error container. */
-  errorProps?: Partial<FormFieldErrorProps>;
+  /** Error map to determine issue message(s) to render. */
+  errorMap?: StandardSchemaV1Issue[];
+  /** Overrides to apply to the default error text element */
+  errorProps?: TextProps;
 }
 
 /**
  * Generalized form `Field` component.
  */
-const Field = ({ errorProps, children, ...rest }: Props) => {
+const Field = ({ errorMap, errorProps, children, ...rest }: Props) => {
   const { state } = useFieldContext<string>();
+
+  const errors = errorMap ?? state.meta.errorMap.onSubmit;
 
   return (
     <Stack position="relative" gap={1.5} {...rest}>
       {children}
 
-      <FormFieldError errors={state.meta.errorMap.onSubmit} {...errorProps} />
+      {!!errors.length && (
+        <Text
+          position="absolute"
+          top={0}
+          right={0}
+          h={5}
+          fontSize="sm"
+          color="red"
+          {...errorProps}
+        >
+          {errors[0].message}
+        </Text>
+      )}
     </Stack>
   );
 };

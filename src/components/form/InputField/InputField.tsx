@@ -3,14 +3,16 @@ import { Input, Label, Tooltip } from "@omnidev/sigil";
 import { Field } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
-import type { InputProps } from "@omnidev/sigil";
-import type { FormFieldErrorProps } from "components/form";
+import type { InputProps, TextProps } from "@omnidev/sigil";
+import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 
 interface Props extends InputProps {
   /** Label for the text field. */
   label?: string;
+  /** Error map to determine issue message(s) to render. */
+  errorMap?: StandardSchemaV1Issue[];
   /** Additional props for the error component. */
-  errorProps?: Partial<FormFieldErrorProps>;
+  errorProps?: TextProps;
   /** Content to display for tooltip when input is disabled. */
   tooltip?: string;
 }
@@ -20,6 +22,7 @@ interface Props extends InputProps {
  */
 const InputField = ({
   label,
+  errorMap,
   errorProps,
   disabled,
   tooltip,
@@ -31,7 +34,7 @@ const InputField = ({
     <Tooltip
       hasArrow={false}
       trigger={
-        <Field errorProps={errorProps}>
+        <Field errorMap={errorMap} errorProps={errorProps}>
           {label && <Label htmlFor={name}>{label}</Label>}
 
           <Input

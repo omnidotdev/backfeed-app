@@ -1,13 +1,12 @@
 "use client";
 
-import { Dialog, Stack, sigil, TagsInput } from "@omnidev/sigil";
+import { Dialog, Stack, sigil, TagsInput, Text } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { z } from "zod";
 
-import { FormFieldError } from "components/form";
 import {
   useCreateInvitationMutation,
   useInvitationsQuery,
@@ -357,7 +356,18 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
                 }}
               />
 
-              <FormFieldError errors={state.meta.errorMap.onSubmit} />
+              {!!state.meta.errorMap.onSubmit?.length && (
+                <Text
+                  position="absolute"
+                  top={0}
+                  right={0}
+                  h={5}
+                  fontSize="sm"
+                  color="red"
+                >
+                  {state.meta.errorMap.onSubmit[0].message}
+                </Text>
+              )}
             </Stack>
           )}
         </Field>
