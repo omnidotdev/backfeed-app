@@ -14,9 +14,11 @@ import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
+import type { Metadata } from "next";
+
 export const generateMetadata = async ({
   params,
-}: PageProps<"/organizations/[organizationSlug]/settings">) => {
+}: PageProps<"/organizations/[organizationSlug]/settings">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({

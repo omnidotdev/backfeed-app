@@ -21,9 +21,11 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
+import type { Metadata } from "next";
+
 export const generateMetadata = async ({
   params,
-}: PageProps<"/organizations/[organizationSlug]/members">) => {
+}: PageProps<"/organizations/[organizationSlug]/members">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({

@@ -9,7 +9,9 @@ import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
-export const metadata = {
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
   title: app.profileSubscriptionPage.breadcrumb,
 };
 

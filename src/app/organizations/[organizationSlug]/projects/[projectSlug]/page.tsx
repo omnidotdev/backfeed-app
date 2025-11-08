@@ -24,10 +24,11 @@ import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Metadata } from "next";
 
 export const generateMetadata = async ({
   params,
-}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">) => {
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">): Promise<Metadata> => {
   const { organizationSlug, projectSlug } = await params;
 
   const project = await getProject({

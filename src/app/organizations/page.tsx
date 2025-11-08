@@ -13,10 +13,11 @@ import { app } from "lib/config";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: app.organizationsPage.breadcrumb,
 };
 

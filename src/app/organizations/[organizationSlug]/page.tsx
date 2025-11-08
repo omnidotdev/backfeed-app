@@ -26,10 +26,11 @@ import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Metadata } from "next";
 
 export const generateMetadata = async ({
   params,
-}: PageProps<"/organizations/[organizationSlug]">) => {
+}: PageProps<"/organizations/[organizationSlug]">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({

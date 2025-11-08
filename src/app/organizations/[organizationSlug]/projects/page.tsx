@@ -15,10 +15,11 @@ import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
+import type { Metadata } from "next";
 
 export const generateMetadata = async ({
   params,
-}: PageProps<"/organizations/[organizationSlug]/projects">) => {
+}: PageProps<"/organizations/[organizationSlug]/projects">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({

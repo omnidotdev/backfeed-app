@@ -6,6 +6,8 @@ import { Layout } from "components/layout";
 import { app, ENABLE_MSW, isDevEnv, NEXT_RUNTIME } from "lib/config";
 import { mswNodeServer } from "test/e2e/util";
 
+import type { Metadata } from "next";
+
 import "lib/styles/main.css";
 
 // set up mock service worker (MSW) fixtures if enabled
@@ -23,7 +25,7 @@ if (ENABLE_MSW) {
   }
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: app.name,
     template: `%s | ${app.name}`,

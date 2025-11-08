@@ -5,9 +5,11 @@ import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
+import type { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: app.pricingPage.title,
 };
 

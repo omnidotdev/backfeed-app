@@ -7,7 +7,9 @@ import { Account } from "components/profile";
 import { AUTH_ISSUER, app } from "lib/config";
 import { getSdk } from "lib/graphql";
 
-export const metadata = {
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
   title: app.profileAccountPage.breadcrumb,
 };
 

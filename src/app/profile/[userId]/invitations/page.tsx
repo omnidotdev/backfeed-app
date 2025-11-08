@@ -5,7 +5,9 @@ import { Page } from "components/layout";
 import { OrganizationInvites } from "components/profile";
 import { app } from "lib/config";
 
-export const metadata = {
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
   title: app.profileInvitationsPage.breadcrumb,
 };
 
