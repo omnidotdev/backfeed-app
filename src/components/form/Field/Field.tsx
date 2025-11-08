@@ -18,7 +18,9 @@ interface Props extends StackProps {
 const Field = ({ errorMap, errorProps, children, ...rest }: Props) => {
   const { state } = useFieldContext<string>();
 
-  const errors = errorMap ?? state.meta.errorMap.onSubmit;
+  const errors = (errorMap ??
+    state.meta.errorMap.onSubmit ??
+    []) as StandardSchemaV1Issue[];
 
   return (
     <Stack position="relative" gap={1.5} {...rest}>
