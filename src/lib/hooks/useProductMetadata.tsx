@@ -1,5 +1,5 @@
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
-import { match, P } from "ts-pattern";
+import { P, match } from "ts-pattern";
 
 import { capitalizeFirstLetter } from "lib/util";
 

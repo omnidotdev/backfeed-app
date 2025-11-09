@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Circle, HStack, Stack, sigil, Text } from "@omnidev/sigil";
+import { Avatar, Circle, HStack, Stack, Text, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";

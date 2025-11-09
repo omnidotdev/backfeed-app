@@ -4,8 +4,8 @@ export { default as InvitationMenu } from "./InvitationMenu/InvitationMenu";
 export { default as Invitations } from "./Invitations/Invitations";
 export { default as InviteMember } from "./InviteMember/InviteMember";
 export {
-  default as InviteMemberEmailTemplate,
   type OrganizationInvitation,
+  default as InviteMemberEmailTemplate,
 } from "./InviteMemberEmailTemplate/InviteMemberEmailTemplate";
 export { default as ManagementNavigation } from "./ManagementNavigation/ManagementNavigation";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";

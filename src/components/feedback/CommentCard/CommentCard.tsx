@@ -9,8 +9,8 @@ import {
   HStack,
   Icon,
   Stack,
-  sigil,
   Text,
+  sigil,
   useDisclosure,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";

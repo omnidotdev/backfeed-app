@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icon, sigil, Text, VStack } from "@omnidev/sigil";
+import { Button, Icon, Text, VStack, sigil } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { LuArrowLeft } from "react-icons/lu";
 

@@ -35,9 +35,9 @@ import {
   useSearchParams,
 } from "lib/hooks";
 import {
+  ViewState,
   useDialogStore,
   useProjectViewStore,
-  ViewState,
 } from "lib/hooks/store";
 import { DialogType } from "store";
 

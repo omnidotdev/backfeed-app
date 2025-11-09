@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, Stack, sigil, TagsInput, Text } from "@omnidev/sigil";
+import { Dialog, Stack, TagsInput, Text, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import ms from "ms";

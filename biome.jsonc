@@ -15,6 +15,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
+            "identifierOrder": "lexicographic",
             "groups": [
               { "type": false, "source": [":BUN:", ":NODE:"] },
               ":BLANK_LINE:",

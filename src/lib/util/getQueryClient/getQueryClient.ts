@@ -1,6 +1,6 @@
 import {
-  isServer,
   QueryClient as ReactQueryClient,
+  isServer,
 } from "@tanstack/react-query";
 
 let browserQueryClient: ReactQueryClient | undefined;

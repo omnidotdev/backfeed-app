@@ -3,7 +3,7 @@ import { Label, Textarea, Tooltip } from "@omnidev/sigil";
 import { Field } from "components/form";
 import { useFieldContext } from "lib/hooks";
 
-import type { TextareaProps, TextProps } from "@omnidev/sigil";
+import type { TextProps, TextareaProps } from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 
 interface Props extends TextareaProps {

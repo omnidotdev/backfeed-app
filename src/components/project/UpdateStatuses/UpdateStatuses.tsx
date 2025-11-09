@@ -10,11 +10,11 @@ import {
   Popover,
   Stack,
   Switch,
-  sigil,
   Table,
   TableCell,
   TableRow,
   Text,
+  sigil,
 } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import {

@@ -1,6 +1,6 @@
 "use client";
 
-import { css, Flex, sigil, Toaster } from "@omnidev/sigil";
+import { Flex, Toaster, css, sigil } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";

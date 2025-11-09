@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
-import { app, FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS } from "lib/config";
+import { FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS, app } from "lib/config";
 
 import type { OrganizationInvitation } from "components/organization";
 import type { NextRequest } from "next/server";
