@@ -6,7 +6,7 @@ import { LuExternalLink } from "react-icons/lu";
 
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
-import { token } from "generated/panda/tokens";
+import { css } from "generated/panda/css";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -25,12 +25,12 @@ const Header = () => {
       w="full"
       h="full"
       py={2}
-      borderBottom="1px solid"
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-      // moved to `style` prop as `css` prop was not rendering properly
-      style={{
-        borderColor: token("colors.border.subtle"),
-      }}
+      css={css.raw({
+        borderBottom: "1px solid",
+        // border.subtle is not applied when used (flaky)
+        borderColor: { base: "#e5e5e5", _dark: "#404040" },
+      })}
     >
       <Flex align="center" justify="space-between" w="full" px={4}>
         <Flex gap={4} alignItems="center">
