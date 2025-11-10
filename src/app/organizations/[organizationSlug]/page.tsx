@@ -76,7 +76,7 @@ const OrganizationPage = async ({
   const hasTeamTierPrivileges =
     hasBasicTierPrivileges && organization.tier !== Tier.Basic;
 
-  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and has appropriate tier to create an additional project
+  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and validate tier based checks
   const canCreateProjects =
     hasAdminPrivileges &&
     (hasBasicTierPrivileges

@@ -1,5 +1,5 @@
 /**
- * The maximum number of projects a user can create if they have lower than a team tier subscription.
+ * The maximum number of projects a user can create if the organization has lower than a team tier subscription.
  */
 const MAX_NUMBER_OF_PROJECTS = 3;
 

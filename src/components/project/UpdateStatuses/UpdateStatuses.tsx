@@ -205,7 +205,7 @@ const UpdateStatuses = ({ projectId }: Props) => {
       }, updateProjectStatuses.actions.update.toast),
   });
 
-  // TODO: when ready to implement for production, remove the development environment check and validate that the user is on a team tier subscription or higher
+  // TODO: when ready to implement for production, remove the development environment check and validate that the organization is on a team tier subscription or higher
   if (!isDevEnv) return null;
 
   return (
