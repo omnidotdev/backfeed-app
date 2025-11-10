@@ -17,7 +17,7 @@ import {
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
+import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 
@@ -118,7 +118,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     },
   };
 
-  const TRANSFER_OWNERSHIP: DestructiveActionProps = {
+  const _TRANSFER_OWNERSHIP: DestructiveActionProps = {
     title: transferOwnershipDetails.title,
     description: transferOwnershipDetails.description,
     triggerLabel: transferOwnershipDetails.actionLabel,
@@ -175,14 +175,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
 
         {isOwner && (
           <Stack gap={6}>
-            {/* TODO: remove development environment check when functionality for ownership transfers is resolved. */}
-            {isOnlyOwner && isDevEnv && (
-              <DangerZoneAction
-                title={transferOwnershipDetails.title}
-                description={transferOwnershipDetails.description}
-                actionProps={TRANSFER_OWNERSHIP}
-              />
-            )}
+            {/* TODO: add ownership transfer when functionality is resolved. Added scope: must transfer subscription. */}
 
             <DangerZoneAction
               title={deleteOrganizationDetails.title}
