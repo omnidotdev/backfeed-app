@@ -8,10 +8,11 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
-import { match } from "ts-pattern";
 
 import DataTable from "components/core/DataTable/DataTable";
-import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
+import { SubscriptionActions } from "components/profile";
+import { Role, useOrganizationsQuery } from "generated/graphql";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";
 
@@ -21,7 +22,7 @@ import type { Session } from "next-auth";
 
 const columnHelper = createColumnHelper<OrganizationFragment>();
 
-interface CustomerState {
+export interface CustomerState {
   id: string;
   subscriptions: SubscriptionInterface[];
   defaultPaymentMethodId?: string | null | undefined;
@@ -61,33 +62,27 @@ const Subscription = ({ user, customer }: Props) => {
       columnHelper.display({
         id: "organization_actions",
         header: "Actions",
-        cell: ({ row }) => {
-          const tier = row.original.tier;
-
-          // TODO: Handlers for managing workspace subscriptions
-          return match(tier)
-            .with(Tier.Free, () => (
-              <Button size="sm" disabled={!customer?.defaultPaymentMethodId}>
-                Upgrade
-              </Button>
-            ))
-            .with(Tier.Basic, () => <Button size="sm">Upgrade</Button>)
-            .with(Tier.Team, () => <Button size="sm">Upgrade</Button>)
-            .with(Tier.Enterprise, () => <Button size="sm">Manage</Button>)
-            .exhaustive();
-        },
+        cell: ({ row }) => (
+          <SubscriptionActions
+            user={user}
+            customer={customer}
+            organization={row.original}
+          />
+        ),
         meta: {
           tableCellProps: {
             pr: 0,
-            textAlign: "right",
+            style: {
+              width: token("sizes.20"),
+            },
           },
           headerProps: {
-            justify: "end",
+            justify: "center",
           },
         },
       }),
     ],
-    [customer?.defaultPaymentMethodId],
+    [user, customer],
   );
 
   const table = useReactTable({

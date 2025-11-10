@@ -11,7 +11,7 @@ const getSubscriptions = async (userId: string) => {
 
   if (
     // TODO: determine if there is a better way to do this. Since the Polar organization scope is beyond Backfeed, we have to apply additional checks
-    !customer.activeSubscriptions.filter((sub) =>
+    !customer.subscriptions.filter((sub) =>
       BACKFEED_PRODUCT_IDS!.includes(sub.productId),
     ).length
   ) {
@@ -19,7 +19,7 @@ const getSubscriptions = async (userId: string) => {
   }
 
   const subscriptionsWithProduct = await Promise.all(
-    customer.activeSubscriptions
+    customer.subscriptions
       .filter((sub) => BACKFEED_PRODUCT_IDS!.includes(sub.productId))
       .map(async (sub) => {
         const product = await getProduct(sub.productId);

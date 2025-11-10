@@ -34,7 +34,6 @@ query Organizations(
     totalCount
     nodes {
       ...Organization
-      rowId
       updatedAt
       projects {
         totalCount

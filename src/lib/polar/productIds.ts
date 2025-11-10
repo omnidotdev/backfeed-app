@@ -1,6 +1,4 @@
-import type { ProductsListRequest } from "@polar-sh/sdk/models/operations/productslist";
-
-type ProductIds = ProductsListRequest["id"];
+import { isDevEnv } from "lib/config";
 
 /**
  * Polar sandbox Product IDs.
@@ -18,10 +16,6 @@ const sandboxProductIds = [
   "51eaf279-48b4-422a-939f-046cb299655d",
   // Backfeed Team (Yearly)
   "2479fd7f-03b3-4965-9887-e701e8e18e14",
-  // Backfeed Enterprise (Monthly)
-  "3776b994-1c73-4869-afef-f34a2ca68181",
-  // Backfeed Enterprise (Yearly)
-  "48d27c97-50da-441b-ba44-d90b8c2d60b3",
 ];
 
 /**
@@ -49,9 +43,8 @@ const productionProductIds = [
 /**
  * Polar product IDs.
  */
-const BACKFEED_PRODUCT_IDS: ProductIds = [
-  ...sandboxProductIds,
-  ...productionProductIds,
-];
+const BACKFEED_PRODUCT_IDS = isDevEnv
+  ? [...sandboxProductIds]
+  : [...productionProductIds];
 
 export default BACKFEED_PRODUCT_IDS;
