@@ -13,9 +13,24 @@ const getCustomer = async (userId: string) => {
     throw new Error("Unauthorized");
   }
 
-  return await polar.customers.getStateExternal({
-    externalId: userId,
+  const customerSession = await polar.customerSessions.create({
+    externalCustomerId: userId,
   });
+
+  const [customer, subscriptionResult] = await Promise.all([
+    polar.customerPortal.customers.get({
+      customerSession: customerSession.token,
+    }),
+    polar.subscriptions.list({
+      externalCustomerId: userId,
+      active: true,
+    }),
+  ]);
+
+  return {
+    ...customer,
+    subscriptions: subscriptionResult.result.items,
+  };
 };
 
 export default getCustomer;
