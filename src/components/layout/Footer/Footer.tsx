@@ -3,7 +3,7 @@
 import { Divider, Icon, Link, Text, sigil } from "@omnidev/sigil";
 import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
 
-import { token } from "generated/panda/tokens";
+import { css } from "generated/panda/css";
 import { app } from "lib/config";
 
 /**
@@ -18,12 +18,11 @@ const Footer = () => (
     p={4}
     bottom={0}
     w="100%"
-    borderTop="1px solid"
     // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-    // moved to `style` prop as `css` prop was not rendering properly
-    style={{
-      borderColor: token("colors.border.subtle"),
-    }}
+    css={css.raw({
+      borderTop: "1px solid",
+      borderColor: { base: "#e5e5e5", _dark: "#404040" },
+    })}
   >
     <Text>
       &copy; {new Date().getFullYear()} {app.organization.name}
