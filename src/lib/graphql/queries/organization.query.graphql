@@ -4,13 +4,7 @@ query Organization($slug: String!) {
     name
     slug
     updatedAt
-    members(first: 1, condition: { role: owner }) {
-      nodes {
-        user {
-          tier
-        }
-      }
-    }
+    tier
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {
