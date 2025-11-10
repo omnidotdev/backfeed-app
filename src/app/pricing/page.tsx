@@ -43,7 +43,7 @@ const PricingPage = async () => {
       customer.status !== "rejected" &&
       customer.value.activeSubscriptions.length
     )
-      redirect(`/profile/${session.user.hidraId}/subscription`);
+      redirect(`/profile/${session.user.hidraId}/subscriptions`);
   }
 
   return <PricingOverview products={products} />;

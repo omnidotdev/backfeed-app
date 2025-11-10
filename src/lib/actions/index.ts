@@ -3,4 +3,4 @@ export { default as getFeedback } from "./getFeedback";
 export { default as getOrganization } from "./getOrganization";
 export { default as getProduct } from "./getProduct";
 export { default as getProject } from "./getProject";
-export { default as getSubscription } from "./getSubscription";
+export { default as getSubscriptions } from "./getSubscriptions";

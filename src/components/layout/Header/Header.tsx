@@ -1,7 +1,6 @@
 "use client";
 
 import { Flex, HStack, Icon, Link as SigilLink, sigil } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { LuExternalLink } from "react-icons/lu";
 
@@ -10,23 +9,15 @@ import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { subscriptionOptions } from "lib/options";
 
 /**
  * Layout header.
  */
 const Header = () => {
   const pathname = usePathname(),
-    { user, isAuthenticated, isLoading } = useAuth();
+    { isAuthenticated, isLoading } = useAuth();
 
-  const { error: subscriptionNotFound } = useQuery(
-    subscriptionOptions({
-      hidraId: user?.hidraId,
-    }),
-  );
-
-  const showPricingLink =
-    !isLoading && (!isAuthenticated || subscriptionNotFound);
+  const showPricingLink = !isLoading && !isAuthenticated;
 
   return (
     <sigil.header

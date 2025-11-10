@@ -158,9 +158,6 @@ const app = {
       description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
-        subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-        noSubscriptionTooltip: "Subscribe to create an organization.",
         cta: {
           label: "Create Organization",
         },
@@ -201,9 +198,6 @@ const app = {
           },
         },
         label: "New Organization",
-        subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-        noSubscriptionTooltip: "Subscribe to create an organization.",
         description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
@@ -344,9 +338,9 @@ const app = {
       },
     },
   },
-  profileSubscriptionPage: {
-    breadcrumb: "Subscription",
-    description: "Manage your subscription plan and billing information.",
+  profileSubscriptionsPage: {
+    breadcrumb: "Subscriptions",
+    description: "Manage your subscriptions and billing information.",
     table: {
       headers: {
         productName: "Product Name",
@@ -354,7 +348,7 @@ const app = {
         amount: "Amount",
       },
       emptyState: {
-        label: "No active subscription found.",
+        label: "No active subscriptions found.",
       },
       actions: {
         subscribe: {
@@ -373,17 +367,11 @@ const app = {
       cta: {
         newOrganization: {
           label: "New Organization",
-          subscribedTooltip:
-            "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-          noSubscriptionTooltip: "Subscribe to create an organization.",
         },
       },
     },
     emptyState: {
       message: "No organizations found. Would you like to create one?",
-      subscribedTooltip:
-        "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-      noSubscriptionTooltip: "Subscribe to create an organization.",
       cta: {
         label: "Create Organization",
       },

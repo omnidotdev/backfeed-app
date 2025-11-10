@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -9,7 +8,6 @@ import { LuBuilding2 } from "react-icons/lu";
 import { useOrganizationQuery, useProjectBySlugQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
-import { subscriptionOptions } from "lib/options";
 
 import type { IconType } from "react-icons";
 
@@ -34,18 +32,12 @@ interface NavItem {
  * Custom hook to generate sidebar navigation items based on authentication state, current route, and available organization/project data.
  */
 const useSidebarNavigationItems = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const pathname = usePathname();
   const { organizationSlug, projectSlug } = useParams<{
     organizationSlug: string;
     projectSlug: string;
   }>();
-
-  const { error: subscriptionNotFound } = useQuery(
-    subscriptionOptions({
-      hidraId: user?.hidraId,
-    }),
-  );
 
   const { data: organization } = useOrganizationQuery(
       {
@@ -72,7 +64,7 @@ const useSidebarNavigationItems = () => {
       {
         href: "/pricing",
         label: app.pricingPage.title,
-        isVisible: !isAuthenticated || !!subscriptionNotFound,
+        isVisible: !isAuthenticated,
         isActive: pathname === "/pricing",
       },
       {
@@ -121,7 +113,6 @@ const useSidebarNavigationItems = () => {
     ],
     [
       isAuthenticated,
-      subscriptionNotFound,
       organization,
       organizationSlug,
       pathname,

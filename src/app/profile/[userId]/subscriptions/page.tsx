@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
-import { Subscription } from "components/profile";
+import { Subscriptions } from "components/profile";
 import { app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
@@ -12,15 +12,15 @@ import { getQueryClient } from "lib/util";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: app.profileSubscriptionPage.breadcrumb,
+  title: app.profileSubscriptionsPage.breadcrumb,
 };
 
 /**
- * Profile subscription page.
+ * Profile subscriptions page.
  */
-const ProfileSubscriptionPage = async ({
+const ProfileSubscriptionsPage = async ({
   params,
-}: PageProps<"/profile/[userId]/subscription">) => {
+}: PageProps<"/profile/[userId]/subscriptions">) => {
   const { userId } = await params;
 
   const [session, customer] = await Promise.allSettled([
@@ -49,15 +49,15 @@ const ProfileSubscriptionPage = async ({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
         header={{
-          title: app.profileSubscriptionPage.breadcrumb,
-          description: app.profileSubscriptionPage.description,
+          title: app.profileSubscriptionsPage.breadcrumb,
+          description: app.profileSubscriptionsPage.description,
         }}
         pt={0}
       >
-        <Subscription customer={customer} />
+        <Subscriptions customer={customer} />
       </Page>
     </HydrationBoundary>
   );
 };
 
-export default ProfileSubscriptionPage;
+export default ProfileSubscriptionsPage;

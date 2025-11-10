@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { getSubscription } from "lib/actions";
+import { getSubscriptions } from "lib/actions";
 
 import type { User } from "generated/graphql";
 
@@ -11,8 +11,8 @@ interface Options {
 
 const subscriptionOptions = ({ hidraId, enabled = true }: Options) =>
   queryOptions({
-    queryKey: ["Subscription", { hidraId }],
-    queryFn: async () => getSubscription(hidraId!),
+    queryKey: ["Subscriptions", { hidraId }],
+    queryFn: async () => getSubscriptions(hidraId!),
     enabled: enabled && !!hidraId,
     retry: false,
   });
