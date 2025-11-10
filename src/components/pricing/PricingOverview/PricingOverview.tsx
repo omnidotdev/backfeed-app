@@ -34,7 +34,10 @@ const PricingOverview = ({ products }: Props) => {
 
   const filteredProducts = useMemo(
     () =>
-      products.filter((product) => product.recurringInterval === pricingModel),
+      products.filter(
+        (product) =>
+          product.recurringInterval === pricingModel || !product.isRecurring,
+      ),
     [products, pricingModel],
   );
 

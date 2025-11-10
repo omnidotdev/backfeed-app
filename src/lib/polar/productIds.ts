@@ -4,10 +4,8 @@ import { isDevEnv } from "lib/config";
  * Polar sandbox Product IDs.
  */
 const sandboxProductIds = [
-  // Backfeed Free (Monthly)
-  "e9a12f96-e207-4394-bc53-a1aca41208b0",
-  // Backfeed Free (Yearly)
-  "9895e940-47d4-4deb-957d-86159f992aa7",
+  // Backfeed Free
+  "087994a1-a9e5-4a8c-8d9d-56701442f935",
   // Backfeed Basic (Monthly)
   "9fdf9d78-f4f7-4222-93ed-55ae60d996e4",
   // Backfeed Basic (Yearly)
@@ -22,6 +20,7 @@ const sandboxProductIds = [
  * Polar production product IDs.
  */
 const productionProductIds = [
+  // TODO: converge free tier to one product (otp)
   // Backfeed Free (Monthly)
   "b43cb695-0762-492b-be29-3320725ac4c6",
   // Backfeed Free (Yearly)
