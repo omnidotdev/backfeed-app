@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscriptions } from "components/profile";
+import { Role, useOrganizationsQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
 import { polar } from "lib/polar";
@@ -36,6 +37,17 @@ const ProfileSubscriptionsPage = async ({
 
   const queryClient = getQueryClient();
 
+  await queryClient.prefetchQuery({
+    queryKey: useOrganizationsQuery.getKey({
+      userId: session.value.user.rowId!,
+      excludeRoles: [Role.Member, Role.Admin],
+    }),
+    queryFn: useOrganizationsQuery.fetcher({
+      userId: session.value.user.rowId!,
+      excludeRoles: [Role.Member, Role.Admin],
+    }),
+  });
+
   // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
   if (customer.status !== "rejected") {
     await queryClient.prefetchQuery(
@@ -54,7 +66,7 @@ const ProfileSubscriptionsPage = async ({
         }}
         pt={0}
       >
-        <Subscriptions customer={customer} />
+        <Subscriptions customer={customer} user={session.value.user} />
       </Page>
     </HydrationBoundary>
   );

@@ -340,7 +340,7 @@ const app = {
   },
   profileSubscriptionsPage: {
     breadcrumb: "Subscriptions",
-    description: "Manage your subscriptions and billing information.",
+    description: "Manage your organization subscriptions.",
     table: {
       headers: {
         productName: "Product Name",

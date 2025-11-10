@@ -1,0 +1,9 @@
+fragment Organization on Organization {
+  name
+  slug
+  tier
+  subscriptionId
+  members {
+    totalCount
+  }
+}
