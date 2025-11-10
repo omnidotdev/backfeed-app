@@ -16,6 +16,10 @@ interface Options {
 const useProductMetadata = ({ product }: Options) => {
   const metadata = product.metadata;
 
+  const isFreeTier = match(metadata)
+    .with({ isFree: P.nonNullable }, () => true)
+    .otherwise(() => false);
+
   const isRecommendedTier = match(metadata)
     .with({ isRecommended: P.nonNullable }, () => true)
     .otherwise(() => false);
@@ -37,6 +41,7 @@ const useProductMetadata = ({ product }: Options) => {
   const productTitle = capitalizeFirstLetter(metadata.title as string);
 
   return {
+    isFreeTier,
     isRecommendedTier,
     isEnterpriseTier,
     isDisabled,

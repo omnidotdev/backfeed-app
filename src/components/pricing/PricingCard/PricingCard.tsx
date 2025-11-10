@@ -87,6 +87,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
   const {
     productTitle,
+    isFreeTier,
     isRecommendedTier,
     isEnterpriseTier,
     isDisabled,
@@ -120,6 +121,22 @@ const PricingCard = ({ product, ...rest }: Props) => {
         >
           <Badge color="brand.primary" height={8} borderRadius={4}>
             {app.pricingPage.pricingTiers.recommended}
+          </Badge>
+        </Stack>
+      )}
+
+      {isFreeTier && (
+        <Stack
+          position="absolute"
+          top={1}
+          left="50%"
+          transform="translateX(-50%)"
+          backgroundColor="background.secondary"
+          p={2}
+          borderRadius={1}
+        >
+          <Badge color="brand.secondary" height={8} borderRadius={4}>
+            No Subscription Required
           </Badge>
         </Stack>
       )}
@@ -165,9 +182,11 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 color="foreground.subtle"
               >
                 /
-                {isPerMonthPricing
-                  ? app.pricingPage.pricingCard.month
-                  : app.pricingPage.pricingCard.year}
+                {!isFreeTier &&
+                  (isPerMonthPricing
+                    ? `${app.pricingPage.pricingCard.month}/org`
+                    : `${app.pricingPage.pricingCard.year}/org`)}
+                {isFreeTier && "forever"}
               </sigil.span>
             )}
           </HStack>
@@ -177,6 +196,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
             fontSize="lg"
             disabled={isDisabled}
             variant={isRecommendedTier ? "solid" : "outline"}
+            // TODO: update logic. With organization based subscriptions, the logic for handling checkout flow changes a lot.
             onClick={() =>
               isAuthenticated
                 ? router.push(
