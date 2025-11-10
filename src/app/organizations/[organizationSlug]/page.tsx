@@ -1,3 +1,4 @@
+import { Badge, HStack, Text } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -23,7 +24,7 @@ import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { capitalizeFirstLetter, getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -126,7 +127,21 @@ const OrganizationPage = async ({
       <Page
         breadcrumbs={breadcrumbs}
         header={{
-          title: organization.name!,
+          title: (
+            <HStack gap={4}>
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="semibold"
+                lineHeight={1.3}
+              >
+                {organization.name!}
+              </Text>
+              <Badge rounded="lg">
+                {capitalizeFirstLetter(organization.tier)}
+              </Badge>
+            </HStack>
+          ),
           cta: [
             {
               label: app.organizationPage.header.cta.viewProjects.label,
