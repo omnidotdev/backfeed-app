@@ -5,8 +5,8 @@ import { LuCirclePlus } from "react-icons/lu";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
-import { Role, useProjectsQuery } from "generated/graphql";
-import { getOrganization, getOwnerTier } from "lib/actions";
+import { Role, Tier, useProjectsQuery } from "generated/graphql";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -44,12 +44,8 @@ const ProjectsPage = async ({
 
   if (!session) notFound();
 
-  const [
-    organization,
-    { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
-  ] = await Promise.all([
+  const [organization] = await Promise.all([
     getOrganization({ organizationSlug }),
-    getOwnerTier({ organizationSlug }),
   ]);
 
   if (!organization) notFound();
@@ -64,11 +60,13 @@ const ProjectsPage = async ({
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
+  const hasBasicTierPrivileges = organization.tier !== Tier.Free;
+  const hasTeamTierPrivileges =
+    hasBasicTierPrivileges && organization.tier !== Tier.Basic;
 
   // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and has appropriate tier to create an additional project
   const canCreateProjects =
     hasAdminPrivileges &&
-    isOwnerSubscribed &&
     (hasBasicTierPrivileges
       ? hasTeamTierPrivileges ||
         organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS
