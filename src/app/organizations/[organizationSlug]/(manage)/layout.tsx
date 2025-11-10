@@ -11,15 +11,13 @@ import {
 import { getOrganization } from "lib/actions";
 import { getQueryClient } from "lib/util";
 
-import type { Metadata } from "next";
-
 /**
  * Manage organization layout.
  */
 const ManageOrganizationLayout = async ({
   params,
   children,
-}: LayoutProps<"/organizations/[organizationSlug]">): Promise<Metadata> => {
+}: LayoutProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();
