@@ -7,6 +7,7 @@ import { LuExternalLink } from "react-icons/lu";
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { css } from "generated/panda/css";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -29,7 +30,7 @@ const Header = () => {
       css={css.raw({
         borderBottom: "1px solid",
         // border.subtle is not applied when used (flaky)
-        borderColor: { base: "#e5e5e5", _dark: "#404040" },
+        borderColor: token("colors.border.subtle"),
       })}
     >
       <Flex align="center" justify="space-between" w="full" px={4}>

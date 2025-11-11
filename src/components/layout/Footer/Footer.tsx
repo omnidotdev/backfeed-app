@@ -4,6 +4,7 @@ import { Divider, Icon, Link, Text, sigil } from "@omnidev/sigil";
 import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
 
 import { css } from "generated/panda/css";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 
 /**
@@ -21,7 +22,7 @@ const Footer = () => (
     // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
     css={css.raw({
       borderTop: "1px solid",
-      borderColor: { base: "#e5e5e5", _dark: "#404040" },
+      borderColor: token("colors.border.subtle"),
     })}
   >
     <Text>
