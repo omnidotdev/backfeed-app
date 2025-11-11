@@ -21,6 +21,7 @@ import {
   TabsRoot,
   Text,
   sigil,
+  useDisclosure,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
 import { useMemo, useState } from "react";
@@ -28,13 +29,14 @@ import { LuCheck, LuClockAlert } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import { Tier } from "generated/graphql";
+import { updateSubscription } from "lib/actions";
 import { useSearchParams } from "lib/hooks";
+import { toaster } from "lib/util";
 
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
 import type { OrganizationFragment } from "generated/graphql";
-import type { Session } from "next-auth";
 import type { CustomerState } from "../Subscription/Subscriptions";
 
 const getPrice = (price: ProductPrice) =>
@@ -43,8 +45,6 @@ const getPrice = (price: ProductPrice) =>
 interface Props {
   /** Organization details. */
   organization: OrganizationFragment;
-  /** User details. */
-  user: Session["user"];
   /** List of available backfeed products. */
   products: Product[];
   /** Customer details. */
@@ -55,13 +55,10 @@ interface Props {
  * Actions a user may perform for an organization level subscription.
  */
 // TODO: create dialogs for actions to avoid customer portal API
-const SubscriptionActions = ({
-  organization,
-  user,
-  products,
-  customer,
-}: Props) => {
+const SubscriptionActions = ({ organization, products, customer }: Props) => {
   const [selectedProduct, setSelectedProduct] = useState<Product>();
+
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const subscriptionId = organization.subscriptionId;
 
@@ -80,9 +77,36 @@ const SubscriptionActions = ({
     [products, pricingModel],
   );
 
+  // TODO: handle case when there is no `subscriptionId` (backwards compat for existing organizations)
+  const handleUpdateSubscription = () =>
+    toaster.promise(
+      async () => {
+        await updateSubscription({
+          subscriptionId: subscriptionId!,
+          productId: selectedProduct?.id!,
+        });
+
+        onClose();
+      },
+      {
+        loading: { title: "Updating subscription..." },
+        success: {
+          title: "Success!",
+          description: "Your subscription has been updated.",
+        },
+        error: {
+          title: "Error",
+          description:
+            "Sorry, there was an issue with updating your subscription. Please try again.",
+        },
+      },
+    );
+
   return (
     <HStack py={2} justify="end">
       <Drawer
+        open={isOpen}
+        onOpenChange={onToggle}
         trigger={
           <Button size="sm" disabled={!customer?.defaultPaymentMethodId}>
             Manage
@@ -96,6 +120,7 @@ const SubscriptionActions = ({
             disabled={
               !selectedProduct || selectedProduct.id === currentProduct.id
             }
+            onClick={handleUpdateSubscription}
           >
             Update Subscription
           </Button>

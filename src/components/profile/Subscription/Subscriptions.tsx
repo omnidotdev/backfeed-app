@@ -67,7 +67,6 @@ const Subscription = ({ user, products, customer }: Props) => {
         header: "Actions",
         cell: ({ row }) => (
           <SubscriptionActions
-            user={user}
             products={products}
             customer={customer}
             organization={row.original}
@@ -86,7 +85,7 @@ const Subscription = ({ user, products, customer }: Props) => {
         },
       }),
     ],
-    [user, products, customer],
+    [products, customer],
   );
 
   const table = useReactTable({
