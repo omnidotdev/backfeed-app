@@ -8,6 +8,7 @@ import { Role, useOrganizationsQuery } from "generated/graphql";
 import { getCustomer } from "lib/actions";
 import { API_BASE_URL, app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -32,6 +33,13 @@ const ProfileSubscriptionsPage = async ({
   if (session.status === "rejected") redirect("/");
 
   if (session?.value?.user?.hidraId !== userId) notFound();
+
+  const {
+    result: { items: products },
+  } = await polar.products.list({
+    id: BACKFEED_PRODUCT_IDS,
+    sorting: ["price_amount"],
+  });
 
   const queryClient = getQueryClient();
 
@@ -86,6 +94,7 @@ const ProfileSubscriptionsPage = async ({
       >
         <Subscriptions
           user={session.value.user}
+          products={products}
           customer={customer.status !== "rejected" ? customer.value : undefined}
         />
       </Page>

@@ -45,7 +45,7 @@ const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
   return price.priceAmount / 100;
 };
 
-const sortBenefits = (benefits: Benefit[]) => {
+export const sortBenefits = (benefits: Benefit[]) => {
   const everythingInPrefix = "Everything in";
   let everythingInBenefit: Benefit | undefined;
   const otherBenefits: Benefit[] = [];

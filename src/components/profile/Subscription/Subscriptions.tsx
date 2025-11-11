@@ -16,6 +16,7 @@ import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";
 
+import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models/components/subscription.js";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
@@ -31,6 +32,8 @@ export interface CustomerState {
 interface Props {
   /** User details. */
   user: Session["user"];
+  /** List of available backfeed products. */
+  products: Product[];
   /** Customer details. */
   customer?: CustomerState;
 }
@@ -38,7 +41,7 @@ interface Props {
 /**
  * Details of the user's subscriptions.
  */
-const Subscription = ({ user, customer }: Props) => {
+const Subscription = ({ user, products, customer }: Props) => {
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
@@ -65,6 +68,7 @@ const Subscription = ({ user, customer }: Props) => {
         cell: ({ row }) => (
           <SubscriptionActions
             user={user}
+            products={products}
             customer={customer}
             organization={row.original}
           />
@@ -82,7 +86,7 @@ const Subscription = ({ user, customer }: Props) => {
         },
       }),
     ],
-    [user, customer],
+    [user, products, customer],
   );
 
   const table = useReactTable({
