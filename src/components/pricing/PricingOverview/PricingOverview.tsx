@@ -36,7 +36,8 @@ const PricingOverview = ({ products }: Props) => {
     () =>
       products.filter(
         (product) =>
-          product.recurringInterval === pricingModel || !product.isRecurring,
+          product.recurringInterval === pricingModel ||
+          product.prices[0].amountType === "free",
       ),
     [products, pricingModel],
   );

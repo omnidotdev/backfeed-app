@@ -1,11 +1,13 @@
 import { isDevEnv } from "lib/config";
 
+const SANDBOX_FREE = "9578f4de-b9f7-46c4-918f-4cfac9988d61";
+
 /**
  * Polar sandbox Product IDs.
  */
 const sandboxProductIds = [
   // Backfeed Free
-  "087994a1-a9e5-4a8c-8d9d-56701442f935",
+  SANDBOX_FREE,
   // Backfeed Basic (Monthly)
   "9fdf9d78-f4f7-4222-93ed-55ae60d996e4",
   // Backfeed Basic (Yearly)
@@ -16,15 +18,15 @@ const sandboxProductIds = [
   "2479fd7f-03b3-4965-9887-e701e8e18e14",
 ];
 
+// TODO: add new product ID
+const PRODUCTION_FREE = "";
+
 /**
  * Polar production product IDs.
  */
 const productionProductIds = [
-  // TODO: converge free tier to one product (otp)
-  // Backfeed Free (Monthly)
-  "b43cb695-0762-492b-be29-3320725ac4c6",
-  // Backfeed Free (Yearly)
-  "62685a4c-04dd-4dcd-989b-7d2e933827a8",
+  // Backfeed Free
+  PRODUCTION_FREE,
   // Backfeed Basic (Monthly)
   "768e1aee-fc38-46fa-91d9-1c15b71375dd",
   // Backfeed Basic (Yearly)
@@ -38,6 +40,11 @@ const productionProductIds = [
   // Backfeed Enterprise (Yearly)
   "51906ba1-b6a9-43c9-83ee-f2fe399a792f",
 ];
+
+/**
+ * Free tier product ID. Used for initial subscriptions.
+ */
+export const FREE_TIER_PRODUCT_ID = isDevEnv ? SANDBOX_FREE : PRODUCTION_FREE;
 
 /**
  * Polar product IDs.

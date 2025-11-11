@@ -4,6 +4,7 @@ import { Button, Flex, Stack } from "@omnidev/sigil";
 import {
   createColumnHelper,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
@@ -92,6 +93,7 @@ const Subscription = ({ user, products, customer }: Props) => {
     columns,
     data: organizations ?? [],
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   if (!organizations?.length)

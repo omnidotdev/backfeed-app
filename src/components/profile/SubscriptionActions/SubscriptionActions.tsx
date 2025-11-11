@@ -29,7 +29,7 @@ import { LuCheck, LuClockAlert } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import { Tier } from "generated/graphql";
-import { updateSubscription } from "lib/actions";
+import { createSubscription, updateSubscription } from "lib/actions";
 import { useSearchParams } from "lib/hooks";
 import { toaster } from "lib/util";
 
@@ -72,19 +72,31 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
     () =>
       products.filter(
         (product) =>
-          product.recurringInterval === pricingModel || !product.isRecurring,
+          product.recurringInterval === pricingModel ||
+          product.prices[0].amountType === "free",
       ),
     [products, pricingModel],
   );
 
-  // TODO: handle case when there is no `subscriptionId` (backwards compat for existing organizations)
   const handleUpdateSubscription = () =>
     toaster.promise(
       async () => {
-        await updateSubscription({
-          subscriptionId: subscriptionId!,
-          productId: selectedProduct?.id!,
-        });
+        if (!selectedProduct) return;
+
+        if (subscriptionId) {
+          await updateSubscription({
+            subscriptionId,
+            productId: selectedProduct?.id,
+          });
+        } else {
+          // TODO: discuss UX with this. Left for backwards compat (existing orgs that do not have a `subscriptionId`).
+          // It is noted in the `createSubscription` server action that it is currently only possible to programmatically create `free` subscriptions as CC is not required.
+          // With this in mind, the *only* available option when this branch of code is hit, is the free tier product.
+          // Not positve on the cleanest way to show this in UI / what the UX should feel like
+          await createSubscription({
+            organizationId: organization.rowId,
+          });
+        }
 
         onClose();
       },
