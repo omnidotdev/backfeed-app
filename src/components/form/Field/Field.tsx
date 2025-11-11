@@ -8,7 +8,7 @@ import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 interface Props extends StackProps {
   /** Error map to determine issue message(s) to render. */
   errorMap?: StandardSchemaV1Issue[];
-  /** Overrides to apply to the default error text element */
+  /** Overrides to apply to the default error text element. */
   errorProps?: TextProps;
 }
 

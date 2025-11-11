@@ -9,14 +9,14 @@ import type { DialogType } from "store";
 
 interface Options {
   /** Dialog type. */
-  type: DialogType | undefined;
+  type: DialogType;
 }
 
 /**
  * Hook for managing the open state of dialogs.
  */
 const useDialogStore = ({ type }: Options) => {
-  const store = getDialogStore({ type: type! });
+  const store = getDialogStore({ type });
 
   return useStoreWithEqualityFn(store, (state) => state, shallow);
 };
