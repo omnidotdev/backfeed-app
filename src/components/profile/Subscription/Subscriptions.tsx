@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Flex, Stack } from "@omnidev/sigil";
+import { Box, Button, Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -9,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
+import { P, match } from "ts-pattern";
 
 import DataTable from "components/core/DataTable/DataTable";
 import { SubscriptionActions } from "components/profile";
@@ -22,7 +24,9 @@ import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 
-const columnHelper = createColumnHelper<OrganizationFragment>();
+const columnHelper = createColumnHelper<
+  OrganizationFragment & { status: SubscriptionStatus }
+>();
 
 export interface CustomerState {
   id: string;
@@ -49,7 +53,13 @@ const Subscription = ({ user, products, customer }: Props) => {
       excludeRoles: [Role.Member, Role.Admin],
     },
     {
-      select: (data) => data.organizations?.nodes?.map((o) => o!) ?? [],
+      select: (data) =>
+        data.organizations?.nodes?.map((o) => ({
+          ...o!,
+          status:
+            customer?.subscriptions.find((s) => s.id === o?.subscriptionId)
+              ?.status ?? SubscriptionStatus.Incomplete,
+        })) ?? [],
     },
   );
 
@@ -62,6 +72,32 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("tier", {
         header: "Subscription Tier",
         cell: (info) => capitalizeFirstLetter(info.getValue()),
+      }),
+      columnHelper.accessor("status", {
+        header: "Subscription Status",
+        cell: (info) => {
+          const color = match(info.getValue())
+            .with(SubscriptionStatus.Active, () => "green")
+            .with(
+              P.union(SubscriptionStatus.Unpaid, SubscriptionStatus.PastDue),
+              () => "red",
+            )
+            .with(SubscriptionStatus.Canceled, () => "yellow")
+            .otherwise(() => "gray");
+
+          return (
+            <HStack>
+              <Box h={2} w={2} rounded="full" bgColor={color} />
+              <Text>
+                {info
+                  .getValue()
+                  .split("_")
+                  .map((word) => capitalizeFirstLetter(word))
+                  .join(" ")}
+              </Text>
+            </HStack>
+          );
+        },
       }),
       columnHelper.display({
         id: "organization_actions",

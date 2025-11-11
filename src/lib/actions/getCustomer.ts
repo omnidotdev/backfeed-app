@@ -23,7 +23,9 @@ const getCustomer = async (userId: string) => {
     }),
     polar.subscriptions.list({
       externalCustomerId: userId,
-      active: true,
+      // TODO: add active filter. Currently facing issue as described here: https://discord.com/channels/1078611507115470849/1437815007747248189
+      // With the above issue, some subscriptions in profile page may render improperly when `active` filter is applied
+      // active: true,
     }),
   ]);
 
