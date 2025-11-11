@@ -18,15 +18,15 @@ import { getQueryClient } from "lib/util";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: app.profileSubscriptionsPage.breadcrumb,
+  title: app.profileOrganizationsPage.breadcrumb,
 };
 
 /**
- * Profile subscriptions page.
+ * Profile organizations page. Manage organization subscriptions.
  */
-const ProfileSubscriptionsPage = async ({
+const ProfileOrganizationsPage = async ({
   params,
-}: PageProps<"/profile/[userId]/subscriptions">) => {
+}: PageProps<"/profile/[userId]/organizations">) => {
   const { userId } = await params;
 
   const [session, customer] = await Promise.allSettled([
@@ -73,8 +73,8 @@ const ProfileSubscriptionsPage = async ({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
         header={{
-          title: app.profileSubscriptionsPage.breadcrumb,
-          description: app.profileSubscriptionsPage.description,
+          title: app.profileOrganizationsPage.breadcrumb,
+          description: app.profileOrganizationsPage.description,
           cta:
             // NB: if the status is rejected, the user has not subscribed ever. If there is no default payment method ID, then the user does not have a payment method on file to upgrade subscriptions
             customer.status === "rejected" ||
@@ -108,4 +108,4 @@ const ProfileSubscriptionsPage = async ({
   );
 };
 
-export default ProfileSubscriptionsPage;
+export default ProfileOrganizationsPage;

@@ -140,11 +140,11 @@ const Subscription = ({ user, products, customer }: Props) => {
   if (!organizations?.length)
     return (
       <Stack>
-        {app.profileSubscriptionsPage.table.emptyState.label}
+        {app.profileOrganizationsPage.table.emptyState.label}
         <Flex>
           <Link href="/pricing">
             <Button>
-              {app.profileSubscriptionsPage.table.actions.subscribe.label}
+              {app.profileOrganizationsPage.table.actions.subscribe.label}
             </Button>
           </Link>
         </Flex>

@@ -26,7 +26,7 @@ const DataTable = <T,>({ table }: Props<T>) => (
     headerContent={table.getHeaderGroups().map((headerGroup) => (
       <TableRow
         key={headerGroup.id}
-        bgColor="background.subtle"
+        bgColor={{ base: "brand.primary.50a", _dark: "brand.primary.950a" }}
         divideX="1px"
         position="sticky"
         top={0}

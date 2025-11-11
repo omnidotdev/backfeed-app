@@ -25,19 +25,30 @@ import {
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
 import { useMemo, useState } from "react";
+import { FiEdit } from "react-icons/fi";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 
+import { DestructiveAction } from "components/core";
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
-import { Tier } from "generated/graphql";
-import { createSubscription, updateSubscription } from "lib/actions";
+import { useDeleteOrganizationMutation } from "generated/graphql";
+import {
+  createSubscription,
+  revokeSubscription,
+  updateSubscription,
+} from "lib/actions";
+import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
+import type { DestructiveActionProps } from "components/core";
 import type { OrganizationFragment } from "generated/graphql";
 import type { CustomerState } from "../Subscription/Subscriptions";
+
+const deleteOrganizationDetails =
+  app.organizationSettingsPage.cta.deleteOrganization;
 
 const getPrice = (price: ProductPrice) =>
   price.amountType !== "fixed" ? 0 : price.priceAmount / 100;
@@ -114,14 +125,61 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
       },
     );
 
+  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
+    // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
+    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
+  });
+
+  const DELETE_ORGANIZATION: DestructiveActionProps = {
+    title: deleteOrganizationDetails.destruciveAction.title,
+    description: deleteOrganizationDetails.destruciveAction.description,
+    destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
+    action: {
+      label: deleteOrganizationDetails.destruciveAction.actionLabel,
+      onClick: () =>
+        toaster.promise(
+          async () => {
+            if (subscriptionId) {
+              const revokedSubscription = await revokeSubscription({
+                subscriptionId,
+              });
+
+              if (!revokedSubscription)
+                throw new Error("Error revoking subscription");
+            }
+
+            await deleteOrganization({ rowId: organization.rowId });
+          },
+          {
+            loading: {
+              title: "Deleting organization...",
+            },
+            success: {
+              title: "Successfully deleted organization.",
+            },
+            error: {
+              title: "Error",
+              description:
+                "Sorry, there was an issue with deleting your organization. Please try again.",
+            },
+          },
+        ),
+    },
+  };
+
   return (
     <HStack py={2} justify="end">
       <Drawer
         open={isOpen}
         onOpenChange={onToggle}
         trigger={
-          <Button size="sm" disabled={!customer?.defaultPaymentMethodId}>
-            Manage
+          <Button
+            color="white"
+            backgroundColor="brand.senary"
+            fontSize="md"
+            disabled={!customer?.defaultPaymentMethodId}
+          >
+            <Icon src={FiEdit} h={5} w={5} />
           </Button>
         }
         title="Manage Subscription"
@@ -244,13 +302,15 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
         </HStack>
       </Drawer>
 
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={organization.tier === Tier.Free}
-      >
-        Cancel
-      </Button>
+      <DestructiveAction {...DELETE_ORGANIZATION}>
+        <Text whiteSpace="wrap" fontWeight="medium">
+          The organization will be{" "}
+          <sigil.span color="red">permanently</sigil.span> deleted, including
+          its projects, posts and comments. Any subscription associated with the
+          organization will be immediately{" "}
+          <sigil.span color="red">revoked</sigil.span>.
+        </Text>
+      </DestructiveAction>
     </HStack>
   );
 };

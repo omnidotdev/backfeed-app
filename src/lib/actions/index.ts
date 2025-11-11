@@ -5,4 +5,5 @@ export { default as getOrganization } from "./getOrganization";
 export { default as getProduct } from "./getProduct";
 export { default as getProject } from "./getProject";
 export { default as getSubscriptions } from "./getSubscriptions";
+export { default as revokeSubscription } from "./revokeSubscription";
 export { default as updateSubscription } from "./updateSubscription";
