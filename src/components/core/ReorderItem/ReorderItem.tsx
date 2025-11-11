@@ -25,7 +25,7 @@ const ReorderItem = <T,>({
         cursor={{ _hover: isGrabbing ? "grabbing" : "grab" }}
         touchAction="none"
         onPointerUp={() => setIsGrabbing(false)}
-        onPointerDown={(evt: PointerEvent) => {
+        onPointerDown={(evt) => {
           evt.preventDefault();
           controls.start(evt);
           setIsGrabbing(true);
