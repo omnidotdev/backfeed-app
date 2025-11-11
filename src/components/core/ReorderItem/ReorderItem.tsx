@@ -25,7 +25,9 @@ const ReorderItem = <T,>({
         cursor={{ _hover: isGrabbing ? "grabbing" : "grab" }}
         touchAction="none"
         onPointerUp={() => setIsGrabbing(false)}
-        onPointerDown={(evt) => {
+        // NB: explicit cast is needed as the event has an implicit `any` type without it
+        // TODO: check if there is anything we can do upstream in sigil to manage this better. Probably due to dynamic nature of `Icon`
+        onPointerDown={(evt: PointerEvent) => {
           evt.preventDefault();
           controls.start(evt);
           setIsGrabbing(true);
