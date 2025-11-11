@@ -4,7 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Subscriptions } from "components/profile";
-import { Role, useOrganizationsQuery } from "generated/graphql";
+import {
+  OrganizationOrderBy,
+  Role,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { getCustomer } from "lib/actions";
 import { API_BASE_URL, app } from "lib/config";
 import { subscriptionOptions } from "lib/options";
@@ -47,10 +51,12 @@ const ProfileSubscriptionsPage = async ({
     queryKey: useOrganizationsQuery.getKey({
       userId: session.value.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
+      orderBy: OrganizationOrderBy.CreatedAtAsc,
     }),
     queryFn: useOrganizationsQuery.fetcher({
       userId: session.value.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
+      orderBy: OrganizationOrderBy.CreatedAtAsc,
     }),
   });
 

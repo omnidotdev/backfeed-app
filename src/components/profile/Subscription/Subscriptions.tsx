@@ -14,7 +14,11 @@ import { P, match } from "ts-pattern";
 
 import DataTable from "components/core/DataTable/DataTable";
 import { SubscriptionActions } from "components/profile";
-import { Role, useOrganizationsQuery } from "generated/graphql";
+import {
+  OrganizationOrderBy,
+  Role,
+  useOrganizationsQuery,
+} from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { capitalizeFirstLetter } from "lib/util";
@@ -51,6 +55,7 @@ const Subscription = ({ user, products, customer }: Props) => {
     {
       userId: user?.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
+      orderBy: OrganizationOrderBy.CreatedAtAsc,
     },
     {
       select: (data) =>
