@@ -66,7 +66,6 @@ interface Props {
 /**
  * Actions a user may perform for an organization level subscription.
  */
-// TODO: create dialogs for actions to avoid customer portal API
 const SubscriptionActions = ({ organization, products, customer }: Props) => {
   const [selectedProduct, setSelectedProduct] = useState<Product>();
 
