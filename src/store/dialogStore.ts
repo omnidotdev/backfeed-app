@@ -13,6 +13,8 @@ export enum DialogType {
   MobileSidebar = "mobileSidebar",
   /** Dialog for inviting a member to an organization. */
   InviteMember = "inviteMember",
+  /** Fallback value to handle undefined cases. This value is not to be used to control any dialog states. */
+  Fallback = "fallback",
 }
 
 interface DialogState {
