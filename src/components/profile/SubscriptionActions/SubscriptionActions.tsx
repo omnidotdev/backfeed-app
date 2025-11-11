@@ -24,6 +24,7 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
+import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
@@ -89,41 +90,50 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
     [products, pricingModel],
   );
 
-  const handleUpdateSubscription = () =>
-    toaster.promise(
-      async () => {
-        if (!selectedProduct) return;
-
-        if (subscriptionId) {
-          await updateSubscription({
-            subscriptionId,
-            productId: selectedProduct?.id,
-          });
-        } else {
-          // TODO: discuss UX with this. Left for backwards compat (existing orgs that do not have a `subscriptionId`).
-          // It is noted in the `createSubscription` server action that it is currently only possible to programmatically create `free` subscriptions as CC is not required.
-          // With this in mind, the *only* available option when this branch of code is hit, is the free tier product.
-          // Not positve on the cleanest way to show this in UI / what the UX should feel like
-          await createSubscription({
-            organizationId: organization.rowId,
-          });
-        }
-
-        onClose();
-      },
+  const { mutateAsync: upsertSubscription, isPending } = useMutation({
+    mutationKey: [
+      "UpsertSubscription",
       {
-        loading: { title: "Updating subscription..." },
-        success: {
-          title: "Success!",
-          description: "Your subscription has been updated.",
-        },
-        error: {
-          title: "Error",
-          description:
-            "Sorry, there was an issue with updating your subscription. Please try again.",
-        },
+        subscriptionId,
+        productId: selectedProduct?.id,
+        organizationId: organization.rowId,
       },
-    );
+    ],
+    mutationFn: async () => {
+      if (!selectedProduct) return;
+
+      if (subscriptionId) {
+        await updateSubscription({
+          subscriptionId,
+          productId: selectedProduct?.id,
+        });
+      } else {
+        // TODO: discuss UX with this. Left for backwards compat (existing orgs that do not have a `subscriptionId`).
+        // It is noted in the `createSubscription` server action that it is currently only possible to programmatically create `free` subscriptions as CC is not required.
+        // With this in mind, the *only* available option when this branch of code is hit, is the free tier product.
+        // Not positve on the cleanest way to show this in UI / what the UX should feel like
+        await createSubscription({
+          organizationId: organization.rowId,
+        });
+      }
+    },
+    onSuccess: () => onClose(),
+    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
+  });
+
+  const handleUpdateSubscription = () =>
+    toaster.promise(upsertSubscription, {
+      loading: { title: "Updating subscription..." },
+      success: {
+        title: "Success!",
+        description: "Your subscription has been updated.",
+      },
+      error: {
+        title: "Error",
+        description:
+          "Sorry, there was an issue with updating your subscription. Please try again.",
+      },
+    });
 
   const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
     // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
@@ -188,7 +198,9 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
           <Button
             w="full"
             disabled={
-              !selectedProduct || selectedProduct.id === currentProduct.id
+              !selectedProduct ||
+              selectedProduct.id === currentProduct.id ||
+              isPending
             }
             onClick={handleUpdateSubscription}
           >
