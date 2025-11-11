@@ -1,12 +1,13 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "backfeed",
       "dependencies": {
         "@ark-ui/react": "^5.27.1",
         "@auth/core": "^0.34.3",
-        "@omnidev/sigil": "https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@64fb464",
+        "@omnidev/sigil": "https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@27d0107",
         "@polar-sh/sdk": "^0.41.1",
         "@react-email/components": "^1.0.0",
         "@tanstack/react-form": "^1.23.8",
@@ -498,7 +499,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
-    "@omnidev/sigil": ["@omnidev/sigil@https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@64fb464", { "peerDependencies": { "@ark-ui/react": ">=5.27.1", "@pandacss/dev": ">=1.4.3", "@pandacss/types": ">=1.4.3", "react": ">=19.2.0", "react-dom": ">=19.2.0", "react-icons": ">=5.5.0" } }],
+    "@omnidev/sigil": ["@omnidev/sigil@https://pkg.pr.new/omnidotdev/sigil/@omnidev/sigil@178@27d0107", { "peerDependencies": { "@ark-ui/react": ">=5.27.1", "@pandacss/dev": ">=1.4.3", "@pandacss/types": ">=1.4.3", "react": ">=19.2.0", "react-dom": ">=19.2.0", "react-icons": ">=5.5.0" } }],
 
     "@open-draft/deferred-promise": ["@open-draft/deferred-promise@2.2.0", "", {}, "sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA=="],
 
