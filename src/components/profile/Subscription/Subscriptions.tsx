@@ -29,7 +29,7 @@ import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 
 const columnHelper = createColumnHelper<
-  OrganizationFragment & { status: SubscriptionStatus }
+  OrganizationFragment & { status: SubscriptionStatus; toBeCanceled: boolean }
 >();
 
 export interface CustomerState {
@@ -59,12 +59,18 @@ const Subscription = ({ user, products, customer }: Props) => {
     },
     {
       select: (data) =>
-        data.organizations?.nodes?.map((o) => ({
-          ...o!,
-          status:
-            customer?.subscriptions.find((s) => s.id === o?.subscriptionId)
-              ?.status ?? SubscriptionStatus.Incomplete,
-        })) ?? [],
+        data.organizations?.nodes?.map((o) => {
+          const currentSubscription = customer?.subscriptions?.find(
+            (s) => s.id === o?.subscriptionId,
+          );
+
+          return {
+            ...o!,
+            status:
+              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
+            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+          };
+        }) ?? [],
     },
   );
 
@@ -81,13 +87,25 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("status", {
         header: "Subscription Status",
         cell: (info) => {
-          const color = match(info.getValue())
-            .with(SubscriptionStatus.Active, () => "green")
+          const color = match({
+            status: info.getValue(),
+            toBeCanceled: info.row.original.toBeCanceled,
+          })
             .with(
-              P.union(SubscriptionStatus.Unpaid, SubscriptionStatus.PastDue),
+              { status: SubscriptionStatus.Active, toBeCanceled: true },
+              () => "yellow",
+            )
+            .with({ status: SubscriptionStatus.Active }, () => "green")
+            .with(
+              {
+                status: P.union(
+                  SubscriptionStatus.PastDue,
+                  SubscriptionStatus.Unpaid,
+                  SubscriptionStatus.Canceled,
+                ),
+              },
               () => "red",
             )
-            .with(SubscriptionStatus.Canceled, () => "yellow")
             .otherwise(() => "gray");
 
           return (

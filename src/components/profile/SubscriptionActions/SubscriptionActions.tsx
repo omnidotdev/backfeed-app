@@ -99,18 +99,12 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
       },
     ],
     mutationFn: async () => {
-      if (!selectedProduct) return;
-
       if (subscriptionId) {
         await updateSubscription({
           subscriptionId,
-          productId: selectedProduct?.id,
+          productId: selectedProduct?.id!,
         });
       } else {
-        // TODO: discuss UX with this. Left for backwards compat (existing orgs that do not have a `subscriptionId`).
-        // It is noted in the `createSubscription` server action that it is currently only possible to programmatically create `free` subscriptions as CC is not required.
-        // With this in mind, the *only* available option when this branch of code is hit, is the free tier product.
-        // Not positve on the cleanest way to show this in UI / what the UX should feel like
         await createSubscription({
           organizationId: organization.rowId,
         });
@@ -120,7 +114,7 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
     onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
   });
 
-  const handleUpdateSubscription = () =>
+  const handleUpsertSubscription = () =>
     toaster.promise(upsertSubscription, {
       loading: { title: "Updating subscription..." },
       success: {
@@ -197,13 +191,13 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
           <Button
             w="full"
             disabled={
-              !selectedProduct ||
-              selectedProduct.id === currentProduct.id ||
+              (!selectedProduct && !!subscriptionId) ||
+              selectedProduct?.id === currentProduct.id ||
               isPending
             }
-            onClick={handleUpdateSubscription}
+            onClick={handleUpsertSubscription}
           >
-            Update Subscription
+            {subscriptionId ? "Update" : "Create"} Subscription
           </Button>
         }
         bodyProps={{
@@ -213,82 +207,95 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
           px: 0,
         }}
       >
-        <Flex direction="column" gap={12}>
-          <TabsRoot
-            variant="enclosed"
-            defaultValue={SubscriptionRecurringInterval.Month}
-            onValueChange={({ value }) =>
-              setSearchParams({
-                pricingModel: value as SubscriptionRecurringInterval,
-              })
-            }
-          >
-            <TabList>
-              <TabTrigger value={SubscriptionRecurringInterval.Month} flex={1}>
-                Monthly
-              </TabTrigger>
+        {subscriptionId ? (
+          <Flex direction="column" gap={12}>
+            <TabsRoot
+              variant="enclosed"
+              value={pricingModel}
+              onValueChange={({ value }) =>
+                setSearchParams({
+                  pricingModel: value as SubscriptionRecurringInterval,
+                })
+              }
+            >
+              <TabList>
+                <TabTrigger
+                  value={SubscriptionRecurringInterval.Month}
+                  flex={1}
+                >
+                  Monthly
+                </TabTrigger>
 
-              <TabTrigger value={SubscriptionRecurringInterval.Year} flex={1}>
-                Yearly
-              </TabTrigger>
-              <TabIndicator />
-            </TabList>
+                <TabTrigger value={SubscriptionRecurringInterval.Year} flex={1}>
+                  Yearly
+                </TabTrigger>
+                <TabIndicator />
+              </TabList>
 
-            <TabContent value={pricingModel}>
-              <RadioGroupRoot
-                orientation="vertical"
-                defaultValue={currentProduct.id}
-                onValueChange={({ value }) =>
-                  setSelectedProduct(products.find((p) => p.id === value))
-                }
-              >
-                {filteredProducts.map((product) => (
-                  <RadioGroupItem key={product.id} value={product.id}>
-                    <RadioGroupItemControl />
+              <TabContent value={pricingModel}>
+                <RadioGroupRoot
+                  orientation="vertical"
+                  defaultValue={currentProduct.id}
+                  onValueChange={({ value }) =>
+                    setSelectedProduct(products.find((p) => p.id === value))
+                  }
+                >
+                  {filteredProducts.map((product) => (
+                    <RadioGroupItem key={product.id} value={product.id}>
+                      <RadioGroupItemControl />
 
-                    <RadioGroupItemText>{product.name}</RadioGroupItemText>
+                      <RadioGroupItemText>{product.name}</RadioGroupItemText>
 
-                    <RadioGroupItemHiddenInput />
-                  </RadioGroupItem>
-                ))}
-              </RadioGroupRoot>
-            </TabContent>
-          </TabsRoot>
+                      <RadioGroupItemHiddenInput />
+                    </RadioGroupItem>
+                  ))}
+                </RadioGroupRoot>
+              </TabContent>
+            </TabsRoot>
 
-          <Flex direction="column" gap={4}>
-            <Text fontWeight="semibold" fontSize="xl">
-              Selected Product Benefits:
-            </Text>
+            <Flex direction="column" gap={4}>
+              <Text fontWeight="semibold" fontSize="xl">
+                Selected Product Benefits:
+              </Text>
 
-            <Grid w="full" lineHeight={1.5}>
-              {sortBenefits(
-                selectedProduct?.benefits ?? currentProduct.benefits,
-              ).map((feature) => {
-                const isComingSoon = (
-                  feature.properties as BenefitCustomProperties
-                ).note
-                  ?.toLowerCase()
-                  .includes("coming soon");
+              <Grid w="full" lineHeight={1.5}>
+                {sortBenefits(
+                  selectedProduct?.benefits ?? currentProduct.benefits,
+                ).map((feature) => {
+                  const isComingSoon = (
+                    feature.properties as BenefitCustomProperties
+                  ).note
+                    ?.toLowerCase()
+                    .includes("coming soon");
 
-                return (
-                  <GridItem key={feature.id} display="flex" gap={2}>
-                    {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                    <sigil.span h={6} display="flex" alignItems="center">
-                      <Icon
-                        src={isComingSoon ? LuClockAlert : LuCheck}
-                        h={4}
-                        w={4}
-                        color={isComingSoon ? "yellow" : "brand.primary"}
-                      />
-                    </sigil.span>
+                  return (
+                    <GridItem key={feature.id} display="flex" gap={2}>
+                      {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                      <sigil.span h={6} display="flex" alignItems="center">
+                        <Icon
+                          src={isComingSoon ? LuClockAlert : LuCheck}
+                          h={4}
+                          w={4}
+                          color={isComingSoon ? "yellow" : "brand.primary"}
+                        />
+                      </sigil.span>
 
-                    {feature.description}
-                  </GridItem>
-                );
-              })}
-            </Grid>
+                      {feature.description}
+                    </GridItem>
+                  );
+                })}
+              </Grid>
+            </Flex>
           </Flex>
-        </Flex>
+        ) : (
+          // TODO: discuss. Left for backwards compat (existing orgs that do not have a `subscriptionId` currently, handled in upsert).
+          <Text whiteSpace="wrap">
+            We recently migrated to organization level subscriptions. Before
+            further subscription changes can be made, please enroll your
+            workspace on the free tier to properly link the workspace with our
+            payment provider. A credit card is not required for this action.
+          </Text>
+        )}
 
         <HStack justify="space-between">
           <Text fontWeight="semibold" fontSize="lg">
@@ -304,9 +311,11 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
               currency="USD"
             />
 
-            {!(selectedProduct
-              ? selectedProduct.isRecurring
-              : currentProduct.isRecurring)
+            {(
+              selectedProduct
+                ? selectedProduct.prices[0].amountType === "free"
+                : currentProduct.prices[0].amountType === "free"
+            )
               ? "/forever"
               : `/${selectedProduct?.recurringInterval ?? currentProduct.recurringInterval}`}
           </Text>
