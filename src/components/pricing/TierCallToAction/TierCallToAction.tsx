@@ -12,8 +12,11 @@ import {
 } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { LuChevronDown, LuPlus } from "react-icons/lu";
 
+import { CreateOrganization } from "components/organization";
+import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
 import { updateSubscription } from "lib/actions";
 import { useDialogStore } from "lib/hooks/store";
@@ -42,6 +45,9 @@ const TierCallToAction = ({
   actionIcon,
   ...rest
 }: Props) => {
+  const [isPaidSubscriptionDialogOpen, setIsPaidSubscriptionDialogOpen] =
+    useState(false);
+
   const router = useRouter();
 
   const { setIsOpen: setIsCreateOrganizationOpen } = useDialogStore({
@@ -118,9 +124,12 @@ const TierCallToAction = ({
 
   if (tier === Tier.Free) {
     return (
-      <Button onClick={() => setIsCreateOrganizationOpen(true)} {...rest}>
-        Create a Free Organization
-      </Button>
+      <>
+        <Button onClick={() => setIsCreateOrganizationOpen(true)} {...rest}>
+          Create a Free Organization
+        </Button>
+        <CreateOrganization disableHotKey />
+      </>
     );
   }
 
@@ -129,53 +138,67 @@ const TierCallToAction = ({
   }
 
   return (
-    <Menu
-      open={isOpen}
-      onOpenChange={onToggle}
-      trigger={
-        <Button {...rest}>
-          {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
-          Continue with {capitalizeFirstLetter(tier)}
-          <Icon src={LuChevronDown} h={4} w={4} />
-        </Button>
-      }
-      positioning={{ sameWidth: true, strategy: "fixed" }}
-    >
-      <MenuItemGroup>
-        {organizations?.map((org) => (
-          <MenuItem
-            key={org?.rowId}
-            value={org?.rowId!}
-            disabled={!org?.subscriptionId || isPending}
-            onClick={() =>
-              handleUpdateSubscription({
-                subscriptionId: org?.subscriptionId!,
-                productId,
-                organizationSlug: org?.slug!,
-              })
-            }
-          >
-            {org?.name}
-          </MenuItem>
-        ))}
-      </MenuItemGroup>
-
-      <MenuSeparator />
-
-      {/** TODO: determine best approach to make this work. */}
-      <MenuItem
-        value="create"
-        disabled
-        cursor="not-allowed"
-        opacity={0.5}
-        bgColor={{ _hover: { _disabled: "transparent" } }}
+    <>
+      <Menu
+        open={isOpen}
+        onOpenChange={onToggle}
+        trigger={
+          <Button {...rest}>
+            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+            Continue with {capitalizeFirstLetter(tier)}
+            <Icon src={LuChevronDown} h={4} w={4} />
+          </Button>
+        }
+        positioning={{ sameWidth: true, strategy: "fixed" }}
       >
-        <HStack>
-          <Icon src={LuPlus} />
-          Create Organization
-        </HStack>
-      </MenuItem>
-    </Menu>
+        <MenuItemGroup>
+          {organizations?.length ? (
+            organizations?.map((org) => (
+              <MenuItem
+                key={org?.rowId}
+                value={org?.rowId!}
+                disabled={!org?.subscriptionId || isPending}
+                onClick={() =>
+                  handleUpdateSubscription({
+                    subscriptionId: org?.subscriptionId!,
+                    productId,
+                    organizationSlug: org?.slug!,
+                  })
+                }
+              >
+                {org?.name}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem
+              value="empty"
+              disabled
+              cursor="default"
+              bgColor={{ _hover: "transparent" }}
+            >
+              No current organizations to manage
+            </MenuItem>
+          )}
+        </MenuItemGroup>
+
+        <MenuSeparator />
+
+        <MenuItem
+          value="create"
+          onClick={() => setIsPaidSubscriptionDialogOpen(true)}
+        >
+          <HStack>
+            <Icon src={LuPlus} />
+            Create Organization
+          </HStack>
+        </MenuItem>
+      </Menu>
+      <CreatePaidSubscription
+        productId={productId}
+        isOpen={isPaidSubscriptionDialogOpen}
+        setIsOpen={setIsPaidSubscriptionDialogOpen}
+      />
+    </>
   );
 };
 

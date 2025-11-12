@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "auth";
-import { CreateOrganization } from "components/organization";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
@@ -33,14 +32,7 @@ const PricingPage = async () => {
 
   if (session?.error) redirect("/");
 
-  return (
-    <>
-      <PricingOverview user={session?.user} products={products} />
-
-      {/** dialogs */}
-      <CreateOrganization />
-    </>
-  );
+  return <PricingOverview user={session?.user} products={products} />;
 };
 
 export default PricingPage;

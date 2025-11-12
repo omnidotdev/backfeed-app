@@ -3,20 +3,16 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { createSubscription } from "lib/actions";
-import { app } from "lib/config";
+import { API_BASE_URL, app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useForm, useViewportSize } from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
-import { useDialogStore } from "lib/hooks/store";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
-import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -50,15 +46,21 @@ const createOrganizationSchema = z
   });
 
 interface Props {
-  /** Whether to disable hotkey trigger for opening the dialog */
-  disableHotKey?: boolean;
+  /** Product ID. */
+  productId: string;
+  /** Whether the dialog is open or not. */
+  isOpen: boolean;
+  /** Handler to manage open state of the dialog */
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 /**
- * Dialog for creating a new organization.
+ * Dialog for creating a new organization with a paid subscription tier.
  */
-const CreateOrganization = ({ disableHotKey = false }: Props) => {
+const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
   const router = useRouter();
+
+  const { user } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -68,40 +70,14 @@ const CreateOrganization = ({ disableHotKey = false }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
-  const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
-
-  const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.CreateOrganization,
-  });
-
-  useHotkeys(
-    "mod+o",
-    () => {
-      setIsOpen(!isOpen);
-      reset();
-    },
-    {
-      enabled: !isCreateProjectDialogOpen && !disableHotKey,
-      enableOnFormTags: true,
-      preventDefault: true,
-    },
-    [isOpen, isCreateProjectDialogOpen, disableHotKey],
-  );
-
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
         router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
+          `${API_BASE_URL}/checkout?products=${productId}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: data?.organization?.rowId }))}`,
         );
-
-        await createSubscription({
-          organizationId: data?.organization?.rowId!,
-        });
 
         setIsOpen(false);
         reset();
@@ -196,4 +172,4 @@ const CreateOrganization = ({ disableHotKey = false }: Props) => {
   );
 };
 
-export default CreateOrganization;
+export default CreatePaidSubscription;
