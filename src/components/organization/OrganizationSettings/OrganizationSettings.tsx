@@ -198,13 +198,15 @@ const OrganizationSettings = ({
             This organization is currently on the Backfeed{" "}
             <sigil.span color="brand.primary">
               {capitalizeFirstLetter(
-                subscription?.product.metadata.title as string,
+                (subscription?.product.metadata.title as string) ?? "free",
               )}
             </sigil.span>{" "}
             tier. Benefits include in this plan are:
           </Text>
           <Grid w="full" lineHeight={1.5}>
-            {sortBenefits(subscription?.product.benefits!).map((feature) => {
+            {sortBenefits(
+              subscription?.product.benefits ?? products[0].benefits,
+            ).map((feature) => {
               const isComingSoon = (
                 feature.properties as BenefitCustomProperties
               ).note
