@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "auth";
 import { polar } from "lib/polar";
 
@@ -33,6 +35,8 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
       },
     },
   );
+
+  revalidatePath("/profile/[userId]/organizations");
 
   return result;
 };

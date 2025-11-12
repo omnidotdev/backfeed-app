@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "auth";
 import { polar } from "lib/polar";
 import { FREE_TIER_PRODUCT_ID } from "lib/polar/productIds";
@@ -30,6 +32,8 @@ const createSubscription = async ({ organizationId }: Options) => {
       customerEmail: session.user.email!,
     },
   });
+
+  revalidatePath("/profile/[userId]/organizations");
 };
 
 export default createSubscription;
