@@ -8,16 +8,12 @@ import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
-import { useAuth } from "lib/hooks";
 
 /**
  * Layout header.
  */
 const Header = () => {
-  const pathname = usePathname(),
-    { isAuthenticated, isLoading } = useAuth();
-
-  const showPricingLink = !isLoading && !isAuthenticated;
+  const pathname = usePathname();
 
   return (
     <sigil.header
@@ -36,29 +32,25 @@ const Header = () => {
           <LogoLink width={48} />
 
           <HStack gap={1}>
-            {showPricingLink && (
-              <Flex display={{ base: "none", sm: "flex" }}>
-                <Link href="/pricing" role="group">
-                  <Flex
-                    h={10}
-                    px={4}
-                    align="center"
-                    color={{
-                      base: "foreground.muted",
-                      _groupHover: "foreground.default",
-                    }}
-                    bgColor={
-                      pathname === "/pricing"
-                        ? "background.muted"
-                        : "transparent"
-                    }
-                    borderRadius="md"
-                  >
-                    {app.header.routes.pricing.label}
-                  </Flex>
-                </Link>
-              </Flex>
-            )}
+            <Flex display={{ base: "none", sm: "flex" }}>
+              <Link href="/pricing" role="group">
+                <Flex
+                  h={10}
+                  px={4}
+                  align="center"
+                  color={{
+                    base: "foreground.muted",
+                    _groupHover: "foreground.default",
+                  }}
+                  bgColor={
+                    pathname === "/pricing" ? "background.muted" : "transparent"
+                  }
+                  borderRadius="md"
+                >
+                  {app.header.routes.pricing.label}
+                </Flex>
+              </Link>
+            </Flex>
 
             <SigilLink
               href={app.docsUrl}

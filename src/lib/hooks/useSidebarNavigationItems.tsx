@@ -64,7 +64,7 @@ const useSidebarNavigationItems = () => {
       {
         href: "/pricing",
         label: app.pricingPage.title,
-        isVisible: !isAuthenticated,
+        isVisible: true,
         isActive: pathname === "/pricing",
       },
       {

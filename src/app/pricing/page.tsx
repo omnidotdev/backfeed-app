@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "auth";
+import { CreateOrganization } from "components/organization";
 import { PricingOverview } from "components/pricing";
 import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
@@ -30,12 +31,16 @@ const PricingPage = async () => {
     }),
   ]);
 
-  // TODO: Odd cases where session cookie is not removed after refresh token expires. Believe it to be that this route is not captured by the middleware and therefore the cookie is not removed. Fix this in order to remove check for `session.error`.
-  if (session && !session.error) {
-    redirect(`/profile/${session.user.hidraId}/organizations`);
-  }
+  if (session?.error) redirect("/");
 
-  return <PricingOverview products={products} />;
+  return (
+    <>
+      <PricingOverview user={session?.user} products={products} />
+
+      {/** dialogs */}
+      <CreateOrganization />
+    </>
+  );
 };
 
 export default PricingPage;

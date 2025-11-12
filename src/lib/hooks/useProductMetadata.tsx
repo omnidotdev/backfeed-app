@@ -1,6 +1,7 @@
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { P, match } from "ts-pattern";
 
+import { Tier } from "generated/graphql";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
@@ -15,6 +16,13 @@ interface Options {
  */
 const useProductMetadata = ({ product }: Options) => {
   const metadata = product.metadata;
+
+  const tier = match(metadata)
+    .with({ title: "free" }, () => Tier.Free)
+    .with({ title: "basic" }, () => Tier.Basic)
+    .with({ title: "team" }, () => Tier.Team)
+    .with({ title: "enterprise" }, () => Tier.Enterprise)
+    .otherwise(() => Tier.Free);
 
   const isFreeTier = match(metadata)
     .with({ isFree: P.nonNullable }, () => true)
@@ -41,6 +49,7 @@ const useProductMetadata = ({ product }: Options) => {
   const productTitle = capitalizeFirstLetter(metadata.title as string);
 
   return {
+    tier,
     isFreeTier,
     isRecommendedTier,
     isEnterpriseTier,

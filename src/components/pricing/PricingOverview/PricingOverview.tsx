@@ -20,8 +20,11 @@ import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
 import type { Product } from "@polar-sh/sdk/models/components/product";
+import type { Session } from "next-auth";
 
 interface Props {
+  /** Signed in user */
+  user: Session["user"] | undefined;
   /** The products available for pricing tiers. */
   products: Product[];
 }
@@ -29,7 +32,7 @@ interface Props {
 /**
  * Pricing overview section.
  */
-const PricingOverview = ({ products }: Props) => {
+const PricingOverview = ({ user, products }: Props) => {
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
   const filteredProducts = useMemo(
@@ -119,7 +122,7 @@ const PricingOverview = ({ products }: Props) => {
         px={4}
       >
         {filteredProducts.map((product) => (
-          <PricingCard key={product.id} product={product} />
+          <PricingCard key={product.id} user={user} product={product} />
         ))}
       </Flex>
 

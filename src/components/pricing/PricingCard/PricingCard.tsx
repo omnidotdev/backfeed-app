@@ -14,19 +14,20 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { API_BASE_URL, app } from "lib/config";
-import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
+import { TierCallToAction } from "components/pricing";
+import { app } from "lib/config";
+import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+import type { Session } from "next-auth";
 
 const COMING_SOON = "coming soon";
 
@@ -68,6 +69,8 @@ export const sortBenefits = (benefits: Benefit[]) => {
 };
 
 interface Props extends CardProps {
+  /** Signed in user */
+  user: Session["user"] | undefined;
   /** Product information. */
   product: Product;
 }
@@ -75,11 +78,7 @@ interface Props extends CardProps {
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ product, ...rest }: Props) => {
-  const router = useRouter();
-
-  const { isAuthenticated, user } = useAuth();
-
+const PricingCard = ({ user, product, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
   const isPerMonthPricing =
@@ -87,6 +86,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
   const {
     productTitle,
+    tier,
     isFreeTier,
     isRecommendedTier,
     isEnterpriseTier,
@@ -191,30 +191,32 @@ const PricingCard = ({ product, ...rest }: Props) => {
             )}
           </HStack>
 
-          <Button
-            w="100%"
-            fontSize="lg"
-            disabled={isDisabled}
-            variant={isRecommendedTier ? "solid" : "outline"}
-            // TODO: update logic.
-            // Currently, the pricing page just throws a redirect if the user is authenticated, but this could be adjusted.
-            // Discuss workflow here. With the updated logic for handling subscriptions, creating an organization is unblocked for all users.
-            // It starts with a `Free` tier subscription, which can be created for a customer without need for a CC.
-            // Management for org subscriptions can be handled in two spots: profile (all owned orgs) and org settings (if user is the owner)
-            onClick={() =>
-              isAuthenticated
-                ? router.push(
-                    `${API_BASE_URL}/checkout?products=${product.id}&customerExternalId=${user?.hidraId}&customerEmail=${user?.email}`,
-                  )
-                : signIn("omni")
-            }
-          >
-            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+          {user ? (
+            <TierCallToAction
+              w="100%"
+              fontSize="lg"
+              variant={isRecommendedTier ? "solid" : "outline"}
+              disabled={isDisabled}
+              user={user}
+              productId={product.id}
+              tier={tier}
+              actionIcon={actionIcon}
+            />
+          ) : (
+            <Button
+              w="100%"
+              fontSize="lg"
+              disabled={isDisabled}
+              variant={isRecommendedTier ? "solid" : "outline"}
+              onClick={() => signIn("omni")}
+            >
+              {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 
-            {isEnterpriseTier
-              ? app.pricingPage.pricingCard.enterprise
-              : app.pricingPage.pricingCard.getStarted}
-          </Button>
+              {isEnterpriseTier
+                ? app.pricingPage.pricingCard.enterprise
+                : app.pricingPage.pricingCard.getStarted}
+            </Button>
+          )}
         </Stack>
 
         <Stack
