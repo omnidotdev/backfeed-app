@@ -1,4 +1,4 @@
-import { Badge, HStack, Text } from "@omnidev/sigil";
+import { Badge, HStack, Icon, Text } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -146,8 +146,11 @@ const OrganizationPage = async ({
             {
               label: app.organizationPage.header.cta.viewProjects.label,
               variant: "outline",
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-              icon: <HiOutlineFolder />,
+              icon: (
+                <Icon>
+                  <HiOutlineFolder />
+                </Icon>
+              ),
               href: `/organizations/${organizationSlug}/projects`,
               disabled: !organization.projects.totalCount,
               tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
@@ -156,8 +159,11 @@ const OrganizationPage = async ({
               ? [
                   {
                     label: app.organizationPage.header.cta.newProject.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-                    icon: <LuCirclePlus />,
+                    icon: (
+                      <Icon>
+                        <LuCirclePlus />
+                      </Icon>
+                    ),
                     disabled: !canCreateProjects,
                     dialogType: DialogType.CreateProject,
                     tooltip: app.organizationPage.header.cta.newProject.tooltip,
