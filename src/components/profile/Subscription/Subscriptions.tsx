@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import {
   createColumnHelper,
@@ -9,8 +9,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import Link from "next/link";
 import { useMemo } from "react";
+import { LuPlus } from "react-icons/lu";
 import { P, match } from "ts-pattern";
 
 import DataTable from "components/core/DataTable/DataTable";
@@ -22,7 +22,9 @@ import {
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
+import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
+import { DialogType } from "store";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models/components/subscription.js";
@@ -79,6 +81,10 @@ const Subscription = ({ user, products, customer }: Props) => {
         }) ?? [],
     },
   );
+
+  const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
+    type: DialogType.CreateOrganization,
+  });
 
   const columns = useMemo(
     () => [
@@ -172,15 +178,11 @@ const Subscription = ({ user, products, customer }: Props) => {
 
   if (!organizations?.length)
     return (
-      <Stack>
+      <Stack gap={8}>
         {app.profileOrganizationsPage.table.emptyState.label}
-        <Flex>
-          <Link href="/pricing">
-            <Button>
-              {app.profileOrganizationsPage.table.actions.subscribe.label}
-            </Button>
-          </Link>
-        </Flex>
+        <Button w="fit" onClick={() => setIsCreateOrganizationDialogOpen(true)}>
+          <Icon src={LuPlus} /> Create Organization
+        </Button>
       </Stack>
     );
 

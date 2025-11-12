@@ -348,7 +348,7 @@ const app = {
         amount: "Amount",
       },
       emptyState: {
-        label: "No organizations found.",
+        label: "No organizations found. Create one to get started.",
       },
       actions: {
         subscribe: {

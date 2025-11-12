@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { Page } from "components/layout";
+import { CreateOrganization } from "components/organization";
 import { Subscriptions } from "components/profile";
 import {
   OrganizationOrderBy,
@@ -103,6 +104,8 @@ const ProfileOrganizationsPage = async ({
           products={products}
           customer={customer.status !== "rejected" ? customer.value : undefined}
         />
+
+        <CreateOrganization />
       </Page>
     </HydrationBoundary>
   );
