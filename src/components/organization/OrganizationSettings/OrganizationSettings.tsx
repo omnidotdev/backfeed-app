@@ -201,7 +201,7 @@ const OrganizationSettings = ({
                 (subscription?.product.metadata.title as string) ?? "free",
               )}
             </sigil.span>{" "}
-            tier. Benefits include in this plan are:
+            tier. Benefits included in this plan are:
           </Text>
           <Grid w="full" lineHeight={1.5}>
             {sortBenefits(
