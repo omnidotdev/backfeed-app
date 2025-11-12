@@ -196,7 +196,11 @@ const PricingCard = ({ product, ...rest }: Props) => {
             fontSize="lg"
             disabled={isDisabled}
             variant={isRecommendedTier ? "solid" : "outline"}
-            // TODO: update logic. With organization based subscriptions, the logic for handling checkout flow changes a lot.
+            // TODO: update logic.
+            // Currently, the pricing page just throws a redirect if the user is authenticated, but this could be adjusted.
+            // Discuss workflow here. With the updated logic for handling subscriptions, creating an organization is unblocked for all users.
+            // It starts with a `Free` tier subscription, which can be created for a customer without need for a CC.
+            // Management for org subscriptions can be handled in two spots: profile (all owned orgs) and org settings (if user is the owner)
             onClick={() =>
               isAuthenticated
                 ? router.push(
