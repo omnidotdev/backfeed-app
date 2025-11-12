@@ -1,6 +1,6 @@
 "use server";
 
-import { getCustomer, getProduct } from "lib/actions";
+import { getCustomer } from "lib/actions";
 import { BACKFEED_PRODUCT_IDS } from "lib/polar";
 
 /**
@@ -18,22 +18,11 @@ const getSubscriptions = async (userId: string) => {
     throw new Error("No active Backfeed subscriptions found");
   }
 
-  const subscriptionsWithProduct = await Promise.all(
-    customer.subscriptions
-      .filter((sub) => BACKFEED_PRODUCT_IDS!.includes(sub.productId))
-      .map(async (sub) => {
-        const product = await getProduct(sub.productId);
-
-        const { productId, ...rest } = sub;
-
-        return {
-          ...rest,
-          product,
-        };
-      }),
+  const backfeedSubscriptions = customer.subscriptions.filter((sub) =>
+    BACKFEED_PRODUCT_IDS!.includes(sub.productId),
   );
 
-  return subscriptionsWithProduct;
+  return backfeedSubscriptions;
 };
 
 export default getSubscriptions;

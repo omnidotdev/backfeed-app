@@ -9,7 +9,7 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getOrganization } from "lib/actions";
+import { getCustomer, getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
@@ -42,9 +42,15 @@ const OrganizationSettingsPage = async ({
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ organizationSlug });
+  const [organizationResponse, customerResponse] = await Promise.allSettled([
+    getOrganization({ organizationSlug }),
+    getCustomer(session.user.hidraId!),
+  ]);
 
-  if (!organization) notFound();
+  if (organizationResponse.status === "rejected" || !organizationResponse.value)
+    notFound();
+
+  const organization = organizationResponse.value;
 
   const sdk = getSdk({ session });
 
@@ -91,6 +97,13 @@ const OrganizationSettingsPage = async ({
         <OrganizationSettings
           user={session.user}
           organizationId={organization.rowId}
+          subscription={
+            customerResponse.status === "fulfilled"
+              ? customerResponse.value.subscriptions.find(
+                  (sub) => sub.metadata.organizationId === organization.rowId,
+                )
+              : undefined
+          }
         />
       </Page>
     </HydrationBoundary>

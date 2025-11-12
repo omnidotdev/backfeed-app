@@ -1,16 +1,28 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Combobox, Divider, Stack } from "@omnidev/sigil";
+import {
+  Button,
+  Combobox,
+  Divider,
+  Grid,
+  GridItem,
+  Icon,
+  Stack,
+  Text,
+  sigil,
+} from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
+import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
@@ -20,7 +32,10 @@ import {
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
+import { capitalizeFirstLetter } from "lib/util";
 
+import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
+import type { Subscription } from "@polar-sh/sdk/models/components/subscription.js";
 import type { DestructiveActionProps } from "components/core";
 import type { Organization } from "generated/graphql";
 import type { Session } from "next-auth";
@@ -37,10 +52,16 @@ interface Props {
   user: Session["user"];
   /** Organization ID. */
   organizationId: Organization["rowId"];
+  /** Subscription for the organization. */
+  subscription: Subscription | undefined;
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({ user, organizationId }: Props) => {
+const OrganizationSettings = ({
+  user,
+  organizationId,
+  subscription,
+}: Props) => {
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
@@ -156,6 +177,49 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
   return (
     <Stack gap={6}>
       <UpdateOrganization user={user} />
+
+      {isOwner && (
+        <SectionContainer
+          title="Manage Subscription"
+          description="Update your organization's subscription to unlock new benefits."
+        >
+          <Text>
+            This organization is currently on the Backfeed{" "}
+            <sigil.span color="brand.primary">
+              {capitalizeFirstLetter(
+                subscription?.product.metadata.title as string,
+              )}
+            </sigil.span>{" "}
+            tier. Benefits include in this plan are:
+          </Text>
+          <Grid w="full" lineHeight={1.5}>
+            {sortBenefits(subscription?.product.benefits!).map((feature) => {
+              const isComingSoon = (
+                feature.properties as BenefitCustomProperties
+              ).note
+                ?.toLowerCase()
+                .includes("coming soon");
+
+              return (
+                <GridItem key={feature.id} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                      color={isComingSoon ? "yellow" : "brand.primary"}
+                    />
+                  </sigil.span>
+
+                  {feature.description}
+                </GridItem>
+              );
+            })}
+          </Grid>
+          <Button w="fit">Manage Subscription</Button>
+        </SectionContainer>
+      )}
 
       <SectionContainer
         title={app.organizationSettingsPage.dangerZone.title}
