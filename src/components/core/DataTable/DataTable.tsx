@@ -45,6 +45,7 @@ const DataTable = <T,>({ table }: Props<T>) => (
               justify="space-between"
               w="full"
               gap={4}
+              fontWeight="semibold"
               {...header.column.columnDef.meta?.headerProps}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}

@@ -26,8 +26,7 @@ import {
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { FiEdit } from "react-icons/fi";
-import { LuCheck, LuClockAlert } from "react-icons/lu";
+import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { DestructiveAction } from "components/core";
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
@@ -44,7 +43,6 @@ import { toaster } from "lib/util";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
-import type { DestructiveActionProps } from "components/core";
 import type { OrganizationFragment } from "generated/graphql";
 import type { CustomerState } from "../Subscription/Subscriptions";
 
@@ -133,56 +131,20 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
     onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
   });
 
-  const DELETE_ORGANIZATION: DestructiveActionProps = {
-    title: deleteOrganizationDetails.destruciveAction.title,
-    description: deleteOrganizationDetails.destruciveAction.description,
-    destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
-    action: {
-      label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () =>
-        toaster.promise(
-          async () => {
-            if (subscriptionId) {
-              const revokedSubscription = await revokeSubscription({
-                subscriptionId,
-              });
-
-              if (!revokedSubscription)
-                throw new Error("Error revoking subscription");
-            }
-
-            await deleteOrganization({ rowId: organization.rowId });
-          },
-          {
-            loading: {
-              title: "Deleting organization...",
-            },
-            success: {
-              title: "Successfully deleted organization.",
-            },
-            error: {
-              title: "Error",
-              description:
-                "Sorry, there was an issue with deleting your organization. Please try again.",
-            },
-          },
-        ),
-    },
-  };
-
   return (
-    <HStack py={2} justify="end">
+    <HStack py={2}>
       <Drawer
         open={isOpen}
         onOpenChange={onToggle}
         trigger={
           <Button
-            color="white"
-            backgroundColor="brand.senary"
+            color="brand.senary"
+            backgroundColor="transparent"
             fontSize="md"
+            px={0}
             disabled={!customer?.defaultPaymentMethodId}
           >
-            <Icon src={FiEdit} h={5} w={5} />
+            <Icon src={LuPencil} h={5} w={5} />
           </Button>
         }
         title="Manage Subscription"
@@ -322,7 +284,43 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
         </HStack>
       </Drawer>
 
-      <DestructiveAction {...DELETE_ORGANIZATION}>
+      <DestructiveAction
+        triggerProps={{ px: 0, backgroundColor: "transparent", color: "red" }}
+        title={deleteOrganizationDetails.destruciveAction.title}
+        description={deleteOrganizationDetails.destruciveAction.description}
+        destructiveInput={deleteOrganizationDetails.destruciveAction.prompt}
+        action={{
+          label: deleteOrganizationDetails.destruciveAction.actionLabel,
+          onClick: () =>
+            toaster.promise(
+              async () => {
+                if (subscriptionId) {
+                  const revokedSubscription = await revokeSubscription({
+                    subscriptionId,
+                  });
+
+                  if (!revokedSubscription)
+                    throw new Error("Error revoking subscription");
+                }
+
+                await deleteOrganization({ rowId: organization.rowId });
+              },
+              {
+                loading: {
+                  title: "Deleting organization...",
+                },
+                success: {
+                  title: "Successfully deleted organization.",
+                },
+                error: {
+                  title: "Error",
+                  description:
+                    "Sorry, there was an issue with deleting your organization. Please try again.",
+                },
+              },
+            ),
+        }}
+      >
         <Text whiteSpace="wrap" fontWeight="medium">
           The organization will be{" "}
           <sigil.span color="red">permanently</sigil.span> deleted, including

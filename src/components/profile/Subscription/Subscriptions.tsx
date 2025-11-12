@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useMemo } from "react";
 import { P, match } from "ts-pattern";
@@ -29,7 +30,11 @@ import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 
 const columnHelper = createColumnHelper<
-  OrganizationFragment & { status: SubscriptionStatus; toBeCanceled: boolean }
+  OrganizationFragment & {
+    status: SubscriptionStatus;
+    toBeCanceled: boolean;
+    currentPeriodEnd: Date | null | undefined;
+  }
 >();
 
 export interface CustomerState {
@@ -59,16 +64,17 @@ const Subscription = ({ user, products, customer }: Props) => {
     },
     {
       select: (data) =>
-        data.organizations?.nodes?.map((o) => {
+        data.organizations?.nodes?.map((org) => {
           const currentSubscription = customer?.subscriptions?.find(
-            (s) => s.id === o?.subscriptionId,
+            (sub) => sub.id === org?.subscriptionId,
           );
 
           return {
-            ...o!,
+            ...org!,
             status:
               currentSubscription?.status ?? SubscriptionStatus.Incomplete,
             toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+            currentPeriodEnd: currentSubscription?.currentPeriodEnd,
           };
         }) ?? [],
     },
@@ -76,6 +82,28 @@ const Subscription = ({ user, products, customer }: Props) => {
 
   const columns = useMemo(
     () => [
+      columnHelper.display({
+        id: "organization_actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <SubscriptionActions
+            products={products}
+            customer={customer}
+            organization={row.original}
+          />
+        ),
+        meta: {
+          tableCellProps: {
+            pr: 0,
+            style: {
+              width: token("sizes.20"),
+            },
+          },
+          headerProps: {
+            justify: "center",
+          },
+        },
+      }),
       columnHelper.accessor("name", {
         header: "Name",
         cell: (info) => info.getValue(),
@@ -87,9 +115,11 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("status", {
         header: "Subscription Status",
         cell: (info) => {
+          const toBeCanceled = info.row.original.toBeCanceled;
+
           const color = match({
             status: info.getValue(),
-            toBeCanceled: info.row.original.toBeCanceled,
+            toBeCanceled,
           })
             .with(
               { status: SubscriptionStatus.Active, toBeCanceled: true },
@@ -112,37 +142,22 @@ const Subscription = ({ user, products, customer }: Props) => {
             <HStack>
               <Box h={2} w={2} rounded="full" bgColor={color} />
               <Text>
-                {info
-                  .getValue()
-                  .split("_")
-                  .map((word) => capitalizeFirstLetter(word))
-                  .join(" ")}
+                {toBeCanceled
+                  ? "To Be Canceled"
+                  : info
+                      .getValue()
+                      .split("_")
+                      .map((word) => capitalizeFirstLetter(word))
+                      .join(" ")}
               </Text>
             </HStack>
           );
         },
       }),
-      columnHelper.display({
-        id: "organization_actions",
-        header: "Actions",
-        cell: ({ row }) => (
-          <SubscriptionActions
-            products={products}
-            customer={customer}
-            organization={row.original}
-          />
-        ),
-        meta: {
-          tableCellProps: {
-            pr: 0,
-            style: {
-              width: token("sizes.20"),
-            },
-          },
-          headerProps: {
-            justify: "center",
-          },
-        },
+      columnHelper.accessor("currentPeriodEnd", {
+        header: "Renewal Date",
+        cell: (info) =>
+          info.getValue() ? dayjs(info.getValue()).format("MM/DD/YYYY") : "-",
       }),
     ],
     [products, customer],
