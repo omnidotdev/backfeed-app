@@ -12,6 +12,7 @@ import {
 import { getCustomer, getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -63,7 +64,15 @@ const OrganizationSettingsPage = async ({
 
   const queryClient = getQueryClient();
 
-  await Promise.all([
+  const [
+    {
+      result: { items: products },
+    },
+  ] = await Promise.all([
+    polar.products.list({
+      id: BACKFEED_PRODUCT_IDS,
+      sorting: ["price_amount"],
+    }),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
@@ -96,14 +105,13 @@ const OrganizationSettingsPage = async ({
       >
         <OrganizationSettings
           user={session.user}
-          organizationId={organization.rowId}
-          subscription={
+          organization={organization}
+          customer={
             customerResponse.status === "fulfilled"
-              ? customerResponse.value.subscriptions.find(
-                  (sub) => sub.metadata.organizationId === organization.rowId,
-                )
+              ? customerResponse.value
               : undefined
           }
+          products={products}
         />
       </Page>
     </HydrationBoundary>

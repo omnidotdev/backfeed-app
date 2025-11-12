@@ -37,6 +37,7 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
   );
 
   revalidatePath("/profile/[userId]/organizations");
+  revalidatePath("/organizations/[organizationSlug]/settings");
 
   return result;
 };

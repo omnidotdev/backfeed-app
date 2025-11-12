@@ -21,7 +21,10 @@ import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import { UpdateOrganization } from "components/organization";
+import {
+  ManageSubscription,
+  UpdateOrganization,
+} from "components/organization";
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
@@ -35,9 +38,10 @@ import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
-import type { Subscription } from "@polar-sh/sdk/models/components/subscription.js";
+import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { DestructiveActionProps } from "components/core";
-import type { Organization } from "generated/graphql";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { OrganizationFragment } from "generated/graphql.sdk";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
@@ -50,18 +54,25 @@ const transferOwnershipDetails =
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Organization ID. */
-  organizationId: Organization["rowId"];
-  /** Subscription for the organization. */
-  subscription: Subscription | undefined;
+  /** Organization details. */
+  organization: OrganizationFragment;
+  /** Customer information derived from the signed in user. */
+  customer: CustomerState | undefined;
+  /** Backfeed subscription products. */
+  products: Product[];
 }
 
 /** Organization settings. */
 const OrganizationSettings = ({
   user,
-  organizationId,
-  subscription,
+  organization,
+  customer,
+  products,
 }: Props) => {
+  const subscription = customer?.subscriptions.find(
+    (sub) => sub.metadata.organizationId === organization.rowId,
+  );
+
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
@@ -70,7 +81,7 @@ const OrganizationSettings = ({
 
   const { data: numberOfOwners } = useMembersQuery(
     {
-      organizationId,
+      organizationId: organization.rowId,
       roles: [Role.Owner],
     },
     {
@@ -81,7 +92,7 @@ const OrganizationSettings = ({
   // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
   const { data: members } = useMembersQuery(
     {
-      organizationId,
+      organizationId: organization.rowId,
       excludeRoles: [Role.Owner],
     },
     {
@@ -95,7 +106,7 @@ const OrganizationSettings = ({
 
   const { isOwner, membershipId } = useOrganizationMembership({
     userId: user.rowId,
-    organizationId,
+    organizationId: organization.rowId,
   });
 
   const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
@@ -109,7 +120,7 @@ const OrganizationSettings = ({
       onSettled: async () => queryClient.invalidateQueries(),
     }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
-      organizationId,
+      organizationId: organization.rowId,
     });
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
@@ -121,7 +132,7 @@ const OrganizationSettings = ({
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organizationId }),
+      onClick: () => deleteOrganization({ rowId: organization.rowId }),
     },
   };
 
@@ -217,7 +228,12 @@ const OrganizationSettings = ({
               );
             })}
           </Grid>
-          <Button w="fit">Manage Subscription</Button>
+          <ManageSubscription
+            organization={organization}
+            products={products}
+            customer={customer}
+            trigger={<Button w="fit">Manage Subscription</Button>}
+          />
         </SectionContainer>
       )}
 

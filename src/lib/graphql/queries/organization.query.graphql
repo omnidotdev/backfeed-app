@@ -1,10 +1,7 @@
 query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
-    rowId
-    name
-    slug
+    ...Organization
     updatedAt
-    tier
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {

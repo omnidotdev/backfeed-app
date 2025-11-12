@@ -34,6 +34,7 @@ const createSubscription = async ({ organizationId }: Options) => {
   });
 
   revalidatePath("/profile/[userId]/organizations");
+  revalidatePath("/organizations/[organizationSlug]/settings");
 };
 
 export default createSubscription;

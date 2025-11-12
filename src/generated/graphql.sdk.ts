@@ -5694,7 +5694,7 @@ export type OrganizationQueryVariables = Exact<{
 }>;
 
 
-export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', rowId: string, name: string, slug: string, updatedAt?: Date | null, tier: Tier, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null };
+export type OrganizationQuery = { __typename?: 'Query', organizationBySlug?: { __typename?: 'Organization', updatedAt?: Date | null, rowId: string, name: string, slug: string, tier: Tier, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> }, members: { __typename?: 'MemberConnection', totalCount: number } } | null };
 
 export type OrganizationMetricsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -6292,11 +6292,8 @@ export const NotificationsDocument = gql`
 export const OrganizationDocument = gql`
     query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
-    rowId
-    name
-    slug
+    ...Organization
     updatedAt
-    tier
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {
@@ -6316,7 +6313,7 @@ export const OrganizationDocument = gql`
     }
   }
 }
-    `;
+    ${OrganizationFragmentDoc}`;
 export const OrganizationMetricsDocument = gql`
     query OrganizationMetrics($organizationId: UUID!) {
   projects(condition: {organizationId: $organizationId}) {
