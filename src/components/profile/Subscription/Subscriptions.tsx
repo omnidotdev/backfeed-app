@@ -76,7 +76,10 @@ const Subscription = ({ user, products, customer }: Props) => {
             status:
               currentSubscription?.status ?? SubscriptionStatus.Incomplete,
             toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
-            currentPeriodEnd: currentSubscription?.currentPeriodEnd,
+            currentPeriodEnd:
+              currentSubscription?.prices[0]?.amountType === "free"
+                ? null
+                : currentSubscription?.currentPeriodEnd,
           };
         }) ?? [],
     },
