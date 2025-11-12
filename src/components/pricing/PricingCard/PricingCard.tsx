@@ -181,11 +181,10 @@ const PricingCard = ({ user, product, ...rest }: Props) => {
                 css={css.raw({ ml: -1.5 })}
                 color="foreground.subtle"
               >
-                /
                 {!isFreeTier &&
                   (isPerMonthPricing
-                    ? `${app.pricingPage.pricingCard.month}/org`
-                    : `${app.pricingPage.pricingCard.year}/org`)}
+                    ? `/org/${app.pricingPage.pricingCard.month}`
+                    : `/org/${app.pricingPage.pricingCard.year}`)}
                 {isFreeTier && "forever"}
               </sigil.span>
             )}

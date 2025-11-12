@@ -162,7 +162,14 @@ const TierCallToAction = ({
 
       <MenuSeparator />
 
-      <MenuItem value="create">
+      {/** TODO: determine best approach to make this work. */}
+      <MenuItem
+        value="create"
+        disabled
+        cursor="not-allowed"
+        opacity={0.5}
+        bgColor={{ _hover: { _disabled: "transparent" } }}
+      >
         <HStack>
           <Icon src={LuPlus} />
           Create Organization
