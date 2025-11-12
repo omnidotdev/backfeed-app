@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid } from "@omnidev/sigil";
+import { Grid, Icon } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -111,14 +111,12 @@ const DashboardPage = ({ user, oneWeekAgo }: Props) => {
           {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuBuilding2 />,
+            icon: <Icon src={LuBuilding2} />,
             href: "/organizations",
           },
           {
             label: app.dashboardPage.cta.newOrganization.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
-            icon: <LuCirclePlus />,
+            icon: <Icon src={LuCirclePlus} />,
             dialogType: DialogType.CreateOrganization,
             disabled: !tierRestrictions?.canCreateOrganizations,
             tooltip: tierRestrictions?.isSubscribed
