@@ -1,3 +1,4 @@
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
@@ -45,13 +46,20 @@ const OrganizationSettingsPage = async ({
 
   const [organizationResponse, customerResponse] = await Promise.allSettled([
     getOrganization({ organizationSlug }),
-    getCustomer({ userId: session.user.hidraId!, activeSubscriptions: true }),
+    getCustomer({ userId: session.user.hidraId! }),
   ]);
 
   if (organizationResponse.status === "rejected" || !organizationResponse.value)
     notFound();
 
   const organization = organizationResponse.value;
+
+  const currentSubscription =
+    customerResponse.status === "fulfilled"
+      ? customerResponse.value.subscriptions.find(
+          (sub) => sub.id === organization.subscriptionId,
+        )
+      : undefined;
 
   const sdk = getSdk({ session });
 
@@ -105,7 +113,13 @@ const OrganizationSettingsPage = async ({
       >
         <OrganizationSettings
           user={session.user}
-          organization={organization}
+          organization={{
+            ...organization,
+            status:
+              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
+            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+            currentPeriodEnd: currentSubscription?.currentPeriodEnd,
+          }}
           customer={
             customerResponse.status === "fulfilled"
               ? customerResponse.value

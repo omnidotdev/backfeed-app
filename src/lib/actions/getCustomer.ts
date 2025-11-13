@@ -6,13 +6,7 @@ import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 /**
  * Server action to get customer details.
  */
-const getCustomer = async ({
-  userId,
-  activeSubscriptions,
-}: {
-  userId: string;
-  activeSubscriptions?: true;
-}) => {
+const getCustomer = async ({ userId }: { userId: string }) => {
   const session = await auth();
 
   if (!session) {
@@ -29,7 +23,6 @@ const getCustomer = async ({
     }),
     polar.subscriptions.list({
       externalCustomerId: userId,
-      active: activeSubscriptions,
       productId: BACKFEED_PRODUCT_IDS,
     }),
     polar.customerPortal.customers.listPaymentMethods(

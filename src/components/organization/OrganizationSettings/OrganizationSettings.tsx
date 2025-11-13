@@ -41,8 +41,10 @@ import { capitalizeFirstLetter, toaster } from "lib/util";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { DestructiveActionProps } from "components/core";
-import type { CustomerState } from "components/profile/Subscription/Subscriptions";
-import type { OrganizationFragment } from "generated/graphql.sdk";
+import type {
+  CustomerState,
+  OrganizationRow,
+} from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
@@ -56,7 +58,7 @@ interface Props {
   /** Authenticated user. */
   user: Session["user"];
   /** Organization details. */
-  organization: OrganizationFragment;
+  organization: OrganizationRow;
   /** Customer information derived from the signed in user. */
   customer: CustomerState | undefined;
   /** Backfeed subscription products. */
@@ -225,9 +227,7 @@ const OrganizationSettings = ({
           <Text>
             This organization is currently on the Backfeed{" "}
             <sigil.span color="brand.primary">
-              {capitalizeFirstLetter(
-                (subscription?.product.metadata.title as string) ?? "free",
-              )}
+              {capitalizeFirstLetter(organization.tier ?? "free")}
             </sigil.span>{" "}
             tier. Benefits included in this plan are:
           </Text>

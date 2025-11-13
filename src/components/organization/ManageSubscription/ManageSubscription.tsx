@@ -24,13 +24,17 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
+import { Tier } from "generated/graphql";
 import { createSubscription, updateSubscription } from "lib/actions";
-import { useSearchParams } from "lib/hooks";
+import { API_BASE_URL } from "lib/config";
+import { useAuth, useSearchParams } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
@@ -71,15 +75,23 @@ const ManageSubscription = ({
   ),
   ...rest
 }: Props) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product>();
+  const router = useRouter();
 
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { user } = useAuth();
 
   const subscriptionId = organization.subscriptionId;
 
   const currentProduct =
-    customer?.subscriptions?.find((sub) => sub.id === subscriptionId)
-      ?.product ?? products[0];
+    // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to the previous tier. We conditionally fallback to `Free` tier here to align UI with intent.
+    organization.tier === Tier.Free
+      ? products[0]
+      : (customer?.subscriptions?.find((sub) => sub.id === subscriptionId)
+          ?.product ?? products[0]);
+
+  const [selectedProduct, setSelectedProduct] =
+    useState<Product>(currentProduct);
+
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
@@ -143,13 +155,28 @@ const ManageSubscription = ({
         <Button
           w="full"
           disabled={
-            (!selectedProduct && !!subscriptionId) ||
-            selectedProduct?.id === currentProduct.id ||
+            (selectedProduct.id === currentProduct.id &&
+              // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
+              organization.status !== SubscriptionStatus.Canceled) ||
             isPending
           }
-          onClick={handleUpsertSubscription}
+          onClick={() => {
+            // NB: if the subscription for the organization has been canceled, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
+            if (organization.status === SubscriptionStatus.Canceled) {
+              router.push(
+                `${API_BASE_URL}/checkout?products=${selectedProduct.id}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: organization.rowId }))}`,
+              );
+            } else {
+              handleUpsertSubscription();
+            }
+          }}
         >
-          {subscriptionId ? "Update" : "Create"} Subscription
+          {subscriptionId
+            ? organization.status === SubscriptionStatus.Canceled
+              ? "Renew"
+              : "Update"
+            : "Create"}{" "}
+          Subscription
         </Button>
       }
       bodyProps={{
@@ -187,7 +214,7 @@ const ManageSubscription = ({
                 orientation="vertical"
                 defaultValue={currentProduct.id}
                 onValueChange={({ value }) =>
-                  setSelectedProduct(products.find((p) => p.id === value))
+                  setSelectedProduct(products.find((p) => p.id === value)!)
                 }
               >
                 {filteredProducts.map((product) => (

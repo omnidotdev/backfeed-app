@@ -49,7 +49,7 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
     );
   }
 
-  const result = await polar.customerPortal.subscriptions.update(
+  await polar.customerPortal.subscriptions.update(
     {
       customerSession: customerSession.token,
     },
@@ -57,15 +57,12 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
       id: subscriptionId,
       customerSubscriptionUpdate: {
         productId,
-        cancelAtPeriodEnd: false,
       },
     },
   );
 
   revalidatePath("/profile/[userId]/organizations");
   revalidatePath("/organizations/[organizationSlug]/settings");
-
-  return result;
 };
 
 export default updateSubscription;
