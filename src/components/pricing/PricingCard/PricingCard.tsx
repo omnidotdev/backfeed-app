@@ -185,7 +185,7 @@ const PricingCard = ({ user, product, ...rest }: Props) => {
                   (isPerMonthPricing
                     ? `/org/${app.pricingPage.pricingCard.month}`
                     : `/org/${app.pricingPage.pricingCard.year}`)}
-                {isFreeTier && "forever"}
+                {isFreeTier && "/forever"}
               </sigil.span>
             )}
           </HStack>
