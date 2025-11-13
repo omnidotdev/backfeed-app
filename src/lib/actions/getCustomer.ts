@@ -1,12 +1,18 @@
 "use server";
 
 import { auth } from "auth";
-import { polar } from "lib/polar";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
 /**
  * Server action to get customer details.
  */
-const getCustomer = async (userId: string) => {
+const getCustomer = async ({
+  userId,
+  activeSubscriptions,
+}: {
+  userId: string;
+  activeSubscriptions?: true;
+}) => {
   const session = await auth();
 
   if (!session) {
@@ -23,7 +29,8 @@ const getCustomer = async (userId: string) => {
     }),
     polar.subscriptions.list({
       externalCustomerId: userId,
-      active: true,
+      active: activeSubscriptions,
+      productId: BACKFEED_PRODUCT_IDS,
     }),
     polar.customerPortal.customers.listPaymentMethods(
       {

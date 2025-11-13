@@ -45,7 +45,7 @@ const OrganizationSettingsPage = async ({
 
   const [organizationResponse, customerResponse] = await Promise.allSettled([
     getOrganization({ organizationSlug }),
-    getCustomer(session.user.hidraId!),
+    getCustomer({ userId: session.user.hidraId!, activeSubscriptions: true }),
   ]);
 
   if (organizationResponse.status === "rejected" || !organizationResponse.value)

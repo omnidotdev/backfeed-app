@@ -37,15 +37,17 @@ import type { DrawerProps } from "@omnidev/sigil";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
-import type { CustomerState } from "components/profile/Subscription/Subscriptions";
-import type { OrganizationFragment } from "generated/graphql";
+import type {
+  CustomerState,
+  OrganizationRow,
+} from "components/profile/Subscription/Subscriptions";
 
 const getPrice = (price: ProductPrice) =>
   price.amountType !== "fixed" ? 0 : price.priceAmount / 100;
 
 interface Props extends DrawerProps {
   /** Organization details. */
-  organization: OrganizationFragment;
+  organization: OrganizationRow;
   /** List of available backfeed products. */
   products: Product[];
   /** Customer details. */

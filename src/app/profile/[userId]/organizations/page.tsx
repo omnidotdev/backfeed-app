@@ -12,7 +12,6 @@ import {
 } from "generated/graphql";
 import { getCustomer } from "lib/actions";
 import { API_BASE_URL, app } from "lib/config";
-import { subscriptionOptions } from "lib/options";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
@@ -32,7 +31,7 @@ const ProfileOrganizationsPage = async ({
 
   const [session, customer] = await Promise.allSettled([
     auth(),
-    getCustomer(userId),
+    getCustomer({ userId }),
   ]);
 
   if (session.status === "rejected") redirect("/");
@@ -60,15 +59,6 @@ const ProfileOrganizationsPage = async ({
       orderBy: OrganizationOrderBy.CreatedAtAsc,
     }),
   });
-
-  // If the customer exists (i.e. has an active subscription or has subscribed in the past), prefetch the subscription data.
-  if (customer.status !== "rejected") {
-    await queryClient.prefetchQuery(
-      subscriptionOptions({
-        hidraId: userId,
-      }),
-    );
-  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

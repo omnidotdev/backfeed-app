@@ -1,6 +1,7 @@
 "use client";
 
 import { HStack, Text, sigil } from "@omnidev/sigil";
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 
 import { DestructiveAction } from "components/core";
 import { ManageSubscription } from "components/organization";
@@ -10,15 +11,17 @@ import { app } from "lib/config";
 import { toaster } from "lib/util";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { OrganizationFragment } from "generated/graphql";
-import type { CustomerState } from "../Subscription/Subscriptions";
+import type {
+  CustomerState,
+  OrganizationRow,
+} from "../Subscription/Subscriptions";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
 
 interface Props {
   /** Organization details. */
-  organization: OrganizationFragment;
+  organization: OrganizationRow;
   /** List of available backfeed products. */
   products: Product[];
   /** Customer details. */
@@ -54,7 +57,10 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
           onClick: () =>
             toaster.promise(
               async () => {
-                if (subscriptionId) {
+                if (
+                  subscriptionId &&
+                  organization.status !== SubscriptionStatus.Canceled
+                ) {
                   const revokedSubscription = await revokeSubscription({
                     subscriptionId,
                   });

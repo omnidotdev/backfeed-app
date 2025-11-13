@@ -32,13 +32,13 @@ import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 
-const columnHelper = createColumnHelper<
-  OrganizationFragment & {
-    status: SubscriptionStatus;
-    toBeCanceled: boolean;
-    currentPeriodEnd: Date | null | undefined;
-  }
->();
+export interface OrganizationRow extends OrganizationFragment {
+  status: SubscriptionStatus;
+  toBeCanceled: boolean;
+  currentPeriodEnd: Date | null | undefined;
+}
+
+const columnHelper = createColumnHelper<OrganizationRow>();
 
 export interface CustomerState {
   id: string;
@@ -119,7 +119,7 @@ const Subscription = ({ user, products, customer }: Props) => {
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor("tier", {
-        header: "Subscription Tier",
+        header: "Tier",
         cell: (info) => capitalizeFirstLetter(info.getValue()),
       }),
       columnHelper.accessor("status", {
@@ -167,7 +167,10 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("currentPeriodEnd", {
         header: "Renewal Date",
         cell: (info) =>
-          info.getValue() ? dayjs(info.getValue()).format("MM/DD/YYYY") : "-",
+          info.getValue() &&
+          info.row.original.status !== SubscriptionStatus.Canceled
+            ? dayjs(info.getValue()).format("MM/DD/YYYY")
+            : "-",
       }),
     ],
     [products, customer],
