@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
@@ -115,11 +114,7 @@ const ProjectsPage = async ({
             ? [
                 {
                   label: app.projectsPage.header.cta.newProject.label,
-                  icon: (
-                    <Icon>
-                      <LuCirclePlus />
-                    </Icon>
-                  ),
+                  icon: <LuCirclePlus />,
                   disabled: !canCreateProjects,
                   dialogType: DialogType.CreateProject,
                   tooltip: app.projectsPage.header.cta.newProject.tooltip,

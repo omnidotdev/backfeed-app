@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
@@ -118,11 +117,7 @@ const OrganizationMembersPage = async ({
               ? [
                   {
                     label: app.organizationMembersPage.cta.addOwner.label,
-                    icon: (
-                      <Icon>
-                        <LuCirclePlus />
-                      </Icon>
-                    ),
+                    icon: <LuCirclePlus />,
                     dialogType: DialogType.AddOwner,
                   },
                 ]

@@ -1,4 +1,4 @@
-import { Badge, HStack, Icon, Text } from "@omnidev/sigil";
+import { Badge, HStack, Text } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -146,11 +146,7 @@ const OrganizationPage = async ({
             {
               label: app.organizationPage.header.cta.viewProjects.label,
               variant: "outline",
-              icon: (
-                <Icon>
-                  <HiOutlineFolder />
-                </Icon>
-              ),
+              icon: <HiOutlineFolder />,
               href: `/organizations/${organizationSlug}/projects`,
               disabled: !organization.projects.totalCount,
               tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
@@ -159,11 +155,7 @@ const OrganizationPage = async ({
               ? [
                   {
                     label: app.organizationPage.header.cta.newProject.label,
-                    icon: (
-                      <Icon>
-                        <LuCirclePlus />
-                      </Icon>
-                    ),
+                    icon: <LuCirclePlus />,
                     disabled: !canCreateProjects,
                     dialogType: DialogType.CreateProject,
                     tooltip: app.organizationPage.header.cta.newProject.tooltip,

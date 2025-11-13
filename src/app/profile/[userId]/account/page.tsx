@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { notFound } from "next/navigation";
 import { FaRegEdit } from "react-icons/fa";
 
@@ -42,11 +41,7 @@ const ProfileAccountPage = async ({
         cta: [
           {
             label: app.profileAccountPage.cta.updateProfile.label,
-            icon: (
-              <Icon>
-                <FaRegEdit />
-              </Icon>
-            ),
+            icon: <FaRegEdit />,
             // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
             href: AUTH_ISSUER!.split("/api")[0],
           },

@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -165,11 +164,7 @@ const ProjectPage = async ({
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,
-              icon: (
-                <Icon>
-                  <HiOutlineFolder />
-                </Icon>
-              ),
+              icon: <HiOutlineFolder />,
               variant: "outline",
               href: `/organizations/${organizationSlug}/projects`,
             },
@@ -177,11 +172,7 @@ const ProjectPage = async ({
               ? [
                   {
                     label: app.projectPage.header.cta.settings.label,
-                    icon: (
-                      <Icon>
-                        <LuSettings />
-                      </Icon>
-                    ),
+                    icon: <LuSettings />,
                     href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
                   },
                 ]

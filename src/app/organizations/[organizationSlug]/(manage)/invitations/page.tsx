@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
@@ -78,11 +77,7 @@ const OrganizationInvitationsPage = async ({
             ? [
                 {
                   label: app.organizationInvitationsPage.cta.inviteMember.title,
-                  icon: (
-                    <Icon>
-                      <FiUserPlus />
-                    </Icon>
-                  ),
+                  icon: <FiUserPlus />,
                   dialogType: DialogType.InviteMember,
                   variant: "outline",
                 },
