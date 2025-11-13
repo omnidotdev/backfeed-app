@@ -41,7 +41,6 @@ const ProfileAccountPage = async ({
         cta: [
           {
             label: app.profileAccountPage.cta.updateProfile.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <FaRegEdit />,
             // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
             href: AUTH_ISSUER!.split("/api")[0],

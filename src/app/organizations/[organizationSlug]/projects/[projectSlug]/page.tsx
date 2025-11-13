@@ -164,7 +164,6 @@ const ProjectPage = async ({
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               variant: "outline",
               href: `/organizations/${organizationSlug}/projects`,
@@ -173,7 +172,6 @@ const ProjectPage = async ({
               ? [
                   {
                     label: app.projectPage.header.cta.settings.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                     icon: <LuSettings />,
                     href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
                   },

@@ -77,7 +77,6 @@ const OrganizationInvitationsPage = async ({
             ? [
                 {
                   label: app.organizationInvitationsPage.cta.inviteMember.title,
-                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                   icon: <FiUserPlus />,
                   dialogType: DialogType.InviteMember,
                   variant: "outline",
