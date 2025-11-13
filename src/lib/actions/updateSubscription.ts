@@ -24,6 +24,31 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
     externalCustomerId: session.user.hidraId!,
   });
 
+  const currentSubscription = await polar.customerPortal.subscriptions.get(
+    {
+      customerSession: customerSession.token,
+    },
+    {
+      id: subscriptionId,
+    },
+  );
+
+  // NB: if a current subscription has already been set to cancel at period end and you try to update to another product, the update will fail.
+  // Here we check to see if this is the case, and if so, we first "uncancel" the current subscription before proceeding to the update
+  if (currentSubscription.cancelAtPeriodEnd) {
+    await polar.customerPortal.subscriptions.update(
+      {
+        customerSession: customerSession.token,
+      },
+      {
+        id: subscriptionId,
+        customerSubscriptionUpdate: {
+          cancelAtPeriodEnd: false,
+        },
+      },
+    );
+  }
+
   const result = await polar.customerPortal.subscriptions.update(
     {
       customerSession: customerSession.token,
@@ -32,6 +57,7 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
       id: subscriptionId,
       customerSubscriptionUpdate: {
         productId,
+        cancelAtPeriodEnd: false,
       },
     },
   );
