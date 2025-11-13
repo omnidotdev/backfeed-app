@@ -19,7 +19,7 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { revokeSubscription, updateSubscription } from "lib/actions";
+import { updateSubscription } from "lib/actions";
 import { API_BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter, toaster } from "lib/util";
@@ -191,20 +191,6 @@ const TierCallToAction = ({
                       org.status === SubscriptionStatus.Canceled ||
                       !customer?.paymentMethods.length
                     ) {
-                      // TODO: discuss comment and logic below. Would like to make this more transactional by possibly moving this type of logic to the API. We could possibly immediately revoke all existing subscriptions for an org when a new one is created.
-                      // NB: If the user does not have any valid payment methods, we first set existing subscription to be canceled at end of period.
-                      // This is to offset/prevent duplicate subscriptions for the same organization.
-                      // The reason we set it for end of period is so that if the user does not complete the checkout process, the existing subscription will still be active until end of period.
-                      if (
-                        !customer?.paymentMethods.length &&
-                        org.status !== SubscriptionStatus.Canceled
-                      ) {
-                        await revokeSubscription({
-                          subscriptionId: org.subscriptionId!,
-                          cancelAtEndOfPeriod: true,
-                        });
-                      }
-
                       router.push(
                         `${API_BASE_URL}/checkout?products=${productId}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: org.rowId! }))}`,
                       );
