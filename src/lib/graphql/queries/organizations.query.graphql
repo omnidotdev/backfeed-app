@@ -8,7 +8,6 @@ query Organizations(
   $search: String
   $slug: String
   $organizationId: UUID
-  $excludeTiers: [Tier!]
 ) {
   organizations(
     first: $pageSize
@@ -18,7 +17,6 @@ query Organizations(
       rowId: { equalTo: $organizationId }
       name: { includesInsensitive: $search }
       slug: { equalTo: $slug }
-      tier: { notIn: $excludeTiers }
       or: [
         {
           membersExist: $isMember

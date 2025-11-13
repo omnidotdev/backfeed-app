@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
+import { getCustomer } from "lib/actions";
 import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
@@ -32,7 +33,21 @@ const PricingPage = async () => {
 
   if (session?.error) redirect("/");
 
-  return <PricingOverview user={session?.user} products={products} />;
+  if (session) {
+    const [customer] = await Promise.allSettled([
+      getCustomer({ userId: session.user.hidraId! }),
+    ]);
+
+    return (
+      <PricingOverview
+        user={session.user}
+        products={products}
+        customer={customer.status === "fulfilled" ? customer.value : undefined}
+      />
+    );
+  }
+
+  return <PricingOverview user={undefined} products={products} />;
 };
 
 export default PricingPage;

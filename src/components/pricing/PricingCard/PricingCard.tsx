@@ -27,6 +27,7 @@ import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 
 const COMING_SOON = "coming soon";
@@ -73,12 +74,14 @@ interface Props extends CardProps {
   user: Session["user"] | undefined;
   /** Product information. */
   product: Product;
+  /** Customer details */
+  customer?: CustomerState;
 }
 
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ user, product, ...rest }: Props) => {
+const PricingCard = ({ user, product, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
   const isPerMonthPricing =
@@ -200,6 +203,7 @@ const PricingCard = ({ user, product, ...rest }: Props) => {
               productId={product.id}
               tier={tier}
               actionIcon={actionIcon}
+              customer={customer}
             />
           ) : (
             <Button

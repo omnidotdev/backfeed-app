@@ -10,6 +10,7 @@ import {
   MenuSeparator,
   useDisclosure,
 } from "@omnidev/sigil";
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,12 +19,14 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { updateSubscription } from "lib/actions";
+import { revokeSubscription, updateSubscription } from "lib/actions";
+import { API_BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
@@ -34,6 +37,8 @@ interface Props extends ButtonProps {
   productId: string;
   /** Subscription tier. */
   tier: Tier;
+  /** Customer details. */
+  customer?: CustomerState;
   /** Action icon. */
   actionIcon?: IconType;
 }
@@ -42,6 +47,7 @@ const TierCallToAction = ({
   user,
   productId,
   tier,
+  customer,
   actionIcon,
   ...rest
 }: Props) => {
@@ -60,10 +66,19 @@ const TierCallToAction = ({
     {
       userId: user.rowId,
       excludeRoles: [Role.Member, Role.Admin],
-      excludeTiers: [tier],
     },
     {
-      select: (data) => data?.organizations?.nodes ?? [],
+      select: (data) =>
+        data?.organizations?.nodes?.map((org) => {
+          const subscription = customer?.subscriptions.find(
+            (sub) => sub.id === org?.subscriptionId,
+          );
+
+          return {
+            ...org,
+            status: subscription?.status ?? SubscriptionStatus.Incomplete,
+          };
+        }) ?? [],
     },
   );
 
@@ -153,22 +168,59 @@ const TierCallToAction = ({
       >
         <MenuItemGroup>
           {organizations?.length ? (
-            organizations?.map((org) => (
-              <MenuItem
-                key={org?.rowId}
-                value={org?.rowId!}
-                disabled={!org?.subscriptionId || isPending}
-                onClick={() =>
-                  handleUpdateSubscription({
-                    subscriptionId: org?.subscriptionId!,
-                    productId,
-                    organizationSlug: org?.slug!,
-                  })
-                }
-              >
-                {org?.name}
-              </MenuItem>
-            ))
+            organizations?.map((org) => {
+              const isDisabled =
+                !org?.subscriptionId || org?.tier === tier || isPending;
+
+              return (
+                <MenuItem
+                  key={org?.rowId}
+                  value={org?.rowId!}
+                  disabled={isDisabled}
+                  _disabled={{
+                    opacity: 0.5,
+                    cursor: "not-allowed",
+                    bgColor: "transparent",
+                  }}
+                  onClick={async () => {
+                    // TODO: figure out why this is required. `onClick` still fires even if `disabled` prop is true, this is a fallback solution
+                    if (isDisabled) return;
+
+                    // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
+                    if (
+                      org.status === SubscriptionStatus.Canceled ||
+                      !customer?.paymentMethods.length
+                    ) {
+                      // TODO: discuss comment and logic below. Would like to make this more transactional by possibly moving this type of logic to the API. We could possibly immediately revoke all existing subscriptions for an org when a new one is created.
+                      // NB: If the user does not have any valid payment methods, we first set existing subscription to be canceled at end of period.
+                      // This is to offset/prevent duplicate subscriptions for the same organization.
+                      // The reason we set it for end of period is so that if the user does not complete the checkout process, the existing subscription will still be active until end of period.
+                      if (
+                        !customer?.paymentMethods.length &&
+                        org.status !== SubscriptionStatus.Canceled
+                      ) {
+                        await revokeSubscription({
+                          subscriptionId: org.subscriptionId!,
+                          cancelAtEndOfPeriod: true,
+                        });
+                      }
+
+                      router.push(
+                        `${API_BASE_URL}/checkout?products=${productId}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: org.rowId! }))}`,
+                      );
+                    } else {
+                      handleUpdateSubscription({
+                        subscriptionId: org?.subscriptionId!,
+                        productId,
+                        organizationSlug: org?.slug!,
+                      });
+                    }
+                  }}
+                >
+                  {org?.name}
+                </MenuItem>
+              );
+            })
           ) : (
             <MenuItem
               value="empty"
