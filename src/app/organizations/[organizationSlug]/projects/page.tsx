@@ -6,6 +6,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
 import { Role, Tier, useProjectsQuery } from "generated/graphql";
+import { icon } from "generated/panda/recipes";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
@@ -114,7 +115,8 @@ const ProjectsPage = async ({
             ? [
                 {
                   label: app.projectsPage.header.cta.newProject.label,
-                  icon: <LuCirclePlus />,
+                  // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                  icon: <LuCirclePlus className={icon()} />,
                   disabled: !canCreateProjects,
                   dialogType: DialogType.CreateProject,
                   tooltip: app.projectsPage.header.cta.newProject.tooltip,

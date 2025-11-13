@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@omnidev/sigil";
 import { LuCirclePlus } from "react-icons/lu";
 
 import { Page } from "components/layout";
@@ -30,7 +31,7 @@ const OrganizationsOverview = () => (
       cta: [
         {
           label: app.organizationsPage.header.cta.newOrganization.label,
-          icon: <LuCirclePlus />,
+          icon: <Icon src={LuCirclePlus} />,
           dialogType: DialogType.CreateOrganization,
         },
       ],

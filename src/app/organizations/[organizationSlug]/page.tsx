@@ -20,6 +20,7 @@ import {
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
+import { icon } from "generated/panda/recipes";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
@@ -146,7 +147,8 @@ const OrganizationPage = async ({
             {
               label: app.organizationPage.header.cta.viewProjects.label,
               variant: "outline",
-              icon: <HiOutlineFolder />,
+              // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+              icon: <HiOutlineFolder className={icon()} />,
               href: `/organizations/${organizationSlug}/projects`,
               disabled: !organization.projects.totalCount,
               tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
@@ -155,7 +157,8 @@ const OrganizationPage = async ({
               ? [
                   {
                     label: app.organizationPage.header.cta.newProject.label,
-                    icon: <LuCirclePlus />,
+                    // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                    icon: <LuCirclePlus className={icon()} />,
                     disabled: !canCreateProjects,
                     dialogType: DialogType.CreateProject,
                     tooltip: app.organizationPage.header.cta.newProject.tooltip,

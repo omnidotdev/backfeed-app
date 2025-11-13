@@ -17,6 +17,7 @@ import {
   useProjectStatusesQuery,
   useStatusBreakdownQuery,
 } from "generated/graphql";
+import { icon } from "generated/panda/recipes";
 import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -164,7 +165,8 @@ const ProjectPage = async ({
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,
-              icon: <HiOutlineFolder />,
+              // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+              icon: <HiOutlineFolder className={icon()} />,
               variant: "outline",
               href: `/organizations/${organizationSlug}/projects`,
             },
@@ -172,7 +174,8 @@ const ProjectPage = async ({
               ? [
                   {
                     label: app.projectPage.header.cta.settings.label,
-                    icon: <LuSettings />,
+                    // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                    icon: <LuSettings className={icon()} />,
                     href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
                   },
                 ]
