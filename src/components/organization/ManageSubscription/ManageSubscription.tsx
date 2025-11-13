@@ -62,7 +62,7 @@ const ManageSubscription = ({
       backgroundColor="transparent"
       fontSize="md"
       px={0}
-      disabled={!customer?.defaultPaymentMethodId}
+      disabled={!customer?.paymentMethods.length}
     >
       <Icon src={LuPencil} h={5} w={5} />
     </Button>

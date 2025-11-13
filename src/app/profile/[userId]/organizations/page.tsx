@@ -79,7 +79,7 @@ const ProfileOrganizationsPage = async ({
           cta:
             // NB: if the status is rejected, the user has not subscribed ever. If there is no default payment method ID, then the user does not have a payment method on file to upgrade subscriptions
             customer.status === "rejected" ||
-            !customer.value.defaultPaymentMethodId
+            !customer.value.paymentMethods.length
               ? [
                   ...(customer.status === "fulfilled"
                     ? [

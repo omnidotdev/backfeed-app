@@ -17,7 +17,7 @@ const getCustomer = async (userId: string) => {
     externalCustomerId: userId,
   });
 
-  const [customer, subscriptionResult] = await Promise.all([
+  const [customer, subscriptions, paymentMethods] = await Promise.all([
     polar.customerPortal.customers.get({
       customerSession: customerSession.token,
     }),
@@ -25,11 +25,18 @@ const getCustomer = async (userId: string) => {
       externalCustomerId: userId,
       active: true,
     }),
+    polar.customerPortal.customers.listPaymentMethods(
+      {
+        customerSession: customerSession.token,
+      },
+      {},
+    ),
   ]);
 
   return {
     ...customer,
-    subscriptions: subscriptionResult.result.items,
+    subscriptions: subscriptions.result.items,
+    paymentMethods: paymentMethods.result.items,
   };
 };
 

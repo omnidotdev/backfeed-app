@@ -26,6 +26,7 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
+import type { CustomerPaymentMethod } from "@polar-sh/sdk/models/components/customerpaymentmethod.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models/components/subscription.js";
 import type { OrganizationFragment } from "generated/graphql";
@@ -42,7 +43,7 @@ const columnHelper = createColumnHelper<
 export interface CustomerState {
   id: string;
   subscriptions: SubscriptionInterface[];
-  defaultPaymentMethodId?: string | null | undefined;
+  paymentMethods: CustomerPaymentMethod[];
 }
 
 interface Props {
