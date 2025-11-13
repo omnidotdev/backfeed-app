@@ -32,10 +32,11 @@ import {
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
+import { revokeSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
-import { capitalizeFirstLetter } from "lib/util";
+import { capitalizeFirstLetter, toaster } from "lib/util";
 
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
@@ -109,7 +110,7 @@ const OrganizationSettings = ({
     organizationId: organization.rowId,
   });
 
-  const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
+  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
       // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
       onSettled: async () => queryClient.invalidateQueries(),
@@ -132,7 +133,34 @@ const OrganizationSettings = ({
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organization.rowId }),
+      onClick: () =>
+        toaster.promise(
+          async () => {
+            if (organization.subscriptionId) {
+              const revokedSubscription = await revokeSubscription({
+                subscriptionId: organization.subscriptionId,
+              });
+
+              if (!revokedSubscription)
+                throw new Error("Error revoking subscription");
+            }
+
+            await deleteOrganization({ rowId: organization.rowId });
+          },
+          {
+            loading: {
+              title: "Deleting organization...",
+            },
+            success: {
+              title: "Successfully deleted organization.",
+            },
+            error: {
+              title: "Error",
+              description:
+                "Sorry, there was an issue with deleting your organization. Please try again.",
+            },
+          },
+        ),
     },
   };
 
