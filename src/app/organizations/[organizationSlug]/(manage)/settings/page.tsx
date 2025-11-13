@@ -79,6 +79,8 @@ const OrganizationSettingsPage = async ({
   ] = await Promise.all([
     polar.products.list({
       id: BACKFEED_PRODUCT_IDS,
+      // Enterprise products are currently archived, but there is no need to display them as options within this route
+      isArchived: false,
       sorting: ["price_amount"],
     }),
     queryClient.prefetchQuery({

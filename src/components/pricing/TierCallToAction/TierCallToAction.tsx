@@ -231,6 +231,7 @@ const TierCallToAction = ({
           </HStack>
         </MenuItem>
       </Menu>
+
       <CreatePaidSubscription
         productId={productId}
         isOpen={isPaidSubscriptionDialogOpen}
