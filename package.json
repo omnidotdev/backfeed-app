@@ -95,5 +95,8 @@
     "msw",
     "sharp",
     "utf-8-validate"
-  ]
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  }
 }
