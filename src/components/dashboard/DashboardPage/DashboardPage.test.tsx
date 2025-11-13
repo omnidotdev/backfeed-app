@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 
-import { DashboardPage } from "components/dashboard";
 import dayjs from "dayjs";
+
+import { DashboardPage } from "components/dashboard";
 import { app } from "lib/config";
 import { render } from "test/unit/util";
 

@@ -5,8 +5,13 @@ import { Field } from "components/form";
 import { token } from "generated/panda/tokens";
 import { useFieldContext } from "lib/hooks";
 
-import type { ButtonProps, InputProps, StackProps } from "@omnidev/sigil";
-import type { FormFieldErrorProps } from "components/form";
+import type {
+  ButtonProps,
+  InputProps,
+  StackProps,
+  TextProps,
+} from "@omnidev/sigil";
+import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 import type { IconType } from "react-icons";
 
 interface Props extends InputProps {
@@ -16,8 +21,10 @@ interface Props extends InputProps {
   label?: string;
   /** Field container props. */
   containerProps?: StackProps;
+  /** Error map to determine issue message(s) to render. */
+  errorMap?: StandardSchemaV1Issue[];
   /** Additional props for the error component. */
-  errorProps?: Partial<FormFieldErrorProps>;
+  errorProps?: TextProps;
   /** Whether to display the remove field trigger. */
   displayRemoveTrigger?: boolean;
   /** Additional props to be passed to the remove field trigger. */
@@ -31,6 +38,7 @@ const URLField = ({
   icon,
   label,
   containerProps,
+  errorMap,
   errorProps,
   displayRemoveTrigger = true,
   removeFieldProps,
@@ -39,7 +47,7 @@ const URLField = ({
   const { handleChange, state, name } = useFieldContext<string>();
 
   return (
-    <Field errorProps={errorProps} {...containerProps}>
+    <Field errorMap={errorMap} errorProps={errorProps} {...containerProps}>
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <HStack>

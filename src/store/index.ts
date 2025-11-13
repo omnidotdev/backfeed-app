@@ -1,1 +1,1 @@
-export { default as getDialogStore, DialogType } from "./dialogStore";
+export { DialogType, default as getDialogStore } from "./dialogStore";

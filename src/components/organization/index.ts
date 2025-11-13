@@ -4,18 +4,18 @@ export { default as InvitationMenu } from "./InvitationMenu/InvitationMenu";
 export { default as Invitations } from "./Invitations/Invitations";
 export { default as InviteMember } from "./InviteMember/InviteMember";
 export {
-  default as InviteMemberEmailTemplate,
   type OrganizationInvitation,
+  default as InviteMemberEmailTemplate,
 } from "./InviteMemberEmailTemplate/InviteMemberEmailTemplate";
 export { default as ManagementNavigation } from "./ManagementNavigation/ManagementNavigation";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";
 export { default as Members } from "./Members/Members";
 export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
 export { default as MembershipMenu } from "./MembershipMenu/MembershipMenu";
-export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as OrganizationFilters } from "./OrganizationFilters/OrganizationFilters";
 export { default as OrganizationList } from "./OrganizationList/OrganizationList";
 export { default as OrganizationListItem } from "./OrganizationListItem/OrganizationListItem";
+export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as OrganizationMetrics } from "./OrganizationMetrics/OrganizationMetrics";
 export { default as OrganizationProjects } from "./OrganizationProjects/OrganizationProjects";
 export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";

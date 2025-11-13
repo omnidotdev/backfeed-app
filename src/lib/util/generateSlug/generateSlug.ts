@@ -1,7 +1,6 @@
 const generateSlug = (name: string | undefined) => {
   if (!name) return undefined;
 
-  // biome-ignore lint/suspicious/noMisleadingCharacterClass: valid due to `normalize`
   const unaccentedName = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const replacedSpaces = unaccentedName.replace(/\s+/g, "-");
   const replacedMultipleDashes = replacedSpaces.replace(/-{2,}/g, "-");

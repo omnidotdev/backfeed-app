@@ -1,4 +1,5 @@
 import { createSearchParamsCache } from "nuqs/server";
+
 // NB: relative import prevents circular dependency
 import searchParams from "../searchParams";
 

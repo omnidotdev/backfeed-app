@@ -15,9 +15,11 @@ import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { ProjectsQueryVariables } from "generated/graphql";
-import type { SearchParams } from "nuqs/server";
+import type { Metadata } from "next";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -29,17 +31,13 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Projects page params. */
-  params: Promise<{ organizationSlug: string }>;
-  /** Projects page search params. */
-  searchParams: Promise<SearchParams>;
-}
-
 /**
  * Projects overview page.
  */
-const ProjectsPage = async ({ params, searchParams }: Props) => {
+const ProjectsPage = async ({
+  params,
+  searchParams,
+}: PageProps<"/organizations/[organizationSlug]/projects">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();
@@ -118,7 +116,6 @@ const ProjectsPage = async ({ params, searchParams }: Props) => {
             ? [
                 {
                   label: app.projectsPage.header.cta.newProject.label,
-                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                   icon: <LuCirclePlus />,
                   disabled: !canCreateProjects,
                   dialogType: DialogType.CreateProject,

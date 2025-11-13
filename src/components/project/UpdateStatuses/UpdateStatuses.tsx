@@ -363,7 +363,6 @@ const UpdateStatuses = ({ projectId }: Props) => {
                               controlProps={{
                                 minW: 40,
                               }}
-                              // @ts-ignore Omit `channel` from upstream types. It is defined internally.
                               channelInputProps={{
                                 borderColor: "border.subtle",
                               }}
@@ -371,7 +370,6 @@ const UpdateStatuses = ({ projectId }: Props) => {
                                 borderColor: "transparent",
                                 p: 0,
                               }}
-                              // @ts-ignore TODO: omit `value` upstream. It is defined internally.
                               swatchProps={{
                                 h: "full",
                                 w: "full",

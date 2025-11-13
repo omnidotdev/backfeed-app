@@ -16,24 +16,18 @@ import { freeTierCommentsOptions } from "lib/options";
 import { getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: app.feedbackPage.breadcrumb,
 };
-
-interface Props {
-  /** Feedback page params. */
-  params: Promise<{
-    organizationSlug: string;
-    projectSlug: string;
-    feedbackId: string;
-  }>;
-}
 
 /**
  * Feedback overview page.
  */
-const FeedbackPage = async ({ params }: Props) => {
+const FeedbackPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]/[feedbackId]">) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
   const session = await auth();

@@ -10,6 +10,7 @@ const getSocialMediaIcon = (url: string) => {
 
   const getApexDomain = () => {
     const regex =
+      // biome-ignore lint: do not override regex
       /^(?:https?:\/\/)?(?:www\.)?([^\/:]+?\.(?:[a-z]{2,}(?:\.[a-z]{2})?|com|org|net))(?:\/.*)?$/i;
     const match = url.match(regex);
 

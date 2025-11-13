@@ -14,8 +14,8 @@ import {
   Stack,
   Text,
 } from "@omnidev/sigil";
-import { signOut } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";

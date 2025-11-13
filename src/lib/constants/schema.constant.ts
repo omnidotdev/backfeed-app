@@ -7,25 +7,11 @@ const projectErrors = app.forms.errors.project;
 
 const emptyStringAsUndefined = z.literal("").transform(() => undefined);
 
-// NB: there is currently an issue with `z.string().url()`. This is a workaround to handle it a bit more verbosely. See: https://github.com/colinhacks/zod/issues/2236#issuecomment-2722654510
-export const urlSchema = z.string().refine((value) => {
-  const urlPattern = new RegExp(
-    // protocol
-    "^(https?:\\/\\/)?" +
-      // domain name or IPv4 address
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
-      "((\\d{1,3}\\.){3}\\d{1,3}))" +
-      // port and path
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
-      // query string
-      "(\\?[;&a-z\\d%_.~+=-]*)?" +
-      // fragment locator
-      "(\\#[-a-z\\d_]*)?$",
-    "i",
-  );
-
-  return urlPattern.test(value);
-}, "Invalid URL");
+// NB: Recommended website url pattern from zod. See: https://zod.dev/api?id=urls
+export const urlSchema = z.url({
+  protocol: /^https?$/,
+  hostname: z.regexes.domain,
+});
 
 export const slugSchema = z
   .string()
@@ -33,11 +19,12 @@ export const slugSchema = z
   .min(3, app.forms.errors.slug.minLength)
   .max(50, app.forms.errors.slug.maxLength);
 
-export const uuidSchema = z.string().uuid(app.forms.errors.id.format);
+export const uuidSchema = z.guid(app.forms.errors.id.format);
 
 export const standardRegexSchema = z
   .string()
   .trim()
+  // biome-ignore lint: do not override regex
   .regex(/^[\p{L}\p{N}\s,!'?.\-\(\)]+$/u, app.forms.errors.regex.invalid);
 
 export const organizationNameSchema = standardRegexSchema

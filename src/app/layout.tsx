@@ -6,7 +6,7 @@ import { Layout } from "components/layout";
 import { ENABLE_MSW, NEXT_RUNTIME, app, isDevEnv } from "lib/config";
 import { mswNodeServer } from "test/e2e/util";
 
-import type { ReactNode } from "react";
+import type { Metadata } from "next";
 
 import "lib/styles/main.css";
 
@@ -25,7 +25,7 @@ if (ENABLE_MSW) {
   }
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: app.name,
     template: `%s | ${app.name}`,
@@ -36,9 +36,10 @@ export const metadata = {
 /**
  * Root layout.
  */
-const RootLayout = ({ children }: { children: ReactNode }) => (
+const RootLayout = ({ children }: LayoutProps<"/">) => (
   // ! NB: `suppressHydrationWarning` is required for `next-themes` to work properly. This property only applies one level deep, so it won't block hydration warnings on other elements. See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-  <html lang="en" suppressHydrationWarning>
+  // `data-scroll-behavior` attribute added as recommendation for nextjs apps. See: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+  <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
     <body>
       {isDevEnv && (
         <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />

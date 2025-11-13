@@ -14,6 +14,7 @@ import {
   RecentFeedback,
 } from "components/dashboard";
 import { Page } from "components/layout";
+import { CreateOrganization } from "components/organization";
 import {
   Role,
   Tier,
@@ -24,7 +25,6 @@ import {
 import { app } from "lib/config";
 import { DialogType } from "store";
 
-import { CreateOrganization } from "components/organization";
 import type { Session } from "next-auth";
 
 interface Props {
@@ -111,13 +111,11 @@ const DashboardPage = ({ user, oneWeekAgo }: Props) => {
           {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuBuilding2 />,
             href: "/organizations",
           },
           {
             label: app.dashboardPage.cta.newOrganization.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             disabled: !tierRestrictions?.canCreateOrganizations,

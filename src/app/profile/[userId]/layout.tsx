@@ -7,12 +7,12 @@ import { ProfileSidebar } from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
 import { getQueryClient } from "lib/util";
 
-import type { PropsWithChildren } from "react";
-
 /**
  * Manage profile layout.
  */
-const ProfileLayout = async ({ children }: PropsWithChildren) => {
+const ProfileLayout = async ({
+  children,
+}: LayoutProps<"/profile/[userId]">) => {
   const session = await auth();
 
   if (!session) notFound();

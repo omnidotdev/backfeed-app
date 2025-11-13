@@ -2,7 +2,7 @@
 
 import { Flex, Text } from "@omnidev/sigil";
 
-import type { TooltipProps } from "recharts";
+import type { TooltipContentProps } from "recharts";
 import type {
   NameType,
   ValueType,
@@ -15,7 +15,7 @@ const FeedbackTooltip = ({
   active,
   payload,
   label,
-}: TooltipProps<ValueType, NameType>) => {
+}: TooltipContentProps<ValueType, NameType>) => {
   if (active && payload && payload.length && !!payload[0].value) {
     return (
       <Flex

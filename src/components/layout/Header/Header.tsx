@@ -1,16 +1,16 @@
 "use client";
 
-import { Flex, HStack, Icon, css, sigil } from "@omnidev/sigil";
-import { Link as SigilLink } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Link as SigilLink, sigil } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
+import { LuExternalLink } from "react-icons/lu";
 
 import { Link, LogoLink } from "components/core";
 import { HeaderActions } from "components/layout";
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { useAuth } from "lib/hooks";
 import { subscriptionOptions } from "lib/options";
-import { LuExternalLink } from "react-icons/lu";
 
 /**
  * Layout header.
@@ -35,10 +35,10 @@ const Header = () => {
       h="full"
       py={2}
       // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-      css={css.raw({
+      style={{
         borderBottom: "1px solid",
-        borderColor: "border.subtle",
-      })}
+        borderColor: token("colors.border.subtle"),
+      }}
     >
       <Flex align="center" justify="space-between" w="full" px={4}>
         <Flex gap={4} alignItems="center">

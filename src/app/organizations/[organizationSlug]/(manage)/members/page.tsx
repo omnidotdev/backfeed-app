@@ -21,9 +21,11 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
-import type { SearchParams } from "nuqs/server";
+import type { Metadata } from "next";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/members">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -35,17 +37,13 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization members page parameters. */
-  params: Promise<{ organizationSlug: string }>;
-  /** Organization members page search parameters. */
-  searchParams: Promise<SearchParams>;
-}
-
 /**
  * Organization members page.
  */
-const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
+const OrganizationMembersPage = async ({
+  params,
+  searchParams,
+}: PageProps<"/organizations/[organizationSlug]/members">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();
@@ -119,7 +117,6 @@ const OrganizationMembersPage = async ({ params, searchParams }: Props) => {
               ? [
                   {
                     label: app.organizationMembersPage.cta.addOwner.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                     icon: <LuCirclePlus />,
                     dialogType: DialogType.AddOwner,
                   },

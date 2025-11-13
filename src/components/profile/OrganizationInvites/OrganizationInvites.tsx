@@ -71,13 +71,6 @@ const OrganizationInvites = ({ email }: Props) => {
                 app.profileInvitationsPage.table.headers.organizationName
               )
             }
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
-            iconProps={{
-              style: {
-                // TODO: Update Sigil component to support icon toggling in checkbox
-                pointerEvents: "none",
-              },
-            }}
             checked={
               table.getIsAllRowsSelected()
                 ? true
@@ -98,13 +91,6 @@ const OrganizationInvites = ({ email }: Props) => {
               fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
-            }}
-            // @ts-ignore TODO: Update Sigil component to remove required `src` prop
-            iconProps={{
-              style: {
-                // TODO: Update Sigil component to support icon toggling in checkbox
-                pointerEvents: "none",
-              },
             }}
             label={row.original.organization?.name}
             checked={row.getIsSelected()}

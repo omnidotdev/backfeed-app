@@ -24,9 +24,11 @@ import { freeTierFeedbackOptions } from "lib/options";
 import { getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { SearchParams } from "nuqs/server";
+import type { Metadata } from "next";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">): Promise<Metadata> => {
   const { organizationSlug, projectSlug } = await params;
 
   const project = await getProject({
@@ -39,17 +41,13 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Project page params. */
-  params: Promise<{ organizationSlug: string; projectSlug: string }>;
-  /** Projects page search params. */
-  searchParams: Promise<SearchParams>;
-}
-
 /**
  * Project overview page.
  */
-const ProjectPage = async ({ params, searchParams }: Props) => {
+const ProjectPage = async ({
+  params,
+  searchParams,
+}: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">) => {
   const { organizationSlug, projectSlug } = await params;
 
   const session = await auth();
@@ -166,7 +164,6 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
           cta: [
             {
               label: app.projectPage.header.cta.viewAllProjects.label,
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               variant: "outline",
               href: `/organizations/${organizationSlug}/projects`,
@@ -175,7 +172,6 @@ const ProjectPage = async ({ params, searchParams }: Props) => {
               ? [
                   {
                     label: app.projectPage.header.cta.settings.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                     icon: <LuSettings />,
                     href: `/organizations/${organizationSlug}/projects/${projectSlug}/settings`,
                   },

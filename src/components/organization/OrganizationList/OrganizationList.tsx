@@ -95,11 +95,9 @@ const OrganizationList = ({
       </Stack>
 
       <Pagination
-        // @ts-ignore: TODO: fix prop definition upstream (omit `index`)
         ellipsisProps={{
           display: { base: "none", sm: "flex" },
         }}
-        // @ts-ignore: TODO: fix prop definition upstream (omit `type` and `value`)
         itemProps={{
           display: { base: "none", sm: "flex" },
         }}

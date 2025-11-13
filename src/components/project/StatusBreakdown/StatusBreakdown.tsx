@@ -102,11 +102,8 @@ const StatusBreakdown = ({ projectId }: Props) => {
               defaultChecked={!excludedStatuses.includes(status?.status!)}
               onCheckedChange={(details) => handleToggleStatus(details, status)}
               size="sm"
-              // @ts-ignore TODO: Update Sigil component to remove required `src` prop
               iconProps={{
                 style: {
-                  // TODO: Update Sigil component to support icon toggling in checkbox
-                  pointerEvents: "none",
                   height: 12,
                   width: 12,
                 },

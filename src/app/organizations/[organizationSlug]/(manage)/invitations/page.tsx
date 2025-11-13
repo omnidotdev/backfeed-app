@@ -12,7 +12,11 @@ import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
-export const generateMetadata = async ({ params }: Props) => {
+import type { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/invitations">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -24,15 +28,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization invitations page parameters. */
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Organization invitations page.
  */
-const OrganizationInvitationsPage = async ({ params }: Props) => {
+const OrganizationInvitationsPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]/invitations">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();
@@ -76,7 +77,6 @@ const OrganizationInvitationsPage = async ({ params }: Props) => {
             ? [
                 {
                   label: app.organizationInvitationsPage.cta.inviteMember.title,
-                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                   icon: <FiUserPlus />,
                   dialogType: DialogType.InviteMember,
                   variant: "outline",

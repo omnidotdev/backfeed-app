@@ -1,8 +1,9 @@
 "use client";
 
-import { Divider, Icon, Link, Text, css, sigil } from "@omnidev/sigil";
+import { Divider, Icon, Link, Text, sigil } from "@omnidev/sigil";
 import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
 
+import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 
 /**
@@ -18,10 +19,10 @@ const Footer = () => (
     bottom={0}
     w="100%"
     // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-    css={css.raw({
+    style={{
       borderTop: "1px solid",
-      borderColor: "border.subtle",
-    })}
+      borderColor: token("colors.border.subtle"),
+    }}
   >
     <Text>
       &copy; {new Date().getFullYear()} {app.organization.name}

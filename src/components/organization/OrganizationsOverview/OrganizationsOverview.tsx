@@ -1,4 +1,7 @@
 "use client";
+
+import { LuCirclePlus } from "react-icons/lu";
+
 import { Page } from "components/layout";
 import {
   CreateOrganization,
@@ -12,7 +15,6 @@ import {
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { LuCirclePlus } from "react-icons/lu";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -75,7 +77,6 @@ const OrganizationsOverview = ({ user }: Props) => {
         cta: [
           {
             label: app.organizationsPage.header.cta.newOrganization.label,
-            // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
             icon: <LuCirclePlus />,
             dialogType: DialogType.CreateOrganization,
             disabled: !tierRestrictions?.canCreateOrganizations,

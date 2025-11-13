@@ -106,6 +106,7 @@ const RecentFeedback = ({ user }: Props) => {
               minH={40}
               h="full"
               w="full"
+              borderColor="transparent"
             />
           )}
 

@@ -4,10 +4,10 @@ import { Button, Center, Tooltip } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 
 import { useDialogStore } from "lib/hooks/store";
+import { DialogType } from "store";
 
 import type { ButtonVariant } from "generated/panda/recipes";
 import type { ReactNode } from "react";
-import type { DialogType } from "store";
 
 export interface ActionButton {
   /** Button label. */
@@ -42,7 +42,7 @@ const CallToAction = ({ action }: Props) => {
     href,
     variant = "solid",
     disabled,
-    dialogType,
+    dialogType = DialogType.Fallback,
     tooltip,
   } = action;
 

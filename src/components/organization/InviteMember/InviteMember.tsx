@@ -1,13 +1,12 @@
 "use client";
 
-import { Dialog, Stack, TagsInput, sigil } from "@omnidev/sigil";
+import { Dialog, Stack, TagsInput, Text, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { z } from "zod";
 
-import { FormFieldError } from "components/form";
 import {
   useCreateInvitationMutation,
   useInvitationsQuery,
@@ -18,8 +17,7 @@ import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useForm, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
-import { getQueryClient } from "lib/util";
-import { getAuthSession, toaster } from "lib/util";
+import { getAuthSession, getQueryClient, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
@@ -31,9 +29,9 @@ const inviteMemberDetails = app.organizationInvitationsPage.cta.inviteMember;
 
 /** Schema for defining the shape of the invite member form fields. */
 const baseSchema = z.object({
-  email: z.string().trim().email(),
+  email: z.email().trim(),
   organizationId: uuidSchema,
-  inviterEmail: z.string().trim().email(),
+  inviterEmail: z.email().trim(),
   inviterUsername: z.string().trim(),
 });
 
@@ -128,14 +126,6 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
     type: DialogType.InviteMember,
   });
 
-  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
-  const queuer = useAsyncQueuer({
-    concurrency: 2,
-    started: false,
-    wait: ms("1s"),
-    maxSize: MAX_NUMBER_OF_INVITES,
-  });
-
   const rateLimiter = useRateLimiter(setNumberOfToasts, {
     limit: 2,
     window: ms("1s"),
@@ -145,7 +135,7 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
 
   const { mutateAsync: inviteToOrganization } = useCreateInvitationMutation({
     onMutate: () => {
-      if (!queuer.getPendingItems().length) {
+      if (!queuer.peekPendingItems().length) {
         setIsSendingInvite(false);
       }
     },
@@ -160,7 +150,7 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
     },
     onSuccess: () => {
       // Wait until the queue is done processing all requests
-      if (!queuer.getPendingItems().length) {
+      if (!queuer.peekPendingItems().length) {
         reset();
         setIsOpen(false);
 
@@ -218,6 +208,14 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
     }
   };
 
+  // NB: Resend's default rate limit is 2 requests per second. So we run 2 invites concurrently, and wait a second in between
+  const queuer = useAsyncQueuer(sendInvite, {
+    concurrency: 2,
+    started: false,
+    wait: ms("1s"),
+    maxSize: MAX_NUMBER_OF_INVITES,
+  });
+
   const { handleSubmit, Field, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       invites: [
@@ -243,11 +241,9 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
       });
 
       try {
-        value.invites.map((invite) =>
-          queuer.addItem(async () => await sendInvite(invite)),
-        );
+        value.invites.map((invite) => queuer.addItem(invite));
 
-        await queuer.start();
+        queuer.start();
       } catch (error) {
         if (toastId.current) {
           toaster.update(toastId.current, {
@@ -360,7 +356,18 @@ const InviteMember = ({ user, organizationName, organizationId }: Props) => {
                 }}
               />
 
-              <FormFieldError errors={state.meta.errorMap.onSubmit} />
+              {!!state.meta.errorMap.onSubmit?.length && (
+                <Text
+                  position="absolute"
+                  top={0}
+                  right={0}
+                  h={5}
+                  fontSize="sm"
+                  color="red"
+                >
+                  {state.meta.errorMap.onSubmit[0].message}
+                </Text>
+              )}
             </Stack>
           )}
         </Field>

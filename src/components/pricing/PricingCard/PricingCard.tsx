@@ -14,8 +14,8 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 

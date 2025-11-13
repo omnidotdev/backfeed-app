@@ -3858,8 +3858,6 @@ export type Query = Node & {
   post?: Maybe<Post>;
   /** Get a single `PostStatus`. */
   postStatus?: Maybe<PostStatus>;
-  /** Get a single `PostStatus`. */
-  postStatusByStatusAndProjectId?: Maybe<PostStatus>;
   /** Reads and enables pagination through a set of `PostStatus`. */
   postStatuses?: Maybe<PostStatusConnection>;
   /** Reads and enables pagination through a set of `Post`. */
@@ -3870,8 +3868,6 @@ export type Query = Node & {
   projectBySlugAndOrganizationId?: Maybe<Project>;
   /** Get a single `ProjectSocial`. */
   projectSocial?: Maybe<ProjectSocial>;
-  /** Get a single `ProjectSocial`. */
-  projectSocialByUrlAndProjectId?: Maybe<ProjectSocial>;
   /** Reads and enables pagination through a set of `ProjectSocial`. */
   projectSocials?: Maybe<ProjectSocialConnection>;
   /** Reads and enables pagination through a set of `Project`. */
@@ -4047,13 +4043,6 @@ export type QueryPostStatusArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryPostStatusByStatusAndProjectIdArgs = {
-  projectId: Scalars['UUID']['input'];
-  status: Scalars['String']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryPostStatusesArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -4095,13 +4084,6 @@ export type QueryProjectBySlugAndOrganizationIdArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectSocialArgs = {
   rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryProjectSocialByUrlAndProjectIdArgs = {
-  projectId: Scalars['UUID']['input'];
-  url: Scalars['String']['input'];
 };
 
 
@@ -5341,8 +5323,6 @@ export enum UserOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
-  TierAsc = 'TIER_ASC',
-  TierDesc = 'TIER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UpvotesCountAsc = 'UPVOTES_COUNT_ASC',

@@ -106,7 +106,7 @@ const FeedbackOverview = ({ user, oneWeekAgo }: Props) => {
               <Tooltip
                 cursor={{ fill: "transparent" }}
                 isAnimationActive={false}
-                content={<FeedbackTooltip />}
+                content={(props) => <FeedbackTooltip {...props} />}
               />
 
               <Bar

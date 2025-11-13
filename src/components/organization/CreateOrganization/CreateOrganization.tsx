@@ -1,12 +1,12 @@
 "use client";
 
 import { Dialog, sigil } from "@omnidev/sigil";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";

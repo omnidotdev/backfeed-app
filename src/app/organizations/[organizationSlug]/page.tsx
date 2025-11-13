@@ -26,8 +26,11 @@ import { getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
+import type { Metadata } from "next";
 
-export const generateMetadata = async ({ params }: Props) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]">): Promise<Metadata> => {
   const { organizationSlug } = await params;
 
   const organization = await getOrganization({
@@ -39,15 +42,12 @@ export const generateMetadata = async ({ params }: Props) => {
   };
 };
 
-interface Props {
-  /** Organization page params. */
-  params: Promise<{ organizationSlug: string }>;
-}
-
 /**
  * Organization overview page.
  */
-const OrganizationPage = async ({ params }: Props) => {
+const OrganizationPage = async ({
+  params,
+}: PageProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
   const session = await auth();
@@ -131,7 +131,6 @@ const OrganizationPage = async ({ params }: Props) => {
             {
               label: app.organizationPage.header.cta.viewProjects.label,
               variant: "outline",
-              // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
               icon: <HiOutlineFolder />,
               href: `/organizations/${organizationSlug}/projects`,
               disabled: !organization.projects.totalCount,
@@ -141,7 +140,6 @@ const OrganizationPage = async ({ params }: Props) => {
               ? [
                   {
                     label: app.organizationPage.header.cta.newProject.label,
-                    // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
                     icon: <LuCirclePlus />,
                     disabled: !canCreateProjects,
                     dialogType: DialogType.CreateProject,
