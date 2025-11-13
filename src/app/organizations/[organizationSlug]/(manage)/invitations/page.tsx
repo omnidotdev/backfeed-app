@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
@@ -78,11 +77,8 @@ const OrganizationInvitationsPage = async ({
             ? [
                 {
                   label: app.organizationInvitationsPage.cta.inviteMember.title,
-                  icon: (
-                    <Icon>
-                      <FiUserPlus />
-                    </Icon>
-                  ),
+                  // TODO: get Sigil Icon component working and update accordingly. Context: https://github.com/omnidotdev/backfeed-app/pull/44#discussion_r1897974331
+                  icon: <FiUserPlus />,
                   dialogType: DialogType.InviteMember,
                   variant: "outline",
                 },
