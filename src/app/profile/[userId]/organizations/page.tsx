@@ -11,7 +11,7 @@ import {
   useOrganizationsQuery,
 } from "generated/graphql";
 import { getCustomer } from "lib/actions";
-import { API_BASE_URL, app } from "lib/config";
+import { app } from "lib/config";
 import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
@@ -68,26 +68,6 @@ const ProfileOrganizationsPage = async ({
         header={{
           title: app.profileOrganizationsPage.breadcrumb,
           description: app.profileOrganizationsPage.description,
-          cta:
-            // NB: if the status is rejected, the user has not subscribed ever. If there is no default payment method ID, then the user does not have a payment method on file to upgrade subscriptions
-            customer.status === "rejected" ||
-            !customer.value.paymentMethods.length
-              ? [
-                  ...(customer.status === "fulfilled"
-                    ? [
-                        {
-                          label: "Update Billing Information",
-                          href: `${API_BASE_URL}/portal?customerId=${customer.value.id}`,
-                        },
-                      ]
-                    : [
-                        {
-                          label: "Add Billing Information",
-                          href: undefined,
-                        },
-                      ]),
-                ]
-              : undefined,
         }}
         pt={0}
       >

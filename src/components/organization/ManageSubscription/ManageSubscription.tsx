@@ -68,7 +68,6 @@ const ManageSubscription = ({
       backgroundColor="transparent"
       fontSize="md"
       px={0}
-      disabled={!customer?.paymentMethods.length}
     >
       <Icon src={LuPencil} h={5} w={5} />
     </Button>
@@ -161,8 +160,11 @@ const ManageSubscription = ({
             isPending
           }
           onClick={() => {
-            // NB: if the subscription for the organization has been canceled, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-            if (organization.status === SubscriptionStatus.Canceled) {
+            // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
+            if (
+              organization.status === SubscriptionStatus.Canceled ||
+              !customer?.paymentMethods.length
+            ) {
               router.push(
                 `${API_BASE_URL}/checkout?products=${selectedProduct.id}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: organization.rowId }))}`,
               );
