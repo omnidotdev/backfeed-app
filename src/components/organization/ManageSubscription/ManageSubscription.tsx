@@ -181,7 +181,7 @@ const ManageSubscription = ({
                 products: [selectedProduct.id],
                 externalCustomerId: user?.hidraId!,
                 customerEmail: user?.email,
-                metadata: { organizationId: organization.rowId },
+                metadata: { backfeedOrganizationId: organization.rowId },
                 subscriptionId:
                   // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
                   subscriptionProduct?.prices?.[0]?.amountType === "free" &&

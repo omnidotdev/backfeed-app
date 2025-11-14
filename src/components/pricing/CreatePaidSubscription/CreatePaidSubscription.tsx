@@ -84,7 +84,7 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
           products: [productId],
           externalCustomerId: user?.hidraId!,
           customerEmail: user?.email,
-          metadata: { organizationId: data.organization?.rowId! },
+          metadata: { backfeedOrganizationId: data.organization?.rowId! },
           successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
           returnUrl: `${BASE_URL}/pricing`,
         });

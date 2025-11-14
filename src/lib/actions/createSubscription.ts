@@ -21,7 +21,7 @@ const createSubscription = async ({ organizationId }: Options) => {
     products: [FREE_TIER_PRODUCT_ID],
     externalCustomerId: session.user.hidraId!,
     metadata: {
-      organizationId,
+      backfeedOrganizationId: organizationId,
     },
   });
 

@@ -195,7 +195,7 @@ const TierCallToAction = ({
                         products: [productId],
                         externalCustomerId: user?.hidraId!,
                         customerEmail: user?.email,
-                        metadata: { organizationId: org.rowId! },
+                        metadata: { backfeedOrganizationId: org.rowId! },
                         successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
                         returnUrl: `${BASE_URL}/pricing`,
                       });
