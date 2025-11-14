@@ -20,46 +20,27 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
 
   if (!session) throw new Error("Unauthorized");
 
-  const customerSession = await polar.customerSessions.create({
-    externalCustomerId: session.user.hidraId!,
+  const currentSubscription = await polar.subscriptions.get({
+    id: subscriptionId,
   });
-
-  const currentSubscription = await polar.customerPortal.subscriptions.get(
-    {
-      customerSession: customerSession.token,
-    },
-    {
-      id: subscriptionId,
-    },
-  );
 
   // NB: if a current subscription has already been set to cancel at period end and you try to update to another product, the update will fail.
   // Here we check to see if this is the case, and if so, we first "uncancel" the current subscription before proceeding to the update
   if (currentSubscription.cancelAtPeriodEnd) {
-    await polar.customerPortal.subscriptions.update(
-      {
-        customerSession: customerSession.token,
+    await polar.subscriptions.update({
+      id: subscriptionId,
+      subscriptionUpdate: {
+        cancelAtPeriodEnd: false,
       },
-      {
-        id: subscriptionId,
-        customerSubscriptionUpdate: {
-          cancelAtPeriodEnd: false,
-        },
-      },
-    );
+    });
   }
 
-  await polar.customerPortal.subscriptions.update(
-    {
-      customerSession: customerSession.token,
+  await polar.subscriptions.update({
+    id: subscriptionId,
+    subscriptionUpdate: {
+      productId,
     },
-    {
-      id: subscriptionId,
-      customerSubscriptionUpdate: {
-        productId,
-      },
-    },
-  );
+  });
 
   revalidatePath("/profile/[userId]/organizations");
   revalidatePath("/organizations/[organizationSlug]/settings");
