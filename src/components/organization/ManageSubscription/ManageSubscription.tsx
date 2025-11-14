@@ -81,7 +81,7 @@ const ManageSubscription = ({
   const subscriptionId = organization.subscriptionId;
 
   const currentProduct =
-    // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to the previous tier. We conditionally fallback to `Free` tier here to align UI with intent.
+    // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to a product that may or may not be a `Free` tier product. We conditionally fallback to `Free` tier here to align UI with intent.
     organization.tier === Tier.Free
       ? products[0]
       : (customer?.subscriptions?.find((sub) => sub.id === subscriptionId)
