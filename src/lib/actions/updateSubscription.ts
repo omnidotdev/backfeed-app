@@ -44,6 +44,7 @@ const updateSubscription = async ({ subscriptionId, productId }: Options) => {
 
   revalidatePath("/profile/[userId]/organizations");
   revalidatePath("/organizations/[organizationSlug]/settings");
+  revalidatePath("/pricing");
 };
 
 export default updateSubscription;

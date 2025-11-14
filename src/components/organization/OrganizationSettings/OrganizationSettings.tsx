@@ -227,7 +227,7 @@ const OrganizationSettings = ({
           <Text>
             This organization is currently on the Backfeed{" "}
             <sigil.span color="brand.primary">
-              {capitalizeFirstLetter(organization.tier ?? "free")}
+              {capitalizeFirstLetter(organization.tier)}
             </sigil.span>{" "}
             tier. Benefits included in this plan are:
           </Text>
