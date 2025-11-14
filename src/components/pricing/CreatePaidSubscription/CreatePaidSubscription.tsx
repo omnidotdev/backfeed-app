@@ -7,17 +7,13 @@ import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
+import { createCheckoutSession } from "lib/actions";
+import { BASE_URL, app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
-import {
-  generateSlug,
-  getAuthSession,
-  getCheckoutRoute,
-  toaster,
-} from "lib/util";
+import { generateSlug, getAuthSession, toaster } from "lib/util";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -84,14 +80,16 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
-        router.push(
-          getCheckoutRoute({
-            productIds: [productId],
-            customerExternalId: user?.hidraId!,
-            customerEmail: user?.email ?? undefined,
-            metadata: { organizationId: data.organization?.rowId! },
-          }),
-        );
+        const session = await createCheckoutSession({
+          products: [productId],
+          externalCustomerId: user?.hidraId!,
+          customerEmail: user?.email,
+          metadata: { organizationId: data.organization?.rowId! },
+          successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
+          returnUrl: `${BASE_URL}/pricing`,
+        });
+
+        router.push(session.url);
 
         setIsOpen(false);
         reset();

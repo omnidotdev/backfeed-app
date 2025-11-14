@@ -26,15 +26,20 @@ import {
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
 import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import { Tier } from "generated/graphql";
-import { createSubscription, updateSubscription } from "lib/actions";
+import {
+  createCheckoutSession,
+  createSubscription,
+  updateSubscription,
+} from "lib/actions";
+import { BASE_URL } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
-import { getCheckoutRoute, toaster } from "lib/util";
+import { toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
@@ -73,6 +78,7 @@ const ManageSubscription = ({
   ),
   ...rest
 }: Props) => {
+  const pathname = usePathname();
   const router = useRouter();
 
   const { user } = useAuth();
@@ -158,20 +164,26 @@ const ManageSubscription = ({
               organization.status !== SubscriptionStatus.Canceled) ||
             isPending
           }
-          onClick={() => {
+          onClick={async () => {
             // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
             if (
               organization.status === SubscriptionStatus.Canceled ||
               !customer?.paymentMethods.length
             ) {
-              router.push(
-                getCheckoutRoute({
-                  productIds: [selectedProduct.id],
-                  customerExternalId: user?.hidraId!,
-                  customerEmail: user?.email ?? undefined,
-                  metadata: { organizationId: organization.rowId },
-                }),
-              );
+              const session = await createCheckoutSession({
+                products: [selectedProduct.id],
+                externalCustomerId: user?.hidraId!,
+                customerEmail: user?.email,
+                metadata: { organizationId: organization.rowId },
+                successUrl: pathname.includes(organization.slug)
+                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                returnUrl: pathname.includes(organization.slug)
+                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+              });
+
+              router.push(session.url);
             } else {
               handleUpsertSubscription();
             }

@@ -19,9 +19,10 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { updateSubscription } from "lib/actions";
+import { createCheckoutSession, updateSubscription } from "lib/actions";
+import { BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
-import { capitalizeFirstLetter, getCheckoutRoute, toaster } from "lib/util";
+import { capitalizeFirstLetter, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -190,14 +191,16 @@ const TierCallToAction = ({
                       org.status === SubscriptionStatus.Canceled ||
                       !customer?.paymentMethods.length
                     ) {
-                      router.push(
-                        getCheckoutRoute({
-                          productIds: [productId],
-                          customerExternalId: user?.hidraId!,
-                          customerEmail: user?.email ?? undefined,
-                          metadata: { organizationId: org.rowId! },
-                        }),
-                      );
+                      const session = await createCheckoutSession({
+                        products: [productId],
+                        externalCustomerId: user?.hidraId!,
+                        customerEmail: user?.email,
+                        metadata: { organizationId: org.rowId! },
+                        successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                        returnUrl: `${BASE_URL}/pricing`,
+                      });
+
+                      router.push(session.url);
                     } else {
                       handleUpdateSubscription({
                         subscriptionId: org?.subscriptionId!,
