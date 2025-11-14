@@ -183,7 +183,9 @@ const ManageSubscription = ({
                 customerEmail: user?.email,
                 metadata: { organizationId: organization.rowId },
                 subscriptionId:
-                  subscriptionProduct?.prices?.[0]?.amountType === "free"
+                  // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
+                  subscriptionProduct?.prices?.[0]?.amountType === "free" &&
+                  organization.status !== SubscriptionStatus.Canceled
                     ? subscriptionId
                     : undefined,
                 successUrl: pathname.includes(organization.slug)
