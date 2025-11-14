@@ -85,12 +85,15 @@ const ManageSubscription = ({
 
   const subscriptionId = organization.subscriptionId;
 
+  const subscriptionProduct = customer?.subscriptions?.find(
+    (sub) => sub.id === subscriptionId,
+  )?.product;
+
   const currentProduct =
     // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to a product that may or may not be a `Free` tier product. We conditionally fallback to `Free` tier here to align UI with intent.
     organization.tier === Tier.Free
       ? products[0]
-      : (customer?.subscriptions?.find((sub) => sub.id === subscriptionId)
-          ?.product ?? products[0]);
+      : (subscriptionProduct ?? products[0]);
 
   const [selectedProduct, setSelectedProduct] =
     useState<Product>(currentProduct);
@@ -168,13 +171,21 @@ const ManageSubscription = ({
             // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
             if (
               organization.status === SubscriptionStatus.Canceled ||
-              !customer?.paymentMethods.length
+              !customer?.paymentMethods.length ||
+              // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
+              // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
+              // Note: The subscription must be on a free pricing plan in order to pass `subscriptionId` in this manner. See: https://polar.sh/docs/api-reference/checkouts/create-session
+              subscriptionProduct?.prices?.[0]?.amountType === "free"
             ) {
               const session = await createCheckoutSession({
                 products: [selectedProduct.id],
                 externalCustomerId: user?.hidraId!,
                 customerEmail: user?.email,
                 metadata: { organizationId: organization.rowId },
+                subscriptionId:
+                  subscriptionProduct?.prices?.[0]?.amountType === "free"
+                    ? subscriptionId
+                    : undefined,
                 successUrl: pathname.includes(organization.slug)
                   ? `${BASE_URL}/organizations/${organization.slug}/settings`
                   : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
