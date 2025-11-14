@@ -20,9 +20,8 @@ import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
 import { updateSubscription } from "lib/actions";
-import { API_BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
-import { capitalizeFirstLetter, toaster } from "lib/util";
+import { capitalizeFirstLetter, getCheckoutRoute, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -192,7 +191,12 @@ const TierCallToAction = ({
                       !customer?.paymentMethods.length
                     ) {
                       router.push(
-                        `${API_BASE_URL}/checkout?products=${productId}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: org.rowId! }))}`,
+                        getCheckoutRoute({
+                          productIds: [productId],
+                          customerExternalId: user?.hidraId!,
+                          customerEmail: user?.email ?? undefined,
+                          metadata: { organizationId: org.rowId! },
+                        }),
                       );
                     } else {
                       handleUpdateSubscription({

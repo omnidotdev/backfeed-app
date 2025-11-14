@@ -33,9 +33,8 @@ import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import { Tier } from "generated/graphql";
 import { createSubscription, updateSubscription } from "lib/actions";
-import { API_BASE_URL } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
-import { toaster } from "lib/util";
+import { getCheckoutRoute, toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
@@ -166,7 +165,12 @@ const ManageSubscription = ({
               !customer?.paymentMethods.length
             ) {
               router.push(
-                `${API_BASE_URL}/checkout?products=${selectedProduct.id}&customerExternalId=${user?.hidraId!}&customerEmail=${user?.email!}&metadata=${encodeURIComponent(JSON.stringify({ organizationId: organization.rowId }))}`,
+                getCheckoutRoute({
+                  productIds: [selectedProduct.id],
+                  customerExternalId: user?.hidraId!,
+                  customerEmail: user?.email ?? undefined,
+                  metadata: { organizationId: organization.rowId },
+                }),
               );
             } else {
               handleUpsertSubscription();
