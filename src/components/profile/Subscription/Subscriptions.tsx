@@ -33,7 +33,7 @@ import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 
 export interface OrganizationRow extends OrganizationFragment {
-  status: SubscriptionStatus;
+  subscriptionStatus: SubscriptionStatus;
   toBeCanceled: boolean;
   currentPeriodEnd: Date | null | undefined;
 }
@@ -74,7 +74,7 @@ const Subscription = ({ user, products, customer }: Props) => {
 
           return {
             ...org!,
-            status:
+            subscriptionStatus:
               currentSubscription?.status ?? SubscriptionStatus.Incomplete,
             toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
             currentPeriodEnd:
@@ -122,7 +122,7 @@ const Subscription = ({ user, products, customer }: Props) => {
         header: "Tier",
         cell: (info) => capitalizeFirstLetter(info.getValue()),
       }),
-      columnHelper.accessor("status", {
+      columnHelper.accessor("subscriptionStatus", {
         header: "Subscription Status",
         cell: (info) => {
           const toBeCanceled = info.row.original.toBeCanceled;
@@ -168,7 +168,7 @@ const Subscription = ({ user, products, customer }: Props) => {
         header: "Renewal Date",
         cell: (info) =>
           info.getValue() &&
-          info.row.original.status !== SubscriptionStatus.Canceled
+          info.row.original.subscriptionStatus !== SubscriptionStatus.Canceled
             ? dayjs(info.getValue()).format("MM/DD/YYYY")
             : "-",
       }),

@@ -117,7 +117,7 @@ const OrganizationSettingsPage = async ({
           user={session.user}
           organization={{
             ...organization,
-            status:
+            subscriptionStatus:
               currentSubscription?.status ?? SubscriptionStatus.Incomplete,
             toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
             currentPeriodEnd: currentSubscription?.currentPeriodEnd,

@@ -59,7 +59,8 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
               async () => {
                 if (
                   subscriptionId &&
-                  organization.status !== SubscriptionStatus.Canceled
+                  organization.subscriptionStatus !==
+                    SubscriptionStatus.Canceled
                 ) {
                   const revokedSubscription = await revokeSubscription({
                     subscriptionId,

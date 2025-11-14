@@ -164,13 +164,14 @@ const ManageSubscription = ({
           disabled={
             (selectedProduct.id === currentProduct.id &&
               // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
-              organization.status !== SubscriptionStatus.Canceled) ||
+              organization.subscriptionStatus !==
+                SubscriptionStatus.Canceled) ||
             isPending
           }
           onClick={async () => {
             // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
             if (
-              organization.status === SubscriptionStatus.Canceled ||
+              organization.subscriptionStatus === SubscriptionStatus.Canceled ||
               !customer?.paymentMethods.length ||
               // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
               // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
@@ -185,7 +186,8 @@ const ManageSubscription = ({
                 subscriptionId:
                   // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
                   subscriptionProduct?.prices?.[0]?.amountType === "free" &&
-                  organization.status !== SubscriptionStatus.Canceled
+                  organization.subscriptionStatus !==
+                    SubscriptionStatus.Canceled
                     ? subscriptionId
                     : undefined,
                 successUrl: pathname.includes(organization.slug)
@@ -203,7 +205,7 @@ const ManageSubscription = ({
           }}
         >
           {subscriptionId
-            ? organization.status === SubscriptionStatus.Canceled
+            ? organization.subscriptionStatus === SubscriptionStatus.Canceled
               ? "Renew"
               : "Update"
             : "Create"}{" "}
