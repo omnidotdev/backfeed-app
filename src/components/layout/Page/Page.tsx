@@ -6,6 +6,7 @@ import { Breadcrumb, CallToAction } from "components/core";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { ActionButton, BreadcrumbRecord } from "components/core";
+import type { ReactNode } from "react";
 
 interface Props extends StackProps {
   /** Page breadcrumbs for navigation. */
@@ -13,7 +14,7 @@ interface Props extends StackProps {
   /** Page header props. */
   header?: {
     /** Header section title. */
-    title: string;
+    title: string | ReactNode;
     /** Header section description. */
     description?: string;
     /** Header section call to action buttons. */
@@ -50,14 +51,18 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
         >
           <Stack>
             <HStack gap={1}>
-              <Text
-                as="h1"
-                fontSize="3xl"
-                fontWeight="semibold"
-                lineHeight={1.3}
-              >
-                {header.title}
-              </Text>
+              {typeof header.title === "string" ? (
+                <Text
+                  as="h1"
+                  fontSize="3xl"
+                  fontWeight="semibold"
+                  lineHeight={1.3}
+                >
+                  {header.title}
+                </Text>
+              ) : (
+                header.title
+              )}
 
               {header.headerProps?.children}
             </HStack>

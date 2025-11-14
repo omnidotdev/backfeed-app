@@ -1,3 +1,4 @@
+import { Badge, HStack, Text } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -13,16 +14,18 @@ import {
 import { CreateProject } from "components/project";
 import {
   Role,
+  Tier,
   useOrganizationMetricsQuery,
   useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { Grid } from "generated/panda/jsx";
-import { getOrganization, getOwnerTier } from "lib/actions";
+import { icon } from "generated/panda/recipes";
+import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { capitalizeFirstLetter, getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -54,12 +57,8 @@ const OrganizationPage = async ({
 
   if (!session) notFound();
 
-  const [
-    organization,
-    { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
-  ] = await Promise.all([
+  const [organization] = await Promise.all([
     getOrganization({ organizationSlug }),
-    getOwnerTier({ organizationSlug }),
   ]);
 
   if (!organization) notFound();
@@ -75,10 +74,13 @@ const OrganizationPage = async ({
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
 
-  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and has appropriate tier to create an additional project
+  const hasBasicTierPrivileges = organization.tier !== Tier.Free;
+  const hasTeamTierPrivileges =
+    hasBasicTierPrivileges && organization.tier !== Tier.Basic;
+
+  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the organization is subscribed and validate tier based checks
   const canCreateProjects =
     hasAdminPrivileges &&
-    isOwnerSubscribed &&
     (hasBasicTierPrivileges
       ? hasTeamTierPrivileges ||
         organization.projects.totalCount < MAX_NUMBER_OF_PROJECTS
@@ -126,12 +128,27 @@ const OrganizationPage = async ({
       <Page
         breadcrumbs={breadcrumbs}
         header={{
-          title: organization.name!,
+          title: (
+            <HStack gap={4}>
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="semibold"
+                lineHeight={1.3}
+              >
+                {organization.name!}
+              </Text>
+              <Badge rounded="lg">
+                {capitalizeFirstLetter(organization.tier)}
+              </Badge>
+            </HStack>
+          ),
           cta: [
             {
               label: app.organizationPage.header.cta.viewProjects.label,
               variant: "outline",
-              icon: <HiOutlineFolder />,
+              // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+              icon: <HiOutlineFolder className={icon()} />,
               href: `/organizations/${organizationSlug}/projects`,
               disabled: !organization.projects.totalCount,
               tooltip: app.organizationPage.header.cta.viewProjects.tooltip,
@@ -140,7 +157,8 @@ const OrganizationPage = async ({
               ? [
                   {
                     label: app.organizationPage.header.cta.newProject.label,
-                    icon: <LuCirclePlus />,
+                    // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                    icon: <LuCirclePlus className={icon()} />,
                     disabled: !canCreateProjects,
                     dialogType: DialogType.CreateProject,
                     tooltip: app.organizationPage.header.cta.newProject.tooltip,

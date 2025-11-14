@@ -1,16 +1,7 @@
 query Organization($slug: String!) {
   organizationBySlug(slug: $slug) {
-    rowId
-    name
-    slug
+    ...Organization
     updatedAt
-    members(first: 1, condition: { role: owner }) {
-      nodes {
-        user {
-          tier
-        }
-      }
-    }
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {
       totalCount
       nodes {

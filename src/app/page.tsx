@@ -61,18 +61,6 @@ const HomePage = async () => {
       }),
     }),
     queryClient.prefetchQuery({
-      queryKey: useOrganizationsQuery.getKey({
-        pageSize: 1,
-        userId: organizationsQueryVariables.userId,
-        excludeRoles: [Role.Member, Role.Admin],
-      }),
-      queryFn: useOrganizationsQuery.fetcher({
-        pageSize: 1,
-        userId: organizationsQueryVariables.userId,
-        excludeRoles: [Role.Member, Role.Admin],
-      }),
-    }),
-    queryClient.prefetchQuery({
       queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
       queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
     }),

@@ -25,8 +25,7 @@ const freeTierFeedbackOptions = ({ organizationSlug, projectSlug }: Options) =>
 
         if (!project) return null;
 
-        const subscriptionTier =
-          project.organization?.members.nodes[0]?.user?.tier;
+        const subscriptionTier = project.organization?.tier;
 
         const activeUserCount = Number(
           project.posts.aggregates?.distinctCount?.userId ?? 0,

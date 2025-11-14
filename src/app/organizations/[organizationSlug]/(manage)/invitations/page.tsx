@@ -6,6 +6,7 @@ import { auth } from "auth";
 import { Page } from "components/layout";
 import { Invitations, InviteMember } from "components/organization";
 import { Role, useInvitationsQuery } from "generated/graphql";
+import { icon } from "generated/panda/recipes";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -77,7 +78,8 @@ const OrganizationInvitationsPage = async ({
             ? [
                 {
                   label: app.organizationInvitationsPage.cta.inviteMember.title,
-                  icon: <FiUserPlus />,
+                  // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                  icon: <FiUserPlus className={icon()} />,
                   dialogType: DialogType.InviteMember,
                   variant: "outline",
                 },

@@ -4,6 +4,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { Account } from "components/profile";
+import { icon } from "generated/panda/recipes";
 import { AUTH_ISSUER, app } from "lib/config";
 import { getSdk } from "lib/graphql";
 
@@ -41,7 +42,8 @@ const ProfileAccountPage = async ({
         cta: [
           {
             label: app.profileAccountPage.cta.updateProfile.label,
-            icon: <FaRegEdit />,
+            // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+            icon: <FaRegEdit className={icon()} />,
             // TODO remove this split once `NEXT_PUBLIC_AUTH_ISSUER` set to base URL (https://linear.app/omnidev/issue/OMNI-254/move-apiauth-paths-to-base-path-or-subpath-eg-auth)
             href: AUTH_ISSUER!.split("/api")[0],
           },

@@ -9,6 +9,7 @@ export {
 } from "./InviteMemberEmailTemplate/InviteMemberEmailTemplate";
 export { default as ManagementNavigation } from "./ManagementNavigation/ManagementNavigation";
 export { default as ManagementSidebar } from "./ManagementSidebar/ManagementSidebar";
+export { default as ManageSubscription } from "./ManageSubscription/ManageSubscription";
 export { default as Members } from "./Members/Members";
 export { default as MembershipFilters } from "./MembershipFilters/MembershipFilters";
 export { default as MembershipMenu } from "./MembershipMenu/MembershipMenu";

@@ -11,13 +11,10 @@ const oneWeekAgo = dayjs().utc().subtract(6, "days").startOf("day").toDate();
 
 describe("dashboard page", () => {
   beforeEach(() => {
-    // TODO: add tests for different tier level renders (i.e. disabled create org button, etc)
     render(
       <DashboardPage
         // TODO: mock user
         user={{}}
-        canCreateOrganizations
-        isSubscribed
         oneWeekAgo={oneWeekAgo}
       />,
     );

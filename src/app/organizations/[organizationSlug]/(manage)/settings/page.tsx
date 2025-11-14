@@ -1,3 +1,4 @@
+import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
@@ -6,12 +7,14 @@ import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import {
   Role,
+  Tier,
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getOrganization } from "lib/actions";
+import { getCustomer, getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
+import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -42,9 +45,22 @@ const OrganizationSettingsPage = async ({
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ organizationSlug });
+  const [organizationResponse, customerResponse] = await Promise.allSettled([
+    getOrganization({ organizationSlug }),
+    getCustomer({ userId: session.user.hidraId! }),
+  ]);
 
-  if (!organization) notFound();
+  if (organizationResponse.status === "rejected" || !organizationResponse.value)
+    notFound();
+
+  const organization = organizationResponse.value;
+
+  const currentSubscription =
+    customerResponse.status === "fulfilled"
+      ? customerResponse.value.subscriptions.find(
+          (sub) => sub.id === organization.subscriptionId,
+        )
+      : undefined;
 
   const sdk = getSdk({ session });
 
@@ -57,7 +73,17 @@ const OrganizationSettingsPage = async ({
 
   const queryClient = getQueryClient();
 
-  await Promise.all([
+  const [
+    {
+      result: { items: products },
+    },
+  ] = await Promise.all([
+    polar.products.list({
+      id: BACKFEED_PRODUCT_IDS,
+      // Enterprise products are currently archived, but there is no need to display them as options within this route
+      isArchived: false,
+      sorting: ["price_amount"],
+    }),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
@@ -90,7 +116,24 @@ const OrganizationSettingsPage = async ({
       >
         <OrganizationSettings
           user={session.user}
-          organizationId={organization.rowId}
+          organization={{
+            ...organization,
+            // NB: we override the `tier` with what is derived from the subscription as the source of truth. The `tier` field in the db is used as a hint for plugins, and is only updated through the webhook handlers which are async so it can take some time to update.
+            // This way, when we use `revalidatePath` in our server actions, the route cache will render the proper tier
+            tier:
+              (currentSubscription?.product?.metadata?.title as Tier) ??
+              Tier.Free,
+            subscriptionStatus:
+              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
+            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+            currentPeriodEnd: currentSubscription?.currentPeriodEnd,
+          }}
+          customer={
+            customerResponse.status === "fulfilled"
+              ? customerResponse.value
+              : undefined
+          }
+          products={products}
         />
       </Page>
     </HydrationBoundary>

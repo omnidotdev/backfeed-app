@@ -68,7 +68,7 @@ const OrganizationsPage = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <OrganizationsOverview user={session.user} />
+      <OrganizationsOverview />
     </HydrationBoundary>
   );
 };

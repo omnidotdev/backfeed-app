@@ -14,19 +14,21 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { API_BASE_URL, app } from "lib/config";
-import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
+import { TierCallToAction } from "components/pricing";
+import { app } from "lib/config";
+import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
 import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
 import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { Session } from "next-auth";
 
 const COMING_SOON = "coming soon";
 
@@ -45,7 +47,7 @@ const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
   return price.priceAmount / 100;
 };
 
-const sortBenefits = (benefits: Benefit[]) => {
+export const sortBenefits = (benefits: Benefit[]) => {
   const everythingInPrefix = "Everything in";
   let everythingInBenefit: Benefit | undefined;
   const otherBenefits: Benefit[] = [];
@@ -68,18 +70,18 @@ const sortBenefits = (benefits: Benefit[]) => {
 };
 
 interface Props extends CardProps {
+  /** Signed in user */
+  user: Session["user"] | undefined;
   /** Product information. */
   product: Product;
+  /** Customer details */
+  customer?: CustomerState;
 }
 
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ product, ...rest }: Props) => {
-  const router = useRouter();
-
-  const { isAuthenticated, user } = useAuth();
-
+const PricingCard = ({ user, product, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
   const isPerMonthPricing =
@@ -87,6 +89,8 @@ const PricingCard = ({ product, ...rest }: Props) => {
 
   const {
     productTitle,
+    tier,
+    isFreeTier,
     isRecommendedTier,
     isEnterpriseTier,
     isDisabled,
@@ -120,6 +124,22 @@ const PricingCard = ({ product, ...rest }: Props) => {
         >
           <Badge color="brand.primary" height={8} borderRadius={4}>
             {app.pricingPage.pricingTiers.recommended}
+          </Badge>
+        </Stack>
+      )}
+
+      {isFreeTier && (
+        <Stack
+          position="absolute"
+          top={1}
+          left="50%"
+          transform="translateX(-50%)"
+          backgroundColor="background.secondary"
+          p={2}
+          borderRadius={1}
+        >
+          <Badge color="brand.secondary" height={8} borderRadius={4}>
+            No Credit Card Required
           </Badge>
         </Stack>
       )}
@@ -164,33 +184,42 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 css={css.raw({ ml: -1.5 })}
                 color="foreground.subtle"
               >
-                /
-                {isPerMonthPricing
-                  ? app.pricingPage.pricingCard.month
-                  : app.pricingPage.pricingCard.year}
+                {!isFreeTier &&
+                  (isPerMonthPricing
+                    ? `/org/${app.pricingPage.pricingCard.month}`
+                    : `/org/${app.pricingPage.pricingCard.year}`)}
+                {isFreeTier && "/forever"}
               </sigil.span>
             )}
           </HStack>
 
-          <Button
-            w="100%"
-            fontSize="lg"
-            disabled={isDisabled}
-            variant={isRecommendedTier ? "solid" : "outline"}
-            onClick={() =>
-              isAuthenticated
-                ? router.push(
-                    `${API_BASE_URL}/checkout?products=${product.id}&customerExternalId=${user?.hidraId}&customerEmail=${user?.email}`,
-                  )
-                : signIn("omni")
-            }
-          >
-            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+          {user ? (
+            <TierCallToAction
+              w="100%"
+              fontSize="lg"
+              variant={isRecommendedTier ? "solid" : "outline"}
+              disabled={isDisabled}
+              user={user}
+              productId={product.id}
+              tier={tier}
+              actionIcon={actionIcon}
+              customer={customer}
+            />
+          ) : (
+            <Button
+              w="100%"
+              fontSize="lg"
+              disabled={isDisabled}
+              variant={isRecommendedTier ? "solid" : "outline"}
+              onClick={() => signIn("omni")}
+            >
+              {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 
-            {isEnterpriseTier
-              ? app.pricingPage.pricingCard.enterprise
-              : app.pricingPage.pricingCard.getStarted}
-          </Button>
+              {isEnterpriseTier
+                ? app.pricingPage.pricingCard.enterprise
+                : app.pricingPage.pricingCard.getStarted}
+            </Button>
+          )}
         </Stack>
 
         <Stack

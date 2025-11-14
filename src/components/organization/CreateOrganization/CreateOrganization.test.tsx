@@ -5,29 +5,9 @@ import CreateOrganization from "./CreateOrganization";
 
 // TODO fill out the `todo` tests
 describe("create organization", () => {
-  describe("no subscription", () => {
-    beforeEach(() => {
-      render(<CreateOrganization />);
-    });
-
-    it.todo("user can not create an organization", () => {});
+  beforeEach(() => {
+    render(<CreateOrganization />);
   });
 
-  describe("basic tier subscription", () => {
-    beforeEach(() => {
-      render(<CreateOrganization />);
-    });
-
-    it.todo("user can create a single organization", () => {});
-
-    it.todo("user can not create multiple organizations", () => {});
-  });
-
-  describe("team tier subscription", () => {
-    beforeEach(() => {
-      render(<CreateOrganization />);
-    });
-
-    it.todo("user can create multiple organizations", () => {});
-  });
+  it.todo("user can create an organization (free tier)", () => {});
 });

@@ -34,8 +34,7 @@ const freeTierCommentsOptions = ({
 
         if (!project) return null;
 
-        const subscriptionTier =
-          project.organization?.members.nodes[0]?.user?.tier;
+        const subscriptionTier = project.organization?.tier;
 
         const feedback = await getFeedback({ feedbackId });
 

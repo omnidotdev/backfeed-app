@@ -44,10 +44,6 @@ const BASIC_FEATURES: Record<string, Feature> = {
 const TEAM_FEATURES: Record<string, Feature> = {
   ...COMMON_FEATURES,
   ...BASIC_FEATURES,
-  unlimitedOrgs: {
-    label: app.pricingPage.pricingMatrix.features.unlimitedOrgs,
-    value: true,
-  },
   unlimitedProjects: {
     label: app.pricingPage.pricingMatrix.features.unlimitedProjects,
     value: true,

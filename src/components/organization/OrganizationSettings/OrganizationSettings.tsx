@@ -1,28 +1,50 @@
 "use client";
 
 import { createListCollection } from "@ark-ui/react";
-import { Combobox, Divider, Stack } from "@omnidev/sigil";
+import {
+  Button,
+  Combobox,
+  Divider,
+  Grid,
+  GridItem,
+  Icon,
+  Stack,
+  Text,
+  sigil,
+} from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import { UpdateOrganization } from "components/organization";
+import {
+  ManageSubscription,
+  UpdateOrganization,
+} from "components/organization";
+import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
+import { revokeSubscription } from "lib/actions";
+import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
+import { capitalizeFirstLetter, toaster } from "lib/util";
 
+import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
+import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { DestructiveActionProps } from "components/core";
-import type { Organization } from "generated/graphql";
+import type {
+  CustomerState,
+  OrganizationRow,
+} from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
@@ -35,12 +57,25 @@ const transferOwnershipDetails =
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Organization ID. */
-  organizationId: Organization["rowId"];
+  /** Organization details. */
+  organization: OrganizationRow;
+  /** Customer information derived from the signed in user. */
+  customer: CustomerState | undefined;
+  /** Backfeed subscription products. */
+  products: Product[];
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({ user, organizationId }: Props) => {
+const OrganizationSettings = ({
+  user,
+  organization,
+  customer,
+  products,
+}: Props) => {
+  const subscription = customer?.subscriptions.find(
+    (sub) => sub.metadata.organizationId === organization.rowId,
+  );
+
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
 
   const queryClient = useQueryClient();
@@ -49,7 +84,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
 
   const { data: numberOfOwners } = useMembersQuery(
     {
-      organizationId,
+      organizationId: organization.rowId,
       roles: [Role.Owner],
     },
     {
@@ -58,10 +93,9 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
   );
 
   // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
-  // TODO: include variable(s) to filter out members that are an owner of another org *if* they have a basic tier subscription
   const { data: members } = useMembersQuery(
     {
-      organizationId,
+      organizationId: organization.rowId,
       excludeRoles: [Role.Owner],
     },
     {
@@ -75,10 +109,10 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
 
   const { isOwner, membershipId } = useOrganizationMembership({
     userId: user.rowId,
-    organizationId,
+    organizationId: organization.rowId,
   });
 
-  const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
+  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
       // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
       onSettled: async () => queryClient.invalidateQueries(),
@@ -89,7 +123,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
       onSettled: async () => queryClient.invalidateQueries(),
     }),
     { mutate: transferOwnership } = useTransferOwnershipMutation({
-      organizationId,
+      organizationId: organization.rowId,
     });
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
@@ -101,7 +135,34 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organizationId }),
+      onClick: () =>
+        toaster.promise(
+          async () => {
+            if (organization.subscriptionId) {
+              const revokedSubscription = await revokeSubscription({
+                subscriptionId: organization.subscriptionId,
+              });
+
+              if (!revokedSubscription)
+                throw new Error("Error revoking subscription");
+            }
+
+            await deleteOrganization({ rowId: organization.rowId });
+          },
+          {
+            loading: {
+              title: "Deleting organization...",
+            },
+            success: {
+              title: "Successfully deleted organization.",
+            },
+            error: {
+              title: "Error",
+              description:
+                "Sorry, there was an issue with deleting your organization. Please try again.",
+            },
+          },
+        ),
     },
   };
 
@@ -119,7 +180,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     },
   };
 
-  const TRANSFER_OWNERSHIP: DestructiveActionProps = {
+  const _TRANSFER_OWNERSHIP: DestructiveActionProps = {
     title: transferOwnershipDetails.title,
     description: transferOwnershipDetails.description,
     triggerLabel: transferOwnershipDetails.actionLabel,
@@ -158,6 +219,54 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     <Stack gap={6}>
       <UpdateOrganization user={user} />
 
+      {isOwner && (
+        <SectionContainer
+          title="Manage Subscription"
+          description="Update your organization's subscription to unlock new benefits."
+        >
+          <Text>
+            This organization is currently on the Backfeed{" "}
+            <sigil.span color="brand.primary">
+              {capitalizeFirstLetter(organization.tier)}
+            </sigil.span>{" "}
+            tier. Benefits included in this plan are:
+          </Text>
+          <Grid w="full" lineHeight={1.5}>
+            {sortBenefits(
+              subscription?.product.benefits ?? products[0].benefits,
+            ).map((feature) => {
+              const isComingSoon = (
+                feature.properties as BenefitCustomProperties
+              ).note
+                ?.toLowerCase()
+                .includes("coming soon");
+
+              return (
+                <GridItem key={feature.id} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                      color={isComingSoon ? "yellow" : "brand.primary"}
+                    />
+                  </sigil.span>
+
+                  {feature.description}
+                </GridItem>
+              );
+            })}
+          </Grid>
+          <ManageSubscription
+            organization={organization}
+            products={products}
+            customer={customer}
+            trigger={<Button w="fit">Manage Subscription</Button>}
+          />
+        </SectionContainer>
+      )}
+
       <SectionContainer
         title={app.organizationSettingsPage.dangerZone.title}
         description={app.organizationSettingsPage.dangerZone.description}
@@ -176,14 +285,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
 
         {isOwner && (
           <Stack gap={6}>
-            {/* TODO: remove development environment check when functionality for ownership transfers is resolved. */}
-            {isOnlyOwner && isDevEnv && (
-              <DangerZoneAction
-                title={transferOwnershipDetails.title}
-                description={transferOwnershipDetails.description}
-                actionProps={TRANSFER_OWNERSHIP}
-              />
-            )}
+            {/* TODO: add ownership transfer when functionality is resolved. Added scope: must transfer subscription. */}
 
             <DangerZoneAction
               title={deleteOrganizationDetails.title}

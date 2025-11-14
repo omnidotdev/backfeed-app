@@ -33,14 +33,9 @@ query Organizations(
   ) {
     totalCount
     nodes {
-      rowId
-      name
-      slug
+      ...Organization
       updatedAt
       projects {
-        totalCount
-      }
-      members {
         totalCount
       }
     }

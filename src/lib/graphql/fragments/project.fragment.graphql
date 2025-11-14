@@ -8,13 +8,7 @@ fragment Project on Project {
     rowId
     name
     slug
-    members(first: 1, condition: { role: owner }) {
-      nodes {
-        user {
-          tier
-        }
-      }
-    }
+    tier
   }
   projectSocials(orderBy: CREATED_AT_ASC) {
     nodes {

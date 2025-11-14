@@ -3,20 +3,17 @@
 import { Dialog, sigil } from "@omnidev/sigil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { createSubscription } from "lib/actions";
-import { app } from "lib/config";
+import { createCheckoutSession } from "lib/actions";
+import { BASE_URL, app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useForm, useViewportSize } from "lib/hooks";
+import { useAuth, useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
-import { useDialogStore } from "lib/hooks/store";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
-import { DialogType } from "store";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -50,15 +47,21 @@ const createOrganizationSchema = z
   });
 
 interface Props {
-  /** Whether to disable hotkey trigger for opening the dialog */
-  disableHotKey?: boolean;
+  /** Product ID. */
+  productId: string;
+  /** Whether the dialog is open or not. */
+  isOpen: boolean;
+  /** Handler to manage open state of the dialog */
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 /**
- * Dialog for creating a new organization.
+ * Dialog for creating a new organization with a paid subscription tier.
  */
-const CreateOrganization = ({ disableHotKey = false }: Props) => {
+const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
   const router = useRouter();
+
+  const { user } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -68,40 +71,25 @@ const CreateOrganization = ({ disableHotKey = false }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
-  const { isOpen: isCreateProjectDialogOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
-
-  const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.CreateOrganization,
-  });
-
-  useHotkeys(
-    "mod+o",
-    () => {
-      setIsOpen(!isOpen);
-      reset();
-    },
-    {
-      enabled: !isCreateProjectDialogOpen && !disableHotKey,
-      enableOnFormTags: true,
-      preventDefault: true,
-    },
-    [isOpen, isCreateProjectDialogOpen, disableHotKey],
-  );
-
+  // TODO: discuss this mutation. We *must* attach `organizationId` as metadata to the subscription upon creation, so we need to wait for `onSuccess` here before routing to the checkout page
+  // The problem here is that a user could then opt to *not* finish the payment flow
+  // If a user doesn't finish the payment flow, the org is still creating in the database but with a `Free` tier subscription.
+  // Is this a tradeoff we are willing to make? Unfortunately, we can't update subscription metadata *after* the fact, or I would propose processing the payment first. See: https://github.com/polarsource/polar/issues/6871
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
-        router.push(
-          `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
-        );
-
-        await createSubscription({
-          organizationId: data?.organization?.rowId!,
+        const session = await createCheckoutSession({
+          products: [productId],
+          externalCustomerId: user?.hidraId!,
+          customerEmail: user?.email,
+          metadata: { backfeedOrganizationId: data.organization?.rowId! },
+          successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
+          returnUrl: `${BASE_URL}/pricing`,
         });
+
+        router.push(session.url);
 
         setIsOpen(false);
         reset();
@@ -196,4 +184,4 @@ const CreateOrganization = ({ disableHotKey = false }: Props) => {
   );
 };
 
-export default CreateOrganization;
+export default CreatePaidSubscription;
