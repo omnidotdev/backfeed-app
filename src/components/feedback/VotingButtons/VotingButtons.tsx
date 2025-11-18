@@ -30,6 +30,8 @@ interface Props {
   totalDownvotes: number;
   /** Whether voting is being handled from the dynamic feedback route. */
   isFeedbackRoute: boolean;
+  /** Whether voting actions are disabled. **/
+  isDisabled?: boolean;
 }
 
 const VotingButtons = ({
@@ -40,6 +42,7 @@ const VotingButtons = ({
   totalUpvotes,
   totalDownvotes,
   isFeedbackRoute,
+  isDisabled = false,
 }: Props) => {
   const { mutate: handleUpvote, isPending: isUpvotePending } =
     useHandleUpvoteMutation({
@@ -101,7 +104,7 @@ const VotingButtons = ({
             e.stopPropagation();
             handleUpvote();
           },
-          disabled: isVotePending || isOptimistic,
+          disabled: isDisabled || isVotePending || isOptimistic,
         }}
       >
         {app.feedbackPage.details.upvote}
@@ -132,7 +135,7 @@ const VotingButtons = ({
             e.stopPropagation();
             handleDownvote();
           },
-          disabled: isVotePending || isOptimistic,
+          disabled: isDisabled || isVotePending || isOptimistic,
         }}
       >
         {app.feedbackPage.details.downvote}
