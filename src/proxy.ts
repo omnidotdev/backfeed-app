@@ -67,18 +67,15 @@ export const proxy = auth(async (request) => {
     return NextResponse.json({}, { status: 200 });
   }
 
-  // If the user is not authenticated, redirect to the landing page
-  if (!request.auth) {
-    return redirect(request);
-  }
-
   // If there is an error from the refresh token rotation, sign out the user (i.e. refresh token was expired)
-  if (request.auth.error) {
+  if (request.auth?.error) {
     return await signOut(request);
   }
 
   // Redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
   if (request.nextUrl.pathname.startsWith("/confirmation")) {
+    if (!request.auth) return redirect(request);
+
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth.user?.hidraId}/subscription`,
     );

@@ -19,14 +19,12 @@ const getProject = cache(
   async ({ organizationSlug, projectSlug }: ProjectOptions) => {
     const session = await getAuthSession();
 
-    if (!session) return null;
-
     const sdk = getSdk({ session });
 
     const { projects } = await sdk.Project({
       projectSlug,
       organizationSlug,
-      userId: session.user.rowId!,
+      userId: session?.user.rowId,
     });
 
     return projects?.nodes?.[0];

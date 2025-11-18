@@ -79,7 +79,7 @@ const useSidebarNavigationItems = () => {
         label: app.organizationsPage.breadcrumb,
         icon: LuBuilding2,
         isCollapsible: true,
-        isVisible: isAuthenticated,
+        isVisible: true,
         children: [
           {
             href: "/organizations",

@@ -45,6 +45,28 @@ const Header = () => {
           <LogoLink width={48} />
 
           <HStack gap={1}>
+            <Flex display={{ base: "none", sm: "flex" }}>
+              <Link href="/organizations">
+                <Flex
+                  h={10}
+                  px={4}
+                  align="center"
+                  color={{
+                    base: "foreground.muted",
+                    _groupHover: "foreground.default",
+                  }}
+                  bgColor={
+                    pathname.includes("organizations")
+                      ? "background.muted"
+                      : "transparent"
+                  }
+                  borderRadius="md"
+                >
+                  {app.header.routes.organizations.label}
+                </Flex>
+              </Link>
+            </Flex>
+
             {showPricingLink && (
               <Flex display={{ base: "none", sm: "flex" }}>
                 <Link href="/pricing" role="group">

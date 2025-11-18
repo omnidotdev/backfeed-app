@@ -42,8 +42,6 @@ const ProjectsPage = async ({
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [
     organization,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
@@ -56,11 +54,12 @@ const ProjectsPage = async ({
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
-      organizationId: organization.rowId,
-    });
+  const { memberByUserIdAndOrganizationId: member } = session
+    ? await sdk.OrganizationRole({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      })
+    : { memberByUserIdAndOrganizationId: null };
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
@@ -128,7 +127,7 @@ const ProjectsPage = async ({
         <ProjectFilters />
 
         <ProjectList
-          user={session.user}
+          user={session?.user}
           canCreateProjects={canCreateProjects}
         />
 

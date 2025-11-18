@@ -1,5 +1,4 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 
 import { auth } from "auth";
 import { OrganizationsOverview } from "components/organization";
@@ -28,8 +27,6 @@ const OrganizationsPage = async ({
   searchParams,
 }: PageProps<"/organizations">) => {
   const session = await auth();
-
-  if (!session) notFound();
 
   const queryClient = getQueryClient();
 
@@ -60,15 +57,19 @@ const OrganizationsPage = async ({
         excludeRoles: [Role.Member, Role.Admin],
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
+            queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <OrganizationsOverview user={session.user} />
+      <OrganizationsOverview user={session?.user} />
     </HydrationBoundary>
   );
 };

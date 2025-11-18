@@ -52,8 +52,6 @@ const OrganizationPage = async ({
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const [
     organization,
     { isOwnerSubscribed, hasBasicTierPrivileges, hasTeamTierPrivileges },
@@ -66,11 +64,12 @@ const OrganizationPage = async ({
 
   const sdk = getSdk({ session });
 
-  const { memberByUserIdAndOrganizationId: member } =
-    await sdk.OrganizationRole({
-      userId: session.user.rowId!,
-      organizationId: organization.rowId,
-    });
+  const { memberByUserIdAndOrganizationId: member } = session
+    ? await sdk.OrganizationRole({
+        userId: session.user.rowId!,
+        organizationId: organization.rowId,
+      })
+    : { memberByUserIdAndOrganizationId: null };
 
   const hasAdminPrivileges =
     member?.role === Role.Admin || member?.role === Role.Owner;
@@ -109,16 +108,20 @@ const OrganizationPage = async ({
         organizationId: organization.rowId,
       }),
     }),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        organizationId: organization.rowId,
-        userId: session.user.rowId!,
-      }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              organizationId: organization.rowId,
+              userId: session.user.rowId!,
+            }),
+          }),
+        ]
+      : []),
   ]);
 
   return (
@@ -160,7 +163,7 @@ const OrganizationPage = async ({
           <OrganizationMetrics organizationId={organization.rowId} />
 
           <OrganizationManagement
-            user={session.user}
+            user={session?.user}
             organizationId={organization.rowId}
             hasAdminPrivileges={hasAdminPrivileges}
           />

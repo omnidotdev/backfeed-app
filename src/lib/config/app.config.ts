@@ -87,6 +87,9 @@ const app = {
   },
   header: {
     routes: {
+      organizations: {
+        label: "Organizations",
+      },
       pricing: {
         label: "Pricing",
       },

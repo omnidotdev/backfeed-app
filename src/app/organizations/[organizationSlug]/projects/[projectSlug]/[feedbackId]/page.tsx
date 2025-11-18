@@ -32,8 +32,6 @@ const FeedbackPage = async ({
 
   const session = await auth();
 
-  if (!session) notFound();
-
   const feedback = await getFeedback({ feedbackId });
 
   if (!feedback) notFound();
@@ -66,26 +64,30 @@ const FeedbackPage = async ({
     queryClient.prefetchQuery({
       queryKey: useFeedbackByIdQuery.getKey({
         rowId: feedbackId,
-        userId: session.user.rowId,
+        userId: session?.user.rowId,
       }),
       queryFn: useFeedbackByIdQuery.fetcher({
         rowId: feedbackId,
-        userId: session.user.rowId,
+        userId: session?.user.rowId,
       }),
     }),
     queryClient.prefetchQuery(
       freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
     ),
-    queryClient.prefetchQuery({
-      queryKey: useOrganizationRoleQuery.getKey({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-      queryFn: useOrganizationRoleQuery.fetcher({
-        userId: session.user.rowId!,
-        organizationId: feedback.project?.organization?.rowId!,
-      }),
-    }),
+    ...(session
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: useOrganizationRoleQuery.getKey({
+              userId: session.user.rowId!,
+              organizationId: feedback.project?.organization?.rowId!,
+            }),
+            queryFn: useOrganizationRoleQuery.fetcher({
+              userId: session.user.rowId!,
+              organizationId: feedback.project?.organization?.rowId!,
+            }),
+          }),
+        ]
+      : []),
     queryClient.prefetchInfiniteQuery({
       queryKey: useInfiniteCommentsQuery.getKey({ feedbackId }),
       queryFn: useCommentsQuery.fetcher({ feedbackId }),
@@ -96,10 +98,10 @@ const FeedbackPage = async ({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page breadcrumbs={breadcrumbs}>
-        <FeedbackDetails user={session.user} feedbackId={feedbackId} />
+        <FeedbackDetails user={session?.user} feedbackId={feedbackId} />
 
         <Comments
-          user={session.user}
+          user={session?.user}
           organizationId={feedback.project?.organization?.rowId!}
           feedbackId={feedbackId}
         />
