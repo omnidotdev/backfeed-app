@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { auth } from "auth";
+import { stripe } from "lib/payments/client";
+import getCustomer from "./getCustomer";
+
+import type Stripe from "stripe";
 
 interface Options {
   /** Organization ID */
@@ -14,7 +18,31 @@ const createSubscription = async ({ organizationId }: Options) => {
 
   if (!session) throw new Error("Unauthorized");
 
-  // TODO: add logic for stripe integration
+  let customer: Omit<Stripe.Customer, "subscriptions">;
+
+  const currentCustomer = await getCustomer();
+
+  if (currentCustomer) {
+    customer = currentCustomer;
+  } else {
+    customer = await stripe.customers.create({
+      email: session.user.email!,
+      metadata: {
+        externalId: session.user.hidraId!,
+      },
+    });
+  }
+
+  if (!customer) throw new Error("Issue creating customer");
+
+  await stripe.subscriptions.create({
+    customer: customer.id,
+    // TODO: dynamic price ID (must be free tier)
+    items: [{ price: "price_1SVBSDI5aTKW2dpwMcbkS2Ds" }],
+    metadata: {
+      organizationId,
+    },
+  });
 
   revalidatePath("/profile/[userId]/organizations");
   revalidatePath("/organizations/[organizationSlug]/settings");
