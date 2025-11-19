@@ -13,7 +13,6 @@ const getCustomer = async () => {
     throw new Error("Unauthorized");
   }
 
-  // TODO: add logic for stripe integration
   const { data: customers } = await stripe.customers.search({
     query: `metadata["externalId"]:"${session.user.hidraId!}"`,
   });
