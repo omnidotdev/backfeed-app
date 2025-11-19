@@ -134,12 +134,11 @@ const OrganizationSettings = ({
         toaster.promise(
           async () => {
             if (organization.subscriptionId) {
-              const revokedSubscription = await revokeSubscription({
+              const revokedSubscriptionId = await revokeSubscription({
                 subscriptionId: organization.subscriptionId,
               });
 
-              // @ts-expect-error TODO: fix. Need to update `revokeSubscription`
-              if (!revokedSubscription)
+              if (!revokedSubscriptionId)
                 throw new Error("Error revoking subscription");
             }
 

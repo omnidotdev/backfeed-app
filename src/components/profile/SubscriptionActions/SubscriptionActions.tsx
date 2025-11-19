@@ -60,12 +60,11 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
                   subscriptionId &&
                   organization.subscriptionStatus !== "canceled"
                 ) {
-                  const revokedSubscription = await revokeSubscription({
+                  const revokedSubscriptionId = await revokeSubscription({
                     subscriptionId,
                   });
 
-                  // @ts-expect-error TODO: fix. Need to update `revokeSubscription` logic
-                  if (!revokedSubscription)
+                  if (!revokedSubscriptionId)
                     throw new Error("Error revoking subscription");
                 }
 
