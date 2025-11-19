@@ -34,8 +34,6 @@ import type { Product } from "../PricingOverview/PricingOverview";
  * @returns A human-readable price.
  */
 const getPrice = (price: Stripe.Price, isEnterpriseTier: boolean) => {
-  if (price.unit_amount === 0) return 0;
-
   if (isEnterpriseTier) return app.pricingPage.pricingCard.customPricing;
 
   return price.unit_amount! / 100;
