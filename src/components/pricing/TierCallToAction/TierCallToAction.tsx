@@ -188,7 +188,7 @@ const TierCallToAction = ({
                     // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
                     if (
                       org.status === "canceled" ||
-                      !customer?.paymentMethods.length
+                      !customer?.invoice_settings.default_payment_method
                     ) {
                       const session = await createCheckoutSession({
                         products: [productId],

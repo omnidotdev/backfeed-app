@@ -10,10 +10,8 @@ import {
   Role,
   useOrganizationsQuery,
 } from "generated/graphql";
-import { getCustomer } from "lib/actions";
+import { getCustomer, getProducts } from "lib/actions";
 import { app } from "lib/config";
-import { stripe } from "lib/payments/client";
-import { PRODUCT_IDS } from "lib/payments/productIds";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -30,29 +28,26 @@ const ProfileOrganizationsPage = async ({
 }: PageProps<"/profile/[userId]/organizations">) => {
   const { userId } = await params;
 
-  const [session, customer] = await Promise.allSettled([
+  const [session, customer, products] = await Promise.all([
     auth(),
-    getCustomer({ userId }),
+    getCustomer(),
+    getProducts(),
   ]);
 
-  if (session.status === "rejected") redirect("/");
+  if (!session) redirect("/");
 
-  if (session?.value?.user?.hidraId !== userId) notFound();
-
-  const { data: products } = await stripe.products.list({
-    ids: PRODUCT_IDS,
-  });
+  if (session?.user?.hidraId !== userId) notFound();
 
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: useOrganizationsQuery.getKey({
-      userId: session.value.user.rowId!,
+      userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
     }),
     queryFn: useOrganizationsQuery.fetcher({
-      userId: session.value.user.rowId!,
+      userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
     }),
@@ -68,10 +63,9 @@ const ProfileOrganizationsPage = async ({
         pt={0}
       >
         <Subscriptions
-          user={session.value.user}
+          user={session.user}
           products={products}
-          // @ts-expect-error TODO: fix. Have to update `getCustomer`
-          customer={customer.status !== "rejected" ? customer.value : undefined}
+          customer={customer}
         />
 
         <CreateOrganization />

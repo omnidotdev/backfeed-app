@@ -10,11 +10,9 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getCustomer, getOrganization } from "lib/actions";
+import { getCustomer, getOrganization, getProducts } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { stripe } from "lib/payments/client";
-import { PRODUCT_IDS } from "lib/payments/productIds";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -45,24 +43,17 @@ const OrganizationSettingsPage = async ({
 
   if (!session) notFound();
 
-  const [organizationResponse, customerResponse] = await Promise.allSettled([
+  const [organization, customer, products] = await Promise.all([
     getOrganization({ organizationSlug }),
-    getCustomer({ userId: session.user.hidraId! }),
+    getCustomer(),
+    getProducts(),
   ]);
 
-  if (organizationResponse.status === "rejected" || !organizationResponse.value)
-    notFound();
+  if (!organization) notFound();
 
-  const organization = organizationResponse.value;
-
-  const currentSubscription =
-    customerResponse.status === "fulfilled"
-      ? // @ts-expect-error TODO: fix. Need to update `getCustomer`
-        customerResponse.value.subscriptions.find(
-          // @ts-expect-error TODO: fix. Need to update `getCustomer`
-          (sub) => sub.id === organization.subscriptionId,
-        )
-      : undefined;
+  const currentSubscription = customer?.subscriptions.find(
+    (sub) => sub.id === organization.subscriptionId,
+  );
 
   const sdk = getSdk({ session });
 
@@ -75,10 +66,7 @@ const OrganizationSettingsPage = async ({
 
   const queryClient = getQueryClient();
 
-  const [{ data: products }] = await Promise.all([
-    stripe.products.list({
-      ids: PRODUCT_IDS,
-    }),
+  await Promise.all([
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
         userId: session.user.rowId!,
@@ -116,19 +104,15 @@ const OrganizationSettingsPage = async ({
             // NB: we override the `tier` with what is derived from the subscription as the source of truth. The `tier` field in the db is used as a hint for plugins, and is only updated through the webhook handlers which are async so it can take some time to update.
             // This way, when we use `revalidatePath` in our server actions, the route cache will render the proper tier
             tier:
+              // @ts-expect-error TODO: fix
               (currentSubscription?.product?.metadata?.title as Tier) ??
               Tier.Free,
             subscriptionStatus: currentSubscription?.status ?? "canceled",
-            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
-            currentPeriodEnd: currentSubscription?.currentPeriodEnd,
+            toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
+            // TODO: fix
+            currentPeriodEnd: new Date(),
           }}
-          // @ts-expect-error TODO: fix
-          customer={
-            customerResponse.status === "fulfilled"
-              ? customerResponse.value
-              : undefined
-          }
-          // @ts-expect-error TODO: fix
+          customer={customer}
           products={products}
         />
       </Page>

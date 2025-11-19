@@ -25,6 +25,7 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
@@ -37,18 +38,15 @@ export interface OrganizationRow extends OrganizationFragment {
 
 const columnHelper = createColumnHelper<OrganizationRow>();
 
-export interface CustomerState {
-  id: string;
+export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
   subscriptions: Stripe.Subscription[];
-  // TODO: fix or remove if no longer needed
-  paymentMethods: string[];
 }
 
 interface Props {
   /** User details. */
   user: Session["user"];
   /** List of available backfeed products. */
-  products: Stripe.Product[];
+  products: Product[];
   /** Customer details. */
   customer?: CustomerState;
 }

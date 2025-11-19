@@ -1,11 +1,12 @@
 "use server";
 
 import { auth } from "auth";
+import { stripe } from "lib/payments/client";
 
 /**
  * Server action to get customer details.
  */
-const getCustomer = async ({ userId }: { userId: string }) => {
+const getCustomer = async () => {
   const session = await auth();
 
   if (!session) {
@@ -13,8 +14,18 @@ const getCustomer = async ({ userId }: { userId: string }) => {
   }
 
   // TODO: add logic for stripe integration
+  const { data: customers } = await stripe.customers.search({
+    query: `metadata["externalId"]:"${session.user.hidraId!}"`,
+  });
 
-  return {};
+  if (!customers.length) return undefined;
+
+  const { data: subscriptions } = await stripe.subscriptions.list({
+    customer: customers[0].id,
+    status: "active",
+  });
+
+  return { ...customers[0], subscriptions };
 };
 
 export default getCustomer;
