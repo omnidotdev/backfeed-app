@@ -93,7 +93,7 @@ const ManageSubscription = ({
       : (subscriptionProduct ?? products[0]);
 
   const [selectedProduct, setSelectedProduct] =
-    useState<Stripe.Product>(currentProduct);
+    useState<Product>(currentProduct);
 
   const { isOpen, onToggle, onClose } = useDisclosure();
 
@@ -104,8 +104,8 @@ const ManageSubscription = ({
       products.filter(
         (product) =>
           // TODO: fix. We need to separate concerns here. Have to apply the correct price
-          product.prices[0].recurring?.interval === pricingModel ||
-          product.prices[0].unit_amount === 0,
+          product.price.recurring?.interval === pricingModel ||
+          product.price.unit_amount === 0,
       ),
     [products, pricingModel],
   );
@@ -169,7 +169,7 @@ const ManageSubscription = ({
             // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
             if (
               organization.subscriptionStatus === "canceled" ||
-              !customer?.paymentMethods.length ||
+              !customer?.invoice_settings.default_payment_method ||
               // TODO: verify if the below check is needed with Stripe. The hope is that the management flow in general can be simplified
               // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
               // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
@@ -309,10 +309,7 @@ const ManageSubscription = ({
 
         <Text fontSize="lg">
           <Format.Number
-            value={getPrice(
-              // @ts-expect-error TODO: fix
-              selectedProduct?.prices[0] ?? currentProduct.prices[0],
-            )}
+            value={getPrice(selectedProduct?.price ?? currentProduct.price)}
             style="currency"
             currency="USD"
           />
