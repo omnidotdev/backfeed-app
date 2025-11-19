@@ -23,7 +23,7 @@ import type { Session } from "next-auth";
 import type Stripe from "stripe";
 
 export interface Product extends Stripe.Product {
-  prices: Stripe.Price[];
+  price: Stripe.Price;
 }
 
 interface Props {
@@ -45,10 +45,8 @@ const PricingOverview = ({ user, products, customer }: Props) => {
     () =>
       products.filter(
         (product) =>
-          // @ts-expect-error TODO: fix
-          product.recurringInterval === pricingModel ||
-          // @ts-expect-error TODO: fix
-          product.prices[0].amountType === "free",
+          product.price.recurring?.interval === pricingModel ||
+          product.price.unit_amount === 0,
       ),
     [products, pricingModel],
   );

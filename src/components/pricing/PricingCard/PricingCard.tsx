@@ -166,7 +166,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {getPrice(product.prices[0], isEnterpriseTier)}
+              {getPrice(product.price, isEnterpriseTier)}
             </Text>
 
             {!isEnterpriseTier && (

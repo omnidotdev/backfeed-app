@@ -37,6 +37,16 @@ const PricingPage = async () => {
     }),
   );
 
+  const splitProducts = pricedProducts
+    .flatMap((product) =>
+      product.prices.map((price) => {
+        const { prices: _prices, ...rest } = product;
+
+        return { ...rest, price };
+      }),
+    )
+    .sort((a, b) => a.price.unit_amount! - b.price.unit_amount!);
+
   if (session?.error) redirect("/");
 
   if (session) {
@@ -47,14 +57,14 @@ const PricingPage = async () => {
     return (
       <PricingOverview
         user={session.user}
-        products={pricedProducts}
+        products={splitProducts}
         // @ts-expect-error TODO: fix. Need to implement `getCustomer` logic
         customer={customer.status === "fulfilled" ? customer.value : undefined}
       />
     );
   }
 
-  return <PricingOverview user={undefined} products={pricedProducts} />;
+  return <PricingOverview user={undefined} products={splitProducts} />;
 };
 
 export default PricingPage;
