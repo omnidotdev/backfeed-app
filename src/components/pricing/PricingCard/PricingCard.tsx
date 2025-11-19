@@ -15,6 +15,7 @@ import {
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
+import { match } from "ts-pattern";
 
 import { TierCallToAction } from "components/pricing";
 import { app } from "lib/config";
@@ -227,6 +228,16 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
             {sortBenefits(product.marketing_features).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");
 
+              const color = match({
+                isDisabled,
+                isRecommendedTier,
+                isComingSoon,
+              })
+                .with({ isDisabled: true }, () => "foreground.subtle")
+                .with({ isComingSoon: true }, () => "yellow")
+                .with({ isRecommendedTier: true }, () => "brand.primary")
+                .otherwise(() => "foreground.subtle");
+
               return (
                 <GridItem key={feature.name} display="flex" gap={2}>
                   {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
@@ -235,12 +246,11 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
                       src={isComingSoon ? LuClockAlert : LuCheck}
                       h={4}
                       w={4}
-                      // TODO: conditionalize further
-                      color={isComingSoon ? "yellow" : "brand.primary"}
+                      color={color}
                     />
                   </sigil.span>
 
-                  {feature.name}
+                  {feature.name?.split(" (coming soon)")[0]}
                 </GridItem>
               );
             })}
