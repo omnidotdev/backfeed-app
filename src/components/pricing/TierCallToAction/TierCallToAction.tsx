@@ -18,8 +18,7 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { createCheckoutSession, updateSubscription } from "lib/actions";
-import { BASE_URL } from "lib/config";
+import { updateSubscription } from "lib/actions";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 import { DialogType } from "store";
@@ -186,22 +185,10 @@ const TierCallToAction = ({
                     if (isDisabled) return;
 
                     // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-                    if (
-                      org.status === "canceled" ||
-                      !customer?.invoice_settings.default_payment_method
-                    ) {
-                      const session = await createCheckoutSession({
-                        products: [productId],
-                        externalCustomerId: user?.hidraId!,
-                        customerEmail: user?.email,
-                        metadata: { backfeedOrganizationId: org.rowId! },
-                        successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-                        returnUrl: `${BASE_URL}/pricing`,
-                      });
-
-                      // @ts-expect-error TODO: fix
-                      router.push(session.url);
+                    if (org.status === "canceled") {
+                      // TODO: handle logic. Need to establish a fresh checkout session (handle this in `createCheckoutSession`)
                     } else {
+                      // TODO: make sure to adjust logic for the server action that handles this flow. Might be able to just run everything through `createCheckoutSession` if we can get the types set up properly
                       handleUpdateSubscription({
                         subscriptionId: org?.subscriptionId!,
                         productId,

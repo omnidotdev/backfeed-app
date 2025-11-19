@@ -21,23 +21,16 @@ import {
   TabsRoot,
   Text,
   sigil,
-  useDisclosure,
 } from "@omnidev/sigil";
-import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import { Tier } from "generated/graphql";
-import {
-  createCheckoutSession,
-  createSubscription,
-  updateSubscription,
-} from "lib/actions";
+import { createCheckoutSession } from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
-import { toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
 import type { Product } from "components/pricing/PricingOverview/PricingOverview";
@@ -95,64 +88,20 @@ const ManageSubscription = ({
   const [selectedProduct, setSelectedProduct] =
     useState<Product>(currentProduct);
 
-  const { isOpen, onToggle, onClose } = useDisclosure();
-
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
   const filteredProducts = useMemo(
     () =>
       products.filter(
         (product) =>
-          // TODO: fix. We need to separate concerns here. Have to apply the correct price
           product.price.recurring?.interval === pricingModel ||
           product.price.unit_amount === 0,
       ),
     [products, pricingModel],
   );
 
-  const { mutateAsync: upsertSubscription, isPending } = useMutation({
-    mutationKey: [
-      "UpsertSubscription",
-      {
-        subscriptionId,
-        productId: selectedProduct?.id,
-        organizationId: organization.rowId,
-      },
-    ],
-    mutationFn: async () => {
-      if (subscriptionId) {
-        await updateSubscription({
-          subscriptionId,
-          productId: selectedProduct?.id!,
-        });
-      } else {
-        await createSubscription({
-          organizationId: organization.rowId,
-        });
-      }
-    },
-    onSuccess: () => onClose(),
-    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
-  });
-
-  const handleUpsertSubscription = () =>
-    toaster.promise(upsertSubscription, {
-      loading: { title: "Updating subscription..." },
-      success: {
-        title: "Success!",
-        description: "Your subscription has been updated.",
-      },
-      error: {
-        title: "Error",
-        description:
-          "Sorry, there was an issue with updating your subscription. Please try again.",
-      },
-    });
-
   return (
     <Drawer
-      open={isOpen}
-      onOpenChange={onToggle}
       trigger={trigger}
       title="Manage Subscription"
       description="Update subscription tier to unlock new benefits."
@@ -160,46 +109,24 @@ const ManageSubscription = ({
         <Button
           w="full"
           disabled={
-            (selectedProduct.id === currentProduct.id &&
-              // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
-              organization.subscriptionStatus !== "canceled") ||
-            isPending
+            selectedProduct.id === currentProduct.id &&
+            // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
+            organization.subscriptionStatus !== "canceled"
           }
+          // TODO: handle canceled subs
           onClick={async () => {
-            // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-            if (
-              organization.subscriptionStatus === "canceled" ||
-              !customer?.invoice_settings.default_payment_method ||
-              // TODO: verify if the below check is needed with Stripe. The hope is that the management flow in general can be simplified
-              // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
-              // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
-              // Note: The subscription must be on a free pricing plan in order to pass `subscriptionId` in this manner. See: https://polar.sh/docs/api-reference/checkouts/create-session
-              subscriptionProduct?.prices?.[0]?.amountType === "free"
-            ) {
-              const session = await createCheckoutSession({
-                products: [selectedProduct.id],
-                externalCustomerId: user?.hidraId!,
-                customerEmail: user?.email,
-                metadata: { backfeedOrganizationId: organization.rowId },
-                subscriptionId:
-                  // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
-                  subscriptionProduct?.prices?.[0]?.amountType === "free" &&
-                  organization.subscriptionStatus !== "canceled"
-                    ? subscriptionId
-                    : undefined,
-                successUrl: pathname.includes(organization.slug)
-                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-                returnUrl: pathname.includes(organization.slug)
-                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-              });
+            const checkoutUrl = await createCheckoutSession({
+              subscriptionId: subscriptionId!,
+              returnUrl: pathname.includes(organization.slug)
+                ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+              product: {
+                id: selectedProduct.id,
+                priceId: selectedProduct.price.id,
+              },
+            });
 
-              // @ts-expect-error TODO: fix
-              router.push(session.url);
-            } else {
-              handleUpsertSubscription();
-            }
+            router.push(checkoutUrl);
           }}
         >
           {subscriptionId
@@ -243,13 +170,18 @@ const ManageSubscription = ({
             <TabContent value={pricingModel}>
               <RadioGroupRoot
                 orientation="vertical"
-                defaultValue={currentProduct.id}
+                defaultValue={currentProduct.price.id}
                 onValueChange={({ value }) =>
-                  setSelectedProduct(products.find((p) => p.id === value)!)
+                  setSelectedProduct(
+                    products.find((p) => p.price.id === value)!,
+                  )
                 }
               >
                 {filteredProducts.map((product) => (
-                  <RadioGroupItem key={product.id} value={product.id}>
+                  <RadioGroupItem
+                    key={product.price.id}
+                    value={product.price.id}
+                  >
                     <RadioGroupItemControl />
 
                     <RadioGroupItemText>{product.name}</RadioGroupItemText>
@@ -313,15 +245,9 @@ const ManageSubscription = ({
             style="currency"
             currency="USD"
           />
-
-          {/** TODO: fix below */}
-          {/* {( */}
-          {/*   selectedProduct */}
-          {/*     ? selectedProduct.prices[0].amountType === "free" */}
-          {/*     : currentProduct.prices[0].amountType === "free" */}
-          {/* ) */}
-          {/*   ? "/forever" */}
-          {/*   : `/${selectedProduct?.recurringInterval ?? currentProduct.recurringInterval}`} */}
+          {selectedProduct.price.unit_amount === 0
+            ? "/forever"
+            : `/${selectedProduct.price.recurring?.interval}`}
         </Text>
       </HStack>
     </Drawer>

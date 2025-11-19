@@ -229,6 +229,7 @@ const OrganizationSettings = ({
           <Grid w="full" lineHeight={1.5}>
             {/** TODO: map over marketable features for product below. See `PricingCard` */}
           </Grid>
+
           <ManageSubscription
             organization={organization}
             products={products}

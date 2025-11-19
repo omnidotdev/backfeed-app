@@ -6,7 +6,6 @@ import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import {
   Role,
-  Tier,
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
@@ -101,12 +100,6 @@ const OrganizationSettingsPage = async ({
           user={session.user}
           organization={{
             ...organization,
-            // NB: we override the `tier` with what is derived from the subscription as the source of truth. The `tier` field in the db is used as a hint for plugins, and is only updated through the webhook handlers which are async so it can take some time to update.
-            // This way, when we use `revalidatePath` in our server actions, the route cache will render the proper tier
-            tier:
-              // @ts-expect-error TODO: fix
-              (currentSubscription?.product?.metadata?.title as Tier) ??
-              Tier.Free,
             subscriptionStatus: currentSubscription?.status ?? "canceled",
             toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
             // TODO: fix

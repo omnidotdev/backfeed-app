@@ -7,8 +7,7 @@ import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { createCheckoutSession } from "lib/actions";
-import { BASE_URL, app } from "lib/config";
+import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
 import { useAuth, useForm, useViewportSize } from "lib/hooks";
@@ -48,6 +47,7 @@ const createOrganizationSchema = z
 
 interface Props {
   /** Product ID. */
+  // TODO: this might need to be changed to be `priceId` to validate that the correct option for a product is being handled
   productId: string;
   /** Whether the dialog is open or not. */
   isOpen: boolean;
@@ -81,16 +81,7 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
-        const session = await createCheckoutSession({
-          products: [productId],
-          externalCustomerId: user?.hidraId!,
-          customerEmail: user?.email,
-          metadata: { backfeedOrganizationId: data.organization?.rowId! },
-          successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
-          returnUrl: `${BASE_URL}/pricing`,
-        });
-
-        router.push(session.url);
+        // TODO: handle `createCheckoutSession` when it is set up for new subscriptions
 
         setIsOpen(false);
         reset();
