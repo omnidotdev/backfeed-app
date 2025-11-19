@@ -45,7 +45,7 @@ jobs:
       - name: Install Playwright
         run: bunx playwright install --with-deps
       - name: Load test environment variables
-        uses: falti/dotenv-action@v1.1.4
+        uses: falti/dotenv-action@v1.1.5
         with:
           path: .env.test
       - name: Run E2E tests
