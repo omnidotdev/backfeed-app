@@ -119,7 +119,10 @@ const ManageSubscription = ({
             organization.subscriptionStatus !== "canceled"
           }
           onClick={async () => {
-            if (organization.subscriptionStatus === "canceled") {
+            if (
+              organization.subscriptionStatus === "canceled" ||
+              !subscriptionId
+            ) {
               const checkoutUrl = await createCheckoutSession({
                 checkout: {
                   type: "create",
@@ -248,6 +251,7 @@ const ManageSubscription = ({
         </Flex>
       ) : (
         // TODO: discuss. Left for backwards compat (existing orgs that do not have a `subscriptionId` currently, handled in upsert).
+        // I believe we can remove this fallback text. Just need to do some testing on how things are handled with orgs that have no subId
         <Text whiteSpace="wrap">
           We recently migrated to organization level subscriptions. Before
           further subscription changes can be made, please enroll your workspace
