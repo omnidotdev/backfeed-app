@@ -74,10 +74,15 @@ const ManageSubscription = ({
 
   const subscriptionId = organization.subscriptionId;
 
-  const subscriptionProduct = customer?.subscriptions?.find(
+  const subscription = customer?.subscriptions?.find(
     (sub) => sub.id === subscriptionId,
-    // @ts-expect-error TODO: fix
-  )?.product;
+  );
+
+  const subscriptionProduct = products.find(
+    (product) =>
+      product.id === subscription?.items.data[0].plan.product &&
+      product.price.id === subscription?.items.data[0].plan.id,
+  );
 
   const currentProduct =
     // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to a product that may or may not be a `Free` tier product. We conditionally fallback to `Free` tier here to align UI with intent.
@@ -109,7 +114,7 @@ const ManageSubscription = ({
         <Button
           w="full"
           disabled={
-            selectedProduct.id === currentProduct.id &&
+            selectedProduct.price.id === currentProduct.price.id &&
             // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
             organization.subscriptionStatus !== "canceled"
           }

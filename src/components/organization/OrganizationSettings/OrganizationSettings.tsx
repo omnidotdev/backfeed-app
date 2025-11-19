@@ -6,6 +6,8 @@ import {
   Combobox,
   Divider,
   Grid,
+  GridItem,
+  Icon,
   Stack,
   Text,
   sigil,
@@ -14,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
@@ -22,6 +25,7 @@ import {
   ManageSubscription,
   UpdateOrganization,
 } from "components/organization";
+import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
@@ -68,7 +72,13 @@ const OrganizationSettings = ({
   products,
 }: Props) => {
   const subscription = customer?.subscriptions.find(
-    (sub) => sub.metadata.organizationId === organization.rowId,
+    (sub) => sub.id === organization.subscriptionId,
+  );
+
+  const subscriptionProduct = products.find(
+    (product) =>
+      product.id === subscription?.items.data[0].plan.product &&
+      product.price.id === subscription?.items.data[0].plan.id,
   );
 
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
@@ -227,7 +237,27 @@ const OrganizationSettings = ({
             tier. Benefits included in this plan are:
           </Text>
           <Grid w="full" lineHeight={1.5}>
-            {/** TODO: map over marketable features for product below. See `PricingCard` */}
+            {sortBenefits(
+              subscriptionProduct?.marketing_features ??
+                products[0].marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
+
+              return (
+                <GridItem key={feature.name} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                    />
+                  </sigil.span>
+
+                  {feature.name?.split(" (coming soon)")[0]}
+                </GridItem>
+              );
+            })}
           </Grid>
 
           <ManageSubscription
