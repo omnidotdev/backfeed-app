@@ -27,6 +27,7 @@ const createSubscription = async ({ organizationId }: Options) => {
   } else {
     customer = await stripe.customers.create({
       email: session.user.email!,
+      name: session.user.name ?? undefined,
       metadata: {
         externalId: session.user.hidraId!,
       },
