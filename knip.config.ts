@@ -29,8 +29,6 @@ const knipConfig: KnipConfig = {
     "@next/env",
     // used by GraphQL Code Generator scripts
     "dotenv",
-    // TODO: remove once stripe is fully integrated
-    "@stripe/stripe-js",
   ],
 };
 
