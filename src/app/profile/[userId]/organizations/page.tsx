@@ -12,7 +12,8 @@ import {
 } from "generated/graphql";
 import { getCustomer } from "lib/actions";
 import { app } from "lib/config";
-import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
+import { stripe } from "lib/payments/client";
+import { PRODUCT_IDS } from "lib/payments/productIds";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -38,13 +39,8 @@ const ProfileOrganizationsPage = async ({
 
   if (session?.value?.user?.hidraId !== userId) notFound();
 
-  const {
-    result: { items: products },
-  } = await polar.products.list({
-    id: BACKFEED_PRODUCT_IDS,
-    // Enterprise products are currently archived, but there is no need to display them as options within this route
-    isArchived: false,
-    sorting: ["price_amount"],
+  const { data: products } = await stripe.products.list({
+    ids: PRODUCT_IDS,
   });
 
   const queryClient = getQueryClient();
@@ -74,6 +70,7 @@ const ProfileOrganizationsPage = async ({
         <Subscriptions
           user={session.value.user}
           products={products}
+          // @ts-expect-error TODO: fix. Have to update `getCustomer`
           customer={customer.status !== "rejected" ? customer.value : undefined}
         />
 

@@ -4,7 +4,8 @@ import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { getCustomer } from "lib/actions";
 import { app } from "lib/config";
-import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
+import { stripe } from "lib/payments/client";
+import { PRODUCT_IDS } from "lib/payments/productIds";
 
 import type { Metadata } from "next";
 
@@ -18,18 +19,23 @@ export const metadata: Metadata = {
  * Pricing page.
  */
 const PricingPage = async () => {
-  const [
-    session,
-    {
-      result: { items: products },
-    },
-  ] = await Promise.all([
+  const [session, { data: products }] = await Promise.all([
     auth(),
-    polar.products.list({
-      id: BACKFEED_PRODUCT_IDS,
-      sorting: ["price_amount"],
+    stripe.products.list({
+      ids: PRODUCT_IDS,
     }),
   ]);
+
+  const pricedProducts = await Promise.all(
+    products.map(async (product) => {
+      const prices = await stripe.prices.list({
+        product: product.id,
+        active: true,
+      });
+
+      return { ...product, prices: prices.data };
+    }),
+  );
 
   if (session?.error) redirect("/");
 
@@ -41,13 +47,14 @@ const PricingPage = async () => {
     return (
       <PricingOverview
         user={session.user}
-        products={products}
+        products={pricedProducts}
+        // @ts-expect-error TODO: fix. Need to implement `getCustomer` logic
         customer={customer.status === "fulfilled" ? customer.value : undefined}
       />
     );
   }
 
-  return <PricingOverview user={undefined} products={products} />;
+  return <PricingOverview user={undefined} products={pricedProducts} />;
 };
 
 export default PricingPage;

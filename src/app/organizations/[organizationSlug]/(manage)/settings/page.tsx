@@ -1,4 +1,3 @@
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
@@ -14,7 +13,8 @@ import {
 import { getCustomer, getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
+import { stripe } from "lib/payments/client";
+import { PRODUCT_IDS } from "lib/payments/productIds";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
@@ -57,7 +57,9 @@ const OrganizationSettingsPage = async ({
 
   const currentSubscription =
     customerResponse.status === "fulfilled"
-      ? customerResponse.value.subscriptions.find(
+      ? // @ts-expect-error TODO: fix. Need to update `getCustomer`
+        customerResponse.value.subscriptions.find(
+          // @ts-expect-error TODO: fix. Need to update `getCustomer`
           (sub) => sub.id === organization.subscriptionId,
         )
       : undefined;
@@ -73,16 +75,9 @@ const OrganizationSettingsPage = async ({
 
   const queryClient = getQueryClient();
 
-  const [
-    {
-      result: { items: products },
-    },
-  ] = await Promise.all([
-    polar.products.list({
-      id: BACKFEED_PRODUCT_IDS,
-      // Enterprise products are currently archived, but there is no need to display them as options within this route
-      isArchived: false,
-      sorting: ["price_amount"],
+  const [{ data: products }] = await Promise.all([
+    stripe.products.list({
+      ids: PRODUCT_IDS,
     }),
     queryClient.prefetchQuery({
       queryKey: useOrganizationRoleQuery.getKey({
@@ -123,16 +118,17 @@ const OrganizationSettingsPage = async ({
             tier:
               (currentSubscription?.product?.metadata?.title as Tier) ??
               Tier.Free,
-            subscriptionStatus:
-              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
+            subscriptionStatus: currentSubscription?.status ?? "canceled",
             toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
             currentPeriodEnd: currentSubscription?.currentPeriodEnd,
           }}
+          // @ts-expect-error TODO: fix
           customer={
             customerResponse.status === "fulfilled"
               ? customerResponse.value
               : undefined
           }
+          // @ts-expect-error TODO: fix
           products={products}
         />
       </Page>

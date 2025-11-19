@@ -4,11 +4,11 @@ import { P, match } from "ts-pattern";
 import { Tier } from "generated/graphql";
 import { capitalizeFirstLetter } from "lib/util";
 
-import type { Product } from "@polar-sh/sdk/models/components/product";
+import type Stripe from "stripe";
 
 interface Options {
   /** The product to fetch metadata for. */
-  product: Product;
+  product: Stripe.Product;
 }
 
 /**

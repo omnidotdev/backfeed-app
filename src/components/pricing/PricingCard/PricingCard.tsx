@@ -13,24 +13,18 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
-import { match } from "ts-pattern";
 
 import { TierCallToAction } from "components/pricing";
 import { app } from "lib/config";
 import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
-import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
-import type { Product } from "@polar-sh/sdk/models/components/product";
-import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
 import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
-
-const COMING_SOON = "coming soon";
+import type Stripe from "stripe";
+import type { Product } from "../PricingOverview/PricingOverview";
 
 /**
  * Get a human-readable price.
@@ -38,23 +32,22 @@ const COMING_SOON = "coming soon";
  * @param isEnterpriseTier Whether the product is enterprise tier.
  * @returns A human-readable price.
  */
-const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
-  if (price.amountType !== "fixed" || isEnterpriseTier)
-    return price.amountType === "free"
-      ? 0
-      : app.pricingPage.pricingCard.customPricing;
+const getPrice = (price: Stripe.Price, isEnterpriseTier: boolean) => {
+  if (price.unit_amount === 0) return 0;
 
-  return price.priceAmount / 100;
+  if (isEnterpriseTier) return app.pricingPage.pricingCard.customPricing;
+
+  return price.unit_amount! / 100;
 };
 
-export const sortBenefits = (benefits: Benefit[]) => {
+export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
   const everythingInPrefix = "Everything in";
-  let everythingInBenefit: Benefit | undefined;
-  const otherBenefits: Benefit[] = [];
+  let everythingInBenefit: Stripe.Product.MarketingFeature | undefined;
+  const otherBenefits: Stripe.Product.MarketingFeature[] = [];
 
   // Separate "Everything in..." benefit and other benefits
   for (const benefit of benefits) {
-    if (benefit.description.startsWith(everythingInPrefix)) {
+    if (benefit.name?.startsWith(everythingInPrefix)) {
       everythingInBenefit = benefit;
     } else {
       otherBenefits.push(benefit);
@@ -84,8 +77,7 @@ interface Props extends CardProps {
 const PricingCard = ({ user, product, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
-  const isPerMonthPricing =
-    pricingModel === SubscriptionRecurringInterval.Month;
+  const isPerMonthPricing = pricingModel === "month";
 
   const {
     productTitle,
@@ -174,7 +166,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
+              {getPrice(product.prices[0], isEnterpriseTier)}
             </Text>
 
             {!isEnterpriseTier && (
@@ -232,36 +224,23 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
-            {sortBenefits(product.benefits).map((feature) => {
-              const isComingSoon = (
-                feature.properties as BenefitCustomProperties
-              ).note
-                ?.toLowerCase()
-                .includes(COMING_SOON);
-
-              const color = match({
-                isDisabled,
-                isRecommendedTier,
-                isComingSoon,
-              })
-                .with({ isDisabled: true }, () => "foreground.subtle")
-                .with({ isComingSoon: true }, () => "yellow")
-                .with({ isRecommendedTier: true }, () => "brand.primary")
-                .otherwise(() => "foreground.subtle");
+            {sortBenefits(product.marketing_features).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
 
               return (
-                <GridItem key={feature.id} display="flex" gap={2}>
+                <GridItem key={feature.name} display="flex" gap={2}>
                   {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
                   <sigil.span h={6} display="flex" alignItems="center">
                     <Icon
                       src={isComingSoon ? LuClockAlert : LuCheck}
                       h={4}
                       w={4}
-                      color={color}
+                      // TODO: conditionalize further
+                      color={isComingSoon ? "yellow" : "brand.primary"}
                     />
                   </sigil.span>
 
-                  {feature.description}
+                  {feature.name}
                 </GridItem>
               );
             })}

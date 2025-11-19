@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -26,14 +25,12 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
-import type { CustomerPaymentMethod } from "@polar-sh/sdk/models/components/customerpaymentmethod.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models/components/subscription.js";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
+import type Stripe from "stripe";
 
 export interface OrganizationRow extends OrganizationFragment {
-  subscriptionStatus: SubscriptionStatus;
+  subscriptionStatus: Stripe.Subscription.Status;
   toBeCanceled: boolean;
   currentPeriodEnd: Date | null | undefined;
 }
@@ -42,15 +39,16 @@ const columnHelper = createColumnHelper<OrganizationRow>();
 
 export interface CustomerState {
   id: string;
-  subscriptions: SubscriptionInterface[];
-  paymentMethods: CustomerPaymentMethod[];
+  subscriptions: Stripe.Subscription[];
+  // TODO: fix or remove if no longer needed
+  paymentMethods: string[];
 }
 
 interface Props {
   /** User details. */
   user: Session["user"];
   /** List of available backfeed products. */
-  products: Product[];
+  products: Stripe.Product[];
   /** Customer details. */
   customer?: CustomerState;
 }
@@ -74,13 +72,15 @@ const Subscription = ({ user, products, customer }: Props) => {
 
           return {
             ...org!,
-            subscriptionStatus:
-              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
-            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+            subscriptionStatus: currentSubscription?.status ?? "incomplete",
+            toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
             currentPeriodEnd:
-              currentSubscription?.prices[0]?.amountType === "free"
+              currentSubscription?.items.data[0].price.unit_amount === 0
                 ? null
-                : currentSubscription?.currentPeriodEnd,
+                : new Date(
+                    currentSubscription?.items.data[0].current_period_end! *
+                      1000,
+                  ),
           };
         }) ?? [],
     },
@@ -131,18 +131,11 @@ const Subscription = ({ user, products, customer }: Props) => {
             status: info.getValue(),
             toBeCanceled,
           })
-            .with(
-              { status: SubscriptionStatus.Active, toBeCanceled: true },
-              () => "yellow",
-            )
-            .with({ status: SubscriptionStatus.Active }, () => "green")
+            .with({ status: "active", toBeCanceled: true }, () => "yellow")
+            .with({ status: "active" }, () => "green")
             .with(
               {
-                status: P.union(
-                  SubscriptionStatus.PastDue,
-                  SubscriptionStatus.Unpaid,
-                  SubscriptionStatus.Canceled,
-                ),
+                status: P.union("past_due", "unpaid", "canceled"),
               },
               () => "red",
             )
@@ -167,8 +160,7 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("currentPeriodEnd", {
         header: "Renewal Date",
         cell: (info) =>
-          info.getValue() &&
-          info.row.original.subscriptionStatus !== SubscriptionStatus.Canceled
+          info.getValue() && info.row.original.subscriptionStatus !== "canceled"
             ? dayjs(info.getValue()).format("MM/DD/YYYY")
             : "-",
       }),

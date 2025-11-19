@@ -10,7 +10,6 @@ import {
   MenuSeparator,
   useDisclosure,
 } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -76,7 +75,7 @@ const TierCallToAction = ({
 
           return {
             ...org,
-            status: subscription?.status ?? SubscriptionStatus.Incomplete,
+            status: subscription?.status ?? "incomplete",
           };
         }) ?? [],
     },
@@ -188,7 +187,7 @@ const TierCallToAction = ({
 
                     // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
                     if (
-                      org.status === SubscriptionStatus.Canceled ||
+                      org.status === "canceled" ||
                       !customer?.paymentMethods.length
                     ) {
                       const session = await createCheckoutSession({
@@ -200,6 +199,7 @@ const TierCallToAction = ({
                         returnUrl: `${BASE_URL}/pricing`,
                       });
 
+                      // @ts-expect-error TODO: fix
                       router.push(session.url);
                     } else {
                       handleUpdateSubscription({

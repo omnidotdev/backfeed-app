@@ -71,6 +71,7 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
+  // TODO: determine if there is a better approach here using Stripe integration
   // TODO: discuss this mutation. We *must* attach `organizationId` as metadata to the subscription upon creation, so we need to wait for `onSuccess` here before routing to the checkout page
   // The problem here is that a user could then opt to *not* finish the payment flow
   // If a user doesn't finish the payment flow, the org is still creating in the database but with a `Free` tier subscription.

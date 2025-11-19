@@ -1,7 +1,6 @@
 "use client";
 
 import { HStack, Text, sigil } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 
 import { DestructiveAction } from "components/core";
 import { ManageSubscription } from "components/organization";
@@ -10,7 +9,7 @@ import { revokeSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
@@ -59,13 +58,13 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
               async () => {
                 if (
                   subscriptionId &&
-                  organization.subscriptionStatus !==
-                    SubscriptionStatus.Canceled
+                  organization.subscriptionStatus !== "canceled"
                 ) {
                   const revokedSubscription = await revokeSubscription({
                     subscriptionId,
                   });
 
+                  // @ts-expect-error TODO: fix. Need to update `revokeSubscription` logic
                   if (!revokedSubscription)
                     throw new Error("Error revoking subscription");
                 }

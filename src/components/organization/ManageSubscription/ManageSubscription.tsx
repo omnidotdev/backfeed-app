@@ -23,8 +23,6 @@ import {
   sigil,
   useDisclosure,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -42,16 +40,14 @@ import { useAuth, useSearchParams } from "lib/hooks";
 import { toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
 } from "components/profile/Subscription/Subscriptions";
+import type Stripe from "stripe";
 
-const getPrice = (price: ProductPrice) =>
-  price.amountType !== "fixed" ? 0 : price.priceAmount / 100;
+const getPrice = (price: Stripe.Price) => price.unit_amount! / 100;
 
 interface Props extends DrawerProps {
   /** Organization details. */
@@ -87,6 +83,7 @@ const ManageSubscription = ({
 
   const subscriptionProduct = customer?.subscriptions?.find(
     (sub) => sub.id === subscriptionId,
+    // @ts-expect-error TODO: fix
   )?.product;
 
   const currentProduct =
@@ -96,7 +93,7 @@ const ManageSubscription = ({
       : (subscriptionProduct ?? products[0]);
 
   const [selectedProduct, setSelectedProduct] =
-    useState<Product>(currentProduct);
+    useState<Stripe.Product>(currentProduct);
 
   const { isOpen, onToggle, onClose } = useDisclosure();
 
@@ -106,8 +103,9 @@ const ManageSubscription = ({
     () =>
       products.filter(
         (product) =>
-          product.recurringInterval === pricingModel ||
-          product.prices[0].amountType === "free",
+          // TODO: fix. We need to separate concerns here. Have to apply the correct price
+          product.prices[0].recurring?.interval === pricingModel ||
+          product.prices[0].unit_amount === 0,
       ),
     [products, pricingModel],
   );
@@ -164,15 +162,15 @@ const ManageSubscription = ({
           disabled={
             (selectedProduct.id === currentProduct.id &&
               // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
-              organization.subscriptionStatus !==
-                SubscriptionStatus.Canceled) ||
+              organization.subscriptionStatus !== "canceled") ||
             isPending
           }
           onClick={async () => {
             // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
             if (
-              organization.subscriptionStatus === SubscriptionStatus.Canceled ||
+              organization.subscriptionStatus === "canceled" ||
               !customer?.paymentMethods.length ||
+              // TODO: verify if the below check is needed with Stripe. The hope is that the management flow in general can be simplified
               // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
               // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
               // Note: The subscription must be on a free pricing plan in order to pass `subscriptionId` in this manner. See: https://polar.sh/docs/api-reference/checkouts/create-session
@@ -186,8 +184,7 @@ const ManageSubscription = ({
                 subscriptionId:
                   // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
                   subscriptionProduct?.prices?.[0]?.amountType === "free" &&
-                  organization.subscriptionStatus !==
-                    SubscriptionStatus.Canceled
+                  organization.subscriptionStatus !== "canceled"
                     ? subscriptionId
                     : undefined,
                 successUrl: pathname.includes(organization.slug)
@@ -198,6 +195,7 @@ const ManageSubscription = ({
                   : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
               });
 
+              // @ts-expect-error TODO: fix
               router.push(session.url);
             } else {
               handleUpsertSubscription();
@@ -205,7 +203,7 @@ const ManageSubscription = ({
           }}
         >
           {subscriptionId
-            ? organization.subscriptionStatus === SubscriptionStatus.Canceled
+            ? organization.subscriptionStatus === "canceled"
               ? "Renew"
               : "Update"
             : "Create"}{" "}
@@ -227,16 +225,16 @@ const ManageSubscription = ({
             value={pricingModel}
             onValueChange={({ value }) =>
               setSearchParams({
-                pricingModel: value as SubscriptionRecurringInterval,
+                pricingModel: value as "month" | "year",
               })
             }
           >
             <TabList>
-              <TabTrigger value={SubscriptionRecurringInterval.Month} flex={1}>
+              <TabTrigger value="month" flex={1}>
                 Monthly
               </TabTrigger>
 
-              <TabTrigger value={SubscriptionRecurringInterval.Year} flex={1}>
+              <TabTrigger value="year" flex={1}>
                 Yearly
               </TabTrigger>
               <TabIndicator />
@@ -270,16 +268,13 @@ const ManageSubscription = ({
 
             <Grid w="full" lineHeight={1.5}>
               {sortBenefits(
-                selectedProduct?.benefits ?? currentProduct.benefits,
+                selectedProduct?.marketing_features ??
+                  currentProduct.marketing_features,
               ).map((feature) => {
-                const isComingSoon = (
-                  feature.properties as BenefitCustomProperties
-                ).note
-                  ?.toLowerCase()
-                  .includes("coming soon");
+                const isComingSoon = feature.name?.includes("coming soon");
 
                 return (
-                  <GridItem key={feature.id} display="flex" gap={2}>
+                  <GridItem key={feature.name} display="flex" gap={2}>
                     {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
                     <sigil.span h={6} display="flex" alignItems="center">
                       <Icon
@@ -290,7 +285,7 @@ const ManageSubscription = ({
                       />
                     </sigil.span>
 
-                    {feature.description}
+                    {feature.name}
                   </GridItem>
                 );
               })}
@@ -315,19 +310,21 @@ const ManageSubscription = ({
         <Text fontSize="lg">
           <Format.Number
             value={getPrice(
+              // @ts-expect-error TODO: fix
               selectedProduct?.prices[0] ?? currentProduct.prices[0],
             )}
             style="currency"
             currency="USD"
           />
 
-          {(
-            selectedProduct
-              ? selectedProduct.prices[0].amountType === "free"
-              : currentProduct.prices[0].amountType === "free"
-          )
-            ? "/forever"
-            : `/${selectedProduct?.recurringInterval ?? currentProduct.recurringInterval}`}
+          {/** TODO: fix below */}
+          {/* {( */}
+          {/*   selectedProduct */}
+          {/*     ? selectedProduct.prices[0].amountType === "free" */}
+          {/*     : currentProduct.prices[0].amountType === "free" */}
+          {/* ) */}
+          {/*   ? "/forever" */}
+          {/*   : `/${selectedProduct?.recurringInterval ?? currentProduct.recurringInterval}`} */}
         </Text>
       </HStack>
     </Drawer>

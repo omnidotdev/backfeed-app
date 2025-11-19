@@ -1,7 +1,6 @@
 "use server";
 
 import { auth } from "auth";
-import { polar } from "lib/polar";
 
 interface Options {
   /** Subscription ID. */
@@ -18,20 +17,7 @@ const revokeSubscription = async ({
 
   if (!session) throw new Error("Unauthorized");
 
-  if (cancelAtEndOfPeriod) {
-    return await polar.subscriptions.update({
-      id: subscriptionId,
-      subscriptionUpdate: {
-        cancelAtPeriodEnd: true,
-      },
-    });
-  }
-
-  const result = await polar.subscriptions.revoke({
-    id: subscriptionId,
-  });
-
-  return result;
+  // TODO: add logic for stripe integration
 };
 
 export default revokeSubscription;

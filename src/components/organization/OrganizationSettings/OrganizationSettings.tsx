@@ -6,8 +6,6 @@ import {
   Combobox,
   Divider,
   Grid,
-  GridItem,
-  Icon,
   Stack,
   Text,
   sigil,
@@ -16,7 +14,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiTransfer } from "react-icons/bi";
-import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
@@ -25,7 +22,6 @@ import {
   ManageSubscription,
   UpdateOrganization,
 } from "components/organization";
-import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
@@ -38,9 +34,8 @@ import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { DestructiveActionProps } from "components/core";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
@@ -143,6 +138,7 @@ const OrganizationSettings = ({
                 subscriptionId: organization.subscriptionId,
               });
 
+              // @ts-expect-error TODO: fix. Need to update `revokeSubscription`
               if (!revokedSubscription)
                 throw new Error("Error revoking subscription");
             }
@@ -232,31 +228,7 @@ const OrganizationSettings = ({
             tier. Benefits included in this plan are:
           </Text>
           <Grid w="full" lineHeight={1.5}>
-            {sortBenefits(
-              subscription?.product.benefits ?? products[0].benefits,
-            ).map((feature) => {
-              const isComingSoon = (
-                feature.properties as BenefitCustomProperties
-              ).note
-                ?.toLowerCase()
-                .includes("coming soon");
-
-              return (
-                <GridItem key={feature.id} display="flex" gap={2}>
-                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                  <sigil.span h={6} display="flex" alignItems="center">
-                    <Icon
-                      src={isComingSoon ? LuClockAlert : LuCheck}
-                      h={4}
-                      w={4}
-                      color={isComingSoon ? "yellow" : "brand.primary"}
-                    />
-                  </sigil.span>
-
-                  {feature.description}
-                </GridItem>
-              );
-            })}
+            {/** TODO: map over marketable features for product below. See `PricingCard` */}
           </Grid>
           <ManageSubscription
             organization={organization}
