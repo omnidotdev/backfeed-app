@@ -7,10 +7,11 @@ import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
+import { createCheckoutSession } from "lib/actions";
+import { BASE_URL, app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useViewportSize } from "lib/hooks";
+import { useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
 
@@ -46,9 +47,8 @@ const createOrganizationSchema = z
   });
 
 interface Props {
-  /** Product ID. */
-  // TODO: this might need to be changed to be `priceId` to validate that the correct option for a product is being handled
-  productId: string;
+  /** Price ID. */
+  priceId: string;
   /** Whether the dialog is open or not. */
   isOpen: boolean;
   /** Handler to manage open state of the dialog */
@@ -58,10 +58,8 @@ interface Props {
 /**
  * Dialog for creating a new organization with a paid subscription tier.
  */
-const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
+const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -81,7 +79,16 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
-        // TODO: handle `createCheckoutSession` when it is set up for new subscriptions
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "create",
+            priceId,
+            successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
+            organizationId: data.organization?.rowId!,
+          },
+        });
+
+        router.push(checkoutUrl);
 
         setIsOpen(false);
         reset();

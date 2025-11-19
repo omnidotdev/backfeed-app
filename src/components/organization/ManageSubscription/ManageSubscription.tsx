@@ -113,20 +113,37 @@ const ManageSubscription = ({
             // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
             organization.subscriptionStatus !== "canceled"
           }
-          // TODO: handle canceled subs
           onClick={async () => {
-            const checkoutUrl = await createCheckoutSession({
-              subscriptionId: subscriptionId!,
-              returnUrl: pathname.includes(organization.slug)
-                ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-              product: {
-                id: selectedProduct.id,
-                priceId: selectedProduct.price.id,
-              },
-            });
+            if (organization.subscriptionStatus === "canceled") {
+              const checkoutUrl = await createCheckoutSession({
+                checkout: {
+                  type: "create",
+                  successUrl: pathname.includes(organization.slug)
+                    ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                    : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                  organizationId: organization.rowId,
+                  priceId: selectedProduct.price.id,
+                },
+              });
 
-            router.push(checkoutUrl);
+              router.push(checkoutUrl);
+            } else {
+              const checkoutUrl = await createCheckoutSession({
+                checkout: {
+                  type: "update",
+                  subscriptionId: subscriptionId!,
+                  returnUrl: pathname.includes(organization.slug)
+                    ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                    : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                  product: {
+                    id: selectedProduct.id,
+                    priceId: selectedProduct.price.id,
+                  },
+                },
+              });
+
+              router.push(checkoutUrl);
+            }
           }}
         >
           {subscriptionId

@@ -10,7 +10,6 @@ import {
   MenuSeparator,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuChevronDown, LuPlus } from "react-icons/lu";
@@ -18,9 +17,8 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { updateSubscription } from "lib/actions";
 import { useDialogStore } from "lib/hooks/store";
-import { capitalizeFirstLetter, toaster } from "lib/util";
+import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -31,8 +29,8 @@ import type { IconType } from "react-icons";
 interface Props extends ButtonProps {
   /** Signed in user. */
   user: Session["user"];
-  /** Product ID. */
-  productId: string;
+  /** Price ID. */
+  priceId: string;
   /** Subscription tier. */
   tier: Tier;
   /** Customer details. */
@@ -43,7 +41,7 @@ interface Props extends ButtonProps {
 
 const TierCallToAction = ({
   user,
-  productId,
+  priceId,
   tier,
   customer,
   actionIcon,
@@ -80,61 +78,6 @@ const TierCallToAction = ({
     },
   );
 
-  const { mutateAsync: updateOrganizationTier, isPending } = useMutation({
-    mutationKey: ["UpdateSubscription"],
-    mutationFn: async ({
-      subscriptionId,
-      productId,
-      // NB: not used for the mutation, but used for proper routing in `onSuccess`
-      organizationSlug: _organizationSlug,
-    }: {
-      subscriptionId: string;
-      productId: string;
-      organizationSlug: string;
-    }) => {
-      await updateSubscription({
-        subscriptionId,
-        productId,
-      });
-    },
-    onSuccess: (_d, variables) => {
-      onClose();
-
-      router.push(`/organizations/${variables.organizationSlug}`);
-    },
-    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
-  });
-
-  const handleUpdateSubscription = ({
-    subscriptionId,
-    productId,
-    organizationSlug,
-  }: {
-    subscriptionId: string;
-    productId: string;
-    organizationSlug: string;
-  }) =>
-    toaster.promise(
-      async () =>
-        await updateOrganizationTier({
-          subscriptionId,
-          productId,
-          organizationSlug,
-        }),
-      {
-        loading: { title: "Updating subscription..." },
-        success: {
-          title: "Success!",
-          description: "Your subscription has been updated.",
-        },
-        error: {
-          title: "Error",
-          description:
-            "Sorry, there was an issue with updating your subscription. Please try again.",
-        },
-      },
-    );
-
   if (tier === Tier.Free) {
     return (
       <>
@@ -167,8 +110,7 @@ const TierCallToAction = ({
         <MenuItemGroup>
           {organizations?.length ? (
             organizations?.map((org) => {
-              const isDisabled =
-                !org?.subscriptionId || org?.tier === tier || isPending;
+              const isDisabled = !org?.subscriptionId || org?.tier === tier;
 
               return (
                 <MenuItem
@@ -189,11 +131,6 @@ const TierCallToAction = ({
                       // TODO: handle logic. Need to establish a fresh checkout session (handle this in `createCheckoutSession`)
                     } else {
                       // TODO: make sure to adjust logic for the server action that handles this flow. Might be able to just run everything through `createCheckoutSession` if we can get the types set up properly
-                      handleUpdateSubscription({
-                        subscriptionId: org?.subscriptionId!,
-                        productId,
-                        organizationSlug: org?.slug!,
-                      });
                     }
                   }}
                 >
@@ -227,7 +164,7 @@ const TierCallToAction = ({
       </Menu>
 
       <CreatePaidSubscription
-        productId={productId}
+        priceId={priceId}
         isOpen={isPaidSubscriptionDialogOpen}
         setIsOpen={setIsPaidSubscriptionDialogOpen}
       />

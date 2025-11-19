@@ -3,21 +3,46 @@
 import { stripe } from "lib/payments/client";
 import getCustomer from "./getCustomer";
 
-interface Options {
+interface CreateCheckout {
+  type: "create";
+  successUrl: string;
+  organizationId: string;
+  priceId: string;
+}
+
+interface UpdateSubscription {
+  type: "update";
   subscriptionId: string;
   returnUrl: string;
-  product?: {
+  product: {
     id: string;
     priceId: string;
   };
 }
 
-const createCheckoutSession = async ({
-  subscriptionId,
-  returnUrl,
-  product,
-}: Options) => {
+interface Options {
+  checkout: CreateCheckout | UpdateSubscription;
+}
+
+const createCheckoutSession = async ({ checkout }: Options) => {
+  // TODO: determine if this is sufficient
   const customer = await getCustomer();
+
+  if (checkout.type === "create") {
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      customer: customer?.id,
+      success_url: checkout.successUrl,
+      line_items: [{ price: checkout.priceId, quantity: 1 }],
+      subscription_data: {
+        metadata: {
+          organizationId: checkout.organizationId,
+        },
+      },
+    });
+
+    return session.url!;
+  }
 
   const configuration = await stripe.billingPortal.configurations.create({
     features: {
@@ -27,18 +52,9 @@ const createCheckoutSession = async ({
       subscription_update: {
         enabled: true,
         default_allowed_updates: ["price"],
-        products: product
-          ? [{ product: product.id, prices: [product.priceId] }]
-          : // TODO: map over all available Backfeed products as fallback
-            [
-              {
-                product: "prod_TS5lVsZQm77d8t",
-                prices: [
-                  "price_1SVBaEI5aTKW2dpw8v08k3Jc",
-                  "price_1SVBb5I5aTKW2dpwtaUvDrk5",
-                ],
-              },
-            ],
+        products: [
+          { product: checkout.product.id, prices: [checkout.product.priceId] },
+        ],
       },
     },
   });
@@ -49,10 +65,10 @@ const createCheckoutSession = async ({
     flow_data: {
       type: "subscription_update",
       subscription_update: {
-        subscription: subscriptionId,
+        subscription: checkout.subscriptionId!,
       },
     },
-    return_url: returnUrl,
+    return_url: checkout.returnUrl,
   });
 
   return session.url;
