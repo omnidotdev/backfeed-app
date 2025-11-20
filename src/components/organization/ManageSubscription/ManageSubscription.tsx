@@ -170,95 +170,79 @@ const ManageSubscription = ({
       }}
       {...rest}
     >
-      {subscriptionId ? (
-        <Flex direction="column" gap={12}>
-          <TabsRoot
-            variant="enclosed"
-            value={pricingModel}
-            onValueChange={({ value }) =>
-              setSearchParams({
-                pricingModel: value as "month" | "year",
-              })
-            }
-          >
-            <TabList>
-              <TabTrigger value="month" flex={1}>
-                Monthly
-              </TabTrigger>
+      <Flex direction="column" gap={12}>
+        <TabsRoot
+          variant="enclosed"
+          value={pricingModel}
+          onValueChange={({ value }) =>
+            setSearchParams({
+              pricingModel: value as "month" | "year",
+            })
+          }
+        >
+          <TabList>
+            <TabTrigger value="month" flex={1}>
+              Monthly
+            </TabTrigger>
 
-              <TabTrigger value="year" flex={1}>
-                Yearly
-              </TabTrigger>
-              <TabIndicator />
-            </TabList>
+            <TabTrigger value="year" flex={1}>
+              Yearly
+            </TabTrigger>
+            <TabIndicator />
+          </TabList>
 
-            <TabContent value={pricingModel}>
-              <RadioGroupRoot
-                orientation="vertical"
-                defaultValue={currentProduct.price.id}
-                onValueChange={({ value }) =>
-                  setSelectedProduct(
-                    products.find((p) => p.price.id === value)!,
-                  )
-                }
-              >
-                {filteredProducts.map((product) => (
-                  <RadioGroupItem
-                    key={product.price.id}
-                    value={product.price.id}
-                  >
-                    <RadioGroupItemControl />
+          <TabContent value={pricingModel}>
+            <RadioGroupRoot
+              orientation="vertical"
+              defaultValue={currentProduct.price.id}
+              onValueChange={({ value }) =>
+                setSelectedProduct(products.find((p) => p.price.id === value)!)
+              }
+            >
+              {filteredProducts.map((product) => (
+                <RadioGroupItem key={product.price.id} value={product.price.id}>
+                  <RadioGroupItemControl />
 
-                    <RadioGroupItemText>{product.name}</RadioGroupItemText>
+                  <RadioGroupItemText>{product.name}</RadioGroupItemText>
 
-                    <RadioGroupItemHiddenInput />
-                  </RadioGroupItem>
-                ))}
-              </RadioGroupRoot>
-            </TabContent>
-          </TabsRoot>
+                  <RadioGroupItemHiddenInput />
+                </RadioGroupItem>
+              ))}
+            </RadioGroupRoot>
+          </TabContent>
+        </TabsRoot>
 
-          <Flex direction="column" gap={4}>
-            <Text fontWeight="semibold" fontSize="xl">
-              Selected Product Benefits:
-            </Text>
+        <Flex direction="column" gap={4}>
+          <Text fontWeight="semibold" fontSize="xl">
+            Selected Product Benefits:
+          </Text>
 
-            <Grid w="full" lineHeight={1.5}>
-              {sortBenefits(
-                selectedProduct?.marketing_features ??
-                  currentProduct.marketing_features,
-              ).map((feature) => {
-                const isComingSoon = feature.name?.includes("coming soon");
+          <Grid w="full" lineHeight={1.5}>
+            {sortBenefits(
+              selectedProduct?.marketing_features ??
+                currentProduct.marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
 
-                return (
-                  <GridItem key={feature.name} display="flex" gap={2}>
-                    {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                    <sigil.span h={6} display="flex" alignItems="center">
-                      <Icon
-                        src={isComingSoon ? LuClockAlert : LuCheck}
-                        h={4}
-                        w={4}
-                        color={isComingSoon ? "yellow" : "brand.primary"}
-                      />
-                    </sigil.span>
+              return (
+                <GridItem key={feature.name} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                      color={isComingSoon ? "yellow" : "brand.primary"}
+                    />
+                  </sigil.span>
 
-                    {feature.name}
-                  </GridItem>
-                );
-              })}
-            </Grid>
-          </Flex>
+                  {feature.name}
+                </GridItem>
+              );
+            })}
+          </Grid>
         </Flex>
-      ) : (
-        // TODO: discuss. Left for backwards compat (existing orgs that do not have a `subscriptionId` currently, handled in upsert).
-        // I believe we can remove this fallback text. Just need to do some testing on how things are handled with orgs that have no subId
-        <Text whiteSpace="wrap">
-          We recently migrated to organization level subscriptions. Before
-          further subscription changes can be made, please enroll your workspace
-          on the free tier to properly link the workspace with our payment
-          provider. A credit card is not required for this action.
-        </Text>
-      )}
+      </Flex>
 
       <HStack justify="space-between">
         <Text fontWeight="semibold" fontSize="lg">

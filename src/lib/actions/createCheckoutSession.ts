@@ -1,7 +1,10 @@
 "use server";
 
+import { auth } from "auth";
 import { stripe } from "lib/payments/client";
 import getCustomer from "./getCustomer";
+
+import type Stripe from "stripe";
 
 interface CreateCheckout {
   type: "create";
@@ -25,13 +28,30 @@ interface Options {
 }
 
 const createCheckoutSession = async ({ checkout }: Options) => {
-  // TODO: determine if this is sufficient
-  const customer = await getCustomer();
+  const authSession = await auth();
+
+  if (!authSession) throw new Error("Unauthorized");
+
+  let customer: Omit<Stripe.Customer, "subscriptions">;
+
+  const currentCustomer = await getCustomer();
+
+  if (currentCustomer) {
+    customer = currentCustomer;
+  } else {
+    customer = await stripe.customers.create({
+      email: authSession.user.email!,
+      name: authSession.user.name ?? undefined,
+      metadata: {
+        externalId: authSession.user.hidraId!,
+      },
+    });
+  }
 
   if (checkout.type === "create") {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer: customer?.id,
+      customer: customer.id,
       success_url: checkout.successUrl,
       line_items: [{ price: checkout.priceId, quantity: 1 }],
       subscription_data: {
@@ -60,7 +80,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
   });
 
   const session = await stripe.billingPortal.sessions.create({
-    customer: customer?.id!,
+    customer: customer.id,
     configuration: configuration.id,
     flow_data: {
       type: "subscription_update",

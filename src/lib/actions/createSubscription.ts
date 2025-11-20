@@ -13,6 +13,7 @@ interface Options {
   organizationId: string;
 }
 
+// TODO: discuss if we even need to create a free tier subscription at all.
 const createSubscription = async ({ organizationId }: Options) => {
   const session = await auth();
 

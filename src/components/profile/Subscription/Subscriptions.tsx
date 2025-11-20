@@ -17,6 +17,7 @@ import { SubscriptionActions } from "components/profile";
 import {
   OrganizationOrderBy,
   Role,
+  Tier,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
@@ -123,6 +124,10 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("subscriptionStatus", {
         header: "Subscription Status",
         cell: (info) => {
+          const isFreeTier = info.row.original.tier === Tier.Free;
+
+          if (isFreeTier) return "-";
+
           const toBeCanceled = info.row.original.toBeCanceled;
 
           const color = match({
@@ -158,7 +163,9 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("currentPeriodEnd", {
         header: "Renewal Date",
         cell: (info) =>
-          info.getValue() && info.row.original.subscriptionStatus !== "canceled"
+          info.getValue() &&
+          info.row.original.tier !== Tier.Free &&
+          info.row.original.subscriptionStatus !== "canceled"
             ? dayjs(info.getValue()).format("MM/DD/YYYY")
             : "-",
       }),
