@@ -34,7 +34,7 @@ import type Stripe from "stripe";
 export interface OrganizationRow extends OrganizationFragment {
   subscriptionStatus: Stripe.Subscription.Status;
   toBeCanceled: boolean;
-  currentPeriodEnd: Date | null | undefined;
+  currentPeriodEnd: number | null | undefined;
 }
 
 const columnHelper = createColumnHelper<OrganizationRow>();
@@ -69,17 +69,21 @@ const Subscription = ({ user, products, customer }: Props) => {
             (sub) => sub.id === org?.subscriptionId,
           );
 
+          if (!currentSubscription) {
+            return {
+              ...org!,
+              subscriptionStatus: "incomplete" as Stripe.Subscription.Status,
+              toBeCanceled: false,
+              currentPeriodEnd: null,
+            };
+          }
+
           return {
             ...org!,
-            subscriptionStatus: currentSubscription?.status ?? "incomplete",
-            toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
+            subscriptionStatus: currentSubscription.status,
+            toBeCanceled: currentSubscription.cancel_at_period_end,
             currentPeriodEnd:
-              currentSubscription?.items.data[0].price.unit_amount === 0
-                ? null
-                : new Date(
-                    currentSubscription?.items.data[0].current_period_end! *
-                      1000,
-                  ),
+              currentSubscription?.items.data[0].current_period_end,
           };
         }) ?? [],
     },
@@ -166,7 +170,7 @@ const Subscription = ({ user, products, customer }: Props) => {
           info.getValue() &&
           info.row.original.tier !== Tier.Free &&
           info.row.original.subscriptionStatus !== "canceled"
-            ? dayjs(info.getValue()).format("MM/DD/YYYY")
+            ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
             : "-",
       }),
     ],
