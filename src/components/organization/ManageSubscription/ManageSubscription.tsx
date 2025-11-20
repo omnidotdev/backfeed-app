@@ -115,6 +115,7 @@ const ManageSubscription = ({
           w="full"
           disabled={
             selectedProduct.price.id === currentProduct.price.id &&
+            // TODO: possibly adjust logic here. If we migrate away from free tier subscriptions we will need to conditionalize this upon that
             // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
             organization.subscriptionStatus !== "canceled"
           }
