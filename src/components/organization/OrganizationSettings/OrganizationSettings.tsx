@@ -25,7 +25,10 @@ import {
   ManageSubscription,
   UpdateOrganization,
 } from "components/organization";
-import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
+import {
+  FREE_PRODUCT_DETAILS,
+  sortBenefits,
+} from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
@@ -248,7 +251,7 @@ const OrganizationSettings = ({
           <Grid w="full" lineHeight={1.5}>
             {sortBenefits(
               subscriptionProduct?.marketing_features ??
-                products[0].marketing_features,
+                FREE_PRODUCT_DETAILS.marketing_features,
             ).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");
 

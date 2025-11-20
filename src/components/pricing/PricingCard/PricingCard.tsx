@@ -27,7 +27,7 @@ import type { Session } from "next-auth";
 import type Stripe from "stripe";
 import type { Product } from "../PricingOverview/PricingOverview";
 
-const FREE_PRODUCT_DETAILS = {
+export const FREE_PRODUCT_DETAILS = {
   description: "Start collecting and iterating on user feedback for free.",
   marketing_features: [
     { name: "1 project per organization" },
