@@ -8,14 +8,14 @@ import type Stripe from "stripe";
 
 interface Options {
   /** The product to fetch metadata for. */
-  product: Stripe.Product;
+  product: Stripe.Product | undefined;
 }
 
 /**
  * Custom hook to define properties based on product metadata.
  */
 const useProductMetadata = ({ product }: Options) => {
-  const metadata = product.metadata;
+  const metadata = product?.metadata ?? { title: "free", isFree: true };
 
   const tier = match(metadata)
     .with({ title: "free" }, () => Tier.Free)

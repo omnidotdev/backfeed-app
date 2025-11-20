@@ -6,6 +6,7 @@ import { PRODUCT_IDS } from "lib/payments/productIds";
 const getProducts = async () => {
   const { data: products } = await stripe.products.list({
     ids: PRODUCT_IDS,
+    active: true,
   });
 
   const pricedProducts = await Promise.all(

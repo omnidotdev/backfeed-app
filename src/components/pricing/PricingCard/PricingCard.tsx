@@ -27,16 +27,14 @@ import type { Session } from "next-auth";
 import type Stripe from "stripe";
 import type { Product } from "../PricingOverview/PricingOverview";
 
-/**
- * Get a human-readable price.
- * @param price Fixed price details. Derived from product.
- * @param isEnterpriseTier Whether the product is enterprise tier.
- * @returns A human-readable price.
- */
-const getPrice = (price: Stripe.Price, isEnterpriseTier: boolean) => {
-  if (isEnterpriseTier) return app.pricingPage.pricingCard.customPricing;
-
-  return price.unit_amount! / 100;
+const FREE_PRODUCT_DETAILS = {
+  description: "Start collecting and iterating on user feedback for free.",
+  marketing_features: [
+    { name: "1 project per organization" },
+    { name: "Feedback from up to 15 unique users per project" },
+    { name: "Community support" },
+    { name: "Community voting & discussions" },
+  ],
 };
 
 export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
@@ -65,7 +63,7 @@ interface Props extends CardProps {
   /** Signed in user */
   user: Session["user"] | undefined;
   /** Product information. */
-  product: Product;
+  product: Product | undefined;
   /** Customer details */
   customer?: CustomerState;
 }
@@ -130,7 +128,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           borderRadius={1}
         >
           <Badge color="brand.secondary" height={8} borderRadius={4}>
-            No Credit Card Required
+            No Subscription Required
           </Badge>
         </Stack>
       )}
@@ -158,14 +156,14 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {product.description}
+            {product?.description ?? FREE_PRODUCT_DETAILS.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {getPrice(product.price, isEnterpriseTier)}
+              {product ? product.price.unit_amount! / 100 : 0}
             </Text>
 
             {!isEnterpriseTier && (
@@ -191,8 +189,8 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
               variant={isRecommendedTier ? "solid" : "outline"}
               disabled={isDisabled}
               user={user}
-              productId={product.id}
-              priceId={product.price.id}
+              productId={product?.id ?? ""}
+              priceId={product?.price.id ?? ""}
               tier={tier}
               actionIcon={actionIcon}
               customer={customer}
@@ -224,7 +222,10 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
-            {sortBenefits(product.marketing_features).map((feature) => {
+            {sortBenefits(
+              product?.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
+            ).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");
 
               const color = match({

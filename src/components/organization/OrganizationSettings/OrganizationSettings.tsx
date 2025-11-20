@@ -169,6 +169,15 @@ const OrganizationSettings = ({
           },
         ),
     },
+    children: (
+      <Text whiteSpace="wrap" fontWeight="medium">
+        The organization will be{" "}
+        <sigil.span color="red">permanently</sigil.span> deleted, including its
+        projects, posts and comments. Any subscription associated with the
+        organization will be immediately{" "}
+        <sigil.span color="red">revoked</sigil.span>.
+      </Text>
+    ),
   };
 
   const LEAVE_ORGANIZATION: DestructiveActionProps = {

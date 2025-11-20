@@ -44,9 +44,7 @@ const PricingOverview = ({ user, products, customer }: Props) => {
   const filteredProducts = useMemo(
     () =>
       products.filter(
-        (product) =>
-          product.price.recurring?.interval === pricingModel ||
-          product.price.unit_amount === 0,
+        (product) => product.price.recurring?.interval === pricingModel,
       ),
     [products, pricingModel],
   );
@@ -127,6 +125,8 @@ const PricingOverview = ({ user, products, customer }: Props) => {
         gap={4}
         px={4}
       >
+        <PricingCard user={user} product={undefined} customer={customer} />
+
         {filteredProducts.map((product) => (
           <PricingCard
             key={product.id}

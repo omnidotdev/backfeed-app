@@ -7,16 +7,24 @@ import getCustomer from "./getCustomer";
 import type Stripe from "stripe";
 
 interface CreateCheckout {
+  /** Checkout flow type. */
   type: "create";
+  /** URL to redirect user to after a successful checkout. */
   successUrl: string;
+  /** Organization ID. */
   organizationId: string;
+  /** Price ID associated with the product. */
   priceId: string;
 }
 
 interface UpdateSubscription {
+  /** Checkout flow type. */
   type: "update";
+  /** Subscription ID. */
   subscriptionId: string;
+  /** URL to redirect user to if the update is not completed. */
   returnUrl: string;
+  /** Updated product details to apply to the subscription. */
   product: {
     id: string;
     priceId: string;
@@ -24,6 +32,7 @@ interface UpdateSubscription {
 }
 
 interface Options {
+  /** Checkout options. */
   checkout: CreateCheckout | UpdateSubscription;
 }
 
@@ -64,6 +73,13 @@ const createCheckoutSession = async ({ checkout }: Options) => {
     return session.url!;
   }
 
+  if (
+    !currentCustomer?.subscriptions?.find(
+      (sub) => sub.id === checkout.subscriptionId,
+    )
+  )
+    throw new Error("Unauthorized");
+
   const configuration = await stripe.billingPortal.configurations.create({
     features: {
       payment_method_update: {
@@ -85,7 +101,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
     flow_data: {
       type: "subscription_update",
       subscription_update: {
-        subscription: checkout.subscriptionId!,
+        subscription: checkout.subscriptionId,
       },
     },
     return_url: checkout.returnUrl,

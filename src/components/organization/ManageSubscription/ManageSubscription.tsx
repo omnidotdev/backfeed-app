@@ -27,8 +27,11 @@ import { useMemo, useState } from "react";
 import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
-import { Tier } from "generated/graphql";
-import { createCheckoutSession } from "lib/actions";
+import {
+  cancelSubscription,
+  createCheckoutSession,
+  renewSubscription,
+} from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
 
@@ -38,9 +41,6 @@ import type {
   CustomerState,
   OrganizationRow,
 } from "components/profile/Subscription/Subscriptions";
-import type Stripe from "stripe";
-
-const getPrice = (price: Stripe.Price) => price.unit_amount! / 100;
 
 interface Props extends DrawerProps {
   /** Organization details. */
@@ -78,29 +78,22 @@ const ManageSubscription = ({
     (sub) => sub.id === subscriptionId,
   );
 
-  const subscriptionProduct = products.find(
+  const currentProduct = products.find(
     (product) =>
       product.id === subscription?.items.data[0].plan.product &&
       product.price.id === subscription?.items.data[0].plan.id,
   );
 
-  const currentProduct =
-    // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to a product that may or may not be a `Free` tier product. We conditionally fallback to `Free` tier here to align UI with intent.
-    organization.tier === Tier.Free
-      ? products[0]
-      : (subscriptionProduct ?? products[0]);
-
-  const [selectedProduct, setSelectedProduct] =
-    useState<Product>(currentProduct);
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    currentProduct,
+  );
 
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
   const filteredProducts = useMemo(
     () =>
       products.filter(
-        (product) =>
-          product.price.recurring?.interval === pricingModel ||
-          product.price.unit_amount === 0,
+        (product) => product.price.recurring?.interval === pricingModel,
       ),
     [products, pricingModel],
   );
@@ -110,58 +103,87 @@ const ManageSubscription = ({
       trigger={trigger}
       title="Manage Subscription"
       description="Update subscription tier to unlock new benefits."
+      onExitComplete={() => {
+        setSelectedProduct(currentProduct);
+        setSearchParams({ pricingModel: "month" });
+      }}
       footer={
-        <Button
-          w="full"
-          disabled={
-            selectedProduct.price.id === currentProduct.price.id &&
-            // TODO: possibly adjust logic here. If we migrate away from free tier subscriptions we will need to conditionalize this upon that
-            // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
-            organization.subscriptionStatus !== "canceled"
-          }
-          onClick={async () => {
-            if (
-              organization.subscriptionStatus === "canceled" ||
-              !subscriptionId
-            ) {
-              const checkoutUrl = await createCheckoutSession({
-                checkout: {
-                  type: "create",
-                  successUrl: pathname.includes(organization.slug)
-                    ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                    : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-                  organizationId: organization.rowId,
-                  priceId: selectedProduct.price.id,
-                },
-              });
-
-              router.push(checkoutUrl);
-            } else {
-              const checkoutUrl = await createCheckoutSession({
-                checkout: {
-                  type: "update",
-                  subscriptionId: subscriptionId!,
-                  returnUrl: pathname.includes(organization.slug)
-                    ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                    : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-                  product: {
-                    id: selectedProduct.id,
-                    priceId: selectedProduct.price.id,
-                  },
-                },
-              });
-
-              router.push(checkoutUrl);
+        <Flex direction="column" w="full" gap={2}>
+          <Button
+            display={organization.toBeCanceled ? "inline-flex" : "none"}
+            onClick={async () =>
+              await renewSubscription({ subscriptionId: subscriptionId! })
             }
-          }}
-        >
-          {subscriptionId
-            ? organization.subscriptionStatus === "canceled"
-              ? "Renew"
-              : "Update"
-            : "Create"}{" "}
-          Subscription
-        </Button>
+          >
+            Renew Subscription
+          </Button>
+          <Button
+            display={organization.toBeCanceled ? "none" : "inline-flex"}
+            disabled={
+              !selectedProduct ||
+              selectedProduct.price.id === currentProduct?.price.id
+            }
+            onClick={async () => {
+              if (
+                // NB: this `canceled` check is for safe measure. When a subscription *is* canceled, the `subscriptionId` is cleared from the database.
+                organization.subscriptionStatus === "canceled" ||
+                !subscriptionId
+              ) {
+                const checkoutUrl = await createCheckoutSession({
+                  checkout: {
+                    type: "create",
+                    successUrl: pathname.includes(organization.slug)
+                      ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                      : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                    organizationId: organization.rowId,
+                    priceId: selectedProduct!.price.id,
+                  },
+                });
+
+                router.push(checkoutUrl);
+              } else {
+                const checkoutUrl = await createCheckoutSession({
+                  checkout: {
+                    type: "update",
+                    subscriptionId,
+                    returnUrl: pathname.includes(organization.slug)
+                      ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                      : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                    product: {
+                      id: selectedProduct!.id,
+                      priceId: selectedProduct!.price.id,
+                    },
+                  },
+                });
+
+                router.push(checkoutUrl);
+              }
+            }}
+          >
+            {subscriptionId ? "Update Subscription" : "Upgrade"}
+          </Button>
+          <Button
+            bgColor="brand.quinary"
+            display={
+              subscriptionId && !organization.toBeCanceled
+                ? "inline-flex"
+                : "none"
+            }
+            onClick={async () => {
+              const cancelSubscriptionUrl = await cancelSubscription({
+                subscriptionId: subscriptionId!,
+
+                returnUrl: pathname.includes(organization.slug)
+                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+              });
+
+              router.push(cancelSubscriptionUrl);
+            }}
+          >
+            Cancel Subscription
+          </Button>
+        </Flex>
       }
       bodyProps={{
         justifyContent: "space-between",
@@ -182,11 +204,19 @@ const ManageSubscription = ({
           }
         >
           <TabList>
-            <TabTrigger value="month" flex={1}>
+            <TabTrigger
+              value="month"
+              flex={1}
+              disabled={organization.toBeCanceled}
+            >
               Monthly
             </TabTrigger>
 
-            <TabTrigger value="year" flex={1}>
+            <TabTrigger
+              value="year"
+              flex={1}
+              disabled={organization.toBeCanceled}
+            >
               Yearly
             </TabTrigger>
             <TabIndicator />
@@ -195,10 +225,12 @@ const ManageSubscription = ({
           <TabContent value={pricingModel}>
             <RadioGroupRoot
               orientation="vertical"
-              defaultValue={currentProduct.price.id}
+              value={selectedProduct?.price.id ?? ""}
               onValueChange={({ value }) =>
                 setSelectedProduct(products.find((p) => p.price.id === value)!)
               }
+              gap={4}
+              disabled={organization.toBeCanceled}
             >
               {filteredProducts.map((product) => (
                 <RadioGroupItem key={product.price.id} value={product.price.id}>
@@ -213,54 +245,55 @@ const ManageSubscription = ({
           </TabContent>
         </TabsRoot>
 
-        <Flex direction="column" gap={4}>
-          <Text fontWeight="semibold" fontSize="xl">
-            Selected Product Benefits:
-          </Text>
+        {!!selectedProduct && (
+          <Flex direction="column" gap={4}>
+            <Text fontWeight="semibold" fontSize="xl">
+              Selected Product Benefits:
+            </Text>
 
-          <Grid w="full" lineHeight={1.5}>
-            {sortBenefits(
-              selectedProduct?.marketing_features ??
-                currentProduct.marketing_features,
-            ).map((feature) => {
-              const isComingSoon = feature.name?.includes("coming soon");
+            <Grid w="full" lineHeight={1.5}>
+              {sortBenefits(selectedProduct.marketing_features).map(
+                (feature) => {
+                  const isComingSoon = feature.name?.includes("coming soon");
 
-              return (
-                <GridItem key={feature.name} display="flex" gap={2}>
-                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                  <sigil.span h={6} display="flex" alignItems="center">
-                    <Icon
-                      src={isComingSoon ? LuClockAlert : LuCheck}
-                      h={4}
-                      w={4}
-                      color={isComingSoon ? "yellow" : "brand.primary"}
-                    />
-                  </sigil.span>
+                  return (
+                    <GridItem key={feature.name} display="flex" gap={2}>
+                      {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                      <sigil.span h={6} display="flex" alignItems="center">
+                        <Icon
+                          src={isComingSoon ? LuClockAlert : LuCheck}
+                          h={4}
+                          w={4}
+                          color={isComingSoon ? "yellow" : "brand.primary"}
+                        />
+                      </sigil.span>
 
-                  {feature.name}
-                </GridItem>
-              );
-            })}
-          </Grid>
-        </Flex>
+                      {feature.name?.split(" (coming soon)")[0]}
+                    </GridItem>
+                  );
+                },
+              )}
+            </Grid>
+          </Flex>
+        )}
       </Flex>
 
-      <HStack justify="space-between">
-        <Text fontWeight="semibold" fontSize="lg">
-          Price:
-        </Text>
+      {selectedProduct && (
+        <HStack justify="space-between">
+          <Text fontWeight="semibold" fontSize="lg">
+            Price:
+          </Text>
 
-        <Text fontSize="lg">
-          <Format.Number
-            value={getPrice(selectedProduct?.price ?? currentProduct.price)}
-            style="currency"
-            currency="USD"
-          />
-          {selectedProduct.price.unit_amount === 0
-            ? "/forever"
-            : `/${selectedProduct.price.recurring?.interval}`}
-        </Text>
-      </HStack>
+          <Text fontSize="lg">
+            <Format.Number
+              value={selectedProduct.price.unit_amount! / 100}
+              style="currency"
+              currency="USD"
+            />
+            /{selectedProduct.price.recurring?.interval}
+          </Text>
+        </HStack>
+      )}
     </Drawer>
   );
 };

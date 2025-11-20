@@ -81,7 +81,7 @@ const Subscription = ({ user, products, customer }: Props) => {
           return {
             ...org!,
             subscriptionStatus: currentSubscription.status,
-            toBeCanceled: currentSubscription.cancel_at_period_end,
+            toBeCanceled: !!currentSubscription.cancel_at,
             currentPeriodEnd:
               currentSubscription?.items.data[0].current_period_end,
           };
@@ -167,9 +167,7 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("currentPeriodEnd", {
         header: "Renewal Date",
         cell: (info) =>
-          info.getValue() &&
-          info.row.original.tier !== Tier.Free &&
-          info.row.original.subscriptionStatus !== "canceled"
+          info.getValue() && !info.row.original.toBeCanceled
             ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
             : "-",
       }),
