@@ -191,6 +191,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
               variant={isRecommendedTier ? "solid" : "outline"}
               disabled={isDisabled}
               user={user}
+              productId={product.id}
               priceId={product.price.id}
               tier={tier}
               actionIcon={actionIcon}

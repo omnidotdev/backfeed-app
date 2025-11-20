@@ -8,7 +8,6 @@ import {
   MenuItem,
   MenuItemGroup,
   MenuSeparator,
-  useDisclosure,
 } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +16,8 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
+import { createCheckoutSession } from "lib/actions";
+import { BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
@@ -29,6 +30,8 @@ import type { IconType } from "react-icons";
 interface Props extends ButtonProps {
   /** Signed in user. */
   user: Session["user"];
+  /** Product ID. */
+  productId: string;
   /** Price ID. */
   priceId: string;
   /** Subscription tier. */
@@ -41,6 +44,7 @@ interface Props extends ButtonProps {
 
 const TierCallToAction = ({
   user,
+  productId,
   priceId,
   tier,
   customer,
@@ -55,8 +59,6 @@ const TierCallToAction = ({
   const { setIsOpen: setIsCreateOrganizationOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
-
-  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const { data: organizations } = useOrganizationsQuery(
     {
@@ -96,8 +98,6 @@ const TierCallToAction = ({
   return (
     <>
       <Menu
-        open={isOpen}
-        onOpenChange={onToggle}
         trigger={
           <Button {...rest}>
             {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
@@ -110,7 +110,7 @@ const TierCallToAction = ({
         <MenuItemGroup>
           {organizations?.length ? (
             organizations?.map((org) => {
-              const isDisabled = !org?.subscriptionId || org?.tier === tier;
+              const isDisabled = org?.tier === tier;
 
               return (
                 <MenuItem
@@ -126,11 +126,32 @@ const TierCallToAction = ({
                     // TODO: figure out why this is required. `onClick` still fires even if `disabled` prop is true, this is a fallback solution
                     if (isDisabled) return;
 
-                    // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-                    if (org.status === "canceled") {
-                      // TODO: handle logic. Need to establish a fresh checkout session (handle this in `createCheckoutSession`)
+                    // NB: if the subscription for the organization has been canceled or the org does not currently have a subId, we must create a new subscription.
+                    if (org.status === "canceled" || !org.subscriptionId) {
+                      const checkoutUrl = await createCheckoutSession({
+                        checkout: {
+                          type: "create",
+                          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                          organizationId: org.rowId!,
+                          priceId,
+                        },
+                      });
+
+                      router.push(checkoutUrl);
                     } else {
-                      // TODO: make sure to adjust logic for the server action that handles this flow. Might be able to just run everything through `createCheckoutSession` if we can get the types set up properly
+                      const checkoutUrl = await createCheckoutSession({
+                        checkout: {
+                          type: "update",
+                          subscriptionId: org.subscriptionId,
+                          returnUrl: `${BASE_URL}/pricing`,
+                          product: {
+                            id: productId,
+                            priceId,
+                          },
+                        },
+                      });
+
+                      router.push(checkoutUrl);
                     }
                   }}
                 >
