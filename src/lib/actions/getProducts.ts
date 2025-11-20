@@ -3,6 +3,9 @@
 import { stripe } from "lib/payments/client";
 import { PRODUCT_IDS } from "lib/payments/productIds";
 
+/**
+ * Server action to fetch Backfeed stripe product details.
+ */
 const getProducts = async () => {
   const { data: products } = await stripe.products.list({
     ids: PRODUCT_IDS,

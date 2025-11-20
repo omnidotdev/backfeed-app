@@ -36,6 +36,9 @@ interface Options {
   checkout: CreateCheckout | UpdateSubscription;
 }
 
+/**
+ * Server action to generate a URL that allows a user to proceed with either creating a subscription, or updating a current one.
+ */
 const createCheckoutSession = async ({ checkout }: Options) => {
   const authSession = await auth();
 

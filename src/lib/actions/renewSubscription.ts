@@ -10,6 +10,9 @@ interface Options {
   subscriptionId: string;
 }
 
+/**
+ * Server action to renew a subscription that is set to be canceled at the end of the current billing period.
+ */
 const renewSubscription = async ({ subscriptionId }: Options) => {
   const customer = await getCustomer();
 

@@ -8,6 +8,9 @@ interface Options {
   subscriptionId: string;
 }
 
+/**
+ * Server action to revoke a subscription immediately.
+ */
 const revokeSubscription = async ({ subscriptionId }: Options) => {
   const customer = await getCustomer();
 
