@@ -1,7 +1,8 @@
 "use server";
 
+import getCustomer from "lib/actions/getCustomer";
+import { CANCEL_SUB_ID } from "lib/config";
 import payments from "lib/payments";
-import getCustomer from "./getCustomer";
 
 interface Options {
   /** Subscription ID. */
@@ -22,28 +23,9 @@ const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
 
   if (!isCustomersSubscription || !customer) throw new Error("Unauthorized");
 
-  const configuration = await payments.billingPortal.configurations.create({
-    features: {
-      subscription_cancel: {
-        enabled: true,
-        mode: "at_period_end",
-        cancellation_reason: {
-          enabled: true,
-          options: [
-            "customer_service",
-            "missing_features",
-            "switched_service",
-            "too_expensive",
-            "other",
-          ],
-        },
-      },
-    },
-  });
-
   const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
-    configuration: configuration.id,
+    configuration: CANCEL_SUB_ID,
     flow_data: {
       type: "subscription_cancel",
       subscription_cancel: {

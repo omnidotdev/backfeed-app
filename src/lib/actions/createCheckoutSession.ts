@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "auth";
+import { MANAGE_SUB_ID } from "lib/config";
 import payments from "lib/payments";
 import getCustomer from "./getCustomer";
 
@@ -83,24 +84,9 @@ const createCheckoutSession = async ({ checkout }: Options) => {
   )
     throw new Error("Unauthorized");
 
-  const configuration = await payments.billingPortal.configurations.create({
-    features: {
-      payment_method_update: {
-        enabled: true,
-      },
-      subscription_update: {
-        enabled: true,
-        default_allowed_updates: ["price"],
-        products: [
-          { product: checkout.product.id, prices: [checkout.product.priceId] },
-        ],
-      },
-    },
-  });
-
   const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
-    configuration: configuration.id,
+    configuration: MANAGE_SUB_ID,
     flow_data: {
       type: "subscription_update",
       subscription_update: {
