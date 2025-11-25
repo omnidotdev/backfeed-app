@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -18,6 +17,7 @@ import { SubscriptionActions } from "components/profile";
 import {
   OrganizationOrderBy,
   Role,
+  Tier,
   useOrganizationsQuery,
 } from "generated/graphql";
 import { token } from "generated/panda/tokens";
@@ -26,24 +26,21 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
-import type { CustomerPaymentMethod } from "@polar-sh/sdk/models/components/customerpaymentmethod.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { Subscription as SubscriptionInterface } from "@polar-sh/sdk/models/components/subscription.js";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
+import type Stripe from "stripe";
 
 export interface OrganizationRow extends OrganizationFragment {
-  subscriptionStatus: SubscriptionStatus;
+  subscriptionStatus: Stripe.Subscription.Status;
   toBeCanceled: boolean;
-  currentPeriodEnd: Date | null | undefined;
+  currentPeriodEnd: number | null | undefined;
 }
 
 const columnHelper = createColumnHelper<OrganizationRow>();
 
-export interface CustomerState {
-  id: string;
-  subscriptions: SubscriptionInterface[];
-  paymentMethods: CustomerPaymentMethod[];
+export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
+  subscriptions: Stripe.Subscription[];
 }
 
 interface Props {
@@ -72,15 +69,21 @@ const Subscription = ({ user, products, customer }: Props) => {
             (sub) => sub.id === org?.subscriptionId,
           );
 
+          if (!currentSubscription) {
+            return {
+              ...org!,
+              subscriptionStatus: "incomplete" as Stripe.Subscription.Status,
+              toBeCanceled: false,
+              currentPeriodEnd: null,
+            };
+          }
+
           return {
             ...org!,
-            subscriptionStatus:
-              currentSubscription?.status ?? SubscriptionStatus.Incomplete,
-            toBeCanceled: currentSubscription?.cancelAtPeriodEnd ?? false,
+            subscriptionStatus: currentSubscription.status,
+            toBeCanceled: !!currentSubscription.cancel_at,
             currentPeriodEnd:
-              currentSubscription?.prices[0]?.amountType === "free"
-                ? null
-                : currentSubscription?.currentPeriodEnd,
+              currentSubscription?.items.data[0].current_period_end,
           };
         }) ?? [],
     },
@@ -125,24 +128,21 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("subscriptionStatus", {
         header: "Subscription Status",
         cell: (info) => {
+          const isFreeTier = info.row.original.tier === Tier.Free;
+
+          if (isFreeTier) return "-";
+
           const toBeCanceled = info.row.original.toBeCanceled;
 
           const color = match({
             status: info.getValue(),
             toBeCanceled,
           })
-            .with(
-              { status: SubscriptionStatus.Active, toBeCanceled: true },
-              () => "yellow",
-            )
-            .with({ status: SubscriptionStatus.Active }, () => "green")
+            .with({ status: "active", toBeCanceled: true }, () => "yellow")
+            .with({ status: "active" }, () => "green")
             .with(
               {
-                status: P.union(
-                  SubscriptionStatus.PastDue,
-                  SubscriptionStatus.Unpaid,
-                  SubscriptionStatus.Canceled,
-                ),
+                status: P.union("past_due", "unpaid", "canceled"),
               },
               () => "red",
             )
@@ -167,9 +167,8 @@ const Subscription = ({ user, products, customer }: Props) => {
       columnHelper.accessor("currentPeriodEnd", {
         header: "Renewal Date",
         cell: (info) =>
-          info.getValue() &&
-          info.row.original.subscriptionStatus !== SubscriptionStatus.Canceled
-            ? dayjs(info.getValue()).format("MM/DD/YYYY")
+          info.getValue() && !info.row.original.toBeCanceled
+            ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
             : "-",
       }),
     ],

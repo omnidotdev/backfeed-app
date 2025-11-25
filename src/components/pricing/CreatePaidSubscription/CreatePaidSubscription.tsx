@@ -11,7 +11,7 @@ import { createCheckoutSession } from "lib/actions";
 import { BASE_URL, app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { useAuth, useForm, useViewportSize } from "lib/hooks";
+import { useForm, useViewportSize } from "lib/hooks";
 import { useCreateOrganizationMutation } from "lib/hooks/mutations";
 import { generateSlug, getAuthSession, toaster } from "lib/util";
 
@@ -47,8 +47,8 @@ const createOrganizationSchema = z
   });
 
 interface Props {
-  /** Product ID. */
-  productId: string;
+  /** Price ID. */
+  priceId: string;
   /** Whether the dialog is open or not. */
   isOpen: boolean;
   /** Handler to manage open state of the dialog */
@@ -58,10 +58,8 @@ interface Props {
 /**
  * Dialog for creating a new organization with a paid subscription tier.
  */
-const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
+const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   const router = useRouter();
-
-  const { user } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -71,6 +69,7 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
+  // TODO: determine if there is a better approach here using Stripe integration
   // TODO: discuss this mutation. We *must* attach `organizationId` as metadata to the subscription upon creation, so we need to wait for `onSuccess` here before routing to the checkout page
   // The problem here is that a user could then opt to *not* finish the payment flow
   // If a user doesn't finish the payment flow, the org is still creating in the database but with a `Free` tier subscription.
@@ -80,16 +79,16 @@ const CreatePaidSubscription = ({ productId, isOpen, setIsOpen }: Props) => {
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
-        const session = await createCheckoutSession({
-          products: [productId],
-          externalCustomerId: user?.hidraId!,
-          customerEmail: user?.email,
-          metadata: { backfeedOrganizationId: data.organization?.rowId! },
-          successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
-          returnUrl: `${BASE_URL}/pricing`,
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "create",
+            priceId,
+            successUrl: `${BASE_URL}/organizations/${data.organization?.slug!}`,
+            organizationId: data.organization?.rowId!,
+          },
         });
 
-        router.push(session.url);
+        router.push(checkoutUrl);
 
         setIsOpen(false);
         reset();

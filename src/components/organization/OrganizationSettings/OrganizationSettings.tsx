@@ -25,7 +25,10 @@ import {
   ManageSubscription,
   UpdateOrganization,
 } from "components/organization";
-import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
+import {
+  FREE_PRODUCT_DETAILS,
+  sortBenefits,
+} from "components/pricing/PricingCard/PricingCard";
 import {
   Role,
   useDeleteOrganizationMutation,
@@ -38,9 +41,8 @@ import { useOrganizationMembership } from "lib/hooks";
 import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { DestructiveActionProps } from "components/core";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
@@ -73,7 +75,13 @@ const OrganizationSettings = ({
   products,
 }: Props) => {
   const subscription = customer?.subscriptions.find(
-    (sub) => sub.metadata.organizationId === organization.rowId,
+    (sub) => sub.id === organization.subscriptionId,
+  );
+
+  const subscriptionProduct = products.find(
+    (product) =>
+      product.id === subscription?.items.data[0].plan.product &&
+      product.price.id === subscription?.items.data[0].plan.id,
   );
 
   const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
@@ -139,11 +147,11 @@ const OrganizationSettings = ({
         toaster.promise(
           async () => {
             if (organization.subscriptionId) {
-              const revokedSubscription = await revokeSubscription({
+              const revokedSubscriptionId = await revokeSubscription({
                 subscriptionId: organization.subscriptionId,
               });
 
-              if (!revokedSubscription)
+              if (!revokedSubscriptionId)
                 throw new Error("Error revoking subscription");
             }
 
@@ -164,6 +172,15 @@ const OrganizationSettings = ({
           },
         ),
     },
+    children: (
+      <Text whiteSpace="wrap" fontWeight="medium">
+        The organization will be{" "}
+        <sigil.span color="red">permanently</sigil.span> deleted, including its
+        projects, posts and comments. Any subscription associated with the
+        organization will be immediately{" "}
+        <sigil.span color="red">revoked</sigil.span>.
+      </Text>
+    ),
   };
 
   const LEAVE_ORGANIZATION: DestructiveActionProps = {
@@ -233,31 +250,28 @@ const OrganizationSettings = ({
           </Text>
           <Grid w="full" lineHeight={1.5}>
             {sortBenefits(
-              subscription?.product.benefits ?? products[0].benefits,
+              subscriptionProduct?.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
             ).map((feature) => {
-              const isComingSoon = (
-                feature.properties as BenefitCustomProperties
-              ).note
-                ?.toLowerCase()
-                .includes("coming soon");
+              const isComingSoon = feature.name?.includes("coming soon");
 
               return (
-                <GridItem key={feature.id} display="flex" gap={2}>
+                <GridItem key={feature.name} display="flex" gap={2}>
                   {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
                   <sigil.span h={6} display="flex" alignItems="center">
                     <Icon
                       src={isComingSoon ? LuClockAlert : LuCheck}
                       h={4}
                       w={4}
-                      color={isComingSoon ? "yellow" : "brand.primary"}
                     />
                   </sigil.span>
 
-                  {feature.description}
+                  {feature.name?.split(" (coming soon)")[0]}
                 </GridItem>
               );
             })}
           </Grid>
+
           <ManageSubscription
             organization={organization}
             products={products}

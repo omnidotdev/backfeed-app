@@ -18,8 +18,8 @@ export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
 // payment processing
-export const ENABLE_POLAR_SANDBOX =
-  process.env.NEXT_PUBLIC_ENABLE_POLAR_SANDBOX === "true";
+export const STRIPE_PRODUCT_IDS =
+  process.env.NEXT_PUBLIC_STRIPE_PRODUCT_IDS?.split(",") ?? [];
 
 // emails
 export const FROM_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_FROM_EMAIL_ADDRESS;

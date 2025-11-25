@@ -8,7 +8,6 @@ import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import { token } from "generated/panda/tokens";
-import { createSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, organizationNameSchema } from "lib/constants";
 import { getSdk } from "lib/graphql";
@@ -98,10 +97,6 @@ const CreateOrganization = ({ disableHotKey = false }: Props) => {
         router.push(
           `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );
-
-        await createSubscription({
-          organizationId: data?.organization?.rowId!,
-        });
 
         setIsOpen(false);
         reset();

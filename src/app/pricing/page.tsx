@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 
 import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
-import { getCustomer } from "lib/actions";
+import { getCustomer, getProducts } from "lib/actions";
 import { app } from "lib/config";
-import { BACKFEED_PRODUCT_IDS, polar } from "lib/polar";
 
 import type { Metadata } from "next";
 
@@ -18,31 +17,18 @@ export const metadata: Metadata = {
  * Pricing page.
  */
 const PricingPage = async () => {
-  const [
-    session,
-    {
-      result: { items: products },
-    },
-  ] = await Promise.all([
-    auth(),
-    polar.products.list({
-      id: BACKFEED_PRODUCT_IDS,
-      sorting: ["price_amount"],
-    }),
-  ]);
+  const [session, products] = await Promise.all([auth(), getProducts()]);
 
   if (session?.error) redirect("/");
 
   if (session) {
-    const [customer] = await Promise.allSettled([
-      getCustomer({ userId: session.user.hidraId! }),
-    ]);
+    const customer = await getCustomer();
 
     return (
       <PricingOverview
         user={session.user}
         products={products}
-        customer={customer.status === "fulfilled" ? customer.value : undefined}
+        customer={customer}
       />
     );
   }

@@ -1,37 +1,25 @@
 "use server";
 
-import { auth } from "auth";
-import { polar } from "lib/polar";
+import payments from "lib/payments";
+import getCustomer from "./getCustomer";
 
 interface Options {
   /** Subscription ID. */
   subscriptionId: string;
-  /** Whether to cancel subscription at end of of current period. */
-  cancelAtEndOfPeriod?: true;
 }
 
-const revokeSubscription = async ({
-  subscriptionId,
-  cancelAtEndOfPeriod,
-}: Options) => {
-  const session = await auth();
+/**
+ * Server action to revoke a subscription immediately.
+ */
+const revokeSubscription = async ({ subscriptionId }: Options) => {
+  const customer = await getCustomer();
 
-  if (!session) throw new Error("Unauthorized");
+  if (!customer?.subscriptions?.find((sub) => sub.id === subscriptionId))
+    throw new Error("Unauthorized");
 
-  if (cancelAtEndOfPeriod) {
-    return await polar.subscriptions.update({
-      id: subscriptionId,
-      subscriptionUpdate: {
-        cancelAtPeriodEnd: true,
-      },
-    });
-  }
+  const subscription = await payments.subscriptions.cancel(subscriptionId);
 
-  const result = await polar.subscriptions.revoke({
-    id: subscriptionId,
-  });
-
-  return result;
+  return subscription.id;
 };
 
 export default revokeSubscription;

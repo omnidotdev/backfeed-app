@@ -4,18 +4,18 @@ import { P, match } from "ts-pattern";
 import { Tier } from "generated/graphql";
 import { capitalizeFirstLetter } from "lib/util";
 
-import type { Product } from "@polar-sh/sdk/models/components/product";
+import type Stripe from "stripe";
 
 interface Options {
   /** The product to fetch metadata for. */
-  product: Product;
+  product: Stripe.Product | undefined;
 }
 
 /**
  * Custom hook to define properties based on product metadata.
  */
 const useProductMetadata = ({ product }: Options) => {
-  const metadata = product.metadata;
+  const metadata = product?.metadata ?? { title: "free", isFree: true };
 
   const tier = match(metadata)
     .with({ title: "free" }, () => Tier.Free)

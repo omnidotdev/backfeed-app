@@ -8,10 +8,7 @@ import {
   MenuItem,
   MenuItemGroup,
   MenuSeparator,
-  useDisclosure,
 } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuChevronDown, LuPlus } from "react-icons/lu";
@@ -19,10 +16,10 @@ import { LuChevronDown, LuPlus } from "react-icons/lu";
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { createCheckoutSession, updateSubscription } from "lib/actions";
+import { createCheckoutSession } from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
-import { capitalizeFirstLetter, toaster } from "lib/util";
+import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -35,6 +32,8 @@ interface Props extends ButtonProps {
   user: Session["user"];
   /** Product ID. */
   productId: string;
+  /** Price ID. */
+  priceId: string;
   /** Subscription tier. */
   tier: Tier;
   /** Customer details. */
@@ -46,6 +45,7 @@ interface Props extends ButtonProps {
 const TierCallToAction = ({
   user,
   productId,
+  priceId,
   tier,
   customer,
   actionIcon,
@@ -59,8 +59,6 @@ const TierCallToAction = ({
   const { setIsOpen: setIsCreateOrganizationOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
-
-  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const { data: organizations } = useOrganizationsQuery(
     {
@@ -76,66 +74,11 @@ const TierCallToAction = ({
 
           return {
             ...org,
-            status: subscription?.status ?? SubscriptionStatus.Incomplete,
+            status: subscription?.status ?? "incomplete",
           };
         }) ?? [],
     },
   );
-
-  const { mutateAsync: updateOrganizationTier, isPending } = useMutation({
-    mutationKey: ["UpdateSubscription"],
-    mutationFn: async ({
-      subscriptionId,
-      productId,
-      // NB: not used for the mutation, but used for proper routing in `onSuccess`
-      organizationSlug: _organizationSlug,
-    }: {
-      subscriptionId: string;
-      productId: string;
-      organizationSlug: string;
-    }) => {
-      await updateSubscription({
-        subscriptionId,
-        productId,
-      });
-    },
-    onSuccess: (_d, variables) => {
-      onClose();
-
-      router.push(`/organizations/${variables.organizationSlug}`);
-    },
-    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
-  });
-
-  const handleUpdateSubscription = ({
-    subscriptionId,
-    productId,
-    organizationSlug,
-  }: {
-    subscriptionId: string;
-    productId: string;
-    organizationSlug: string;
-  }) =>
-    toaster.promise(
-      async () =>
-        await updateOrganizationTier({
-          subscriptionId,
-          productId,
-          organizationSlug,
-        }),
-      {
-        loading: { title: "Updating subscription..." },
-        success: {
-          title: "Success!",
-          description: "Your subscription has been updated.",
-        },
-        error: {
-          title: "Error",
-          description:
-            "Sorry, there was an issue with updating your subscription. Please try again.",
-        },
-      },
-    );
 
   if (tier === Tier.Free) {
     return (
@@ -155,8 +98,6 @@ const TierCallToAction = ({
   return (
     <>
       <Menu
-        open={isOpen}
-        onOpenChange={onToggle}
         trigger={
           <Button {...rest}>
             {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
@@ -169,8 +110,7 @@ const TierCallToAction = ({
         <MenuItemGroup>
           {organizations?.length ? (
             organizations?.map((org) => {
-              const isDisabled =
-                !org?.subscriptionId || org?.tier === tier || isPending;
+              const isDisabled = org?.tier === tier;
 
               return (
                 <MenuItem
@@ -186,27 +126,32 @@ const TierCallToAction = ({
                     // TODO: figure out why this is required. `onClick` still fires even if `disabled` prop is true, this is a fallback solution
                     if (isDisabled) return;
 
-                    // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-                    if (
-                      org.status === SubscriptionStatus.Canceled ||
-                      !customer?.paymentMethods.length
-                    ) {
-                      const session = await createCheckoutSession({
-                        products: [productId],
-                        externalCustomerId: user?.hidraId!,
-                        customerEmail: user?.email,
-                        metadata: { backfeedOrganizationId: org.rowId! },
-                        successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-                        returnUrl: `${BASE_URL}/pricing`,
+                    // NB: if the subscription for the organization has been canceled or the org does not currently have a subId, we must create a new subscription.
+                    if (org.status === "canceled" || !org.subscriptionId) {
+                      const checkoutUrl = await createCheckoutSession({
+                        checkout: {
+                          type: "create",
+                          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                          organizationId: org.rowId!,
+                          priceId,
+                        },
                       });
 
-                      router.push(session.url);
+                      router.push(checkoutUrl);
                     } else {
-                      handleUpdateSubscription({
-                        subscriptionId: org?.subscriptionId!,
-                        productId,
-                        organizationSlug: org?.slug!,
+                      const checkoutUrl = await createCheckoutSession({
+                        checkout: {
+                          type: "update",
+                          subscriptionId: org.subscriptionId,
+                          returnUrl: `${BASE_URL}/pricing`,
+                          product: {
+                            id: productId,
+                            priceId,
+                          },
+                        },
                       });
+
+                      router.push(checkoutUrl);
                     }
                   }}
                 >
@@ -240,7 +185,7 @@ const TierCallToAction = ({
       </Menu>
 
       <CreatePaidSubscription
-        productId={productId}
+        priceId={priceId}
         isOpen={isPaidSubscriptionDialogOpen}
         setIsOpen={setIsPaidSubscriptionDialogOpen}
       />

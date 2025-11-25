@@ -7,7 +7,6 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { useMemo } from "react";
 
 import {
@@ -19,9 +18,13 @@ import {
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
-import type { Product } from "@polar-sh/sdk/models/components/product";
 import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
+import type Stripe from "stripe";
+
+export interface Product extends Stripe.Product {
+  price: Stripe.Price;
+}
 
 interface Props {
   /** Signed in user */
@@ -41,9 +44,7 @@ const PricingOverview = ({ user, products, customer }: Props) => {
   const filteredProducts = useMemo(
     () =>
       products.filter(
-        (product) =>
-          product.recurringInterval === pricingModel ||
-          product.prices[0].amountType === "free",
+        (product) => product.price.recurring?.interval === pricingModel,
       ),
     [products, pricingModel],
   );
@@ -64,12 +65,12 @@ const PricingOverview = ({ user, products, customer }: Props) => {
             // NB: length check prevents deselecting a selected value
             value.length &&
             setSearchParams({
-              pricingModel: (value[0] as SubscriptionRecurringInterval) ?? null,
+              pricingModel: (value[0] as "month" | "year") ?? null,
             })
           }
         >
           <ToggleGroupItem
-            value={SubscriptionRecurringInterval.Month}
+            value="month"
             color="foreground.default"
             px={6}
             py={4}
@@ -84,7 +85,7 @@ const PricingOverview = ({ user, products, customer }: Props) => {
           </ToggleGroupItem>
 
           <ToggleGroupItem
-            value={SubscriptionRecurringInterval.Year}
+            value="year"
             color="foreground.default"
             px={6}
             py={4}
@@ -124,6 +125,8 @@ const PricingOverview = ({ user, products, customer }: Props) => {
         gap={4}
         px={4}
       >
+        <PricingCard user={user} product={undefined} customer={customer} />
+
         {filteredProducts.map((product) => (
           <PricingCard
             key={product.id}

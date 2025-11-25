@@ -685,7 +685,6 @@ const app = {
       items: [
         {
           title: "Can I switch plans later?",
-          // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)
           body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
         },
         {

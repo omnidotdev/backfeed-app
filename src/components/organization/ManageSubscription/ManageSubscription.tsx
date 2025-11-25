@@ -21,37 +21,26 @@ import {
   TabsRoot,
   Text,
   sigil,
-  useDisclosure,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
-import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { LuCheck, LuClockAlert, LuPencil } from "react-icons/lu";
 
 import { sortBenefits } from "components/pricing/PricingCard/PricingCard";
-import { Tier } from "generated/graphql";
 import {
+  cancelSubscription,
   createCheckoutSession,
-  createSubscription,
-  updateSubscription,
+  renewSubscription,
 } from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth, useSearchParams } from "lib/hooks";
-import { toaster } from "lib/util";
 
 import type { DrawerProps } from "@omnidev/sigil";
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties.js";
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice.js";
+import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
 } from "components/profile/Subscription/Subscriptions";
-
-const getPrice = (price: ProductPrice) =>
-  price.amountType !== "fixed" ? 0 : price.priceAmount / 100;
 
 interface Props extends DrawerProps {
   /** Organization details. */
@@ -85,132 +74,116 @@ const ManageSubscription = ({
 
   const subscriptionId = organization.subscriptionId;
 
-  const subscriptionProduct = customer?.subscriptions?.find(
+  const subscription = customer?.subscriptions?.find(
     (sub) => sub.id === subscriptionId,
-  )?.product;
+  );
 
-  const currentProduct =
-    // NB: if a subscription gets canceled, the `tier` in the db is updated to `Free`, however, the `subscriptionId` will still point to a product that may or may not be a `Free` tier product. We conditionally fallback to `Free` tier here to align UI with intent.
-    organization.tier === Tier.Free
-      ? products[0]
-      : (subscriptionProduct ?? products[0]);
+  const currentProduct = products.find(
+    (product) =>
+      product.id === subscription?.items.data[0].plan.product &&
+      product.price.id === subscription?.items.data[0].plan.id,
+  );
 
-  const [selectedProduct, setSelectedProduct] =
-    useState<Product>(currentProduct);
-
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    currentProduct,
+  );
 
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
   const filteredProducts = useMemo(
     () =>
       products.filter(
-        (product) =>
-          product.recurringInterval === pricingModel ||
-          product.prices[0].amountType === "free",
+        (product) => product.price.recurring?.interval === pricingModel,
       ),
     [products, pricingModel],
   );
 
-  const { mutateAsync: upsertSubscription, isPending } = useMutation({
-    mutationKey: [
-      "UpsertSubscription",
-      {
-        subscriptionId,
-        productId: selectedProduct?.id,
-        organizationId: organization.rowId,
-      },
-    ],
-    mutationFn: async () => {
-      if (subscriptionId) {
-        await updateSubscription({
-          subscriptionId,
-          productId: selectedProduct?.id!,
-        });
-      } else {
-        await createSubscription({
-          organizationId: organization.rowId,
-        });
-      }
-    },
-    onSuccess: () => onClose(),
-    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
-  });
-
-  const handleUpsertSubscription = () =>
-    toaster.promise(upsertSubscription, {
-      loading: { title: "Updating subscription..." },
-      success: {
-        title: "Success!",
-        description: "Your subscription has been updated.",
-      },
-      error: {
-        title: "Error",
-        description:
-          "Sorry, there was an issue with updating your subscription. Please try again.",
-      },
-    });
-
   return (
     <Drawer
-      open={isOpen}
-      onOpenChange={onToggle}
       trigger={trigger}
       title="Manage Subscription"
       description="Update subscription tier to unlock new benefits."
+      onExitComplete={() => {
+        setSelectedProduct(currentProduct);
+        setSearchParams({ pricingModel: "month" });
+      }}
       footer={
-        <Button
-          w="full"
-          disabled={
-            (selectedProduct.id === currentProduct.id &&
-              // NB: if a subscription has been canceled, we want to allow users to renew with any available product, so we do not disable this CTA
-              organization.subscriptionStatus !==
-                SubscriptionStatus.Canceled) ||
-            isPending
-          }
-          onClick={async () => {
-            // NB: if the subscription for the organization has been canceled or the user has no payment methods on file, we must go through the checkout flow to create a new subscription. This isnt necessary for `Free` tier subs, but it is required for paid tier.
-            if (
-              organization.subscriptionStatus === SubscriptionStatus.Canceled ||
-              !customer?.paymentMethods.length ||
-              // NB: this additional check is here due to a bug where using `subscriptions.update` when handling a free --> paid subscription change will set the status of the subscription to `past_due`. See: https://discord.com/channels/1078611507115470849/1437815007747248189 for more context
-              // Creating a checkout session and supplying the `subscriptionId` to update seems to work as a workaround for the above.
-              // Note: The subscription must be on a free pricing plan in order to pass `subscriptionId` in this manner. See: https://polar.sh/docs/api-reference/checkouts/create-session
-              subscriptionProduct?.prices?.[0]?.amountType === "free"
-            ) {
-              const session = await createCheckoutSession({
-                products: [selectedProduct.id],
-                externalCustomerId: user?.hidraId!,
-                customerEmail: user?.email,
-                metadata: { backfeedOrganizationId: organization.rowId },
-                subscriptionId:
-                  // Must be upgrading a free tier sub (see note above), and the subscription must *not* be currently canceled
-                  subscriptionProduct?.prices?.[0]?.amountType === "free" &&
-                  organization.subscriptionStatus !==
-                    SubscriptionStatus.Canceled
-                    ? subscriptionId
-                    : undefined,
-                successUrl: pathname.includes(organization.slug)
-                  ? `${BASE_URL}/organizations/${organization.slug}/settings`
-                  : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+        <Flex direction="column" w="full" gap={2}>
+          <Button
+            display={organization.toBeCanceled ? "inline-flex" : "none"}
+            onClick={async () =>
+              await renewSubscription({ subscriptionId: subscriptionId! })
+            }
+          >
+            Renew Subscription
+          </Button>
+          <Button
+            display={organization.toBeCanceled ? "none" : "inline-flex"}
+            disabled={
+              !selectedProduct ||
+              selectedProduct.price.id === currentProduct?.price.id
+            }
+            onClick={async () => {
+              if (
+                // NB: this `canceled` check is for safe measure. When a subscription *is* canceled, the `subscriptionId` is cleared from the database.
+                organization.subscriptionStatus === "canceled" ||
+                !subscriptionId
+              ) {
+                const checkoutUrl = await createCheckoutSession({
+                  checkout: {
+                    type: "create",
+                    successUrl: pathname.includes(organization.slug)
+                      ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                      : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                    organizationId: organization.rowId,
+                    priceId: selectedProduct!.price.id,
+                  },
+                });
+
+                router.push(checkoutUrl);
+              } else {
+                const checkoutUrl = await createCheckoutSession({
+                  checkout: {
+                    type: "update",
+                    subscriptionId,
+                    returnUrl: pathname.includes(organization.slug)
+                      ? `${BASE_URL}/organizations/${organization.slug}/settings`
+                      : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                    product: {
+                      id: selectedProduct!.id,
+                      priceId: selectedProduct!.price.id,
+                    },
+                  },
+                });
+
+                router.push(checkoutUrl);
+              }
+            }}
+          >
+            {subscriptionId ? "Update Subscription" : "Upgrade"}
+          </Button>
+          <Button
+            bgColor="brand.quinary"
+            display={
+              subscriptionId && !organization.toBeCanceled
+                ? "inline-flex"
+                : "none"
+            }
+            onClick={async () => {
+              const cancelSubscriptionUrl = await cancelSubscription({
+                subscriptionId: subscriptionId!,
+
                 returnUrl: pathname.includes(organization.slug)
                   ? `${BASE_URL}/organizations/${organization.slug}/settings`
                   : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
               });
 
-              router.push(session.url);
-            } else {
-              handleUpsertSubscription();
-            }
-          }}
-        >
-          {subscriptionId
-            ? organization.subscriptionStatus === SubscriptionStatus.Canceled
-              ? "Renew"
-              : "Update"
-            : "Create"}{" "}
-          Subscription
-        </Button>
+              router.push(cancelSubscriptionUrl);
+            }}
+          >
+            Cancel Subscription
+          </Button>
+        </Flex>
       }
       bodyProps={{
         justifyContent: "space-between",
@@ -220,116 +193,107 @@ const ManageSubscription = ({
       }}
       {...rest}
     >
-      {subscriptionId ? (
-        <Flex direction="column" gap={12}>
-          <TabsRoot
-            variant="enclosed"
-            value={pricingModel}
-            onValueChange={({ value }) =>
-              setSearchParams({
-                pricingModel: value as SubscriptionRecurringInterval,
-              })
-            }
-          >
-            <TabList>
-              <TabTrigger value={SubscriptionRecurringInterval.Month} flex={1}>
-                Monthly
-              </TabTrigger>
+      <Flex direction="column" gap={12}>
+        <TabsRoot
+          variant="enclosed"
+          value={pricingModel}
+          onValueChange={({ value }) =>
+            setSearchParams({
+              pricingModel: value as "month" | "year",
+            })
+          }
+        >
+          <TabList>
+            <TabTrigger
+              value="month"
+              flex={1}
+              disabled={organization.toBeCanceled}
+            >
+              Monthly
+            </TabTrigger>
 
-              <TabTrigger value={SubscriptionRecurringInterval.Year} flex={1}>
-                Yearly
-              </TabTrigger>
-              <TabIndicator />
-            </TabList>
+            <TabTrigger
+              value="year"
+              flex={1}
+              disabled={organization.toBeCanceled}
+            >
+              Yearly
+            </TabTrigger>
+            <TabIndicator />
+          </TabList>
 
-            <TabContent value={pricingModel}>
-              <RadioGroupRoot
-                orientation="vertical"
-                defaultValue={currentProduct.id}
-                onValueChange={({ value }) =>
-                  setSelectedProduct(products.find((p) => p.id === value)!)
-                }
-              >
-                {filteredProducts.map((product) => (
-                  <RadioGroupItem key={product.id} value={product.id}>
-                    <RadioGroupItemControl />
+          <TabContent value={pricingModel}>
+            <RadioGroupRoot
+              orientation="vertical"
+              value={selectedProduct?.price.id ?? ""}
+              onValueChange={({ value }) =>
+                setSelectedProduct(products.find((p) => p.price.id === value)!)
+              }
+              gap={4}
+              disabled={organization.toBeCanceled}
+            >
+              {filteredProducts.map((product) => (
+                <RadioGroupItem key={product.price.id} value={product.price.id}>
+                  <RadioGroupItemControl />
 
-                    <RadioGroupItemText>{product.name}</RadioGroupItemText>
+                  <RadioGroupItemText>{product.name}</RadioGroupItemText>
 
-                    <RadioGroupItemHiddenInput />
-                  </RadioGroupItem>
-                ))}
-              </RadioGroupRoot>
-            </TabContent>
-          </TabsRoot>
+                  <RadioGroupItemHiddenInput />
+                </RadioGroupItem>
+              ))}
+            </RadioGroupRoot>
+          </TabContent>
+        </TabsRoot>
 
+        {!!selectedProduct && (
           <Flex direction="column" gap={4}>
             <Text fontWeight="semibold" fontSize="xl">
               Selected Product Benefits:
             </Text>
 
             <Grid w="full" lineHeight={1.5}>
-              {sortBenefits(
-                selectedProduct?.benefits ?? currentProduct.benefits,
-              ).map((feature) => {
-                const isComingSoon = (
-                  feature.properties as BenefitCustomProperties
-                ).note
-                  ?.toLowerCase()
-                  .includes("coming soon");
+              {sortBenefits(selectedProduct.marketing_features).map(
+                (feature) => {
+                  const isComingSoon = feature.name?.includes("coming soon");
 
-                return (
-                  <GridItem key={feature.id} display="flex" gap={2}>
-                    {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                    <sigil.span h={6} display="flex" alignItems="center">
-                      <Icon
-                        src={isComingSoon ? LuClockAlert : LuCheck}
-                        h={4}
-                        w={4}
-                        color={isComingSoon ? "yellow" : "brand.primary"}
-                      />
-                    </sigil.span>
+                  return (
+                    <GridItem key={feature.name} display="flex" gap={2}>
+                      {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                      <sigil.span h={6} display="flex" alignItems="center">
+                        <Icon
+                          src={isComingSoon ? LuClockAlert : LuCheck}
+                          h={4}
+                          w={4}
+                          color={isComingSoon ? "yellow" : "brand.primary"}
+                        />
+                      </sigil.span>
 
-                    {feature.description}
-                  </GridItem>
-                );
-              })}
+                      {feature.name?.split(" (coming soon)")[0]}
+                    </GridItem>
+                  );
+                },
+              )}
             </Grid>
           </Flex>
-        </Flex>
-      ) : (
-        // TODO: discuss. Left for backwards compat (existing orgs that do not have a `subscriptionId` currently, handled in upsert).
-        <Text whiteSpace="wrap">
-          We recently migrated to organization level subscriptions. Before
-          further subscription changes can be made, please enroll your workspace
-          on the free tier to properly link the workspace with our payment
-          provider. A credit card is not required for this action.
-        </Text>
+        )}
+      </Flex>
+
+      {selectedProduct && (
+        <HStack justify="space-between">
+          <Text fontWeight="semibold" fontSize="lg">
+            Price:
+          </Text>
+
+          <Text fontSize="lg">
+            <Format.Number
+              value={selectedProduct.price.unit_amount! / 100}
+              style="currency"
+              currency="USD"
+            />
+            /{selectedProduct.price.recurring?.interval}
+          </Text>
+        </HStack>
       )}
-
-      <HStack justify="space-between">
-        <Text fontWeight="semibold" fontSize="lg">
-          Price:
-        </Text>
-
-        <Text fontSize="lg">
-          <Format.Number
-            value={getPrice(
-              selectedProduct?.prices[0] ?? currentProduct.prices[0],
-            )}
-            style="currency"
-            currency="USD"
-          />
-
-          {(
-            selectedProduct
-              ? selectedProduct.prices[0].amountType === "free"
-              : currentProduct.prices[0].amountType === "free"
-          )
-            ? "/forever"
-            : `/${selectedProduct?.recurringInterval ?? currentProduct.recurringInterval}`}
-        </Text>
-      </HStack>
     </Drawer>
   );
 };

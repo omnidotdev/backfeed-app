@@ -1,7 +1,6 @@
 "use client";
 
 import { HStack, Text, sigil } from "@omnidev/sigil";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus.js";
 
 import { DestructiveAction } from "components/core";
 import { ManageSubscription } from "components/organization";
@@ -10,11 +9,8 @@ import { revokeSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
-import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type {
-  CustomerState,
-  OrganizationRow,
-} from "../Subscription/Subscriptions";
+import type { Product } from "components/pricing";
+import type { CustomerState, OrganizationRow } from "components/profile";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -59,14 +55,13 @@ const SubscriptionActions = ({ organization, products, customer }: Props) => {
               async () => {
                 if (
                   subscriptionId &&
-                  organization.subscriptionStatus !==
-                    SubscriptionStatus.Canceled
+                  organization.subscriptionStatus !== "canceled"
                 ) {
-                  const revokedSubscription = await revokeSubscription({
+                  const revokedSubscriptionId = await revokeSubscription({
                     subscriptionId,
                   });
 
-                  if (!revokedSubscription)
+                  if (!revokedSubscriptionId)
                     throw new Error("Error revoking subscription");
                 }
 

@@ -2091,7 +2091,7 @@ export type Organization = {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
-  subscriptionId?: Maybe<Scalars['UUID']['output']>;
+  subscriptionId?: Maybe<Scalars['String']['output']>;
   tier: Tier;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
@@ -2153,7 +2153,7 @@ export type OrganizationCondition = {
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
+  subscriptionId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `tier` field. */
   tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -2240,7 +2240,7 @@ export type OrganizationFilter = {
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<UuidFilter>;
+  subscriptionId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `tier` field. */
   tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */

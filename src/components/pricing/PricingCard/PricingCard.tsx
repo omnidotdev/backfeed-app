@@ -13,7 +13,6 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { signIn } from "next-auth/react";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
@@ -23,38 +22,30 @@ import { app } from "lib/config";
 import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
-import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
-import type { Product } from "@polar-sh/sdk/models/components/product";
-import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+import type { Product } from "components/pricing";
 import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
+import type Stripe from "stripe";
 
-const COMING_SOON = "coming soon";
-
-/**
- * Get a human-readable price.
- * @param price Fixed price details. Derived from product.
- * @param isEnterpriseTier Whether the product is enterprise tier.
- * @returns A human-readable price.
- */
-const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
-  if (price.amountType !== "fixed" || isEnterpriseTier)
-    return price.amountType === "free"
-      ? 0
-      : app.pricingPage.pricingCard.customPricing;
-
-  return price.priceAmount / 100;
+// TODO discuss pulling dynamically + cache from Omni API or other approaches that make this changeable without redeploying service
+export const FREE_PRODUCT_DETAILS = {
+  description: "Start collecting and iterating on user feedback for free.",
+  marketing_features: [
+    { name: "1 project per organization" },
+    { name: "Feedback from up to 15 unique users per project" },
+    { name: "Community support" },
+    { name: "Community voting & discussions" },
+  ],
 };
 
-export const sortBenefits = (benefits: Benefit[]) => {
+export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
   const everythingInPrefix = "Everything in";
-  let everythingInBenefit: Benefit | undefined;
-  const otherBenefits: Benefit[] = [];
+  let everythingInBenefit: Stripe.Product.MarketingFeature | undefined;
+  const otherBenefits: Stripe.Product.MarketingFeature[] = [];
 
   // Separate "Everything in..." benefit and other benefits
   for (const benefit of benefits) {
-    if (benefit.description.startsWith(everythingInPrefix)) {
+    if (benefit.name?.startsWith(everythingInPrefix)) {
       everythingInBenefit = benefit;
     } else {
       otherBenefits.push(benefit);
@@ -73,7 +64,7 @@ interface Props extends CardProps {
   /** Signed in user */
   user: Session["user"] | undefined;
   /** Product information. */
-  product: Product;
+  product: Product | undefined;
   /** Customer details */
   customer?: CustomerState;
 }
@@ -84,8 +75,7 @@ interface Props extends CardProps {
 const PricingCard = ({ user, product, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
-  const isPerMonthPricing =
-    pricingModel === SubscriptionRecurringInterval.Month;
+  const isPerMonthPricing = pricingModel === "month";
 
   const {
     productTitle,
@@ -139,7 +129,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           borderRadius={1}
         >
           <Badge color="brand.secondary" height={8} borderRadius={4}>
-            No Credit Card Required
+            No Subscription Required
           </Badge>
         </Stack>
       )}
@@ -167,14 +157,14 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {product.description}
+            {product?.description ?? FREE_PRODUCT_DETAILS.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
+              {product ? product.price.unit_amount! / 100 : 0}
             </Text>
 
             {!isEnterpriseTier && (
@@ -200,7 +190,8 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
               variant={isRecommendedTier ? "solid" : "outline"}
               disabled={isDisabled}
               user={user}
-              productId={product.id}
+              productId={product?.id ?? ""}
+              priceId={product?.price.id ?? ""}
               tier={tier}
               actionIcon={actionIcon}
               customer={customer}
@@ -232,12 +223,11 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
-            {sortBenefits(product.benefits).map((feature) => {
-              const isComingSoon = (
-                feature.properties as BenefitCustomProperties
-              ).note
-                ?.toLowerCase()
-                .includes(COMING_SOON);
+            {sortBenefits(
+              product?.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
 
               const color = match({
                 isDisabled,
@@ -250,7 +240,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
                 .otherwise(() => "foreground.subtle");
 
               return (
-                <GridItem key={feature.id} display="flex" gap={2}>
+                <GridItem key={feature.name} display="flex" gap={2}>
                   {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
                   <sigil.span h={6} display="flex" alignItems="center">
                     <Icon
@@ -261,7 +251,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
                     />
                   </sigil.span>
 
-                  {feature.description}
+                  {feature.name?.split(" (coming soon)")[0]}
                 </GridItem>
               );
             })}
