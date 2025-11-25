@@ -21,7 +21,7 @@ interface Props {
 }
 
 /**
- * Actions a user may perform for an organization level subscription.
+ * Actions a user may perform for an organization-level subscription.
  */
 const SubscriptionActions = ({ organization }: Props) => {
   const router = useRouter();

@@ -49,7 +49,7 @@ const createOrganizationSchema = z
   });
 
 interface Props {
-  /** Whether to disable hotkey trigger for opening the dialog */
+  /** Whether to disable hotkey trigger for opening the dialog. */
   disableHotKey?: boolean;
 }
 

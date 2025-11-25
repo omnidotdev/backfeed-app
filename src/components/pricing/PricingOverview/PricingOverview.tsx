@@ -27,11 +27,11 @@ export interface Product extends Stripe.Product {
 }
 
 interface Props {
-  /** Signed in user */
+  /** Signed in user. */
   user: Session["user"] | undefined;
   /** The products available for pricing tiers. */
   products: Product[];
-  /** Customer details */
+  /** Customer details. */
   customer?: CustomerState;
 }
 

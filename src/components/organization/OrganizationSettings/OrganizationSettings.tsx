@@ -57,7 +57,7 @@ interface Props {
   organization: OrganizationRow;
   /** Customer information derived from the signed in user. */
   customer: CustomerState | undefined;
-  /** Backfeed subscription products. */
+  /** App subscription products. */
   products: Product[];
 }
 
