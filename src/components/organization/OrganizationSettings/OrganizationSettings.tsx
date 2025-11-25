@@ -173,29 +173,15 @@ const OrganizationSettings = ({
 
   const { mutateAsync: manageSubscription } = useMutation({
     mutationFn: async () => {
-      // TODO: fix for current `Free` tier (no sub ID). Need to provide means to select product. This currently fails.
-      if (!organization.subscriptionId) {
-        const checkoutUrl = await createCheckoutSession({
-          checkout: {
-            type: "create",
-            successUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
-            organizationId: organization.rowId,
-            priceId: subscriptionProduct?.price.id!,
-          },
-        });
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "update",
+          subscriptionId: organization.subscriptionId!,
+          returnUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
+        },
+      });
 
-        return checkoutUrl;
-      } else {
-        const checkoutUrl = await createCheckoutSession({
-          checkout: {
-            type: "update",
-            subscriptionId: organization.subscriptionId,
-            returnUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
-          },
-        });
-
-        return checkoutUrl;
-      }
+      return checkoutUrl;
     },
     onSuccess: (url) => router.push(url),
   });
@@ -240,21 +226,25 @@ const OrganizationSettings = ({
             })}
           </Grid>
 
-          {organization.subscription.toBeCanceled ? (
+          {organization.subscriptionId ? (
             <Button
               w="fit"
-              onClick={async () =>
-                await renewSubscription({
-                  subscriptionId: organization.subscriptionId!,
-                })
-              }
+              onClick={async () => {
+                if (organization.subscription.toBeCanceled) {
+                  await renewSubscription({
+                    subscriptionId: organization.subscriptionId!,
+                  });
+                } else {
+                  await manageSubscription();
+                }
+              }}
             >
-              Renew Subscription
+              {organization.subscription.toBeCanceled ? "Renew" : "Manage"}{" "}
+              Subscription
             </Button>
           ) : (
-            <Button w="fit" onClick={async () => await manageSubscription()}>
-              Manage Subscription
-            </Button>
+            // TODO: update this. Allow user to select a plan and subscribe.
+            <Button w="fit">Subscribe</Button>
           )}
         </SectionContainer>
       )}
