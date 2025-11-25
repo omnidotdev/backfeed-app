@@ -22,10 +22,10 @@ import { app } from "lib/config";
 import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
+import type { Product } from "components/pricing";
 import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
-import type { Product } from "../PricingOverview/PricingOverview";
 
 export const FREE_PRODUCT_DETAILS = {
   description: "Start collecting and iterating on user feedback for free.",
