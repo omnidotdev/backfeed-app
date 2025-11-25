@@ -30,9 +30,11 @@ import type { Session } from "next-auth";
 import type Stripe from "stripe";
 
 export interface OrganizationRow extends OrganizationFragment {
-  subscriptionStatus: Stripe.Subscription.Status;
-  toBeCanceled: boolean;
-  currentPeriodEnd: number | null | undefined;
+  subscription: {
+    subscriptionStatus: Stripe.Subscription.Status;
+    toBeCanceled: boolean;
+    currentPeriodEnd: number | null | undefined;
+  };
 }
 
 const columnHelper = createColumnHelper<OrganizationRow>();
@@ -62,14 +64,14 @@ const columns = [
     header: "Tier",
     cell: (info) => capitalizeFirstLetter(info.getValue()),
   }),
-  columnHelper.accessor("subscriptionStatus", {
+  columnHelper.accessor("subscription.subscriptionStatus", {
     header: "Subscription Status",
     cell: (info) => {
       const isFreeTier = info.row.original.tier === Tier.Free;
 
       if (isFreeTier) return "-";
 
-      const toBeCanceled = info.row.original.toBeCanceled;
+      const toBeCanceled = info.row.original.subscription.toBeCanceled;
 
       const color = match({
         status: info.getValue(),
@@ -101,10 +103,10 @@ const columns = [
       );
     },
   }),
-  columnHelper.accessor("currentPeriodEnd", {
+  columnHelper.accessor("subscription.currentPeriodEnd", {
     header: "Renewal Date",
     cell: (info) =>
-      info.getValue() && !info.row.original.toBeCanceled
+      info.getValue() && !info.row.original.subscription.toBeCanceled
         ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
         : "-",
   }),
@@ -142,18 +144,22 @@ const Subscription = ({ user, customer }: Props) => {
           if (!currentSubscription) {
             return {
               ...org!,
-              subscriptionStatus: "incomplete" as Stripe.Subscription.Status,
-              toBeCanceled: false,
-              currentPeriodEnd: null,
+              subscription: {
+                subscriptionStatus: "incomplete" as Stripe.Subscription.Status,
+                toBeCanceled: false,
+                currentPeriodEnd: null,
+              },
             };
           }
 
           return {
             ...org!,
-            subscriptionStatus: currentSubscription.status,
-            toBeCanceled: !!currentSubscription.cancel_at,
-            currentPeriodEnd:
-              currentSubscription?.items.data[0].current_period_end,
+            subscription: {
+              subscriptionStatus: currentSubscription.status,
+              toBeCanceled: !!currentSubscription.cancel_at,
+              currentPeriodEnd:
+                currentSubscription?.items.data[0].current_period_end,
+            },
           };
         }) ?? [],
     },

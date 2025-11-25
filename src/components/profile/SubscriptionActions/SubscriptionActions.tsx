@@ -57,7 +57,7 @@ const SubscriptionActions = ({ organization }: Props) => {
 
   return (
     <HStack py={2}>
-      {organization.toBeCanceled ? (
+      {organization.subscription.toBeCanceled ? (
         <Button
           color="brand.senary"
           backgroundColor="transparent"
@@ -96,7 +96,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         disabled={
           isAuthenticationLoading ||
           !organization.subscriptionId ||
-          organization.toBeCanceled
+          organization.subscription.toBeCanceled
         }
         onClick={async () => await handleCancelSubscription()}
       >

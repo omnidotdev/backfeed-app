@@ -100,15 +100,12 @@ const OrganizationSettingsPage = async ({
           user={session.user}
           organization={{
             ...organization,
-            subscriptionStatus: currentSubscription?.status ?? "canceled",
-            toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
-            currentPeriodEnd:
-              currentSubscription?.items.data[0].price.unit_amount === 0
-                ? null
-                : new Date(
-                    currentSubscription?.items.data[0].current_period_end! *
-                      1000,
-                  ),
+            subscription: {
+              subscriptionStatus: currentSubscription?.status ?? "canceled",
+              toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
+              currentPeriodEnd:
+                currentSubscription?.items.data[0].current_period_end,
+            },
           }}
           customer={customer}
           products={products}

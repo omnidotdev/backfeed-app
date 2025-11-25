@@ -240,7 +240,7 @@ const OrganizationSettings = ({
             })}
           </Grid>
 
-          {organization.toBeCanceled ? (
+          {organization.subscription.toBeCanceled ? (
             <Button
               w="fit"
               onClick={async () =>
