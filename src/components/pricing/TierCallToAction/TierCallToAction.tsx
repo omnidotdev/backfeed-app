@@ -112,6 +112,7 @@ const TierCallToAction = ({
             organizations?.map((org) => {
               const isDisabled = org?.tier === tier;
 
+              // TODO: possibly adjust logic here a bit. Currently updates go through the static customer portal configuration, but for these actions in particular, it probably should be dynamic based on selected tier / pricing interval
               return (
                 <MenuItem
                   key={org?.rowId}
