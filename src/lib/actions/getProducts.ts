@@ -1,14 +1,14 @@
 "use server";
 
+import { STRIPE_PRODUCT_IDS } from "lib/config";
 import { stripe } from "lib/payments/client";
-import { PRODUCT_IDS } from "lib/payments/productIds";
 
 /**
  * Server action to fetch Backfeed stripe product details.
  */
 const getProducts = async () => {
   const { data: products } = await stripe.products.list({
-    ids: PRODUCT_IDS,
+    ids: STRIPE_PRODUCT_IDS,
     active: true,
   });
 
