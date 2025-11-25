@@ -19,7 +19,7 @@ import { match } from "ts-pattern";
 
 import { TierCallToAction } from "components/pricing";
 import { app } from "lib/config";
-import { useProductMetadata, useSearchParams } from "lib/hooks";
+import { usePriceMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
@@ -85,7 +85,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
     isEnterpriseTier,
     isDisabled,
     actionIcon,
-  } = useProductMetadata({ product: price?.product });
+  } = usePriceMetadata({ price });
 
   return (
     <Card
