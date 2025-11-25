@@ -9,11 +9,8 @@ import { revokeSubscription } from "lib/actions";
 import { app } from "lib/config";
 import { toaster } from "lib/util";
 
-import type { Product } from "components/pricing/PricingOverview/PricingOverview";
-import type {
-  CustomerState,
-  OrganizationRow,
-} from "../Subscription/Subscriptions";
+import type { Product } from "components/pricing";
+import type { CustomerState, OrganizationRow } from "components/profile";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
