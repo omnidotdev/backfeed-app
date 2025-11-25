@@ -11,7 +11,7 @@ interface Options {
 }
 
 /**
- * Server action to cancel a subscription at the end of it's current billing period.
+ * Server action to cancel a subscription at the end of its current billing period.
  */
 const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
   const customer = await getCustomer();
