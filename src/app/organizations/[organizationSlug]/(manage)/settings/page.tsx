@@ -102,7 +102,7 @@ const OrganizationSettingsPage = async ({
             ...organization,
             subscription: {
               subscriptionStatus: currentSubscription?.status ?? "canceled",
-              toBeCanceled: currentSubscription?.cancel_at_period_end ?? false,
+              toBeCanceled: !!currentSubscription?.cancel_at,
               currentPeriodEnd:
                 currentSubscription?.items.data[0].current_period_end,
             },
