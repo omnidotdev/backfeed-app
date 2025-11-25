@@ -61,6 +61,16 @@ const SubscriptionActions = ({ organization }: Props) => {
     onSuccess: (url) => router.push(url),
   });
 
+  const {
+    mutateAsync: handleRenewSubscription,
+    isPending: isRenewSubscriptionPending,
+  } = useMutation({
+    mutationFn: async () =>
+      await renewSubscription({
+        subscriptionId: organization.subscriptionId!,
+      }),
+  });
+
   return (
     <HStack py={2}>
       {organization.subscription.toBeCanceled ? (
@@ -70,12 +80,8 @@ const SubscriptionActions = ({ organization }: Props) => {
           _disabled={{ opacity: 0.5 }}
           fontSize="md"
           px={0}
-          disabled={isAuthenticationLoading}
-          onClick={async () =>
-            await renewSubscription({
-              subscriptionId: organization.subscriptionId!,
-            })
-          }
+          disabled={isAuthenticationLoading || isRenewSubscriptionPending}
+          onClick={async () => await handleRenewSubscription()}
         >
           <Icon src={LuRepeat2} h={5} w={5} />
         </Button>
