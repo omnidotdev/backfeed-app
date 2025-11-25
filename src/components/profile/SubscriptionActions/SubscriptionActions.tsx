@@ -3,9 +3,13 @@
 import { Button, HStack, Icon } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { LuPencil, LuTrash2 } from "react-icons/lu";
+import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
-import { cancelSubscription, createCheckoutSession } from "lib/actions";
+import {
+  cancelSubscription,
+  createCheckoutSession,
+  renewSubscription,
+} from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth } from "lib/hooks";
 
@@ -70,16 +74,35 @@ const SubscriptionActions = ({ organization }: Props) => {
 
   return (
     <HStack py={2}>
-      <Button
-        color="brand.senary"
-        backgroundColor="transparent"
-        fontSize="md"
-        px={0}
-        disabled={isAuthenticationLoading}
-        onClick={async () => await manageSubscription()}
-      >
-        <Icon src={LuPencil} h={5} w={5} />
-      </Button>
+      {organization.toBeCanceled ? (
+        <Button
+          color="brand.senary"
+          backgroundColor="transparent"
+          _disabled={{ opacity: 0.5 }}
+          fontSize="md"
+          px={0}
+          disabled={isAuthenticationLoading}
+          onClick={async () =>
+            await renewSubscription({
+              subscriptionId: organization.subscriptionId!,
+            })
+          }
+        >
+          <Icon src={LuRepeat2} h={5} w={5} />
+        </Button>
+      ) : (
+        <Button
+          color="brand.senary"
+          backgroundColor="transparent"
+          _disabled={{ opacity: 0.5 }}
+          fontSize="md"
+          px={0}
+          disabled={isAuthenticationLoading}
+          onClick={async () => await manageSubscription()}
+        >
+          <Icon src={LuPencil} h={5} w={5} />
+        </Button>
+      )}
 
       <Button
         color="red"
@@ -87,7 +110,11 @@ const SubscriptionActions = ({ organization }: Props) => {
         _disabled={{ opacity: 0.5 }}
         fontSize="md"
         px={0}
-        disabled={isAuthenticationLoading || !organization.subscriptionId}
+        disabled={
+          isAuthenticationLoading ||
+          !organization.subscriptionId ||
+          organization.toBeCanceled
+        }
         onClick={async () => await handleCancelSubscription()}
       >
         <Icon src={LuTrash2} h={5} w={5} />
