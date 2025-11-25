@@ -5,5 +5,3 @@ export { default as PricingHeader } from "./PricingHeader/PricingHeader";
 export { default as PricingMatrix } from "./PricingMatrix/PricingMatrix";
 export { default as PricingOverview } from "./PricingOverview/PricingOverview";
 export { default as TierCallToAction } from "./TierCallToAction/TierCallToAction";
-
-export type { Product } from "./PricingOverview/PricingOverview";

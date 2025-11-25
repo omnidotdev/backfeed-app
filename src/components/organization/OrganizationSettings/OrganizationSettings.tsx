@@ -38,7 +38,7 @@ import { useOrganizationMembership } from "lib/hooks";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 
 import type { DestructiveActionProps } from "components/core";
-import type { Product } from "components/pricing/PricingOverview/PricingOverview";
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
@@ -57,8 +57,8 @@ interface Props {
   organization: OrganizationRow;
   /** Customer information derived from the signed in user. */
   customer: CustomerState | undefined;
-  /** App subscription products. */
-  products: Product[];
+  /** App subscription pricing options. */
+  prices: Price[];
 }
 
 /** Organization settings. */
@@ -66,7 +66,7 @@ const OrganizationSettings = ({
   user,
   organization,
   customer,
-  products,
+  prices,
 }: Props) => {
   const router = useRouter();
 
@@ -74,10 +74,10 @@ const OrganizationSettings = ({
     (sub) => sub.id === organization.subscriptionId,
   );
 
-  const subscriptionProduct = products.find(
-    (product) =>
-      product.id === subscription?.items.data[0].plan.product &&
-      product.price.id === subscription?.items.data[0].plan.id,
+  const subscriptionPrice = prices.find(
+    (price) =>
+      price.product.id === subscription?.items.data[0].plan.product &&
+      price.id === subscription?.items.data[0].plan.id,
   );
 
   const queryClient = useQueryClient();
@@ -204,7 +204,7 @@ const OrganizationSettings = ({
           </Text>
           <Grid w="full" lineHeight={1.5}>
             {sortBenefits(
-              subscriptionProduct?.marketing_features ??
+              subscriptionPrice?.product.marketing_features ??
                 FREE_PRODUCT_DETAILS.marketing_features,
             ).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");

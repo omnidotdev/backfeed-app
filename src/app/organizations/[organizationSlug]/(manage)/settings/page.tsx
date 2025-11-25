@@ -9,11 +9,12 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getCustomer, getOrganization, getProducts } from "lib/actions";
+import { getCustomer, getOrganization, getPrices } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -42,10 +43,10 @@ const OrganizationSettingsPage = async ({
 
   if (!session) notFound();
 
-  const [organization, customer, products] = await Promise.all([
+  const [organization, customer, prices] = await Promise.all([
     getOrganization({ organizationSlug }),
     getCustomer(),
-    getProducts(),
+    getPrices(),
   ]);
 
   if (!organization) notFound();
@@ -108,7 +109,7 @@ const OrganizationSettingsPage = async ({
             },
           }}
           customer={customer}
-          products={products}
+          prices={prices as Price[]}
         />
       </Page>
     </HydrationBoundary>

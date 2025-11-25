@@ -18,8 +18,6 @@ export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
 // payment processing
-export const STRIPE_PRODUCT_IDS =
-  process.env.NEXT_PUBLIC_STRIPE_PRODUCT_IDS?.split(",") ?? [];
 export const CANCEL_SUB_ID = process.env.NEXT_PUBLIC_CANCEL_SUB_ID;
 export const MANAGE_SUB_ID = process.env.NEXT_PUBLIC_MANAGE_SUB_ID;
 

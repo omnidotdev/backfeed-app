@@ -22,15 +22,15 @@ import type { CustomerState } from "components/profile/Subscription/Subscription
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
 
-export interface Product extends Stripe.Product {
-  price: Stripe.Price;
+export interface Price extends Stripe.Price {
+  product: Stripe.Product;
 }
 
 interface Props {
   /** Signed in user. */
   user: Session["user"] | undefined;
-  /** The products available for pricing tiers. */
-  products: Product[];
+  /** The available pricing tiers. */
+  prices: Price[];
   /** Customer details. */
   customer?: CustomerState;
 }
@@ -38,15 +38,12 @@ interface Props {
 /**
  * Pricing overview section.
  */
-const PricingOverview = ({ user, products, customer }: Props) => {
+const PricingOverview = ({ user, prices, customer }: Props) => {
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
-  const filteredProducts = useMemo(
-    () =>
-      products.filter(
-        (product) => product.price.recurring?.interval === pricingModel,
-      ),
-    [products, pricingModel],
+  const filteredPrices = useMemo(
+    () => prices.filter((price) => price.recurring?.interval === pricingModel),
+    [prices, pricingModel],
   );
 
   return (
@@ -125,13 +122,13 @@ const PricingOverview = ({ user, products, customer }: Props) => {
         gap={4}
         px={4}
       >
-        <PricingCard user={user} product={undefined} customer={customer} />
+        <PricingCard user={user} price={undefined} customer={customer} />
 
-        {filteredProducts.map((product) => (
+        {filteredPrices.map((price) => (
           <PricingCard
-            key={product.id}
+            key={price.id}
             user={user}
-            product={product}
+            price={price}
             customer={customer}
           />
         ))}

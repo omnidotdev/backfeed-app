@@ -22,7 +22,7 @@ import { app } from "lib/config";
 import { useProductMetadata, useSearchParams } from "lib/hooks";
 
 import type { CardProps } from "@omnidev/sigil";
-import type { Product } from "components/pricing";
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { CustomerState } from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
@@ -63,8 +63,8 @@ export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
 interface Props extends CardProps {
   /** Signed in user. */
   user: Session["user"] | undefined;
-  /** Product information. */
-  product: Product | undefined;
+  /** Price information. */
+  price: Price | undefined;
   /** Customer details. */
   customer?: CustomerState;
 }
@@ -72,7 +72,7 @@ interface Props extends CardProps {
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ user, product, customer, ...rest }: Props) => {
+const PricingCard = ({ user, price, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
   const isPerMonthPricing = pricingModel === "month";
@@ -85,7 +85,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
     isEnterpriseTier,
     isDisabled,
     actionIcon,
-  } = useProductMetadata({ product });
+  } = useProductMetadata({ product: price?.product });
 
   return (
     <Card
@@ -157,14 +157,14 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {product?.description ?? FREE_PRODUCT_DETAILS.description}
+            {price?.product.description ?? FREE_PRODUCT_DETAILS.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {product ? product.price.unit_amount! / 100 : 0}
+              {price ? price.unit_amount! / 100 : 0}
             </Text>
 
             {!isEnterpriseTier && (
@@ -190,8 +190,8 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
               variant={isRecommendedTier ? "solid" : "outline"}
               disabled={isDisabled}
               user={user}
-              productId={product?.id ?? ""}
-              priceId={product?.price.id ?? ""}
+              productId={price?.product.id ?? ""}
+              priceId={price?.id ?? ""}
               tier={tier}
               actionIcon={actionIcon}
               customer={customer}
@@ -224,7 +224,7 @@ const PricingCard = ({ user, product, customer, ...rest }: Props) => {
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
             {sortBenefits(
-              product?.marketing_features ??
+              price?.product.marketing_features ??
                 FREE_PRODUCT_DETAILS.marketing_features,
             ).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");
