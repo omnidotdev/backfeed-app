@@ -28,7 +28,10 @@ const SubscriptionActions = ({ organization }: Props) => {
 
   const { user, isLoading: isAuthenticationLoading } = useAuth();
 
-  const { mutateAsync: manageSubscription } = useMutation({
+  const {
+    mutateAsync: manageSubscription,
+    isPending: isManageSubscriptionPending,
+  } = useMutation({
     mutationFn: async () => {
       const checkoutUrl = await createCheckoutSession({
         checkout: {
@@ -43,7 +46,10 @@ const SubscriptionActions = ({ organization }: Props) => {
     onSuccess: (url) => router.push(url),
   });
 
-  const { mutateAsync: handleCancelSubscription } = useMutation({
+  const {
+    mutateAsync: handleCancelSubscription,
+    isPending: isCancelSubscriptionPending,
+  } = useMutation({
     mutationFn: async () => {
       const cancelUrl = await cancelSubscription({
         subscriptionId: organization.subscriptionId!,
@@ -80,7 +86,7 @@ const SubscriptionActions = ({ organization }: Props) => {
           _disabled={{ opacity: 0.5 }}
           fontSize="md"
           px={0}
-          disabled={isAuthenticationLoading}
+          disabled={isAuthenticationLoading || isManageSubscriptionPending}
           onClick={async () => await manageSubscription()}
         >
           <Icon src={LuPencil} h={5} w={5} />
@@ -95,7 +101,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         px={0}
         disabled={
           isAuthenticationLoading ||
-          !organization.subscriptionId ||
+          isCancelSubscriptionPending ||
           organization.subscription.toBeCanceled
         }
         onClick={async () => await handleCancelSubscription()}
