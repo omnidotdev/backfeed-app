@@ -3,7 +3,7 @@
 import payments from "lib/payments";
 
 /**
- * Server action to fetch Stripe product details.
+ * Server action to fetch Stripe pricing details.
  */
 const getPrices = async () => {
   const { data: prices } = await payments.prices.search({
