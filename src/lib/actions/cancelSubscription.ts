@@ -1,6 +1,6 @@
 "use server";
 
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 import getCustomer from "./getCustomer";
 
 interface Options {
@@ -22,7 +22,7 @@ const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
 
   if (!isCustomersSubscription || !customer) throw new Error("Unauthorized");
 
-  const configuration = await stripe.billingPortal.configurations.create({
+  const configuration = await payments.billingPortal.configurations.create({
     features: {
       subscription_cancel: {
         enabled: true,
@@ -41,7 +41,7 @@ const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
     },
   });
 
-  const session = await stripe.billingPortal.sessions.create({
+  const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
     configuration: configuration.id,
     flow_data: {

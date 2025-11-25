@@ -1,6 +1,6 @@
 "use server";
 
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 import getCustomer from "./getCustomer";
 
 interface Options {
@@ -17,7 +17,7 @@ const revokeSubscription = async ({ subscriptionId }: Options) => {
   if (!customer?.subscriptions?.find((sub) => sub.id === subscriptionId))
     throw new Error("Unauthorized");
 
-  const subscription = await stripe.subscriptions.cancel(subscriptionId);
+  const subscription = await payments.subscriptions.cancel(subscriptionId);
 
   return subscription.id;
 };

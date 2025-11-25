@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "auth";
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 
 /**
  * Server action to get customer details.
@@ -13,13 +13,13 @@ const getCustomer = async () => {
     throw new Error("Unauthorized");
   }
 
-  const { data: customers } = await stripe.customers.search({
+  const { data: customers } = await payments.customers.search({
     query: `metadata["externalId"]:"${session.user.hidraId!}"`,
   });
 
   if (!customers.length) return undefined;
 
-  const { data: subscriptions } = await stripe.subscriptions.list({
+  const { data: subscriptions } = await payments.subscriptions.list({
     customer: customers[0].id,
     status: "active",
   });

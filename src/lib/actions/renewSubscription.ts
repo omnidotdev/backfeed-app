@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 import getCustomer from "./getCustomer";
 
 interface Options {
@@ -19,7 +19,7 @@ const renewSubscription = async ({ subscriptionId }: Options) => {
   if (!customer?.subscriptions.find((sub) => sub.id === subscriptionId))
     throw new Error("Unauthorized");
 
-  await stripe.subscriptions.update(subscriptionId, {
+  await payments.subscriptions.update(subscriptionId, {
     cancel_at: null,
   });
 

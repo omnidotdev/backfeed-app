@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "auth";
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 import getCustomer from "./getCustomer";
 
 import type Stripe from "stripe";
@@ -51,7 +51,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
   if (currentCustomer) {
     customer = currentCustomer;
   } else {
-    customer = await stripe.customers.create({
+    customer = await payments.customers.create({
       email: authSession.user.email!,
       name: authSession.user.name ?? undefined,
       metadata: {
@@ -61,7 +61,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
   }
 
   if (checkout.type === "create") {
-    const session = await stripe.checkout.sessions.create({
+    const session = await payments.checkout.sessions.create({
       mode: "subscription",
       customer: customer.id,
       success_url: checkout.successUrl,
@@ -83,7 +83,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
   )
     throw new Error("Unauthorized");
 
-  const configuration = await stripe.billingPortal.configurations.create({
+  const configuration = await payments.billingPortal.configurations.create({
     features: {
       payment_method_update: {
         enabled: true,
@@ -98,7 +98,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
     },
   });
 
-  const session = await stripe.billingPortal.sessions.create({
+  const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
     configuration: configuration.id,
     flow_data: {

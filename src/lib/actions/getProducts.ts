@@ -1,20 +1,20 @@
 "use server";
 
 import { STRIPE_PRODUCT_IDS } from "lib/config";
-import { stripe } from "lib/payments/client";
+import payments from "lib/payments";
 
 /**
- * Server action to fetch Backfeed stripe product details.
+ * Server action to fetch Stripe product details.
  */
 const getProducts = async () => {
-  const { data: products } = await stripe.products.list({
+  const { data: products } = await payments.products.list({
     ids: STRIPE_PRODUCT_IDS,
     active: true,
   });
 
   const pricedProducts = await Promise.all(
     products.map(async (product) => {
-      const prices = await stripe.prices.list({
+      const prices = await payments.prices.list({
         product: product.id,
         active: true,
       });
