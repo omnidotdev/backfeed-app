@@ -24,7 +24,7 @@ const renewSubscription = async ({ subscriptionId }: Options) => {
   });
 
   revalidatePath("/organizations/[organizationSlug]/settings");
-  revalidatePath("/profile/[userId]/organizations");
+  revalidatePath("/profile/[userId]/subscriptions");
   revalidatePath("/pricing");
 };
 

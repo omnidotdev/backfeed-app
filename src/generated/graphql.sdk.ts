@@ -5719,6 +5719,7 @@ export type OrganizationsQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  isFreeTier?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -6337,12 +6338,12 @@ export const OrganizationRoleDocument = gql`
 }
     `;
 export const OrganizationsDocument = gql`
-    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $isMember: Boolean, $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String, $organizationId: UUID) {
+    query Organizations($pageSize: Int, $offset: Int, $orderBy: [OrganizationOrderBy!], $isMember: Boolean, $userId: UUID, $excludeRoles: [Role!], $search: String, $slug: String, $organizationId: UUID, $isFreeTier: Boolean) {
   organizations(
     first: $pageSize
     offset: $offset
     orderBy: $orderBy
-    filter: {rowId: {equalTo: $organizationId}, name: {includesInsensitive: $search}, slug: {equalTo: $slug}, or: [{membersExist: $isMember, members: {some: {userId: {equalTo: $userId}, role: {notIn: $excludeRoles}}}}, {rowId: {isNull: $isMember}}]}
+    filter: {rowId: {equalTo: $organizationId}, name: {includesInsensitive: $search}, slug: {equalTo: $slug}, subscriptionId: {isNull: $isFreeTier}, or: [{membersExist: $isMember, members: {some: {userId: {equalTo: $userId}, role: {notIn: $excludeRoles}}}}, {rowId: {isNull: $isMember}}]}
   ) {
     totalCount
     nodes {

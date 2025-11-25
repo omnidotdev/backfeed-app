@@ -10,14 +10,14 @@ import {
   Role,
   useOrganizationsQuery,
 } from "generated/graphql";
-import { getCustomer, getProducts } from "lib/actions";
+import { getCustomer } from "lib/actions";
 import { app } from "lib/config";
 import { getQueryClient } from "lib/util";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: app.profileOrganizationsPage.breadcrumb,
+  title: app.profileSubscriptionsPage.breadcrumb,
 };
 
 /**
@@ -25,14 +25,10 @@ export const metadata: Metadata = {
  */
 const ProfileOrganizationsPage = async ({
   params,
-}: PageProps<"/profile/[userId]/organizations">) => {
+}: PageProps<"/profile/[userId]/subscriptions">) => {
   const { userId } = await params;
 
-  const [session, customer, products] = await Promise.all([
-    auth(),
-    getCustomer(),
-    getProducts(),
-  ]);
+  const [session, customer] = await Promise.all([auth(), getCustomer()]);
 
   if (!session) redirect("/");
 
@@ -45,11 +41,13 @@ const ProfileOrganizationsPage = async ({
       userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
+      isFreeTier: false,
     }),
     queryFn: useOrganizationsQuery.fetcher({
       userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
+      isFreeTier: false,
     }),
   });
 
@@ -57,8 +55,8 @@ const ProfileOrganizationsPage = async ({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
         header={{
-          title: app.profileOrganizationsPage.breadcrumb,
-          description: app.profileOrganizationsPage.description,
+          title: app.profileSubscriptionsPage.breadcrumb,
+          description: app.profileSubscriptionsPage.description,
         }}
         pt={0}
       >

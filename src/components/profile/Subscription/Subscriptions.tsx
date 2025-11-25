@@ -130,6 +130,7 @@ const Subscription = ({ user, customer }: Props) => {
       userId: user?.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
+      isFreeTier: false,
     },
     {
       select: (data) =>
@@ -172,7 +173,7 @@ const Subscription = ({ user, customer }: Props) => {
   if (!organizations?.length)
     return (
       <Stack gap={8}>
-        {app.profileOrganizationsPage.table.emptyState.label}
+        {app.profileSubscriptionsPage.table.emptyState.label}
         <Button w="fit" onClick={() => setIsCreateOrganizationDialogOpen(true)}>
           <Icon src={LuPlus} /> Create Organization
         </Button>

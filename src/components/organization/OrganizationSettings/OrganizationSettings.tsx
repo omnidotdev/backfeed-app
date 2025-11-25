@@ -11,7 +11,7 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
@@ -68,7 +68,6 @@ const OrganizationSettings = ({
   customer,
   products,
 }: Props) => {
-  const pathname = usePathname();
   const router = useRouter();
 
   const subscription = customer?.subscriptions.find(
@@ -179,9 +178,7 @@ const OrganizationSettings = ({
         const checkoutUrl = await createCheckoutSession({
           checkout: {
             type: "create",
-            successUrl: pathname.includes(organization.slug)
-              ? `${BASE_URL}/organizations/${organization.slug}/settings`
-              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+            successUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
             organizationId: organization.rowId,
             priceId: subscriptionProduct?.price.id!,
           },
@@ -193,9 +190,7 @@ const OrganizationSettings = ({
           checkout: {
             type: "update",
             subscriptionId: organization.subscriptionId,
-            returnUrl: pathname.includes(organization.slug)
-              ? `${BASE_URL}/organizations/${organization.slug}/settings`
-              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+            returnUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
           },
         });
 

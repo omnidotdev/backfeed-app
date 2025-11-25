@@ -2,7 +2,7 @@
 
 import { Button, HStack, Icon } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
 import {
@@ -24,38 +24,21 @@ interface Props {
  * Actions a user may perform for an organization level subscription.
  */
 const SubscriptionActions = ({ organization }: Props) => {
-  const pathname = usePathname(),
-    router = useRouter();
+  const router = useRouter();
 
   const { user, isLoading: isAuthenticationLoading } = useAuth();
 
   const { mutateAsync: manageSubscription } = useMutation({
     mutationFn: async () => {
-      // TODO: fix for current `Free` tier (no sub ID). Need to provide means to select product. This currently fails.
-      if (!organization.subscriptionId) {
-        const checkoutUrl = await createCheckoutSession({
-          checkout: {
-            type: "create",
-            successUrl: pathname.includes(organization.slug)
-              ? `${BASE_URL}/organizations/${organization.slug}/settings`
-              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-            organizationId: organization.rowId,
-            priceId: "",
-          },
-        });
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "update",
+          subscriptionId: organization.subscriptionId!,
+          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
+        },
+      });
 
-        return checkoutUrl;
-      } else {
-        const checkoutUrl = await createCheckoutSession({
-          checkout: {
-            type: "update",
-            subscriptionId: organization.subscriptionId,
-            returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
-          },
-        });
-
-        return checkoutUrl;
-      }
+      return checkoutUrl;
     },
     onSuccess: (url) => router.push(url),
   });
@@ -64,7 +47,7 @@ const SubscriptionActions = ({ organization }: Props) => {
     mutationFn: async () => {
       const cancelUrl = await cancelSubscription({
         subscriptionId: organization.subscriptionId!,
-        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
       });
 
       return cancelUrl;

@@ -131,7 +131,7 @@ const TierCallToAction = ({
                       const checkoutUrl = await createCheckoutSession({
                         checkout: {
                           type: "create",
-                          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+                          successUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
                           organizationId: org.rowId!,
                           priceId,
                         },
@@ -144,10 +144,6 @@ const TierCallToAction = ({
                           type: "update",
                           subscriptionId: org.subscriptionId,
                           returnUrl: `${BASE_URL}/pricing`,
-                          product: {
-                            id: productId,
-                            priceId,
-                          },
                         },
                       });
 
