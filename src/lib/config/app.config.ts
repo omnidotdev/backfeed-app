@@ -530,17 +530,6 @@ const app = {
           },
         },
       },
-      transferOwnership: {
-        title: "Transfer Ownership",
-        description:
-          "Transfer ownership of this organization to another member.",
-        actionLabel: "Transfer",
-        destructiveAction: {
-          title: "Transfer Ownership",
-          description: "Are you sure you want to transfer ownership?",
-          actionLabel: "Transfer",
-        },
-      },
       deleteOrganization: {
         title: "Delete Organization",
         description:

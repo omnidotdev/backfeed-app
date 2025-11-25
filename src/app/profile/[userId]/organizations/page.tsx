@@ -62,11 +62,7 @@ const ProfileOrganizationsPage = async ({
         }}
         pt={0}
       >
-        <Subscriptions
-          user={session.user}
-          products={products}
-          customer={customer}
-        />
+        <Subscriptions user={session.user} customer={customer} />
 
         <CreateOrganization />
       </Page>

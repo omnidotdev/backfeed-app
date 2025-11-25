@@ -1,96 +1,97 @@
 "use client";
 
-import { HStack, Text, sigil } from "@omnidev/sigil";
+import { Button, HStack, Icon } from "@omnidev/sigil";
+import { useMutation } from "@tanstack/react-query";
+import { usePathname, useRouter } from "next/navigation";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
-import { DestructiveAction } from "components/core";
-import { ManageSubscription } from "components/organization";
-import { useDeleteOrganizationMutation } from "generated/graphql";
-import { revokeSubscription } from "lib/actions";
-import { app } from "lib/config";
-import { toaster } from "lib/util";
+import { cancelSubscription, createCheckoutSession } from "lib/actions";
+import { BASE_URL } from "lib/config";
+import { useAuth } from "lib/hooks";
 
-import type { Product } from "components/pricing";
-import type { CustomerState, OrganizationRow } from "components/profile";
-
-const deleteOrganizationDetails =
-  app.organizationSettingsPage.cta.deleteOrganization;
+import type { OrganizationRow } from "components/profile";
 
 interface Props {
   /** Organization details. */
   organization: OrganizationRow;
-  /** List of available backfeed products. */
-  products: Product[];
-  /** Customer details. */
-  customer?: CustomerState;
 }
 
 /**
  * Actions a user may perform for an organization level subscription.
  */
-const SubscriptionActions = ({ organization, products, customer }: Props) => {
-  const subscriptionId = organization.subscriptionId;
+const SubscriptionActions = ({ organization }: Props) => {
+  const pathname = usePathname(),
+    router = useRouter();
 
-  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
-    // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
-    onSettled: async (_d, _e, _v, _r, { client }) => client.invalidateQueries(),
+  const { user, isLoading: isAuthenticationLoading } = useAuth();
+
+  const { mutateAsync: manageSubscription } = useMutation({
+    mutationFn: async () => {
+      // TODO: fix for current `Free` tier (no sub ID). Need to provide means to select product. This currently fails.
+      if (!organization.subscriptionId) {
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "create",
+            successUrl: pathname.includes(organization.slug)
+              ? `${BASE_URL}/organizations/${organization.slug}/settings`
+              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+            organizationId: organization.rowId,
+            priceId: "",
+          },
+        });
+
+        return checkoutUrl;
+      } else {
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "update",
+            subscriptionId: organization.subscriptionId,
+            returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+          },
+        });
+
+        return checkoutUrl;
+      }
+    },
+    onSuccess: (url) => router.push(url),
+  });
+
+  const { mutateAsync: handleCancelSubscription } = useMutation({
+    mutationFn: async () => {
+      const cancelUrl = await cancelSubscription({
+        subscriptionId: organization.subscriptionId!,
+        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+      });
+
+      return cancelUrl;
+    },
+    onSuccess: (url) => router.push(url),
   });
 
   return (
     <HStack py={2}>
-      <ManageSubscription
-        organization={organization}
-        products={products}
-        customer={customer}
-      />
-
-      <DestructiveAction
-        triggerProps={{ px: 0, backgroundColor: "transparent", color: "red" }}
-        title={deleteOrganizationDetails.destruciveAction.title}
-        description={deleteOrganizationDetails.destruciveAction.description}
-        destructiveInput={deleteOrganizationDetails.destruciveAction.prompt}
-        action={{
-          label: deleteOrganizationDetails.destruciveAction.actionLabel,
-          onClick: () =>
-            toaster.promise(
-              async () => {
-                if (
-                  subscriptionId &&
-                  organization.subscriptionStatus !== "canceled"
-                ) {
-                  const revokedSubscriptionId = await revokeSubscription({
-                    subscriptionId,
-                  });
-
-                  if (!revokedSubscriptionId)
-                    throw new Error("Error revoking subscription");
-                }
-
-                await deleteOrganization({ rowId: organization.rowId });
-              },
-              {
-                loading: {
-                  title: "Deleting organization...",
-                },
-                success: {
-                  title: "Successfully deleted organization.",
-                },
-                error: {
-                  title: "Error",
-                  description:
-                    "Sorry, there was an issue with deleting your organization. Please try again.",
-                },
-              },
-            ),
-        }}
+      <Button
+        color="brand.senary"
+        backgroundColor="transparent"
+        fontSize="md"
+        px={0}
+        disabled={isAuthenticationLoading}
+        onClick={async () => await manageSubscription()}
       >
-        <Text whiteSpace="wrap" fontWeight="medium">
-          The organization will be{" "}
-          <sigil.span color="red">permanently</sigil.span> deleted, including
-          its projects, posts and comments. Any subscription associated with the
-          organization will be immediately{" "}
-          <sigil.span color="red">revoked</sigil.span>.
-        </Text>
-      </DestructiveAction>
+        <Icon src={LuPencil} h={5} w={5} />
+      </Button>
+
+      <Button
+        color="red"
+        backgroundColor="transparent"
+        _disabled={{ opacity: 0.5 }}
+        fontSize="md"
+        px={0}
+        disabled={isAuthenticationLoading || !organization.subscriptionId}
+        onClick={async () => await handleCancelSubscription()}
+      >
+        <Icon src={LuTrash2} h={5} w={5} />
+      </Button>
     </HStack>
   );
 };

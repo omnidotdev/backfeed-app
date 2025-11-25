@@ -8,7 +8,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { useMemo } from "react";
 import { LuPlus } from "react-icons/lu";
 import { P, match } from "ts-pattern";
 
@@ -26,7 +25,6 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
-import type { Product } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
@@ -39,6 +37,79 @@ export interface OrganizationRow extends OrganizationFragment {
 
 const columnHelper = createColumnHelper<OrganizationRow>();
 
+const columns = [
+  columnHelper.display({
+    id: "organization_actions",
+    header: "Actions",
+    cell: ({ row }) => <SubscriptionActions organization={row.original} />,
+    meta: {
+      tableCellProps: {
+        pr: 0,
+        style: {
+          width: token("sizes.20"),
+        },
+      },
+      headerProps: {
+        justify: "center",
+      },
+    },
+  }),
+  columnHelper.accessor("name", {
+    header: "Name",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("tier", {
+    header: "Tier",
+    cell: (info) => capitalizeFirstLetter(info.getValue()),
+  }),
+  columnHelper.accessor("subscriptionStatus", {
+    header: "Subscription Status",
+    cell: (info) => {
+      const isFreeTier = info.row.original.tier === Tier.Free;
+
+      if (isFreeTier) return "-";
+
+      const toBeCanceled = info.row.original.toBeCanceled;
+
+      const color = match({
+        status: info.getValue(),
+        toBeCanceled,
+      })
+        .with({ status: "active", toBeCanceled: true }, () => "yellow")
+        .with({ status: "active" }, () => "green")
+        .with(
+          {
+            status: P.union("past_due", "unpaid", "canceled"),
+          },
+          () => "red",
+        )
+        .otherwise(() => "gray");
+
+      return (
+        <HStack>
+          <Box h={2} w={2} rounded="full" bgColor={color} />
+          <Text>
+            {toBeCanceled
+              ? "To Be Canceled"
+              : info
+                  .getValue()
+                  .split("_")
+                  .map((word) => capitalizeFirstLetter(word))
+                  .join(" ")}
+          </Text>
+        </HStack>
+      );
+    },
+  }),
+  columnHelper.accessor("currentPeriodEnd", {
+    header: "Renewal Date",
+    cell: (info) =>
+      info.getValue() && !info.row.original.toBeCanceled
+        ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
+        : "-",
+  }),
+];
+
 export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
   subscriptions: Stripe.Subscription[];
 }
@@ -46,8 +117,6 @@ export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
 interface Props {
   /** User details. */
   user: Session["user"];
-  /** List of available backfeed products. */
-  products: Product[];
   /** Customer details. */
   customer?: CustomerState;
 }
@@ -55,7 +124,7 @@ interface Props {
 /**
  * Details of the user's subscriptions.
  */
-const Subscription = ({ user, products, customer }: Props) => {
+const Subscription = ({ user, customer }: Props) => {
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
@@ -92,88 +161,6 @@ const Subscription = ({ user, products, customer }: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
-
-  const columns = useMemo(
-    () => [
-      columnHelper.display({
-        id: "organization_actions",
-        header: "Actions",
-        cell: ({ row }) => (
-          <SubscriptionActions
-            products={products}
-            customer={customer}
-            organization={row.original}
-          />
-        ),
-        meta: {
-          tableCellProps: {
-            pr: 0,
-            style: {
-              width: token("sizes.20"),
-            },
-          },
-          headerProps: {
-            justify: "center",
-          },
-        },
-      }),
-      columnHelper.accessor("name", {
-        header: "Name",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("tier", {
-        header: "Tier",
-        cell: (info) => capitalizeFirstLetter(info.getValue()),
-      }),
-      columnHelper.accessor("subscriptionStatus", {
-        header: "Subscription Status",
-        cell: (info) => {
-          const isFreeTier = info.row.original.tier === Tier.Free;
-
-          if (isFreeTier) return "-";
-
-          const toBeCanceled = info.row.original.toBeCanceled;
-
-          const color = match({
-            status: info.getValue(),
-            toBeCanceled,
-          })
-            .with({ status: "active", toBeCanceled: true }, () => "yellow")
-            .with({ status: "active" }, () => "green")
-            .with(
-              {
-                status: P.union("past_due", "unpaid", "canceled"),
-              },
-              () => "red",
-            )
-            .otherwise(() => "gray");
-
-          return (
-            <HStack>
-              <Box h={2} w={2} rounded="full" bgColor={color} />
-              <Text>
-                {toBeCanceled
-                  ? "To Be Canceled"
-                  : info
-                      .getValue()
-                      .split("_")
-                      .map((word) => capitalizeFirstLetter(word))
-                      .join(" ")}
-              </Text>
-            </HStack>
-          );
-        },
-      }),
-      columnHelper.accessor("currentPeriodEnd", {
-        header: "Renewal Date",
-        cell: (info) =>
-          info.getValue() && !info.row.original.toBeCanceled
-            ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
-            : "-",
-      }),
-    ],
-    [products, customer],
-  );
 
   const table = useReactTable({
     columns,

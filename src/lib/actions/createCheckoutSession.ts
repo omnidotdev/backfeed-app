@@ -1,9 +1,9 @@
 "use server";
 
 import { auth } from "auth";
+import getCustomer from "lib/actions/getCustomer";
 import { MANAGE_SUB_ID } from "lib/config";
 import payments from "lib/payments";
-import getCustomer from "./getCustomer";
 
 import type Stripe from "stripe";
 
@@ -25,11 +25,6 @@ interface UpdateSubscription {
   subscriptionId: string;
   /** URL to redirect user to if the update is not completed. */
   returnUrl: string;
-  /** Updated product details to apply to the subscription. */
-  product: {
-    id: string;
-    priceId: string;
-  };
 }
 
 interface Options {

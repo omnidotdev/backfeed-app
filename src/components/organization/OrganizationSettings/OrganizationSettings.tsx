@@ -1,9 +1,7 @@
 "use client";
 
-import { createListCollection } from "@ark-ui/react";
 import {
   Button,
-  Combobox,
   Divider,
   Grid,
   GridItem,
@@ -12,19 +10,14 @@ import {
   Text,
   sigil,
 } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { BiTransfer } from "react-icons/bi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { usePathname, useRouter } from "next/navigation";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
-import {
-  ManageSubscription,
-  UpdateOrganization,
-} from "components/organization";
+import { UpdateOrganization } from "components/organization";
 import {
   FREE_PRODUCT_DETAILS,
   sortBenefits,
@@ -35,10 +28,13 @@ import {
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
-import { revokeSubscription } from "lib/actions";
-import { app } from "lib/config";
+import {
+  createCheckoutSession,
+  renewSubscription,
+  revokeSubscription,
+} from "lib/actions";
+import { BASE_URL, app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
-import { useTransferOwnershipMutation } from "lib/hooks/mutations";
 import { capitalizeFirstLetter, toaster } from "lib/util";
 
 import type { DestructiveActionProps } from "components/core";
@@ -53,8 +49,6 @@ const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
-const transferOwnershipDetails =
-  app.organizationSettingsPage.cta.transferOwnership;
 
 interface Props {
   /** Authenticated user. */
@@ -74,6 +68,9 @@ const OrganizationSettings = ({
   customer,
   products,
 }: Props) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const subscription = customer?.subscriptions.find(
     (sub) => sub.id === organization.subscriptionId,
   );
@@ -84,11 +81,7 @@ const OrganizationSettings = ({
       product.price.id === subscription?.items.data[0].plan.id,
   );
 
-  const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
-
   const queryClient = useQueryClient();
-
-  const router = useRouter();
 
   const { data: numberOfOwners } = useMembersQuery(
     {
@@ -97,21 +90,6 @@ const OrganizationSettings = ({
     },
     {
       select: (data) => data.members?.totalCount,
-    },
-  );
-
-  // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
-  const { data: members } = useMembersQuery(
-    {
-      organizationId: organization.rowId,
-      excludeRoles: [Role.Owner],
-    },
-    {
-      select: (data) =>
-        data.members?.nodes?.map((member) => ({
-          label: `${member?.user?.firstName} ${member?.user?.lastName}`,
-          value: member?.rowId,
-        })),
     },
   );
 
@@ -129,9 +107,6 @@ const OrganizationSettings = ({
       onMutate: () => router.replace("/"),
       // NB: when a user leaves an organization, we want to invalidate all queries as any of them could have data for said org associated with the user
       onSettled: async () => queryClient.invalidateQueries(),
-    }),
-    { mutate: transferOwnership } = useTransferOwnershipMutation({
-      organizationId: organization.rowId,
     });
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
@@ -197,40 +172,38 @@ const OrganizationSettings = ({
     },
   };
 
-  const _TRANSFER_OWNERSHIP: DestructiveActionProps = {
-    title: transferOwnershipDetails.title,
-    description: transferOwnershipDetails.description,
-    triggerLabel: transferOwnershipDetails.actionLabel,
-    icon: BiTransfer,
-    action: {
-      label: transferOwnershipDetails.actionLabel,
-      disabled: !newOwnerMembershipId.length,
-      onClick: () =>
-        transferOwnership({
-          rowId: newOwnerMembershipId,
-          patch: {
-            role: Role.Owner,
+  const { mutateAsync: manageSubscription } = useMutation({
+    mutationFn: async () => {
+      // TODO: fix for current `Free` tier (no sub ID). Need to provide means to select product. This currently fails.
+      if (!organization.subscriptionId) {
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "create",
+            successUrl: pathname.includes(organization.slug)
+              ? `${BASE_URL}/organizations/${organization.slug}/settings`
+              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+            organizationId: organization.rowId,
+            priceId: subscriptionProduct?.price.id!,
           },
-        }),
+        });
+
+        return checkoutUrl;
+      } else {
+        const checkoutUrl = await createCheckoutSession({
+          checkout: {
+            type: "update",
+            subscriptionId: organization.subscriptionId,
+            returnUrl: pathname.includes(organization.slug)
+              ? `${BASE_URL}/organizations/${organization.slug}/settings`
+              : `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+          },
+        });
+
+        return checkoutUrl;
+      }
     },
-    children: (
-      <Combobox
-        label={{ id: "member", singular: "Member", plural: "Members" }}
-        collection={createListCollection({ items: members ?? [] })}
-        placeholder="Search for or select a member..."
-        colorPalette="red"
-        clearTriggerProps={{
-          display: newOwnerMembershipId ? "block" : "none",
-        }}
-        value={[newOwnerMembershipId]}
-        onValueChange={({ value }) => {
-          value.length
-            ? setNewOwnerMembershipId(value[0])
-            : setNewOwnerMembershipId("");
-        }}
-      />
-    ),
-  };
+    onSuccess: (url) => router.push(url),
+  });
 
   return (
     <Stack gap={6}>
@@ -272,12 +245,22 @@ const OrganizationSettings = ({
             })}
           </Grid>
 
-          <ManageSubscription
-            organization={organization}
-            products={products}
-            customer={customer}
-            trigger={<Button w="fit">Manage Subscription</Button>}
-          />
+          {organization.toBeCanceled ? (
+            <Button
+              w="fit"
+              onClick={async () =>
+                await renewSubscription({
+                  subscriptionId: organization.subscriptionId!,
+                })
+              }
+            >
+              Renew Subscription
+            </Button>
+          ) : (
+            <Button w="fit" onClick={async () => await manageSubscription()}>
+              Manage Subscription
+            </Button>
+          )}
         </SectionContainer>
       )}
 
