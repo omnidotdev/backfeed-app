@@ -36,7 +36,7 @@ const usePriceMetadata = ({ price }: Options) => {
     .with(Tier.Basic, () => HiLockOpen)
     .otherwise(() => undefined);
 
-  const productTitle = capitalizeFirstLetter(metadata.title as string);
+  const productTitle = capitalizeFirstLetter(metadata.tier as string);
 
   return {
     tier,
