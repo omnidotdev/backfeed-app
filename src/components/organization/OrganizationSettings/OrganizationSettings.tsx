@@ -1,11 +1,18 @@
 "use client";
 
+import { Format } from "@ark-ui/react";
 import {
   Button,
   Divider,
   Grid,
   GridItem,
+  HStack,
   Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuSeparator,
   Stack,
   Text,
   sigil,
@@ -171,6 +178,25 @@ const OrganizationSettings = ({
     },
   };
 
+  const {
+    mutateAsync: createSubscription,
+    isPending: isCreateSubscriptionPending,
+  } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) => {
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "create",
+          priceId,
+          organizationId: organization.rowId!,
+          successUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
+        },
+      });
+
+      return checkoutUrl;
+    },
+    onSuccess: (url) => router.push(url),
+  });
+
   const { mutateAsync: manageSubscription } = useMutation({
     mutationFn: async () => {
       const checkoutUrl = await createCheckoutSession({
@@ -243,8 +269,60 @@ const OrganizationSettings = ({
               Subscription
             </Button>
           ) : (
-            // TODO: update this. Allow user to select a plan and subscribe.
-            <Button w="fit">Subscribe</Button>
+            <Menu
+              trigger={
+                <Button w="fit" disabled={isCreateSubscriptionPending}>
+                  Upgrade Plan
+                </Button>
+              }
+              onSelect={({ value }) => createSubscription({ priceId: value })}
+            >
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "month")
+                  .map((price) => (
+                    <MenuItem key={price.id} value={price.id}>
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /mo
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+
+              <MenuSeparator />
+
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "year")
+                  .map((price) => (
+                    <MenuItem key={price.id} value={price.id}>
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /yr
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+            </Menu>
           )}
         </SectionContainer>
       )}
