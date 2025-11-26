@@ -1,23 +1,12 @@
 "use client";
 
-import {
-  Button,
-  HStack,
-  Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
-  MenuSeparator,
-} from "@omnidev/sigil";
+import { Button, Icon } from "@omnidev/sigil";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LuChevronDown, LuPlus } from "react-icons/lu";
 
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
-import { createCheckoutSession } from "lib/actions";
-import { BASE_URL } from "lib/config";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
@@ -97,89 +86,10 @@ const TierCallToAction = ({
 
   return (
     <>
-      <Menu
-        trigger={
-          <Button {...rest}>
-            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
-            Continue with {capitalizeFirstLetter(tier)}
-            <Icon src={LuChevronDown} h={4} w={4} />
-          </Button>
-        }
-        positioning={{ sameWidth: true, strategy: "fixed" }}
-      >
-        <MenuItemGroup>
-          {organizations?.length ? (
-            organizations?.map((org) => {
-              const isDisabled = org?.tier === tier;
-
-              // TODO: possibly adjust logic here a bit. Currently updates go through the static customer portal configuration, but for these actions in particular, it probably should be dynamic based on selected tier / pricing interval
-              return (
-                <MenuItem
-                  key={org?.rowId}
-                  value={org?.rowId!}
-                  disabled={isDisabled}
-                  _disabled={{
-                    opacity: 0.5,
-                    cursor: "not-allowed",
-                    bgColor: "transparent",
-                  }}
-                  onClick={async () => {
-                    // TODO: figure out why this is required. `onClick` still fires even if `disabled` prop is true, this is a fallback solution
-                    if (isDisabled) return;
-
-                    // NB: if the subscription for the organization has been canceled or the org does not currently have a subId, we must create a new subscription.
-                    if (org.status === "canceled" || !org.subscriptionId) {
-                      const checkoutUrl = await createCheckoutSession({
-                        checkout: {
-                          type: "create",
-                          successUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
-                          organizationId: org.rowId!,
-                          priceId,
-                        },
-                      });
-
-                      router.push(checkoutUrl);
-                    } else {
-                      const checkoutUrl = await createCheckoutSession({
-                        checkout: {
-                          type: "update",
-                          subscriptionId: org.subscriptionId,
-                          returnUrl: `${BASE_URL}/pricing`,
-                        },
-                      });
-
-                      router.push(checkoutUrl);
-                    }
-                  }}
-                >
-                  {org?.name}
-                </MenuItem>
-              );
-            })
-          ) : (
-            <MenuItem
-              value="empty"
-              disabled
-              cursor="default"
-              bgColor={{ _hover: "transparent" }}
-            >
-              No current organizations to manage
-            </MenuItem>
-          )}
-        </MenuItemGroup>
-
-        <MenuSeparator />
-
-        <MenuItem
-          value="create"
-          onClick={() => setIsPaidSubscriptionDialogOpen(true)}
-        >
-          <HStack>
-            <Icon src={LuPlus} />
-            Create Organization
-          </HStack>
-        </MenuItem>
-      </Menu>
+      <Button {...rest} onClick={() => setIsPaidSubscriptionDialogOpen(true)}>
+        {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+        Continue with {capitalizeFirstLetter(tier)}
+      </Button>
 
       <CreatePaidSubscription
         priceId={priceId}
