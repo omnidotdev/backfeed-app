@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, HStack, Icon } from "@omnidev/sigil";
+import { Button, HStack, Icon, Tooltip } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
@@ -74,46 +74,118 @@ const SubscriptionActions = ({ organization }: Props) => {
   return (
     <HStack py={2}>
       {organization.subscription.toBeCanceled ? (
-        <Button
-          color="brand.senary"
-          backgroundColor="transparent"
-          _disabled={{ opacity: 0.5 }}
-          fontSize="md"
-          px={0}
-          disabled={isAuthenticationLoading || isRenewSubscriptionPending}
-          onClick={async () => await handleRenewSubscription()}
+        <Tooltip
+          positioning={{
+            placement: "top",
+          }}
+          hasArrow={false}
+          closeOnClick={false}
+          closeOnPointerDown={false}
+          trigger={
+            <Button
+              asChild
+              color="brand.senary"
+              backgroundColor="transparent"
+              _disabled={{ opacity: 0.5 }}
+              fontSize="md"
+              px={0}
+              disabled={isAuthenticationLoading || isRenewSubscriptionPending}
+              onClick={async () => await handleRenewSubscription()}
+            >
+              <Icon src={LuRepeat2} h={5} w={5} />
+            </Button>
+          }
+          triggerProps={{
+            style: { all: "unset" },
+            disabled: isAuthenticationLoading || isRenewSubscriptionPending,
+          }}
+          contentProps={{
+            zIndex: "foreground",
+            fontSize: "sm",
+          }}
         >
-          <Icon src={LuRepeat2} h={5} w={5} />
-        </Button>
+          Renew Subscription
+        </Tooltip>
       ) : (
-        <Button
-          color="brand.senary"
-          backgroundColor="transparent"
-          _disabled={{ opacity: 0.5 }}
-          fontSize="md"
-          px={0}
-          disabled={isAuthenticationLoading || isManageSubscriptionPending}
-          onClick={async () => await manageSubscription()}
+        <Tooltip
+          positioning={{
+            placement: "top",
+          }}
+          hasArrow={false}
+          closeOnClick={false}
+          closeOnPointerDown={false}
+          trigger={
+            <Button
+              asChild
+              color="brand.senary"
+              backgroundColor="transparent"
+              _disabled={{ opacity: 0.5 }}
+              fontSize="md"
+              px={0}
+              disabled={isAuthenticationLoading || isManageSubscriptionPending}
+              onClick={async () => await manageSubscription()}
+            >
+              <Icon src={LuPencil} h={5} w={5} />
+            </Button>
+          }
+          triggerProps={{
+            style: { all: "unset" },
+            disabled: isAuthenticationLoading || isManageSubscriptionPending,
+          }}
+          contentProps={{
+            zIndex: "foreground",
+            fontSize: "sm",
+          }}
         >
-          <Icon src={LuPencil} h={5} w={5} />
-        </Button>
+          Manage Subscription
+        </Tooltip>
       )}
 
-      <Button
-        color="red"
-        backgroundColor="transparent"
-        _disabled={{ opacity: 0.5 }}
-        fontSize="md"
-        px={0}
-        disabled={
-          isAuthenticationLoading ||
-          isCancelSubscriptionPending ||
-          organization.subscription.toBeCanceled
+      <Tooltip
+        positioning={{
+          placement: "top",
+        }}
+        hasArrow={false}
+        closeOnClick={false}
+        closeOnPointerDown={false}
+        trigger={
+          <Button
+            asChild
+            color="red"
+            backgroundColor="transparent"
+            _disabled={{ opacity: 0.5 }}
+            fontSize="md"
+            px={0}
+            disabled={
+              isAuthenticationLoading ||
+              isCancelSubscriptionPending ||
+              organization.subscription.toBeCanceled
+            }
+            onClick={async () => await handleCancelSubscription()}
+          >
+            <Icon src={LuTrash2} h={5} w={5} />
+          </Button>
         }
-        onClick={async () => await handleCancelSubscription()}
+        triggerProps={{
+          style: { all: "unset" },
+          disabled:
+            isAuthenticationLoading ||
+            isCancelSubscriptionPending ||
+            organization.subscription.toBeCanceled,
+        }}
+        contentProps={{
+          display:
+            isAuthenticationLoading ||
+            isCancelSubscriptionPending ||
+            organization.subscription.toBeCanceled
+              ? "none"
+              : undefined,
+          zIndex: "foreground",
+          fontSize: "sm",
+        }}
       >
-        <Icon src={LuTrash2} h={5} w={5} />
-      </Button>
+        Cancel Subscription
+      </Tooltip>
     </HStack>
   );
 };
