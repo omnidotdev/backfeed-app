@@ -14,12 +14,15 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { signIn } from "next-auth/react";
+import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { TierCallToAction } from "components/pricing";
+import { Tier } from "generated/graphql";
 import { app } from "lib/config";
-import { usePriceMetadata, useSearchParams } from "lib/hooks";
+import { useSearchParams } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
@@ -77,15 +80,17 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
 
   const isPerMonthPricing = pricingModel === "month";
 
-  const {
-    productTitle,
-    tier,
-    isFreeTier,
-    isRecommendedTier,
-    isEnterpriseTier,
-    isDisabled,
-    actionIcon,
-  } = usePriceMetadata({ price });
+  const tier = (price?.metadata.tier as Tier) ?? Tier.Free;
+
+  const isFreeTier = tier === Tier.Free;
+  const isRecommendedTier = tier === Tier.Team;
+  // TODO: determine if we want to display / handle Enterprise tier
+  const isEnterpriseTier = false;
+
+  const actionIcon = match(tier)
+    .with(Tier.Team, () => HiSparkles)
+    .with(Tier.Basic, () => HiLockOpen)
+    .otherwise(() => undefined);
 
   return (
     <Card
@@ -134,7 +139,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
         </Stack>
       )}
 
-      {isDisabled && (
+      {isEnterpriseTier && (
         <Stack
           position="absolute"
           top={1}
@@ -153,7 +158,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
         <Stack align="center" w="full" px={6}>
           {/* ! NB: important to add a `title` key to product metadata */}
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {productTitle}
+            {capitalizeFirstLetter(tier)}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
@@ -188,7 +193,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
               w="100%"
               fontSize="lg"
               variant={isRecommendedTier ? "solid" : "outline"}
-              disabled={isDisabled}
+              disabled={isEnterpriseTier}
               user={user}
               productId={price?.product.id ?? ""}
               priceId={price?.id ?? ""}
@@ -200,7 +205,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
             <Button
               w="100%"
               fontSize="lg"
-              disabled={isDisabled}
+              disabled={isEnterpriseTier}
               variant={isRecommendedTier ? "solid" : "outline"}
               onClick={() => signIn("omni")}
             >
@@ -230,12 +235,14 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
               const isComingSoon = feature.name?.includes("coming soon");
 
               const color = match({
-                isDisabled,
+                isEnterpriseTier,
                 isRecommendedTier,
                 isComingSoon,
               })
-                .with({ isDisabled: true }, () => "foreground.subtle")
-                .with({ isComingSoon: true }, () => "yellow")
+                .with(
+                  { isComingSoon: true, isEnterpriseTier: false },
+                  () => "yellow",
+                )
                 .with({ isRecommendedTier: true }, () => "brand.primary")
                 .otherwise(() => "foreground.subtle");
 
