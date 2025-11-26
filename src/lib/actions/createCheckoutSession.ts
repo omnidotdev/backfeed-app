@@ -2,7 +2,7 @@
 
 import { auth } from "auth";
 import getCustomer from "lib/actions/getCustomer";
-import { MANAGE_SUB_ID } from "lib/config";
+import { MANAGE_SUB_ID, app } from "lib/config";
 import payments from "lib/payments";
 
 import type Stripe from "stripe";
@@ -65,6 +65,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
       subscription_data: {
         metadata: {
           organizationId: checkout.organizationId,
+          omniProduct: app.name.toLowerCase(),
         },
       },
     });
