@@ -14,7 +14,7 @@ interface Props extends StackProps {
   /** Page header props. */
   header?: {
     /** Header section title. */
-    title: string | ReactNode;
+    title: ReactNode;
     /** Header section description. */
     description?: string;
     /** Header section call to action buttons. */
