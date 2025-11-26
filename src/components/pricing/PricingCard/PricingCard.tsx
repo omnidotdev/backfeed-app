@@ -32,7 +32,7 @@ import type Stripe from "stripe";
 
 // TODO discuss pulling dynamically + cache from Omni API or other approaches that make this changeable without redeploying service
 export const FREE_PRODUCT_DETAILS = {
-  description: "Start collecting and iterating on user feedback for free.",
+  description: "Start collecting and iterating on user feedback for free",
   marketing_features: [
     { name: "1 project per organization" },
     { name: "Feedback from up to 15 unique users per project" },
