@@ -2,7 +2,7 @@
 
 import { auth } from "auth";
 import getCustomer from "lib/actions/getCustomer";
-import { app } from "lib/config";
+import { STRIPE_PORTAL_CONFIG_ID, app } from "lib/config";
 import payments from "lib/payments";
 
 import type Stripe from "stripe";
@@ -82,6 +82,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
 
   const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
+    configuration: STRIPE_PORTAL_CONFIG_ID,
     flow_data: {
       type: "subscription_update",
       subscription_update: {

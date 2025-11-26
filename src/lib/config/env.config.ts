@@ -20,6 +20,11 @@ export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 export const FROM_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_FROM_EMAIL_ADDRESS;
 export const TO_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_TO_EMAIL_ADDRESS;
 
+// payment processing
+// customer portal session configuration: https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-configuration
+export const STRIPE_PORTAL_CONFIG_ID =
+  process.env.NEXT_PUBLIC_STRIPE_PORTAL_CONFIG_ID;
+
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
