@@ -31,6 +31,12 @@ const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
       subscription_cancel: {
         subscription: subscriptionId,
       },
+      after_completion: {
+        type: "redirect",
+        redirect: {
+          return_url: returnUrl,
+        },
+      },
     },
     return_url: returnUrl,
   });

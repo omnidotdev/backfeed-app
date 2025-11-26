@@ -87,6 +87,12 @@ const createCheckoutSession = async ({ checkout }: Options) => {
       subscription_update: {
         subscription: checkout.subscriptionId,
       },
+      after_completion: {
+        type: "redirect",
+        redirect: {
+          return_url: checkout.returnUrl,
+        },
+      },
     },
     return_url: checkout.returnUrl,
   });
