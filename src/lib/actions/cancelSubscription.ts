@@ -1,7 +1,6 @@
 "use server";
 
 import getCustomer from "lib/actions/getCustomer";
-import { STRIPE_PORTAL_SESSION_CONFIGURATION_ID } from "lib/config";
 import payments from "lib/payments";
 
 interface Options {
@@ -25,7 +24,6 @@ const cancelSubscription = async ({ subscriptionId, returnUrl }: Options) => {
 
   const session = await payments.billingPortal.sessions.create({
     customer: customer.id,
-    configuration: STRIPE_PORTAL_SESSION_CONFIGURATION_ID,
     flow_data: {
       type: "subscription_cancel",
       subscription_cancel: {

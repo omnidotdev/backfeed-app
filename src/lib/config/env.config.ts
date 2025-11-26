@@ -16,11 +16,6 @@ export const AUTH_ISSUER = process.env.NEXT_PUBLIC_AUTH_ISSUER;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
-// payment processing
-// customer portal session configuration: https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-configuration
-export const STRIPE_PORTAL_SESSION_CONFIGURATION_ID =
-  process.env.NEXT_PUBLIC_STRIPE_PORTAL_SESSION_CONFIGURATION_ID;
-
 // emails
 export const FROM_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_FROM_EMAIL_ADDRESS;
 export const TO_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_TO_EMAIL_ADDRESS;
