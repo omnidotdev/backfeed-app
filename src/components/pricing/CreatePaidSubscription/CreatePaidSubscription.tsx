@@ -69,11 +69,9 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
-  // TODO: determine if there is a better approach here using Stripe integration
-  // TODO: discuss this mutation. We *must* attach `organizationId` as metadata to the subscription upon creation, so we need to wait for `onSuccess` here before routing to the checkout page
+  // TODO: determine if there is a better approach here to make the mutation transactional
   // The problem here is that a user could then opt to *not* finish the payment flow
-  // If a user doesn't finish the payment flow, the org is still creating in the database but with a `Free` tier subscription.
-  // Is this a tradeoff we are willing to make? Unfortunately, we can't update subscription metadata *after* the fact, or I would propose processing the payment first. See: https://github.com/polarsource/polar/issues/6871
+  // If a user doesn't finish the payment flow, the org is still created in the database but with a `Free` tier subscription.
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSettled: async () =>
