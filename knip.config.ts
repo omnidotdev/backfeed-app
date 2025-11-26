@@ -23,6 +23,7 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
+  ignoreExportsUsedInFile: true,
   ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
   ignoreDependencies: [
     // included by Next.js metapackage, used in Playwright config
