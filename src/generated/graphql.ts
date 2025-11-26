@@ -1578,15 +1578,6 @@ export enum InvitationOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
-/** Represents an update to a `Invitation`. Fields that are set will be updated. */
-export type InvitationPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
 export type Member = {
   __typename?: 'Member';
   createdAt?: Maybe<Scalars['Datetime']['output']>;
@@ -1855,8 +1846,6 @@ export type Mutation = {
   updateComment?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Downvote` using a unique key and a patch. */
   updateDownvote?: Maybe<UpdateDownvotePayload>;
-  /** Updates a single `Invitation` using a unique key and a patch. */
-  updateInvitation?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Member` using a unique key and a patch. */
   updateMember?: Maybe<UpdateMemberPayload>;
   /** Updates a single `Organization` using a unique key and a patch. */
@@ -2017,12 +2006,6 @@ export type MutationUpdateCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateDownvoteArgs = {
   input: UpdateDownvoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateInvitationArgs = {
-  input: UpdateInvitationInput;
 };
 
 
@@ -4428,40 +4411,6 @@ export type UpdateDownvotePayload = {
 /** The output of our update `Downvote` mutation. */
 export type UpdateDownvotePayloadDownvoteEdgeArgs = {
   orderBy?: Array<DownvoteOrderBy>;
-};
-
-/** All input for the `updateInvitation` mutation. */
-export type UpdateInvitationInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Invitation` being updated. */
-  patch: InvitationPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `Invitation` mutation. */
-export type UpdateInvitationPayload = {
-  __typename?: 'UpdateInvitationPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `Invitation` that was updated by this mutation. */
-  invitation?: Maybe<Invitation>;
-  /** An edge for our `Invitation`. May be used by Relay 1. */
-  invitationEdge?: Maybe<InvitationEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `Invitation` mutation. */
-export type UpdateInvitationPayloadInvitationEdgeArgs = {
-  orderBy?: Array<InvitationOrderBy>;
 };
 
 /** All input for the `updateMember` mutation. */
