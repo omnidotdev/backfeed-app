@@ -5,7 +5,7 @@ export const NEXT_RUNTIME = process.env.NEXT_RUNTIME;
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 /** @knipignore */
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export const API_GRAPHQL_URL = process.env.NEXT_PUBLIC_API_GRAPHQL_URL;
+export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // simplified environment helpers
 export const isDevEnv = NODE_ENV === "development";
