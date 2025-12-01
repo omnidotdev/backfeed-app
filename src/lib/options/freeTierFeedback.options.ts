@@ -48,6 +48,8 @@ const freeTierFeedbackOptions = ({ organizationSlug, projectSlug }: Options) =>
         return false;
       }
 
+      // NB: If the organization is on the `free` tier, then there is a maximum of 15 unique users that are allowed to provide feedback.
+      // This first checks if the user has already provided feedback (if so, allow user to submit more feedback), and then checks against the total number of unique users to provide feedback
       if (data.subscriptionTier === Tier.Free) {
         return (
           data.hasUserSubmittedFeedback ||

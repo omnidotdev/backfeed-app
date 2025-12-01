@@ -12,7 +12,11 @@ import {
   Stack,
   Text,
 } from "@omnidev/sigil";
-import { keepPreviousData, useMutationState } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutationState,
+  useQuery,
+} from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuPlus } from "react-icons/lu";
@@ -39,6 +43,7 @@ import {
   useDialogStore,
   useProjectViewStore,
 } from "lib/hooks/store";
+import { freeTierFeedbackOptions } from "lib/options";
 import { DialogType } from "store";
 
 import type {
@@ -88,6 +93,13 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
     useSearchParams();
 
   const onSearchChange = useHandleSearch();
+
+  const { data: canCreateFeedback } = useQuery(
+    freeTierFeedbackOptions({
+      organizationSlug: params.organizationSlug,
+      projectSlug: params.projectSlug,
+    }),
+  );
 
   const { data: defaultStatus } = useProjectStatusesQuery(
     {
@@ -256,6 +268,8 @@ const ProjectFeedback = ({ user, projectId }: Props) => {
             _hover: { base: "brand.primary.50", _dark: "brand.primary.950/30" },
           }}
           onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
+          // TODO: add tooltip for disabled state. Discuss copy
+          disabled={!canCreateFeedback}
         >
           <Icon src={LuPlus} />
 
