@@ -1,12 +1,11 @@
 "use client";
 
 import { Button, Icon } from "@omnidev/sigil";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
-import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
+import { Tier } from "generated/graphql";
 import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
@@ -43,31 +42,9 @@ const TierCallToAction = ({
   const [isPaidSubscriptionDialogOpen, setIsPaidSubscriptionDialogOpen] =
     useState(false);
 
-  const router = useRouter();
-
   const { setIsOpen: setIsCreateOrganizationOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
-
-  const { data: organizations } = useOrganizationsQuery(
-    {
-      userId: user.rowId,
-      excludeRoles: [Role.Member, Role.Admin],
-    },
-    {
-      select: (data) =>
-        data?.organizations?.nodes?.map((org) => {
-          const subscription = customer?.subscriptions.find(
-            (sub) => sub.id === org?.subscriptionId,
-          );
-
-          return {
-            ...org,
-            status: subscription?.status ?? "incomplete",
-          };
-        }) ?? [],
-    },
-  );
 
   if (tier === Tier.Free) {
     return (
