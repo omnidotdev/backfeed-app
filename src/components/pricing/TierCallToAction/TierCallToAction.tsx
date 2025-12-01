@@ -8,6 +8,7 @@ import { CreateOrganization } from "components/organization";
 import { CreatePaidSubscription } from "components/pricing";
 import { Role, Tier, useOrganizationsQuery } from "generated/graphql";
 import { useDialogStore } from "lib/hooks/store";
+import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
@@ -87,7 +88,7 @@ const TierCallToAction = ({
     <>
       <Button {...rest} onClick={() => setIsPaidSubscriptionDialogOpen(true)}>
         {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
-        Get Started
+        Continue with {capitalizeFirstLetter(tier)}
       </Button>
 
       <CreatePaidSubscription
