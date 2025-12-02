@@ -279,12 +279,14 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           disabled:
             isAuthenticationLoading ||
             isCancelSubscriptionPending ||
+            !organization.subscriptionId ||
             organization.subscription.toBeCanceled,
         }}
         contentProps={{
           display:
             isAuthenticationLoading ||
             isCancelSubscriptionPending ||
+            !organization.subscriptionId ||
             organization.subscription.toBeCanceled
               ? "none"
               : undefined,
