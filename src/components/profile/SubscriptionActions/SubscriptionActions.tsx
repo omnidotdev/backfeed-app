@@ -15,7 +15,8 @@ import {
 } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { LuPencil, LuPlus, LuRepeat2, LuTrash2 } from "react-icons/lu";
+import { FiArrowUpCircle } from "react-icons/fi";
+import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
 import {
   cancelSubscription,
@@ -202,7 +203,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
                     isAuthenticationLoading || isCreateSubscriptionPending
                   }
                 >
-                  <Icon src={LuPlus} h={5} w={5} />
+                  <Icon src={FiArrowUpCircle} h={5} w={5} />
                 </Button>
               }
               onSelect={({ value }) => createSubscription({ priceId: value })}
