@@ -175,77 +175,97 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           Manage Subscription
         </Tooltip>
       ) : (
-        <Menu
-          // TODO: discuss / figure out how to properly set a tooltip for this trigger
+        <Tooltip
+          positioning={{
+            placement: "top",
+          }}
+          hasArrow={false}
+          triggerProps={{
+            style: { all: "unset" },
+            disabled: isAuthenticationLoading || isManageSubscriptionPending,
+          }}
+          contentProps={{
+            zIndex: "foreground",
+            fontSize: "sm",
+          }}
           trigger={
-            <Button
-              asChild
-              color="brand.senary"
-              backgroundColor="transparent"
-              _disabled={{ opacity: 0.5 }}
-              fontSize="md"
-              px={0}
-              disabled={isAuthenticationLoading || isCreateSubscriptionPending}
+            <Menu
+              // TODO: discuss / figure out how to properly set a tooltip for this trigger
+              trigger={
+                <Button
+                  asChild
+                  color="brand.senary"
+                  backgroundColor="transparent"
+                  _disabled={{ opacity: 0.5 }}
+                  fontSize="md"
+                  px={0}
+                  disabled={
+                    isAuthenticationLoading || isCreateSubscriptionPending
+                  }
+                >
+                  <Icon src={LuPlus} h={5} w={5} />
+                </Button>
+              }
+              onSelect={({ value }) => createSubscription({ priceId: value })}
             >
-              <Icon src={LuPlus} h={5} w={5} />
-            </Button>
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "month")
+                  .map((price) => (
+                    <MenuItem
+                      key={price.id}
+                      value={price.id}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /mo
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+
+              <MenuSeparator />
+
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "year")
+                  .map((price) => (
+                    <MenuItem
+                      key={price.id}
+                      value={price.id}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /yr
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+            </Menu>
           }
-          onSelect={({ value }) => createSubscription({ priceId: value })}
         >
-          <MenuItemGroup minW={40}>
-            <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
-            {prices
-              .filter((price) => price.recurring?.interval === "month")
-              .map((price) => (
-                <MenuItem
-                  key={price.id}
-                  value={price.id}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <HStack w="full" justify="space-between">
-                    {capitalizeFirstLetter(price.metadata.tier)}
-                    <Text>
-                      <Format.Number
-                        value={price.unit_amount! / 100}
-                        currency="USD"
-                        style="currency"
-                        notation="compact"
-                      />
-                      /mo
-                    </Text>
-                  </HStack>
-                </MenuItem>
-              ))}
-          </MenuItemGroup>
-
-          <MenuSeparator />
-
-          <MenuItemGroup minW={40}>
-            <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
-            {prices
-              .filter((price) => price.recurring?.interval === "year")
-              .map((price) => (
-                <MenuItem
-                  key={price.id}
-                  value={price.id}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <HStack w="full" justify="space-between">
-                    {capitalizeFirstLetter(price.metadata.tier)}
-                    <Text>
-                      <Format.Number
-                        value={price.unit_amount! / 100}
-                        currency="USD"
-                        style="currency"
-                        notation="compact"
-                      />
-                      /yr
-                    </Text>
-                  </HStack>
-                </MenuItem>
-              ))}
-          </MenuItemGroup>
-        </Menu>
+          Upgrade Plan
+        </Tooltip>
       )}
 
       <Tooltip
