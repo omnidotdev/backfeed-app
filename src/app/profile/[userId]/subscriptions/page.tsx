@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * Profile organizations page. Manage organization subscriptions.
+ * Profile subscriptions page. Manage organization subscriptions.
  */
-const ProfileOrganizationsPage = async ({
+const ProfileSubscriptionsPage = async ({
   params,
 }: PageProps<"/profile/[userId]/subscriptions">) => {
   const { userId } = await params;
@@ -68,4 +68,4 @@ const ProfileOrganizationsPage = async ({
   );
 };
 
-export default ProfileOrganizationsPage;
+export default ProfileSubscriptionsPage;
