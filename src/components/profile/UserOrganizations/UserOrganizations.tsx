@@ -179,7 +179,7 @@ const Subscription = ({ user, customer }: Props) => {
   if (!organizations?.length)
     return (
       <Stack gap={8}>
-        {app.profileSubscriptionsPage.table.emptyState.label}
+        {app.profileOrganizationsPage.table.emptyState.label}
         <Button w="fit" onClick={() => setIsCreateOrganizationDialogOpen(true)}>
           <Icon src={LuPlus} /> Create Organization
         </Button>

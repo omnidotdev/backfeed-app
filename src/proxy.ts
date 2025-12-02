@@ -80,7 +80,7 @@ export const proxy = auth(async (request) => {
   // Redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
   if (request.nextUrl.pathname.startsWith("/confirmation")) {
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth.user?.hidraId}/subscriptions`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth.user?.hidraId}/organizations`,
     );
   }
 

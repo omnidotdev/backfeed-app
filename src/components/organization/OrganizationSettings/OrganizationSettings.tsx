@@ -49,7 +49,7 @@ import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type {
   CustomerState,
   OrganizationRow,
-} from "components/profile/Subscription/Subscriptions";
+} from "components/profile/UserOrganizations/UserOrganizations";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =

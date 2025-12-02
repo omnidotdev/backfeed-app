@@ -338,9 +338,9 @@ const app = {
       },
     },
   },
-  profileSubscriptionsPage: {
-    breadcrumb: "Subscriptions",
-    description: "View and manage your active subscriptions.",
+  profileOrganizationsPage: {
+    breadcrumb: "Organizations",
+    description: "View and manage your organizations.",
     table: {
       headers: {
         productName: "Product Name",
@@ -349,7 +349,7 @@ const app = {
       },
       emptyState: {
         label:
-          "No active subscriptions. Create a new organization, or upgrade an existing plan to get started.",
+          "No currently owned organizations. Create a new organization to get started.",
       },
       actions: {
         subscribe: {

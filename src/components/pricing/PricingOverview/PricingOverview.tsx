@@ -18,7 +18,7 @@ import {
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
-import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { CustomerState } from "components/profile/UserOrganizations/UserOrganizations";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
 

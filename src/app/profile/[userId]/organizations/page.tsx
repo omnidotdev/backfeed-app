@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateOrganization } from "components/organization";
-import { Subscriptions } from "components/profile";
+import { UserOrganizations } from "components/profile";
 import {
   OrganizationOrderBy,
   Role,
@@ -17,7 +17,7 @@ import { getQueryClient } from "lib/util";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: app.profileSubscriptionsPage.breadcrumb,
+  title: app.profileOrganizationsPage.breadcrumb,
 };
 
 /**
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
  */
 const ProfileSubscriptionsPage = async ({
   params,
-}: PageProps<"/profile/[userId]/subscriptions">) => {
+}: PageProps<"/profile/[userId]/organizations">) => {
   const { userId } = await params;
 
   const [session, customer] = await Promise.all([auth(), getCustomer()]);
@@ -55,12 +55,12 @@ const ProfileSubscriptionsPage = async ({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Page
         header={{
-          title: app.profileSubscriptionsPage.breadcrumb,
-          description: app.profileSubscriptionsPage.description,
+          title: app.profileOrganizationsPage.breadcrumb,
+          description: app.profileOrganizationsPage.description,
         }}
         pt={0}
       >
-        <Subscriptions user={session.user} customer={customer} />
+        <UserOrganizations user={session.user} customer={customer} />
 
         <CreateOrganization />
       </Page>

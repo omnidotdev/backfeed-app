@@ -37,7 +37,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         checkout: {
           type: "update",
           subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
+          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
         },
       });
 
@@ -53,7 +53,7 @@ const SubscriptionActions = ({ organization }: Props) => {
     mutationFn: async () => {
       const cancelUrl = await cancelSubscription({
         subscriptionId: organization.subscriptionId!,
-        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
+        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
       });
 
       return cancelUrl;
