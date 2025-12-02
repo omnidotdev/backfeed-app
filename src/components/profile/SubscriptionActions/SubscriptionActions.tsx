@@ -190,7 +190,6 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           }}
           trigger={
             <Menu
-              // TODO: discuss / figure out how to properly set a tooltip for this trigger
               trigger={
                 <Button
                   asChild
