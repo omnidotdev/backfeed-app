@@ -182,7 +182,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           hasArrow={false}
           triggerProps={{
             style: { all: "unset" },
-            disabled: isAuthenticationLoading || isManageSubscriptionPending,
+            disabled: isAuthenticationLoading || isCreateSubscriptionPending,
           }}
           contentProps={{
             zIndex: "foreground",
