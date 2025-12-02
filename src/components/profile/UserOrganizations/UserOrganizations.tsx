@@ -195,9 +195,20 @@ const UserOrganizations = ({ user, prices, customer }: Props) => {
     );
 
   return (
-    <Flex w="100%" overflowX="auto">
-      <DataTable table={table} />
-    </Flex>
+    <Stack>
+      <Button
+        size="sm"
+        variant="outline"
+        w="fit"
+        onClick={() => setIsCreateOrganizationDialogOpen(true)}
+        alignSelf="flex-end"
+      >
+        <Icon src={LuPlus} /> Create Organization
+      </Button>
+      <Flex w="100%" overflowX="auto">
+        <DataTable table={table} />
+      </Flex>
+    </Stack>
   );
 };
 
