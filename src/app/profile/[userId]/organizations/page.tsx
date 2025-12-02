@@ -10,10 +10,11 @@ import {
   Role,
   useOrganizationsQuery,
 } from "generated/graphql";
-import { getCustomer } from "lib/actions";
+import { getCustomer, getPrices } from "lib/actions";
 import { app } from "lib/config";
 import { getQueryClient } from "lib/util";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,7 +29,11 @@ const ProfileSubscriptionsPage = async ({
 }: PageProps<"/profile/[userId]/organizations">) => {
   const { userId } = await params;
 
-  const [session, customer] = await Promise.all([auth(), getCustomer()]);
+  const [session, customer, prices] = await Promise.all([
+    auth(),
+    getCustomer(),
+    getPrices(),
+  ]);
 
   if (!session) redirect("/");
 
@@ -58,7 +63,11 @@ const ProfileSubscriptionsPage = async ({
         }}
         pt={0}
       >
-        <UserOrganizations user={session.user} customer={customer} />
+        <UserOrganizations
+          user={session.user}
+          customer={customer}
+          prices={prices as Price[]}
+        />
 
         <CreateOrganization />
       </Page>

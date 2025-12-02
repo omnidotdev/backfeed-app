@@ -1,9 +1,21 @@
 "use client";
 
-import { Button, HStack, Icon, Tooltip } from "@omnidev/sigil";
+import { Format } from "@ark-ui/react";
+import {
+  Button,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuSeparator,
+  Text,
+  Tooltip,
+} from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
+import { LuPencil, LuPlus, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
 import {
   cancelSubscription,
@@ -12,18 +24,22 @@ import {
 } from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationRow } from "components/profile";
 
 interface Props {
   /** Organization details. */
   organization: OrganizationRow;
+  /** App subscription priceing options. */
+  prices: Price[];
 }
 
 /**
  * Actions a user may perform for an organization-level subscription.
  */
-const SubscriptionActions = ({ organization }: Props) => {
+const SubscriptionActions = ({ organization, prices }: Props) => {
   const router = useRouter();
 
   const { user, isLoading: isAuthenticationLoading } = useAuth();
@@ -38,6 +54,25 @@ const SubscriptionActions = ({ organization }: Props) => {
           type: "update",
           subscriptionId: organization.subscriptionId!,
           returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+        },
+      });
+
+      return checkoutUrl;
+    },
+    onSuccess: (url) => router.push(url),
+  });
+
+  const {
+    mutateAsync: createSubscription,
+    isPending: isCreateSubscriptionPending,
+  } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) => {
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "create",
+          organizationId: organization.rowId,
+          priceId,
+          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
         },
       });
 
@@ -72,7 +107,7 @@ const SubscriptionActions = ({ organization }: Props) => {
   });
 
   return (
-    <HStack py={2}>
+    <HStack py={2} justify="center">
       {organization.subscription.toBeCanceled ? (
         <Tooltip
           positioning={{
@@ -106,7 +141,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         >
           Renew Subscription
         </Tooltip>
-      ) : (
+      ) : organization.subscriptionId ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -139,6 +174,78 @@ const SubscriptionActions = ({ organization }: Props) => {
         >
           Manage Subscription
         </Tooltip>
+      ) : (
+        <Menu
+          // TODO: discuss / figure out how to properly set a tooltip for this trigger
+          trigger={
+            <Button
+              asChild
+              color="brand.senary"
+              backgroundColor="transparent"
+              _disabled={{ opacity: 0.5 }}
+              fontSize="md"
+              px={0}
+              disabled={isAuthenticationLoading || isCreateSubscriptionPending}
+            >
+              <Icon src={LuPlus} h={5} w={5} />
+            </Button>
+          }
+          onSelect={({ value }) => createSubscription({ priceId: value })}
+        >
+          <MenuItemGroup minW={40}>
+            <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
+            {prices
+              .filter((price) => price.recurring?.interval === "month")
+              .map((price) => (
+                <MenuItem
+                  key={price.id}
+                  value={price.id}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <HStack w="full" justify="space-between">
+                    {capitalizeFirstLetter(price.metadata.tier)}
+                    <Text>
+                      <Format.Number
+                        value={price.unit_amount! / 100}
+                        currency="USD"
+                        style="currency"
+                        notation="compact"
+                      />
+                      /mo
+                    </Text>
+                  </HStack>
+                </MenuItem>
+              ))}
+          </MenuItemGroup>
+
+          <MenuSeparator />
+
+          <MenuItemGroup minW={40}>
+            <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
+            {prices
+              .filter((price) => price.recurring?.interval === "year")
+              .map((price) => (
+                <MenuItem
+                  key={price.id}
+                  value={price.id}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <HStack w="full" justify="space-between">
+                    {capitalizeFirstLetter(price.metadata.tier)}
+                    <Text>
+                      <Format.Number
+                        value={price.unit_amount! / 100}
+                        currency="USD"
+                        style="currency"
+                        notation="compact"
+                      />
+                      /yr
+                    </Text>
+                  </HStack>
+                </MenuItem>
+              ))}
+          </MenuItemGroup>
+        </Menu>
       )}
 
       <Tooltip
@@ -159,6 +266,7 @@ const SubscriptionActions = ({ organization }: Props) => {
             disabled={
               isAuthenticationLoading ||
               isCancelSubscriptionPending ||
+              !organization.subscriptionId ||
               organization.subscription.toBeCanceled
             }
             onClick={async () => await handleCancelSubscription()}
