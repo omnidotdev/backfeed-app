@@ -209,9 +209,9 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
               onSelect={({ value }) => createSubscription({ priceId: value })}
             >
               <MenuItemGroup minW={40}>
-                <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
+                <MenuItemGroupLabel>Basic</MenuItemGroupLabel>
                 {prices
-                  .filter((price) => price.recurring?.interval === "month")
+                  .filter((price) => price.metadata.tier === "basic")
                   .map((price) => (
                     <MenuItem
                       key={price.id}
@@ -219,7 +219,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
                       onClick={(e) => e.stopPropagation()}
                     >
                       <HStack w="full" justify="space-between">
-                        {capitalizeFirstLetter(price.metadata.tier)}
+                        {capitalizeFirstLetter(price.recurring?.interval)}ly
                         <Text>
                           <Format.Number
                             value={price.unit_amount! / 100}
@@ -227,7 +227,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
                             style="currency"
                             notation="compact"
                           />
-                          /mo
+                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
                         </Text>
                       </HStack>
                     </MenuItem>
@@ -237,9 +237,9 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
               <MenuSeparator />
 
               <MenuItemGroup minW={40}>
-                <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
+                <MenuItemGroupLabel>Team</MenuItemGroupLabel>
                 {prices
-                  .filter((price) => price.recurring?.interval === "year")
+                  .filter((price) => price.metadata.tier === "team")
                   .map((price) => (
                     <MenuItem
                       key={price.id}
@@ -247,7 +247,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
                       onClick={(e) => e.stopPropagation()}
                     >
                       <HStack w="full" justify="space-between">
-                        {capitalizeFirstLetter(price.metadata.tier)}
+                        {capitalizeFirstLetter(price.recurring?.interval)}ly
                         <Text>
                           <Format.Number
                             value={price.unit_amount! / 100}
@@ -255,7 +255,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
                             style="currency"
                             notation="compact"
                           />
-                          /yr
+                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
                         </Text>
                       </HStack>
                     </MenuItem>
