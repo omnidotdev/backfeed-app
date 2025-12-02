@@ -16,7 +16,7 @@ import type { Session } from "next-auth";
 import type { IconType } from "react-icons";
 
 interface Props extends ButtonProps {
-  /** Signed in user. */
+  /** Authenticated user. */
   user: Session["user"];
   /** Product ID. */
   productId: string;
@@ -52,6 +52,7 @@ const TierCallToAction = ({
         <Button onClick={() => setIsCreateOrganizationOpen(true)} {...rest}>
           Create a Free Organization
         </Button>
+
         <CreateOrganization disableHotKey />
       </>
     );

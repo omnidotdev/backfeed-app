@@ -62,7 +62,7 @@ interface Props {
   user: Session["user"];
   /** Organization details. */
   organization: OrganizationRow;
-  /** Customer information derived from the signed in user. */
+  /** Customer information derived from the authenticated user. */
   customer: CustomerState | undefined;
   /** App subscription pricing options. */
   prices: Price[];

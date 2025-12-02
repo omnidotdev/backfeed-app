@@ -27,7 +27,7 @@ export interface Price extends Stripe.Price {
 }
 
 interface Props {
-  /** Signed in user. */
+  /** Authenticated user. */
   user: Session["user"] | undefined;
   /** The available pricing tiers. */
   prices: Price[];

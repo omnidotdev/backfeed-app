@@ -64,7 +64,7 @@ export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
 };
 
 interface Props extends CardProps {
-  /** Signed in user. */
+  /** Authenticated user. */
   user: Session["user"] | undefined;
   /** Price information. */
   price: Price | undefined;
