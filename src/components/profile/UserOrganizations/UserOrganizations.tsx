@@ -132,7 +132,6 @@ const Subscription = ({ user, customer }: Props) => {
       userId: user?.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
-      isFreeTier: false,
     },
     {
       select: (data) =>

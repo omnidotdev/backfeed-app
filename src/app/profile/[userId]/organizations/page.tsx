@@ -41,13 +41,11 @@ const ProfileSubscriptionsPage = async ({
       userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
-      isFreeTier: false,
     }),
     queryFn: useOrganizationsQuery.fetcher({
       userId: session.user.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
-      isFreeTier: false,
     }),
   });
 
