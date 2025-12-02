@@ -8,11 +8,7 @@ const knipConfig: KnipConfig = {
   // NB: Modified from the default Next.js configuration, see: https://knip.dev/reference/plugins/next
   entry: [
     "src/{instrumentation,proxy}.ts",
-    // "src/app/global-error.{ts,tsx}",
     "src/app/**/{error,layout,loading,not-found,page,template,default,route}.{ts,tsx}",
-    // "src/app/{manifest,sitemap,robots}.ts",
-    // "src/app/**/{icon,apple-icon}.{ts,tsx}",
-    // "src/app/**/{opengraph,twitter}-image.{ts,tsx}",
     "src/test/**/*.{ts,tsx}",
     // NB: include test files and their dependencies as entry points
     "src/**/*.test.{ts,tsx}",
