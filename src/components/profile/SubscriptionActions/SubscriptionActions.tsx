@@ -32,7 +32,7 @@ import type { OrganizationRow } from "components/profile";
 interface Props {
   /** Organization details. */
   organization: OrganizationRow;
-  /** App subscription priceing options. */
+  /** App subscription pricing options. */
   prices: Price[];
 }
 
