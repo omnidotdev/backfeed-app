@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid } from "@omnidev/sigil";
+import { Grid, Icon } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -15,13 +15,7 @@ import {
 } from "components/dashboard";
 import { Page } from "components/layout";
 import { CreateOrganization } from "components/organization";
-import {
-  Role,
-  Tier,
-  useDashboardAggregatesQuery,
-  useOrganizationsQuery,
-  useUserQuery,
-} from "generated/graphql";
+import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { DialogType } from "store";
 
@@ -55,40 +49,6 @@ const DashboardPage = ({ user, oneWeekAgo }: Props) => {
     },
   );
 
-  const { data: organizations } = useOrganizationsQuery(
-    {
-      pageSize: 1,
-      userId: user.rowId,
-      excludeRoles: [Role.Member, Role.Admin],
-    },
-    {
-      select: (data) => data?.organizations,
-    },
-  );
-
-  const { data: tierRestrictions } = useUserQuery(
-    {
-      hidraId: user.hidraId!,
-    },
-    {
-      enabled: !!organizations,
-      select: (data) => {
-        const userTier = data?.userByHidraId?.tier;
-
-        const isTeamTier =
-          userTier && ![Tier.Free, Tier.Basic].includes(userTier);
-        const isFreeTier = !!userTier;
-
-        return {
-          isSubscribed: isFreeTier,
-          // NB: if the user is not subscribed to a team tier subscription or higher, limit the number of organizations they can create to just one.
-          canCreateOrganizations:
-            isTeamTier || (isFreeTier && !organizations?.totalCount),
-        };
-      },
-    },
-  );
-
   const aggregates = [
     {
       title: app.dashboardPage.aggregates.totalFeedback.title,
@@ -111,26 +71,18 @@ const DashboardPage = ({ user, oneWeekAgo }: Props) => {
           {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
-            icon: <LuBuilding2 />,
+            icon: <Icon src={LuBuilding2} />,
             href: "/organizations",
           },
           {
             label: app.dashboardPage.cta.newOrganization.label,
-            icon: <LuCirclePlus />,
+            icon: <Icon src={LuCirclePlus} />,
             dialogType: DialogType.CreateOrganization,
-            disabled: !tierRestrictions?.canCreateOrganizations,
-            tooltip: tierRestrictions?.isSubscribed
-              ? app.dashboardPage.cta.newOrganization.subscribedTooltip
-              : app.dashboardPage.cta.newOrganization.noSubscriptionTooltip,
           },
         ],
       }}
     >
-      <PinnedOrganizations
-        user={user}
-        canCreateOrganizations={tierRestrictions?.canCreateOrganizations}
-        isSubscribed={tierRestrictions?.isSubscribed}
-      />
+      <PinnedOrganizations user={user} />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -152,7 +104,7 @@ const DashboardPage = ({ user, oneWeekAgo }: Props) => {
       </Grid>
 
       {/* dialogs */}
-      {tierRestrictions?.canCreateOrganizations && <CreateOrganization />}
+      <CreateOrganization />
     </Page>
   );
 };

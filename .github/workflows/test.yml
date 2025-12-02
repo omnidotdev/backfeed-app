@@ -12,10 +12,10 @@ jobs:
     timeout-minutes: 1
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.1.42
+          bun-version: 1.3.3
       # - uses: ArtiomTr/jest-coverage-report-action@v2
       #   with:
       #     package-manager: bun
@@ -38,14 +38,14 @@ jobs:
     # matrix:
     # shard: [1/4, 2/4, 3/4, 4/4]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: bun install
       - name: Install Playwright
         run: bunx playwright install --with-deps
       - name: Load test environment variables
-        uses: falti/dotenv-action@v1.1.4
+        uses: falti/dotenv-action@v1.1.5
         with:
           path: .env.test
       - name: Run E2E tests

@@ -17,20 +17,12 @@ import type { Session } from "next-auth";
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Whether the authenticated user can create organizations. */
-  canCreateOrganizations: boolean | undefined;
-  /** Whether the authenticated user is subscribed. */
-  isSubscribed: boolean | undefined;
 }
 
 /**
  * Pinned organizations section.
  */
-const PinnedOrganizations = ({
-  user,
-  canCreateOrganizations,
-  isSubscribed,
-}: Props) => {
+const PinnedOrganizations = ({ user }: Props) => {
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -93,11 +85,6 @@ const PinnedOrganizations = ({
                 label: app.dashboardPage.organizations.emptyState.cta.label,
                 onClick: () => setIsCreateOrganizationDialogOpen(true),
                 icon: LuCirclePlus,
-                disabled: !canCreateOrganizations,
-                tooltip: isSubscribed
-                  ? app.dashboardPage.organizations.emptyState.subscribedTooltip
-                  : app.dashboardPage.organizations.emptyState
-                      .noSubscriptionTooltip,
               }}
               h={48}
             />

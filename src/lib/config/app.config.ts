@@ -158,9 +158,6 @@ const app = {
       description: "Quickly view organizations that you are a member of",
       emptyState: {
         message: "No organizations found. Would you like to create one?",
-        subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-        noSubscriptionTooltip: "Subscribe to create an organization.",
         cta: {
           label: "Create Organization",
         },
@@ -201,9 +198,6 @@ const app = {
           },
         },
         label: "New Organization",
-        subscribedTooltip:
-          "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-        noSubscriptionTooltip: "Subscribe to create an organization.",
         description: "Create a new organization",
         organizationName: {
           id: "Organization Name",
@@ -344,9 +338,9 @@ const app = {
       },
     },
   },
-  profileSubscriptionPage: {
-    breadcrumb: "Subscription",
-    description: "Manage your subscription plan and billing information.",
+  profileSubscriptionsPage: {
+    breadcrumb: "Subscriptions",
+    description: "View and manage your active subscriptions.",
     table: {
       headers: {
         productName: "Product Name",
@@ -354,7 +348,8 @@ const app = {
         amount: "Amount",
       },
       emptyState: {
-        label: "No active subscription found.",
+        label:
+          "No active subscriptions. Create a new organization, or upgrade an existing plan to get started.",
       },
       actions: {
         subscribe: {
@@ -373,17 +368,11 @@ const app = {
       cta: {
         newOrganization: {
           label: "New Organization",
-          subscribedTooltip:
-            "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-          noSubscriptionTooltip: "Subscribe to create an organization.",
         },
       },
     },
     emptyState: {
       message: "No organizations found. Would you like to create one?",
-      subscribedTooltip:
-        "Your plan only allows you to create 1 organization. Upgrade your plan to create more.",
-      noSubscriptionTooltip: "Subscribe to create an organization.",
       cta: {
         label: "Create Organization",
       },
@@ -542,17 +531,6 @@ const app = {
           },
         },
       },
-      transferOwnership: {
-        title: "Transfer Ownership",
-        description:
-          "Transfer ownership of this organization to another member.",
-        actionLabel: "Transfer",
-        destructiveAction: {
-          title: "Transfer Ownership",
-          description: "Are you sure you want to transfer ownership?",
-          actionLabel: "Transfer",
-        },
-      },
       deleteOrganization: {
         title: "Delete Organization",
         description:
@@ -697,7 +675,6 @@ const app = {
       items: [
         {
           title: "Can I switch plans later?",
-          // TODO verify this is correct with Polar, it is possible with Stripe. Adjust copy once sorted (https://linear.app/omnidev/issue/OMNI-235/verify-polar-upgradedowngrade-plan-caveats-see-todo-in-can-i-switch)
           body: "Yes, you can upgrade or downgrade your plan at any time. When you upgrade, you'll be prorated the difference. When you downgrade, you'll receive credit for your next billing cycle.",
         },
         {

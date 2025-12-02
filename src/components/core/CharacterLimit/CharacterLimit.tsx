@@ -40,6 +40,7 @@ const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
       min={0}
       max={max}
       display="flex"
+      flexDirection="row"
       alignItems="center"
       w="fit"
       gap={2}

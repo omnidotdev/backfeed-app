@@ -7,7 +7,6 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import { useMemo } from "react";
 
 import {
@@ -19,23 +18,32 @@ import {
 import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
-import type { Product } from "@polar-sh/sdk/models/components/product";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { Session } from "next-auth";
+import type Stripe from "stripe";
+
+export interface Price extends Stripe.Price {
+  product: Stripe.Product;
+}
 
 interface Props {
-  /** The products available for pricing tiers. */
-  products: Product[];
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** The available pricing tiers. */
+  prices: Price[];
+  /** Customer details. */
+  customer?: CustomerState;
 }
 
 /**
  * Pricing overview section.
  */
-const PricingOverview = ({ products }: Props) => {
+const PricingOverview = ({ user, prices, customer }: Props) => {
   const [{ pricingModel }, setSearchParams] = useSearchParams();
 
-  const filteredProducts = useMemo(
-    () =>
-      products.filter((product) => product.recurringInterval === pricingModel),
-    [products, pricingModel],
+  const filteredPrices = useMemo(
+    () => prices.filter((price) => price.recurring?.interval === pricingModel),
+    [prices, pricingModel],
   );
 
   return (
@@ -54,12 +62,12 @@ const PricingOverview = ({ products }: Props) => {
             // NB: length check prevents deselecting a selected value
             value.length &&
             setSearchParams({
-              pricingModel: (value[0] as SubscriptionRecurringInterval) ?? null,
+              pricingModel: (value[0] as "month" | "year") ?? null,
             })
           }
         >
           <ToggleGroupItem
-            value={SubscriptionRecurringInterval.Month}
+            value="month"
             color="foreground.default"
             px={6}
             py={4}
@@ -74,7 +82,7 @@ const PricingOverview = ({ products }: Props) => {
           </ToggleGroupItem>
 
           <ToggleGroupItem
-            value={SubscriptionRecurringInterval.Year}
+            value="year"
             color="foreground.default"
             px={6}
             py={4}
@@ -114,8 +122,15 @@ const PricingOverview = ({ products }: Props) => {
         gap={4}
         px={4}
       >
-        {filteredProducts.map((product) => (
-          <PricingCard key={product.id} product={product} />
+        <PricingCard user={user} price={undefined} customer={customer} />
+
+        {filteredPrices.map((price) => (
+          <PricingCard
+            key={price.id}
+            user={user}
+            price={price}
+            customer={customer}
+          />
         ))}
       </Flex>
 

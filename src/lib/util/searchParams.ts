@@ -1,4 +1,3 @@
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -24,9 +23,10 @@ const searchParams = {
   roles: parseAsArrayOf(parseAsStringEnum<Role>(Object.values(Role))),
   page: parseAsInteger.withDefault(DEFAULT_PAGE_NUMBER),
   pageSize: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
-  pricingModel: parseAsStringEnum<SubscriptionRecurringInterval>(
-    Object.values(SubscriptionRecurringInterval),
-  ).withDefault(SubscriptionRecurringInterval.Month),
+  pricingModel: parseAsStringEnum<"month" | "year">([
+    "month",
+    "year",
+  ]).withDefault("month"),
   excludedStatuses: parseAsArrayOf(parseAsString).withDefault([]),
   orderBy: parseAsString,
 };

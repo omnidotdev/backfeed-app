@@ -1,55 +1,97 @@
 "use client";
 
-import { createListCollection } from "@ark-ui/react";
-import { Combobox, Divider, Stack } from "@omnidev/sigil";
-import { useQueryClient } from "@tanstack/react-query";
+import { Format } from "@ark-ui/react";
+import {
+  Button,
+  Divider,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuSeparator,
+  Stack,
+  Text,
+  sigil,
+} from "@omnidev/sigil";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { BiTransfer } from "react-icons/bi";
+import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { RiUserSharedLine } from "react-icons/ri";
 
 import { DangerZoneAction } from "components/core";
 import { SectionContainer } from "components/layout";
 import { UpdateOrganization } from "components/organization";
 import {
+  FREE_PRODUCT_DETAILS,
+  sortBenefits,
+} from "components/pricing/PricingCard/PricingCard";
+import {
   Role,
   useDeleteOrganizationMutation,
   useLeaveOrganizationMutation,
   useMembersQuery,
 } from "generated/graphql";
-import { app, isDevEnv } from "lib/config";
+import {
+  createCheckoutSession,
+  renewSubscription,
+  revokeSubscription,
+} from "lib/actions";
+import { BASE_URL, app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
-import { useTransferOwnershipMutation } from "lib/hooks/mutations";
+import { capitalizeFirstLetter, toaster } from "lib/util";
 
 import type { DestructiveActionProps } from "components/core";
-import type { Organization } from "generated/graphql";
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
+import type {
+  CustomerState,
+  OrganizationRow,
+} from "components/profile/Subscription/Subscriptions";
 import type { Session } from "next-auth";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
 const leaveOrganizationDetails =
   app.organizationSettingsPage.cta.leaveOrganization;
-const transferOwnershipDetails =
-  app.organizationSettingsPage.cta.transferOwnership;
 
 interface Props {
   /** Authenticated user. */
   user: Session["user"];
-  /** Organization ID. */
-  organizationId: Organization["rowId"];
+  /** Organization details. */
+  organization: OrganizationRow;
+  /** Customer information derived from the authenticated user. */
+  customer: CustomerState | undefined;
+  /** App subscription pricing options. */
+  prices: Price[];
 }
 
 /** Organization settings. */
-const OrganizationSettings = ({ user, organizationId }: Props) => {
-  const [newOwnerMembershipId, setNewOwnerMembershipId] = useState("");
+const OrganizationSettings = ({
+  user,
+  organization,
+  customer,
+  prices,
+}: Props) => {
+  const router = useRouter();
+
+  const subscription = customer?.subscriptions.find(
+    (sub) => sub.id === organization.subscriptionId,
+  );
+
+  const subscriptionPrice = prices.find(
+    (price) =>
+      price.product.id === subscription?.items.data[0].plan.product &&
+      price.id === subscription?.items.data[0].plan.id,
+  );
 
   const queryClient = useQueryClient();
 
-  const router = useRouter();
-
   const { data: numberOfOwners } = useMembersQuery(
     {
-      organizationId,
+      organizationId: organization.rowId,
       roles: [Role.Owner],
     },
     {
@@ -57,28 +99,12 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     },
   );
 
-  // NB: does not need to be prefetched from the server as the data is hidden within the transfer ownership destructive action dialog upon initial render.
-  // TODO: include variable(s) to filter out members that are an owner of another org *if* they have a basic tier subscription
-  const { data: members } = useMembersQuery(
-    {
-      organizationId,
-      excludeRoles: [Role.Owner],
-    },
-    {
-      select: (data) =>
-        data.members?.nodes?.map((member) => ({
-          label: `${member?.user?.firstName} ${member?.user?.lastName}`,
-          value: member?.rowId,
-        })),
-    },
-  );
-
   const { isOwner, membershipId } = useOrganizationMembership({
     userId: user.rowId,
-    organizationId,
+    organizationId: organization.rowId,
   });
 
-  const { mutate: deleteOrganization } = useDeleteOrganizationMutation({
+  const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
       onMutate: () => router.replace("/"),
       // NB: when an organization is deleted, we want to invalidate all queries as any of them could have data for said org associated with the user
       onSettled: async () => queryClient.invalidateQueries(),
@@ -87,9 +113,6 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
       onMutate: () => router.replace("/"),
       // NB: when a user leaves an organization, we want to invalidate all queries as any of them could have data for said org associated with the user
       onSettled: async () => queryClient.invalidateQueries(),
-    }),
-    { mutate: transferOwnership } = useTransferOwnershipMutation({
-      organizationId,
     });
 
   const isOnlyOwner = isOwner && numberOfOwners === 1;
@@ -101,8 +124,44 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     destructiveInput: deleteOrganizationDetails.destruciveAction.prompt,
     action: {
       label: deleteOrganizationDetails.destruciveAction.actionLabel,
-      onClick: () => deleteOrganization({ rowId: organizationId }),
+      onClick: () =>
+        toaster.promise(
+          async () => {
+            if (organization.subscriptionId) {
+              const revokedSubscriptionId = await revokeSubscription({
+                subscriptionId: organization.subscriptionId,
+              });
+
+              if (!revokedSubscriptionId)
+                throw new Error("Error revoking subscription");
+            }
+
+            await deleteOrganization({ rowId: organization.rowId });
+          },
+          {
+            loading: {
+              title: "Deleting organization...",
+            },
+            success: {
+              title: "Successfully deleted organization.",
+            },
+            error: {
+              title: "Error",
+              description:
+                "Sorry, there was an issue with deleting your organization. Please try again.",
+            },
+          },
+        ),
     },
+    children: (
+      <Text whiteSpace="wrap" fontWeight="medium">
+        The organization will be{" "}
+        <sigil.span color="red">permanently</sigil.span> deleted, including its
+        projects, posts and comments. Any subscription associated with the
+        organization will be immediately{" "}
+        <sigil.span color="red">revoked</sigil.span>.
+      </Text>
+    ),
   };
 
   const LEAVE_ORGANIZATION: DestructiveActionProps = {
@@ -119,44 +178,154 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
     },
   };
 
-  const TRANSFER_OWNERSHIP: DestructiveActionProps = {
-    title: transferOwnershipDetails.title,
-    description: transferOwnershipDetails.description,
-    triggerLabel: transferOwnershipDetails.actionLabel,
-    icon: BiTransfer,
-    action: {
-      label: transferOwnershipDetails.actionLabel,
-      disabled: !newOwnerMembershipId.length,
-      onClick: () =>
-        transferOwnership({
-          rowId: newOwnerMembershipId,
-          patch: {
-            role: Role.Owner,
-          },
-        }),
+  const {
+    mutateAsync: createSubscription,
+    isPending: isCreateSubscriptionPending,
+  } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) => {
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "create",
+          priceId,
+          organizationId: organization.rowId!,
+          successUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
+        },
+      });
+
+      return checkoutUrl;
     },
-    children: (
-      <Combobox
-        label={{ id: "member", singular: "Member", plural: "Members" }}
-        collection={createListCollection({ items: members ?? [] })}
-        placeholder="Search for or select a member..."
-        colorPalette="red"
-        clearTriggerProps={{
-          display: newOwnerMembershipId ? "block" : "none",
-        }}
-        value={[newOwnerMembershipId]}
-        onValueChange={({ value }) => {
-          value.length
-            ? setNewOwnerMembershipId(value[0])
-            : setNewOwnerMembershipId("");
-        }}
-      />
-    ),
-  };
+    onSuccess: (url) => router.push(url),
+  });
+
+  const { mutateAsync: manageSubscription } = useMutation({
+    mutationFn: async () => {
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "update",
+          subscriptionId: organization.subscriptionId!,
+          returnUrl: `${BASE_URL}/organizations/${organization.slug}/settings`,
+        },
+      });
+
+      return checkoutUrl;
+    },
+    onSuccess: (url) => router.push(url),
+  });
 
   return (
     <Stack gap={6}>
       <UpdateOrganization user={user} />
+
+      {isOwner && (
+        <SectionContainer
+          title="Manage Subscription"
+          description="Update your organization's subscription to unlock new benefits."
+        >
+          <Text>
+            This organization is currently on the Backfeed{" "}
+            <sigil.span color="brand.primary">
+              {capitalizeFirstLetter(organization.tier)}
+            </sigil.span>{" "}
+            tier. Benefits included in this plan are:
+          </Text>
+          <Grid w="full" lineHeight={1.5}>
+            {sortBenefits(
+              subscriptionPrice?.product.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
+
+              return (
+                <GridItem key={feature.name} display="flex" gap={2}>
+                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <sigil.span h={6} display="flex" alignItems="center">
+                    <Icon
+                      src={isComingSoon ? LuClockAlert : LuCheck}
+                      h={4}
+                      w={4}
+                    />
+                  </sigil.span>
+
+                  {feature.name?.split(" (coming soon)")[0]}
+                </GridItem>
+              );
+            })}
+          </Grid>
+
+          {organization.subscriptionId ? (
+            <Button
+              w="fit"
+              onClick={async () => {
+                if (organization.subscription.toBeCanceled) {
+                  await renewSubscription({
+                    subscriptionId: organization.subscriptionId!,
+                  });
+                } else {
+                  await manageSubscription();
+                }
+              }}
+            >
+              {organization.subscription.toBeCanceled ? "Renew" : "Manage"}{" "}
+              Subscription
+            </Button>
+          ) : (
+            <Menu
+              trigger={
+                <Button w="fit" disabled={isCreateSubscriptionPending}>
+                  Upgrade Plan
+                </Button>
+              }
+              onSelect={({ value }) => createSubscription({ priceId: value })}
+            >
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Monthly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "month")
+                  .map((price) => (
+                    <MenuItem key={price.id} value={price.id}>
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /mo
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+
+              <MenuSeparator />
+
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Yearly</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.recurring?.interval === "year")
+                  .map((price) => (
+                    <MenuItem key={price.id} value={price.id}>
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.metadata.tier)}
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /yr
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+            </Menu>
+          )}
+        </SectionContainer>
+      )}
 
       <SectionContainer
         title={app.organizationSettingsPage.dangerZone.title}
@@ -176,14 +345,7 @@ const OrganizationSettings = ({ user, organizationId }: Props) => {
 
         {isOwner && (
           <Stack gap={6}>
-            {/* TODO: remove development environment check when functionality for ownership transfers is resolved. */}
-            {isOnlyOwner && isDevEnv && (
-              <DangerZoneAction
-                title={transferOwnershipDetails.title}
-                description={transferOwnershipDetails.description}
-                actionProps={TRANSFER_OWNERSHIP}
-              />
-            )}
+            {/* TODO: add ownership transfer when functionality is resolved. Added scope: must transfer subscription. */}
 
             <DangerZoneAction
               title={deleteOrganizationDetails.title}

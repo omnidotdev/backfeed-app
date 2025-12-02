@@ -9,6 +9,7 @@ import * as rtlDomMatchers from "@testing-library/jest-dom/matchers";
 
 import "__mocks__/nextImage.mock";
 import "__mocks__/nextRouter.mock";
+import "__mocks__/payments.mock";
 
 // import { mswNodeServer } from "test/e2e/util";
 

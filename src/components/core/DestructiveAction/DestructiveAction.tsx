@@ -152,6 +152,7 @@ const DestructiveAction = ({
         style: {
           // TODO: adjust minW upstream in Sigil for mobile viewports
           minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          maxWidth: token("sizes.lg"),
           cursor: "default",
         },
       }}

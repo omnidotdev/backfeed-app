@@ -15,6 +15,7 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
+import { icon } from "generated/panda/recipes";
 import { getOrganization } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
@@ -117,7 +118,8 @@ const OrganizationMembersPage = async ({
               ? [
                   {
                     label: app.organizationMembersPage.cta.addOwner.label,
-                    icon: <LuCirclePlus />,
+                    // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
+                    icon: <LuCirclePlus className={icon()} />,
                     dialogType: DialogType.AddOwner,
                   },
                 ]

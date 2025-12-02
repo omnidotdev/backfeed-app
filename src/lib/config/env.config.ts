@@ -2,8 +2,9 @@
 const NODE_ENV = process.env.NODE_ENV;
 const APP_ENV = process.env.APP_ENV;
 export const NEXT_RUNTIME = process.env.NEXT_RUNTIME;
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export const API_GRAPHQL_URL = process.env.NEXT_PUBLIC_API_GRAPHQL_URL;
+export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // simplified environment helpers
 export const isDevEnv = NODE_ENV === "development";
@@ -15,13 +16,14 @@ export const AUTH_ISSUER = process.env.NEXT_PUBLIC_AUTH_ISSUER;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
-// payment processing
-export const ENABLE_POLAR_SANDBOX =
-  process.env.NEXT_PUBLIC_ENABLE_POLAR_SANDBOX === "true";
-
 // emails
 export const FROM_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_FROM_EMAIL_ADDRESS;
 export const TO_EMAIL_ADDRESS = process.env.NEXT_PUBLIC_TO_EMAIL_ADDRESS;
+
+// payment processing
+// customer portal session configuration: https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-configuration
+export const STRIPE_PORTAL_CONFIG_ID =
+  process.env.NEXT_PUBLIC_STRIPE_PORTAL_CONFIG_ID;
 
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired

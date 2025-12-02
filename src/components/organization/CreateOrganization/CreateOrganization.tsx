@@ -48,10 +48,15 @@ const createOrganizationSchema = z
     }
   });
 
+interface Props {
+  /** Whether to enable hotkey trigger for opening the dialog. */
+  isHotkeyEnabled?: boolean;
+}
+
 /**
  * Dialog for creating a new organization.
  */
-const CreateOrganization = () => {
+const CreateOrganization = ({ isHotkeyEnabled = true }: Props) => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -77,18 +82,18 @@ const CreateOrganization = () => {
       reset();
     },
     {
-      enabled: !isCreateProjectDialogOpen,
+      enabled: !isCreateProjectDialogOpen && isHotkeyEnabled,
       enableOnFormTags: true,
       preventDefault: true,
     },
-    [isOpen, isCreateProjectDialogOpen],
+    [isOpen, isCreateProjectDialogOpen, isHotkeyEnabled],
   );
 
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSettled: async () =>
         queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         router.push(
           `/${app.organizationsPage.breadcrumb.toLowerCase()}/${data?.organization?.slug}`,
         );

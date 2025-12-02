@@ -9,11 +9,12 @@ import {
   useMembersQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
-import { getOrganization } from "lib/actions";
+import { getCustomer, getOrganization, getPrices } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { getQueryClient } from "lib/util";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
 
 export const generateMetadata = async ({
@@ -42,9 +43,17 @@ const OrganizationSettingsPage = async ({
 
   if (!session) notFound();
 
-  const organization = await getOrganization({ organizationSlug });
+  const [organization, customer, prices] = await Promise.all([
+    getOrganization({ organizationSlug }),
+    getCustomer(),
+    getPrices(),
+  ]);
 
   if (!organization) notFound();
+
+  const currentSubscription = customer?.subscriptions.find(
+    (sub) => sub.id === organization.subscriptionId,
+  );
 
   const sdk = getSdk({ session });
 
@@ -90,7 +99,17 @@ const OrganizationSettingsPage = async ({
       >
         <OrganizationSettings
           user={session.user}
-          organizationId={organization.rowId}
+          organization={{
+            ...organization,
+            subscription: {
+              subscriptionStatus: currentSubscription?.status ?? "canceled",
+              toBeCanceled: !!currentSubscription?.cancel_at,
+              currentPeriodEnd:
+                currentSubscription?.items.data[0].current_period_end,
+            },
+          }}
+          customer={customer}
+          prices={prices as Price[]}
         />
       </Page>
     </HydrationBoundary>

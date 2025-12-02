@@ -8,6 +8,7 @@ query Organizations(
   $search: String
   $slug: String
   $organizationId: UUID
+  $isFreeTier: Boolean
 ) {
   organizations(
     first: $pageSize
@@ -17,6 +18,7 @@ query Organizations(
       rowId: { equalTo: $organizationId }
       name: { includesInsensitive: $search }
       slug: { equalTo: $slug }
+      subscriptionId: { isNull: $isFreeTier }
       or: [
         {
           membersExist: $isMember
@@ -33,14 +35,9 @@ query Organizations(
   ) {
     totalCount
     nodes {
-      rowId
-      name
-      slug
+      ...Organization
       updatedAt
       projects {
-        totalCount
-      }
-      members {
         totalCount
       }
     }

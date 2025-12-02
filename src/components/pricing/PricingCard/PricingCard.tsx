@@ -13,46 +13,42 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { API_BASE_URL, app } from "lib/config";
-import { useAuth, useProductMetadata, useSearchParams } from "lib/hooks";
+import { TierCallToAction } from "components/pricing";
+import { Tier } from "generated/graphql";
+import { app } from "lib/config";
+import { useSearchParams } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
 import type { CardProps } from "@omnidev/sigil";
-import type { Benefit } from "@polar-sh/sdk/models/components/benefit";
-import type { BenefitCustomProperties } from "@polar-sh/sdk/models/components/benefitcustomproperties";
-import type { Product } from "@polar-sh/sdk/models/components/product";
-import type { ProductPrice } from "@polar-sh/sdk/models/components/productprice";
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
+import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { Session } from "next-auth";
+import type Stripe from "stripe";
 
-const COMING_SOON = "coming soon";
-
-/**
- * Get a human-readable price.
- * @param price Fixed price details. Derived from product.
- * @param isEnterpriseTier Whether the product is enterprise tier.
- * @returns A human-readable price.
- */
-const getPrice = (price: ProductPrice, isEnterpriseTier: boolean) => {
-  if (price.amountType !== "fixed" || isEnterpriseTier)
-    return price.amountType === "free"
-      ? 0
-      : app.pricingPage.pricingCard.customPricing;
-
-  return price.priceAmount / 100;
+// TODO discuss pulling dynamically + cache from Omni API or other approaches that make this changeable without redeploying service
+export const FREE_PRODUCT_DETAILS = {
+  description: "Start collecting and iterating on user feedback for free",
+  marketing_features: [
+    { name: "1 project per organization" },
+    { name: "Feedback from up to 15 unique users per project" },
+    { name: "Community support" },
+    { name: "Community voting & discussions" },
+  ],
 };
 
-const sortBenefits = (benefits: Benefit[]) => {
+export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
   const everythingInPrefix = "Everything in";
-  let everythingInBenefit: Benefit | undefined;
-  const otherBenefits: Benefit[] = [];
+  let everythingInBenefit: Stripe.Product.MarketingFeature | undefined;
+  const otherBenefits: Stripe.Product.MarketingFeature[] = [];
 
   // Separate "Everything in..." benefit and other benefits
   for (const benefit of benefits) {
-    if (benefit.description.startsWith(everythingInPrefix)) {
+    if (benefit.name?.startsWith(everythingInPrefix)) {
       everythingInBenefit = benefit;
     } else {
       otherBenefits.push(benefit);
@@ -68,30 +64,33 @@ const sortBenefits = (benefits: Benefit[]) => {
 };
 
 interface Props extends CardProps {
-  /** Product information. */
-  product: Product;
+  /** Authenticated user. */
+  user: Session["user"] | undefined;
+  /** Price information. */
+  price: Price | undefined;
+  /** Customer details. */
+  customer?: CustomerState;
 }
 
 /**
  * Pricing card. Provides pricing information and benefits attached to a product.
  */
-const PricingCard = ({ product, ...rest }: Props) => {
-  const router = useRouter();
-
-  const { isAuthenticated, user } = useAuth();
-
+const PricingCard = ({ user, price, customer, ...rest }: Props) => {
   const [{ pricingModel }] = useSearchParams();
 
-  const isPerMonthPricing =
-    pricingModel === SubscriptionRecurringInterval.Month;
+  const isPerMonthPricing = pricingModel === "month";
 
-  const {
-    productTitle,
-    isRecommendedTier,
-    isEnterpriseTier,
-    isDisabled,
-    actionIcon,
-  } = useProductMetadata({ product });
+  const tier = (price?.metadata.tier as Tier) ?? Tier.Free;
+
+  const isFreeTier = tier === Tier.Free;
+  const isRecommendedTier = tier === Tier.Team;
+  // TODO: determine if we want to display / handle Enterprise tier
+  const isEnterpriseTier = false;
+
+  const actionIcon = match(tier)
+    .with(Tier.Team, () => HiSparkles)
+    .with(Tier.Basic, () => HiLockOpen)
+    .otherwise(() => undefined);
 
   return (
     <Card
@@ -124,7 +123,23 @@ const PricingCard = ({ product, ...rest }: Props) => {
         </Stack>
       )}
 
-      {isDisabled && (
+      {isFreeTier && (
+        <Stack
+          position="absolute"
+          top={1}
+          left="50%"
+          transform="translateX(-50%)"
+          backgroundColor="background.secondary"
+          p={2}
+          borderRadius={1}
+        >
+          <Badge color="brand.secondary" height={8} borderRadius={4}>
+            No Subscription Required
+          </Badge>
+        </Stack>
+      )}
+
+      {isEnterpriseTier && (
         <Stack
           position="absolute"
           top={1}
@@ -143,18 +158,18 @@ const PricingCard = ({ product, ...rest }: Props) => {
         <Stack align="center" w="full" px={6}>
           {/* ! NB: important to add a `title` key to product metadata */}
           <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
-            {productTitle}
+            {capitalizeFirstLetter(tier)}
           </Text>
 
           <Text textAlign="center" color="foreground.subtle">
-            {product.description}
+            {price?.product.description ?? FREE_PRODUCT_DETAILS.description}
           </Text>
 
           <HStack display="inline-flex" alignItems="center">
             <Text as="h3" fontSize="4xl" fontWeight="bold">
               {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
 
-              {getPrice(product.prices[0] as ProductPrice, isEnterpriseTier)}
+              {price ? price.unit_amount! / 100 : 0}
             </Text>
 
             {!isEnterpriseTier && (
@@ -164,33 +179,43 @@ const PricingCard = ({ product, ...rest }: Props) => {
                 css={css.raw({ ml: -1.5 })}
                 color="foreground.subtle"
               >
-                /
-                {isPerMonthPricing
-                  ? app.pricingPage.pricingCard.month
-                  : app.pricingPage.pricingCard.year}
+                {!isFreeTier &&
+                  (isPerMonthPricing
+                    ? `/org/${app.pricingPage.pricingCard.month}`
+                    : `/org/${app.pricingPage.pricingCard.year}`)}
+                {isFreeTier && "/forever"}
               </sigil.span>
             )}
           </HStack>
 
-          <Button
-            w="100%"
-            fontSize="lg"
-            disabled={isDisabled}
-            variant={isRecommendedTier ? "solid" : "outline"}
-            onClick={() =>
-              isAuthenticated
-                ? router.push(
-                    `${API_BASE_URL}/checkout?products=${product.id}&customerExternalId=${user?.hidraId}&customerEmail=${user?.email}`,
-                  )
-                : signIn("omni")
-            }
-          >
-            {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+          {user ? (
+            <TierCallToAction
+              w="100%"
+              fontSize="lg"
+              variant={isRecommendedTier ? "solid" : "outline"}
+              disabled={isEnterpriseTier}
+              user={user}
+              productId={price?.product.id ?? ""}
+              priceId={price?.id ?? ""}
+              tier={tier}
+              actionIcon={actionIcon}
+              customer={customer}
+            />
+          ) : (
+            <Button
+              w="100%"
+              fontSize="lg"
+              disabled={isEnterpriseTier}
+              variant={isRecommendedTier ? "solid" : "outline"}
+              onClick={() => signIn("omni")}
+            >
+              {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 
-            {isEnterpriseTier
-              ? app.pricingPage.pricingCard.enterprise
-              : app.pricingPage.pricingCard.getStarted}
-          </Button>
+              {isEnterpriseTier
+                ? app.pricingPage.pricingCard.enterprise
+                : app.pricingPage.pricingCard.getStarted}
+            </Button>
+          )}
         </Stack>
 
         <Stack
@@ -203,25 +228,26 @@ const PricingCard = ({ product, ...rest }: Props) => {
           p={6}
         >
           <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
-            {sortBenefits(product.benefits).map((feature) => {
-              const isComingSoon = (
-                feature.properties as BenefitCustomProperties
-              ).note
-                ?.toLowerCase()
-                .includes(COMING_SOON);
+            {sortBenefits(
+              price?.product.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
 
               const color = match({
-                isDisabled,
+                isEnterpriseTier,
                 isRecommendedTier,
                 isComingSoon,
               })
-                .with({ isDisabled: true }, () => "foreground.subtle")
-                .with({ isComingSoon: true }, () => "yellow")
+                .with(
+                  { isComingSoon: true, isEnterpriseTier: false },
+                  () => "yellow",
+                )
                 .with({ isRecommendedTier: true }, () => "brand.primary")
                 .otherwise(() => "foreground.subtle");
 
               return (
-                <GridItem key={feature.id} display="flex" gap={2}>
+                <GridItem key={feature.name} display="flex" gap={2}>
                   {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
                   <sigil.span h={6} display="flex" alignItems="center">
                     <Icon
@@ -232,7 +258,7 @@ const PricingCard = ({ product, ...rest }: Props) => {
                     />
                   </sigil.span>
 
-                  {feature.description}
+                  {feature.name?.split(" (coming soon)")[0]}
                 </GridItem>
               );
             })}
