@@ -48,7 +48,7 @@ export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
 interface Props {
   /** User details. */
   user: Session["user"];
-  /** App subscription pricing options */
+  /** App subscription pricing options. */
   prices: Price[];
   /** Customer details. */
   customer?: CustomerState;
