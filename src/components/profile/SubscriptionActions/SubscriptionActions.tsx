@@ -15,6 +15,7 @@ import {
 } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FiArrowUpCircle } from "react-icons/fi";
 import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
@@ -42,6 +43,8 @@ interface Props {
  */
 const SubscriptionActions = ({ organization, prices }: Props) => {
   const router = useRouter();
+
+  const [isUpgradePlanMenuOpen, setIsUpgradePlanMenuOpen] = useState(false);
 
   const { user, isLoading: isAuthenticationLoading } = useAuth();
 
@@ -188,9 +191,12 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           contentProps={{
             zIndex: "foreground",
             fontSize: "sm",
+            display: isUpgradePlanMenuOpen ? "none" : undefined,
           }}
           trigger={
             <Menu
+              open={isUpgradePlanMenuOpen}
+              onOpenChange={({ open }) => setIsUpgradePlanMenuOpen(open)}
               trigger={
                 <Button
                   asChild
