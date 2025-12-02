@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { useMemo } from "react";
 import { LuPlus } from "react-icons/lu";
 import { P, match } from "ts-pattern";
 
@@ -25,6 +26,7 @@ import { useDialogStore } from "lib/hooks/store";
 import { capitalizeFirstLetter } from "lib/util";
 import { DialogType } from "store";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationFragment } from "generated/graphql";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
@@ -39,79 +41,6 @@ export interface OrganizationRow extends OrganizationFragment {
 
 const columnHelper = createColumnHelper<OrganizationRow>();
 
-const columns = [
-  columnHelper.display({
-    id: "organization_actions",
-    header: "Actions",
-    cell: ({ row }) => <SubscriptionActions organization={row.original} />,
-    meta: {
-      tableCellProps: {
-        pr: 0,
-        style: {
-          width: token("sizes.20"),
-        },
-      },
-      headerProps: {
-        justify: "center",
-      },
-    },
-  }),
-  columnHelper.accessor("name", {
-    header: "Name",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("tier", {
-    header: "Tier",
-    cell: (info) => capitalizeFirstLetter(info.getValue()),
-  }),
-  columnHelper.accessor("subscription.subscriptionStatus", {
-    header: "Subscription Status",
-    cell: (info) => {
-      const isFreeTier = info.row.original.tier === Tier.Free;
-
-      if (isFreeTier) return "-";
-
-      const toBeCanceled = info.row.original.subscription.toBeCanceled;
-
-      const color = match({
-        status: info.getValue(),
-        toBeCanceled,
-      })
-        .with({ status: "active", toBeCanceled: true }, () => "yellow")
-        .with({ status: "active" }, () => "green")
-        .with(
-          {
-            status: P.union("past_due", "unpaid", "canceled"),
-          },
-          () => "red",
-        )
-        .otherwise(() => "gray");
-
-      return (
-        <HStack>
-          <Box h={2} w={2} rounded="full" bgColor={color} />
-          <Text>
-            {toBeCanceled
-              ? "To Be Canceled"
-              : info
-                  .getValue()
-                  .split("_")
-                  .map((word) => capitalizeFirstLetter(word))
-                  .join(" ")}
-          </Text>
-        </HStack>
-      );
-    },
-  }),
-  columnHelper.accessor("subscription.currentPeriodEnd", {
-    header: "Renewal Date",
-    cell: (info) =>
-      info.getValue() && !info.row.original.subscription.toBeCanceled
-        ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
-        : "-",
-  }),
-];
-
 export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
   subscriptions: Stripe.Subscription[];
 }
@@ -119,20 +48,21 @@ export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
 interface Props {
   /** User details. */
   user: Session["user"];
+  /** App subscription pricing options. */
+  prices: Price[];
   /** Customer details. */
   customer?: CustomerState;
 }
 
 /**
- * Details of the user's subscriptions.
+ * Details of the organizations that the user is the owner of.
  */
-const Subscription = ({ user, customer }: Props) => {
+const UserOrganizations = ({ user, prices, customer }: Props) => {
   const { data: organizations } = useOrganizationsQuery(
     {
       userId: user?.rowId!,
       excludeRoles: [Role.Member, Role.Admin],
       orderBy: OrganizationOrderBy.CreatedAtAsc,
-      isFreeTier: false,
     },
     {
       select: (data) =>
@@ -165,6 +95,84 @@ const Subscription = ({ user, customer }: Props) => {
     },
   );
 
+  const columns = useMemo(
+    () => [
+      columnHelper.display({
+        id: "organization_actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <SubscriptionActions organization={row.original} prices={prices} />
+        ),
+        meta: {
+          tableCellProps: {
+            pr: 0,
+            style: {
+              width: token("sizes.20"),
+            },
+          },
+          headerProps: {
+            justify: "center",
+          },
+        },
+      }),
+      columnHelper.accessor("name", {
+        header: "Name",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("tier", {
+        header: "Tier",
+        cell: (info) => capitalizeFirstLetter(info.getValue()),
+      }),
+      columnHelper.accessor("subscription.subscriptionStatus", {
+        header: "Subscription Status",
+        cell: (info) => {
+          const isFreeTier = info.row.original.tier === Tier.Free;
+
+          if (isFreeTier) return "-";
+
+          const toBeCanceled = info.row.original.subscription.toBeCanceled;
+
+          const color = match({
+            status: info.getValue(),
+            toBeCanceled,
+          })
+            .with({ status: "active", toBeCanceled: true }, () => "yellow")
+            .with({ status: "active" }, () => "green")
+            .with(
+              {
+                status: P.union("past_due", "unpaid", "canceled"),
+              },
+              () => "red",
+            )
+            .otherwise(() => "gray");
+
+          return (
+            <HStack>
+              <Box h={2} w={2} rounded="full" bgColor={color} />
+              <Text>
+                {toBeCanceled
+                  ? "To Be Canceled"
+                  : info
+                      .getValue()
+                      .split("_")
+                      .map((word) => capitalizeFirstLetter(word))
+                      .join(" ")}
+              </Text>
+            </HStack>
+          );
+        },
+      }),
+      columnHelper.accessor("subscription.currentPeriodEnd", {
+        header: "Renewal Date",
+        cell: (info) =>
+          info.getValue() && !info.row.original.subscription.toBeCanceled
+            ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
+            : "-",
+      }),
+    ],
+    [prices],
+  );
+
   const { setIsOpen: setIsCreateOrganizationDialogOpen } = useDialogStore({
     type: DialogType.CreateOrganization,
   });
@@ -179,7 +187,7 @@ const Subscription = ({ user, customer }: Props) => {
   if (!organizations?.length)
     return (
       <Stack gap={8}>
-        {app.profileSubscriptionsPage.table.emptyState.label}
+        {app.profileOrganizationsPage.table.emptyState.label}
         <Button w="fit" onClick={() => setIsCreateOrganizationDialogOpen(true)}>
           <Icon src={LuPlus} /> Create Organization
         </Button>
@@ -187,10 +195,21 @@ const Subscription = ({ user, customer }: Props) => {
     );
 
   return (
-    <Flex w="100%" overflowX="auto">
-      <DataTable table={table} />
-    </Flex>
+    <Stack>
+      <Button
+        size="sm"
+        variant="outline"
+        w="fit"
+        onClick={() => setIsCreateOrganizationDialogOpen(true)}
+        alignSelf="flex-end"
+      >
+        <Icon src={LuPlus} /> Create Organization
+      </Button>
+      <Flex w="100%" overflowX="auto">
+        <DataTable table={table} />
+      </Flex>
+    </Stack>
   );
 };
 
-export default Subscription;
+export default UserOrganizations;

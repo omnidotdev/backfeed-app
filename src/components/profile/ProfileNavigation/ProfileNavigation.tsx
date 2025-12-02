@@ -86,11 +86,11 @@ const ProfileNavigation = ({
       },
     },
     {
-      label: app.profileSubscriptionsPage.breadcrumb,
+      label: app.profileOrganizationsPage.breadcrumb,
       icon: PiCreditCardLight,
       onClick: () => {
         onClose?.();
-        router.push(`/profile/${userId}/subscriptions`);
+        router.push(`/profile/${userId}/organizations`);
       },
     },
   ];

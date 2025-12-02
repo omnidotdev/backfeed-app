@@ -26,7 +26,7 @@ import { capitalizeFirstLetter } from "lib/util";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
-import type { CustomerState } from "components/profile/Subscription/Subscriptions";
+import type { CustomerState } from "components/profile/UserOrganizations/UserOrganizations";
 import type { Session } from "next-auth";
 import type Stripe from "stripe";
 

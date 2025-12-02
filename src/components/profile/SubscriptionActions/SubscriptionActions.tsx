@@ -1,8 +1,22 @@
 "use client";
 
-import { Button, HStack, Icon, Tooltip } from "@omnidev/sigil";
+import { Format } from "@ark-ui/react";
+import {
+  Button,
+  HStack,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuSeparator,
+  Text,
+  Tooltip,
+} from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FiArrowUpCircle } from "react-icons/fi";
 import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
 import {
@@ -12,19 +26,25 @@ import {
 } from "lib/actions";
 import { BASE_URL } from "lib/config";
 import { useAuth } from "lib/hooks";
+import { capitalizeFirstLetter } from "lib/util";
 
+import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationRow } from "components/profile";
 
 interface Props {
   /** Organization details. */
   organization: OrganizationRow;
+  /** App subscription pricing options. */
+  prices: Price[];
 }
 
 /**
  * Actions a user may perform for an organization-level subscription.
  */
-const SubscriptionActions = ({ organization }: Props) => {
+const SubscriptionActions = ({ organization, prices }: Props) => {
   const router = useRouter();
+
+  const [isUpgradePlanMenuOpen, setIsUpgradePlanMenuOpen] = useState(false);
 
   const { user, isLoading: isAuthenticationLoading } = useAuth();
 
@@ -37,7 +57,26 @@ const SubscriptionActions = ({ organization }: Props) => {
         checkout: {
           type: "update",
           subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
+          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+        },
+      });
+
+      return checkoutUrl;
+    },
+    onSuccess: (url) => router.push(url),
+  });
+
+  const {
+    mutateAsync: createSubscription,
+    isPending: isCreateSubscriptionPending,
+  } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) => {
+      const checkoutUrl = await createCheckoutSession({
+        checkout: {
+          type: "create",
+          organizationId: organization.rowId,
+          priceId,
+          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
         },
       });
 
@@ -53,7 +92,7 @@ const SubscriptionActions = ({ organization }: Props) => {
     mutationFn: async () => {
       const cancelUrl = await cancelSubscription({
         subscriptionId: organization.subscriptionId!,
-        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/subscriptions`,
+        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
       });
 
       return cancelUrl;
@@ -72,7 +111,7 @@ const SubscriptionActions = ({ organization }: Props) => {
   });
 
   return (
-    <HStack py={2}>
+    <HStack py={2} justify="center">
       {organization.subscription.toBeCanceled ? (
         <Tooltip
           positioning={{
@@ -106,7 +145,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         >
           Renew Subscription
         </Tooltip>
-      ) : (
+      ) : organization.subscriptionId ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -139,6 +178,100 @@ const SubscriptionActions = ({ organization }: Props) => {
         >
           Manage Subscription
         </Tooltip>
+      ) : (
+        <Tooltip
+          positioning={{
+            placement: "top",
+          }}
+          hasArrow={false}
+          triggerProps={{
+            style: { all: "unset" },
+            disabled: isAuthenticationLoading || isCreateSubscriptionPending,
+          }}
+          contentProps={{
+            zIndex: "foreground",
+            fontSize: "sm",
+            display: isUpgradePlanMenuOpen ? "none" : undefined,
+          }}
+          trigger={
+            <Menu
+              open={isUpgradePlanMenuOpen}
+              onOpenChange={({ open }) => setIsUpgradePlanMenuOpen(open)}
+              trigger={
+                <Button
+                  asChild
+                  color="brand.senary"
+                  backgroundColor="transparent"
+                  _disabled={{ opacity: 0.5 }}
+                  fontSize="md"
+                  px={0}
+                  disabled={
+                    isAuthenticationLoading || isCreateSubscriptionPending
+                  }
+                >
+                  <Icon src={FiArrowUpCircle} h={5} w={5} />
+                </Button>
+              }
+              onSelect={({ value }) => createSubscription({ priceId: value })}
+            >
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Basic</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.metadata.tier === "basic")
+                  .map((price) => (
+                    <MenuItem
+                      key={price.id}
+                      value={price.id}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.recurring?.interval)}ly
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+
+              <MenuSeparator />
+
+              <MenuItemGroup minW={40}>
+                <MenuItemGroupLabel>Team</MenuItemGroupLabel>
+                {prices
+                  .filter((price) => price.metadata.tier === "team")
+                  .map((price) => (
+                    <MenuItem
+                      key={price.id}
+                      value={price.id}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <HStack w="full" justify="space-between">
+                        {capitalizeFirstLetter(price.recurring?.interval)}ly
+                        <Text>
+                          <Format.Number
+                            value={price.unit_amount! / 100}
+                            currency="USD"
+                            style="currency"
+                            notation="compact"
+                          />
+                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
+                        </Text>
+                      </HStack>
+                    </MenuItem>
+                  ))}
+              </MenuItemGroup>
+            </Menu>
+          }
+        >
+          Upgrade Plan
+        </Tooltip>
       )}
 
       <Tooltip
@@ -159,6 +292,7 @@ const SubscriptionActions = ({ organization }: Props) => {
             disabled={
               isAuthenticationLoading ||
               isCancelSubscriptionPending ||
+              !organization.subscriptionId ||
               organization.subscription.toBeCanceled
             }
             onClick={async () => await handleCancelSubscription()}
@@ -171,12 +305,14 @@ const SubscriptionActions = ({ organization }: Props) => {
           disabled:
             isAuthenticationLoading ||
             isCancelSubscriptionPending ||
+            !organization.subscriptionId ||
             organization.subscription.toBeCanceled,
         }}
         contentProps={{
           display:
             isAuthenticationLoading ||
             isCancelSubscriptionPending ||
+            !organization.subscriptionId ||
             organization.subscription.toBeCanceled
               ? "none"
               : undefined,
