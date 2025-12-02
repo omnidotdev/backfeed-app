@@ -53,7 +53,7 @@ const TierCallToAction = ({
           Create a Free Organization
         </Button>
 
-        <CreateOrganization disableHotKey />
+        <CreateOrganization isHotkeyEnabled={false} />
       </>
     );
   }
