@@ -8,61 +8,521 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
+import { createFileRoute } from '@tanstack/react-router'
 
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
+import { Route as AuthProfileRouteImport } from './routes/_auth/_profile'
+import { Route as AuthOrganizationsIndexRouteImport } from './routes/_auth/organizations/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthOrganizationsOrganizationSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/index'
+import { Route as AuthOrganizationsOrganizationSlugManageRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage'
+import { Route as AuthProfileUserIdOrganizationsRouteImport } from './routes/_auth/_profile/$userId/organizations'
+import { Route as AuthProfileUserIdInvitationsRouteImport } from './routes/_auth/_profile/$userId/invitations'
+import { Route as AuthProfileUserIdAccountRouteImport } from './routes/_auth/_profile/$userId/account'
+import { Route as AuthOrganizationsOrganizationSlugProjectsIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/index'
+import { Route as AuthOrganizationsOrganizationSlugManageSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/settings'
+import { Route as AuthOrganizationsOrganizationSlugManageMembersRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/members'
+import { Route as AuthOrganizationsOrganizationSlugManageInvitationsRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/invitations'
+import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/index'
+import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
+import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+
+const AuthOrganizationsOrganizationSlugRouteImport = createFileRoute(
+  '/_auth/organizations/$organizationSlug',
+)()
+
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthDashboardRoute = AuthDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthProfileRoute = AuthProfileRouteImport.update({
+  id: '/_profile',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthOrganizationsOrganizationSlugRoute =
+  AuthOrganizationsOrganizationSlugRouteImport.update({
+    id: '/organizations/$organizationSlug',
+    path: '/organizations/$organizationSlug',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthOrganizationsIndexRoute = AuthOrganizationsIndexRouteImport.update({
+  id: '/organizations/',
+  path: '/organizations/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthOrganizationsOrganizationSlugIndexRoute =
+  AuthOrganizationsOrganizationSlugIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugManageRoute =
+  AuthOrganizationsOrganizationSlugManageRouteImport.update({
+    id: '/_manage',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+  } as any)
+const AuthProfileUserIdOrganizationsRoute =
+  AuthProfileUserIdOrganizationsRouteImport.update({
+    id: '/$userId/organizations',
+    path: '/$userId/organizations',
+    getParentRoute: () => AuthProfileRoute,
+  } as any)
+const AuthProfileUserIdInvitationsRoute =
+  AuthProfileUserIdInvitationsRouteImport.update({
+    id: '/$userId/invitations',
+    path: '/$userId/invitations',
+    getParentRoute: () => AuthProfileRoute,
+  } as any)
+const AuthProfileUserIdAccountRoute =
+  AuthProfileUserIdAccountRouteImport.update({
+    id: '/$userId/account',
+    path: '/$userId/account',
+    getParentRoute: () => AuthProfileRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugProjectsIndexRoute =
+  AuthOrganizationsOrganizationSlugProjectsIndexRouteImport.update({
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugManageSettingsRoute =
+  AuthOrganizationsOrganizationSlugManageSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugManageMembersRoute =
+  AuthOrganizationsOrganizationSlugManageMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugManageInvitationsRoute =
+  AuthOrganizationsOrganizationSlugManageInvitationsRouteImport.update({
+    id: '/invitations',
+    path: '/invitations',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute =
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport.update({
+    id: '/projects/$projectSlug/',
+    path: '/projects/$projectSlug/',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute =
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport.update(
+    {
+      id: '/projects/$projectSlug/settings',
+      path: '/projects/$projectSlug/settings',
+      getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+    } as any,
+  )
+const AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute =
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport.update(
+    {
+      id: '/projects/$projectSlug/$feedbackId',
+      path: '/projects/$projectSlug/$feedbackId',
+      getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
+  '/': typeof IndexRoute
+  '/pricing': typeof PricingRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/organizations': typeof AuthOrganizationsIndexRoute
+  '/$userId/account': typeof AuthProfileUserIdAccountRoute
+  '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
+  '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
+  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
+  '/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugIndexRoute
+  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
+  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
+  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
+  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
+  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
+  '/': typeof IndexRoute
+  '/pricing': typeof PricingRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/organizations': typeof AuthOrganizationsIndexRoute
+  '/$userId/account': typeof AuthProfileUserIdAccountRoute
+  '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
+  '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
+  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugIndexRoute
+  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
+  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
+  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
+  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
+  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/pricing': typeof PricingRoute
+  '/_auth/_profile': typeof AuthProfileRouteWithChildren
+  '/_auth/dashboard': typeof AuthDashboardRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_auth/organizations/': typeof AuthOrganizationsIndexRoute
+  '/_auth/_profile/$userId/account': typeof AuthProfileUserIdAccountRoute
+  '/_auth/_profile/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
+  '/_auth/_profile/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
+  '/_auth/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugRouteWithChildren
+  '/_auth/organizations/$organizationSlug/_manage': typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
+  '/_auth/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugIndexRoute
+  '/_auth/organizations/$organizationSlug/_manage/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
+  '/_auth/organizations/$organizationSlug/_manage/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
+  '/_auth/organizations/$organizationSlug/_manage/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
+  '/_auth/organizations/$organizationSlug/projects/': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
+  '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
+  '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
+  '/_auth/organizations/$organizationSlug/projects/$projectSlug/': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/";
-  id: "__root__" | "/";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/pricing'
+    | '/dashboard'
+    | '/api/auth/$'
+    | '/organizations'
+    | '/$userId/account'
+    | '/$userId/invitations'
+    | '/$userId/organizations'
+    | '/organizations/$organizationSlug'
+    | '/organizations/$organizationSlug/'
+    | '/organizations/$organizationSlug/invitations'
+    | '/organizations/$organizationSlug/members'
+    | '/organizations/$organizationSlug/settings'
+    | '/organizations/$organizationSlug/projects'
+    | '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+    | '/organizations/$organizationSlug/projects/$projectSlug/settings'
+    | '/organizations/$organizationSlug/projects/$projectSlug'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/pricing'
+    | '/dashboard'
+    | '/api/auth/$'
+    | '/organizations'
+    | '/$userId/account'
+    | '/$userId/invitations'
+    | '/$userId/organizations'
+    | '/organizations/$organizationSlug'
+    | '/organizations/$organizationSlug/invitations'
+    | '/organizations/$organizationSlug/members'
+    | '/organizations/$organizationSlug/settings'
+    | '/organizations/$organizationSlug/projects'
+    | '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+    | '/organizations/$organizationSlug/projects/$projectSlug/settings'
+    | '/organizations/$organizationSlug/projects/$projectSlug'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/pricing'
+    | '/_auth/_profile'
+    | '/_auth/dashboard'
+    | '/api/auth/$'
+    | '/_auth/organizations/'
+    | '/_auth/_profile/$userId/account'
+    | '/_auth/_profile/$userId/invitations'
+    | '/_auth/_profile/$userId/organizations'
+    | '/_auth/organizations/$organizationSlug'
+    | '/_auth/organizations/$organizationSlug/_manage'
+    | '/_auth/organizations/$organizationSlug/'
+    | '/_auth/organizations/$organizationSlug/_manage/invitations'
+    | '/_auth/organizations/$organizationSlug/_manage/members'
+    | '/_auth/organizations/$organizationSlug/_manage/settings'
+    | '/_auth/organizations/$organizationSlug/projects/'
+    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
+    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
+  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  PricingRoute: typeof PricingRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/dashboard': {
+      id: '/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/_profile': {
+      id: '/_auth/_profile'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthProfileRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/organizations/$organizationSlug': {
+      id: '/_auth/organizations/$organizationSlug'
+      path: '/organizations/$organizationSlug'
+      fullPath: '/organizations/$organizationSlug'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/organizations/': {
+      id: '/_auth/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof AuthOrganizationsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/organizations/$organizationSlug/': {
+      id: '/_auth/organizations/$organizationSlug/'
+      path: '/'
+      fullPath: '/organizations/$organizationSlug/'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
+    '/_auth/organizations/$organizationSlug/_manage': {
+      id: '/_auth/organizations/$organizationSlug/_manage'
+      path: '/organizations/$organizationSlug'
+      fullPath: '/organizations/$organizationSlug'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
+    '/_auth/_profile/$userId/organizations': {
+      id: '/_auth/_profile/$userId/organizations'
+      path: '/$userId/organizations'
+      fullPath: '/$userId/organizations'
+      preLoaderRoute: typeof AuthProfileUserIdOrganizationsRouteImport
+      parentRoute: typeof AuthProfileRoute
+    }
+    '/_auth/_profile/$userId/invitations': {
+      id: '/_auth/_profile/$userId/invitations'
+      path: '/$userId/invitations'
+      fullPath: '/$userId/invitations'
+      preLoaderRoute: typeof AuthProfileUserIdInvitationsRouteImport
+      parentRoute: typeof AuthProfileRoute
+    }
+    '/_auth/_profile/$userId/account': {
+      id: '/_auth/_profile/$userId/account'
+      path: '/$userId/account'
+      fullPath: '/$userId/account'
+      preLoaderRoute: typeof AuthProfileUserIdAccountRouteImport
+      parentRoute: typeof AuthProfileRoute
+    }
+    '/_auth/organizations/$organizationSlug/projects/': {
+      id: '/_auth/organizations/$organizationSlug/projects/'
+      path: '/projects'
+      fullPath: '/organizations/$organizationSlug/projects'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
+    '/_auth/organizations/$organizationSlug/_manage/settings': {
+      id: '/_auth/organizations/$organizationSlug/_manage/settings'
+      path: '/settings'
+      fullPath: '/organizations/$organizationSlug/settings'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageSettingsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+    }
+    '/_auth/organizations/$organizationSlug/_manage/members': {
+      id: '/_auth/organizations/$organizationSlug/_manage/members'
+      path: '/members'
+      fullPath: '/organizations/$organizationSlug/members'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageMembersRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+    }
+    '/_auth/organizations/$organizationSlug/_manage/invitations': {
+      id: '/_auth/organizations/$organizationSlug/_manage/invitations'
+      path: '/invitations'
+      fullPath: '/organizations/$organizationSlug/invitations'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageInvitationsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+    }
+    '/_auth/organizations/$organizationSlug/projects/$projectSlug/': {
+      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/'
+      path: '/projects/$projectSlug'
+      fullPath: '/organizations/$organizationSlug/projects/$projectSlug'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
+    '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings': {
+      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
+      path: '/projects/$projectSlug/settings'
+      fullPath: '/organizations/$organizationSlug/projects/$projectSlug/settings'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
+    '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': {
+      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+      path: '/projects/$projectSlug/$feedbackId'
+      fullPath: '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+    }
   }
 }
 
+interface AuthProfileRouteChildren {
+  AuthProfileUserIdAccountRoute: typeof AuthProfileUserIdAccountRoute
+  AuthProfileUserIdInvitationsRoute: typeof AuthProfileUserIdInvitationsRoute
+  AuthProfileUserIdOrganizationsRoute: typeof AuthProfileUserIdOrganizationsRoute
+}
+
+const AuthProfileRouteChildren: AuthProfileRouteChildren = {
+  AuthProfileUserIdAccountRoute: AuthProfileUserIdAccountRoute,
+  AuthProfileUserIdInvitationsRoute: AuthProfileUserIdInvitationsRoute,
+  AuthProfileUserIdOrganizationsRoute: AuthProfileUserIdOrganizationsRoute,
+}
+
+const AuthProfileRouteWithChildren = AuthProfileRoute._addFileChildren(
+  AuthProfileRouteChildren,
+)
+
+interface AuthOrganizationsOrganizationSlugManageRouteChildren {
+  AuthOrganizationsOrganizationSlugManageInvitationsRoute: typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
+  AuthOrganizationsOrganizationSlugManageMembersRoute: typeof AuthOrganizationsOrganizationSlugManageMembersRoute
+  AuthOrganizationsOrganizationSlugManageSettingsRoute: typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
+}
+
+const AuthOrganizationsOrganizationSlugManageRouteChildren: AuthOrganizationsOrganizationSlugManageRouteChildren =
+  {
+    AuthOrganizationsOrganizationSlugManageInvitationsRoute:
+      AuthOrganizationsOrganizationSlugManageInvitationsRoute,
+    AuthOrganizationsOrganizationSlugManageMembersRoute:
+      AuthOrganizationsOrganizationSlugManageMembersRoute,
+    AuthOrganizationsOrganizationSlugManageSettingsRoute:
+      AuthOrganizationsOrganizationSlugManageSettingsRoute,
+  }
+
+const AuthOrganizationsOrganizationSlugManageRouteWithChildren =
+  AuthOrganizationsOrganizationSlugManageRoute._addFileChildren(
+    AuthOrganizationsOrganizationSlugManageRouteChildren,
+  )
+
+interface AuthOrganizationsOrganizationSlugRouteChildren {
+  AuthOrganizationsOrganizationSlugManageRoute: typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
+  AuthOrganizationsOrganizationSlugIndexRoute: typeof AuthOrganizationsOrganizationSlugIndexRoute
+  AuthOrganizationsOrganizationSlugProjectsIndexRoute: typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
+  AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
+}
+
+const AuthOrganizationsOrganizationSlugRouteChildren: AuthOrganizationsOrganizationSlugRouteChildren =
+  {
+    AuthOrganizationsOrganizationSlugManageRoute:
+      AuthOrganizationsOrganizationSlugManageRouteWithChildren,
+    AuthOrganizationsOrganizationSlugIndexRoute:
+      AuthOrganizationsOrganizationSlugIndexRoute,
+    AuthOrganizationsOrganizationSlugProjectsIndexRoute:
+      AuthOrganizationsOrganizationSlugProjectsIndexRoute,
+    AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute:
+      AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute,
+    AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute:
+      AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute,
+    AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute:
+      AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute,
+  }
+
+const AuthOrganizationsOrganizationSlugRouteWithChildren =
+  AuthOrganizationsOrganizationSlugRoute._addFileChildren(
+    AuthOrganizationsOrganizationSlugRouteChildren,
+  )
+
+interface AuthRouteChildren {
+  AuthProfileRoute: typeof AuthProfileRouteWithChildren
+  AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthOrganizationsIndexRoute: typeof AuthOrganizationsIndexRoute
+  AuthOrganizationsOrganizationSlugRoute: typeof AuthOrganizationsOrganizationSlugRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthProfileRoute: AuthProfileRouteWithChildren,
+  AuthDashboardRoute: AuthDashboardRoute,
+  AuthOrganizationsIndexRoute: AuthOrganizationsIndexRoute,
+  AuthOrganizationsOrganizationSlugRoute:
+    AuthOrganizationsOrganizationSlugRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-};
+  AuthRoute: AuthRouteWithChildren,
+  PricingRoute: PricingRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.ts";
-import type { createStart } from "@tanstack/react-start";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.ts'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }

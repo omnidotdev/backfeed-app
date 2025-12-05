@@ -1,0 +1,72 @@
+import { Input, Label, Tooltip } from "@omnidev/sigil";
+
+import Field from "@/components/form/Field";
+import { useFieldContext } from "@/lib/hooks/useForm";
+
+import type { InputProps, TextProps } from "@omnidev/sigil";
+import type { StandardSchemaV1Issue } from "@tanstack/react-form";
+
+interface Props extends InputProps {
+  /** Label for the text field. */
+  label?: string;
+  /** Error map to determine issue message(s) to render. */
+  errorMap?: StandardSchemaV1Issue[];
+  /** Additional props for the error component. */
+  errorProps?: TextProps;
+  /** Content to display for tooltip when input is disabled. */
+  tooltip?: string;
+}
+
+/**
+ * Text field component for form inputs.
+ */
+const InputField = ({
+  label,
+  errorMap,
+  errorProps,
+  disabled,
+  tooltip,
+  ...rest
+}: Props) => {
+  const { handleChange, state, name } = useFieldContext<string>();
+
+  return (
+    <Tooltip
+      hasArrow={false}
+      trigger={
+        <Field errorMap={errorMap} errorProps={errorProps}>
+          {label && <Label htmlFor={name}>{label}</Label>}
+
+          <Input
+            id={name}
+            value={state.value}
+            onChange={(evt) => handleChange(evt.target.value)}
+            borderColor="border.subtle"
+            disabled={disabled}
+            {...rest}
+          />
+        </Field>
+      }
+      triggerProps={{
+        disabled,
+        onClick: (evt) => {
+          evt.preventDefault();
+          evt.stopPropagation();
+        },
+        tabIndex: -1,
+        style: {
+          all: "unset",
+        },
+      }}
+      contentProps={{
+        display: !disabled || !tooltip ? "none" : undefined,
+        zIndex: "foreground",
+        fontSize: "sm",
+      }}
+    >
+      {tooltip}
+    </Tooltip>
+  );
+};
+
+export default InputField;
