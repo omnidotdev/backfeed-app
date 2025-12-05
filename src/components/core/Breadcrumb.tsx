@@ -4,11 +4,11 @@ import { LuChevronRight } from "react-icons/lu";
 
 import app from "@/lib/config/app.config";
 
-export interface BreadcrumbRecord {
+import type { LinkOptions } from "@tanstack/react-router";
+
+export interface BreadcrumbRecord extends Omit<LinkOptions, "href"> {
   /** Label for the breadcrumb. */
   label: string;
-  /** URL path the breadcrumb navigates to. */
-  href?: `/${string}`;
 }
 
 interface Props {
@@ -27,7 +27,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
       </Text>
     </Link>
 
-    {breadcrumbs.map(({ label, href }, index) => {
+    {breadcrumbs.map(({ label, to, params }, index) => {
       const isLastItem = breadcrumbs.length - 1 === index;
 
       return (
@@ -41,9 +41,9 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
             mx={1.5}
           />
 
-          {href ? (
+          {to ? (
             // TODO: fix. make typesafe and use proper href
-            <Link to="/">
+            <Link to={to} params={params}>
               <Text
                 display={isLastItem ? "none" : { base: "inline", lg: "none" }}
                 color={{

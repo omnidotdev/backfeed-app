@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
+import type { LinkOptions } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import type { ButtonVariant } from "@/generated/panda/recipes";
 
@@ -11,8 +12,8 @@ export interface ActionButton {
   label: string;
   /** Button icon. */
   icon?: ReactNode;
-  /** URL path for navigation. */
-  href?: string;
+  /** Options for navigation. */
+  linkOptions?: LinkOptions;
   /** Whether the button is disabled. */
   disabled?: boolean;
   /** Type of dialog to trigger. */
@@ -36,7 +37,7 @@ const CallToAction = ({ action }: Props) => {
   const {
     label,
     icon,
-    href,
+    linkOptions,
     variant = "solid",
     disabled,
     dialogType = DialogType.Fallback,
@@ -48,12 +49,11 @@ const CallToAction = ({ action }: Props) => {
   });
 
   const handleAction = () => {
-    if (href) {
-      if (href.startsWith("https://")) {
-        window.open(href, "_blank", "noopener,noreferrer");
+    if (linkOptions) {
+      if (linkOptions.href?.startsWith("https://")) {
+        window.open(linkOptions.href, "_blank", "noopener,noreferrer");
       } else {
-        // TODO: make type safe, use href
-        navigate({ to: "/" });
+        navigate({ to: linkOptions.to, params: linkOptions.params });
       }
       return;
     }

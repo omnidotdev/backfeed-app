@@ -13,15 +13,14 @@ import {
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 
+import type { LinkOptions } from "@tanstack/react-router";
 import type { IconType } from "react-icons";
 
-interface NavItem {
-  /** The navigation item label. */
+interface NavItem extends Omit<LinkOptions, "href"> {
+  /** Label for the navigation item. */
   label: string;
   /** Whether the navigation item is visible. */
   isVisible: boolean;
-  /** The navigation item href. */
-  href?: string;
   /** Whether the navigation item is active. */
   isActive?: boolean;
   /** Whether the navigation item is collapsible. */
@@ -63,7 +62,7 @@ const useSidebarNavigationItems = () => {
   const routes = useMemo<NavItem[]>(
     () => [
       {
-        href: "/pricing",
+        to: "/pricing",
         label: app.pricingPage.title,
         isVisible: true,
         isActive: pathname === "/pricing",
@@ -75,13 +74,14 @@ const useSidebarNavigationItems = () => {
         isVisible: !!session,
         children: [
           {
-            href: "/organizations",
+            to: "/organizations",
             label: app.dashboardPage.cta.viewOrganizations.label,
             isVisible: true,
             isActive: pathname === "/organizations",
           },
           {
-            href: `/organizations/${organizationSlug}`,
+            to: "/organizations/$organizationSlug",
+            params: { organizationSlug },
             label: organization?.name ?? organizationSlug!,
             isVisible: !!organizationSlug,
             isActive: pathname === `/organizations/${organizationSlug}`,
@@ -93,14 +93,16 @@ const useSidebarNavigationItems = () => {
             isVisible: !!session && !!organizationSlug,
             children: [
               {
-                href: `/organizations/${organizationSlug}/projects`,
+                to: "/organizations/$organizationSlug/projects",
+                params: { organizationSlug },
                 label: app.organizationPage.header.cta.viewProjects.label,
                 isVisible: true,
                 isActive:
                   pathname === `/organizations/${organizationSlug}/projects`,
               },
               {
-                href: `/organizations/${organizationSlug}/projects/${projectSlug}`,
+                to: "/organizations/$organizationSlug/projects/$projectSlug",
+                params: { organizationSlug, projectSlug },
                 label: project?.name ?? projectSlug!,
                 isVisible: !!projectSlug,
                 isActive:

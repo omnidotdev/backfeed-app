@@ -107,7 +107,7 @@ function DashboardPage() {
             label: app.dashboardPage.cta.viewOrganizations.label,
             variant: "outline",
             icon: <Icon src={LuBuilding2} />,
-            href: "/organizations",
+            linkOptions: { to: "/organizations" },
           },
           {
             label: app.dashboardPage.cta.newOrganization.label,
