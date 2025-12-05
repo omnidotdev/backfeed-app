@@ -1,5 +1,5 @@
 import { Badge, Flex, sigil } from "@omnidev/sigil";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 
 import app from "@/lib/config/app.config";
 
@@ -14,8 +14,10 @@ interface Props extends FlexProps {
  * Navigation link that displays the Backfeed logo. Routes to the home page.
  */
 const LogoLink = ({ width, ...rest }: Props) => {
+  const { session } = useRouteContext({ strict: false });
+
   return (
-    <Link to="/">
+    <Link to={session ? "/dashboard" : "/"}>
       <Flex gap={2} alignItems="center" {...rest}>
         <sigil.img
           src="/img/logo.png"
