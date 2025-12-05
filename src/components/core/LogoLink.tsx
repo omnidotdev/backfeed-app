@@ -1,4 +1,4 @@
-import { Badge, Flex, sigil } from "@omnidev/sigil";
+import { Badge, Flex, css, sigil } from "@omnidev/sigil";
 import { Link, useRouteContext } from "@tanstack/react-router";
 
 import app from "@/lib/config/app.config";
@@ -25,11 +25,12 @@ const LogoLink = ({ width, ...rest }: Props) => {
           width={width}
           height={width / 2}
           // adjust color based on color theme
-          // TODO: figure out why this is not being applied
-          filter={{
-            base: "brightness(0)",
-            _dark: "brightness(0) invert(1)",
-          }}
+          css={css.raw({
+            filter: {
+              base: "brightness(0)",
+              _dark: "brightness(0) invert(1)",
+            },
+          })}
         />
 
         <Badge
