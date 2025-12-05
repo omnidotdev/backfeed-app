@@ -12,7 +12,10 @@ import CreateProject from "@/components/project/CreateProject";
 import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
-import { organizationOptions } from "@/lib/options/organizations";
+import {
+  organizationMetricsOptions,
+  organizationOptions,
+} from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
@@ -21,6 +24,13 @@ import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/",
 )({
+  loader: async ({ context: { queryClient, organizationId } }) => {
+    await queryClient.ensureQueryData(
+      organizationMetricsOptions({
+        organizationId,
+      }),
+    );
+  },
   component: OrganizationPage,
 });
 
