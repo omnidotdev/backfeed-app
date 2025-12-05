@@ -75,6 +75,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       params: { organizationSlug },
     },
     {
+      // TODO: determine best way to approach this. If you use the breadcrumbs to navigate, `segment` updates instantly
       label: capitalizeFirstLetter(segment)!,
     },
   ];

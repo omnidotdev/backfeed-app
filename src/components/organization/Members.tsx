@@ -1,0 +1,192 @@
+import {
+  Badge,
+  Checkbox,
+  Stack,
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Text,
+} from "@omnidev/sigil";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useRouteContext, useSearch } from "@tanstack/react-router";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useMemo } from "react";
+import { match } from "ts-pattern";
+
+import MembershipMenu from "@/components/organization/MembershipMenu";
+import { Role } from "@/generated/graphql";
+import app from "@/lib/config/app.config";
+import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
+import { membersOptions } from "@/lib/options/members";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+
+import type { MemberFragment } from "@/generated/graphql";
+
+const columnHelper = createColumnHelper<MemberFragment>();
+
+/**
+ * Organization members table.
+ */
+const Members = () => {
+  const { session, organizationId } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
+  });
+  const { search, roles } = useSearch({
+    from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
+  });
+
+  const { isOwner } = useOrganizationMembership({
+    userId: session?.user?.rowId,
+    organizationId,
+  });
+
+  const { data: members } = useQuery({
+    ...membersOptions({
+      organizationId,
+      roles: roles ?? undefined,
+      search,
+      excludeRoles: [Role.Owner],
+    }),
+    placeholderData: keepPreviousData,
+    select: (data) => data.members?.nodes,
+  });
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("rowId", {
+        header: ({ table }) => (
+          <Checkbox
+            size="sm"
+            // explicit width to prevent CLS with row selection
+            w={28}
+            // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+            gap={0}
+            labelProps={{
+              flex: 1,
+              px: isOwner ? 4 : 2,
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
+            }}
+            label={
+              table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
+                <MembershipMenu
+                  selectedRows={table.getSelectedRowModel().rows}
+                  toggleRowSelection={table.toggleAllRowsSelected}
+                />
+              ) : (
+                app.organizationMembersPage.membersTable.headers.members
+              )
+            }
+            controlProps={{
+              display: isOwner ? "flex" : "none",
+            }}
+            disabled={!isOwner}
+            checked={
+              table.getIsAllRowsSelected()
+                ? true
+                : table.getIsSomeRowsSelected()
+                  ? "indeterminate"
+                  : false
+            }
+            onCheckedChange={({ checked }) =>
+              table.toggleAllRowsSelected(checked as boolean)
+            }
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            size="sm"
+            labelProps={{
+              px: 2,
+            }}
+            label={
+              <Stack py={4}>
+                <Text fontSize="lg">
+                  {row.original.user?.firstName} {row.original.user?.lastName}
+                </Text>
+                <Text color="foreground.subtle">
+                  {row.original.user?.username}
+                </Text>
+              </Stack>
+            }
+            controlProps={{
+              display: isOwner ? "flex" : "none",
+            }}
+            disabled={!isOwner}
+            checked={row.getIsSelected()}
+            onCheckedChange={({ checked }) =>
+              row.toggleSelected(checked as boolean)
+            }
+          />
+        ),
+      }),
+      columnHelper.accessor("role", {
+        header: app.organizationMembersPage.membersTable.headers.role,
+        cell: (info) => {
+          const accentColor = match(info.getValue())
+            .with(Role.Admin, () => "brand.secondary")
+            .with(Role.Member, () => "brand.tertiary")
+            .otherwise(() => undefined);
+
+          return (
+            <Badge
+              variant="outline"
+              w={18}
+              justifyContent="center"
+              color={accentColor}
+              borderColor={accentColor}
+              fontWeight="semibold"
+            >
+              {capitalizeFirstLetter(info.getValue())}
+            </Badge>
+          );
+        },
+      }),
+    ],
+    [isOwner],
+  );
+
+  const table = useReactTable({
+    data: members as MemberFragment[],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <Table
+      headerContent={table.getHeaderGroups().map((headerGroup) => (
+        <TableRow key={headerGroup.id} bgColor="background.subtle">
+          {headerGroup.headers.map((header) => (
+            <TableHeader key={header.id} fontWeight="bold">
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+            </TableHeader>
+          ))}
+        </TableRow>
+      ))}
+    >
+      {table.getRowModel().rows.map((row) => (
+        <TableRow key={row.id}>
+          {row.getVisibleCells().map((cell) => (
+            <TableCell key={cell.id} fontWeight="light">
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </Table>
+  );
+};
+
+export default Members;
