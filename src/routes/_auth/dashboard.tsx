@@ -24,18 +24,8 @@ import {
 import { organizationsOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 
-import type { OrganizationsQueryVariables } from "@/generated/graphql";
-
 export const Route = createFileRoute("/_auth/dashboard")({
   loader: async ({ context: { session, queryClient } }) => {
-    const organizationsQueryVariables: OrganizationsQueryVariables = {
-      pageSize: 3,
-      offset: 0,
-      orderBy: [OrganizationOrderBy.MembersCountDesc],
-      userId: session?.user.rowId!,
-      isMember: true,
-    };
-
     const oneWeekAgo = dayjs()
       .utc()
       .subtract(6, "days")
@@ -44,7 +34,13 @@ export const Route = createFileRoute("/_auth/dashboard")({
 
     await Promise.all([
       queryClient.ensureQueryData(
-        organizationsOptions(organizationsQueryVariables),
+        organizationsOptions({
+          pageSize: 3,
+          offset: 0,
+          orderBy: [OrganizationOrderBy.MembersCountDesc],
+          userId: session?.user.rowId!,
+          isMember: true,
+        }),
       ),
       queryClient.ensureQueryData(
         dashboardAggregatesOptions({
