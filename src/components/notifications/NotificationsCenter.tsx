@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { IoNotifications } from "react-icons/io5";
 import { LuCheck, LuX } from "react-icons/lu";
@@ -15,28 +16,26 @@ import {
   Role,
   useCreateMemberMutation,
   useDeleteInvitationMutation,
-  useNotificationsQuery,
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { notificationsOptions } from "@/lib/options/notifications";
 
 const invitations = app.header.routes.invitations;
 
 const NotificationCenter = () => {
   const { queryClient, session } = useRouteContext({ from: "__root__" });
 
-  const { data: notifications } = useNotificationsQuery(
-    { email: session?.user?.email! },
-    {
-      enabled: !!session?.user?.email,
-      select: (data) =>
-        data?.invitations?.nodes.map((inv) => ({
-          rowId: inv?.rowId!,
-          organizationId: inv?.organizationId!,
-          // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
-          message: `${invitations.join} ${inv?.organization?.name}`,
-        })) ?? [],
-    },
-  );
+  const { data: notifications } = useQuery({
+    ...notificationsOptions({ email: session?.user?.email! }),
+    enabled: !!session?.user?.email,
+    select: (data) =>
+      data?.invitations?.nodes.map((inv) => ({
+        rowId: inv?.rowId!,
+        organizationId: inv?.organizationId!,
+        // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
+        message: `${invitations.join} ${inv?.organization?.name}`,
+      })) ?? [],
+  });
 
   // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
   const onSettled = async () => queryClient.invalidateQueries();
