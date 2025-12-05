@@ -1,5 +1,7 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
+import ManagementSidebar from "@/components/organization/ManagementSidebar";
+
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/_manage",
 )({
@@ -7,5 +9,9 @@ export const Route = createFileRoute(
 });
 
 function ManageOrganizationLayout() {
-  return <Outlet />;
+  return (
+    <ManagementSidebar>
+      <Outlet />
+    </ManagementSidebar>
+  );
 }
