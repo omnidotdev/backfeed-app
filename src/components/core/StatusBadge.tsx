@@ -1,7 +1,7 @@
 import { Badge } from "@omnidev/sigil";
 
 import type { BadgeProps } from "@omnidev/sigil";
-import type { PostStatus } from "../../../generated/graphql";
+import type { PostStatus } from "@/generated/graphql";
 
 interface Props extends BadgeProps {
   /** The status of the post. */

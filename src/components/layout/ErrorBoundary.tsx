@@ -1,5 +1,3 @@
-"use client";
-
 import { Flex } from "@omnidev/sigil";
 
 import type { FlexProps } from "@omnidev/sigil";

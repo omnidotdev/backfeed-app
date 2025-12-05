@@ -1,8 +1,6 @@
-"use client";
-
 import { Flex, Icon, Text } from "@omnidev/sigil";
 
-import { setSingularOrPlural } from "lib/util";
+import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { IconType } from "react-icons";
 

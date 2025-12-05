@@ -1,26 +1,24 @@
-"use client";
-
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import { GradientMask, Link, SkeletonArray, Spinner } from "components/core";
-import { FeedbackSection, Response } from "components/dashboard";
-import { EmptyState, ErrorBoundary } from "components/layout";
-import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
-import { app } from "lib/config";
+import GradientMask from "@/components/core/GradientMask";
+import SkeletonArray from "@/components/core/SkeletonArray";
+import Spinner from "@/components/core/Spinner";
+import FeedbackSection from "@/components/dashboard/FeedbackSection";
+import Response from "@/components/dashboard/Response";
+import EmptyState from "@/components/layout/EmptyState";
+import ErrorBoundary from "@/components/layout/ErrorBoundary";
+import { useInfiniteRecentFeedbackQuery } from "@/generated/graphql";
+import app from "@/lib/config/app.config";
 
-import type { Post } from "generated/graphql";
-import type { Session } from "next-auth";
-
-interface Props {
-  /** Authenticated user. */
-  user: Session["user"];
-}
+import type { Post } from "@/generated/graphql";
 
 /**
  * Recent feedback section.
  */
-const RecentFeedback = ({ user }: Props) => {
+const RecentFeedback = () => {
+  const { session } = useRouteContext({ from: "/_auth/dashboard" });
   const {
     data: recentFeedback,
     isLoading,
@@ -29,7 +27,7 @@ const RecentFeedback = ({ user }: Props) => {
     fetchNextPage,
   } = useInfiniteRecentFeedbackQuery(
     {
-      userId: user.rowId!,
+      userId: session?.user.rowId!,
     },
     {
       initialPageParam: undefined,
@@ -78,7 +76,12 @@ const RecentFeedback = ({ user }: Props) => {
               {recentFeedback?.map((feedback) => (
                 <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
-                    href={`/organizations/${feedback?.project?.organization?.slug}/projects/${feedback?.project?.slug}/${feedback?.rowId}`}
+                    to="/organizations/$organizationSlug/projects/$projectSlug/$feedbackId"
+                    params={{
+                      organizationSlug: feedback?.project?.organization?.slug!,
+                      projectSlug: feedback?.project?.slug!,
+                      feedbackId: feedback?.rowId!,
+                    }}
                   >
                     <Response
                       feedback={feedback as Partial<Post>}

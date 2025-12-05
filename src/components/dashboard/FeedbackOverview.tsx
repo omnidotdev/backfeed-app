@@ -1,6 +1,5 @@
-"use client";
-
 import { Skeleton } from "@omnidev/sigil";
+import { useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import {
@@ -12,17 +11,14 @@ import {
   YAxis,
 } from "recharts";
 
-import { FeedbackSection, FeedbackTooltip } from "components/dashboard";
-import { ErrorBoundary } from "components/layout";
-import { useWeeklyFeedbackQuery } from "generated/graphql";
-import { token } from "generated/panda/tokens";
-import { useViewportSize } from "lib/hooks";
-
-import type { Session } from "next-auth";
+import FeedbackSection from "@/components/dashboard/FeedbackSection";
+import FeedbackTooltip from "@/components/dashboard/FeedbackTooltip";
+import ErrorBoundary from "@/components/layout/ErrorBoundary";
+import { useWeeklyFeedbackQuery } from "@/generated/graphql";
+import { token } from "@/generated/panda/tokens";
+import useViewportSize from "@/lib/hooks/useViewportSize";
 
 interface Props {
-  /** Authenticated user. */
-  user: Session["user"];
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }
@@ -30,7 +26,8 @@ interface Props {
 /**
  * Feedback overview section. Displays a bar chart that displays daily feedback volume for the past 7 days.
  */
-const FeedbackOverview = ({ user, oneWeekAgo }: Props) => {
+const FeedbackOverview = ({ oneWeekAgo }: Props) => {
+  const { session } = useRouteContext({ from: "/_auth/dashboard" });
   const isLargeViewport = useViewportSize({
     minWidth: token("breakpoints.lg"),
   });
@@ -44,7 +41,7 @@ const FeedbackOverview = ({ user, oneWeekAgo }: Props) => {
     isError,
   } = useWeeklyFeedbackQuery(
     {
-      userId: user.rowId!,
+      userId: session?.user.rowId!,
       startDate: oneWeekAgo,
     },
     {

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Center, Flex, Icon, Tooltip } from "@omnidev/sigil";
 
 import type { FlexProps } from "@omnidev/sigil";

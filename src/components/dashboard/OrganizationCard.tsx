@@ -1,14 +1,12 @@
-"use client";
-
 import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
 import { FiArrowUpRight } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
-import { OverflowText } from "components/core";
-import { DashboardMetric } from "components/dashboard";
+import OverflowText from "@/components/core/OverflowText";
+import DashboardMetric from "@/components/dashboard/DashboardMetric";
 
 import type { FlexProps } from "@omnidev/sigil";
-import type { Organization } from "generated/graphql";
+import type { Organization } from "@/generated/graphql";
 
 interface Props extends FlexProps {
   /** Organization details. */

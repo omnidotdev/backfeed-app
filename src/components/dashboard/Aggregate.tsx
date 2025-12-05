@@ -1,5 +1,3 @@
-"use client";
-
 import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
 
 import type { IconType } from "react-icons";

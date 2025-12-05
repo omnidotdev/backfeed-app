@@ -1,5 +1,3 @@
-"use client";
-
 import { Skeleton } from "@omnidev/sigil";
 
 import type { SkeletonProps } from "@omnidev/sigil";

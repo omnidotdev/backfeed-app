@@ -1,5 +1,3 @@
-"use client";
-
 import { Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import {
@@ -8,10 +6,10 @@ import {
   HiOutlineUser,
 } from "react-icons/hi2";
 
-import { StatusBadge } from "components/core";
+import StatusBadge from "@/components/core/StatusBadge";
 
 import type { FlexProps } from "@omnidev/sigil";
-import type { Post } from "generated/graphql";
+import type { Post } from "@/generated/graphql";
 
 interface Props extends FlexProps {
   /** Feedback details. */

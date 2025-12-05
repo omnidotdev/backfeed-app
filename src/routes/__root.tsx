@@ -8,6 +8,9 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
@@ -22,6 +25,9 @@ import { getTheme } from "@/server/functions/theme";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

@@ -1,5 +1,3 @@
-"use client";
-
 import { Box, Text } from "@omnidev/sigil";
 
 import type { BoxProps } from "@omnidev/sigil";
