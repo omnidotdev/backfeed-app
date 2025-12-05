@@ -1,6 +1,6 @@
 import { Grid } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLoaderData, useParams } from "@tanstack/react-router";
+import { Link, useParams, useRouteContext } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
@@ -27,8 +27,8 @@ const OrganizationProjects = ({ canCreateProjects }: Props) => {
   const { organizationSlug } = useParams({
     from: "/_auth/organizations/$organizationSlug",
   });
-  const { hasAdminPrivileges } = useLoaderData({
-    from: "/_auth/organizations/$organizationSlug/",
+  const { hasAdminPrivileges } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout/",
   });
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
-  "/_auth/organizations/$organizationSlug/projects/$projectSlug/settings",
+  "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings",
 )({
   component: ProjectSettingsPage,
 });

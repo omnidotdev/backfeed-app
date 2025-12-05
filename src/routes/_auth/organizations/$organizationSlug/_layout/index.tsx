@@ -1,6 +1,6 @@
 import { Badge, HStack, Icon, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
@@ -9,64 +9,25 @@ import OrganizationManagement from "@/components/organization/OrganizationManage
 import OrganizationMetrics from "@/components/organization/OrganizationMetrics";
 import OrganizationProjects from "@/components/organization/OrganizationProjects";
 import CreateProject from "@/components/project/CreateProject";
-import { Role, Tier } from "@/generated/graphql";
 import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
-import {
-  organizationMetricsOptions,
-  organizationOptions,
-  organizationRoleOptions,
-} from "@/lib/options/organizations";
+import { organizationOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
-export const Route = createFileRoute("/_auth/organizations/$organizationSlug/")(
-  {
-    loader: async ({
-      context: { queryClient, session },
-      params: { organizationSlug },
-    }) => {
-      const { organizationBySlug } = await queryClient.ensureQueryData(
-        organizationOptions({ slug: organizationSlug }),
-      );
-
-      if (!organizationBySlug) throw notFound();
-
-      const [{ memberByUserIdAndOrganizationId: member }] = await Promise.all([
-        queryClient.ensureQueryData(
-          organizationRoleOptions({
-            userId: session?.user?.rowId!,
-            organizationId: organizationBySlug.rowId,
-          }),
-        ),
-        queryClient.ensureQueryData(
-          organizationMetricsOptions({
-            organizationId: organizationBySlug.rowId,
-          }),
-        ),
-      ]);
-
-      return {
-        organizationId: organizationBySlug.rowId,
-        hasAdminPrivileges:
-          member?.role === Role.Admin || member?.role === Role.Owner,
-        hasBasicTierPrivileges: organizationBySlug.tier !== Tier.Free,
-        hasTeamTierPrivileges: ![Tier.Free, Tier.Basic].includes(
-          organizationBySlug.tier,
-        ),
-      };
-    },
-    component: OrganizationPage,
-  },
-);
+export const Route = createFileRoute(
+  "/_auth/organizations/$organizationSlug/_layout/",
+)({
+  component: OrganizationPage,
+});
 
 function OrganizationPage() {
   const { organizationSlug } = Route.useParams();
   const { hasAdminPrivileges, hasBasicTierPrivileges, hasTeamTierPrivileges } =
-    Route.useLoaderData();
+    Route.useRouteContext();
 
   const { data: organization } = useQuery({
     ...organizationOptions({ slug: organizationSlug }),

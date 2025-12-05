@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
-  "/_auth/organizations/$organizationSlug/_manage",
+  "/_auth/organizations/$organizationSlug/_layout/_manage",
 )({
   component: ManageOrganizationLayout,
 });

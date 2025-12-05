@@ -18,18 +18,19 @@ import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AuthProfileRouteImport } from './routes/_auth/_profile'
 import { Route as AuthOrganizationsIndexRouteImport } from './routes/_auth/organizations/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AuthOrganizationsOrganizationSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/index'
-import { Route as AuthOrganizationsOrganizationSlugManageRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage'
+import { Route as AuthOrganizationsOrganizationSlugLayoutRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout'
 import { Route as AuthProfileUserIdOrganizationsRouteImport } from './routes/_auth/_profile/$userId/organizations'
 import { Route as AuthProfileUserIdInvitationsRouteImport } from './routes/_auth/_profile/$userId/invitations'
 import { Route as AuthProfileUserIdAccountRouteImport } from './routes/_auth/_profile/$userId/account'
-import { Route as AuthOrganizationsOrganizationSlugProjectsIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/index'
-import { Route as AuthOrganizationsOrganizationSlugManageSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/settings'
-import { Route as AuthOrganizationsOrganizationSlugManageMembersRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/members'
-import { Route as AuthOrganizationsOrganizationSlugManageInvitationsRouteImport } from './routes/_auth/organizations/$organizationSlug/_manage/invitations'
-import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/index'
-import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
-import { Route as AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport } from './routes/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+import { Route as AuthOrganizationsOrganizationSlugLayoutIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/index'
+import { Route as AuthOrganizationsOrganizationSlugLayoutManageRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage'
+import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/index'
+import { Route as AuthOrganizationsOrganizationSlugLayoutManageSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage/settings'
+import { Route as AuthOrganizationsOrganizationSlugLayoutManageMembersRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage/members'
+import { Route as AuthOrganizationsOrganizationSlugLayoutManageInvitationsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage/invitations'
+import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/index'
+import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings'
+import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId'
 
 const AuthOrganizationsOrganizationSlugRouteImport = createFileRoute(
   '/_auth/organizations/$organizationSlug',
@@ -74,15 +75,9 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthOrganizationsOrganizationSlugIndexRoute =
-  AuthOrganizationsOrganizationSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
-  } as any)
-const AuthOrganizationsOrganizationSlugManageRoute =
-  AuthOrganizationsOrganizationSlugManageRouteImport.update({
-    id: '/_manage',
+const AuthOrganizationsOrganizationSlugLayoutRoute =
+  AuthOrganizationsOrganizationSlugLayoutRouteImport.update({
+    id: '/_layout',
     getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
   } as any)
 const AuthProfileUserIdOrganizationsRoute =
@@ -103,50 +98,63 @@ const AuthProfileUserIdAccountRoute =
     path: '/$userId/account',
     getParentRoute: () => AuthProfileRoute,
   } as any)
-const AuthOrganizationsOrganizationSlugProjectsIndexRoute =
-  AuthOrganizationsOrganizationSlugProjectsIndexRouteImport.update({
+const AuthOrganizationsOrganizationSlugLayoutIndexRoute =
+  AuthOrganizationsOrganizationSlugLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugLayoutManageRoute =
+  AuthOrganizationsOrganizationSlugLayoutManageRouteImport.update({
+    id: '/_manage',
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
+  } as any)
+const AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute =
+  AuthOrganizationsOrganizationSlugLayoutProjectsIndexRouteImport.update({
     id: '/projects/',
     path: '/projects/',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
   } as any)
-const AuthOrganizationsOrganizationSlugManageSettingsRoute =
-  AuthOrganizationsOrganizationSlugManageSettingsRouteImport.update({
+const AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute =
+  AuthOrganizationsOrganizationSlugLayoutManageSettingsRouteImport.update({
     id: '/settings',
     path: '/settings',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutManageRoute,
   } as any)
-const AuthOrganizationsOrganizationSlugManageMembersRoute =
-  AuthOrganizationsOrganizationSlugManageMembersRouteImport.update({
+const AuthOrganizationsOrganizationSlugLayoutManageMembersRoute =
+  AuthOrganizationsOrganizationSlugLayoutManageMembersRouteImport.update({
     id: '/members',
     path: '/members',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutManageRoute,
   } as any)
-const AuthOrganizationsOrganizationSlugManageInvitationsRoute =
-  AuthOrganizationsOrganizationSlugManageInvitationsRouteImport.update({
+const AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute =
+  AuthOrganizationsOrganizationSlugLayoutManageInvitationsRouteImport.update({
     id: '/invitations',
     path: '/invitations',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugManageRoute,
+    getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutManageRoute,
   } as any)
-const AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute =
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport.update({
-    id: '/projects/$projectSlug/',
-    path: '/projects/$projectSlug/',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
-  } as any)
-const AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute =
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport.update(
+const AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute =
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRouteImport.update(
+    {
+      id: '/projects/$projectSlug/',
+      path: '/projects/$projectSlug/',
+      getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
+    } as any,
+  )
+const AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute =
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRouteImport.update(
     {
       id: '/projects/$projectSlug/settings',
       path: '/projects/$projectSlug/settings',
-      getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+      getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
     } as any,
   )
-const AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute =
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport.update(
+const AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute =
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRouteImport.update(
     {
       id: '/projects/$projectSlug/$feedbackId',
       path: '/projects/$projectSlug/$feedbackId',
-      getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+      getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
     } as any,
   )
 
@@ -159,15 +167,15 @@ export interface FileRoutesByFullPath {
   '/$userId/account': typeof AuthProfileUserIdAccountRoute
   '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
   '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
-  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
-  '/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
-  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
-  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
-  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
-  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
-  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
-  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
+  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
+  '/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
+  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
+  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
+  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute
+  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute
+  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -178,14 +186,14 @@ export interface FileRoutesByTo {
   '/$userId/account': typeof AuthProfileUserIdAccountRoute
   '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
   '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
-  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
-  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
-  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
-  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
-  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
-  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
-  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
+  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
+  '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
+  '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
+  '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute
+  '/organizations/$organizationSlug/projects': typeof AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute
+  '/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute
+  '/organizations/$organizationSlug/projects/$projectSlug': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -200,15 +208,16 @@ export interface FileRoutesById {
   '/_auth/_profile/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
   '/_auth/_profile/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
   '/_auth/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugRouteWithChildren
-  '/_auth/organizations/$organizationSlug/_manage': typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
-  '/_auth/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugIndexRoute
-  '/_auth/organizations/$organizationSlug/_manage/invitations': typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
-  '/_auth/organizations/$organizationSlug/_manage/members': typeof AuthOrganizationsOrganizationSlugManageMembersRoute
-  '/_auth/organizations/$organizationSlug/_manage/settings': typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
-  '/_auth/organizations/$organizationSlug/projects/': typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
-  '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
-  '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
-  '/_auth/organizations/$organizationSlug/projects/$projectSlug/': typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
+  '/_auth/organizations/$organizationSlug/_layout': typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
+  '/_auth/organizations/$organizationSlug/_layout/_manage': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
+  '/_auth/organizations/$organizationSlug/_layout/': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
+  '/_auth/organizations/$organizationSlug/_layout/_manage/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
+  '/_auth/organizations/$organizationSlug/_layout/_manage/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
+  '/_auth/organizations/$organizationSlug/_layout/_manage/settings': typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute
+  '/_auth/organizations/$organizationSlug/_layout/projects/': typeof AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute
+  '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute
+  '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute
+  '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/': typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,15 +270,16 @@ export interface FileRouteTypes {
     | '/_auth/_profile/$userId/invitations'
     | '/_auth/_profile/$userId/organizations'
     | '/_auth/organizations/$organizationSlug'
-    | '/_auth/organizations/$organizationSlug/_manage'
-    | '/_auth/organizations/$organizationSlug/'
-    | '/_auth/organizations/$organizationSlug/_manage/invitations'
-    | '/_auth/organizations/$organizationSlug/_manage/members'
-    | '/_auth/organizations/$organizationSlug/_manage/settings'
-    | '/_auth/organizations/$organizationSlug/projects/'
-    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
-    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
-    | '/_auth/organizations/$organizationSlug/projects/$projectSlug/'
+    | '/_auth/organizations/$organizationSlug/_layout'
+    | '/_auth/organizations/$organizationSlug/_layout/_manage'
+    | '/_auth/organizations/$organizationSlug/_layout/'
+    | '/_auth/organizations/$organizationSlug/_layout/_manage/invitations'
+    | '/_auth/organizations/$organizationSlug/_layout/_manage/members'
+    | '/_auth/organizations/$organizationSlug/_layout/_manage/settings'
+    | '/_auth/organizations/$organizationSlug/_layout/projects/'
+    | '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId'
+    | '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings'
+    | '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -337,18 +347,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/organizations/$organizationSlug/': {
-      id: '/_auth/organizations/$organizationSlug/'
-      path: '/'
-      fullPath: '/organizations/$organizationSlug/'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugIndexRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
-    }
-    '/_auth/organizations/$organizationSlug/_manage': {
-      id: '/_auth/organizations/$organizationSlug/_manage'
+    '/_auth/organizations/$organizationSlug/_layout': {
+      id: '/_auth/organizations/$organizationSlug/_layout'
       path: '/organizations/$organizationSlug'
       fullPath: '/organizations/$organizationSlug'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageRouteImport
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteImport
       parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
     }
     '/_auth/_profile/$userId/organizations': {
@@ -372,54 +375,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthProfileUserIdAccountRouteImport
       parentRoute: typeof AuthProfileRoute
     }
-    '/_auth/organizations/$organizationSlug/projects/': {
-      id: '/_auth/organizations/$organizationSlug/projects/'
+    '/_auth/organizations/$organizationSlug/_layout/': {
+      id: '/_auth/organizations/$organizationSlug/_layout/'
+      path: '/'
+      fullPath: '/organizations/$organizationSlug/'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
+    }
+    '/_auth/organizations/$organizationSlug/_layout/_manage': {
+      id: '/_auth/organizations/$organizationSlug/_layout/_manage'
+      path: ''
+      fullPath: '/organizations/$organizationSlug'
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
+    }
+    '/_auth/organizations/$organizationSlug/_layout/projects/': {
+      id: '/_auth/organizations/$organizationSlug/_layout/projects/'
       path: '/projects'
       fullPath: '/organizations/$organizationSlug/projects'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsIndexRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
     }
-    '/_auth/organizations/$organizationSlug/_manage/settings': {
-      id: '/_auth/organizations/$organizationSlug/_manage/settings'
+    '/_auth/organizations/$organizationSlug/_layout/_manage/settings': {
+      id: '/_auth/organizations/$organizationSlug/_layout/_manage/settings'
       path: '/settings'
       fullPath: '/organizations/$organizationSlug/settings'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageSettingsRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageRoute
     }
-    '/_auth/organizations/$organizationSlug/_manage/members': {
-      id: '/_auth/organizations/$organizationSlug/_manage/members'
+    '/_auth/organizations/$organizationSlug/_layout/_manage/members': {
+      id: '/_auth/organizations/$organizationSlug/_layout/_manage/members'
       path: '/members'
       fullPath: '/organizations/$organizationSlug/members'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageMembersRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageRoute
     }
-    '/_auth/organizations/$organizationSlug/_manage/invitations': {
-      id: '/_auth/organizations/$organizationSlug/_manage/invitations'
+    '/_auth/organizations/$organizationSlug/_layout/_manage/invitations': {
+      id: '/_auth/organizations/$organizationSlug/_layout/_manage/invitations'
       path: '/invitations'
       fullPath: '/organizations/$organizationSlug/invitations'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugManageInvitationsRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugManageRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageRoute
     }
-    '/_auth/organizations/$organizationSlug/projects/$projectSlug/': {
-      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/'
+    '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/': {
+      id: '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/'
       path: '/projects/$projectSlug'
       fullPath: '/organizations/$organizationSlug/projects/$projectSlug'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
     }
-    '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings': {
-      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/settings'
+    '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings': {
+      id: '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings'
       path: '/projects/$projectSlug/settings'
       fullPath: '/organizations/$organizationSlug/projects/$projectSlug/settings'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
     }
-    '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId': {
-      id: '/_auth/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
+    '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId': {
+      id: '/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId'
       path: '/projects/$projectSlug/$feedbackId'
       fullPath: '/organizations/$organizationSlug/projects/$projectSlug/$feedbackId'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRouteImport
+      parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
     }
   }
 }
@@ -440,50 +457,65 @@ const AuthProfileRouteWithChildren = AuthProfileRoute._addFileChildren(
   AuthProfileRouteChildren,
 )
 
-interface AuthOrganizationsOrganizationSlugManageRouteChildren {
-  AuthOrganizationsOrganizationSlugManageInvitationsRoute: typeof AuthOrganizationsOrganizationSlugManageInvitationsRoute
-  AuthOrganizationsOrganizationSlugManageMembersRoute: typeof AuthOrganizationsOrganizationSlugManageMembersRoute
-  AuthOrganizationsOrganizationSlugManageSettingsRoute: typeof AuthOrganizationsOrganizationSlugManageSettingsRoute
+interface AuthOrganizationsOrganizationSlugLayoutManageRouteChildren {
+  AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
+  AuthOrganizationsOrganizationSlugLayoutManageMembersRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
+  AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute
 }
 
-const AuthOrganizationsOrganizationSlugManageRouteChildren: AuthOrganizationsOrganizationSlugManageRouteChildren =
+const AuthOrganizationsOrganizationSlugLayoutManageRouteChildren: AuthOrganizationsOrganizationSlugLayoutManageRouteChildren =
   {
-    AuthOrganizationsOrganizationSlugManageInvitationsRoute:
-      AuthOrganizationsOrganizationSlugManageInvitationsRoute,
-    AuthOrganizationsOrganizationSlugManageMembersRoute:
-      AuthOrganizationsOrganizationSlugManageMembersRoute,
-    AuthOrganizationsOrganizationSlugManageSettingsRoute:
-      AuthOrganizationsOrganizationSlugManageSettingsRoute,
+    AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute:
+      AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute,
+    AuthOrganizationsOrganizationSlugLayoutManageMembersRoute:
+      AuthOrganizationsOrganizationSlugLayoutManageMembersRoute,
+    AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute:
+      AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute,
   }
 
-const AuthOrganizationsOrganizationSlugManageRouteWithChildren =
-  AuthOrganizationsOrganizationSlugManageRoute._addFileChildren(
-    AuthOrganizationsOrganizationSlugManageRouteChildren,
+const AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren =
+  AuthOrganizationsOrganizationSlugLayoutManageRoute._addFileChildren(
+    AuthOrganizationsOrganizationSlugLayoutManageRouteChildren,
+  )
+
+interface AuthOrganizationsOrganizationSlugLayoutRouteChildren {
+  AuthOrganizationsOrganizationSlugLayoutManageRoute: typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
+  AuthOrganizationsOrganizationSlugLayoutIndexRoute: typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
+  AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute
+  AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute: typeof AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute
+}
+
+const AuthOrganizationsOrganizationSlugLayoutRouteChildren: AuthOrganizationsOrganizationSlugLayoutRouteChildren =
+  {
+    AuthOrganizationsOrganizationSlugLayoutManageRoute:
+      AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren,
+    AuthOrganizationsOrganizationSlugLayoutIndexRoute:
+      AuthOrganizationsOrganizationSlugLayoutIndexRoute,
+    AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute:
+      AuthOrganizationsOrganizationSlugLayoutProjectsIndexRoute,
+    AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute:
+      AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRoute,
+    AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute:
+      AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRoute,
+    AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute:
+      AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRoute,
+  }
+
+const AuthOrganizationsOrganizationSlugLayoutRouteWithChildren =
+  AuthOrganizationsOrganizationSlugLayoutRoute._addFileChildren(
+    AuthOrganizationsOrganizationSlugLayoutRouteChildren,
   )
 
 interface AuthOrganizationsOrganizationSlugRouteChildren {
-  AuthOrganizationsOrganizationSlugManageRoute: typeof AuthOrganizationsOrganizationSlugManageRouteWithChildren
-  AuthOrganizationsOrganizationSlugIndexRoute: typeof AuthOrganizationsOrganizationSlugIndexRoute
-  AuthOrganizationsOrganizationSlugProjectsIndexRoute: typeof AuthOrganizationsOrganizationSlugProjectsIndexRoute
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute
-  AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute: typeof AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute
+  AuthOrganizationsOrganizationSlugLayoutRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
 }
 
 const AuthOrganizationsOrganizationSlugRouteChildren: AuthOrganizationsOrganizationSlugRouteChildren =
   {
-    AuthOrganizationsOrganizationSlugManageRoute:
-      AuthOrganizationsOrganizationSlugManageRouteWithChildren,
-    AuthOrganizationsOrganizationSlugIndexRoute:
-      AuthOrganizationsOrganizationSlugIndexRoute,
-    AuthOrganizationsOrganizationSlugProjectsIndexRoute:
-      AuthOrganizationsOrganizationSlugProjectsIndexRoute,
-    AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute:
-      AuthOrganizationsOrganizationSlugProjectsProjectSlugFeedbackIdRoute,
-    AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute:
-      AuthOrganizationsOrganizationSlugProjectsProjectSlugSettingsRoute,
-    AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute:
-      AuthOrganizationsOrganizationSlugProjectsProjectSlugIndexRoute,
+    AuthOrganizationsOrganizationSlugLayoutRoute:
+      AuthOrganizationsOrganizationSlugLayoutRouteWithChildren,
   }
 
 const AuthOrganizationsOrganizationSlugRouteWithChildren =

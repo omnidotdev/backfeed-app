@@ -1,6 +1,5 @@
 import { Button, Grid, Icon } from "@omnidev/sigil";
 import {
-  useLoaderData,
   useNavigate,
   useParams,
   useRouteContext,
@@ -30,13 +29,13 @@ const managementDetails = app.organizationPage.management;
  */
 const OrganizationManagement = () => {
   const { organizationSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug",
+    from: "/_auth/organizations/$organizationSlug/_layout/",
   });
   const { session } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug",
+    from: "/_auth/organizations/$organizationSlug/_layout/",
   });
-  const { organizationId, hasAdminPrivileges } = useLoaderData({
-    from: "/_auth/organizations/$organizationSlug/",
+  const { organizationId, hasAdminPrivileges } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout/",
   });
   const navigate = useNavigate();
 

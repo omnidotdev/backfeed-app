@@ -1,6 +1,6 @@
 import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineFolder,
@@ -27,8 +27,8 @@ interface OrganizationMetric extends FlexProps {
  * Organization metrics.
  */
 const OrganizationMetrics = () => {
-  const { organizationId } = useLoaderData({
-    from: "/_auth/organizations/$organizationSlug/",
+  const { organizationId } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout/",
   });
 
   const {
