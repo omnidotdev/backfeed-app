@@ -41,7 +41,10 @@ export const getSubscription = createServerFn()
 
     return {
       id: subscription.id,
+      status: subscription.status,
       cancelAt: subscription.cancel_at,
+      currentPeriodEnd: subscription.items.data[0].current_period_end,
+      priceId: subscription.items.data[0].price.id,
       product: subscription.items.data[0].price.product as Stripe.Product,
     };
   });
