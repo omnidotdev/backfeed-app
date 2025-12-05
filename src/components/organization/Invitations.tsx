@@ -1,44 +1,38 @@
 import {
-  Badge,
   Checkbox,
-  Stack,
   Table,
   TableCell,
   TableHeader,
   TableRow,
-  Text,
 } from "@omnidev/sigil";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useRouteContext, useSearch } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { useMemo } from "react";
-import { match } from "ts-pattern";
 
-import MembershipMenu from "@/components/organization/MembershipMenu";
-import { Role } from "@/generated/graphql";
+import InvitationMenu from "@/components/organization/InvitationMenu";
 import app from "@/lib/config/app.config";
 import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
-import { membersOptions } from "@/lib/options/members";
-import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import { invitationsOptions } from "@/lib/options/invitations";
 
-import type { MemberFragment } from "@/generated/graphql";
+import type { InvitationFragment } from "@/generated/graphql";
 
-const columnHelper = createColumnHelper<MemberFragment>();
+const columnHelper = createColumnHelper<InvitationFragment>();
+
+const organizationInviteDetails = app.organizationInvitationsPage;
 
 /**
- * Organization members table.
+ * Organization invitations table.
  */
-const Members = () => {
+const Invitations = () => {
   const { session, organizationId } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
-  });
-  const { search, roles } = useSearch({
-    from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
+    from: "/_auth/organizations/$organizationSlug/_layout/_manage/invitations",
   });
 
   const { isOwner } = useOrganizationMembership({
@@ -46,15 +40,12 @@ const Members = () => {
     organizationId,
   });
 
-  const { data: members } = useQuery({
-    ...membersOptions({
+  const { data: invitations } = useQuery({
+    ...invitationsOptions({
       organizationId,
-      roles,
-      search,
-      excludeRoles: [Role.Owner],
     }),
     placeholderData: keepPreviousData,
-    select: (data) => data.members?.nodes,
+    select: (data) => data.invitations?.nodes ?? [],
   });
 
   const columns = useMemo(
@@ -64,24 +55,23 @@ const Members = () => {
           <Checkbox
             size="sm"
             // explicit width to prevent CLS with row selection
-            w={28}
+            w={48}
             // Prevent spacing between checkbox and label. See note for label `onClick` handler below
             gap={0}
             labelProps={{
-              flex: 1,
-              px: isOwner ? 4 : 2,
+              px: 4,
               fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
             }}
             label={
               table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
-                <MembershipMenu
+                <InvitationMenu
                   selectedRows={table.getSelectedRowModel().rows}
                   toggleRowSelection={table.toggleAllRowsSelected}
                 />
               ) : (
-                app.organizationMembersPage.membersTable.headers.members
+                organizationInviteDetails.invitationsTable.headers.email
               )
             }
             controlProps={{
@@ -103,23 +93,17 @@ const Members = () => {
         cell: ({ row }) => (
           <Checkbox
             size="sm"
+            gap={4}
             labelProps={{
-              px: 2,
+              fontWeight: "bold",
+              // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+              onClick: (e) => e.preventDefault(),
             }}
-            label={
-              <Stack py={4}>
-                <Text fontSize="lg">
-                  {row.original.user?.firstName} {row.original.user?.lastName}
-                </Text>
-                <Text color="foreground.subtle">
-                  {row.original.user?.username}
-                </Text>
-              </Stack>
-            }
             controlProps={{
               display: isOwner ? "flex" : "none",
             }}
             disabled={!isOwner}
+            label={row.original.email}
             checked={row.getIsSelected()}
             onCheckedChange={({ checked }) =>
               row.toggleSelected(checked as boolean)
@@ -127,34 +111,17 @@ const Members = () => {
           />
         ),
       }),
-      columnHelper.accessor("role", {
-        header: app.organizationMembersPage.membersTable.headers.role,
-        cell: (info) => {
-          const accentColor = match(info.getValue())
-            .with(Role.Admin, () => "brand.secondary")
-            .with(Role.Member, () => "brand.tertiary")
-            .otherwise(() => undefined);
-
-          return (
-            <Badge
-              variant="outline"
-              w={18}
-              justifyContent="center"
-              color={accentColor}
-              borderColor={accentColor}
-              fontWeight="semibold"
-            >
-              {capitalizeFirstLetter(info.getValue())}
-            </Badge>
-          );
-        },
+      columnHelper.accessor("createdAt", {
+        header:
+          organizationInviteDetails.invitationsTable.headers.invitationDate,
+        cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
       }),
     ],
     [isOwner],
   );
 
   const table = useReactTable({
-    data: members as MemberFragment[],
+    data: (invitations as InvitationFragment[]) ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -189,4 +156,4 @@ const Members = () => {
   );
 };
 
-export default Members;
+export default Invitations;
