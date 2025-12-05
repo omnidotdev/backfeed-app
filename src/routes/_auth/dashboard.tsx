@@ -1,4 +1,5 @@
 import { Grid, Icon } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import {
@@ -13,17 +14,14 @@ import RecentFeedback from "@/components/dashboard/RecentFeedback";
 import Page from "@/components/layout/Page";
 import CreateOrganization from "@/components/organization/CreateOrganization";
 import PinnedOrganizations from "@/components/organization/PinnedOrganizations";
-import {
-  OrganizationOrderBy,
-  Role,
-  useDashboardAggregatesQuery,
-  useInfiniteRecentFeedbackQuery,
-  useOrganizationsQuery,
-  useRecentFeedbackQuery,
-  useUserQuery,
-  useWeeklyFeedbackQuery,
-} from "@/generated/graphql";
+import { OrganizationOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import {
+  dashboardAggregatesOptions,
+  recentFeedbackOptions,
+  weeklyFeedbackOptions,
+} from "@/lib/options/dashboard";
+import { organizationsOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 
 import type { OrganizationsQueryVariables } from "@/generated/graphql";
@@ -45,53 +43,25 @@ export const Route = createFileRoute("/_auth/dashboard")({
       .toDate();
 
     await Promise.all([
-      queryClient.ensureQueryData({
-        queryKey: useOrganizationsQuery.getKey(organizationsQueryVariables),
-        queryFn: useOrganizationsQuery.fetcher(organizationsQueryVariables),
-      }),
-      queryClient.ensureQueryData({
-        queryKey: useOrganizationsQuery.getKey({
-          userId: organizationsQueryVariables.userId,
-          isMember: true,
-          excludeRoles: [Role.Member],
-        }),
-        queryFn: useOrganizationsQuery.fetcher({
-          userId: organizationsQueryVariables.userId,
-          isMember: true,
-          excludeRoles: [Role.Member],
-        }),
-      }),
-      queryClient.ensureQueryData({
-        queryKey: useUserQuery.getKey({ hidraId: session?.user?.hidraId! }),
-        queryFn: useUserQuery.fetcher({ hidraId: session?.user?.hidraId! }),
-      }),
-      queryClient.ensureQueryData({
-        queryKey: useDashboardAggregatesQuery.getKey({
+      queryClient.ensureQueryData(
+        organizationsOptions(organizationsQueryVariables),
+      ),
+      queryClient.ensureQueryData(
+        dashboardAggregatesOptions({
           userId: session?.user.rowId!,
         }),
-        queryFn: useDashboardAggregatesQuery.fetcher({
-          userId: session?.user.rowId!,
-        }),
-      }),
-      queryClient.ensureQueryData({
-        queryKey: useWeeklyFeedbackQuery.getKey({
+      ),
+      queryClient.ensureQueryData(
+        weeklyFeedbackOptions({
           userId: session?.user?.rowId!,
           startDate: oneWeekAgo,
         }),
-        queryFn: useWeeklyFeedbackQuery.fetcher({
-          userId: session?.user?.rowId!,
-          startDate: oneWeekAgo,
-        }),
-      }),
-      queryClient.ensureInfiniteQueryData({
-        queryKey: useInfiniteRecentFeedbackQuery.getKey({
+      ),
+      queryClient.ensureInfiniteQueryData(
+        recentFeedbackOptions({
           userId: session?.user?.rowId!,
         }),
-        queryFn: useRecentFeedbackQuery.fetcher({
-          userId: session?.user?.rowId!,
-        }),
-        initialPageParam: undefined,
-      }),
+      ),
     ]);
 
     return {
@@ -109,18 +79,14 @@ function DashboardPage() {
     data: dashboardAggregates,
     isLoading,
     isError,
-  } = useDashboardAggregatesQuery(
-    {
-      userId: session?.user?.rowId!,
-    },
-    {
-      enabled: !!session?.user?.rowId,
-      select: (data) => ({
-        totalFeedback: data?.posts?.totalCount,
-        totalUsers: data?.users?.totalCount,
-      }),
-    },
-  );
+  } = useQuery({
+    ...dashboardAggregatesOptions({ userId: session?.user.rowId! }),
+    enabled: !!session?.user?.rowId,
+    select: (data) => ({
+      totalFeedback: data?.posts?.totalCount,
+      totalUsers: data?.users?.totalCount,
+    }),
+  });
 
   const aggregates = [
     {

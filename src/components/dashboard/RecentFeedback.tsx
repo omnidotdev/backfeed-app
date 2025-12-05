@@ -1,4 +1,5 @@
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -9,8 +10,8 @@ import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import Response from "@/components/dashboard/Response";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import { useInfiniteRecentFeedbackQuery } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { recentFeedbackOptions } from "@/lib/options/dashboard";
 
 import type { Post } from "@/generated/graphql";
 
@@ -25,22 +26,15 @@ const RecentFeedback = () => {
     isError,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteRecentFeedbackQuery(
-    {
+  } = useInfiniteQuery({
+    ...recentFeedbackOptions({
       userId: session?.user.rowId!,
-    },
-    {
-      initialPageParam: undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage?.posts?.pageInfo?.hasNextPage
-          ? { after: lastPage?.posts?.pageInfo?.endCursor }
-          : undefined,
-      select: (data) =>
-        data?.pages?.flatMap((page) =>
-          page?.posts?.edges?.map((edge) => edge?.node),
-        ),
-    },
-  );
+    }),
+    select: (data) =>
+      data?.pages?.flatMap((page) =>
+        page?.posts?.edges?.map((edge) => edge?.node),
+      ),
+  });
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,

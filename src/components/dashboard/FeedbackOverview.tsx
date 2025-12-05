@@ -1,4 +1,5 @@
 import { Skeleton } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useMemo } from "react";
@@ -14,9 +15,9 @@ import {
 import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import FeedbackTooltip from "@/components/dashboard/FeedbackTooltip";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import { useWeeklyFeedbackQuery } from "@/generated/graphql";
 import { token } from "@/generated/panda/tokens";
 import useViewportSize from "@/lib/hooks/useViewportSize";
+import { weeklyFeedbackOptions } from "@/lib/options/dashboard";
 
 interface Props {
   /** Start of day from one week ago. */
@@ -39,19 +40,17 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
     data: weeklyFeedback,
     isLoading,
     isError,
-  } = useWeeklyFeedbackQuery(
-    {
+  } = useQuery({
+    ...weeklyFeedbackOptions({
       userId: session?.user.rowId!,
       startDate: oneWeekAgo,
-    },
-    {
-      select: (data) =>
-        data?.posts?.groupedAggregates?.map((aggregate) => ({
-          name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),
-          total: Number(aggregate.distinctCount?.rowId),
-        })),
-    },
-  );
+    }),
+    select: (data) =>
+      data?.posts?.groupedAggregates?.map((aggregate) => ({
+        name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),
+        total: Number(aggregate.distinctCount?.rowId),
+      })),
+  });
 
   const getDailyTotal = (date: string) =>
     weeklyFeedback?.find((item) => item.name === date)?.total ?? 0;

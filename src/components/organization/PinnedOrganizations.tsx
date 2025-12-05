@@ -1,4 +1,5 @@
 import { Grid } from "@omnidev/sigil";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
 
@@ -7,11 +8,9 @@ import OrganizationCard from "@/components/dashboard/OrganizationCard";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import SectionContainer from "@/components/layout/SectionContainer";
-import {
-  OrganizationOrderBy,
-  useOrganizationsQuery,
-} from "@/generated/graphql";
+import { OrganizationOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { organizationsOptions } from "@/lib/options/organizations";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { Organization } from "@/generated/graphql";
@@ -29,18 +28,16 @@ const PinnedOrganizations = () => {
     data: pinnedOrganizations,
     isLoading,
     isError,
-  } = useOrganizationsQuery(
-    {
+  } = useQuery({
+    ...organizationsOptions({
       pageSize: 3,
       offset: 0,
       orderBy: [OrganizationOrderBy.MembersCountDesc],
       userId: session?.user.rowId!,
       isMember: true,
-    },
-    {
-      select: (data) => data?.organizations?.nodes,
-    },
-  );
+    }),
+    select: (data) => data?.organizations?.nodes,
+  });
 
   return (
     <SectionContainer
