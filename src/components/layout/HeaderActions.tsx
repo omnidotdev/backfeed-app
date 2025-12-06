@@ -69,8 +69,13 @@ const HeaderActions = () => {
               {app.auth.signIn.label}
             </Button>
 
-            {/** TODO: handle sign up flow */}
-            <Button>{app.auth.signUp.label}</Button>
+            <Button
+              onClick={() =>
+                signIn({ redirectUrl: BASE_URL!, action: "sign-up" })
+              }
+            >
+              {app.auth.signUp.label}
+            </Button>
           </HStack>
         )}
       </Flex>

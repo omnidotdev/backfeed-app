@@ -1,21 +1,30 @@
-export const signIn = async ({ redirectUrl }: { redirectUrl: string }) => {
+export const signIn = async ({
+  redirectUrl,
+  action,
+}: {
+  redirectUrl: string;
+  action?: "sign-up";
+}) => {
   const { callbackUrl = redirectUrl, redirect = true } = {};
 
   const response = await fetch("/api/auth/csrf");
   const { csrfToken } = await (response.json() as Promise<{
     csrfToken: string;
   }>);
-  const res = await fetch("/api/auth/signin/omni", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-Auth-Return-Redirect": "1",
+  const res = await fetch(
+    `/api/auth/signin/omni${action ? "?action=sign-up" : ""}`,
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Auth-Return-Redirect": "1",
+      },
+      body: new URLSearchParams({
+        csrfToken,
+        callbackUrl,
+      }),
     },
-    body: new URLSearchParams({
-      csrfToken,
-      callbackUrl,
-    }),
-  });
+  );
 
   const data = await res.clone().json();
   const error = new URL(data.url).searchParams.get("error");
