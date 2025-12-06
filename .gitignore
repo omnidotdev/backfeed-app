@@ -4,6 +4,7 @@ node_modules
 .tanstack
 .output
 .nitro
+dist
 
 # tests
 coverage
