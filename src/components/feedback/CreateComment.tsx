@@ -1,26 +1,22 @@
-"use client";
-
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { CharacterLimit } from "components/core";
+import CharacterLimit from "@/components/core/CharacterLimit";
+import { useCreateCommentMutation } from "@/generated/graphql";
+import app from "@/lib/config/app.config";
+import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
+import { uuidSchema } from "@/lib/constants/schema.constant";
+import useForm from "@/lib/hooks/useForm";
 import {
-  useCreateCommentMutation,
-  useFeedbackByIdQuery,
-  useInfiniteCommentsQuery,
-} from "generated/graphql";
-import { app } from "lib/config";
-import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
-import { useForm } from "lib/hooks";
-import { freeTierCommentsOptions } from "lib/options";
-import { toaster } from "lib/util";
+  freeTierCommentsOptions,
+  infiniteCommentsOptions,
+} from "@/lib/options/comments";
+import { feedbackByIdOptions } from "@/lib/options/feedback";
+import toaster from "@/lib/util/toaster";
 
-import type { Session } from "next-auth";
-
-const MAX_COMMENT_LENGTH = 240;
+const MAX_COMMENT_LENGTH = 500;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -38,8 +34,6 @@ const createCommentSchema = z.object({
 });
 
 interface Props {
-  /** Authenticated user. */
-  user: Session["user"] | undefined;
   /** Whether the user can create a comment. */
   canCreateComment: boolean;
 }
@@ -47,14 +41,13 @@ interface Props {
 /**
  * Create comment form.
  */
-const CreateComment = ({ user, canCreateComment }: Props) => {
-  const queryClient = useQueryClient();
-
-  const { organizationSlug, projectSlug, feedbackId } = useParams<{
-    organizationSlug: string;
-    projectSlug: string;
-    feedbackId: string;
-  }>();
+const CreateComment = ({ canCreateComment }: Props) => {
+  const { session, queryClient } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+  });
+  const { organizationSlug, projectSlug, feedbackId } = useParams({
+    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+  });
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
     onSettled: async () => {
@@ -69,17 +62,17 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
           }),
         ),
         queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+          queryKey: feedbackByIdOptions({
             rowId: feedbackId,
-            userId: user?.rowId,
-          }),
+            userId: session?.user?.rowId,
+          }).queryKey,
         }),
       ]);
 
       return queryClient.invalidateQueries({
-        queryKey: useInfiniteCommentsQuery.getKey({
+        queryKey: infiniteCommentsOptions({
           feedbackId,
-        }),
+        }).queryKey,
       });
     },
   });
@@ -88,7 +81,7 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
     {
       defaultValues: {
         postId: feedbackId,
-        userId: user?.rowId ?? "",
+        userId: session?.user?.rowId ?? "",
         message: "",
       },
       asyncDebounceMs: DEBOUNCE_TIME,
@@ -144,7 +137,7 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
             placeholder={app.feedbackPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
-            disabled={!user || !canCreateComment}
+            disabled={!session || !canCreateComment}
             tooltip={app.feedbackPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
@@ -165,7 +158,7 @@ const CreateComment = ({ user, canCreateComment }: Props) => {
           <SubmitForm
             action={app.feedbackPage.comments.action}
             isPending={isPending}
-            disabled={!user || !canCreateComment}
+            disabled={!session || !canCreateComment}
           />
         </AppForm>
       </Stack>

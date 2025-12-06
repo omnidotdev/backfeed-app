@@ -1,8 +1,7 @@
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
-import { Tier } from "generated/graphql";
-import { getFeedback, getProject } from "lib/actions";
-import { MAX_FREE_TIER_COMMENTS } from "lib/constants";
+import { Tier } from "@/generated/graphql";
+import MAX_FREE_TIER_COMMENTS from "@/lib/constants/";
 
 import type { Organization, Post, Project } from "generated/graphql";
 
@@ -42,7 +41,7 @@ const freeTierCommentsOptions = ({
           subscriptionTier,
           totalComments: feedback?.commentsWithReplies.totalCount ?? 0,
         };
-      } catch (error) {
+      } catch (_err) {
         return null;
       }
     },
