@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { useRouteContext, useSearch } from "@tanstack/react-router";
 
 import {
   PostOrderBy,
@@ -49,8 +49,7 @@ const useHandleDownvoteMutation = ({
 }: Options) => {
   const queryClient = useQueryClient();
 
-  // TODO: fix
-  const [{ excludedStatuses, orderBy, search }] = useSearchParams();
+  const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
   const { session } = useRouteContext({ strict: false });
 
