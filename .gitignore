@@ -1,9 +1,9 @@
 node_modules
 
-# Next.js
-.next
-next-env.d.ts
-.swc
+# Tanstack
+.tanstack
+.output
+.nitro
 
 # tests
 coverage
