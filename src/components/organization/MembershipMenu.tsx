@@ -9,7 +9,6 @@ import {
   useUpdateMemberMutation,
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
@@ -43,18 +42,13 @@ const MembershipMenu = ({
   toggleRowSelection,
   ...rest
 }: Props) => {
-  const { session, queryClient, organizationId } = useRouteContext({
+  const { queryClient, isOwner } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
   });
 
   const selectedRowsAreAdmins = selectedRows.every(
     (row) => row.original.role === Role.Admin,
   );
-
-  const { isOwner } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId,
-  });
 
   const onSettled = () =>
     queryClient.invalidateQueries({

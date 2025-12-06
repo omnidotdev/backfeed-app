@@ -10,7 +10,6 @@ import { LuSettings } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import app from "@/lib/config/app.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -31,18 +30,10 @@ const OrganizationManagement = () => {
   const { organizationSlug } = useParams({
     from: "/_auth/organizations/$organizationSlug/_layout/",
   });
-  const { session } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/",
-  });
-  const { organizationId, hasAdminPrivileges } = useRouteContext({
+  const { role, hasAdminPrivileges } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/",
   });
   const navigate = useNavigate();
-
-  const { isMember } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId,
-  });
 
   const ORGANIZATION_ACTIONS: Action[] = [
     {
@@ -72,7 +63,7 @@ const OrganizationManagement = () => {
           to: "/organizations/$organizationSlug/settings",
           params: { organizationSlug },
         }),
-      disabled: !isMember,
+      disabled: !role,
     },
     {
       label: app.organizationPage.header.cta.viewProjects.label,
@@ -82,17 +73,17 @@ const OrganizationManagement = () => {
           to: "/organizations/$organizationSlug/projects",
           params: { organizationSlug },
         }),
-      disabled: isMember,
+      disabled: !!role,
     },
   ];
 
   return (
     <SectionContainer
       title={
-        isMember ? managementDetails.title.member : managementDetails.title.anon
+        role ? managementDetails.title.member : managementDetails.title.anon
       }
       description={
-        isMember
+        role
           ? managementDetails.description.member
           : managementDetails.description.anon
       }

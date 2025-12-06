@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useParams,
@@ -7,11 +8,9 @@ import { useMemo } from "react";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuBuilding2 } from "react-icons/lu";
 
-import {
-  useOrganizationQuery,
-  useProjectBySlugQuery,
-} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { organizationOptions } from "@/lib/options/organizations";
+import { projectOptions } from "@/lib/options/projects";
 
 import type { LinkOptions } from "@tanstack/react-router";
 import type { IconType } from "react-icons";
@@ -39,25 +38,21 @@ const useSidebarNavigationItems = () => {
   const { organizationSlug, projectSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 
-  const { data: organization } = useOrganizationQuery(
-      {
+  const { data: organization } = useQuery({
+      ...organizationOptions({
         slug: organizationSlug!,
-      },
-      {
-        enabled: !!session && !!organizationSlug,
-        select: (data) => data?.organizationBySlug,
-      },
-    ),
-    { data: project } = useProjectBySlugQuery(
-      {
-        slug: projectSlug!,
-        organizationId: organization?.rowId ?? "",
-      },
-      {
-        enabled: !!session && !!projectSlug && !!organization,
-        select: (data) => data?.projectBySlugAndOrganizationId,
-      },
-    );
+      }),
+      enabled: !!session && !!organizationSlug,
+      select: (data) => data?.organizationBySlug,
+    }),
+    { data: project } = useQuery({
+      ...projectOptions({
+        projectSlug: projectSlug!,
+        organizationSlug: organizationSlug!,
+      }),
+      enabled: !!session && !!projectSlug && !!organization,
+      select: (data) => data?.projects?.nodes[0],
+    });
 
   const routes = useMemo<NavItem[]>(
     () => [

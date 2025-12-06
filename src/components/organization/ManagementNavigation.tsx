@@ -12,7 +12,6 @@ import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
 import app from "@/lib/config/app.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import { organizationOptions } from "@/lib/options/organizations";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
@@ -43,7 +42,7 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { session } = useRouteContext({
+  const { role, hasAdminPrivileges } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage",
   });
   const { organizationSlug } = useParams({
@@ -57,11 +56,6 @@ const ManagementNavigation = ({
   const { data: organization } = useQuery({
     ...organizationOptions({ slug: organizationSlug }),
     select: (data) => data?.organizationBySlug,
-  });
-
-  const { isMember, isAdmin } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId: organization?.rowId,
   });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
@@ -86,7 +80,7 @@ const ManagementNavigation = ({
           params: { organizationSlug },
         });
       },
-      disabled: !isAdmin,
+      disabled: !hasAdminPrivileges,
     },
     {
       label: app.organizationSettingsPage.breadcrumb,
@@ -98,7 +92,7 @@ const ManagementNavigation = ({
           params: { organizationSlug },
         });
       },
-      disabled: !isMember,
+      disabled: !role,
     },
   ];
 

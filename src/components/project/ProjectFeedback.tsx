@@ -38,7 +38,6 @@ import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import {
   freeTierFeedbackOptions,
   infiniteFeedbackOptions,
@@ -75,7 +74,7 @@ const SORT_BY_OPTIONS = [
  * Project feedback.
  */
 const ProjectFeedback = () => {
-  const { session } = useRouteContext({
+  const { session, hasAdminPrivileges } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
   });
   const { organizationSlug, projectSlug } = useParams({
@@ -179,11 +178,6 @@ const ProjectFeedback = () => {
     },
   });
 
-  const { isAdmin } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId: posts?.[0]?.project?.organization?.rowId,
-  });
-
   const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
     useDialogStore({
       type: DialogType.CreateFeedback,
@@ -193,7 +187,7 @@ const ProjectFeedback = () => {
     ...projectStatusesOptions({
       projectId: project?.rowId!,
     }),
-    enabled: isAdmin && !!project?.rowId,
+    enabled: hasAdminPrivileges && !!project?.rowId,
     select: (data) =>
       data?.postStatuses?.nodes.map((status) => ({
         rowId: status?.rowId,
@@ -342,7 +336,7 @@ const ProjectFeedback = () => {
                       colSpan={{ base: 1, lg: allPosts.length === 1 ? 2 : 1 }}
                     >
                       <FeedbackCard
-                        canManageFeedback={isAdmin}
+                        canManageFeedback={hasAdminPrivileges}
                         feedback={feedback!}
                         projectStatuses={projectStatuses}
                         h="full"

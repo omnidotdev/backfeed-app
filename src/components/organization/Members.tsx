@@ -22,7 +22,6 @@ import { match } from "ts-pattern";
 import MembershipMenu from "@/components/organization/MembershipMenu";
 import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import { membersOptions } from "@/lib/options/members";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
@@ -34,16 +33,11 @@ const columnHelper = createColumnHelper<MemberFragment>();
  * Organization members table.
  */
 const Members = () => {
-  const { session, organizationId } = useRouteContext({
+  const { isOwner, organizationId } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
   });
   const { search, roles } = useSearch({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/members",
-  });
-
-  const { isOwner } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId,
   });
 
   const { data: members } = useQuery({

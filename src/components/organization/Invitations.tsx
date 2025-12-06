@@ -18,7 +18,6 @@ import { useMemo } from "react";
 
 import InvitationMenu from "@/components/organization/InvitationMenu";
 import app from "@/lib/config/app.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import { invitationsOptions } from "@/lib/options/invitations";
 
 import type { InvitationFragment } from "@/generated/graphql";
@@ -31,13 +30,8 @@ const organizationInviteDetails = app.organizationInvitationsPage;
  * Organization invitations table.
  */
 const Invitations = () => {
-  const { session, organizationId } = useRouteContext({
+  const { isOwner, organizationId } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/invitations",
-  });
-
-  const { isOwner } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId,
   });
 
   const { data: invitations } = useQuery({

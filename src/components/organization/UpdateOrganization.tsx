@@ -18,7 +18,6 @@ import {
 } from "@/lib/constants/schema.constant";
 import getSdk from "@/lib/graphql/getSdk";
 import useForm from "@/lib/hooks/useForm";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import { organizationOptions } from "@/lib/options/organizations";
 import generateSlug from "@/lib/util/generateSlug";
 import { fetchSession } from "@/server/functions/auth";
@@ -60,7 +59,7 @@ const updateOrganizationSchema = z
  * Form for updating organization details.
  */
 const UpdateOrganization = () => {
-  const { session, queryClient } = useRouteContext({
+  const { hasAdminPrivileges, queryClient } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
   });
   const { organizationSlug } = useParams({
@@ -73,11 +72,6 @@ const UpdateOrganization = () => {
       slug: organizationSlug,
     }),
     select: (data) => data.organizationBySlug,
-  });
-
-  const { isAdmin } = useOrganizationMembership({
-    userId: session?.user.rowId,
-    organizationId: organization?.rowId,
   });
 
   const { mutateAsync: updateOrganization } = useUpdateOrganizationMutation({
@@ -126,7 +120,7 @@ const UpdateOrganization = () => {
   return (
     <SectionContainer
       title={
-        isAdmin
+        hasAdminPrivileges
           ? updateOrganizationDetails.title
           : updateOrganizationDetails.memberTitle
       }
@@ -145,7 +139,7 @@ const UpdateOrganization = () => {
             {({ InputField }) => (
               <InputField
                 label={updateOrganizationDetails.fields.organizationName.label}
-                disabled={!isAdmin}
+                disabled={!hasAdminPrivileges}
               />
             )}
           </AppField>
@@ -154,7 +148,7 @@ const UpdateOrganization = () => {
         <AppForm>
           <SubmitForm
             action={updateOrganizationDetails.action}
-            disabled={!isAdmin}
+            disabled={!hasAdminPrivileges}
             mt={4}
           />
         </AppForm>

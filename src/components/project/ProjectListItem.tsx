@@ -7,7 +7,6 @@ import {
 import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { Project } from "@/generated/graphql";
@@ -23,13 +22,8 @@ interface Props {
 const ProjectListItem = ({
   project: { slug, organization, name, description, posts },
 }: Props) => {
-  const { session } = useRouteContext({
+  const { hasAdminPrivileges } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/projects/",
-  });
-
-  const { isAdmin } = useOrganizationMembership({
-    userId: session?.user?.rowId,
-    organizationId: organization?.rowId,
   });
 
   const AGGREGATES = [
@@ -84,7 +78,7 @@ const ProjectListItem = ({
             </Link>
           </Stack>
 
-          {isAdmin && (
+          {hasAdminPrivileges && (
             <Flex position="absolute" right={0} top={0} m={2}>
               <Link
                 to="/organizations/$organizationSlug/projects/$projectSlug/settings"

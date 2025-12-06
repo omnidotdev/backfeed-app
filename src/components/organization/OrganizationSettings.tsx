@@ -39,7 +39,6 @@ import {
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
-import useOrganizationMembership from "@/lib/hooks/useOrganizationMembership";
 import { membersOptions } from "@/lib/options/members";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import toaster from "@/lib/util/toaster";
@@ -71,9 +70,10 @@ const OrganizationSettings = ({ organization, prices }: Props) => {
   const { organizationSlug } = useParams({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
   });
-  const { session, queryClient, organizationId } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
-  });
+  const { isOwner, membershipId, queryClient, organizationId } =
+    useRouteContext({
+      from: "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
+    });
   const { subscription } = useLoaderData({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
   });
@@ -91,11 +91,6 @@ const OrganizationSettings = ({ organization, prices }: Props) => {
       roles: [Role.Owner],
     }),
     select: (data) => data.members?.totalCount,
-  });
-
-  const { isOwner, membershipId } = useOrganizationMembership({
-    userId: session?.user.rowId,
-    organizationId,
   });
 
   const { mutateAsync: deleteOrganization } = useDeleteOrganizationMutation({
