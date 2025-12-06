@@ -32,6 +32,7 @@ export const Route = createFileRoute(
       role: member?.role,
       subscriptionId: organizationBySlug.subscriptionId,
       isOwner: member?.role === Role.Owner,
+      membershipId: member?.rowId,
       hasAdminPrivileges:
         member?.role === Role.Admin || member?.role === Role.Owner,
       hasBasicTierPrivileges: organizationBySlug.tier !== Tier.Free,
