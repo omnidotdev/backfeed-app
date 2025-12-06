@@ -8,7 +8,10 @@ import useHandleSearch from "@/lib/hooks/useHandleSearch";
  * Organization filters.
  */
 const OrganizationFilters = () => {
-  const { search } = useSearch({ from: "/_auth/organizations/" });
+  const search = useSearch({
+    from: "/_auth/organizations/",
+    select: ({ search }) => search,
+  });
 
   const onSearchChange = useHandleSearch();
 

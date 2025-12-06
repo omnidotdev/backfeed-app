@@ -8,8 +8,9 @@ import useHandleSearch from "@/lib/hooks/useHandleSearch";
  * Project filters.
  */
 const ProjectFilters = () => {
-  const { search } = useSearch({
+  const search = useSearch({
     from: "/_auth/organizations/$organizationSlug/_layout/projects/",
+    select: ({ search }) => search,
   });
 
   const onSearchChange = useHandleSearch();

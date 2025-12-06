@@ -32,8 +32,9 @@ const StatusBreakdown = () => {
     from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
   });
 
-  const { excludedStatuses } = useSearch({
+  const excludedStatuses = useSearch({
     from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({
     from: "/organizations/$organizationSlug/projects/$projectSlug",

@@ -52,10 +52,11 @@ export function getRouter() {
 
   const router = createTanStackRouter({
     routeTree,
-    context: { queryClient, session: null },
+    context: { queryClient },
     defaultPreload: "intent",
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: NotFound,
+    defaultStructuralSharing: true,
   });
 
   setupRouterSsrQueryIntegration({
@@ -65,3 +66,5 @@ export function getRouter() {
 
   return router;
 }
+
+export type AppRouter = ReturnType<typeof getRouter>;
