@@ -7,7 +7,7 @@ const app = {
   name: "Backfeed",
   description: "Streamlined user feedback 📣",
   productionUrl: "https://backfeed.omni.dev",
-  docsUrl: "https://docs.omni.dev/backfeed/overview",
+  docsUrl: "https://docs.omni.dev/backfeed",
   socials: {
     discord: "https://discord.gg/omnidotdev",
     x: "https://x.com/omnidotdev",

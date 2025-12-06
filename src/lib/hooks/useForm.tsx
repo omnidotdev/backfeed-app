@@ -1,14 +1,10 @@
-"use client";
-
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 
-import {
-  InputField,
-  SingularComboboxField,
-  SubmitForm,
-  TextareaField,
-  URLField,
-} from "components/form";
+import InputField from "@/components/form/InputField";
+import SingularComboboxField from "@/components/form/SingularComboboxField";
+import SubmitForm from "@/components/form/SubmitForm";
+import TextareaField from "@/components/form/TextareaField";
+import URLField from "@/components/form/URLField";
 
 const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();

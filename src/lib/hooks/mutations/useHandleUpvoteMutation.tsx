@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouteContext, useSearch } from "@tanstack/react-router";
 
 import {
   PostOrderBy,
@@ -8,8 +9,7 @@ import {
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
   useProjectMetricsQuery,
-} from "generated/graphql";
-import { useAuth, useSearchParams } from "lib/hooks";
+} from "@/generated/graphql";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -19,7 +19,7 @@ import type {
   PostsQuery,
   Project,
   Upvote,
-} from "generated/graphql";
+} from "@/generated/graphql";
 
 interface Options {
   /** Feedback ID */
@@ -49,9 +49,9 @@ const useHandleUpvoteMutation = ({
 }: Options) => {
   const queryClient = useQueryClient();
 
-  const [{ excludedStatuses, orderBy, search }] = useSearchParams();
+  const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
-  const { user } = useAuth();
+  const { session } = useRouteContext({ strict: false });
 
   const { mutateAsync: createUpvote } = useCreateUpvoteMutation();
   const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();
@@ -75,7 +75,7 @@ const useHandleUpvoteMutation = ({
           input: {
             upvote: {
               postId: feedbackId,
-              userId: user?.rowId!,
+              userId: session?.user?.rowId!,
             },
           },
         });
@@ -83,7 +83,10 @@ const useHandleUpvoteMutation = ({
     },
     onMutate: async () => {
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
+        useFeedbackByIdQuery.getKey({
+          rowId: feedbackId,
+          userId: session?.user?.rowId,
+        }),
       ) as FeedbackByIdQuery;
 
       const postsQueryKey = useInfinitePostsQuery.getKey({
@@ -93,7 +96,7 @@ const useHandleUpvoteMutation = ({
           ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
           : undefined,
         search,
-        userId: user?.rowId,
+        userId: session?.user?.rowId,
       });
 
       const postsSnapshot = queryClient.getQueryData(
@@ -104,7 +107,7 @@ const useHandleUpvoteMutation = ({
         queryClient.setQueryData(
           useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
-            userId: user?.rowId,
+            userId: session?.user?.rowId,
           }),
           {
             post: {
@@ -178,7 +181,7 @@ const useHandleUpvoteMutation = ({
         return queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
-            userId: user?.rowId,
+            userId: session?.user?.rowId,
           }),
         });
       }
@@ -187,7 +190,7 @@ const useHandleUpvoteMutation = ({
         queryClient.invalidateQueries({
           queryKey: useFeedbackByIdQuery.getKey({
             rowId: feedbackId,
-            userId: user?.rowId,
+            userId: session?.user?.rowId,
           }),
         }),
         queryClient.invalidateQueries({

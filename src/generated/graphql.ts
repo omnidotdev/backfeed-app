@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
-import { graphqlFetch } from 'lib/graphql/graphqlFetch';
+import { graphqlFetch } from '@/lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
