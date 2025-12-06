@@ -29,6 +29,7 @@ import {
 } from "@/lib/options/projects";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
+import type { ActionButton } from "@/components/core/CallToAction";
 
 const projectSearchSchema = z.object({
   excludedStatuses: z.array(z.string()).default([]),
@@ -141,7 +142,6 @@ function ProjectPage() {
               params: { organizationSlug },
             },
           },
-          // @ts-expect-error TODO: figure out issue with `to`
           ...(hasAdminPrivileges
             ? [
                 {
@@ -151,7 +151,8 @@ function ProjectPage() {
                     to: "/organizations/$organizationSlug/projects/$projectSlug/settings",
                     params: { organizationSlug, projectSlug },
                   },
-                },
+                  // NB: required because of the spread. The type inference of `to` is not narrowed to the required union otherwise
+                } satisfies ActionButton,
               ]
             : []),
         ],
