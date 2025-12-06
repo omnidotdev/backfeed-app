@@ -15,14 +15,14 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
-import { Route as AuthProfileRouteImport } from './routes/_auth/_profile'
 import { Route as AuthOrganizationsIndexRouteImport } from './routes/_auth/organizations/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthProfileLayoutRouteImport } from './routes/_auth/profile/_layout'
 import { Route as AuthOrganizationsOrganizationSlugLayoutRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout'
-import { Route as AuthProfileUserIdOrganizationsRouteImport } from './routes/_auth/_profile/$userId/organizations'
-import { Route as AuthProfileUserIdInvitationsRouteImport } from './routes/_auth/_profile/$userId/invitations'
-import { Route as AuthProfileUserIdAccountRouteImport } from './routes/_auth/_profile/$userId/account'
 import { Route as AuthOrganizationsOrganizationSlugLayoutIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/index'
+import { Route as AuthProfileLayoutUserIdOrganizationsRouteImport } from './routes/_auth/profile/_layout/$userId/organizations'
+import { Route as AuthProfileLayoutUserIdInvitationsRouteImport } from './routes/_auth/profile/_layout/$userId/invitations'
+import { Route as AuthProfileLayoutUserIdAccountRouteImport } from './routes/_auth/profile/_layout/$userId/account'
 import { Route as AuthOrganizationsOrganizationSlugLayoutManageRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage'
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/index'
 import { Route as AuthOrganizationsOrganizationSlugLayoutManageSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/_manage/settings'
@@ -32,6 +32,7 @@ import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugInde
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings'
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId'
 
+const AuthProfileRouteImport = createFileRoute('/_auth/profile')()
 const AuthOrganizationsOrganizationSlugRouteImport = createFileRoute(
   '/_auth/organizations/$organizationSlug',
 )()
@@ -50,13 +51,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthProfileRoute = AuthProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthProfileRoute = AuthProfileRouteImport.update({
-  id: '/_profile',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthOrganizationsOrganizationSlugRoute =
@@ -75,34 +77,38 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthProfileLayoutRoute = AuthProfileLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => AuthProfileRoute,
+} as any)
 const AuthOrganizationsOrganizationSlugLayoutRoute =
   AuthOrganizationsOrganizationSlugLayoutRouteImport.update({
     id: '/_layout',
     getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
-  } as any)
-const AuthProfileUserIdOrganizationsRoute =
-  AuthProfileUserIdOrganizationsRouteImport.update({
-    id: '/$userId/organizations',
-    path: '/$userId/organizations',
-    getParentRoute: () => AuthProfileRoute,
-  } as any)
-const AuthProfileUserIdInvitationsRoute =
-  AuthProfileUserIdInvitationsRouteImport.update({
-    id: '/$userId/invitations',
-    path: '/$userId/invitations',
-    getParentRoute: () => AuthProfileRoute,
-  } as any)
-const AuthProfileUserIdAccountRoute =
-  AuthProfileUserIdAccountRouteImport.update({
-    id: '/$userId/account',
-    path: '/$userId/account',
-    getParentRoute: () => AuthProfileRoute,
   } as any)
 const AuthOrganizationsOrganizationSlugLayoutIndexRoute =
   AuthOrganizationsOrganizationSlugLayoutIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthOrganizationsOrganizationSlugLayoutRoute,
+  } as any)
+const AuthProfileLayoutUserIdOrganizationsRoute =
+  AuthProfileLayoutUserIdOrganizationsRouteImport.update({
+    id: '/$userId/organizations',
+    path: '/$userId/organizations',
+    getParentRoute: () => AuthProfileLayoutRoute,
+  } as any)
+const AuthProfileLayoutUserIdInvitationsRoute =
+  AuthProfileLayoutUserIdInvitationsRouteImport.update({
+    id: '/$userId/invitations',
+    path: '/$userId/invitations',
+    getParentRoute: () => AuthProfileLayoutRoute,
+  } as any)
+const AuthProfileLayoutUserIdAccountRoute =
+  AuthProfileLayoutUserIdAccountRouteImport.update({
+    id: '/$userId/account',
+    path: '/$userId/account',
+    getParentRoute: () => AuthProfileLayoutRoute,
   } as any)
 const AuthOrganizationsOrganizationSlugLayoutManageRoute =
   AuthOrganizationsOrganizationSlugLayoutManageRouteImport.update({
@@ -162,12 +168,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/profile': typeof AuthProfileLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations': typeof AuthOrganizationsIndexRoute
-  '/$userId/account': typeof AuthProfileUserIdAccountRoute
-  '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
-  '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
   '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
+  '/profile/$userId/account': typeof AuthProfileLayoutUserIdAccountRoute
+  '/profile/$userId/invitations': typeof AuthProfileLayoutUserIdInvitationsRoute
+  '/profile/$userId/organizations': typeof AuthProfileLayoutUserIdOrganizationsRoute
   '/organizations/$organizationSlug/': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
   '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
   '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
@@ -181,12 +188,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/profile': typeof AuthProfileLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations': typeof AuthOrganizationsIndexRoute
-  '/$userId/account': typeof AuthProfileUserIdAccountRoute
-  '/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
-  '/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
   '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
+  '/profile/$userId/account': typeof AuthProfileLayoutUserIdAccountRoute
+  '/profile/$userId/invitations': typeof AuthProfileLayoutUserIdInvitationsRoute
+  '/profile/$userId/organizations': typeof AuthProfileLayoutUserIdOrganizationsRoute
   '/organizations/$organizationSlug/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
   '/organizations/$organizationSlug/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
   '/organizations/$organizationSlug/settings': typeof AuthOrganizationsOrganizationSlugLayoutManageSettingsRoute
@@ -200,16 +208,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/pricing': typeof PricingRoute
-  '/_auth/_profile': typeof AuthProfileRouteWithChildren
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/profile': typeof AuthProfileRouteWithChildren
+  '/_auth/profile/_layout': typeof AuthProfileLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/organizations/': typeof AuthOrganizationsIndexRoute
-  '/_auth/_profile/$userId/account': typeof AuthProfileUserIdAccountRoute
-  '/_auth/_profile/$userId/invitations': typeof AuthProfileUserIdInvitationsRoute
-  '/_auth/_profile/$userId/organizations': typeof AuthProfileUserIdOrganizationsRoute
   '/_auth/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugRouteWithChildren
   '/_auth/organizations/$organizationSlug/_layout': typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
   '/_auth/organizations/$organizationSlug/_layout/_manage': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
+  '/_auth/profile/_layout/$userId/account': typeof AuthProfileLayoutUserIdAccountRoute
+  '/_auth/profile/_layout/$userId/invitations': typeof AuthProfileLayoutUserIdInvitationsRoute
+  '/_auth/profile/_layout/$userId/organizations': typeof AuthProfileLayoutUserIdOrganizationsRoute
   '/_auth/organizations/$organizationSlug/_layout/': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
   '/_auth/organizations/$organizationSlug/_layout/_manage/invitations': typeof AuthOrganizationsOrganizationSlugLayoutManageInvitationsRoute
   '/_auth/organizations/$organizationSlug/_layout/_manage/members': typeof AuthOrganizationsOrganizationSlugLayoutManageMembersRoute
@@ -225,12 +234,13 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/profile'
     | '/api/auth/$'
     | '/organizations'
-    | '/$userId/account'
-    | '/$userId/invitations'
-    | '/$userId/organizations'
     | '/organizations/$organizationSlug'
+    | '/profile/$userId/account'
+    | '/profile/$userId/invitations'
+    | '/profile/$userId/organizations'
     | '/organizations/$organizationSlug/'
     | '/organizations/$organizationSlug/invitations'
     | '/organizations/$organizationSlug/members'
@@ -244,12 +254,13 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/profile'
     | '/api/auth/$'
     | '/organizations'
-    | '/$userId/account'
-    | '/$userId/invitations'
-    | '/$userId/organizations'
     | '/organizations/$organizationSlug'
+    | '/profile/$userId/account'
+    | '/profile/$userId/invitations'
+    | '/profile/$userId/organizations'
     | '/organizations/$organizationSlug/invitations'
     | '/organizations/$organizationSlug/members'
     | '/organizations/$organizationSlug/settings'
@@ -262,16 +273,17 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/pricing'
-    | '/_auth/_profile'
     | '/_auth/dashboard'
+    | '/_auth/profile'
+    | '/_auth/profile/_layout'
     | '/api/auth/$'
     | '/_auth/organizations/'
-    | '/_auth/_profile/$userId/account'
-    | '/_auth/_profile/$userId/invitations'
-    | '/_auth/_profile/$userId/organizations'
     | '/_auth/organizations/$organizationSlug'
     | '/_auth/organizations/$organizationSlug/_layout'
     | '/_auth/organizations/$organizationSlug/_layout/_manage'
+    | '/_auth/profile/_layout/$userId/account'
+    | '/_auth/profile/_layout/$userId/invitations'
+    | '/_auth/profile/_layout/$userId/organizations'
     | '/_auth/organizations/$organizationSlug/_layout/'
     | '/_auth/organizations/$organizationSlug/_layout/_manage/invitations'
     | '/_auth/organizations/$organizationSlug/_layout/_manage/members'
@@ -312,18 +324,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/profile': {
+      id: '/_auth/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthProfileRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthDashboardRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/_profile': {
-      id: '/_auth/_profile'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthProfileRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/organizations/$organizationSlug': {
@@ -347,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/profile/_layout': {
+      id: '/_auth/profile/_layout'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthProfileLayoutRouteImport
+      parentRoute: typeof AuthProfileRoute
+    }
     '/_auth/organizations/$organizationSlug/_layout': {
       id: '/_auth/organizations/$organizationSlug/_layout'
       path: '/organizations/$organizationSlug'
@@ -354,33 +373,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteImport
       parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
     }
-    '/_auth/_profile/$userId/organizations': {
-      id: '/_auth/_profile/$userId/organizations'
-      path: '/$userId/organizations'
-      fullPath: '/$userId/organizations'
-      preLoaderRoute: typeof AuthProfileUserIdOrganizationsRouteImport
-      parentRoute: typeof AuthProfileRoute
-    }
-    '/_auth/_profile/$userId/invitations': {
-      id: '/_auth/_profile/$userId/invitations'
-      path: '/$userId/invitations'
-      fullPath: '/$userId/invitations'
-      preLoaderRoute: typeof AuthProfileUserIdInvitationsRouteImport
-      parentRoute: typeof AuthProfileRoute
-    }
-    '/_auth/_profile/$userId/account': {
-      id: '/_auth/_profile/$userId/account'
-      path: '/$userId/account'
-      fullPath: '/$userId/account'
-      preLoaderRoute: typeof AuthProfileUserIdAccountRouteImport
-      parentRoute: typeof AuthProfileRoute
-    }
     '/_auth/organizations/$organizationSlug/_layout/': {
       id: '/_auth/organizations/$organizationSlug/_layout/'
       path: '/'
       fullPath: '/organizations/$organizationSlug/'
       preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutIndexRouteImport
       parentRoute: typeof AuthOrganizationsOrganizationSlugLayoutRoute
+    }
+    '/_auth/profile/_layout/$userId/organizations': {
+      id: '/_auth/profile/_layout/$userId/organizations'
+      path: '/$userId/organizations'
+      fullPath: '/profile/$userId/organizations'
+      preLoaderRoute: typeof AuthProfileLayoutUserIdOrganizationsRouteImport
+      parentRoute: typeof AuthProfileLayoutRoute
+    }
+    '/_auth/profile/_layout/$userId/invitations': {
+      id: '/_auth/profile/_layout/$userId/invitations'
+      path: '/$userId/invitations'
+      fullPath: '/profile/$userId/invitations'
+      preLoaderRoute: typeof AuthProfileLayoutUserIdInvitationsRouteImport
+      parentRoute: typeof AuthProfileLayoutRoute
+    }
+    '/_auth/profile/_layout/$userId/account': {
+      id: '/_auth/profile/_layout/$userId/account'
+      path: '/$userId/account'
+      fullPath: '/profile/$userId/account'
+      preLoaderRoute: typeof AuthProfileLayoutUserIdAccountRouteImport
+      parentRoute: typeof AuthProfileLayoutRoute
     }
     '/_auth/organizations/$organizationSlug/_layout/_manage': {
       id: '/_auth/organizations/$organizationSlug/_layout/_manage'
@@ -441,16 +460,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthProfileLayoutRouteChildren {
+  AuthProfileLayoutUserIdAccountRoute: typeof AuthProfileLayoutUserIdAccountRoute
+  AuthProfileLayoutUserIdInvitationsRoute: typeof AuthProfileLayoutUserIdInvitationsRoute
+  AuthProfileLayoutUserIdOrganizationsRoute: typeof AuthProfileLayoutUserIdOrganizationsRoute
+}
+
+const AuthProfileLayoutRouteChildren: AuthProfileLayoutRouteChildren = {
+  AuthProfileLayoutUserIdAccountRoute: AuthProfileLayoutUserIdAccountRoute,
+  AuthProfileLayoutUserIdInvitationsRoute:
+    AuthProfileLayoutUserIdInvitationsRoute,
+  AuthProfileLayoutUserIdOrganizationsRoute:
+    AuthProfileLayoutUserIdOrganizationsRoute,
+}
+
+const AuthProfileLayoutRouteWithChildren =
+  AuthProfileLayoutRoute._addFileChildren(AuthProfileLayoutRouteChildren)
+
 interface AuthProfileRouteChildren {
-  AuthProfileUserIdAccountRoute: typeof AuthProfileUserIdAccountRoute
-  AuthProfileUserIdInvitationsRoute: typeof AuthProfileUserIdInvitationsRoute
-  AuthProfileUserIdOrganizationsRoute: typeof AuthProfileUserIdOrganizationsRoute
+  AuthProfileLayoutRoute: typeof AuthProfileLayoutRouteWithChildren
 }
 
 const AuthProfileRouteChildren: AuthProfileRouteChildren = {
-  AuthProfileUserIdAccountRoute: AuthProfileUserIdAccountRoute,
-  AuthProfileUserIdInvitationsRoute: AuthProfileUserIdInvitationsRoute,
-  AuthProfileUserIdOrganizationsRoute: AuthProfileUserIdOrganizationsRoute,
+  AuthProfileLayoutRoute: AuthProfileLayoutRouteWithChildren,
 }
 
 const AuthProfileRouteWithChildren = AuthProfileRoute._addFileChildren(
@@ -524,15 +556,15 @@ const AuthOrganizationsOrganizationSlugRouteWithChildren =
   )
 
 interface AuthRouteChildren {
-  AuthProfileRoute: typeof AuthProfileRouteWithChildren
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthProfileRoute: typeof AuthProfileRouteWithChildren
   AuthOrganizationsIndexRoute: typeof AuthOrganizationsIndexRoute
   AuthOrganizationsOrganizationSlugRoute: typeof AuthOrganizationsOrganizationSlugRouteWithChildren
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthProfileRoute: AuthProfileRouteWithChildren,
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthProfileRoute: AuthProfileRouteWithChildren,
   AuthOrganizationsIndexRoute: AuthOrganizationsIndexRoute,
   AuthOrganizationsOrganizationSlugRoute:
     AuthOrganizationsOrganizationSlugRouteWithChildren,

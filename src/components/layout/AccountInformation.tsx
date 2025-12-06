@@ -47,8 +47,10 @@ const AccountInformation = () => {
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
-    // TODO: profile routing
-    // navigate({ to: "/profile/$userId/account", params: { userId: session.user.hidraId } });
+    navigate({
+      to: "/profile/$userId/account",
+      params: { userId: session?.user.hidraId! },
+    });
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
