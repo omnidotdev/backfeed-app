@@ -50,7 +50,12 @@ const ManagementNavigation = ({
   });
   const navigate = useNavigate();
   const segment = useRouterState({
-    select: (state) => state.location.pathname.split("/").at(-1),
+    select: (state) => {
+      const currentLocation = state.isLoading
+        ? state.resolvedLocation
+        : state.location;
+      return currentLocation?.pathname.split("/").at(-1);
+    },
   });
 
   const { data: organization } = useQuery({

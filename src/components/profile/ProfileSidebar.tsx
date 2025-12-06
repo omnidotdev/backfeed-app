@@ -24,7 +24,12 @@ import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
  */
 const ProfileSidebar = ({ children }: PropsWithChildren) => {
   const segment = useRouterState({
-    select: (state) => state.location.pathname.split("/").at(-1),
+    select: (state) => {
+      const currentLocation = state.isLoading
+        ? state.resolvedLocation
+        : state.location;
+      return currentLocation?.pathname.split("/").at(-1);
+    },
   });
 
   const isLargeViewport = useViewportSize({
@@ -52,7 +57,6 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
-      // TODO: determine best way to approach this. If you use the breadcrumbs to navigate, `segment` updates instantly
       label: capitalizeFirstLetter(segment)!,
     },
   ];
