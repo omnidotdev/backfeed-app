@@ -24,14 +24,6 @@
                 "source": [
                   ":PACKAGE:",
                   ":PACKAGE_WITH_PROTOCOL:",
-                  "!app/**",
-                  "!components/**",
-                  "!generated/**",
-                  "!lib/**",
-                  "!providers/**",
-                  "!store",
-                  "!store/**",
-                  "!auth",
                   "!test/**",
                   "!__mocks__/**"
                 ]
