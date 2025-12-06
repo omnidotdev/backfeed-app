@@ -76,7 +76,7 @@ const createProjectSchema = z
 
     if (!organizationId.length || !slug?.length || !session) return z.NEVER;
 
-    const sdk = getSdk({ session });
+    const sdk = await getSdk();
 
     const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
       organizationId,

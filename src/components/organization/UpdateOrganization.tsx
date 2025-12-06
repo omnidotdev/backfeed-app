@@ -40,7 +40,7 @@ const updateOrganizationSchema = z
     if (!updatedSlug?.length || updatedSlug === currentSlug || !session)
       return z.NEVER;
 
-    const sdk = getSdk({ session });
+    const sdk = await getSdk();
 
     const { organizationBySlug } = await sdk.Organization({
       slug: updatedSlug,

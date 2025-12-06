@@ -49,7 +49,7 @@ const createInvitationsSchema = invitesSchema.superRefine(
 
     if (!invites.length || !session) return z.NEVER;
 
-    const sdk = getSdk({ session });
+    const sdk = await getSdk();
 
     const validateInvite = async ({ email, organizationId }: Invite) => {
       // Prevent self-invitation

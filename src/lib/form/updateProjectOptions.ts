@@ -61,7 +61,7 @@ const updateProjectSchema = z
       if (!updatedSlug?.length || currentSlug === updatedSlug || !session)
         return z.NEVER;
 
-      const sdk = getSdk({ session });
+      const sdk = await getSdk();
 
       const { projects } = await sdk.Project({
         projectSlug: updatedSlug,
