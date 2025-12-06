@@ -4,7 +4,7 @@ import { z } from "zod";
 import app from "@/lib/config/app.config";
 import { STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
-import { customerMiddleware } from "@/server/middleware";
+import { authMiddleware, customerMiddleware } from "@/server/middleware";
 
 import type Stripe from "stripe";
 
@@ -26,6 +26,28 @@ const createSubscriptionSchema = z.object({
 const renewSubscriptionSchema = z.object({
   subscriptionId: z.string().startsWith("sub_"),
 });
+
+export const getSubscriptions = createServerFn()
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    const { data: customers } = await payments.customers.search({
+      query: `metadata["externalId"]:"${context.session.user.hidraId!}"`,
+    });
+
+    if (!customers.length) return undefined;
+
+    const { data: subscriptions } = await payments.subscriptions.list({
+      customer: customers[0].id,
+      status: "active",
+    });
+
+    return subscriptions.map((sub) => ({
+      id: sub.id,
+      subscriptionStatus: sub.status,
+      toBeCanceled: !!sub.cancel_at,
+      currentPeriodEnd: sub.items.data[0].current_period_end,
+    }));
+  });
 
 export const getSubscription = createServerFn()
   .inputValidator((data) => subscriptionSchema.parse(data))
