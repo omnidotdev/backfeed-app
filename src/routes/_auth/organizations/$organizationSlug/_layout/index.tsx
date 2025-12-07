@@ -18,19 +18,27 @@ import {
 } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import seo from "@/lib/util/seo";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/",
 )({
-  loader: async ({ context: { queryClient, organizationId } }) => {
+  loader: async ({
+    context: { queryClient, organizationId, organizationName },
+  }) => {
     await queryClient.ensureQueryData(
       organizationMetricsOptions({
         organizationId,
       }),
     );
+
+    return { organizationName };
   },
+  head: ({ loaderData }) => ({
+    meta: seo({ title: loaderData?.organizationName }),
+  }),
   component: OrganizationPage,
 });
 

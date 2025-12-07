@@ -11,15 +11,23 @@ import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
 import { organizationOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/_manage/invitations",
 )({
-  loader: async ({ context: { queryClient, role, organizationId } }) => {
+  loader: async ({
+    context: { queryClient, role, organizationId, organizationName },
+  }) => {
     if (!role || role === Role.Member) throw notFound();
 
     await queryClient.ensureQueryData(invitationsOptions({ organizationId }));
+
+    return { organizationName };
   },
+  head: ({ loaderData }) => ({
+    meta: seo({ title: `${loaderData?.organizationName} Invitations` }),
+  }),
   component: OrganizationInvitationsPage,
 });
 

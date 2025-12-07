@@ -10,6 +10,7 @@ import { Role, useDeleteProjectMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { organizationsOptions } from "@/lib/options/organizations";
 import { projectOptions } from "@/lib/options/projects";
+import seo from "@/lib/util/seo";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
@@ -27,7 +28,12 @@ export const Route = createFileRoute(
     );
 
     if (!projects?.nodes.length) throw notFound();
+
+    return { projectName: projects.nodes[0]?.name };
   },
+  head: ({ loaderData }) => ({
+    meta: seo({ title: `${loaderData?.projectName} Settings` }),
+  }),
   component: ProjectSettingsPage,
 });
 

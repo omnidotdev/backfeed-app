@@ -8,6 +8,7 @@ import PricingFAQ from "@/components/pricing/PricingFAQ";
 import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingMatrix from "@/components/pricing/PricingMatrix";
 import app from "@/lib/config/app.config";
+import seo from "@/lib/util/seo";
 import { getPrices } from "@/server/functions/prices";
 
 export const Route = createFileRoute("/pricing")({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/pricing")({
 
     return { prices };
   },
+  head: () => ({ meta: seo({ title: "Pricing" }) }),
   component: PricingPage,
 });
 

@@ -7,6 +7,7 @@ import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { membersOptions } from "@/lib/options/members";
 import { organizationOptions } from "@/lib/options/organizations";
+import seo from "@/lib/util/seo";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscription } from "@/server/functions/subscriptions";
 
@@ -16,7 +17,7 @@ export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/_manage/settings",
 )({
   loader: async ({
-    context: { queryClient, subscriptionId, organizationId },
+    context: { queryClient, subscriptionId, organizationId, organizationName },
   }) => {
     const [prices, subscription] = await Promise.all([
       getPrices(),
@@ -26,8 +27,11 @@ export const Route = createFileRoute(
       ),
     ]);
 
-    return { prices, subscription };
+    return { prices, subscription, organizationName };
   },
+  head: ({ loaderData }) => ({
+    meta: seo({ title: `${loaderData?.organizationName} Settings` }),
+  }),
   component: OrganizationSettingsPage,
 });
 

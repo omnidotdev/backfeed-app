@@ -23,6 +23,7 @@ import {
 } from "@/lib/options/dashboard";
 import { organizationsOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   loader: async ({ context: { session, queryClient } }) => {
@@ -64,6 +65,7 @@ export const Route = createFileRoute("/_auth/dashboard")({
       oneWeekAgo: dayjs().utc().subtract(6, "days").startOf("day").toDate(),
     };
   },
+  head: () => ({ meta: seo({ title: "Dashboard" }) }),
   component: DashboardPage,
 });
 

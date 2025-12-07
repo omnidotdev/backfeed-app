@@ -13,6 +13,7 @@ import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
 import { organizationOptions } from "@/lib/options/organizations";
 import { projectsOptions } from "@/lib/options/projects";
 import { DialogType } from "@/lib/store/useDialogStore";
+import seo from "@/lib/util/seo";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
@@ -31,7 +32,7 @@ export const Route = createFileRoute(
   },
   loaderDeps: ({ search }) => search,
   loader: async ({
-    context: { queryClient },
+    context: { queryClient, organizationName },
     deps: { page, pageSize, search },
     params: { organizationSlug },
   }) => {
@@ -43,7 +44,12 @@ export const Route = createFileRoute(
         organizationSlug,
       }),
     );
+
+    return { organizationName };
   },
+  head: ({ loaderData }) => ({
+    meta: seo({ title: `${loaderData?.organizationName} Projects` }),
+  }),
   component: ProjectsPage,
 });
 

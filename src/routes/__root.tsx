@@ -32,6 +32,12 @@ dayjs.extend(utc);
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
+  beforeLoad: async () => {
+    const { session } = await fetchSession();
+
+    return { session };
+  },
+  loader: () => getTheme(),
   head: () => ({
     meta: [
       {
@@ -49,12 +55,6 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
-  beforeLoad: async () => {
-    const { session } = await fetchSession();
-
-    return { session };
-  },
-  loader: () => getTheme(),
   errorComponent: DefaultCatchBoundary,
   component: RootComponent,
 });

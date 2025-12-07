@@ -7,10 +7,12 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import Page from "@/components/layout/Page";
 import app from "@/lib/config/app.config";
 import { AUTH_ISSUER } from "@/lib/config/env.config";
+import seo from "@/lib/util/seo";
 
 import type { InputProps } from "@omnidev/sigil";
 
 export const Route = createFileRoute("/_auth/profile/$userId/_layout/account")({
+  head: () => ({ meta: seo({ title: "Account" }) }),
   component: UserAccountPage,
 });
 

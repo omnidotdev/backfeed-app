@@ -6,6 +6,7 @@ import UserOrganizations from "@/components/profile/UserOrganizations";
 import { OrganizationOrderBy, Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { organizationsOptions } from "@/lib/options/organizations";
+import seo from "@/lib/util/seo";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscriptions } from "@/server/functions/subscriptions";
 
@@ -27,6 +28,7 @@ export const Route = createFileRoute(
 
     return { prices, subscriptions };
   },
+  head: () => ({ meta: seo({ title: "User Organizations" }) }),
   component: UserOrganizationsPage,
 });
 

@@ -27,6 +27,7 @@ import {
   projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
+import seo from "@/lib/util/seo";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 import type { ActionButton } from "@/components/core/CallToAction";
@@ -68,7 +69,9 @@ export const Route = createFileRoute(
 
     if (!projects?.nodes.length) throw notFound();
 
-    const projectId = projects.nodes[0]?.rowId!;
+    const project = projects.nodes[0]!;
+    const projectId = project.rowId;
+    const projectName = project.name;
 
     await Promise.all([
       queryClient.ensureQueryData(statusBreakdownOptions({ projectId })),
@@ -88,8 +91,9 @@ export const Route = createFileRoute(
       ),
     ]);
 
-    return { projectId };
+    return { projectId, projectName };
   },
+  head: ({ loaderData }) => ({ meta: seo({ title: loaderData?.projectName }) }),
   component: ProjectPage,
 });
 

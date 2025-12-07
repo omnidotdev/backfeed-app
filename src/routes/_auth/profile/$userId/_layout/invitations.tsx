@@ -4,6 +4,7 @@ import Page from "@/components/layout/Page";
 import OrganizationInvites from "@/components/profile/OrganizationInvites";
 import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute(
   "/_auth/profile/$userId/_layout/invitations",
@@ -13,6 +14,7 @@ export const Route = createFileRoute(
       invitationsOptions({ email: user?.email! }),
     );
   },
+  head: () => ({ meta: seo({ title: "Invitations" }) }),
   component: UserInvitationsPage,
 });
 
