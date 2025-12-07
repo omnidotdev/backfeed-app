@@ -6,10 +6,12 @@ import {
   useCreateDownvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
-  useFeedbackByIdQuery,
-  useInfinitePostsQuery,
-  useProjectMetricsQuery,
 } from "@/generated/graphql";
+import {
+  feedbackByIdOptions,
+  infiniteFeedbackOptions,
+} from "@/lib/options/feedback";
+import { projectMetricsOptions } from "@/lib/options/projects";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -83,13 +85,13 @@ const useHandleDownvoteMutation = ({
     },
     onMutate: async () => {
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({
+        feedbackByIdOptions({
           rowId: feedbackId,
           userId: session?.user?.rowId,
-        }),
+        }).queryKey,
       ) as FeedbackByIdQuery;
 
-      const postsQueryKey = useInfinitePostsQuery.getKey({
+      const postsQueryKey = infiniteFeedbackOptions({
         projectId,
         excludedStatuses,
         orderBy: orderBy
@@ -97,7 +99,7 @@ const useHandleDownvoteMutation = ({
           : undefined,
         search,
         userId: session?.user?.rowId,
-      });
+      }).queryKey;
 
       const postsSnapshot = queryClient.getQueryData(
         postsQueryKey,
@@ -105,18 +107,20 @@ const useHandleDownvoteMutation = ({
 
       if (feedbackSnapshot) {
         queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({
+          feedbackByIdOptions({
             rowId: feedbackId,
             userId: session?.user?.rowId,
-          }),
+          }).queryKey,
           {
             post: {
-              ...feedbackSnapshot?.post,
+              ...feedbackSnapshot?.post!,
               userDownvotes: {
                 nodes: downvote ? [] : [{ rowId: "pending" }],
               },
               userUpvotes: {
-                nodes: downvote ? feedbackSnapshot?.post?.userUpvotes : [],
+                nodes: downvote
+                  ? feedbackSnapshot?.post?.userUpvotes.nodes!
+                  : [],
               },
               downvotes: {
                 ...feedbackSnapshot?.post?.downvotes,
@@ -138,6 +142,7 @@ const useHandleDownvoteMutation = ({
       if (postsSnapshot) {
         queryClient.setQueryData(postsQueryKey, {
           ...postsSnapshot,
+          // @ts-expect-error TODO: properly type
           pages: postsSnapshot.pages.map((page) => ({
             ...page,
             posts: {
@@ -174,27 +179,27 @@ const useHandleDownvoteMutation = ({
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
           queryClient.invalidateQueries({
-            queryKey: useProjectMetricsQuery.getKey({ projectId }),
+            queryKey: projectMetricsOptions({ projectId }).queryKey,
           }),
         ]);
 
         return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+          queryKey: feedbackByIdOptions({
             rowId: feedbackId,
             userId: session?.user?.rowId,
-          }),
+          }).queryKey,
         });
       }
 
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+          queryKey: feedbackByIdOptions({
             rowId: feedbackId,
             userId: session?.user?.rowId,
-          }),
+          }).queryKey,
         }),
         queryClient.invalidateQueries({
-          queryKey: useProjectMetricsQuery.getKey({ projectId }),
+          queryKey: projectMetricsOptions({ projectId }).queryKey,
         }),
       ]);
 
