@@ -74,10 +74,10 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
       reset();
 
       return Promise.all([
-        queryClient?.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: ["Posts.infinite"],
         }),
-        queryClient?.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: feedbackByIdOptions({
             rowId: feedback.rowId!,
             userId: session?.user?.rowId,
