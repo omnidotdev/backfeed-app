@@ -11,6 +11,7 @@ const knipConfig: KnipConfig = {
     "src/lib/graphql/graphqlFetch.ts",
     "src/test/test.setup.ts",
     "src/**/*.test.{ts,tsx}",
+    "src/**/*.spec.{ts,tsx}",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
   project: ["src/**/*.{ts,tsx}"],
