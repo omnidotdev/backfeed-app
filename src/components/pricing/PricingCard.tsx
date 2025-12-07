@@ -12,14 +12,15 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useRouteContext } from "@tanstack/react-router";
-import { signIn } from "next-auth/react";
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import TierCallToAction from "@/components/pricing/TierCallToAction";
 import { Tier } from "@/generated/graphql";
+import { signIn } from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { CardProps } from "@omnidev/sigil";
@@ -196,7 +197,7 @@ const PricingCard = ({ price, ...rest }: Props) => {
               fontSize="lg"
               disabled={isEnterpriseTier}
               variant={isRecommendedTier ? "solid" : "outline"}
-              onClick={() => signIn("omni")}
+              onClick={() => signIn({ redirectUrl: `${BASE_URL}/pricing` })}
             >
               {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 

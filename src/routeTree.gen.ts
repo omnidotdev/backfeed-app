@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiInviteRouteImport } from './routes/api/invite'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AuthOrganizationsIndexRouteImport } from './routes/_auth/organizations/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -49,6 +50,11 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInviteRoute = ApiInviteRouteImport.update({
+  id: '/api/invite',
+  path: '/api/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations': typeof AuthOrganizationsIndexRoute
   '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations': typeof AuthOrganizationsIndexRoute
   '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/pricing': typeof PricingRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/organizations/': typeof AuthOrganizationsIndexRoute
   '/_auth/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugRouteWithChildren
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/api/invite'
     | '/api/auth/$'
     | '/organizations'
     | '/organizations/$organizationSlug'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/api/invite'
     | '/api/auth/$'
     | '/organizations'
     | '/organizations/$organizationSlug'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/pricing'
     | '/_auth/dashboard'
+    | '/api/invite'
     | '/api/auth/$'
     | '/_auth/organizations/'
     | '/_auth/organizations/$organizationSlug'
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   PricingRoute: typeof PricingRoute
+  ApiInviteRoute: typeof ApiInviteRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -322,6 +335,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/invite': {
+      id: '/api/invite'
+      path: '/api/invite'
+      fullPath: '/api/invite'
+      preLoaderRoute: typeof ApiInviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/dashboard': {
@@ -578,6 +598,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   PricingRoute: PricingRoute,
+  ApiInviteRoute: ApiInviteRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
