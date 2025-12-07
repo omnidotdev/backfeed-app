@@ -23,7 +23,7 @@ const useCreateOrganizationMutation = (
     CreateOrganizationMutationVariables
   >,
 ) => {
-  const { session } = useRouteContext({ from: "/_auth" });
+  const { session } = useRouteContext({ from: "__root__" });
 
   const { mutateAsync: createOrganization } =
     useGeneratedCreateOrganizationMutation();

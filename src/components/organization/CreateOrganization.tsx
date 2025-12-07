@@ -57,7 +57,7 @@ interface Props {
  * Dialog for creating a new organization.
  */
 const CreateOrganization = ({ isHotkeyEnabled = true }: Props) => {
-  const { queryClient } = useRouteContext({ from: "/_auth" });
+  const { queryClient } = useRouteContext({ from: "__root__" });
   const navigate = useNavigate();
 
   const isClient = useIsClient();

@@ -53,7 +53,13 @@ export const Route = createRootRouteWithContext<{
       },
       ...seo(),
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      {
+        rel: "icon",
+        href: "/favicon.ico",
+      },
+    ],
   }),
   errorComponent: DefaultCatchBoundary,
   component: RootComponent,
