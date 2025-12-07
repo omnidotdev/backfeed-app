@@ -51,7 +51,7 @@ const useHandleDownvoteMutation = ({
 
   const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
-  const { session } = useRouteContext({ strict: false });
+  const { session } = useRouteContext({ from: "/_auth" });
 
   const { mutateAsync: createDownvote } = useCreateDownvoteMutation();
   const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();

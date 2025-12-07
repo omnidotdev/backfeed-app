@@ -1,5 +1,3 @@
-"use client";
-
 import { Stack, Text } from "@omnidev/sigil";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";

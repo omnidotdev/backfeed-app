@@ -81,7 +81,9 @@ const FeedbackCard = ({
   descriptionProps,
   ...rest
 }: Props) => {
-  const { session, queryClient } = useRouteContext({ strict: false });
+  const { session, queryClient } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout",
+  });
   const {
     organizationSlug,
     projectSlug,
@@ -101,13 +103,13 @@ const FeedbackCard = ({
     useDeletePostMutation({
       onSettled: () =>
         Promise.all([
-          queryClient?.invalidateQueries({ queryKey: ["Posts.infinite"] }),
-          queryClient?.invalidateQueries({
+          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+          queryClient.invalidateQueries({
             queryKey: statusBreakdownOptions({
               projectId: feedback?.project?.rowId!,
             }).queryKey,
           }),
-          queryClient?.invalidateQueries({
+          queryClient.invalidateQueries({
             queryKey: projectMetricsOptions({
               projectId: feedback?.project?.rowId!,
             }).queryKey,
@@ -153,7 +155,7 @@ const FeedbackCard = ({
         );
 
         if (feedbackSnapshot) {
-          queryClient?.setQueryData(
+          queryClient.setQueryData(
             feedbackByIdOptions({
               rowId: feedback.rowId!,
               userId: session?.user?.rowId,
@@ -173,7 +175,7 @@ const FeedbackCard = ({
         }
 
         if (postsSnapshot) {
-          queryClient?.setQueryData(postsQueryKey, {
+          queryClient.setQueryData(postsQueryKey, {
             ...postsSnapshot,
             // @ts-expect-error TODO: strongly type
             pages: postsSnapshot.pages.map((page) => ({
@@ -203,15 +205,15 @@ const FeedbackCard = ({
       },
       onSettled: async () =>
         Promise.all([
-          queryClient?.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
 
-          queryClient?.invalidateQueries({
+          queryClient.invalidateQueries({
             queryKey: statusBreakdownOptions({
               projectId: feedback.project?.rowId!,
             }).queryKey,
           }),
 
-          queryClient?.invalidateQueries({
+          queryClient.invalidateQueries({
             queryKey: feedbackByIdOptions({
               rowId: feedback.rowId!,
               userId: session?.user?.rowId,

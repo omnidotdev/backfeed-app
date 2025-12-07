@@ -1,5 +1,3 @@
-"use client";
-
 import { Flex, Text } from "@omnidev/sigil";
 
 import type { TooltipContentProps } from "recharts";

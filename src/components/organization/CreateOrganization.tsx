@@ -1,5 +1,3 @@
-"use client";
-
 import { Dialog, sigil } from "@omnidev/sigil";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -59,7 +57,7 @@ interface Props {
  * Dialog for creating a new organization.
  */
 const CreateOrganization = ({ isHotkeyEnabled = true }: Props) => {
-  const { queryClient } = useRouteContext({ strict: false });
+  const { queryClient } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -93,7 +91,7 @@ const CreateOrganization = ({ isHotkeyEnabled = true }: Props) => {
   const { mutateAsync: createOrganization, isPending } =
     useCreateOrganizationMutation({
       onSettled: async () =>
-        queryClient?.invalidateQueries({ queryKey: ["Organizations"] }),
+        queryClient.invalidateQueries({ queryKey: ["Organizations"] }),
       onSuccess: async (data) => {
         navigate({
           to: "/organizations/$organizationSlug",

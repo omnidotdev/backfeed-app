@@ -1,5 +1,3 @@
-"use client";
-
 import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 
 import type { FlexProps, TextProps } from "@omnidev/sigil";

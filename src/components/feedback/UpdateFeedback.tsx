@@ -57,7 +57,9 @@ interface Props extends DialogProps {
  * Update feedback form.
  */
 const UpdateFeedback = ({ feedback, ...rest }: Props) => {
-  const { session, queryClient } = useRouteContext({ strict: false });
+  const { session, queryClient } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout",
+  });
 
   const isClient = useIsClient();
 

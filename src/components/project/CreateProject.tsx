@@ -101,7 +101,9 @@ interface Props {
  * Dialog for creating a new project.
  */
 const CreateProject = ({ organizationSlug }: Props) => {
-  const { session, queryClient } = useRouteContext({ strict: false });
+  const { session, queryClient } = useRouteContext({
+    from: "/_auth/organizations/$organizationSlug/_layout",
+  });
   const navigate = useNavigate();
 
   const isClient = useIsClient();

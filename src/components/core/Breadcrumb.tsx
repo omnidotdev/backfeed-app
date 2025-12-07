@@ -42,7 +42,6 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
           />
 
           {to ? (
-            // TODO: fix. make typesafe and use proper href
             <Link to={to} params={params}>
               <Text
                 display={isLastItem ? "none" : { base: "inline", lg: "none" }}

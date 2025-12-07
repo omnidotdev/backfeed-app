@@ -34,7 +34,7 @@ interface NavItem extends Omit<LinkOptions, "href"> {
  * Custom hook to generate sidebar navigation items based on authentication state, current route, and available organization/project data.
  */
 const useSidebarNavigationItems = () => {
-  const { session } = useRouteContext({ strict: false });
+  const { session } = useRouteContext({ from: "__root__" });
   const { organizationSlug, projectSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 

@@ -51,7 +51,7 @@ const useHandleUpvoteMutation = ({
 
   const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
-  const { session } = useRouteContext({ strict: false });
+  const { session } = useRouteContext({ from: "/_auth" });
 
   const { mutateAsync: createUpvote } = useCreateUpvoteMutation();
   const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();

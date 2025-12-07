@@ -14,7 +14,7 @@ interface Props extends FlexProps {
  * Navigation link that displays the Backfeed logo. Routes to the home page.
  */
 const LogoLink = ({ width, ...rest }: Props) => {
-  const { session } = useRouteContext({ strict: false });
+  const { session } = useRouteContext({ from: "__root__" });
 
   return (
     <Link to={session ? "/dashboard" : "/"}>

@@ -42,8 +42,10 @@ const ProfileNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { session } = useRouteContext({ strict: false });
-  const { userId } = useParams({ strict: false });
+  const { session } = useRouteContext({
+    from: "/_auth/profile/$userId/_layout",
+  });
+  const { userId } = useParams({ from: "/_auth/profile/$userId/_layout" });
   const navigate = useNavigate();
   const segment = useRouterState({
     select: (state) => {
@@ -73,7 +75,7 @@ const ProfileNavigation = ({
         onClose?.();
         navigate({
           to: "/profile/$userId/account",
-          params: { userId: userId! },
+          params: { userId },
         });
       },
     },
@@ -85,7 +87,7 @@ const ProfileNavigation = ({
         onClose?.();
         navigate({
           to: "/profile/$userId/invitations",
-          params: { userId: userId! },
+          params: { userId },
         });
       },
     },
@@ -96,7 +98,7 @@ const ProfileNavigation = ({
         onClose?.();
         navigate({
           to: "/profile/$userId/organizations",
-          params: { userId: userId! },
+          params: { userId },
         });
       },
     },
