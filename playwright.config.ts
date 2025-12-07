@@ -1,5 +1,5 @@
-import { loadEnvConfig } from "@next/env";
 import { defineConfig } from "@playwright/test";
+import dotenv from "dotenv";
 import ms from "ms";
 
 // import type {
@@ -15,8 +15,8 @@ import ms from "ms";
 //   PlaywrightWorkerOptions
 // >;
 
-// load environment variables (see https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#loading-environment-variables-with-nextenv)
-loadEnvConfig(process.cwd());
+// load environment variables
+dotenv.config();
 
 /**
  * Desktop devices/viewports.
@@ -24,26 +24,26 @@ loadEnvConfig(process.cwd());
 // TODO enable desktop viewports (https://linear.app/omnidev/issue/OMNI-156/enable-more-playwright-devices)
 // const desktopDevices: PlaywrightDevices[] = [
 //   {
-//     name: "🖥️  Chromium",
+//     name: "🖥  Chromium",
 //     use: {
 //       ...devices["Desktop Chrome"],
 //     },
 //   },
 //   {
-//     name: "🖥️  Firefox",
+//     name: "🖥  Firefox",
 //     use: {
 //       ...devices["Desktop Firefox"],
 //     },
 //   },
 
 //   {
-//     name: "🖥️  Safari (Webkit)",
+//     name: "🖥  Safari (Webkit)",
 //     use: {
 //       ...devices["Desktop Safari"],
 //     },
 //   },
 //   {
-//     name: "🖥️  Microsoft Edge",
+//     name: "🖥  Microsoft Edge",
 //     use: {
 //       channel: "msedge",
 //     },
@@ -97,8 +97,8 @@ const playwrightConfig = defineConfig({
   outputDir: "src/generated/test-artifacts",
   // run dev server before starting the tests
   webServer: {
-    // NB: no need to run GraphQL code generation, so just the Next.js server is started here
-    command: "bun dev:next",
+    // NB: no need to run GraphQL code generation, so just the Vite server is started here
+    command: "bun dev:vite",
     port: (process.env.PORT as unknown as number) || 3000,
     timeout: ms("2m"),
     // do not use an existing server on CI

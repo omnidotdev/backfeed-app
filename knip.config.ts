@@ -21,10 +21,6 @@ const knipConfig: KnipConfig = {
   },
   ignoreExportsUsedInFile: true,
   ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
-  ignoreDependencies: [
-    // used by GraphQL Code Generator scripts
-    "dotenv",
-  ],
 };
 
 export default knipConfig;
