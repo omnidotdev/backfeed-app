@@ -25,4 +25,5 @@ export const STRIPE_PORTAL_CONFIG_ID = import.meta.env
 
 // tests
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
+/** @knipignore */
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
