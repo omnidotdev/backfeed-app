@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/invite")({
         const result = await inviteSchema.safeParseAsync(body);
 
         if (!result.success)
-          return Response.json(
+          return json(
             { error: result.error },
             {
               status: 500,
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/api/invite")({
           }),
         });
 
-        if (error) return Response.json({ error }, { status: 500 });
+        if (error) return json({ error }, { status: 500 });
 
         return json({ data });
       },
