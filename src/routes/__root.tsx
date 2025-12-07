@@ -15,8 +15,7 @@ import utc from "dayjs/plugin/utc";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-// @ts-expect-error TODO: figure this out
-import appCss from "@/lib/styles/globals.css?url";
+import appCss from "@/lib/styles/app.css?url";
 import seo from "@/lib/util/seo";
 import toaster from "@/lib/util/toaster";
 import ThemeProvider from "@/providers/ThemeProvider";
