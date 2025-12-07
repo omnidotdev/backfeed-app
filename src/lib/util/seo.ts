@@ -46,10 +46,9 @@ const seo = ({
           { name: "og:image", content: image },
         ]
       : [
-          // TODO: validate logo path
-          { name: "twitter:image", content: "/logo.png" },
+          { name: "twitter:image", content: "/img/logo.png" },
           { name: "twitter:card", content: "summary_large_image" },
-          { name: "og:image", content: "/logo.png" },
+          { name: "og:image", content: "/img/logo.png" },
         ]),
   ];
 
