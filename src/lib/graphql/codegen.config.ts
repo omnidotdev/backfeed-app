@@ -1,4 +1,4 @@
-import { API_GRAPHQL_URL } from "lib/config";
+import { API_GRAPHQL_URL } from "../config/env.config";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import type { Types } from "@graphql-codegen/plugin-helpers";
@@ -85,7 +85,7 @@ const graphqlCodegenConfig: CodegenConfig = {
         exposeFetcher: true,
         // NB: the custom fetcher has the benefits of, among others, integrating async headers directly within the `graphql-request` client and not requiring passing the client to each hook invocation
         fetcher: {
-          func: "lib/graphql/graphqlFetch#graphqlFetch",
+          func: "@/lib/graphql/graphqlFetch#graphqlFetch",
         },
       },
     },

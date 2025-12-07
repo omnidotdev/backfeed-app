@@ -2,4 +2,4 @@ telemetry = false
 
 # https://bun.sh/docs/runtime/bunfig#test-runner
 [test]
-preload = "test/test.setup.ts"
+preload = "src/test/test.setup.ts"

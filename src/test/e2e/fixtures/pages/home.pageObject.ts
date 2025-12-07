@@ -1,6 +1,6 @@
-import { createPageObject } from "test/e2e/util";
+import createPageObject from "@/test/e2e/util/createPageObject";
 
-import type { PageObjectContext } from "test/e2e/util";
+import type { PageObjectContext } from "@/test/e2e/util/createPageObject";
 
 /**
  * Home page object.
