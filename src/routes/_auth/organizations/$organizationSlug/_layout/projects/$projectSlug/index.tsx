@@ -63,9 +63,10 @@ export const Route = createFileRoute(
     params: { organizationSlug, projectSlug },
     deps: { search, excludedStatuses, orderBy },
   }) => {
-    const { projects } = await queryClient.ensureQueryData(
-      projectOptions({ organizationSlug, projectSlug }),
-    );
+    const { projects } = await queryClient.ensureQueryData({
+      ...projectOptions({ organizationSlug, projectSlug }),
+      revalidateIfStale: true,
+    });
 
     if (!projects?.nodes.length) throw notFound();
 
@@ -74,21 +75,29 @@ export const Route = createFileRoute(
     const projectName = project.name;
 
     await Promise.all([
-      queryClient.ensureQueryData(statusBreakdownOptions({ projectId })),
-      queryClient.ensureQueryData(projectStatusesOptions({ projectId })),
+      queryClient.ensureQueryData({
+        ...statusBreakdownOptions({ projectId }),
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureQueryData({
+        ...projectStatusesOptions({ projectId }),
+        revalidateIfStale: true,
+      }),
       queryClient.ensureQueryData(projectMetricsOptions({ projectId })),
-      queryClient.ensureQueryData(
-        freeTierFeedbackOptions({ organizationSlug, projectSlug }),
-      ),
-      queryClient.ensureInfiniteQueryData(
-        infiniteFeedbackOptions({
+      queryClient.ensureQueryData({
+        ...freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureInfiniteQueryData({
+        ...infiniteFeedbackOptions({
           projectId,
           search,
           excludedStatuses,
           orderBy: [orderBy, PostOrderBy.CreatedAtDesc],
           userId: session?.user?.rowId,
         }),
-      ),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return { projectId, projectName };

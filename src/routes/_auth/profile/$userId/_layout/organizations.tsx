@@ -17,13 +17,14 @@ export const Route = createFileRoute(
     const [prices, subscriptions] = await Promise.all([
       getPrices(),
       getSubscriptions(),
-      queryClient.ensureQueryData(
-        organizationsOptions({
+      queryClient.ensureQueryData({
+        ...organizationsOptions({
           userId: session?.user?.rowId!,
           excludeRoles: [Role.Member, Role.Admin],
           orderBy: OrganizationOrderBy.CreatedAtAsc,
         }),
-      ),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return { prices, subscriptions };

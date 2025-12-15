@@ -10,9 +10,10 @@ export const Route = createFileRoute(
   "/_auth/profile/$userId/_layout/invitations",
 )({
   loader: async ({ context: { queryClient, user } }) => {
-    await queryClient.ensureQueryData(
-      invitationsOptions({ email: user?.email! }),
-    );
+    await queryClient.ensureQueryData({
+      ...invitationsOptions({ email: user?.email! }),
+      revalidateIfStale: true,
+    });
   },
   head: () => ({ meta: seo({ title: "Invitations" }) }),
   component: UserInvitationsPage,

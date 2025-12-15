@@ -34,17 +34,19 @@ export const Route = createFileRoute(
     deps: { search, roles },
   }) => {
     await Promise.all([
-      queryClient.ensureQueryData(
-        membersOptions({ organizationId, roles: [Role.Owner] }),
-      ),
-      queryClient.ensureQueryData(
-        membersOptions({
+      queryClient.ensureQueryData({
+        ...membersOptions({ organizationId, roles: [Role.Owner] }),
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureQueryData({
+        ...membersOptions({
           organizationId,
           roles,
           search,
           excludeRoles: [Role.Owner],
         }),
-      ),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return { organizationName };

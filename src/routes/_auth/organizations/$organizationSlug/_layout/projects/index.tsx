@@ -36,14 +36,15 @@ export const Route = createFileRoute(
     deps: { page, pageSize, search },
     params: { organizationSlug },
   }) => {
-    await queryClient.ensureQueryData(
-      projectsOptions({
+    await queryClient.ensureQueryData({
+      ...projectsOptions({
         pageSize,
         offset: (page - 1) * pageSize,
         search,
         organizationSlug,
       }),
-    );
+      revalidateIfStale: true,
+    });
 
     return { organizationName };
   },

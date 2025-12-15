@@ -22,9 +22,10 @@ export const Route = createFileRoute(
     const [prices, subscription] = await Promise.all([
       getPrices(),
       getSubscription({ data: { subscriptionId } }),
-      queryClient.ensureQueryData(
-        membersOptions({ organizationId, roles: [Role.Owner] }),
-      ),
+      queryClient.ensureQueryData({
+        ...membersOptions({ organizationId, roles: [Role.Owner] }),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return { prices, subscription, organizationName };

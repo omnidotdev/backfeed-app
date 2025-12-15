@@ -21,7 +21,10 @@ export const Route = createFileRoute(
   }) => {
     if (!role || role === Role.Member) throw notFound();
 
-    await queryClient.ensureQueryData(invitationsOptions({ organizationId }));
+    await queryClient.ensureQueryData({
+      ...invitationsOptions({ organizationId }),
+      revalidateIfStale: true,
+    });
 
     return { organizationName };
   },

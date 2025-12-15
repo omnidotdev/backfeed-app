@@ -37,15 +37,16 @@ export const Route = createFileRoute("/_auth/organizations/")({
     context: { queryClient },
     deps: { page, pageSize, search },
   }) => {
-    await queryClient.ensureQueryData(
-      organizationsOptions({
+    await queryClient.ensureQueryData({
+      ...organizationsOptions({
         pageSize,
         offset: (page - 1) * pageSize,
         orderBy: [OrganizationOrderBy.MembersCountDesc],
         search,
         isMember: false,
       }),
-    );
+      revalidateIfStale: true,
+    });
   },
   head: () => ({ meta: seo({ title: app.organizationsPage.breadcrumb }) }),
   component: OrganizationsPage,

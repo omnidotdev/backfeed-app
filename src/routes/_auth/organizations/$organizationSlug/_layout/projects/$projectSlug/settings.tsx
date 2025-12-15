@@ -23,9 +23,10 @@ export const Route = createFileRoute(
     context: { queryClient },
     params: { organizationSlug, projectSlug },
   }) => {
-    const { projects } = await queryClient.ensureQueryData(
-      projectOptions({ organizationSlug, projectSlug }),
-    );
+    const { projects } = await queryClient.ensureQueryData({
+      ...projectOptions({ organizationSlug, projectSlug }),
+      revalidateIfStale: true,
+    });
 
     if (!projects?.nodes.length) throw notFound();
 

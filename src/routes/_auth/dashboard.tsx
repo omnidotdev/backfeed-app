@@ -34,31 +34,35 @@ export const Route = createFileRoute("/_auth/dashboard")({
       .toDate();
 
     await Promise.all([
-      queryClient.ensureQueryData(
-        organizationsOptions({
+      queryClient.ensureQueryData({
+        ...organizationsOptions({
           pageSize: 3,
           offset: 0,
           orderBy: [OrganizationOrderBy.MembersCountDesc],
           userId: session?.user.rowId!,
           isMember: true,
         }),
-      ),
-      queryClient.ensureQueryData(
-        dashboardAggregatesOptions({
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureQueryData({
+        ...dashboardAggregatesOptions({
           userId: session?.user.rowId!,
         }),
-      ),
-      queryClient.ensureQueryData(
-        weeklyFeedbackOptions({
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureQueryData({
+        ...weeklyFeedbackOptions({
           userId: session?.user?.rowId!,
           startDate: oneWeekAgo,
         }),
-      ),
-      queryClient.ensureInfiniteQueryData(
-        recentFeedbackOptions({
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureInfiniteQueryData({
+        ...recentFeedbackOptions({
           userId: session?.user?.rowId!,
         }),
-      ),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return {

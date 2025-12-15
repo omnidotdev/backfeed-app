@@ -28,11 +28,12 @@ export const Route = createFileRoute(
   loader: async ({
     context: { queryClient, organizationId, organizationName },
   }) => {
-    await queryClient.ensureQueryData(
-      organizationMetricsOptions({
+    await queryClient.ensureQueryData({
+      ...organizationMetricsOptions({
         organizationId,
       }),
-    );
+      revalidateIfStale: true,
+    });
 
     return { organizationName };
   },

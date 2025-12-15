@@ -23,18 +23,25 @@ export const Route = createFileRoute(
     params: { organizationSlug, projectSlug, feedbackId },
   }) => {
     await Promise.all([
-      queryClient.ensureQueryData(
-        feedbackByIdOptions({
+      queryClient.ensureQueryData({
+        ...feedbackByIdOptions({
           rowId: feedbackId,
           userId: session?.user?.rowId,
         }),
-      ),
-      queryClient.ensureInfiniteQueryData(
-        infiniteCommentsOptions({ feedbackId }),
-      ),
-      queryClient.ensureQueryData(
-        freeTierCommentsOptions({ organizationSlug, projectSlug, feedbackId }),
-      ),
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureInfiniteQueryData({
+        ...infiniteCommentsOptions({ feedbackId }),
+        revalidateIfStale: true,
+      }),
+      queryClient.ensureQueryData({
+        ...freeTierCommentsOptions({
+          organizationSlug,
+          projectSlug,
+          feedbackId,
+        }),
+        revalidateIfStale: true,
+      }),
     ]);
   },
   head: () => ({ meta: seo({ title: "Feedback" }) }),

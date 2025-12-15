@@ -13,19 +13,21 @@ export const Route = createFileRoute(
     context: { queryClient, session },
     params: { organizationSlug },
   }) => {
-    const { organizationBySlug } = await queryClient.ensureQueryData(
-      organizationOptions({ slug: organizationSlug }),
-    );
+    const { organizationBySlug } = await queryClient.ensureQueryData({
+      ...organizationOptions({ slug: organizationSlug }),
+      revalidateIfStale: true,
+    });
 
     if (!organizationBySlug) throw notFound();
 
     const { memberByUserIdAndOrganizationId: member } =
-      await queryClient.ensureQueryData(
-        organizationRoleOptions({
+      await queryClient.ensureQueryData({
+        ...organizationRoleOptions({
           userId: session?.user?.rowId!,
           organizationId: organizationBySlug.rowId,
         }),
-      );
+        revalidateIfStale: true,
+      });
 
     return {
       organizationId: organizationBySlug.rowId,
