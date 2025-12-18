@@ -14,6 +14,7 @@ describe("dashboard page", () => {
     render(
       <DashboardPage
         // TODO: mock user
+        // @ts-ignore TODO
         user={{}}
         oneWeekAgo={oneWeekAgo}
       />,
