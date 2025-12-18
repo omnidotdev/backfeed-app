@@ -15,11 +15,11 @@ import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
 
 import type { Project } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
 }

@@ -40,7 +40,7 @@ import type {
   PostStatus,
   PostsQuery,
 } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface ProjectStatus {
   /** Post status row ID. */
@@ -53,7 +53,7 @@ interface ProjectStatus {
 
 interface Props extends HstackProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Whether the user has permission to manage statuses or delete feedback. */
   canManageFeedback: boolean;
   /** Feedback details. */

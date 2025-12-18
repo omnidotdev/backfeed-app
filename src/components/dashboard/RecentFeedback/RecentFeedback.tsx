@@ -10,11 +10,11 @@ import { useInfiniteRecentFeedbackQuery } from "generated/graphql";
 import { app } from "lib/config";
 
 import type { Post } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
 }
 
 /**

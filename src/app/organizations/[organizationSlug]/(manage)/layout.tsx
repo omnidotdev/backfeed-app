@@ -2,14 +2,13 @@ import { HStack } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { ManagementSidebar } from "components/organization";
 import {
   useOrganizationQuery,
   useOrganizationRoleQuery,
 } from "generated/graphql";
 import { getOrganization } from "lib/actions";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 /**
  * Manage organization layout.
@@ -20,7 +19,7 @@ const ManageOrganizationLayout = async ({
 }: LayoutProps<"/organizations/[organizationSlug]">) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

@@ -8,3 +8,5 @@ export { default as getSocialMediaLabel } from "./getSocialMediaLabel/getSocialM
 export { default as searchParams } from "./searchParams";
 export { default as setSingularOrPlural } from "./setSingularOrPlural/setSingularOrPlural";
 export { default as toaster } from "./toaster";
+
+export type { AuthSession, AuthUser } from "./getAuthSession/getAuthSession";

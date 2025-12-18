@@ -1,11 +1,11 @@
 "use client";
 
 import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
-import { signIn } from "next-auth/react";
 import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
 
-import { app } from "lib/config";
+import signIn from "lib/auth/signIn";
+import { BASE_URL, app } from "lib/config";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -29,7 +29,7 @@ const Hero = () => {
         long: app.landingPage.hero.cta.collect.label.long,
       },
       icon: FiArrowRight,
-      onClick: () => signIn("omni"),
+      onClick: () => signIn({ redirectUrl: BASE_URL! }),
     },
     {
       label: {

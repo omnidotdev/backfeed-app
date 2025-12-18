@@ -23,7 +23,7 @@ import { app } from "lib/config";
 import { useOrganizationMembership } from "lib/hooks";
 
 import type { InvitationFragment, Organization } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const columnHelper = createColumnHelper<InvitationFragment>();
 
@@ -31,7 +31,7 @@ const organizationInviteDetails = app.organizationInvitationsPage;
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
 }

@@ -20,7 +20,7 @@ import { getSdk } from "lib/graphql";
 import { useForm, useOrganizationMembership } from "lib/hooks";
 import { generateSlug, getAuthSession } from "lib/util";
 
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const updateOrganizationDetails =
   app.organizationSettingsPage.cta.updateOrganization;
@@ -57,7 +57,7 @@ const updateOrganizationSchema = z
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
 }
 
 /**

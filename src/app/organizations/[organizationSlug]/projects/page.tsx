@@ -2,7 +2,6 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { LuCirclePlus } from "react-icons/lu";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateProject, ProjectFilters, ProjectList } from "components/project";
 import { Role, Tier, useProjectsQuery } from "generated/graphql";
@@ -11,7 +10,7 @@ import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { MAX_NUMBER_OF_PROJECTS } from "lib/constants";
 import { getSdk } from "lib/graphql";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 import { DialogType } from "store";
 
 import type { BreadcrumbRecord } from "components/core";
@@ -41,7 +40,7 @@ const ProjectsPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/projects">) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

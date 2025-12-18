@@ -51,7 +51,7 @@ import type {
   FeedbackFragment,
   Project,
 } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 // TODO: figure out how to properly handle refresh for view state management.
 
@@ -72,7 +72,7 @@ const SORT_BY_OPTIONS = [
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Project ID. */
   projectId: Project["rowId"];
 }

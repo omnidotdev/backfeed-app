@@ -9,7 +9,6 @@ import {
   Icon,
   Stack,
 } from "@omnidev/sigil";
-import { signIn } from "next-auth/react";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
@@ -22,7 +21,8 @@ import {
 } from "components/layout";
 import { NotificationCenter } from "components/notifications";
 import { token } from "generated/panda/tokens";
-import { app } from "lib/config";
+import signIn from "lib/auth/signIn";
+import { BASE_URL, app } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
 import { DialogType } from "store";
@@ -42,7 +42,7 @@ const HeaderActions = () => {
       });
 
   const handleSignUp = () => {
-    signIn("omni", undefined, { action: "sign-up" });
+    signIn({ redirectUrl: BASE_URL! });
   };
 
   useEffect(() => {
@@ -66,7 +66,10 @@ const HeaderActions = () => {
           </HStack>
         ) : (
           <HStack>
-            <Button variant="outline" onClick={() => signIn("omni")}>
+            <Button
+              variant="outline"
+              onClick={() => signIn({ redirectUrl: BASE_URL! })}
+            >
               {app.auth.signIn.label}
             </Button>
 
@@ -133,7 +136,10 @@ const HeaderActions = () => {
               <AccountInformation />
             ) : (
               <Stack>
-                <Button variant="outline" onClick={() => signIn("omni")}>
+                <Button
+                  variant="outline"
+                  onClick={() => signIn({ redirectUrl: BASE_URL! })}
+                >
                   {app.auth.signIn.label}
                 </Button>
 

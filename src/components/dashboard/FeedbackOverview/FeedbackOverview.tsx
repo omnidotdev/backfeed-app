@@ -18,11 +18,11 @@ import { useWeeklyFeedbackQuery } from "generated/graphql";
 import { token } from "generated/panda/tokens";
 import { useViewportSize } from "lib/hooks";
 
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }

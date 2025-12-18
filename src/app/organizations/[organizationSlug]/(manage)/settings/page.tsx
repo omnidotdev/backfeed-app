@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationSettings } from "components/organization";
 import {
@@ -12,7 +11,7 @@ import {
 import { getCustomer, getOrganization, getPrices } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
@@ -39,7 +38,7 @@ const OrganizationSettingsPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/settings">) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

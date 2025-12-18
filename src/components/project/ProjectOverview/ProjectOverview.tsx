@@ -12,11 +12,11 @@ import {
 import { useProjectMetricsQuery } from "generated/graphql";
 
 import type { Project } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Project ID. */
   projectId: Project["rowId"];
 }

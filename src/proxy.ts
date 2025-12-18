@@ -1,18 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { auth } from "auth";
+import auth from "lib/auth/auth";
 
 import type { NextRequest } from "next/server";
-import type { Session } from "next-auth";
-
-interface NextAuthRequest extends NextRequest {
-  auth: Session | null;
-}
 
 // TODO: update this to sign in route when custom auth pages are implemented
 const REDIRECT_PATH = "/";
 
-const SESSION_COOKIE_PREFIX = "authjs.session-token";
+const SESSION_COOKIE_PREFIX = "better-auth.session_token";
 
 const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
   ? `__Secure-${SESSION_COOKIE_PREFIX}`
@@ -22,7 +17,7 @@ const sessionCookie = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https://")
  * Redirect the user's request.
  * NB: need to use rewrite instead of redirect to avoid infinite redirect loop if the user is already on the redirect path
  */
-const redirect = (request: NextAuthRequest, init?: ResponseInit) => {
+const redirect = (request: NextRequest, init?: ResponseInit) => {
   if (request.nextUrl.pathname !== REDIRECT_PATH) {
     return NextResponse.redirect(
       new URL(REDIRECT_PATH, request.nextUrl.origin),
@@ -39,7 +34,7 @@ const redirect = (request: NextAuthRequest, init?: ResponseInit) => {
 /**
  * Sign out handler used to sign out the user from the application.
  */
-const signOut = async (request: NextAuthRequest) => {
+const _signOut = async (request: NextRequest) => {
   // Delete session cookie on request as server-side auth will read from the request headers
   request.cookies.delete(sessionCookie);
 
@@ -60,33 +55,51 @@ const signOut = async (request: NextAuthRequest) => {
 /**
  * Proxy function for handling authentication flows on designated routes.
  */
-export const proxy = auth(async (request) => {
+export const proxy = async (request: NextRequest) => {
   // NB: Used to bypass preflight checks. See: https://github.com/vercel/next.js/discussions/75668
   // TODO: look into the security of this as this is a temporary workaround to allow for sign in / sign up flows to work properly in Safari
   if (request.method === "OPTIONS") {
     return NextResponse.json({}, { status: 200 });
   }
 
+  // get the session using Better Auth
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
   // If the user is not authenticated, redirect to the landing page
-  if (!request.auth) {
+  if (!session) {
     return redirect(request);
   }
 
-  // If there is an error from the refresh token rotation, sign out the user (i.e. refresh token was expired)
-  if (request.auth.error) {
-    return await signOut(request);
-  }
-
-  // Redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
+  // redirect user to their profile page upon successful checkout (or force redirect when trying to access confirmation route)
   if (request.nextUrl.pathname.startsWith("/confirmation")) {
-    return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${request.auth.user?.hidraId}/organizations`,
-    );
+    // get access token to extract identityProviderId from the id token
+    try {
+      const tokenResult = await auth.api.getAccessToken({
+        body: { providerId: "omni" },
+        headers: request.headers,
+      });
+
+      if (tokenResult?.idToken) {
+        const payloadBase64 = tokenResult.idToken.split(".")[1];
+        const payloadJson = Buffer.from(payloadBase64, "base64").toString(
+          "utf-8",
+        );
+        const payload = JSON.parse(payloadJson);
+        const identityProviderId = payload.sub;
+
+        return NextResponse.redirect(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/profile/${identityProviderId}/organizations`,
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  // If the access token is not expired and there was no error refreshing the token, return the response
   return NextResponse.next();
-});
+};
 
 export const config = {
   // See: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher

@@ -9,11 +9,11 @@ import { useOrganizationMembership } from "lib/hooks";
 
 import type { HstackProps } from "@omnidev/sigil";
 import type { Post } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props extends HstackProps {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Feedback ID. Used to fetch feedback details. */
   feedbackId: Post["rowId"];
 }

@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { Comments, FeedbackDetails } from "components/feedback";
 import { Page } from "components/layout";
 import {
@@ -13,7 +12,7 @@ import {
 import { getFeedback } from "lib/actions";
 import { app } from "lib/config";
 import { freeTierCommentsOptions } from "lib/options";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
@@ -30,7 +29,7 @@ const FeedbackPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]/[feedbackId]">) => {
   const { organizationSlug, projectSlug, feedbackId } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

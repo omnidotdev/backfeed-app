@@ -12,7 +12,7 @@ import { useOrganizationMembership } from "lib/hooks";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { Organization } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type { IconType } from "react-icons";
 
 interface NavigationItem extends ButtonProps {
@@ -24,7 +24,7 @@ interface NavigationItem extends ButtonProps {
 
 interface Props extends StackProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Organization slug. */

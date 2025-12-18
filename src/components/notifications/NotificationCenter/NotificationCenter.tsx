@@ -25,7 +25,7 @@ const invitations = app.header.routes.invitations;
 
 const NotificationCenter = () => {
   const { user } = useAuth();
-  const router = useRouter();
+  const _router = useRouter();
   const queryClient = getQueryClient();
 
   const { data: notifications } = useNotificationsQuery(

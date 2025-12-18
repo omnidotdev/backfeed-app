@@ -2,7 +2,6 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { FiUserPlus } from "react-icons/fi";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { Invitations, InviteMember } from "components/organization";
 import { Role, useInvitationsQuery } from "generated/graphql";
@@ -10,7 +9,7 @@ import { icon } from "generated/panda/recipes";
 import { getOrganization } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 import { DialogType } from "store";
 
 import type { Metadata } from "next";
@@ -37,7 +36,7 @@ const OrganizationInvitationsPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/invitations">) => {
   const { organizationSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

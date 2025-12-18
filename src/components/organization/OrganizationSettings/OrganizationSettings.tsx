@@ -50,7 +50,7 @@ import type {
   CustomerState,
   OrganizationRow,
 } from "components/profile/UserOrganizations/UserOrganizations";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const deleteOrganizationDetails =
   app.organizationSettingsPage.cta.deleteOrganization;
@@ -59,7 +59,7 @@ const leaveOrganizationDetails =
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Organization details. */
   organization: OrganizationRow;
   /** Customer information derived from the authenticated user. */

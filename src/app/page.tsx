@@ -2,7 +2,6 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
-import { auth } from "auth";
 import { DashboardPage } from "components/dashboard";
 import { LandingPage } from "components/landing";
 import {
@@ -15,7 +14,8 @@ import {
   useUserQuery,
   useWeeklyFeedbackQuery,
 } from "generated/graphql";
-import { getQueryClient } from "lib/util";
+import { signOutAndRedirect } from "lib/actions";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 
@@ -27,9 +27,14 @@ export const dynamic = "force-dynamic";
  * Home page. This route is dynamically rendered based on the user's authentication status.
  */
 const HomePage = async () => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) return <LandingPage />;
+
+  // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
+  if (!session.user.rowId) {
+    await signOutAndRedirect();
+  }
 
   const queryClient = getQueryClient();
 
@@ -61,8 +66,12 @@ const HomePage = async () => {
       }),
     }),
     queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
+      queryKey: useUserQuery.getKey({
+        identityProviderId: session.user.identityProviderId!,
+      }),
+      queryFn: useUserQuery.fetcher({
+        identityProviderId: session.user.identityProviderId!,
+      }),
     }),
     queryClient.prefetchQuery({
       queryKey: useDashboardAggregatesQuery.getKey({

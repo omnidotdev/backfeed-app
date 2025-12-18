@@ -18,11 +18,11 @@ import type {
   Organization,
   ReplyFragment,
 } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props extends CollapsibleProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Comment ID. */

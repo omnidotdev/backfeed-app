@@ -32,11 +32,11 @@ import { setSingularOrPlural } from "lib/util";
 
 import type { StackProps } from "@omnidev/sigil";
 import type { CommentFragment, Organization } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props extends StackProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Comment. */
   comment: CommentFragment;
   /** Organization ID. */

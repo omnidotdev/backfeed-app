@@ -16,13 +16,13 @@ import { app } from "lib/config";
 
 import type { DestructiveActionProps } from "components/core";
 import type { Organization, Project } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Project ID. */
   projectId: Project["rowId"];
   /** Organization slug. */

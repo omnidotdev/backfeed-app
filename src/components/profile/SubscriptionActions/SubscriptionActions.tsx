@@ -57,7 +57,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
         checkout: {
           type: "update",
           subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+          returnUrl: `${BASE_URL}/profile/${user?.identityProviderId}/organizations`,
         },
       });
 
@@ -76,7 +76,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
           type: "create",
           organizationId: organization.rowId,
           priceId,
-          successUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+          successUrl: `${BASE_URL}/profile/${user?.identityProviderId}/organizations`,
         },
       });
 
@@ -92,7 +92,7 @@ const SubscriptionActions = ({ organization, prices }: Props) => {
     mutationFn: async () => {
       const cancelUrl = await cancelSubscription({
         subscriptionId: organization.subscriptionId!,
-        returnUrl: `${BASE_URL}/profile/${user?.hidraId}/organizations`,
+        returnUrl: `${BASE_URL}/profile/${user?.identityProviderId}/organizations`,
       });
 
       return cancelUrl;

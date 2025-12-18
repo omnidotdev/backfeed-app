@@ -19,12 +19,12 @@ import { useDebounceValue, useViewportSize } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type { PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
   /** User derived from the auth session. */
-  user: Session["user"];
+  user: AuthUser;
 }
 
 /**

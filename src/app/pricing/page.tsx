@@ -1,9 +1,7 @@
-import { redirect } from "next/navigation";
-
-import { auth } from "auth";
 import { PricingOverview } from "components/pricing";
 import { getCustomer, getPrices } from "lib/actions";
 import { app } from "lib/config";
+import { getAuthSession } from "lib/util";
 
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
@@ -18,9 +16,7 @@ export const metadata: Metadata = {
  * Pricing page.
  */
 const PricingPage = async () => {
-  const [session, prices] = await Promise.all([auth(), getPrices()]);
-
-  if (session?.error) redirect("/");
+  const [session, prices] = await Promise.all([getAuthSession(), getPrices()]);
 
   if (session) {
     const customer = await getCustomer();

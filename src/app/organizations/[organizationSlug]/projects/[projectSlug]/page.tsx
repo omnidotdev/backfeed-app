@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectLinks, ProjectOverview } from "components/project";
 import {
@@ -22,7 +21,7 @@ import { getProject } from "lib/actions";
 import { app } from "lib/config";
 import { getSdk } from "lib/graphql";
 import { freeTierFeedbackOptions } from "lib/options";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
@@ -51,7 +50,7 @@ const ProjectPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]">) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

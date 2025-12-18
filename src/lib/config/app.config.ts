@@ -1,5 +1,3 @@
-// TODO: dedupe as much as possible.
-
 /**
  * Application configuration.
  */

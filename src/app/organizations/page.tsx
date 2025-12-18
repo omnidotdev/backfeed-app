@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { OrganizationsOverview } from "components/organization";
 import {
   OrganizationOrderBy,
@@ -10,7 +9,7 @@ import {
   useUserQuery,
 } from "generated/graphql";
 import { app } from "lib/config";
-import { getQueryClient, getSearchParams } from "lib/util";
+import { getAuthSession, getQueryClient, getSearchParams } from "lib/util";
 
 import type { OrganizationsQueryVariables } from "generated/graphql";
 import type { Metadata } from "next";
@@ -27,7 +26,7 @@ export const metadata: Metadata = {
 const OrganizationsPage = async ({
   searchParams,
 }: PageProps<"/organizations">) => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 
@@ -61,8 +60,12 @@ const OrganizationsPage = async ({
       }),
     }),
     queryClient.prefetchQuery({
-      queryKey: useUserQuery.getKey({ hidraId: session.user.hidraId! }),
-      queryFn: useUserQuery.fetcher({ hidraId: session.user.hidraId! }),
+      queryKey: useUserQuery.getKey({
+        identityProviderId: session.user.identityProviderId!,
+      }),
+      queryFn: useUserQuery.fetcher({
+        identityProviderId: session.user.identityProviderId!,
+      }),
     }),
   ]);
 

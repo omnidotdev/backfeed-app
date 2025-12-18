@@ -18,7 +18,7 @@ import { useForm } from "lib/hooks";
 import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -39,7 +39,7 @@ const createCommentSchema = z.object({
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Whether the user can create a comment. */
   canCreateComment: boolean;
 }

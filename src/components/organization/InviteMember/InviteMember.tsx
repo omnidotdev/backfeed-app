@@ -21,7 +21,7 @@ import { getAuthSession, getQueryClient, toaster } from "lib/util";
 import { DialogType } from "store";
 
 import type { Organization } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const MAX_NUMBER_OF_INVITES = 10;
 
@@ -106,7 +106,7 @@ const createInvitationsSchema = invitesSchema.superRefine(
 
 interface Props {
   /* Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Organization name. */
   organizationName: Organization["name"];
   /** Organization ID. */

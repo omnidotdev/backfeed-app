@@ -28,7 +28,7 @@ import { DialogType } from "store";
 
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { OrganizationFragment } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type Stripe from "stripe";
 
 export interface OrganizationRow extends OrganizationFragment {
@@ -47,7 +47,7 @@ export interface CustomerState extends Omit<Stripe.Customer, "subscriptions"> {
 
 interface Props {
   /** User details. */
-  user: Session["user"];
+  user: AuthUser;
   /** App subscription pricing options. */
   prices: Price[];
   /** Customer details. */

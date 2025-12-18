@@ -12,7 +12,8 @@ export const isDevEnv = NODE_ENV === "development";
 const isTestEnv = APP_ENV === "test";
 
 // auth
-export const AUTH_ISSUER = process.env.NEXT_PUBLIC_AUTH_ISSUER;
+export const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_BASE_URL;
+export const AUTH_ISSUER_URL = `${AUTH_BASE_URL}/api/auth`;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 

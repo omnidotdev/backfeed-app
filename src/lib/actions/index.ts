@@ -7,3 +7,4 @@ export { default as getPrices } from "./getPrices";
 export { default as getProject } from "./getProject";
 export { default as renewSubscription } from "./renewSubscription";
 export { default as revokeSubscription } from "./revokeSubscription";
+export { default as signOutAndRedirect } from "./signOutAndRedirect";

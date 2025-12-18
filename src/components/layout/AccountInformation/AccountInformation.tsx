@@ -14,14 +14,14 @@ import {
   Stack,
   Text,
 } from "@omnidev/sigil";
-import { redirect, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { token } from "generated/panda/tokens";
+import authClient from "lib/auth/authClient";
 import { app, isDevEnv } from "lib/config";
 import { useAuth, useViewportSize } from "lib/hooks";
 import { useDialogStore } from "lib/hooks/store";
@@ -49,7 +49,7 @@ const AccountInformation = () => {
   const handleProfileClick = () => {
     setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
-    router.push(`/profile/${user?.hidraId}/account`);
+    router.push(`/profile/${user?.identityProviderId}/account`);
   };
 
   useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
@@ -62,9 +62,9 @@ const AccountInformation = () => {
         method: "POST",
       });
 
-      await signOut();
+      await authClient.signOut();
 
-      redirect("/");
+      window.location.href = "/";
     } catch (err) {
       if (isDevEnv) console.error(err);
     }

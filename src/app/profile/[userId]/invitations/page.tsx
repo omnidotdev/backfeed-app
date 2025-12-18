@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { OrganizationInvites } from "components/profile";
 import { app } from "lib/config";
+import { getAuthSession } from "lib/util";
 
 import type { Metadata } from "next";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * Profile invitations page.
  */
 const ProfileInvitationsPage = async () => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

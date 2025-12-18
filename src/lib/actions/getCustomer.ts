@@ -1,20 +1,20 @@
 "use server";
 
-import { auth } from "auth";
 import payments from "lib/payments";
+import { getAuthSession } from "lib/util";
 
 /**
  * Server action to get customer details.
  */
 const getCustomer = async () => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) {
     throw new Error("Unauthorized");
   }
 
   const { data: customers } = await payments.customers.search({
-    query: `metadata["externalId"]:"${session.user.hidraId!}"`,
+    query: `metadata["externalId"]:"${session.user.identityProviderId!}"`,
   });
 
   if (!customers.length) return undefined;

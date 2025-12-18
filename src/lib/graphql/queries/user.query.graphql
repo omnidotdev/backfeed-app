@@ -1,5 +1,5 @@
-query User($hidraId: UUID!) {
-  userByHidraId(hidraId: $hidraId) {
+query User($identityProviderId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $identityProviderId) {
     ...User
   }
 }

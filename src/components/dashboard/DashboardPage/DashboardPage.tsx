@@ -19,11 +19,11 @@ import { useDashboardAggregatesQuery } from "generated/graphql";
 import { app } from "lib/config";
 import { DialogType } from "store";
 
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Start of day from one week ago. */
   oneWeekAgo: Date;
 }

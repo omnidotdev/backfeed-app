@@ -1,9 +1,9 @@
 "use server";
 
-import { auth } from "auth";
 import getCustomer from "lib/actions/getCustomer";
 import { STRIPE_PORTAL_CONFIG_ID, app } from "lib/config";
 import payments from "lib/payments";
+import { getAuthSession } from "lib/util";
 
 import type Stripe from "stripe";
 
@@ -36,7 +36,7 @@ interface Options {
  * Server action to generate a URL that allows a user to proceed with either creating a subscription, or updating a current one.
  */
 const createCheckoutSession = async ({ checkout }: Options) => {
-  const authSession = await auth();
+  const authSession = await getAuthSession();
 
   if (!authSession) throw new Error("Unauthorized");
 
@@ -51,7 +51,7 @@ const createCheckoutSession = async ({ checkout }: Options) => {
       email: authSession.user.email!,
       name: authSession.user.name ?? undefined,
       metadata: {
-        externalId: authSession.user.hidraId!,
+        externalId: authSession.user.identityProviderId!,
       },
     });
   }

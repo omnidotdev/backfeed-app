@@ -22,7 +22,7 @@ import { freeTierFeedbackOptions } from "lib/options";
 import { toaster } from "lib/util";
 import { DialogType } from "store";
 
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -50,7 +50,7 @@ const createFeedbackSchema = z.object({
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
 }
 
 /**

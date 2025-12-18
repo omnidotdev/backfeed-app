@@ -27,13 +27,13 @@ import { useOrganizationMembership, useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { MemberFragment, Organization } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const columnHelper = createColumnHelper<MemberFragment>();
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Organization ID. */
   organizationId: Organization["rowId"];
 }

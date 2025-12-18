@@ -2,10 +2,9 @@ import { HStack } from "@omnidev/sigil";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { ProfileSidebar } from "components/profile";
 import { useInvitationsQuery } from "generated/graphql";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 /**
  * Manage profile layout.
@@ -13,7 +12,7 @@ import { getQueryClient } from "lib/util";
 const ProfileLayout = async ({
   children,
 }: LayoutProps<"/profile/[userId]">) => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

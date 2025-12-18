@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound, redirect } from "next/navigation";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { CreateOrganization } from "components/organization";
 import { UserOrganizations } from "components/profile";
@@ -12,7 +11,7 @@ import {
 } from "generated/graphql";
 import { getCustomer, getPrices } from "lib/actions";
 import { app } from "lib/config";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { Metadata } from "next";
@@ -30,14 +29,14 @@ const ProfileSubscriptionsPage = async ({
   const { userId } = await params;
 
   const [session, customer, prices] = await Promise.all([
-    auth(),
+    getAuthSession(),
     getCustomer(),
     getPrices(),
   ]);
 
   if (!session) redirect("/");
 
-  if (session?.user?.hidraId !== userId) notFound();
+  if (session?.user?.identityProviderId !== userId) notFound();
 
   const queryClient = getQueryClient();
 

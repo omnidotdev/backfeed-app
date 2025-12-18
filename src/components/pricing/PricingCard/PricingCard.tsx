@@ -13,21 +13,21 @@ import {
   css,
   sigil,
 } from "@omnidev/sigil";
-import { signIn } from "next-auth/react";
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import { TierCallToAction } from "components/pricing";
 import { Tier } from "generated/graphql";
-import { app } from "lib/config";
+import signIn from "lib/auth/signIn";
+import { BASE_URL, app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 import { capitalizeFirstLetter } from "lib/util";
 
 import type { CardProps } from "@omnidev/sigil";
 import type { Price } from "components/pricing/PricingOverview/PricingOverview";
 import type { CustomerState } from "components/profile/UserOrganizations/UserOrganizations";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type Stripe from "stripe";
 
 // TODO discuss pulling dynamically + cache from Omni API or other approaches that make this changeable without redeploying service
@@ -65,7 +65,7 @@ export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
 
 interface Props extends CardProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Price information. */
   price: Price | undefined;
   /** Customer details. */
@@ -207,7 +207,7 @@ const PricingCard = ({ user, price, customer, ...rest }: Props) => {
               fontSize="lg"
               disabled={isEnterpriseTier}
               variant={isRecommendedTier ? "solid" : "outline"}
-              onClick={() => signIn("omni")}
+              onClick={() => signIn({ redirectUrl: `${BASE_URL}/pricing` })}
             >
               {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
 

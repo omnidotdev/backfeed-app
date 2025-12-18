@@ -12,11 +12,11 @@ import { useOrganizationMembership } from "lib/hooks";
 import { setSingularOrPlural } from "lib/util";
 
 import type { Project } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Project details. */
   project: Partial<Project>;
 }

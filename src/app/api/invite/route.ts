@@ -1,8 +1,8 @@
 import { Resend } from "resend";
 
-import { auth } from "auth";
 import { InviteMemberEmailTemplate } from "components/organization";
 import { FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS, app } from "lib/config";
+import { getAuthSession } from "lib/util";
 
 import type { OrganizationInvitation } from "components/organization";
 import type { NextRequest } from "next/server";
@@ -17,7 +17,7 @@ const emailTemplate =
  * Organization invite route.
  */
 export const POST = async (req: NextRequest) => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

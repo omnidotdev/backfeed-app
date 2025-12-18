@@ -12,12 +12,12 @@ import { DialogType } from "store";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { CustomerState } from "components/profile/UserOrganizations/UserOrganizations";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type { IconType } from "react-icons";
 
 interface Props extends ButtonProps {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Product ID. */
   productId: string;
   /** Price ID. */

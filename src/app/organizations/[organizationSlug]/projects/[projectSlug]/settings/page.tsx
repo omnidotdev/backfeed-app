@@ -1,7 +1,6 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
-import { auth } from "auth";
 import { Page } from "components/layout";
 import { ProjectSettings } from "components/project";
 import {
@@ -12,7 +11,7 @@ import {
 import { getProject } from "lib/actions";
 import { app, isDevEnv } from "lib/config";
 import { getSdk } from "lib/graphql";
-import { getQueryClient } from "lib/util";
+import { getAuthSession, getQueryClient } from "lib/util";
 
 import type { BreadcrumbRecord } from "components/core";
 import type { Metadata } from "next";
@@ -40,7 +39,7 @@ const ProjectSettingsPage = async ({
 }: PageProps<"/organizations/[organizationSlug]/projects/[projectSlug]/settings">) => {
   const { organizationSlug, projectSlug } = await params;
 
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) notFound();
 

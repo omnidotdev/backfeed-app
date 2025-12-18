@@ -19,7 +19,7 @@ import { app } from "lib/config";
 import { useSearchParams } from "lib/hooks";
 
 import type { CustomerState } from "components/profile/UserOrganizations/UserOrganizations";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 import type Stripe from "stripe";
 
 export interface Price extends Stripe.Price {
@@ -28,7 +28,7 @@ export interface Price extends Stripe.Price {
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** The available pricing tiers. */
   prices: Price[];
   /** Customer details. */

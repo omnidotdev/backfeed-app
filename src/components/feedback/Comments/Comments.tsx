@@ -22,11 +22,11 @@ import type {
   Organization,
   Post,
 } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 interface Props {
   /** Authenticated user. */
-  user: Session["user"];
+  user: AuthUser;
   /** Organization ID. */
   organizationId: Organization["rowId"];
   /** Feedback ID. */

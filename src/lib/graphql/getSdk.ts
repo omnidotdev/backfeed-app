@@ -3,11 +3,11 @@ import { GraphQLClient } from "graphql-request";
 import { getSdk as getGraphQLSdk } from "generated/graphql.sdk";
 import { API_GRAPHQL_URL } from "lib/config";
 
-import type { Session } from "next-auth";
+import type { AuthSession } from "lib/util/getAuthSession/getAuthSession";
 
 interface Options {
   /** Auth session required to retrieve the appropriate `accessToken`.  */
-  session: Session;
+  session: AuthSession;
 }
 
 /**

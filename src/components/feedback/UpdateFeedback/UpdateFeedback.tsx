@@ -24,7 +24,7 @@ import { toaster } from "lib/util";
 
 import type { DialogProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "generated/graphql";
-import type { Session } from "next-auth";
+import type { AuthUser } from "lib/util";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -51,7 +51,7 @@ const updateFeedbackSchema = z.object({
 
 interface Props extends DialogProps {
   /** Authenticated user. */
-  user: Session["user"] | undefined;
+  user: AuthUser | undefined;
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
 }

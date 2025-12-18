@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { auth } from "auth";
+import { getAuthSession } from "lib/util";
 
 export const dynamic = "force-dynamic";
 
@@ -8,11 +8,11 @@ export const dynamic = "force-dynamic";
  * Checkout confirmation page.
  */
 const CheckoutConfirmationPage = async () => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session) redirect("/");
 
-  redirect(`/profile/${session.user?.hidraId}`);
+  redirect(`/profile/${session.user?.identityProviderId}`);
 };
 
 export default CheckoutConfirmationPage;

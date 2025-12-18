@@ -38,7 +38,7 @@ const freeTierFeedbackOptions = ({ organizationSlug, projectSlug }: Options) =>
           activeUserCount,
           hasUserSubmittedFeedback,
         };
-      } catch (error) {
+      } catch (_error) {
         return null;
       }
     },
