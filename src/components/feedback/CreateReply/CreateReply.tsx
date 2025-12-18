@@ -16,12 +16,13 @@ import {
 import { token } from "generated/panda/tokens";
 import { app } from "lib/config";
 import { DEBOUNCE_TIME, uuidSchema } from "lib/constants";
-import { useAuth, useForm } from "lib/hooks";
+import { useForm } from "lib/hooks";
 import { freeTierCommentsOptions } from "lib/options";
 import { toaster } from "lib/util";
 
 import type { CollapsibleProps } from "@omnidev/sigil";
 import type { Comment } from "generated/graphql";
+import type { AuthUser } from "lib/util";
 
 const MAX_COMMENT_LENGTH = 240;
 
@@ -42,6 +43,8 @@ const createReplySchema = z.object({
 });
 
 interface Props extends CollapsibleProps {
+  /** Authenticated user. */
+  user: AuthUser | undefined;
   /** Comment ID. */
   commentId: Comment["rowId"];
   /** Whether the user can reply to the comment. */
@@ -53,10 +56,14 @@ interface Props extends CollapsibleProps {
 /**
  * Create reply form.
  */
-const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
+const CreateReply = ({
+  user,
+  commentId,
+  canReply,
+  onReply,
+  ...rest
+}: Props) => {
   const queryClient = useQueryClient();
-
-  const { user, isLoading: isAuthLoading } = useAuth();
 
   const { organizationSlug, projectSlug, feedbackId } = useParams<{
     organizationSlug: string;
@@ -168,7 +175,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
                   borderBottomColor: "border.subtle",
                   boxShadow: "none",
                 }}
-                disabled={isAuthLoading || !canReply}
+                disabled={!user || !canReply}
                 maxLength={MAX_COMMENT_LENGTH}
                 errorProps={{
                   top: -6,

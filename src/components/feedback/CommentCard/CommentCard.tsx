@@ -239,6 +239,7 @@ const CommentCard = ({
       )}
 
       <CreateReply
+        user={user}
         commentId={comment.rowId}
         open={isReplyFormOpen}
         canReply={canReply}
