@@ -34,9 +34,12 @@ const SingularComboboxField = ({
       {/* TODO: figure out how to appropriately style clearTrigger and trigger */}
       <Combobox
         label={label}
-        collection={createListCollection({
-          items,
-        })}
+        collection={
+          createListCollection({
+            items,
+            // TODO remove need for type cast
+          }) as ComboboxProps["collection"]
+        }
         clearTriggerProps={{
           display: state.value.length ? "block" : "none",
         }}

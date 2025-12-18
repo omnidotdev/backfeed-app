@@ -22,7 +22,7 @@ test.describe
     test("authenticates user (sign in)", async ({ page }) => {
       page.locator("text=Sign In").click();
 
-      await page.waitForURL("https://hidra.omni.dev/**");
+      await page.waitForURL("https://identity.omni.dev/**");
 
       await page.locator("#username").fill(process.env.TEST_USERNAME!);
       await page.locator("#password").fill(process.env.TEST_PASSWORD!);
