@@ -94,11 +94,9 @@ export const { handlers, auth } = NextAuth({
   },
   providers: [
     {
-      // hint encryption algorithms from IDP; currently not correctly broadcast by Better Auth (https://github.com/better-auth/better-auth/pull/2326)
       client: {
-        // TODO research security of these, they are from Better Auth, maybe tweakable if needed. Research quantum resistance
-        authorization_signed_response_alg: "HS256",
-        id_token_signed_response_alg: "HS256",
+        // hint encryption algorithm from IDP
+        id_token_signed_response_alg: "EdDSA",
       },
       id: "omni",
       name: "Omni",
