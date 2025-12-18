@@ -10,7 +10,8 @@ import type { FlexProps, TableCellProps } from "@omnidev/sigil";
 import type { RowData, Table as TableInterface } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<_TData extends RowData, _TValue> {
+  // biome-ignore lint/correctness/noUnusedVariables: type signature must match TanStack Table's shape exactly, see https://tanstack.com/table/latest/docs/api/core/column-def#meta
+  interface ColumnMeta<TData extends RowData, TValue> {
     tableCellProps?: TableCellProps;
     headerProps?: FlexProps;
   }
