@@ -14,7 +14,7 @@ describe("dashboard page", () => {
     render(
       <DashboardPage
         // TODO: mock user
-        // @ts-ignore TODO
+        // @ts-expect-error TODO
         user={{}}
         oneWeekAgo={oneWeekAgo}
       />,
