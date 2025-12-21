@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,PANDA,CLIENT\" -c \"bgBlue.bold,bgYellow.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun panda --watch\" \"bun dev:vite\"",
-    "dev:vite": "vite dev",
+    "dev:vite": "bun --env-file .env.local --env-file .env.development vite dev",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
     "check": "biome check",
