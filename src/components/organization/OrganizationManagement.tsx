@@ -45,15 +45,16 @@ const OrganizationManagement = () => {
           params: { organizationSlug },
         }),
     },
+    // TODO: re-enable when per-seat pricing is implemented
     {
       label: managementDetails.cta.invitations.label,
       icon: FiUserPlus,
-      onClick: () =>
-        navigate({
-          to: "/organizations/$organizationSlug/invitations",
-          params: { organizationSlug },
-        }),
-      disabled: !hasAdminPrivileges,
+      // onClick: () =>
+      //   navigate({
+      //     to: "/organizations/$organizationSlug/invitations",
+      //     params: { organizationSlug },
+      //   }),
+      disabled: true,
     },
     {
       label: managementDetails.cta.settings.label,

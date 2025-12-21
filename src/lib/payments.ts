@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
 import Stripe from "stripe";
+
+// load environment variables (Nitro doesn't load these automatically)
+dotenv.config({ path: ".env.local" });
 
 /**
  * Stripe SDK.

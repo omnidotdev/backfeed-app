@@ -10,7 +10,6 @@ import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
 import { organizationOptions } from "@/lib/options/organizations";
-import { DialogType } from "@/lib/store/useDialogStore";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute(
@@ -47,12 +46,15 @@ function OrganizationInvitationsPage() {
       header={{
         title: `${organization?.name} ${app.organizationInvitationsPage.breadcrumb}`,
         description: app.organizationInvitationsPage.description,
+        // TODO: re-enable when per-seat pricing is implemented
         cta: [
           {
             label: app.organizationInvitationsPage.cta.inviteMember.title,
             icon: <Icon src={FiUserPlus} />,
-            dialogType: DialogType.InviteMember,
+            // dialogType: DialogType.InviteMember,
             variant: "outline",
+            disabled: true,
+            tooltip: app.info.comingSoon.label,
           },
         ],
       }}

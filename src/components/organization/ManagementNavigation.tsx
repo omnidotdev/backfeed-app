@@ -75,17 +75,18 @@ const ManagementNavigation = ({
         });
       },
     },
+    // TODO: re-enable when per-seat pricing is implemented
     {
       label: app.organizationInvitationsPage.breadcrumb,
       icon: FiUserPlus,
-      onClick: () => {
-        onClose?.();
-        navigate({
-          to: "/organizations/$organizationSlug/invitations",
-          params: { organizationSlug },
-        });
-      },
-      disabled: !hasAdminPrivileges,
+      // onClick: () => {
+      //   onClose?.();
+      //   navigate({
+      //     to: "/organizations/$organizationSlug/invitations",
+      //     params: { organizationSlug },
+      //   });
+      // },
+      disabled: true,
     },
     {
       label: app.organizationSettingsPage.breadcrumb,

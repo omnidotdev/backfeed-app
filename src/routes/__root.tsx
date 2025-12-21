@@ -83,6 +83,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
+
       <body>
         <ThemeProvider theme={theme}>
           {/* NB: needs to be outside of main container in order to stay fixed to top of page, see: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
@@ -118,7 +119,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           </Flex>
         </ThemeProvider>
 
-        {/* Dev Tools - only included in development */}
+        {/* dev tools (only included in development) */}
         <TanStackDevtools
           plugins={[
             {
