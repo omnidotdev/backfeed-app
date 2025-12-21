@@ -36,9 +36,8 @@ export function getRouter() {
               mutation.meta?.invalidates?.some((queryKey) =>
                 queryKey.includes("all"),
               )
-            ) {
+            )
               return true;
-            }
 
             // invalidate all matching tags at once
             // or nothing if no meta is provided
