@@ -7,7 +7,7 @@ import type { KnipConfig } from "knip";
 const knipConfig: KnipConfig = {
   entry: [
     "src/routes/**/*.{ts,tsx}",
-    "src/router.ts",
+    "src/router.tsx",
     "src/lib/graphql/graphqlFetch.ts",
     "src/test/test.setup.ts",
     "src/**/*.test.{ts,tsx}",
