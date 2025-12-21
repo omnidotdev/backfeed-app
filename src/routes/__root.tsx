@@ -15,6 +15,7 @@ import utc from "dayjs/plugin/utc";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import app from "@/lib/config/app.config";
 import appCss from "@/lib/styles/app.css?url";
 import seo from "@/lib/util/seo";
 import toaster from "@/lib/util/toaster";
@@ -22,6 +23,7 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
 
+import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
@@ -30,6 +32,7 @@ dayjs.extend(utc);
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  session: Session | null;
 }>()({
   beforeLoad: async () => {
     const { session } = await fetchSession();
@@ -48,7 +51,7 @@ export const Route = createRootRouteWithContext<{
       },
       {
         name: "apple-mobile-web-app-title",
-        content: "Runa",
+        content: app.name,
       },
       ...seo(),
     ],

@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AuthRouteImport } from './routes/_auth'
@@ -32,11 +30,6 @@ import { Route as AuthOrganizationsOrganizationSlugLayoutManageInvitationsRouteI
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/index'
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings'
 import { Route as AuthOrganizationsOrganizationSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId'
-
-const AuthProfileUserIdRouteImport = createFileRoute('/_auth/profile/$userId')()
-const AuthOrganizationsOrganizationSlugRouteImport = createFileRoute(
-  '/_auth/organizations/$organizationSlug',
-)()
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -62,17 +55,6 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthProfileUserIdRoute = AuthProfileUserIdRouteImport.update({
-  id: '/profile/$userId',
-  path: '/profile/$userId',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthOrganizationsOrganizationSlugRoute =
-  AuthOrganizationsOrganizationSlugRouteImport.update({
-    id: '/organizations/$organizationSlug',
-    path: '/organizations/$organizationSlug',
-    getParentRoute: () => AuthRoute,
-  } as any)
 const AuthOrganizationsIndexRoute = AuthOrganizationsIndexRouteImport.update({
   id: '/organizations/',
   path: '/organizations/',
@@ -84,13 +66,15 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthProfileUserIdLayoutRoute = AuthProfileUserIdLayoutRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => AuthProfileUserIdRoute,
+  id: '/profile/$userId/_layout',
+  path: '/profile/$userId',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthOrganizationsOrganizationSlugLayoutRoute =
   AuthOrganizationsOrganizationSlugLayoutRouteImport.update({
-    id: '/_layout',
-    getParentRoute: () => AuthOrganizationsOrganizationSlugRoute,
+    id: '/organizations/$organizationSlug/_layout',
+    path: '/organizations/$organizationSlug',
+    getParentRoute: () => AuthRoute,
   } as any)
 const AuthOrganizationsOrganizationSlugLayoutIndexRoute =
   AuthOrganizationsOrganizationSlugLayoutIndexRouteImport.update({
@@ -198,8 +182,8 @@ export interface FileRoutesByTo {
   '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations': typeof AuthOrganizationsIndexRoute
-  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
+  '/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugLayoutIndexRoute
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
   '/profile/$userId/invitations': typeof AuthProfileUserIdLayoutInvitationsRoute
   '/profile/$userId/organizations': typeof AuthProfileUserIdLayoutOrganizationsRoute
@@ -220,9 +204,7 @@ export interface FileRoutesById {
   '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/organizations/': typeof AuthOrganizationsIndexRoute
-  '/_auth/organizations/$organizationSlug': typeof AuthOrganizationsOrganizationSlugRouteWithChildren
   '/_auth/organizations/$organizationSlug/_layout': typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
-  '/_auth/profile/$userId': typeof AuthProfileUserIdRouteWithChildren
   '/_auth/profile/$userId/_layout': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/_auth/organizations/$organizationSlug/_layout/_manage': typeof AuthOrganizationsOrganizationSlugLayoutManageRouteWithChildren
   '/_auth/profile/$userId/_layout/account': typeof AuthProfileUserIdLayoutAccountRoute
@@ -267,8 +249,8 @@ export interface FileRouteTypes {
     | '/api/invite'
     | '/api/auth/$'
     | '/organizations'
-    | '/organizations/$organizationSlug'
     | '/profile/$userId'
+    | '/organizations/$organizationSlug'
     | '/profile/$userId/account'
     | '/profile/$userId/invitations'
     | '/profile/$userId/organizations'
@@ -288,9 +270,7 @@ export interface FileRouteTypes {
     | '/api/invite'
     | '/api/auth/$'
     | '/_auth/organizations/'
-    | '/_auth/organizations/$organizationSlug'
     | '/_auth/organizations/$organizationSlug/_layout'
-    | '/_auth/profile/$userId'
     | '/_auth/profile/$userId/_layout'
     | '/_auth/organizations/$organizationSlug/_layout/_manage'
     | '/_auth/profile/$userId/_layout/account'
@@ -351,20 +331,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/profile/$userId': {
-      id: '/_auth/profile/$userId'
-      path: '/profile/$userId'
-      fullPath: '/profile/$userId'
-      preLoaderRoute: typeof AuthProfileUserIdRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/organizations/$organizationSlug': {
-      id: '/_auth/organizations/$organizationSlug'
-      path: '/organizations/$organizationSlug'
-      fullPath: '/organizations/$organizationSlug'
-      preLoaderRoute: typeof AuthOrganizationsOrganizationSlugRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/organizations/': {
       id: '/_auth/organizations/'
       path: '/organizations'
@@ -384,14 +350,14 @@ declare module '@tanstack/react-router' {
       path: '/profile/$userId'
       fullPath: '/profile/$userId'
       preLoaderRoute: typeof AuthProfileUserIdLayoutRouteImport
-      parentRoute: typeof AuthProfileUserIdRoute
+      parentRoute: typeof AuthRoute
     }
     '/_auth/organizations/$organizationSlug/_layout': {
       id: '/_auth/organizations/$organizationSlug/_layout'
       path: '/organizations/$organizationSlug'
       fullPath: '/organizations/$organizationSlug'
       preLoaderRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteImport
-      parentRoute: typeof AuthOrganizationsOrganizationSlugRoute
+      parentRoute: typeof AuthRoute
     }
     '/_auth/organizations/$organizationSlug/_layout/': {
       id: '/_auth/organizations/$organizationSlug/_layout/'
@@ -531,21 +497,6 @@ const AuthOrganizationsOrganizationSlugLayoutRouteWithChildren =
     AuthOrganizationsOrganizationSlugLayoutRouteChildren,
   )
 
-interface AuthOrganizationsOrganizationSlugRouteChildren {
-  AuthOrganizationsOrganizationSlugLayoutRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
-}
-
-const AuthOrganizationsOrganizationSlugRouteChildren: AuthOrganizationsOrganizationSlugRouteChildren =
-  {
-    AuthOrganizationsOrganizationSlugLayoutRoute:
-      AuthOrganizationsOrganizationSlugLayoutRouteWithChildren,
-  }
-
-const AuthOrganizationsOrganizationSlugRouteWithChildren =
-  AuthOrganizationsOrganizationSlugRoute._addFileChildren(
-    AuthOrganizationsOrganizationSlugRouteChildren,
-  )
-
 interface AuthProfileUserIdLayoutRouteChildren {
   AuthProfileUserIdLayoutAccountRoute: typeof AuthProfileUserIdLayoutAccountRoute
   AuthProfileUserIdLayoutInvitationsRoute: typeof AuthProfileUserIdLayoutInvitationsRoute
@@ -566,30 +517,19 @@ const AuthProfileUserIdLayoutRouteWithChildren =
     AuthProfileUserIdLayoutRouteChildren,
   )
 
-interface AuthProfileUserIdRouteChildren {
-  AuthProfileUserIdLayoutRoute: typeof AuthProfileUserIdLayoutRouteWithChildren
-}
-
-const AuthProfileUserIdRouteChildren: AuthProfileUserIdRouteChildren = {
-  AuthProfileUserIdLayoutRoute: AuthProfileUserIdLayoutRouteWithChildren,
-}
-
-const AuthProfileUserIdRouteWithChildren =
-  AuthProfileUserIdRoute._addFileChildren(AuthProfileUserIdRouteChildren)
-
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthOrganizationsIndexRoute: typeof AuthOrganizationsIndexRoute
-  AuthOrganizationsOrganizationSlugRoute: typeof AuthOrganizationsOrganizationSlugRouteWithChildren
-  AuthProfileUserIdRoute: typeof AuthProfileUserIdRouteWithChildren
+  AuthOrganizationsOrganizationSlugLayoutRoute: typeof AuthOrganizationsOrganizationSlugLayoutRouteWithChildren
+  AuthProfileUserIdLayoutRoute: typeof AuthProfileUserIdLayoutRouteWithChildren
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
   AuthOrganizationsIndexRoute: AuthOrganizationsIndexRoute,
-  AuthOrganizationsOrganizationSlugRoute:
-    AuthOrganizationsOrganizationSlugRouteWithChildren,
-  AuthProfileUserIdRoute: AuthProfileUserIdRouteWithChildren,
+  AuthOrganizationsOrganizationSlugLayoutRoute:
+    AuthOrganizationsOrganizationSlugLayoutRouteWithChildren,
+  AuthProfileUserIdLayoutRoute: AuthProfileUserIdLayoutRouteWithChildren,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

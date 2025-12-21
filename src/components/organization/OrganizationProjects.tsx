@@ -25,7 +25,7 @@ interface Props {
  */
 const OrganizationProjects = ({ canCreateProjects }: Props) => {
   const { organizationSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug",
+    from: "/_auth/organizations/$organizationSlug/_layout",
   });
   const { hasAdminPrivileges } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/",
