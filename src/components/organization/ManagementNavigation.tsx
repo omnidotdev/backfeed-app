@@ -42,7 +42,7 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { role, hasAdminPrivileges } = useRouteContext({
+  const { role } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/_manage",
   });
   const { organizationSlug } = useParams({

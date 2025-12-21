@@ -30,7 +30,7 @@ const OrganizationManagement = () => {
   const { organizationSlug } = useParams({
     from: "/_auth/organizations/$organizationSlug/_layout/",
   });
-  const { role, hasAdminPrivileges } = useRouteContext({
+  const { role } = useRouteContext({
     from: "/_auth/organizations/$organizationSlug/_layout/",
   });
   const navigate = useNavigate();
