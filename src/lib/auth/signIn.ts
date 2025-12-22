@@ -5,7 +5,6 @@ import authClient from "@/lib/auth/authClient";
  */
 const signIn = async ({
   redirectUrl,
-  action,
 }: {
   redirectUrl: string;
   action?: "sign-up";
