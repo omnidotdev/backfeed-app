@@ -13,7 +13,7 @@ query Posts(
     orderBy: $orderBy
     filter: {
       projectId: { equalTo: $projectId }
-      status: { status: { notIn: $excludedStatuses } }
+      statusTemplate: { displayName: { notIn: $excludedStatuses } }
       title: { includesInsensitive: $search }
     }
   ) {

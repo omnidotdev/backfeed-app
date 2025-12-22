@@ -7,21 +7,19 @@ import {
 } from "react-icons/pi";
 import { match } from "ts-pattern";
 
+import { VoteType } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import useHandleDownvoteMutation from "@/lib/hooks/mutations/useHandleDownvoteMutation";
-import useHandleUpvoteMutation from "@/lib/hooks/mutations/useHandleUpvoteMutation";
+import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
 
-import type { Downvote, Post, Project, Upvote } from "@/generated/graphql";
+import type { Post, Project, Vote } from "@/generated/graphql";
 
 interface Props {
   /** Feedback ID. */
   feedbackId: Post["rowId"];
   /** Project ID. */
   projectId: Project["rowId"];
-  /** Upvote object. Used to determine if the user has already upvoted */
-  upvote: Partial<Upvote> | null | undefined;
-  /** Downvote object. Used to determine if the user has already downvoted */
-  downvote: Partial<Downvote> | null | undefined;
+  /** User's current vote on this post (if any) */
+  userVote: Partial<Vote> | null | undefined;
   /** Total number of upvotes. */
   totalUpvotes: number;
   /** Total number of downvotes. */
@@ -33,32 +31,34 @@ interface Props {
 const VotingButtons = ({
   feedbackId,
   projectId,
-  upvote,
-  downvote,
+  userVote,
   totalUpvotes,
   totalDownvotes,
   isFeedbackRoute,
 }: Props) => {
   const { mutate: handleUpvote, isPending: isUpvotePending } =
-    useHandleUpvoteMutation({
+    useHandleVoteMutation({
       feedbackId,
       projectId,
-      upvote,
-      downvote,
+      userVote,
+      voteType: VoteType.Up,
       isFeedbackRoute,
     });
 
   const { mutate: handleDownvote, isPending: isDownvotePending } =
-    useHandleDownvoteMutation({
+    useHandleVoteMutation({
       feedbackId,
       projectId,
-      upvote,
-      downvote,
+      userVote,
+      voteType: VoteType.Down,
       isFeedbackRoute,
     });
 
+  const hasUpvote = userVote?.voteType === VoteType.Up;
+  const hasDownvote = userVote?.voteType === VoteType.Down;
+
   // NB: we set `rowId` to `pending` optimistically for these values on occasion. If an attempt at triggering a mutation happens while they are still in this state, the mutation will fail
-  const isOptimistic = [feedbackId, upvote?.rowId, downvote?.rowId].some(
+  const isOptimistic = [feedbackId, userVote?.rowId].some(
     (state) => state === "pending",
   );
 
@@ -86,7 +86,7 @@ const VotingButtons = ({
         hasArrow={false}
         trigger={
           <Icon
-            src={upvote ? PiArrowFatLineUpFill : PiArrowFatLineUp}
+            src={hasUpvote ? PiArrowFatLineUpFill : PiArrowFatLineUp}
             w={5}
             h={5}
           />
@@ -117,7 +117,7 @@ const VotingButtons = ({
         hasArrow={false}
         trigger={
           <Icon
-            src={downvote ? PiArrowFatLineDownFill : PiArrowFatLineDown}
+            src={hasDownvote ? PiArrowFatLineDownFill : PiArrowFatLineDown}
             w={5}
             h={5}
           />

@@ -69,11 +69,7 @@ const HeaderActions = () => {
               {app.auth.signIn.label}
             </Button>
 
-            <Button
-              onClick={() =>
-                signIn({ redirectUrl: BASE_URL!, action: "sign-up" })
-              }
-            >
+            <Button onClick={() => signIn({ redirectUrl: BASE_URL! })}>
               {app.auth.signUp.label}
             </Button>
           </HStack>
@@ -145,11 +141,7 @@ const HeaderActions = () => {
                   {app.auth.signIn.label}
                 </Button>
 
-                <Button
-                  onClick={() =>
-                    signIn({ redirectUrl: BASE_URL!, action: "sign-up" })
-                  }
-                >
+                <Button onClick={() => signIn({ redirectUrl: BASE_URL! })}>
                   {app.auth.signUp.label}
                 </Button>
               </Stack>

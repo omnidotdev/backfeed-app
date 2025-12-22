@@ -1,5 +1,0 @@
-mutation CreatePostStatus($input: CreatePostStatusInput!) {
-  createPostStatus(input: $input) {
-    clientMutationId
-  }
-}

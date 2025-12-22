@@ -61,12 +61,8 @@ const SORT_BY_OPTIONS = [
     value: PostOrderBy.CreatedAtDesc,
   },
   {
-    label: "Total Upvotes",
-    value: PostOrderBy.UpvotesCountDesc,
-  },
-  {
-    label: "Total Downvotes",
-    value: PostOrderBy.DownvotesCountDesc,
+    label: "Total Votes",
+    value: PostOrderBy.VotesCountDesc,
   },
 ];
 
@@ -107,11 +103,21 @@ const ProjectFeedback = () => {
 
   const { data: defaultStatus } = useQuery({
     ...projectStatusesOptions({
-      projectId: project?.rowId!,
-      isDefault: true,
+      organizationId: project?.organization?.rowId!,
     }),
-    enabled: !!project?.rowId,
-    select: (data) => data?.postStatuses?.nodes?.[0],
+    enabled: !!project?.organization?.rowId,
+    select: (data) => {
+      // find the default status from project status configs, or fall back to first template
+      const templates = data?.statusTemplates?.nodes;
+      const configs = data?.projectStatusConfigs?.nodes;
+      const defaultConfig = configs?.find((c) => c?.isDefault);
+      if (defaultConfig) {
+        return templates?.find(
+          (t) => t?.rowId === defaultConfig.statusTemplateId,
+        );
+      }
+      return templates?.[0];
+    },
   });
 
   const {
@@ -146,7 +152,7 @@ const ProjectFeedback = () => {
         rowId: "pending",
         title: input.post.title,
         description: input.post.description,
-        status: defaultStatus!,
+        statusTemplate: defaultStatus!,
         project: {
           rowId: input.post.projectId,
           name: "pending",
@@ -185,13 +191,14 @@ const ProjectFeedback = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      projectId: project?.rowId!,
+      organizationId: project?.organization?.rowId!,
     }),
-    enabled: hasAdminPrivileges && !!project?.rowId,
+    enabled: hasAdminPrivileges && !!project?.organization?.rowId,
     select: (data) =>
-      data?.postStatuses?.nodes.map((status) => ({
+      data?.statusTemplates?.nodes.map((status) => ({
         rowId: status?.rowId,
-        status: status?.status,
+        name: status?.name,
+        displayName: status?.displayName,
         color: status?.color,
       })),
   });
@@ -199,7 +206,7 @@ const ProjectFeedback = () => {
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.
   const showPendingFeedback =
     defaultStatus &&
-    !excludedStatuses.includes(defaultStatus.status) &&
+    !excludedStatuses.includes(defaultStatus.name!) &&
     !orderBy;
 
   const allPosts = [
@@ -294,8 +301,7 @@ const ProjectFeedback = () => {
             onValueChange={({ value }) => {
               const orderBy = value[0] as
                 | PostOrderBy.CreatedAtDesc
-                | PostOrderBy.UpvotesCountDesc
-                | PostOrderBy.DownvotesCountDesc;
+                | PostOrderBy.VotesCountDesc;
 
               navigate({
                 search: (prev) => ({

@@ -1,0 +1,9 @@
+mutation UpdateVote($rowId: UUID!, $patch: VotePatch!) {
+  updateVote(input: { rowId: $rowId, patch: $patch }) {
+    clientMutationId
+    vote {
+      rowId
+      voteType
+    }
+  }
+}

@@ -1,14 +1,27 @@
-query ProjectStatuses($projectId: UUID!, $isDefault: Boolean) {
-  postStatuses(
-    condition: { projectId: $projectId, isDefault: $isDefault }
-    orderBy: [IS_DEFAULT_DESC, CREATED_AT_ASC]
+query ProjectStatuses($organizationId: UUID!, $isEnabled: Boolean) {
+  statusTemplates(
+    condition: { organizationId: $organizationId }
+    orderBy: [SORT_ORDER_ASC, CREATED_AT_ASC]
   ) {
     nodes {
       rowId
-      status
+      name
+      displayName
       description
       color
+      sortOrder
+    }
+  }
+  projectStatusConfigs(condition: { isEnabled: $isEnabled }) {
+    nodes {
+      rowId
+      projectId
+      statusTemplateId
+      customColor
+      customDescription
+      isEnabled
       isDefault
+      sortOrder
     }
   }
 }

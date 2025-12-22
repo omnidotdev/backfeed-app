@@ -1,0 +1,15 @@
+mutation CreateProjectStatusConfig($input: CreateProjectStatusConfigInput!) {
+  createProjectStatusConfig(input: $input) {
+    clientMutationId
+    projectStatusConfig {
+      rowId
+      projectId
+      statusTemplateId
+      customColor
+      customDescription
+      isEnabled
+      isDefault
+      sortOrder
+    }
+  }
+}

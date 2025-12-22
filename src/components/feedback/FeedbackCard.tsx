@@ -24,6 +24,7 @@ import StatusBadge from "@/components/core/StatusBadge";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
+  VoteType,
   useDeletePostMutation,
   useUpdatePostMutation,
 } from "@/generated/graphql";
@@ -44,17 +45,19 @@ import type {
   FeedbackByIdQuery,
   FeedbackFragment,
   PostOrderBy,
-  PostStatus,
   PostsQuery,
+  StatusTemplate,
 } from "@/generated/graphql";
 
 interface ProjectStatus {
-  /** Post status row ID. */
-  rowId: PostStatus["rowId"] | undefined;
-  /** Post status. */
-  status: PostStatus["status"] | undefined;
-  /** Post status color. */
-  color: PostStatus["color"];
+  /** Status template row ID. */
+  rowId: StatusTemplate["rowId"] | undefined;
+  /** Status template name. */
+  name: StatusTemplate["name"] | undefined;
+  /** Status template display name. */
+  displayName: StatusTemplate["displayName"] | undefined;
+  /** Status template color. */
+  color: StatusTemplate["color"];
 }
 
 interface Props extends HstackProps {
@@ -151,7 +154,7 @@ const FeedbackCard = ({
         ) as InfiniteData<PostsQuery>;
 
         const updatedStatus = projectStatuses?.find(
-          (status) => status.rowId === variables.patch.statusId,
+          (status) => status.rowId === variables.patch.statusTemplateId,
         );
 
         if (feedbackSnapshot) {
@@ -164,9 +167,15 @@ const FeedbackCard = ({
               post: {
                 ...feedbackSnapshot.post!,
                 statusUpdatedAt: variables.patch.statusUpdatedAt,
-                status: {
-                  ...feedbackSnapshot.post?.status!,
-                  status: updatedStatus?.status!,
+                statusTemplate: {
+                  ...feedbackSnapshot.post?.statusTemplate!,
+                  rowId:
+                    updatedStatus?.rowId ??
+                    feedbackSnapshot.post?.statusTemplate?.rowId!,
+                  name:
+                    updatedStatus?.name ??
+                    feedbackSnapshot.post?.statusTemplate?.name!,
+                  displayName: updatedStatus?.displayName!,
                   color: updatedStatus?.color,
                 },
               },
@@ -187,10 +196,11 @@ const FeedbackCard = ({
                     return {
                       ...post,
                       statusUpdatedAt: variables.patch.statusUpdatedAt,
-                      status: {
-                        ...post?.status,
-                        rowId: variables.patch.statusId,
-                        status: updatedStatus?.status,
+                      statusTemplate: {
+                        ...post?.statusTemplate,
+                        rowId: updatedStatus?.rowId,
+                        name: updatedStatus?.name,
+                        displayName: updatedStatus?.displayName,
                         color: updatedStatus?.color,
                       },
                     };
@@ -222,10 +232,17 @@ const FeedbackCard = ({
         ]),
     });
 
-  const userUpvote = session ? feedback?.userUpvotes?.nodes[0] : null,
-    userDownvote = session ? feedback?.userDownvotes?.nodes[0] : null,
-    totalUpvotes = feedback?.upvotes?.totalCount ?? 0,
-    totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
+  // get user's vote from the unified votes
+  const userUpvoteNode = session ? feedback?.userUpvotes?.nodes[0] : null;
+  const userDownvoteNode = session ? feedback?.userDownvotes?.nodes[0] : null;
+  const userVote = userUpvoteNode
+    ? { rowId: userUpvoteNode.rowId, voteType: VoteType.Up }
+    : userDownvoteNode
+      ? { rowId: userDownvoteNode.rowId, voteType: VoteType.Down }
+      : null;
+
+  const totalUpvotes = feedback?.upvotes?.totalCount ?? 0;
+  const totalDownvotes = feedback?.downvotes?.totalCount ?? 0;
 
   const isAuthor = session?.user?.rowId === feedback.user?.rowId;
 
@@ -284,8 +301,7 @@ const FeedbackCard = ({
           <VotingButtons
             feedbackId={feedback.rowId!}
             projectId={feedback?.project?.rowId!}
-            upvote={userUpvote}
-            downvote={userDownvote}
+            userVote={userVote}
             totalUpvotes={totalUpvotes}
             totalDownvotes={totalDownvotes}
             isFeedbackRoute={!!isFeedbackRoute}
@@ -317,7 +333,7 @@ const FeedbackCard = ({
                 onExitComplete={() => setIsStatusMenuOpen(false)}
                 trigger={
                   <StatusBadge
-                    status={feedback.status!}
+                    status={feedback.statusTemplate!}
                     cursor={canManageFeedback ? "pointer" : "default"}
                     onClick={(evt) => evt.stopPropagation()}
                   >
@@ -347,15 +363,15 @@ const FeedbackCard = ({
                         updateStatus({
                           rowId: feedback.rowId!,
                           patch: {
-                            statusId: status.rowId!,
+                            statusTemplateId: status.rowId!,
                             statusUpdatedAt: new Date(),
                           },
                         })
                       }
                     >
-                      {status.status}
+                      {status.displayName}
 
-                      {status.rowId === feedback.status?.rowId && (
+                      {status.rowId === feedback.statusTemplate?.rowId && (
                         <Icon src={LuCheck} h={4} w={4} color="green.500" />
                       )}
                     </MenuItem>

@@ -36,7 +36,7 @@ const Response = ({ feedback, ...rest }: Props) => {
             {feedback?.title}
           </Text>
 
-          <StatusBadge status={feedback?.status!} />
+          <StatusBadge status={feedback?.statusTemplate!} />
         </Flex>
 
         <Text fontSize="sm" color="foreground.subtle">

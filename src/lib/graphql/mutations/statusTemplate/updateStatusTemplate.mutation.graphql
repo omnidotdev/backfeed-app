@@ -1,0 +1,13 @@
+mutation UpdateStatusTemplate($rowId: UUID!, $patch: StatusTemplatePatch!) {
+  updateStatusTemplate(input: { rowId: $rowId, patch: $patch }) {
+    clientMutationId
+    statusTemplate {
+      rowId
+      name
+      displayName
+      color
+      description
+      sortOrder
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation DeleteStatusTemplate($rowId: UUID!) {
+  deleteStatusTemplate(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

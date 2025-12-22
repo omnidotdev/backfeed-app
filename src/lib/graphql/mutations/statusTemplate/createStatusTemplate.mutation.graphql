@@ -1,0 +1,13 @@
+mutation CreateStatusTemplate($input: CreateStatusTemplateInput!) {
+  createStatusTemplate(input: $input) {
+    clientMutationId
+    statusTemplate {
+      rowId
+      name
+      displayName
+      color
+      description
+      sortOrder
+    }
+  }
+}

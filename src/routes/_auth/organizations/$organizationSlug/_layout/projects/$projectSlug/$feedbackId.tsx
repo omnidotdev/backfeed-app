@@ -58,12 +58,15 @@ function FeedbackPage() {
   });
 
   const { data: projectStatuses } = useQuery({
-    ...projectStatusesOptions({ projectId: feedback?.project?.rowId! }),
-    enabled: !!hasAdminPrivileges && !!feedback?.project?.rowId,
+    ...projectStatusesOptions({
+      organizationId: feedback?.project?.organization?.rowId!,
+    }),
+    enabled: !!hasAdminPrivileges && !!feedback?.project?.organization?.rowId,
     select: (data) =>
-      data?.postStatuses?.nodes.map((status) => ({
+      data?.statusTemplates?.nodes.map((status) => ({
         rowId: status?.rowId,
-        status: status?.status,
+        name: status?.name,
+        displayName: status?.displayName,
         color: status?.color,
       })),
   });

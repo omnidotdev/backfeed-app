@@ -1,5 +1,0 @@
-mutation DeletePostStatus($statusId: UUID!) {
-  deletePostStatus(input: { rowId: $statusId }) {
-    clientMutationId
-  }
-}
