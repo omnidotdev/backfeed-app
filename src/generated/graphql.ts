@@ -15,25 +15,10 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: { input: string; output: string; }
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
-   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
-   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
-   * to unexpected results.
-   */
   Datetime: { input: Date; output: Date; }
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
