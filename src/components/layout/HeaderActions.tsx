@@ -19,7 +19,7 @@ import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import NotificationCenter from "@/components/notifications/NotificationsCenter";
 import { token } from "@/generated/panda/tokens";
-import { signIn } from "@/lib/auth/signIn";
+import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";

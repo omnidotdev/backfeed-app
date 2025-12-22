@@ -1,6 +1,6 @@
 fragment User on User {
   rowId
-  hidraId
+  identityProviderId
   username
   firstName
   lastName

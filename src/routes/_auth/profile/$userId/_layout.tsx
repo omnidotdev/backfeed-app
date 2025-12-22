@@ -8,14 +8,17 @@ export const Route = createFileRoute("/_auth/profile/$userId/_layout")({
     context: { session, queryClient },
     params: { userId },
   }) => {
-    const { userByHidraId } = await queryClient.ensureQueryData(
-      userOptions({ hidraId: userId }),
+    const { userByIdentityProviderId } = await queryClient.ensureQueryData(
+      userOptions({ identityProviderId: userId }),
     );
 
-    if (!userByHidraId || userByHidraId.rowId !== session?.user?.rowId)
+    if (
+      !userByIdentityProviderId ||
+      userByIdentityProviderId.rowId !== session?.user?.rowId
+    )
       throw redirect({ to: "/" });
 
-    return { user: userByHidraId };
+    return { user: userByIdentityProviderId };
   },
   component: ProfileLayout,
 });

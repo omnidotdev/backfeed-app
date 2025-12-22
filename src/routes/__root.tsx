@@ -23,16 +23,31 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
 
-import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
+import type { Session } from "better-auth/types";
 import type { ReactNode } from "react";
+
+interface ExtendedUser {
+  id: string;
+  email: string;
+  name?: string;
+  image?: string;
+  rowId?: string;
+  identityProviderId?: string;
+  username?: string;
+}
+
+interface ExtendedSession extends Omit<Session, "user"> {
+  user: ExtendedUser;
+  accessToken?: string;
+}
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-  session: Session | null;
+  session: ExtendedSession | null;
 }>()({
   beforeLoad: async () => {
     const { session } = await fetchSession();

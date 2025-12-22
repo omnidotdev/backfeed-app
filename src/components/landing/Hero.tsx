@@ -2,7 +2,7 @@ import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
 import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
 
-import { signIn } from "@/lib/auth/signIn";
+import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 

@@ -18,7 +18,7 @@ import { match } from "ts-pattern";
 
 import TierCallToAction from "@/components/pricing/TierCallToAction";
 import { Tier } from "@/generated/graphql";
-import { signIn } from "@/lib/auth/signIn";
+import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";

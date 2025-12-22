@@ -1,7 +1,7 @@
 query userByEmail($email: String!) {
   userByEmail(email: $email) {
     rowId
-    hidraId
+    identityProviderId
     username
     firstName
     lastName

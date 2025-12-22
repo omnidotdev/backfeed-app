@@ -19,7 +19,7 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { token } from "@/generated/panda/tokens";
-import { signOut } from "@/lib/auth/signOut";
+import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
@@ -49,7 +49,7 @@ const AccountInformation = () => {
     setIsMobileSidebarOpen(false);
     navigate({
       to: "/profile/$userId/account",
-      params: { userId: session?.user.hidraId! },
+      params: { userId: session?.user.identityProviderId! },
     });
   };
 

@@ -31,7 +31,7 @@ export const getSubscriptions = createServerFn()
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const { data: customers } = await payments.customers.search({
-      query: `metadata["externalId"]:"${context.session.user.hidraId!}"`,
+      query: `metadata["externalId"]:"${context.session.user.identityProviderId!}"`,
     });
 
     if (!customers.length) return undefined;
@@ -122,7 +122,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
         email: context.session.user.email!,
         name: context.session.user.name ?? undefined,
         metadata: {
-          externalId: context.session.user.hidraId!,
+          externalId: context.session.user.identityProviderId!,
         },
       });
     }

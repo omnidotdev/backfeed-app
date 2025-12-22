@@ -7,13 +7,13 @@ import { mockCreateUserMutation } from "@/generated/graphql.mock";
  */
 export const mockCreateUserMutationSuccess = mockCreateUserMutation(
   ({ variables }) => {
-    const { hidraId, username, firstName, lastName } = variables;
+    const { identityProviderId, username, firstName, lastName } = variables;
 
     return HttpResponse.json({
       data: {
         createUser: {
           id: "1dc43c0f-5140-43e9-a646-b144305d7787",
-          hidraId,
+          identityProviderId,
           firstName,
           lastName,
           username,

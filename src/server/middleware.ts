@@ -15,7 +15,7 @@ export const customerMiddleware = createMiddleware()
   .middleware([authMiddleware])
   .server(async ({ next, context }) => {
     const { data: customers } = await payments.customers.search({
-      query: `metadata["externalId"]:"${context.session.user.hidraId!}"`,
+      query: `metadata["externalId"]:"${context.session.user.identityProviderId!}"`,
     });
 
     return next({

@@ -1,5 +1,5 @@
 mutation CreateUser(
-  $hidraId: UUID!
+  $identityProviderId: UUID!
   $username: String
   $firstName: String
   $lastName: String
@@ -8,7 +8,7 @@ mutation CreateUser(
   createUser(
     input: {
       user: {
-        hidraId: $hidraId
+        identityProviderId: $identityProviderId
         username: $username
         firstName: $firstName
         lastName: $lastName

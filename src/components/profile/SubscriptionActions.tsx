@@ -59,7 +59,7 @@ const SubscriptionActions = ({ organization }: Props) => {
       const checkoutUrl = await getManageSubscriptionUrl({
         data: {
           subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${session?.user?.hidraId}/organizations`,
+          returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
         },
       });
 
@@ -77,7 +77,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         data: {
           organizationId: organization.rowId,
           priceId,
-          successUrl: `${BASE_URL}/profile/${session?.user?.hidraId}/organizations`,
+          successUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
         },
       });
 
@@ -94,7 +94,7 @@ const SubscriptionActions = ({ organization }: Props) => {
       const cancelUrl = await getCancelSubscriptionUrl({
         data: {
           subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${session?.user?.hidraId}/organizations`,
+          returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
         },
       });
 

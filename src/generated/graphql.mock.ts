@@ -582,7 +582,7 @@ export const mockDeleteUpvoteMutation = (resolver: GraphQLResponseResolver<Types
  * @example
  * mockCreateUserMutation(
  *   ({ query, variables }) => {
- *     const { hidraId, username, firstName, lastName, email } = variables;
+ *     const { identityProviderId, username, firstName, lastName, email } = variables;
  *     return HttpResponse.json({
  *       data: { createUser }
  *     })
@@ -1022,9 +1022,9 @@ export const mockStatusBreakdownQuery = (resolver: GraphQLResponseResolver<Types
  * @example
  * mockUserQuery(
  *   ({ query, variables }) => {
- *     const { hidraId } = variables;
+ *     const { identityProviderId } = variables;
  *     return HttpResponse.json({
- *       data: { userByHidraId }
+ *       data: { userByIdentityProviderId }
  *     })
  *   },
  *   requestOptions
