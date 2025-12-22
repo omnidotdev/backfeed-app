@@ -11,7 +11,7 @@ import {
 } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectStatusesOptions } from "@/lib/options/projects";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
@@ -44,7 +44,7 @@ export const Route = createFileRoute(
       }),
     ]);
   },
-  head: () => ({ meta: seo({ title: "Feedback" }) }),
+  head: () => ({ meta: createMetaTags({ title: "Feedback" }) }),
   component: FeedbackPage,
 });
 

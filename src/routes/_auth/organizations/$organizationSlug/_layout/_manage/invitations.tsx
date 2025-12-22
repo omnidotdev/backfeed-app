@@ -10,7 +10,7 @@ import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
 import { organizationOptions } from "@/lib/options/organizations";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout/_manage/invitations",
@@ -28,7 +28,9 @@ export const Route = createFileRoute(
     return { organizationName };
   },
   head: ({ loaderData }) => ({
-    meta: seo({ title: `${loaderData?.organizationName} Invitations` }),
+    meta: createMetaTags({
+      title: `${loaderData?.organizationName} Invitations`,
+    }),
   }),
   component: OrganizationInvitationsPage,
 });

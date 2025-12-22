@@ -18,7 +18,7 @@ import {
 } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
@@ -38,7 +38,7 @@ export const Route = createFileRoute(
     return { organizationName };
   },
   head: ({ loaderData }) => ({
-    meta: seo({ title: loaderData?.organizationName }),
+    meta: createMetaTags({ title: loaderData?.organizationName }),
   }),
   component: OrganizationPage,
 });

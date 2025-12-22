@@ -11,7 +11,7 @@ import { OrganizationOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { organizationsOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
@@ -48,7 +48,9 @@ export const Route = createFileRoute("/_auth/organizations/")({
       revalidateIfStale: true,
     });
   },
-  head: () => ({ meta: seo({ title: app.organizationsPage.breadcrumb }) }),
+  head: () => ({
+    meta: createMetaTags({ title: app.organizationsPage.breadcrumb }),
+  }),
   component: OrganizationsPage,
 });
 

@@ -27,7 +27,7 @@ import {
   projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 import type { ActionButton } from "@/components/core/CallToAction";
@@ -102,7 +102,9 @@ export const Route = createFileRoute(
 
     return { projectId, projectName };
   },
-  head: ({ loaderData }) => ({ meta: seo({ title: loaderData?.projectName }) }),
+  head: ({ loaderData }) => ({
+    meta: createMetaTags({ title: loaderData?.projectName }),
+  }),
   component: ProjectPage,
 });
 

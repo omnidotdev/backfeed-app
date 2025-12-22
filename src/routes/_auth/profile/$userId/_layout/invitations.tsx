@@ -4,7 +4,7 @@ import Page from "@/components/layout/Page";
 import OrganizationInvites from "@/components/profile/OrganizationInvites";
 import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
   "/_auth/profile/$userId/_layout/invitations",
@@ -15,7 +15,7 @@ export const Route = createFileRoute(
       revalidateIfStale: true,
     });
   },
-  head: () => ({ meta: seo({ title: "Invitations" }) }),
+  head: () => ({ meta: createMetaTags({ title: "Invitations" }) }),
   component: UserInvitationsPage,
 });
 

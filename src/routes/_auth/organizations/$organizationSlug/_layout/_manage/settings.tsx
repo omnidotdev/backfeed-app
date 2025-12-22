@@ -7,7 +7,7 @@ import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { membersOptions } from "@/lib/options/members";
 import { organizationOptions } from "@/lib/options/organizations";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscription } from "@/server/functions/subscriptions";
 
@@ -31,7 +31,7 @@ export const Route = createFileRoute(
     return { prices, subscription, organizationName };
   },
   head: ({ loaderData }) => ({
-    meta: seo({ title: `${loaderData?.organizationName} Settings` }),
+    meta: createMetaTags({ title: `${loaderData?.organizationName} Settings` }),
   }),
   component: OrganizationSettingsPage,
 });

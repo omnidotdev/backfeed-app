@@ -17,7 +17,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import app from "@/lib/config/app.config";
 import appCss from "@/lib/styles/app.css?url";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import toaster from "@/lib/util/toaster";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
@@ -68,7 +68,7 @@ export const Route = createRootRouteWithContext<{
         name: "apple-mobile-web-app-title",
         content: app.name,
       },
-      ...seo(),
+      ...createMetaTags(),
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -14,7 +14,7 @@ import { isDevEnv } from "@/lib/config/env.config";
 import { membersOptions } from "@/lib/options/members";
 import { organizationOptions } from "@/lib/options/organizations";
 import { DialogType } from "@/lib/store/useDialogStore";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 const membersSearchSchema = z.object({
   search: z.string().default(""),
@@ -52,7 +52,7 @@ export const Route = createFileRoute(
     return { organizationName };
   },
   head: ({ loaderData }) => ({
-    meta: seo({ title: `${loaderData?.organizationName} Members` }),
+    meta: createMetaTags({ title: `${loaderData?.organizationName} Members` }),
   }),
   component: OrganizationMembersPage,
 });

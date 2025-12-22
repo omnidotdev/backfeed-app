@@ -1,6 +1,6 @@
 import authClient from "@/lib/auth/authClient";
 
-interface SignInParams {
+interface Params {
   /** Redirect URL. */
   redirectUrl: string;
   // TODO: handle sign-up action if Better Auth supports it
@@ -10,7 +10,7 @@ interface SignInParams {
 /**
  * Sign in with OAuth2 provider.
  */
-const signIn = async ({ redirectUrl }: SignInParams) => {
+const signIn = async ({ redirectUrl }: Params) => {
   await authClient.signIn.oauth2({
     // TODO env var/derive for the self-hosting fam
     providerId: "omni",
