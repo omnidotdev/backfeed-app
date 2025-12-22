@@ -6,7 +6,7 @@ import Hero from "@/components/landing/Hero";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async ({ context: { session } }) => {
-    if (session) throw redirect({ to: "/dashboard" });
+    if (session?.user.rowId) throw redirect({ to: "/dashboard" });
   },
   component: LandingPage,
 });
