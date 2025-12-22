@@ -1,15 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouteContext, useSearch } from "@tanstack/react-router";
 
 import {
   PostOrderBy,
   useCreateUpvoteMutation,
   useDeleteDownvoteMutation,
   useDeleteUpvoteMutation,
-  useFeedbackByIdQuery,
-  useInfinitePostsQuery,
-  useProjectMetricsQuery,
-} from "generated/graphql";
-import { useAuth, useSearchParams } from "lib/hooks";
+} from "@/generated/graphql";
+import {
+  feedbackByIdOptions,
+  infiniteFeedbackOptions,
+} from "@/lib/options/feedback";
+import { projectMetricsOptions } from "@/lib/options/projects";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
@@ -19,7 +21,7 @@ import type {
   PostsQuery,
   Project,
   Upvote,
-} from "generated/graphql";
+} from "@/generated/graphql";
 
 interface Options {
   /** Feedback ID */
@@ -49,9 +51,9 @@ const useHandleUpvoteMutation = ({
 }: Options) => {
   const queryClient = useQueryClient();
 
-  const [{ excludedStatuses, orderBy, search }] = useSearchParams();
+  const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
-  const { user } = useAuth();
+  const { session } = useRouteContext({ from: "/_auth" });
 
   const { mutateAsync: createUpvote } = useCreateUpvoteMutation();
   const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();
@@ -75,7 +77,7 @@ const useHandleUpvoteMutation = ({
           input: {
             upvote: {
               postId: feedbackId,
-              userId: user?.rowId!,
+              userId: session?.user?.rowId!,
             },
           },
         });
@@ -83,18 +85,21 @@ const useHandleUpvoteMutation = ({
     },
     onMutate: async () => {
       const feedbackSnapshot = queryClient.getQueryData(
-        useFeedbackByIdQuery.getKey({ rowId: feedbackId, userId: user?.rowId }),
+        feedbackByIdOptions({
+          rowId: feedbackId,
+          userId: session?.user?.rowId,
+        }).queryKey,
       ) as FeedbackByIdQuery;
 
-      const postsQueryKey = useInfinitePostsQuery.getKey({
+      const postsQueryKey = infiniteFeedbackOptions({
         projectId,
         excludedStatuses,
         orderBy: orderBy
           ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
           : undefined,
         search,
-        userId: user?.rowId,
-      });
+        userId: session?.user?.rowId,
+      }).queryKey;
 
       const postsSnapshot = queryClient.getQueryData(
         postsQueryKey,
@@ -102,18 +107,20 @@ const useHandleUpvoteMutation = ({
 
       if (feedbackSnapshot) {
         queryClient.setQueryData(
-          useFeedbackByIdQuery.getKey({
+          feedbackByIdOptions({
             rowId: feedbackId,
-            userId: user?.rowId,
-          }),
+            userId: session?.user?.rowId,
+          }).queryKey,
           {
             post: {
-              ...feedbackSnapshot?.post,
+              ...feedbackSnapshot?.post!,
               userUpvotes: {
                 nodes: upvote ? [] : [{ rowId: "pending" }],
               },
               userDownvotes: {
-                nodes: upvote ? feedbackSnapshot?.post?.userDownvotes : [],
+                nodes: upvote
+                  ? feedbackSnapshot?.post?.userDownvotes?.nodes!
+                  : [],
               },
               upvotes: {
                 ...feedbackSnapshot?.post?.upvotes,
@@ -135,6 +142,7 @@ const useHandleUpvoteMutation = ({
       if (postsSnapshot) {
         queryClient.setQueryData(postsQueryKey, {
           ...postsSnapshot,
+          // @ts-expect-error TODO: properly type
           pages: postsSnapshot.pages.map((page) => ({
             ...page,
             posts: {
@@ -171,27 +179,27 @@ const useHandleUpvoteMutation = ({
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
           queryClient.invalidateQueries({
-            queryKey: useProjectMetricsQuery.getKey({ projectId }),
+            queryKey: projectMetricsOptions({ projectId }).queryKey,
           }),
         ]);
 
         return queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+          queryKey: feedbackByIdOptions({
             rowId: feedbackId,
-            userId: user?.rowId,
-          }),
+            userId: session?.user?.rowId,
+          }).queryKey,
         });
       }
 
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: useFeedbackByIdQuery.getKey({
+          queryKey: feedbackByIdOptions({
             rowId: feedbackId,
-            userId: user?.rowId,
-          }),
+            userId: session?.user?.rowId,
+          }).queryKey,
         }),
         queryClient.invalidateQueries({
-          queryKey: useProjectMetricsQuery.getKey({ projectId }),
+          queryKey: projectMetricsOptions({ projectId }).queryKey,
         }),
       ]);
 

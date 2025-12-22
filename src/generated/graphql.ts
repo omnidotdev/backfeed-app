@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
-import { graphqlFetch } from 'lib/graphql/graphqlFetch';
+import { graphqlFetch } from '@/lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -3889,7 +3889,7 @@ export type Query = Node & {
   /** Get a single `User`. */
   userByEmail?: Maybe<User>;
   /** Get a single `User`. */
-  userByHidraId?: Maybe<User>;
+  userByIdentityProviderId?: Maybe<User>;
   /** Get a single `User`. */
   userByUsername?: Maybe<User>;
   /** Reads and enables pagination through a set of `User`. */
@@ -4153,8 +4153,8 @@ export type QueryUserByEmailArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryUserByHidraIdArgs = {
-  hidraId: Scalars['UUID']['input'];
+export type QueryUserByIdentityProviderIdArgs = {
+  identityProviderId: Scalars['UUID']['input'];
 };
 
 
@@ -4922,7 +4922,7 @@ export type User = {
   downvotes: DownvoteConnection;
   email: Scalars['String']['output'];
   firstName?: Maybe<Scalars['String']['output']>;
-  hidraId: Scalars['UUID']['output'];
+  identityProviderId: Scalars['UUID']['output'];
   lastName?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Member`. */
   members: MemberConnection;
@@ -5010,8 +5010,8 @@ export type UserCondition = {
   email?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `firstName` field. */
   firstName?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `hidraId` field. */
-  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `identityProviderId` field. */
+  identityProviderId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `lastName` field. */
   lastName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -5054,8 +5054,8 @@ export type UserDistinctCountAggregates = {
   email?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of firstName across the matching connection */
   firstName?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of hidraId across the matching connection */
-  hidraId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of identityProviderId across the matching connection */
+  identityProviderId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of lastName across the matching connection */
   lastName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -5093,8 +5093,8 @@ export type UserFilter = {
   email?: InputMaybe<StringFilter>;
   /** Filter by the object’s `firstName` field. */
   firstName?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `hidraId` field. */
-  hidraId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `identityProviderId` field. */
+  identityProviderId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `lastName` field. */
   lastName?: InputMaybe<StringFilter>;
   /** Filter by the object’s `members` relation. */
@@ -5198,7 +5198,7 @@ export type UserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   email: Scalars['String']['input'];
   firstName?: InputMaybe<Scalars['String']['input']>;
-  hidraId: Scalars['UUID']['input'];
+  identityProviderId: Scalars['UUID']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -5241,8 +5241,8 @@ export enum UserOrderBy {
   EmailDesc = 'EMAIL_DESC',
   FirstNameAsc = 'FIRST_NAME_ASC',
   FirstNameDesc = 'FIRST_NAME_DESC',
-  HidraIdAsc = 'HIDRA_ID_ASC',
-  HidraIdDesc = 'HIDRA_ID_DESC',
+  IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
+  IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
   LastNameAsc = 'LAST_NAME_ASC',
   LastNameDesc = 'LAST_NAME_DESC',
   MembersCountAsc = 'MEMBERS_COUNT_ASC',
@@ -5305,7 +5305,7 @@ export type UserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
-  hidraId?: InputMaybe<Scalars['UUID']['input']>;
+  identityProviderId?: InputMaybe<Scalars['UUID']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -5386,7 +5386,7 @@ export type ProjectFragment = { __typename?: 'Project', rowId: string, name: str
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt?: Date | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
-export type UserFragment = { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
+export type UserFragment = { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string };
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
@@ -5576,7 +5576,7 @@ export type DeleteUpvoteMutationVariables = Exact<{
 export type DeleteUpvoteMutation = { __typename?: 'Mutation', deleteUpvote?: { __typename?: 'DeleteUpvotePayload', clientMutationId?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
+  identityProviderId: Scalars['UUID']['input'];
   username?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -5752,18 +5752,18 @@ export type StatusBreakdownQueryVariables = Exact<{
 export type StatusBreakdownQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type UserQueryVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
+  identityProviderId: Scalars['UUID']['input'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', userByHidraId?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
+export type UserQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
 
 export type UserByEmailQueryVariables = Exact<{
   email: Scalars['String']['input'];
 }>;
 
 
-export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, hidraId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
+export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, firstName?: string | null, lastName?: string | null, email: string } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -5926,7 +5926,7 @@ export const ReplyFragmentDoc = `
 export const UserFragmentDoc = `
     fragment User on User {
   rowId
-  hidraId
+  identityProviderId
   username
   firstName
   lastName
@@ -6636,9 +6636,9 @@ useDeleteUpvoteMutation.getKey = () => ['DeleteUpvote'];
 useDeleteUpvoteMutation.fetcher = (variables: DeleteUpvoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUpvoteMutation, DeleteUpvoteMutationVariables>(DeleteUpvoteDocument, variables, options);
 
 export const CreateUserDocument = `
-    mutation CreateUser($hidraId: UUID!, $username: String, $firstName: String, $lastName: String, $email: String!) {
+    mutation CreateUser($identityProviderId: UUID!, $username: String, $firstName: String, $lastName: String, $email: String!) {
   createUser(
-    input: {user: {hidraId: $hidraId, username: $username, firstName: $firstName, lastName: $lastName, email: $email}}
+    input: {user: {identityProviderId: $identityProviderId, username: $username, firstName: $firstName, lastName: $lastName, email: $email}}
   ) {
     user {
       rowId
@@ -7817,8 +7817,8 @@ useInfiniteStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariabl
 useStatusBreakdownQuery.fetcher = (variables: StatusBreakdownQueryVariables, options?: RequestInit['headers']) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables, options);
 
 export const UserDocument = `
-    query User($hidraId: UUID!) {
-  userByHidraId(hidraId: $hidraId) {
+    query User($identityProviderId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $identityProviderId) {
     ...User
   }
 }
@@ -7870,7 +7870,7 @@ export const UserByEmailDocument = `
     query userByEmail($email: String!) {
   userByEmail(email: $email) {
     rowId
-    hidraId
+    identityProviderId
     username
     firstName
     lastName

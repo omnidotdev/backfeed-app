@@ -1,17 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 
 import {
   Role,
   useCreateMemberMutation,
   useCreateOrganizationMutation as useGeneratedCreateOrganizationMutation,
-} from "generated/graphql";
-import { useAuth } from "lib/hooks";
+} from "@/generated/graphql";
 
 import type { UseMutationOptions } from "@tanstack/react-query";
 import type {
   CreateOrganizationMutationVariables,
   CreateOrganizationPayload,
-} from "generated/graphql";
+} from "@/generated/graphql";
 
 /**
  * Create a new organization.
@@ -23,7 +23,7 @@ const useCreateOrganizationMutation = (
     CreateOrganizationMutationVariables
   >,
 ) => {
-  const { user } = useAuth();
+  const { session } = useRouteContext({ from: "__root__" });
 
   const { mutateAsync: createOrganization } =
     useGeneratedCreateOrganizationMutation();
@@ -45,7 +45,7 @@ const useCreateOrganizationMutation = (
       const { createMember: createMemberResponse } = await createMember({
         input: {
           member: {
-            userId: user?.rowId!,
+            userId: session?.user?.rowId!,
             organizationId: createOrganizationResponse?.organization?.rowId!,
             role: Role.Owner,
           },

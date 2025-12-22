@@ -1,8 +1,8 @@
 import { test as testBase } from "@playwright/test";
 
-import { createHomePageObject } from "test/e2e/fixtures/pages";
+import createHomePageObject from "@/test/e2e/fixtures/pages/home.pageObject";
 
-import type { HomePageObject } from "test/e2e/fixtures/pages";
+import type { HomePageObject } from "@/test/e2e/fixtures/pages/home.pageObject";
 
 interface PageObjects {
   homePage: HomePageObject;

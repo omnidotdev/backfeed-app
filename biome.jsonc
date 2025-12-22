@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!!**/generated", "!!public"]
+    "includes": ["**", "!!**/generated", "!!public", "!!src/routeTree.gen.ts"]
   },
   "assist": {
     "actions": {
@@ -24,14 +24,6 @@
                 "source": [
                   ":PACKAGE:",
                   ":PACKAGE_WITH_PROTOCOL:",
-                  "!app/**",
-                  "!components/**",
-                  "!generated/**",
-                  "!lib/**",
-                  "!providers/**",
-                  "!store",
-                  "!store/**",
-                  "!auth",
                   "!test/**",
                   "!__mocks__/**"
                 ]

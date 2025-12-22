@@ -1,8 +1,8 @@
 import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
-import { API_GRAPHQL_URL } from "lib/config";
-import { getAuthSession } from "lib/util";
+import { API_GRAPHQL_URL } from "@/lib/config/env.config";
+import { fetchSession } from "@/server/functions/auth";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { Variables } from "graphql-request";
@@ -10,14 +10,11 @@ import type { Variables } from "graphql-request";
 type FetchOptions = {
   /** Request cache setting. */
   cache?: RequestCache;
-  /** Next.js request options. */
-  next?: NextFetchRequestConfig;
 };
 
 /**
- * GraphQL fetch wrapper. This is a wrapper around `graphql-request` that adds support for Next.js request options.
+ * GraphQL fetch wrapper. This is a wrapper around `graphql-request` that adds support for request options.
  * ! NB: this wrapper is not meant to be used directly. It is intended to be used by GraphQL Code Generator as a custom fetch implementation.
- * @knipignore - this wrapper is used by GraphQL Code Generator as a custom fetch implementation.
  */
 export const graphqlFetch =
   <TData, TVariables>(
@@ -26,9 +23,9 @@ export const graphqlFetch =
     options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>
   async (): Promise<TData> => {
-    const session = await getAuthSession();
+    const { session } = await fetchSession();
 
-    const { next, cache, ...restOptions } = options || {};
+    const { cache, ...restOptions } = options || {};
 
     const client = new GraphQLClient(API_GRAPHQL_URL!, {
       headers: {
@@ -36,7 +33,6 @@ export const graphqlFetch =
         Authorization: `Bearer ${session?.accessToken ?? ""}`,
         ...restOptions,
       },
-      next,
       cache,
     });
 

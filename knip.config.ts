@@ -5,13 +5,13 @@ import type { KnipConfig } from "knip";
  * @see https://knip.dev/overview/configuration
  */
 const knipConfig: KnipConfig = {
-  // NB: Modified from the default Next.js configuration, see: https://knip.dev/reference/plugins/next
   entry: [
-    "src/{instrumentation,proxy}.ts",
-    "src/app/**/{error,layout,loading,not-found,page,template,default,route}.{ts,tsx}",
-    "src/test/**/*.{ts,tsx}",
-    // NB: include test files and their dependencies as entry points
+    "src/routes/**/*.{ts,tsx}",
+    "src/router.tsx",
+    "src/lib/graphql/graphqlFetch.ts",
+    "src/test/test.setup.ts",
     "src/**/*.test.{ts,tsx}",
+    "src/**/*.spec.{ts,tsx}",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
   project: ["src/**/*.{ts,tsx}"],
@@ -21,12 +21,6 @@ const knipConfig: KnipConfig = {
   },
   ignoreExportsUsedInFile: true,
   ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
-  ignoreDependencies: [
-    // included by Next.js metapackage, used in Playwright config
-    "@next/env",
-    // used by GraphQL Code Generator scripts
-    "dotenv",
-  ],
 };
 
 export default knipConfig;

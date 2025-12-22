@@ -1,18 +1,18 @@
 import { HttpResponse } from "msw";
 
-import { mockUserQuery } from "generated/graphql.mock";
+import { mockUserQuery } from "@/generated/graphql.mock";
 
 /**
  * User query (success) mock.
  */
 export const mockUserQuerySuccess = mockUserQuery(({ variables }) => {
-  const { hidraId } = variables;
+  const { identityProviderId } = variables;
 
   return HttpResponse.json({
     data: {
-      userByHidraId: {
+      userByIdentityProviderId: {
         id: "WyJVc2VyIiwiOTc4YTM3ODQtZTE2ZS00MWM0LTk1OGEtNThhYTI2YThkNTEzIl0=",
-        hidraId,
+        identityProviderId,
         username: "omni",
         firstName: "Omni",
         lastName: "Test",

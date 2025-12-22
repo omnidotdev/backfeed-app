@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { standardRegexSchema } from "lib/constants";
+import { standardRegexSchema } from "@/lib/constants/schema.constant";
 
 describe("Schema Validation", () => {
   describe("Regex Schema", () => {

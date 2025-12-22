@@ -1,7 +1,7 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
-import { DEBOUNCE_TIME } from "lib/constants";
-import { useSearchParams } from "lib/hooks";
+import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 
 import type { ChangeEvent } from "react";
 
@@ -14,11 +14,15 @@ interface Options {
  * Custom hook for handling search input with debounce functionality. Updates search parameters based on user input.
  */
 const useHandleSearch = ({ delay = DEBOUNCE_TIME }: Options = {}) => {
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   return useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchParams({
-      search: e.target.value.length ? e.target.value.toLowerCase() : "",
+    navigate({
+      // @ts-expect-error TODO: have to properly type the route this hook is called from (search has to be a valid param)
+      search: (prev) => ({
+        ...prev,
+        search: e.target.value.length ? e.target.value : "",
+      }),
     });
   }, delay);
 };

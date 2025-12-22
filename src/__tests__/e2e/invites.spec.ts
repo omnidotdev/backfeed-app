@@ -1,4 +1,4 @@
-import { test } from "test/e2e/util";
+import test from "@/test/e2e/util/test";
 
 test.describe
   .skip("invites", () => {

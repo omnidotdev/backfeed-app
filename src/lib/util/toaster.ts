@@ -1,5 +1,3 @@
-"use client";
-
 import { createToaster } from "@ark-ui/react";
 
 /**

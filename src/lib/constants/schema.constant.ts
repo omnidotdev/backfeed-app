@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { app } from "lib/config";
+import app from "@/lib/config/app.config";
 
 const organizationErrors = app.forms.errors.organization;
 const projectErrors = app.forms.errors.project;

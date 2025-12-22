@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
-import { mswNodeServer, test } from "test/e2e/util";
+import mswNodeServer from "@/test/e2e/util/mswNodeServer";
+import test from "@/test/e2e/util/test";
 
 if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD)
   throw new Error("TEST_USERNAME and TEST_PASSWORD must be set");
@@ -10,8 +11,7 @@ if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD)
  */
 test.describe
   .skip("authentication", () => {
-    // `.listen()` is already called in `src/app/layout.tsx`, just used here for breadcrumbs when tests are enabled again (see note about app router above)
-    // test.beforeAll(() => mswNodeServer.listen());
+    test.beforeAll(() => mswNodeServer.listen());
     test.afterEach(() => mswNodeServer.resetHandlers());
     test.afterAll(() => mswNodeServer.close());
 
