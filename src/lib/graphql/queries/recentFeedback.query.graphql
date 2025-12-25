@@ -27,9 +27,9 @@ query RecentFeedback($userId: UUID!, $after: Cursor) {
             slug
           }
         }
-        status {
+        statusTemplate {
           rowId
-          status
+          displayName
           color
         }
         user {

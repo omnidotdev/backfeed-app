@@ -15,9 +15,10 @@ fragment Feedback on Post {
       slug
     }
   }
-  status {
+  statusTemplate {
     rowId
-    status
+    name
+    displayName
     description
     color
   }
@@ -31,18 +32,18 @@ fragment Feedback on Post {
   commentsWithReplies: comments {
     totalCount
   }
-  upvotes {
+  upvotes: votes(condition: { voteType: up }) {
     totalCount
   }
-  userUpvotes: upvotes(condition: { userId: $userId }) {
+  userUpvotes: votes(condition: { userId: $userId, voteType: up }) {
     nodes {
       rowId
     }
   }
-  downvotes {
+  downvotes: votes(condition: { voteType: down }) {
     totalCount
   }
-  userDownvotes: downvotes(condition: { userId: $userId }) {
+  userDownvotes: votes(condition: { userId: $userId, voteType: down }) {
     nodes {
       rowId
     }

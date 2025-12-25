@@ -3,9 +3,10 @@ import { useRouteContext, useSearch } from "@tanstack/react-router";
 
 import {
   PostOrderBy,
-  useCreateUpvoteMutation,
-  useDeleteDownvoteMutation,
-  useDeleteUpvoteMutation,
+  VoteType,
+  useCreateVoteMutation,
+  useDeleteVoteMutation,
+  useUpdateVoteMutation,
 } from "@/generated/graphql";
 import {
   feedbackByIdOptions,
@@ -15,37 +16,39 @@ import { projectMetricsOptions } from "@/lib/options/projects";
 
 import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
 import type {
-  Downvote,
   FeedbackByIdQuery,
   Post,
   PostsQuery,
   Project,
-  Upvote,
+  Vote,
 } from "@/generated/graphql";
 
 interface Options {
   /** Feedback ID */
   feedbackId: Post["rowId"];
-  /** project ID */
+  /** Project ID */
   projectId: Project["rowId"];
-  /** Upvote object. Used to determine if the user has already upvoted */
-  upvote: Partial<Upvote> | null | undefined;
-  /** Downvote object. Used to determine if the user has already downvoted */
-  downvote: Partial<Downvote> | null | undefined;
-  /** Whether voting is being handled from the dynamic feedback route. */
+  /** Current user's vote on this post (if any) */
+  userVote: Partial<Vote> | null | undefined;
+  /** The type of vote to cast */
+  voteType: VoteType;
+  /** Whether voting is being handled from the dynamic feedback route */
   isFeedbackRoute: boolean;
-  /** mutation options */
+  /** Mutation options */
   mutationOptions?: UseMutationOptions;
 }
 
 /**
- * Handle upvoting on feedback.
+ * Handle voting on feedback.
+ * - If user has no vote, creates a vote with the specified type
+ * - If user has the same vote type, removes the vote (toggle off)
+ * - If user has a different vote type, updates the vote
  */
-const useHandleUpvoteMutation = ({
+const useHandleVoteMutation = ({
   feedbackId,
   projectId,
-  upvote,
-  downvote,
+  userVote,
+  voteType,
   isFeedbackRoute,
   mutationOptions,
 }: Options) => {
@@ -55,29 +58,36 @@ const useHandleUpvoteMutation = ({
 
   const { session } = useRouteContext({ from: "/_auth" });
 
-  const { mutateAsync: createUpvote } = useCreateUpvoteMutation();
-  const { mutateAsync: deleteUpvote } = useDeleteUpvoteMutation();
-  const { mutateAsync: deleteDownvote } = useDeleteDownvoteMutation();
+  const { mutateAsync: createVote } = useCreateVoteMutation();
+  const { mutateAsync: updateVote } = useUpdateVoteMutation();
+  const { mutateAsync: deleteVote } = useDeleteVoteMutation();
+
+  const isUpvote = voteType === VoteType.Up;
+  const isDownvote = voteType === VoteType.Down;
+  const hasVote = !!userVote;
+  const hasSameVote = hasVote && userVote.voteType === voteType;
+  const hasDifferentVote = hasVote && userVote.voteType !== voteType;
 
   return useMutation({
-    mutationKey: ["handleUpvote", feedbackId],
+    mutationKey: ["handleVote", feedbackId, voteType],
     mutationFn: async () => {
-      if (downvote) {
-        await deleteDownvote({
-          rowId: downvote.rowId!,
-        });
-      }
-
-      if (upvote) {
-        await deleteUpvote({
-          rowId: upvote.rowId!,
+      if (hasSameVote) {
+        // toggle off - remove the vote
+        await deleteVote({ rowId: userVote.rowId! });
+      } else if (hasDifferentVote) {
+        // change vote type
+        await updateVote({
+          rowId: userVote.rowId!,
+          patch: { voteType },
         });
       } else {
-        await createUpvote({
+        // create new vote
+        await createVote({
           input: {
-            upvote: {
+            vote: {
               postId: feedbackId,
               userId: session?.user?.rowId!,
+              voteType,
             },
           },
         });
@@ -105,7 +115,68 @@ const useHandleUpvoteMutation = ({
         postsQueryKey,
       ) as InfiniteData<PostsQuery>;
 
+      // calculate optimistic updates
+      const getOptimisticCounts = (
+        currentUpvotes: number,
+        currentDownvotes: number,
+      ) => {
+        let upvotes = currentUpvotes;
+        let downvotes = currentDownvotes;
+
+        if (hasSameVote) {
+          // removing vote
+          if (isUpvote) upvotes--;
+          else downvotes--;
+        } else if (hasDifferentVote) {
+          // changing vote
+          if (isUpvote) {
+            upvotes++;
+            downvotes--;
+          } else {
+            upvotes--;
+            downvotes++;
+          }
+        } else {
+          // adding vote
+          if (isUpvote) upvotes++;
+          else downvotes++;
+        }
+
+        return { upvotes, downvotes };
+      };
+
+      const getOptimisticUserVotes = () => {
+        if (hasSameVote) {
+          // removing vote - no user votes
+          return {
+            userUpvotes: { nodes: [] },
+            userDownvotes: { nodes: [] },
+          };
+        } else if (hasDifferentVote || !hasVote) {
+          // adding or changing vote
+          return {
+            userUpvotes: {
+              nodes: isUpvote ? [{ rowId: userVote?.rowId ?? "pending" }] : [],
+            },
+            userDownvotes: {
+              nodes: isDownvote
+                ? [{ rowId: userVote?.rowId ?? "pending" }]
+                : [],
+            },
+          };
+        }
+        return {
+          userUpvotes: { nodes: [] },
+          userDownvotes: { nodes: [] },
+        };
+      };
+
       if (feedbackSnapshot) {
+        const { upvotes, downvotes } = getOptimisticCounts(
+          feedbackSnapshot?.post?.upvotes?.totalCount ?? 0,
+          feedbackSnapshot?.post?.downvotes?.totalCount ?? 0,
+        );
+
         queryClient.setQueryData(
           feedbackByIdOptions({
             rowId: feedbackId,
@@ -114,25 +185,14 @@ const useHandleUpvoteMutation = ({
           {
             post: {
               ...feedbackSnapshot?.post!,
-              userUpvotes: {
-                nodes: upvote ? [] : [{ rowId: "pending" }],
-              },
-              userDownvotes: {
-                nodes: upvote
-                  ? feedbackSnapshot?.post?.userDownvotes?.nodes!
-                  : [],
-              },
+              ...getOptimisticUserVotes(),
               upvotes: {
                 ...feedbackSnapshot?.post?.upvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.upvotes?.totalCount ?? 0) +
-                  (upvote ? -1 : 1),
+                totalCount: upvotes,
               },
               downvotes: {
                 ...feedbackSnapshot?.post?.downvotes,
-                totalCount:
-                  (feedbackSnapshot?.post?.downvotes?.totalCount ?? 0) +
-                  (downvote ? -1 : 0),
+                totalCount: downvotes,
               },
             },
           },
@@ -149,21 +209,16 @@ const useHandleUpvoteMutation = ({
               ...page.posts,
               nodes: page.posts?.nodes?.map((post) => {
                 if (post?.rowId === feedbackId) {
+                  const { upvotes, downvotes } = getOptimisticCounts(
+                    post.upvotes.totalCount,
+                    post.downvotes.totalCount,
+                  );
+
                   return {
                     ...post,
-                    userUpvotes: {
-                      nodes: upvote ? [] : [{ rowId: "pending" }],
-                    },
-                    userDownvotes: {
-                      nodes: upvote ? post.userDownvotes : [],
-                    },
-                    upvotes: {
-                      totalCount: post.upvotes.totalCount + (upvote ? -1 : 1),
-                    },
-                    downvotes: {
-                      totalCount:
-                        post.downvotes.totalCount + (downvote ? -1 : 0),
-                    },
+                    ...getOptimisticUserVotes(),
+                    upvotes: { totalCount: upvotes },
+                    downvotes: { totalCount: downvotes },
                   };
                 }
 
@@ -209,4 +264,4 @@ const useHandleUpvoteMutation = ({
   });
 };
 
-export default useHandleUpvoteMutation;
+export default useHandleVoteMutation;

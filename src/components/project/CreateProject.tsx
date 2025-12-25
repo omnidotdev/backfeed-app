@@ -5,11 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
-import {
-  Role,
-  useCreatePostStatusMutation,
-  useCreateProjectMutation,
-} from "@/generated/graphql";
+import { Role, useCreateProjectMutation } from "@/generated/graphql";
 import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -29,36 +25,6 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
 import { fetchSession } from "@/server/functions/auth";
-
-// NB: colors need to be raw hex values (or other color formats). Can't extract this from `token` or other helpers as you would need to fetch the computed value at runtime. See: https://github.com/chakra-ui/panda/discussions/2200
-const DEFAULT_POST_STATUSES = [
-  {
-    status: "Open",
-    description: "Newly created",
-    color: "#3b82f6",
-    isDefault: true,
-  },
-  {
-    status: "Planned",
-    description: "Planned for future",
-    color: "#a855f7",
-  },
-  {
-    status: "In Progress",
-    description: "Currently in progress",
-    color: "#eab308",
-  },
-  {
-    status: "Closed",
-    description: "Not currently planned",
-    color: "#ef4444",
-  },
-  {
-    status: "Resolved",
-    description: "Resolved request",
-    color: "#22c55e",
-  },
-];
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -158,8 +124,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
     },
   });
 
-  const { mutateAsync: createPostStatus } = useCreatePostStatusMutation();
-
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
       organizationId: organization?.rowId ?? "",
@@ -173,6 +137,8 @@ const CreateProject = ({ organizationSlug }: Props) => {
     onSubmit: async ({ value }) =>
       toaster.promise(
         async () => {
+          // NB: status templates are now organization-level, so projects automatically
+          // inherit them. No need to create per-project statuses.
           const { createProject: projectData } = await createProject({
             input: {
               project: {
@@ -185,22 +151,6 @@ const CreateProject = ({ organizationSlug }: Props) => {
           });
 
           if (projectData) {
-            await Promise.all(
-              DEFAULT_POST_STATUSES.map((status) =>
-                createPostStatus({
-                  input: {
-                    postStatus: {
-                      projectId: projectData.project?.rowId!,
-                      status: status.status,
-                      description: status.description,
-                      color: status.color,
-                      isDefault: status.isDefault,
-                    },
-                  },
-                }),
-              ),
-            );
-
             navigate({
               to: "/organizations/$organizationSlug/projects/$projectSlug",
               params: {

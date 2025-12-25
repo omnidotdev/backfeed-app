@@ -6,6 +6,11 @@ import {
   organizationRoleOptions,
 } from "@/lib/options/organizations";
 
+const billingBypassSlugs: string[] =
+  import.meta.env.VITE_BILLING_BYPASS_SLUGS?.split(",")
+    .map((s: string) => s.trim())
+    .filter(Boolean) ?? [];
+
 export const Route = createFileRoute(
   "/_auth/organizations/$organizationSlug/_layout",
 )({
@@ -29,6 +34,9 @@ export const Route = createFileRoute(
         revalidateIfStale: true,
       });
 
+    // Bypass tier limits for exempt organizations
+    const isBillingExempt = billingBypassSlugs.includes(organizationSlug);
+
     return {
       organizationId: organizationBySlug.rowId,
       organizationName: organizationBySlug.name,
@@ -38,10 +46,11 @@ export const Route = createFileRoute(
       membershipId: member?.rowId,
       hasAdminPrivileges:
         member?.role === Role.Admin || member?.role === Role.Owner,
-      hasBasicTierPrivileges: organizationBySlug.tier !== Tier.Free,
-      hasTeamTierPrivileges: ![Tier.Free, Tier.Basic].includes(
-        organizationBySlug.tier,
-      ),
+      hasBasicTierPrivileges:
+        isBillingExempt || organizationBySlug.tier !== Tier.Free,
+      hasTeamTierPrivileges:
+        isBillingExempt ||
+        ![Tier.Free, Tier.Basic].includes(organizationBySlug.tier),
     };
   },
   component: OrganizationLayout,

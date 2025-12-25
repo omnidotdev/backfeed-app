@@ -1,11 +1,11 @@
 import { Badge } from "@omnidev/sigil";
 
 import type { BadgeProps } from "@omnidev/sigil";
-import type { PostStatus } from "@/generated/graphql";
+import type { StatusTemplate } from "@/generated/graphql";
 
 interface Props extends BadgeProps {
-  /** The status of the post. */
-  status: Partial<PostStatus> | null;
+  /** The status template for the post. */
+  status: Partial<StatusTemplate> | null;
 }
 
 /*
@@ -28,7 +28,7 @@ const StatusBadge = ({ status, children, ...rest }: Props) => (
     }
     {...rest}
   >
-    {status?.status ?? "Unknown"}
+    {status?.displayName ?? "Unknown"}
 
     {children}
   </Badge>

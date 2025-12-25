@@ -29,7 +29,7 @@ const feedbackSchemaErrors =
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
-  statusId: uuidSchema,
+  statusTemplateId: uuidSchema,
   projectId: uuidSchema,
   userId: uuidSchema,
   title: z
@@ -63,21 +63,32 @@ const CreateFeedback = () => {
     freeTierFeedbackOptions({ organizationSlug, projectSlug }),
   );
 
-  const { data: projectId } = useQuery({
+  const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
       organizationSlug,
     }),
-    select: (data) => data?.projects?.nodes?.[0]?.rowId,
+    select: (data) => data?.projects?.nodes?.[0],
   });
 
-  const { data: defaultStatusId } = useQuery({
+  const projectId = project?.rowId;
+  const organizationId = project?.organization?.rowId;
+
+  const { data: defaultStatusTemplateId } = useQuery({
     ...projectStatusesOptions({
-      projectId: projectId!,
-      isDefault: true,
+      organizationId: organizationId!,
     }),
-    enabled: !!projectId,
-    select: (data) => data?.postStatuses?.nodes?.[0]?.rowId,
+    enabled: !!organizationId,
+    select: (data) => {
+      // find the default status from project status configs, or fall back to first template
+      const templates = data?.statusTemplates?.nodes;
+      const configs = data?.projectStatusConfigs?.nodes;
+      const defaultConfig = configs?.find((c) => c?.isDefault);
+      if (defaultConfig) {
+        return defaultConfig.statusTemplateId;
+      }
+      return templates?.[0]?.rowId;
+    },
   });
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
@@ -105,7 +116,7 @@ const CreateFeedback = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
       defaultValues: {
-        statusId: defaultStatusId ?? "",
+        statusTemplateId: defaultStatusTemplateId ?? "",
         projectId: projectId ?? "",
         userId: session?.user?.rowId ?? "",
         title: "",
@@ -120,7 +131,7 @@ const CreateFeedback = () => {
           createFeedback({
             input: {
               post: {
-                statusId: value.statusId,
+                statusTemplateId: value.statusTemplateId,
                 projectId: value.projectId,
                 userId: value.userId,
                 title: value.title.trim(),

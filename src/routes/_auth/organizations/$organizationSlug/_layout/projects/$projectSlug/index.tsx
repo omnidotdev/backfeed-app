@@ -36,11 +36,7 @@ const projectSearchSchema = z.object({
   excludedStatuses: z.array(z.string()).default([]),
   search: z.string().default(""),
   orderBy: z
-    .enum([
-      PostOrderBy.CreatedAtDesc,
-      PostOrderBy.UpvotesCountDesc,
-      PostOrderBy.DownvotesCountDesc,
-    ])
+    .enum([PostOrderBy.CreatedAtDesc, PostOrderBy.VotesCountDesc])
     .default(PostOrderBy.CreatedAtDesc),
 });
 
@@ -73,6 +69,7 @@ export const Route = createFileRoute(
     const project = projects.nodes[0]!;
     const projectId = project.rowId;
     const projectName = project.name;
+    const organizationId = project.organization?.rowId!;
 
     await Promise.all([
       queryClient.ensureQueryData({
@@ -80,7 +77,7 @@ export const Route = createFileRoute(
         revalidateIfStale: true,
       }),
       queryClient.ensureQueryData({
-        ...projectStatusesOptions({ projectId }),
+        ...projectStatusesOptions({ organizationId }),
         revalidateIfStale: true,
       }),
       queryClient.ensureQueryData(projectMetricsOptions({ projectId })),
@@ -100,7 +97,7 @@ export const Route = createFileRoute(
       }),
     ]);
 
-    return { projectId, projectName };
+    return { projectId, projectName, organizationId };
   },
   head: ({ loaderData }) => ({
     meta: createMetaTags({ title: loaderData?.projectName }),

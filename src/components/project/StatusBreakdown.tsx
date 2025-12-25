@@ -13,22 +13,24 @@ import {
 } from "@/lib/options/projects";
 
 import type { CheckboxCheckedChangeDetails } from "@ark-ui/react";
-import type { PostStatus } from "@/generated/graphql";
+import type { StatusTemplate } from "@/generated/graphql";
 
 interface Status {
-  /** Feedback status ID. */
-  rowId: PostStatus["rowId"] | undefined;
-  /** Feedback status. */
-  status: PostStatus["status"] | undefined;
-  /* Feedback status color. */
-  color: PostStatus["color"];
+  /** Status template ID. */
+  rowId: StatusTemplate["rowId"] | undefined;
+  /** Status template name. */
+  name: StatusTemplate["name"] | undefined;
+  /** Status template display name. */
+  displayName: StatusTemplate["displayName"] | undefined;
+  /* Status template color. */
+  color: StatusTemplate["color"];
 }
 
 /**
  * Feedback status breakdown for a project.
  */
 const StatusBreakdown = () => {
-  const { projectId } = useLoaderData({
+  const { organizationId, projectId } = useLoaderData({
     from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
   });
 
@@ -44,7 +46,7 @@ const StatusBreakdown = () => {
     ({ checked }: CheckboxCheckedChangeDetails, status: Status) => {
       // NB: we must filter the statuses regardless of checked status to prevent adding duplicates of the same status to the search params.
       const filteredStatuses = excludedStatuses.filter(
-        (s) => s !== status?.status!,
+        (s) => s !== status?.name!,
       );
 
       checked
@@ -58,7 +60,7 @@ const StatusBreakdown = () => {
             search: (prev) => ({
               ...prev,
               // NB: the sort method is used to stabilize the array order. This helps with query key management to avoid having multiple keys that point to the same data
-              excludedStatuses: [...filteredStatuses, status?.status!].sort(),
+              excludedStatuses: [...filteredStatuses, status?.name!].sort(),
             }),
           });
     },
@@ -67,12 +69,13 @@ const StatusBreakdown = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      projectId,
+      organizationId,
     }),
     select: (data) =>
-      data?.postStatuses?.nodes?.map((status) => ({
+      data?.statusTemplates?.nodes?.map((status) => ({
         rowId: status?.rowId,
-        status: status?.status,
+        name: status?.name,
+        displayName: status?.displayName,
         color: status?.color,
       })),
   });
@@ -105,7 +108,7 @@ const StatusBreakdown = () => {
         <Flex key={status?.rowId} justifyContent="space-between" align="center">
           <HStack>
             <Checkbox
-              defaultChecked={!excludedStatuses.includes(status?.status!)}
+              defaultChecked={!excludedStatuses.includes(status?.name!)}
               onCheckedChange={(details) => handleToggleStatus(details, status)}
               size="sm"
               iconProps={{

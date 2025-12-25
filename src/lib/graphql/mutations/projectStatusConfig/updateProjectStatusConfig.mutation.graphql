@@ -1,0 +1,18 @@
+mutation UpdateProjectStatusConfig(
+  $rowId: UUID!
+  $patch: ProjectStatusConfigPatch!
+) {
+  updateProjectStatusConfig(input: { rowId: $rowId, patch: $patch }) {
+    clientMutationId
+    projectStatusConfig {
+      rowId
+      projectId
+      statusTemplateId
+      customColor
+      customDescription
+      isEnabled
+      isDefault
+      sortOrder
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation DeleteProjectStatusConfig($rowId: UUID!) {
+  deleteProjectStatusConfig(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

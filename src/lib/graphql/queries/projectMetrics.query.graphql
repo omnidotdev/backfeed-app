@@ -11,11 +11,21 @@ query ProjectMetrics($projectId: UUID!) {
     }
   }
 
-  upvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
+  upvotes: votes(
+    filter: {
+      post: { projectId: { equalTo: $projectId } }
+      voteType: { equalTo: up }
+    }
+  ) {
     totalCount
   }
 
-  downvotes(filter: { post: { projectId: { equalTo: $projectId } } }) {
+  downvotes: votes(
+    filter: {
+      post: { projectId: { equalTo: $projectId } }
+      voteType: { equalTo: down }
+    }
+  ) {
     totalCount
   }
 }
