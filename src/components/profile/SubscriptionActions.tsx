@@ -24,9 +24,8 @@ import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import {
-  getCancelSubscriptionUrl,
+  getBillingPortalUrl,
   getCreateSubscriptionUrl,
-  getManageSubscriptionUrl,
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
@@ -51,22 +50,20 @@ const SubscriptionActions = ({ organization }: Props) => {
 
   const [isUpgradePlanMenuOpen, setIsUpgradePlanMenuOpen] = useState(false);
 
-  const {
-    mutateAsync: manageSubscription,
-    isPending: isManageSubscriptionPending,
-  } = useMutation({
-    mutationFn: async () => {
-      const checkoutUrl = await getManageSubscriptionUrl({
-        data: {
-          subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
-        },
-      });
+  const { mutateAsync: openBillingPortal, isPending: isBillingPortalPending } =
+    useMutation({
+      mutationFn: async () => {
+        const portalUrl = await getBillingPortalUrl({
+          data: {
+            organizationId: organization.rowId,
+            returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
+          },
+        });
 
-      return checkoutUrl;
-    },
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
+        return portalUrl;
+      },
+      onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+    });
 
   const {
     mutateAsync: createSubscription,
@@ -82,23 +79,6 @@ const SubscriptionActions = ({ organization }: Props) => {
       });
 
       return checkoutUrl;
-    },
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
-
-  const {
-    mutateAsync: handleCancelSubscription,
-    isPending: isCancelSubscriptionPending,
-  } = useMutation({
-    mutationFn: async () => {
-      const cancelUrl = await getCancelSubscriptionUrl({
-        data: {
-          subscriptionId: organization.subscriptionId!,
-          returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
-        },
-      });
-
-      return cancelUrl;
     },
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
@@ -166,15 +146,15 @@ const SubscriptionActions = ({ organization }: Props) => {
               _disabled={{ opacity: 0.5 }}
               fontSize="md"
               px={0}
-              disabled={isManageSubscriptionPending}
-              onClick={async () => await manageSubscription()}
+              disabled={isBillingPortalPending}
+              onClick={async () => await openBillingPortal()}
             >
               <Icon src={LuPencil} h={5} w={5} />
             </Button>
           }
           triggerProps={{
             style: { all: "unset" },
-            disabled: isManageSubscriptionPending,
+            disabled: isBillingPortalPending,
           }}
           contentProps={{
             zIndex: "foreground",
@@ -293,11 +273,11 @@ const SubscriptionActions = ({ organization }: Props) => {
             fontSize="md"
             px={0}
             disabled={
-              isCancelSubscriptionPending ||
+              isBillingPortalPending ||
               !organization.subscriptionId ||
               organization.subscription.toBeCanceled
             }
-            onClick={async () => await handleCancelSubscription()}
+            onClick={async () => await openBillingPortal()}
           >
             <Icon src={LuTrash2} h={5} w={5} />
           </Button>
@@ -305,13 +285,13 @@ const SubscriptionActions = ({ organization }: Props) => {
         triggerProps={{
           style: { all: "unset" },
           disabled:
-            isCancelSubscriptionPending ||
+            isBillingPortalPending ||
             !organization.subscriptionId ||
             organization.subscription.toBeCanceled,
         }}
         contentProps={{
           display:
-            isCancelSubscriptionPending ||
+            isBillingPortalPending ||
             !organization.subscriptionId ||
             organization.subscription.toBeCanceled
               ? "none"

@@ -43,8 +43,8 @@ import { membersOptions } from "@/lib/options/members";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import toaster from "@/lib/util/toaster";
 import {
+  getBillingPortalUrl,
   getCreateSubscriptionUrl,
-  getManageSubscriptionUrl,
   renewSubscription,
   revokeSubscription,
 } from "@/server/functions/subscriptions";
@@ -185,16 +185,16 @@ const OrganizationSettings = ({ organization, prices }: Props) => {
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
 
-  const { mutateAsync: manageSubscription } = useMutation({
+  const { mutateAsync: openBillingPortal } = useMutation({
     mutationFn: async () => {
-      const checkoutUrl = await getManageSubscriptionUrl({
+      const portalUrl = await getBillingPortalUrl({
         data: {
-          subscriptionId: subscription?.id,
+          organizationId,
           returnUrl: `${BASE_URL}/organizations/${organizationSlug}/settings`,
         },
       });
 
-      return checkoutUrl;
+      return portalUrl;
     },
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
@@ -248,7 +248,7 @@ const OrganizationSettings = ({ organization, prices }: Props) => {
                     data: { subscriptionId: subscription.id },
                   });
                 } else {
-                  await manageSubscription();
+                  await openBillingPortal();
                 }
               }}
             >

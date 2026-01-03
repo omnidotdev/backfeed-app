@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import app from "@/lib/config/app.config";
-import { STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
+import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { authMiddleware, customerMiddleware } from "@/server/middleware";
 
@@ -12,8 +12,8 @@ const subscriptionSchema = z.object({
   subscriptionId: z.string().startsWith("sub_").nullable(),
 });
 
-const manageSubscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_"),
+const billingPortalSchema = z.object({
+  organizationId: z.guid(),
   returnUrl: z.url(),
 });
 
@@ -84,31 +84,39 @@ export const revokeSubscription = createServerFn({ method: "POST" })
     return subscription.id;
   });
 
-export const getManageSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => manageSubscriptionSchema.parse(data))
+/**
+ * Get billing portal URL from Aether.
+ * This creates a Stripe billing portal session through Aether,
+ * which looks up the billing account by organization ID.
+ */
+export const getBillingPortalUrl = createServerFn({ method: "POST" })
+  .inputValidator((data) => billingPortalSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
+    if (!context.session) throw new Error("Unauthorized");
 
-    const portal = await payments.billingPortal.sessions.create({
-      customer: context.customer.id,
-      configuration: STRIPE_PORTAL_CONFIG_ID,
-      flow_data: {
-        type: "subscription_update",
-        subscription_update: {
-          subscription: data.subscriptionId,
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/organization/${data.organizationId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${context.session.accessToken}`,
         },
-        after_completion: {
-          type: "redirect",
-          redirect: {
-            return_url: data.returnUrl,
-          },
-        },
+        body: JSON.stringify({
+          productId: "backfeed",
+          returnUrl: data.returnUrl,
+        }),
       },
-      return_url: data.returnUrl,
-    });
+    );
 
-    return portal.url;
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "Failed to get billing portal URL");
+    }
+
+    const { url } = await response.json();
+    return url as string;
   });
 
 export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
@@ -141,33 +149,6 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
     });
 
     return checkout.url!;
-  });
-
-export const getCancelSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => manageSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    const portal = await payments.billingPortal.sessions.create({
-      customer: context.customer.id,
-      configuration: STRIPE_PORTAL_CONFIG_ID,
-      flow_data: {
-        type: "subscription_cancel",
-        subscription_cancel: {
-          subscription: data.subscriptionId,
-        },
-        after_completion: {
-          type: "redirect",
-          redirect: {
-            return_url: data.returnUrl,
-          },
-        },
-      },
-      return_url: data.returnUrl,
-    });
-
-    return portal.url;
   });
 
 export const renewSubscription = createServerFn({ method: "POST" })
