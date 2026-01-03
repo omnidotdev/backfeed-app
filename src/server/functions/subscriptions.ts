@@ -85,7 +85,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
   });
 
 /**
- * Get billing portal URL from Aether.
+ * Get billing portal URL.
  * This creates a Stripe billing portal session through Aether,
  * which looks up the billing account by organization ID.
  */
