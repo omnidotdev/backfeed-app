@@ -16,7 +16,6 @@ export const {
 } = { ...import.meta.env, ...process.env };
 
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
-export const AUTH_ISSUER_URL = `${AUTH_BASE_URL}/api/auth`;
 
 // environment helpers
 export const isDevEnv = import.meta.env.DEV;

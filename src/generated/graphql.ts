@@ -1895,6 +1895,7 @@ export type Node = {
 
 export type Organization = {
   __typename?: 'Organization';
+  billingAccountId?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Invitation`. */
   invitations: InvitationConnection;
@@ -1972,6 +1973,8 @@ export type OrganizationAggregates = {
  * tested for equality and combined with a logical ‘and.’
  */
 export type OrganizationCondition = {
+  /** Checks for equality with the object’s `billingAccountId` field. */
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -2014,6 +2017,8 @@ export type OrganizationConnectionGroupedAggregatesArgs = {
 
 export type OrganizationDistinctCountAggregates = {
   __typename?: 'OrganizationDistinctCountAggregates';
+  /** Distinct count of billingAccountId across the matching connection */
+  billingAccountId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -2043,6 +2048,8 @@ export type OrganizationEdge = {
 export type OrganizationFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<OrganizationFilter>>;
+  /** Filter by the object’s `billingAccountId` field. */
+  billingAccountId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `invitations` relation. */
@@ -2081,6 +2088,7 @@ export type OrganizationFilter = {
 
 /** Grouping methods for `Organization` for usage during aggregation. */
 export enum OrganizationGroupBy {
+  BillingAccountId = 'BILLING_ACCOUNT_ID',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
@@ -2153,6 +2161,7 @@ export type OrganizationHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `Organization` */
 export type OrganizationInput = {
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2162,6 +2171,8 @@ export type OrganizationInput = {
 
 /** Methods to use when ordering `Organization`. */
 export enum OrganizationOrderBy {
+  BillingAccountIdAsc = 'BILLING_ACCOUNT_ID_ASC',
+  BillingAccountIdDesc = 'BILLING_ACCOUNT_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   InvitationsCountAsc = 'INVITATIONS_COUNT_ASC',
@@ -2261,6 +2272,7 @@ export enum OrganizationOrderBy {
 
 /** Represents an update to a `Organization`. Fields that are set will be updated. */
 export type OrganizationPatch = {
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;

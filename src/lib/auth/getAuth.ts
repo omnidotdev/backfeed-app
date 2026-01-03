@@ -3,7 +3,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 
 import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
-import { API_GRAPHQL_URL, AUTH_ISSUER_URL } from "@/lib/config/env.config";
+import { API_GRAPHQL_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
 
 export async function getAuth(request: Request) {
   try {
@@ -26,12 +26,13 @@ export async function getAuth(request: Request) {
 
       // extract claims from the ID token
       if (tokenResult?.idToken) {
-        const jwks = createRemoteJWKSet(new URL(`${AUTH_ISSUER_URL}/jwks`));
+        const jwksUrl = `${AUTH_BASE_URL}/jwks`;
+        const jwks = createRemoteJWKSet(new URL(jwksUrl));
         const { payload } = await jwtVerify(tokenResult.idToken, jwks);
         identityProviderId = payload.sub;
       }
     } catch (err) {
-      console.error(err);
+      console.error("[getAuth] Token/JWT error:", err);
     }
 
     let rowId: string | undefined;
@@ -47,11 +48,12 @@ export async function getAuth(request: Request) {
 
         const sdk = getSdk(graphqlClient);
 
-        const { userByIdentityProviderId } = await sdk.User({
+        const result = await sdk.User({
           identityProviderId,
         });
 
-        if (userByIdentityProviderId) rowId = userByIdentityProviderId.rowId;
+        if (result.userByIdentityProviderId)
+          rowId = result.userByIdentityProviderId.rowId;
       } catch (error) {
         console.error(
           "[getAuth] Error fetching user rowId from GraphQL:",

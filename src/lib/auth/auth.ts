@@ -3,9 +3,9 @@ import { genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import {
+  AUTH_BASE_URL,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
-  AUTH_ISSUER_URL,
   BASE_URL,
 } from "@/lib/config/env.config";
 
@@ -45,7 +45,7 @@ const auth = betterAuth({
           providerId: "omni",
           clientId: AUTH_CLIENT_ID!,
           clientSecret: AUTH_CLIENT_SECRET!,
-          discoveryUrl: `${AUTH_ISSUER_URL}/.well-known/openid-configuration`,
+          discoveryUrl: `${AUTH_BASE_URL}/.well-known/openid-configuration`,
           scopes: [
             "openid",
             "profile",
