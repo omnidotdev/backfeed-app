@@ -9,8 +9,8 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import { LuBuilding2 } from "react-icons/lu";
 
 import app from "@/lib/config/app.config";
-import { organizationOptions } from "@/lib/options/organizations";
 import { projectOptions } from "@/lib/options/projects";
+import { workspaceOptions } from "@/lib/options/workspaces";
 
 import type { LinkOptions } from "@tanstack/react-router";
 import type { IconType } from "react-icons";
@@ -31,26 +31,26 @@ interface NavItem extends Omit<LinkOptions, "href"> {
 }
 
 /**
- * Custom hook to generate sidebar navigation items based on authentication state, current route, and available organization/project data.
+ * Custom hook to generate sidebar navigation items based on authentication state, current route, and available workspace/project data.
  */
 const useSidebarNavigationItems = () => {
   const { session } = useRouteContext({ from: "__root__" });
-  const { organizationSlug, projectSlug } = useParams({ strict: false });
+  const { workspaceSlug, projectSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 
-  const { data: organization } = useQuery({
-      ...organizationOptions({
-        slug: organizationSlug!,
+  const { data: workspace } = useQuery({
+      ...workspaceOptions({
+        slug: workspaceSlug!,
       }),
-      enabled: !!session && !!organizationSlug,
-      select: (data) => data?.organizationBySlug,
+      enabled: !!session && !!workspaceSlug,
+      select: (data) => data?.workspaceBySlug,
     }),
     { data: project } = useQuery({
       ...projectOptions({
         projectSlug: projectSlug!,
-        organizationSlug: organizationSlug!,
+        workspaceSlug: workspaceSlug!,
       }),
-      enabled: !!session && !!projectSlug && !!organization,
+      enabled: !!session && !!projectSlug && !!workspace,
       select: (data) => data?.projects?.nodes[0],
     });
 
@@ -63,53 +63,52 @@ const useSidebarNavigationItems = () => {
         isActive: pathname === "/pricing",
       },
       {
-        label: app.organizationsPage.breadcrumb,
+        label: app.workspacesPage.breadcrumb,
         icon: LuBuilding2,
         isCollapsible: true,
         isVisible: !!session,
         children: [
           {
-            to: "/organizations",
-            label: app.dashboardPage.cta.viewOrganizations.label,
+            to: "/workspaces",
+            label: app.dashboardPage.cta.viewWorkspaces.label,
             isVisible: true,
-            isActive: pathname === "/organizations",
+            isActive: pathname === "/workspaces",
           },
           {
-            to: "/organizations/$organizationSlug",
-            params: { organizationSlug },
-            label: organization?.name ?? organizationSlug!,
-            isVisible: !!organizationSlug,
-            isActive: pathname === `/organizations/${organizationSlug}`,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+            label: workspace?.name ?? workspaceSlug!,
+            isVisible: !!workspaceSlug,
+            isActive: pathname === `/workspaces/${workspaceSlug}`,
           },
           {
             label: app.projectsPage.breadcrumb,
             icon: HiOutlineFolder,
             isCollapsible: true,
-            isVisible: !!session && !!organizationSlug,
+            isVisible: !!session && !!workspaceSlug,
             children: [
               {
-                to: "/organizations/$organizationSlug/projects",
-                params: { organizationSlug },
-                label: app.organizationPage.header.cta.viewProjects.label,
+                to: "/workspaces/$workspaceSlug/projects",
+                params: { workspaceSlug },
+                label: app.workspacePage.header.cta.viewProjects.label,
                 isVisible: true,
-                isActive:
-                  pathname === `/organizations/${organizationSlug}/projects`,
+                isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
               },
               {
-                to: "/organizations/$organizationSlug/projects/$projectSlug",
-                params: { organizationSlug, projectSlug },
+                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                params: { workspaceSlug, projectSlug },
                 label: project?.name ?? projectSlug!,
                 isVisible: !!projectSlug,
                 isActive:
                   pathname ===
-                  `/organizations/${organizationSlug}/projects/${projectSlug}`,
+                  `/workspaces/${workspaceSlug}/projects/${projectSlug}`,
               },
             ],
           },
         ],
       },
     ],
-    [session, organization, organizationSlug, pathname, project, projectSlug],
+    [session, workspace, workspaceSlug, pathname, project, projectSlug],
   );
 
   return routes.filter((route) => route.isVisible);

@@ -17,10 +17,7 @@ import {
 import getSdk from "@/lib/graphql/getSdk";
 import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
-import {
-  organizationOptions,
-  organizationsOptions,
-} from "@/lib/options/organizations";
+import { workspaceOptions, workspacesOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
@@ -31,25 +28,25 @@ import { fetchSession } from "@/server/functions/auth";
 /** Schema for defining the shape of the create project form fields, as well as validating the form. */
 const createProjectSchema = z
   .object({
-    organizationId: uuidSchema,
+    workspaceId: uuidSchema,
     name: projectNameSchema,
     description: projectDescriptionSchema,
   })
-  .superRefine(async ({ organizationId, name }, ctx) => {
+  .superRefine(async ({ workspaceId, name }, ctx) => {
     const { session } = await fetchSession();
 
     const slug = generateSlug(name);
 
-    if (!organizationId.length || !slug?.length || !session) return z.NEVER;
+    if (!workspaceId.length || !slug?.length || !session) return z.NEVER;
 
     const sdk = await getSdk();
 
-    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
-      organizationId,
+    const { projectBySlugAndWorkspaceId } = await sdk.ProjectBySlug({
+      workspaceId,
       slug,
     });
 
-    if (projectBySlugAndOrganizationId) {
+    if (projectBySlugAndWorkspaceId) {
       ctx.addIssue({
         code: "custom",
         message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
@@ -59,16 +56,16 @@ const createProjectSchema = z
   });
 
 interface Props {
-  /** Slug of the organization to create the project under. */
-  organizationSlug: string;
+  /** Slug of the workspace to create the project under. */
+  workspaceSlug: string;
 }
 
 /**
  * Dialog for creating a new project.
  */
-const CreateProject = ({ organizationSlug }: Props) => {
+const CreateProject = ({ workspaceSlug }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout",
+    from: "/_auth/workspaces/$workspaceSlug/_layout",
   });
   const navigate = useNavigate();
 
@@ -78,20 +75,20 @@ const CreateProject = ({ organizationSlug }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
-  const { isOpen: isCreateOrganizationDialogOpen } = useDialogStore({
-    type: DialogType.CreateOrganization,
+  const { isOpen: isCreateWorkspaceDialogOpen } = useDialogStore({
+    type: DialogType.CreateWorkspace,
   });
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
 
-  const { data: organization } = useQuery({
-    ...organizationOptions({
-      slug: organizationSlug,
+  const { data: workspace } = useQuery({
+    ...workspaceOptions({
+      slug: workspaceSlug,
     }),
     enabled: !!session?.user?.rowId,
-    select: (data) => data?.organizationBySlug,
+    select: (data) => data?.workspaceBySlug,
   });
 
   useHotkeys(
@@ -101,23 +98,23 @@ const CreateProject = ({ organizationSlug }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateOrganizationDialogOpen && !!organization,
+      enabled: !isCreateWorkspaceDialogOpen && !!workspace,
       // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
       enableOnFormTags: true,
       // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [isOpen, isCreateOrganizationDialogOpen, organization],
+    [isOpen, isCreateWorkspaceDialogOpen, workspace],
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
     onSettled: () => {
-      // ! NB: needed to invalidate the number of projects for an organization
+      // ! NB: needed to invalidate the number of projects for a workspace
       queryClient?.invalidateQueries({
-        queryKey: organizationsOptions({
+        queryKey: workspacesOptions({
           userId: session?.user?.rowId!,
           isMember: true,
-          slug: organizationSlug,
+          slug: workspaceSlug,
           excludeRoles: [Role.Member],
         }).queryKey,
       });
@@ -126,7 +123,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      organizationId: organization?.rowId ?? "",
+      workspaceId: workspace?.rowId ?? "",
       name: "",
       description: "",
     },
@@ -137,7 +134,7 @@ const CreateProject = ({ organizationSlug }: Props) => {
     onSubmit: async ({ value }) =>
       toaster.promise(
         async () => {
-          // NB: status templates are now organization-level, so projects automatically
+          // NB: status templates are now workspace-level, so projects automatically
           // inherit them. No need to create per-project statuses.
           const { createProject: projectData } = await createProject({
             input: {
@@ -145,16 +142,16 @@ const CreateProject = ({ organizationSlug }: Props) => {
                 name: value.name,
                 description: value.description,
                 slug: generateSlug(value.name)!,
-                organizationId: value.organizationId,
+                workspaceId: value.workspaceId,
               },
             },
           });
 
           if (projectData) {
             navigate({
-              to: "/organizations/$organizationSlug/projects/$projectSlug",
+              to: "/workspaces/$workspaceSlug/projects/$projectSlug",
               params: {
-                organizationSlug: projectData.project?.organization?.slug!,
+                workspaceSlug: projectData.project?.workspace?.slug!,
                 projectSlug: projectData.project?.slug!,
               },
             });

@@ -11,12 +11,12 @@ import { authMiddleware } from "@/server/middleware";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const emailTemplate =
-  app.organizationInvitationsPage.cta.inviteMember.emailTemplate;
+  app.workspaceInvitationsPage.cta.inviteMember.emailTemplate;
 
 const inviteSchema = z.object({
   inviterUsername: z.string(),
   inviterEmail: z.email(),
-  organizationName: z.string(),
+  workspaceName: z.string(),
   recipientEmail: z.email(),
 });
 
@@ -37,21 +37,17 @@ export const Route = createFileRoute("/api/invite")({
             },
           );
 
-        const {
-          inviterEmail,
-          inviterUsername,
-          recipientEmail,
-          organizationName,
-        } = result.data;
+        const { inviterEmail, inviterUsername, recipientEmail, workspaceName } =
+          result.data;
 
         const { data, error } = await resend.emails.send({
           from: `${app.organization.name} Support <${FROM_EMAIL_ADDRESS}>`,
           to: TO_EMAIL_ADDRESS || recipientEmail,
-          subject: `${emailTemplate.subject.value1} ${organizationName} ${emailTemplate.subject.value2} ${app.name}`,
+          subject: `${emailTemplate.subject.value1} ${workspaceName} ${emailTemplate.subject.value2} ${app.name}`,
           react: InviteMemberEmailTemplate({
             inviterUsername,
             inviterEmail,
-            organizationName,
+            workspaceName,
             recipientEmail,
             // TODO: Route to sign in page
             inviteUrl: process.env.VITE_BASE_URL!,

@@ -49,10 +49,10 @@ const createFeedbackSchema = z.object({
  */
 const CreateFeedback = () => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
-  const { organizationSlug, projectSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
@@ -60,25 +60,25 @@ const CreateFeedback = () => {
     type: DialogType.CreateFeedback,
   });
   const { data: canCreateFeedback } = useQuery(
-    freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+    freeTierFeedbackOptions({ workspaceSlug, projectSlug }),
   );
 
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
-      organizationSlug,
+      workspaceSlug,
     }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
   const projectId = project?.rowId;
-  const organizationId = project?.organization?.rowId;
+  const workspaceId = project?.workspace?.rowId;
 
   const { data: defaultStatusTemplateId } = useQuery({
     ...projectStatusesOptions({
-      organizationId: organizationId!,
+      workspaceId: workspaceId!,
     }),
-    enabled: !!organizationId,
+    enabled: !!workspaceId,
     select: (data) => {
       // find the default status from project status configs, or fall back to first template
       const templates = data?.statusTemplates?.nodes;
@@ -103,7 +103,7 @@ const CreateFeedback = () => {
           queryKey: projectMetricsOptions({ projectId: projectId! }).queryKey,
         }),
         queryClient.invalidateQueries(
-          freeTierFeedbackOptions({ organizationSlug, projectSlug }),
+          freeTierFeedbackOptions({ workspaceSlug, projectSlug }),
         ),
       ]);
 

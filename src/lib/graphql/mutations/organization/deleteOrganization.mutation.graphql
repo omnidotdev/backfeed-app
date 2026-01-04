@@ -1,7 +1,0 @@
-mutation DeleteOrganization($rowId: UUID!) {
-  deleteOrganization(input: { rowId: $rowId }) {
-    organization {
-      rowId
-    }
-  }
-}

@@ -9,7 +9,7 @@ import useHandleSearch from "@/lib/hooks/useHandleSearch";
  */
 const ProjectFilters = () => {
   const search = useSearch({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
     select: ({ search }) => search,
   });
 

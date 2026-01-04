@@ -14,7 +14,7 @@ interface Props {
 }
 
 /**
- * Organization action. This action is destructive and cannot be undone.
+ * Workspace action. This action is destructive and cannot be undone.
  */
 const DangerZoneAction = ({ title, description, actionProps }: Props) => (
   <HStack alignItems="center" justifyContent="space-between">

@@ -1,6 +1,6 @@
-query ProjectStatuses($organizationId: UUID!, $isEnabled: Boolean) {
+query ProjectStatuses($workspaceId: UUID!, $isEnabled: Boolean) {
   statusTemplates(
-    condition: { organizationId: $organizationId }
+    condition: { workspaceId: $workspaceId }
     orderBy: [SORT_ORDER_ASC, CREATED_AT_ASC]
   ) {
     nodes {

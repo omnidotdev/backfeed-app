@@ -1,0 +1,43 @@
+query Workspaces(
+  $pageSize: Int
+  $offset: Int
+  $orderBy: [WorkspaceOrderBy!]
+  $isMember: Boolean
+  $userId: UUID
+  $excludeRoles: [Role!]
+  $search: String
+  $slug: String
+  $workspaceId: UUID
+) {
+  workspaces(
+    first: $pageSize
+    offset: $offset
+    orderBy: $orderBy
+    filter: {
+      rowId: { equalTo: $workspaceId }
+      name: { includesInsensitive: $search }
+      slug: { equalTo: $slug }
+      or: [
+        {
+          membersExist: $isMember
+          members: {
+            some: {
+              userId: { equalTo: $userId }
+              role: { notIn: $excludeRoles }
+            }
+          }
+        }
+        { rowId: { isNull: $isMember } }
+      ]
+    }
+  ) {
+    totalCount
+    nodes {
+      ...Workspace
+      updatedAt
+      projects {
+        totalCount
+      }
+    }
+  }
+}

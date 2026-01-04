@@ -52,11 +52,11 @@ interface Props extends CollapsibleProps {
  * Create reply form.
  */
 const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
-  const { organizationSlug, projectSlug, feedbackId } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
@@ -78,7 +78,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
         }),
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            organizationSlug,
+            workspaceSlug,
             projectSlug,
             feedbackId,
           }),

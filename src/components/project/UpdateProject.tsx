@@ -36,10 +36,10 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
  */
 const UpdateProject = () => {
   const { queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
   });
-  const { organizationSlug, projectSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/settings",
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
   });
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ const UpdateProject = () => {
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
-      organizationSlug,
+      workspaceSlug,
     }),
     placeholderData: keepPreviousData,
     select: (data) => data.projects?.nodes?.[0],
@@ -79,7 +79,7 @@ const UpdateProject = () => {
       projectSocials: (project?.projectSocials?.nodes?.length
         ? project?.projectSocials?.nodes
         : [DEFAULT_PENDING_SOCIAL]) as ProjectSocial[],
-      organizationSlug: project?.organization?.slug ?? "",
+      workspaceSlug: project?.workspace?.slug ?? "",
       currentSlug: project?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
@@ -131,8 +131,8 @@ const UpdateProject = () => {
         formApi.reset();
 
         navigate({
-          to: "/organizations/$organizationSlug/projects/$projectSlug/settings",
-          params: { organizationSlug, projectSlug: generateSlug(value.name)! },
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+          params: { workspaceSlug, projectSlug: generateSlug(value.name)! },
           replace: true,
         });
       } catch (err) {

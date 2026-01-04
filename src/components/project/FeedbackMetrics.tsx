@@ -13,7 +13,7 @@ import { projectMetricsOptions } from "@/lib/options/projects";
  */
 const FeedbackMetrics = () => {
   const { projectId } = useLoaderData({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const { data: projectMetrics, isError } = useQuery({

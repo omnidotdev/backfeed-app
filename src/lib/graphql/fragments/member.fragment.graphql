@@ -1,6 +1,6 @@
 fragment Member on Member {
   rowId
-  organizationId
+  workspaceId
   userId
   role
   user {

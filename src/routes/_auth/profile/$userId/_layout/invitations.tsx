@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import Page from "@/components/layout/Page";
-import OrganizationInvites from "@/components/profile/OrganizationInvites";
+import WorkspaceInvites from "@/components/profile/WorkspaceInvites";
 import app from "@/lib/config/app.config";
 import { invitationsOptions } from "@/lib/options/invitations";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -28,7 +28,7 @@ function UserInvitationsPage() {
       }}
       pt={0}
     >
-      <OrganizationInvites />
+      <WorkspaceInvites />
     </Page>
   );
 }

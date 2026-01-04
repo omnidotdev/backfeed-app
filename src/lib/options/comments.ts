@@ -32,23 +32,20 @@ export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
   });
 
 export const freeTierCommentsOptions = ({
-  organizationSlug,
+  workspaceSlug,
   projectSlug,
   feedbackId,
 }: {
-  organizationSlug: string;
+  workspaceSlug: string;
   projectSlug: string;
   feedbackId: string;
 }) =>
   queryOptions({
-    queryKey: [
-      "FreeTierComments",
-      { organizationSlug, projectSlug, feedbackId },
-    ],
+    queryKey: ["FreeTierComments", { workspaceSlug, projectSlug, feedbackId }],
     queryFn: async () => {
       try {
         const { projects } = await useProjectQuery.fetcher({
-          organizationSlug,
+          workspaceSlug,
           projectSlug,
         })();
 
@@ -56,7 +53,7 @@ export const freeTierCommentsOptions = ({
 
         const project = projects.nodes[0]!;
 
-        const subscriptionTier = project.organization?.tier;
+        const subscriptionTier = project.workspace?.tier;
 
         const { post: feedback } = await useFeedbackByIdQuery.fetcher({
           rowId: feedbackId,

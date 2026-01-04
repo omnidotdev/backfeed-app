@@ -20,10 +20,10 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { slug, organization, name, description, posts },
+  project: { slug, workspace, name, description, posts },
 }: Props) => {
   const { hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
   });
 
   const AGGREGATES = [
@@ -55,9 +55,9 @@ const ProjectListItem = ({
         <HStack alignItems="center" justify="space-between">
           <Stack maxW="65svw">
             <Link
-              to="/organizations/$organizationSlug/projects/$projectSlug"
+              to="/workspaces/$workspaceSlug/projects/$projectSlug"
               params={{
-                organizationSlug: organization?.slug!,
+                workspaceSlug: workspace?.slug!,
                 projectSlug: slug!,
               }}
               role="group"
@@ -81,9 +81,9 @@ const ProjectListItem = ({
           {hasAdminPrivileges && (
             <Flex position="absolute" right={0} top={0} m={2}>
               <Link
-                to="/organizations/$organizationSlug/projects/$projectSlug/settings"
+                to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
                 params={{
-                  organizationSlug: organization?.slug!,
+                  workspaceSlug: workspace?.slug!,
                   projectSlug: slug!,
                 }}
               >

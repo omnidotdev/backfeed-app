@@ -1,8 +1,8 @@
 import { Button, Icon } from "@omnidev/sigil";
 import { useState } from "react";
 
-import CreateOrganization from "@/components/organization/CreateOrganization";
 import CreatePaidSubscription from "@/components/pricing/CreatePaidSubscription";
+import CreateWorkspace from "@/components/workspace/CreateWorkspace";
 import { Tier } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -23,18 +23,18 @@ const TierCallToAction = ({ priceId, tier, actionIcon, ...rest }: Props) => {
   const [isPaidSubscriptionDialogOpen, setIsPaidSubscriptionDialogOpen] =
     useState(false);
 
-  const { setIsOpen: setIsCreateOrganizationOpen } = useDialogStore({
-    type: DialogType.CreateOrganization,
+  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+    type: DialogType.CreateWorkspace,
   });
 
   if (tier === Tier.Free) {
     return (
       <>
-        <Button onClick={() => setIsCreateOrganizationOpen(true)} {...rest}>
-          Create a Free Organization
+        <Button onClick={() => setIsCreateWorkspaceOpen(true)} {...rest}>
+          Create a Free Workspace
         </Button>
 
-        <CreateOrganization isHotkeyEnabled={false} />
+        <CreateWorkspace isHotkeyEnabled={false} />
       </>
     );
   }

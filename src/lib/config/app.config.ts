@@ -33,7 +33,7 @@ const app = {
       id: {
         format: "Invalid UUID format.",
       },
-      organization: {
+      workspace: {
         name: {
           minLength: "Must be at least 3 characters.",
           maxLength: "Must be at most 90 characters.",
@@ -96,7 +96,7 @@ const app = {
       invitations: {
         title: "Invitations",
         noInvites: "No new invitations",
-        description: "You’ve been invited to join these organizations.",
+        description: "You've been invited to join these workspaces.",
         join: "Join",
       },
     },
@@ -153,13 +153,13 @@ const app = {
   dashboardPage: {
     welcomeMessage: "Welcome back",
     description: "Here's what's happening with your feedback today.",
-    organizations: {
-      title: "Organizations",
-      description: "Quickly view organizations that you are a member of",
+    workspaces: {
+      title: "Workspaces",
+      description: "Quickly view workspaces that you are a member of",
       emptyState: {
-        message: "No organizations found. Would you like to create one?",
+        message: "No workspaces found. Would you like to create one?",
         cta: {
-          label: "Create Organization",
+          label: "Create Workspace",
         },
       },
     },
@@ -181,41 +181,41 @@ const app = {
       },
     },
     cta: {
-      viewOrganizations: {
-        label: "View All Organizations",
+      viewWorkspaces: {
+        label: "View All Workspaces",
       },
-      newOrganization: {
+      newWorkspace: {
         action: {
-          submit: "Create Organization",
-          pending: "Creating Organization...",
+          submit: "Create Workspace",
+          pending: "Creating Workspace...",
           success: {
             title: "Success!",
-            description: "Your organization has been successfully created.",
+            description: "Your workspace has been successfully created.",
           },
           error: {
             title: "Error",
-            description: "An error occurred while creating your organization.",
+            description: "An error occurred while creating your workspace.",
           },
         },
-        label: "New Organization",
-        description: "Create a new organization",
-        organizationName: {
-          id: "Organization Name",
+        label: "New Workspace",
+        description: "Create a new workspace",
+        workspaceName: {
+          id: "Workspace Name",
           placeholder: "Omni",
           errors: {
             minLength: "Must be at least 3 characters.",
             maxLength: "Must be at most 90 characters.",
-            invalidFormat: "Invalid organization name.",
+            invalidFormat: "Invalid workspace name.",
           },
         },
-        organizationSlug: {
-          id: "Organization Slug",
+        workspaceSlug: {
+          id: "Workspace Slug",
           placeholder: "omni-dev",
           error: {
             invalidFormat: "Invalid slug format.",
             minLength: "Must be at least 3 characters.",
             maxLength: "Must be at most 50 characters.",
-            duplicate: "Organization already exists.",
+            duplicate: "Workspace already exists.",
           },
         },
       },
@@ -235,16 +235,16 @@ const app = {
         },
         label: "New Project",
         description: "Create a new project",
-        selectOrganization: {
+        selectWorkspace: {
           label: {
-            id: "organizations",
-            singular: "Organization",
-            plural: "Organizations",
+            id: "workspaces",
+            singular: "Workspace",
+            plural: "Workspaces",
           },
-          placeholder: "Select an organization",
-          error: "Please select an organization.",
+          placeholder: "Select a workspace",
+          error: "Please select a workspace.",
         },
-        organizationId: {
+        workspaceId: {
           error: {
             max: "Maximum number of projects reached.",
           },
@@ -318,15 +318,15 @@ const app = {
   },
   profileInvitationsPage: {
     breadcrumb: "Invitations",
-    description: "View and manage your organization invitations.",
+    description: "View and manage your workspace invitations.",
     table: {
       headers: {
-        organizationName: "Organization Name",
+        workspaceName: "Workspace Name",
         invitationDate: "Invitation Date",
         actions: "Actions",
       },
       emptyState: {
-        label: "No organization invites found.",
+        label: "No workspace invites found.",
       },
       actions: {
         accept: {
@@ -338,9 +338,9 @@ const app = {
       },
     },
   },
-  profileOrganizationsPage: {
-    breadcrumb: "Organizations",
-    description: "View and manage your organizations.",
+  profileWorkspacesPage: {
+    breadcrumb: "Workspaces",
+    description: "View and manage your workspaces.",
     table: {
       headers: {
         productName: "Product Name",
@@ -349,7 +349,7 @@ const app = {
       },
       emptyState: {
         label:
-          "No currently owned organizations. Create a new organization to get started.",
+          "No currently owned workspaces. Create a new workspace to get started.",
       },
       actions: {
         subscribe: {
@@ -361,29 +361,29 @@ const app = {
       },
     },
   },
-  organizationsPage: {
-    breadcrumb: "Organizations",
+  workspacesPage: {
+    breadcrumb: "Workspaces",
     header: {
-      title: "Organizations",
+      title: "Workspaces",
       cta: {
-        newOrganization: {
-          label: "New Organization",
+        newWorkspace: {
+          label: "New Workspace",
         },
       },
     },
     emptyState: {
-      message: "No organizations found. Would you like to create one?",
+      message: "No workspaces found. Would you like to create one?",
       cta: {
-        label: "Create Organization",
+        label: "Create Workspace",
       },
     },
     filters: {
       search: {
-        placeholder: "Search all organizations...",
+        placeholder: "Search all workspaces...",
       },
     },
   },
-  organizationPage: {
+  workspacePage: {
     header: {
       cta: {
         viewProjects: {
@@ -398,11 +398,11 @@ const app = {
     },
     projects: {
       title: "Projects",
-      description: "Manage projects across this organization",
+      description: "Manage projects across this workspace",
       emptyState: {
-        organizationOwnerMessage:
+        workspaceOwnerMessage:
           "No projects found. Would you like to create one?",
-        organizationUserMessage: "No projects found.",
+        workspaceUserMessage: "No projects found.",
         tooltip: "Upgrade your plan to create a project.",
         cta: {
           label: "Create Project",
@@ -410,9 +410,9 @@ const app = {
       },
     },
     metrics: {
-      title: "Organization Metrics",
+      title: "Workspace Metrics",
       description:
-        "Overview of all projects and feedback within this organization",
+        "Overview of all projects and feedback within this workspace",
       data: {
         totalProjects: {
           title: "Total Projects",
@@ -427,12 +427,12 @@ const app = {
     },
     management: {
       title: {
-        member: "Organization Management",
-        anon: "Organization Details",
+        member: "Workspace Management",
+        anon: "Workspace Details",
       },
       description: {
-        member: "Manage organization details, members, and more",
-        anon: "View organization members and projects",
+        member: "Manage workspace details, members, and more",
+        anon: "View workspace members and projects",
       },
       cta: {
         manageTeam: {
@@ -447,12 +447,12 @@ const app = {
       },
     },
   },
-  organizationMembersPage: {
+  workspaceMembersPage: {
     breadcrumb: "Members",
-    description: "View and manage the organization's members and their roles.",
+    description: "View and manage the workspace's members and their roles.",
     filters: {
       search: {
-        placeholder: "Search all organization members...",
+        placeholder: "Search all workspace members...",
       },
       role: {
         placeholder: "Select Roles",
@@ -461,7 +461,7 @@ const app = {
     membersMenu: {
       makeAdmin: "Give administrative privileges",
       removeAdmin: "Remove administrative privileges",
-      removeMember: "Remove from organization",
+      removeMember: "Remove from workspace",
     },
     ownersTable: {
       headers: {
@@ -478,7 +478,7 @@ const app = {
     cta: {
       addOwner: {
         title: "Add Owner",
-        description: "Add a new owner to your organization.",
+        description: "Add a new owner to your workspace.",
         label: "New Owner",
         noMembersFound: "No members found",
         comboboxLabel: {
@@ -496,7 +496,7 @@ const app = {
       },
     },
   },
-  organizationSettingsPage: {
+  workspaceSettingsPage: {
     breadcrumb: "Settings",
     dangerZone: {
       title: "Danger Zone",
@@ -504,61 +504,61 @@ const app = {
         "Below are destructive actions that are irreversible and cannot be undone.",
     },
     cta: {
-      updateOrganization: {
-        title: "Update Organization",
-        memberTitle: "Organization Details",
+      updateWorkspace: {
+        title: "Update Workspace",
+        memberTitle: "Workspace Details",
         action: {
-          submit: "Update Organization",
-          pending: "Updating Organization...",
+          submit: "Update Workspace",
+          pending: "Updating Workspace...",
         },
         fields: {
-          organizationName: {
-            label: "Organization Name",
+          workspaceName: {
+            label: "Workspace Name",
             errors: {
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 90 characters.",
-              invalid: "Invalid organization name.",
+              invalid: "Invalid workspace name.",
             },
           },
-          organizationSlug: {
-            label: "Organization Slug",
+          workspaceSlug: {
+            label: "Workspace Slug",
             errors: {
               invalidFormat: "Invalid slug format.",
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 50 characters.",
-              duplicate: "Organization already exists.",
+              duplicate: "Workspace already exists.",
             },
           },
         },
       },
-      deleteOrganization: {
-        title: "Delete Organization",
+      deleteWorkspace: {
+        title: "Delete Workspace",
         description:
-          "The organization will be permanently deleted, including its projects, posts and comments.",
+          "The workspace will be permanently deleted, including its projects, posts and comments.",
         actionLabel: "Delete",
         destruciveAction: {
-          title: "Delete Organization",
-          description: "Are you sure you want to delete this organization?",
+          title: "Delete Workspace",
+          description: "Are you sure you want to delete this workspace?",
           actionLabel: "Delete",
-          prompt: "permanently delete organization",
+          prompt: "permanently delete workspace",
         },
       },
-      leaveOrganization: {
-        title: "Leave Organization",
+      leaveWorkspace: {
+        title: "Leave Workspace",
         description:
-          "You will no longer have access to this organization and its projects.",
+          "You will no longer have access to this workspace and its projects.",
         actionLabel: "Leave",
         destruciveAction: {
-          title: "Leave Organization",
-          description: "Are you sure you want to leave this organization?",
+          title: "Leave Workspace",
+          description: "Are you sure you want to leave this workspace?",
           actionLabel: "Leave",
         },
       },
     },
   },
-  organizationInvitationsPage: {
+  workspaceInvitationsPage: {
     breadcrumb: "Invitations",
-    description: "View and manage the organization's invitations.",
+    description: "View and manage the workspace's invitations.",
     invitationsMenu: {
       resend: "Resend",
       delete: "Delete",
@@ -573,7 +573,7 @@ const app = {
       inviteMember: {
         title: "Invite Members",
         description:
-          "Invite new members to your organization. Enter emails individually, or paste up to 10 comma-separated emails.",
+          "Invite new members to your workspace. Enter emails individually, or paste up to 10 comma-separated emails.",
         form: {
           email: {
             label: "Email(s)",
@@ -608,13 +608,13 @@ const app = {
           },
           subject: {
             value1: "You have been invited to join the",
-            value2: "organization on",
+            value2: "workspace on",
           },
-          heading: "Join **{organizationName}** on **Backfeed**",
+          heading: "Join **{workspaceName}** on **Backfeed**",
           greeting: "Hello",
           statement:
-            "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{organizationName}** on **Backfeed**.",
-          cta: "Join the organization",
+            "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{workspaceName}** on **Backfeed**.",
+          cta: "Join the workspace",
           supportMessagePrefix:
             "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please email us at ",
           supportEmail: "support@omni.dev",
@@ -646,7 +646,7 @@ const app = {
         gdpr: "GDPR Compliance",
         communitySupport: "Community Support",
         unlimitedFeedback: "Unlimited Feedback",
-        unlimitedOrgs: "Unlimited Organizations",
+        unlimitedWorkspaces: "Unlimited Workspaces",
         unlimitedProjects: "Unlimited Projects",
         webhooks: "Webhooks",
         apiAccess: "API Access",
@@ -705,9 +705,8 @@ const app = {
       },
     },
     emptyState: {
-      organizationOwnerMessage:
-        "No projects found. Would you like to create one?",
-      organizationUserMessage: "No projects found.",
+      workspaceOwnerMessage: "No projects found. Would you like to create one?",
+      workspaceUserMessage: "No projects found.",
       cta: {
         label: "Create Project",
       },

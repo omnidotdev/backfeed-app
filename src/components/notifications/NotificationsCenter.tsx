@@ -31,13 +31,13 @@ const NotificationCenter = () => {
     select: (data) =>
       data?.invitations?.nodes.map((inv) => ({
         rowId: inv?.rowId!,
-        organizationId: inv?.organizationId!,
+        workspaceId: inv?.workspaceId!,
         // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
-        message: `${invitations.join} ${inv?.organization?.name}`,
+        message: `${invitations.join} ${inv?.workspace?.name}`,
       })) ?? [],
   });
 
-  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new workspace they are now a part of
   const onSettled = async () => queryClient.invalidateQueries();
 
   const { mutate: acceptInvitation } = useCreateMemberMutation({ onSettled });
@@ -125,7 +125,7 @@ const NotificationCenter = () => {
                       input: {
                         member: {
                           userId: session?.user?.rowId!,
-                          organizationId: notification.organizationId,
+                          workspaceId: notification.workspaceId,
                           role: Role.Member,
                         },
                       },

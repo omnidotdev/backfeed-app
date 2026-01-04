@@ -31,7 +31,7 @@ const Breadcrumb = ({ breadcrumbs }: Props) => (
       const isLastItem = breadcrumbs.length - 1 === index;
 
       return (
-        // biome-ignore lint/suspicious/noArrayIndexKey: index used in the key in case an organization and project have the same label
+        // biome-ignore lint/suspicious/noArrayIndexKey: index used in the key in case a workspace and project have the same label
         <Flex key={`${label}-${index}`} align="center">
           <Icon
             src={LuChevronRight}

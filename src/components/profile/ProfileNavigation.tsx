@@ -92,12 +92,12 @@ const ProfileNavigation = ({
       },
     },
     {
-      label: app.profileOrganizationsPage.breadcrumb,
+      label: app.profileWorkspacesPage.breadcrumb,
       icon: PiCreditCardLight,
       onClick: () => {
         onClose?.();
         navigate({
-          to: "/profile/$userId/organizations",
+          to: "/profile/$userId/workspaces",
           params: { userId },
         });
       },

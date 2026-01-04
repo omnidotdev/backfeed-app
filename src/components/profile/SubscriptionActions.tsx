@@ -29,22 +29,22 @@ import {
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
-import type { OrganizationRow } from "@/components/profile/UserOrganizations";
+import type { WorkspaceRow } from "@/components/profile/UserWorkspaces";
 
 interface Props {
-  /** Organization details. */
-  organization: OrganizationRow;
+  /** Workspace details. */
+  workspace: WorkspaceRow;
 }
 
 /**
- * Actions a user may perform for an organization-level subscription.
+ * Actions a user may perform for a workspace-level subscription.
  */
-const SubscriptionActions = ({ organization }: Props) => {
+const SubscriptionActions = ({ workspace }: Props) => {
   const { session } = useRouteContext({
-    from: "/_auth/profile/$userId/_layout/organizations",
+    from: "/_auth/profile/$userId/_layout/workspaces",
   });
   const { prices } = useLoaderData({
-    from: "/_auth/profile/$userId/_layout/organizations",
+    from: "/_auth/profile/$userId/_layout/workspaces",
   });
   const navigate = useNavigate();
 
@@ -55,8 +55,8 @@ const SubscriptionActions = ({ organization }: Props) => {
       mutationFn: async () => {
         const portalUrl = await getBillingPortalUrl({
           data: {
-            organizationId: organization.rowId,
-            returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
+            workspaceId: workspace.rowId,
+            returnUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/workspaces`,
           },
         });
 
@@ -72,9 +72,9 @@ const SubscriptionActions = ({ organization }: Props) => {
     mutationFn: async ({ priceId }: { priceId: string }) => {
       const checkoutUrl = await getCreateSubscriptionUrl({
         data: {
-          organizationId: organization.rowId,
+          workspaceId: workspace.rowId,
           priceId,
-          successUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/organizations`,
+          successUrl: `${BASE_URL}/profile/${session?.user?.identityProviderId}/workspaces`,
         },
       });
 
@@ -90,14 +90,14 @@ const SubscriptionActions = ({ organization }: Props) => {
     mutationFn: async () =>
       await renewSubscription({
         data: {
-          subscriptionId: organization.subscriptionId!,
+          subscriptionId: workspace.subscriptionId!,
         },
       }),
   });
 
   return (
     <HStack py={2} justify="center">
-      {organization.subscription.toBeCanceled ? (
+      {workspace.subscription.toBeCanceled ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -130,7 +130,7 @@ const SubscriptionActions = ({ organization }: Props) => {
         >
           Renew Subscription
         </Tooltip>
-      ) : organization.subscriptionId ? (
+      ) : workspace.subscriptionId ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -274,8 +274,8 @@ const SubscriptionActions = ({ organization }: Props) => {
             px={0}
             disabled={
               isBillingPortalPending ||
-              !organization.subscriptionId ||
-              organization.subscription.toBeCanceled
+              !workspace.subscriptionId ||
+              workspace.subscription.toBeCanceled
             }
             onClick={async () => await openBillingPortal()}
           >
@@ -286,14 +286,14 @@ const SubscriptionActions = ({ organization }: Props) => {
           style: { all: "unset" },
           disabled:
             isBillingPortalPending ||
-            !organization.subscriptionId ||
-            organization.subscription.toBeCanceled,
+            !workspace.subscriptionId ||
+            workspace.subscription.toBeCanceled,
         }}
         contentProps={{
           display:
             isBillingPortalPending ||
-            !organization.subscriptionId ||
-            organization.subscription.toBeCanceled
+            !workspace.subscriptionId ||
+            workspace.subscription.toBeCanceled
               ? "none"
               : undefined,
           zIndex: "foreground",

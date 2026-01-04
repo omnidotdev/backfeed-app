@@ -1,0 +1,13 @@
+query WorkspaceMetrics($workspaceId: UUID!) {
+  projects(condition: { workspaceId: $workspaceId }) {
+    totalCount
+  }
+
+  posts(filter: { project: { workspaceId: { equalTo: $workspaceId } } }) {
+    totalCount
+  }
+
+  members(condition: { workspaceId: $workspaceId }) {
+    totalCount
+  }
+}

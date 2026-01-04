@@ -1,0 +1,8 @@
+mutation LeaveWorkspace($rowId: UUID!) {
+  deleteMember(input: { rowId: $rowId }) {
+    member {
+      userId
+      workspaceId
+    }
+  }
+}

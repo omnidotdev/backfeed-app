@@ -33,14 +33,14 @@ import type {
  */
 const Comments = () => {
   const { session } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
-  const { organizationSlug, projectSlug, feedbackId } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { data: canCreateComment } = useQuery(
-    freeTierCommentsOptions({ projectSlug, organizationSlug, feedbackId }),
+    freeTierCommentsOptions({ projectSlug, workspaceSlug, feedbackId }),
   );
 
   const {

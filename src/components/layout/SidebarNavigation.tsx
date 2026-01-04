@@ -25,8 +25,8 @@ const SidebarNavigation = () => {
   });
 
   const {
-    isOpen: isOrganizationContentOpen,
-    onToggle: toggleisOrganizationContentOpen,
+    isOpen: isWorkspaceContentOpen,
+    onToggle: toggleIsWorkspaceContentOpen,
   } = useDisclosure({
     defaultIsOpen: true,
   });
@@ -44,9 +44,9 @@ const SidebarNavigation = () => {
             <Collapsible
               key={label}
               unmountOnExit
-              open={isOrganizationContentOpen}
+              open={isWorkspaceContentOpen}
               onOpenChange={() => {
-                toggleisOrganizationContentOpen();
+                toggleIsWorkspaceContentOpen();
                 isProjectContentOpen && toggleisProjectContentOpen();
               }}
               trigger={
@@ -66,7 +66,7 @@ const SidebarNavigation = () => {
                   <Flex
                     transitionDuration="normal"
                     transform={
-                      isOrganizationContentOpen ? "rotate(90deg)" : "none"
+                      isWorkspaceContentOpen ? "rotate(90deg)" : "none"
                     }
                   >
                     <Icon src={FiChevronRight} />
