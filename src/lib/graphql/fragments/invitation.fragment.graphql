@@ -1,8 +1,8 @@
 fragment Invitation on Invitation {
   rowId
   email
-  organizationId
-  organization {
+  workspaceId
+  workspace {
     name
   }
   createdAt

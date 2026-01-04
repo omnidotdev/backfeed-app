@@ -36,18 +36,18 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
   });
 
 export const freeTierFeedbackOptions = ({
-  organizationSlug,
+  workspaceSlug,
   projectSlug,
 }: {
-  organizationSlug: string;
+  workspaceSlug: string;
   projectSlug: string;
 }) =>
   queryOptions({
-    queryKey: ["FreeTierFeedback", { organizationSlug, projectSlug }],
+    queryKey: ["FreeTierFeedback", { workspaceSlug, projectSlug }],
     queryFn: async () => {
       try {
         const { projects } = await useProjectQuery.fetcher({
-          organizationSlug,
+          workspaceSlug,
           projectSlug,
         })();
 
@@ -55,7 +55,7 @@ export const freeTierFeedbackOptions = ({
 
         const project = projects.nodes[0];
 
-        const subscriptionTier = project?.organization?.tier;
+        const subscriptionTier = project?.workspace?.tier;
 
         const activeUserCount = Number(
           project?.posts.aggregates?.distinctCount?.userId ?? 0,
@@ -78,7 +78,7 @@ export const freeTierFeedbackOptions = ({
         return false;
       }
 
-      // NB: If the organization is on the `free` tier, then there is a maximum of 15 unique users that are allowed to provide feedback.
+      // NB: If the workspace is on the `free` tier, then there is a maximum of 15 unique users that are allowed to provide feedback.
       // This first checks if the user has already provided feedback (if so, allow user to submit more feedback), and then checks against the total number of unique users to provide feedback
       if (data.subscriptionTier === Tier.Free) {
         return (

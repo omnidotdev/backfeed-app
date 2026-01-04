@@ -1,0 +1,10 @@
+fragment Workspace on Workspace {
+  rowId
+  name
+  slug
+  tier
+  subscriptionId
+  members {
+    totalCount
+  }
+}

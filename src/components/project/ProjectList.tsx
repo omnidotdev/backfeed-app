@@ -22,14 +22,14 @@ interface Props {
  * Project list.
  */
 const ProjectList = ({ canCreateProjects }: Props) => {
-  const { organizationSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/",
+  const { workspaceSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
   });
   const { page, pageSize, search } = useSearch({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
   });
   const navigate = useNavigate({
-    from: "/organizations/$organizationSlug/projects",
+    from: "/workspaces/$workspaceSlug/projects",
   });
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -40,7 +40,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     ...projectsOptions({
       pageSize,
       offset: (page - 1) * pageSize,
-      organizationSlug,
+      workspaceSlug,
       search,
     }),
     placeholderData: keepPreviousData,
@@ -67,8 +67,8 @@ const ProjectList = ({ canCreateProjects }: Props) => {
       <EmptyState
         message={
           canCreateProjects
-            ? app.projectsPage.emptyState.organizationOwnerMessage
-            : app.projectsPage.emptyState.organizationUserMessage
+            ? app.projectsPage.emptyState.workspaceOwnerMessage
+            : app.projectsPage.emptyState.workspaceUserMessage
         }
         action={
           canCreateProjects

@@ -2,7 +2,7 @@ mutation CreateInvitation($input: CreateInvitationInput!) {
   createInvitation(input: $input) {
     invitation {
       email
-      organizationId
+      workspaceId
     }
   }
 }

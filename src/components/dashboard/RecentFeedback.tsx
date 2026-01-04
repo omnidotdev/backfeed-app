@@ -70,9 +70,9 @@ const RecentFeedback = () => {
               {recentFeedback?.map((feedback) => (
                 <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
                   <Link
-                    to="/organizations/$organizationSlug/projects/$projectSlug/$feedbackId"
+                    to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
                     params={{
-                      organizationSlug: feedback?.project?.organization?.slug!,
+                      workspaceSlug: feedback?.project?.workspace?.slug!,
                       projectSlug: feedback?.project?.slug!,
                       feedbackId: feedback?.rowId!,
                     }}

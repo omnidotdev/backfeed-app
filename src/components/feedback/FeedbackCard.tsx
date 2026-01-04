@@ -85,10 +85,10 @@ const FeedbackCard = ({
   ...rest
 }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout",
+    from: "/_auth/workspaces/$workspaceSlug/_layout",
   });
   const {
-    organizationSlug,
+    workspaceSlug,
     projectSlug,
     feedbackId: isFeedbackRoute,
   } = useParams({ strict: false });
@@ -121,9 +121,9 @@ const FeedbackCard = ({
       onSuccess: () => {
         if (isFeedbackRoute) {
           navigate({
-            to: "/organizations/$organizationSlug/projects/$projectSlug",
+            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
             params: {
-              organizationSlug: organizationSlug!,
+              workspaceSlug: workspaceSlug!,
               projectSlug: projectSlug!,
             },
           });

@@ -2,7 +2,7 @@ query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
   posts(
     filter: {
       project: {
-        organization: { members: { some: { userId: { equalTo: $userId } } } }
+        workspace: { members: { some: { userId: { equalTo: $userId } } } }
       }
       createdAt: { greaterThanOrEqualTo: $startDate }
     }

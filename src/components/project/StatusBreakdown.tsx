@@ -30,16 +30,16 @@ interface Status {
  * Feedback status breakdown for a project.
  */
 const StatusBreakdown = () => {
-  const { organizationId, projectId } = useLoaderData({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+  const { workspaceId, projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const excludedStatuses = useSearch({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
     select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({
-    from: "/organizations/$organizationSlug/projects/$projectSlug",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const handleToggleStatus = useDebounceCallback(
@@ -69,7 +69,7 @@ const StatusBreakdown = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      organizationId,
+      workspaceId,
     }),
     select: (data) =>
       data?.statusTemplates?.nodes?.map((status) => ({

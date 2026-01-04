@@ -5,7 +5,7 @@ query RecentFeedback($userId: UUID!, $after: Cursor) {
     orderBy: CREATED_AT_DESC
     filter: {
       project: {
-        organization: { members: { some: { userId: { equalTo: $userId } } } }
+        workspace: { members: { some: { userId: { equalTo: $userId } } } }
       }
     }
   ) {
@@ -23,7 +23,7 @@ query RecentFeedback($userId: UUID!, $after: Cursor) {
         project {
           name
           slug
-          organization {
+          workspace {
             slug
           }
         }

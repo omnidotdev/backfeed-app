@@ -71,16 +71,16 @@ const SORT_BY_OPTIONS = [
  */
 const ProjectFeedback = () => {
   const { session, hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
-  const { organizationSlug, projectSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { excludedStatuses, search, orderBy } = useSearch({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const navigate = useNavigate({
-    from: "/organizations/$organizationSlug/projects/$projectSlug",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const { viewState } = useProjectViewStore(({ viewState }) => ({
@@ -88,7 +88,7 @@ const ProjectFeedback = () => {
   }));
 
   const { data: project } = useQuery({
-    ...projectOptions({ organizationSlug, projectSlug }),
+    ...projectOptions({ workspaceSlug, projectSlug }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
@@ -96,16 +96,16 @@ const ProjectFeedback = () => {
 
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
-      organizationSlug,
+      workspaceSlug,
       projectSlug,
     }),
   );
 
   const { data: defaultStatus } = useQuery({
     ...projectStatusesOptions({
-      organizationId: project?.organization?.rowId!,
+      workspaceId: project?.workspace?.rowId!,
     }),
-    enabled: !!project?.organization?.rowId,
+    enabled: !!project?.workspace?.rowId,
     select: (data) => {
       // find the default status from project status configs, or fall back to first template
       const templates = data?.statusTemplates?.nodes;
@@ -191,9 +191,9 @@ const ProjectFeedback = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      organizationId: project?.organization?.rowId!,
+      workspaceId: project?.workspace?.rowId!,
     }),
-    enabled: hasAdminPrivileges && !!project?.organization?.rowId,
+    enabled: hasAdminPrivileges && !!project?.workspace?.rowId,
     select: (data) =>
       data?.statusTemplates?.nodes.map((status) => ({
         rowId: status?.rowId,
@@ -373,9 +373,9 @@ const ProjectFeedback = () => {
                         onClick={() =>
                           !isPending
                             ? navigate({
-                                to: "/organizations/$organizationSlug/projects/$projectSlug/$feedbackId",
+                                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
                                 params: {
-                                  organizationSlug,
+                                  workspaceSlug,
                                   projectSlug,
                                   feedbackId: feedback?.rowId!,
                                 },

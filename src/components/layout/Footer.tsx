@@ -23,7 +23,7 @@ const Footer = () => (
     }}
   >
     <Text>
-      &copy; {new Date().getFullYear()} {app.organization.name}
+      &copy; {new Date().getFullYear()} {app.workspace.name}
     </Text>
 
     <Divider orientation="vertical" />

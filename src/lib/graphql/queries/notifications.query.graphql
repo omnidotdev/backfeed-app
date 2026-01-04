@@ -4,8 +4,8 @@ query Notifications($email: String!) {
     nodes {
       rowId
       email
-      organizationId
-      organization {
+      workspaceId
+      workspace {
         name
       }
     }

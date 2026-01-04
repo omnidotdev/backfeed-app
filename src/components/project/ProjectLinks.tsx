@@ -23,12 +23,12 @@ import getSocialMediaLabel from "@/lib/util/getSocialMediaLabel";
  * Project links component.
  */
 const ProjectLinks = () => {
-  const { organizationSlug, projectSlug } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/",
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const { data: project } = useQuery({
-    ...projectOptions({ organizationSlug, projectSlug }),
+    ...projectOptions({ workspaceSlug, projectSlug }),
     select: (data) => data.projects?.nodes?.[0],
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -1,7 +1,7 @@
 query Projects(
   $pageSize: Int!
   $offset: Int!
-  $organizationSlug: String!
+  $workspaceSlug: String!
   $search: String
 ) {
   projects(
@@ -10,7 +10,7 @@ query Projects(
     offset: $offset
     filter: {
       name: { includesInsensitive: $search }
-      organization: { slug: { equalTo: $organizationSlug } }
+      workspace: { slug: { equalTo: $workspaceSlug } }
     }
   ) {
     totalCount
@@ -19,7 +19,7 @@ query Projects(
       name
       description
       slug
-      organization {
+      workspace {
         rowId
         slug
       }

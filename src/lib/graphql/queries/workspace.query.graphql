@@ -1,0 +1,23 @@
+query Workspace($slug: String!) {
+  workspaceBySlug(slug: $slug) {
+    ...Workspace
+    updatedAt
+    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
+      totalCount
+      nodes {
+        rowId
+        name
+        description
+        slug
+        posts {
+          totalCount
+          aggregates {
+            distinctCount {
+              userId
+            }
+          }
+        }
+      }
+    }
+  }
+}

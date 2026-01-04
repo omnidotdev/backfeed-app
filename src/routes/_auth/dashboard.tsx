@@ -12,16 +12,16 @@ import Aggregate from "@/components/dashboard/Aggregate";
 import FeedbackOverview from "@/components/dashboard/FeedbackOverview";
 import RecentFeedback from "@/components/dashboard/RecentFeedback";
 import Page from "@/components/layout/Page";
-import CreateOrganization from "@/components/organization/CreateOrganization";
-import PinnedOrganizations from "@/components/organization/PinnedOrganizations";
-import { OrganizationOrderBy } from "@/generated/graphql";
+import CreateWorkspace from "@/components/workspace/CreateWorkspace";
+import PinnedWorkspaces from "@/components/workspace/PinnedWorkspaces";
+import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import {
   dashboardAggregatesOptions,
   recentFeedbackOptions,
   weeklyFeedbackOptions,
 } from "@/lib/options/dashboard";
-import { organizationsOptions } from "@/lib/options/organizations";
+import { workspacesOptions } from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 
@@ -35,10 +35,10 @@ export const Route = createFileRoute("/_auth/dashboard")({
 
     await Promise.all([
       queryClient.ensureQueryData({
-        ...organizationsOptions({
+        ...workspacesOptions({
           pageSize: 3,
           offset: 0,
-          orderBy: [OrganizationOrderBy.MembersCountDesc],
+          orderBy: [WorkspaceOrderBy.MembersCountDesc],
           userId: session?.user.rowId!,
           isMember: true,
         }),
@@ -110,20 +110,20 @@ function DashboardPage() {
         description: app.dashboardPage.description,
         cta: [
           {
-            label: app.dashboardPage.cta.viewOrganizations.label,
+            label: app.dashboardPage.cta.viewWorkspaces.label,
             variant: "outline",
             icon: <Icon src={LuBuilding2} />,
-            linkOptions: { to: "/organizations" },
+            linkOptions: { to: "/workspaces" },
           },
           {
-            label: app.dashboardPage.cta.newOrganization.label,
+            label: app.dashboardPage.cta.newWorkspace.label,
             icon: <Icon src={LuCirclePlus} />,
-            dialogType: DialogType.CreateOrganization,
+            dialogType: DialogType.CreateWorkspace,
           },
         ],
       }}
     >
-      <PinnedOrganizations />
+      <PinnedWorkspaces />
 
       <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
         {aggregates.map(({ title, value, icon }) => (
@@ -145,7 +145,7 @@ function DashboardPage() {
       </Grid>
 
       {/* dialogs */}
-      <CreateOrganization />
+      <CreateWorkspace />
     </Page>
   );
 }

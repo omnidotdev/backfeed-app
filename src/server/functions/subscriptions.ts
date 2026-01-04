@@ -13,12 +13,12 @@ const subscriptionSchema = z.object({
 });
 
 const billingPortalSchema = z.object({
-  organizationId: z.guid(),
+  workspaceId: z.guid(),
   returnUrl: z.url(),
 });
 
 const createSubscriptionSchema = z.object({
-  organizationId: z.guid(),
+  workspaceId: z.guid(),
   priceId: z.string().startsWith("price_"),
   successUrl: z.url(),
 });
@@ -87,7 +87,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
 /**
  * Get billing portal URL.
  * This creates a Stripe billing portal session through Aether,
- * which looks up the billing account by organization ID.
+ * which looks up the billing account by workspace ID.
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => billingPortalSchema.parse(data))
@@ -96,7 +96,7 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/organization/${data.organizationId}`,
+      `${BILLING_BASE_URL}/billing-portal/workspace/${data.workspaceId}`,
       {
         method: "POST",
         headers: {
@@ -142,7 +142,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       line_items: [{ price: data.priceId, quantity: 1 }],
       subscription_data: {
         metadata: {
-          organizationId: data.organizationId,
+          workspaceId: data.workspaceId,
           omniProduct: app.name.toLowerCase(),
         },
       },

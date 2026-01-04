@@ -43,10 +43,10 @@ interface Props {
  */
 const CreateComment = ({ canCreateComment }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
-  const { organizationSlug, projectSlug, feedbackId } = useParams({
-    from: "/_auth/organizations/$organizationSlug/_layout/projects/$projectSlug/$feedbackId",
+  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
@@ -56,7 +56,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
       await Promise.all([
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            organizationSlug,
+            workspaceSlug,
             projectSlug,
             feedbackId,
           }),

@@ -3,17 +3,17 @@ import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 
 export enum DialogType {
-  /** Dialog for creating a new organization. */
-  CreateOrganization = "createOrganization",
+  /** Dialog for creating a new workspace. */
+  CreateWorkspace = "createWorkspace",
   /** Dialog for creating a new project. */
   CreateProject = "createProject",
   /** Dialog for creating feedback. */
   CreateFeedback = "createFeedback",
-  /** Dialog for adding an owner to an organization. */
+  /** Dialog for adding an owner to a workspace. */
   AddOwner = "addOwner",
   /** Dialog for managing the mobile sidebar navigation and actions. */
   MobileSidebar = "mobileSidebar",
-  /** Dialog for inviting a member to an organization. */
+  /** Dialog for inviting a member to a workspace. */
   InviteMember = "inviteMember",
   /** Fallback value to handle undefined cases. This value is not to be used to control any dialog states. */
   Fallback = "fallback",

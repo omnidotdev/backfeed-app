@@ -16,15 +16,15 @@ import {
 import app from "@/lib/config/app.config";
 
 const inviteMemberDetails =
-  app.organizationInvitationsPage.cta.inviteMember.emailTemplate;
+  app.workspaceInvitationsPage.cta.inviteMember.emailTemplate;
 
-export interface OrganizationInvitation {
+export interface WorkspaceInvitation {
   /** Username of the person sending the invite. */
   inviterUsername: string;
   /** Email of the person sending the invite. */
   inviterEmail: string;
-  /** Name of the organization the invite is for. */
-  organizationName: string;
+  /** Name of the workspace the invite is for. */
+  workspaceName: string;
   /** Email of the person receiving the invite. */
   recipientEmail: string;
   /** URL for the invitee to accept the invitation. */
@@ -32,15 +32,15 @@ export interface OrganizationInvitation {
 }
 
 /**
- * Invite member to an organziation email template.
+ * Invite member to a workspace email template.
  */
 const InviteMemberEmailTemplate = ({
   inviterUsername,
   inviterEmail,
-  organizationName,
+  workspaceName,
   recipientEmail,
   inviteUrl,
-}: OrganizationInvitation) => (
+}: WorkspaceInvitation) => (
   <Html>
     <Head />
     <Tailwind
@@ -76,8 +76,8 @@ const InviteMemberEmailTemplate = ({
           >
             <Markdown>
               {inviteMemberDetails.heading.replace(
-                "{organizationName}",
-                organizationName,
+                "{workspaceName}",
+                workspaceName,
               )}
             </Markdown>
           </Heading>
@@ -95,7 +95,7 @@ const InviteMemberEmailTemplate = ({
             {inviteMemberDetails.statement
               .replace("{inviterUsername}", inviterUsername)
               .replace("{inviterEmail}", inviterEmail)
-              .replace("{organizationName}", organizationName)}
+              .replace("{workspaceName}", workspaceName)}
           </Markdown>
 
           <Section className="text-center my-8">

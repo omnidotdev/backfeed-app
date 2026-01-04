@@ -3,7 +3,7 @@ mutation CreateProject($input: CreateProjectInput!) {
     project {
       rowId
       slug
-      organization {
+      workspace {
         slug
       }
     }

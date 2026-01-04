@@ -34,7 +34,7 @@ interface Props extends MenuProps {
 }
 
 /**
- * Invitation menu to handle actions on selected organization invites.
+ * Invitation menu to handle actions on selected workspace invites.
  */
 const InvitationMenu = ({
   selectedRows,
@@ -45,7 +45,7 @@ const InvitationMenu = ({
     from: "/_auth/profile/$userId/_layout/invitations",
   });
 
-  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new organization they are now a part of
+  // NB: when a user accepts an invitation, all queries should be invalidated to populate data that is based on the new workspace they are now a part of
   const onSettled = async () => queryClient.invalidateQueries();
 
   const { mutate: acceptInvitation } = useCreateMemberMutation({
@@ -65,7 +65,7 @@ const InvitationMenu = ({
             input: {
               member: {
                 userId: user?.rowId!,
-                organizationId: invitation.organizationId,
+                workspaceId: invitation.workspaceId,
                 role: Role.Member,
               },
             },
