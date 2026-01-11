@@ -10,6 +10,7 @@ import type { FlexProps, TableCellProps } from "@omnidev/sigil";
 import type { RowData, Table as TableInterface } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
+  // biome-ignore lint/correctness/noUnusedVariables: Required for module augmentation
   interface ColumnMeta<TData extends RowData, TValue> {
     tableCellProps?: TableCellProps;
     headerProps?: FlexProps;

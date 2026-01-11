@@ -15,6 +15,7 @@ import { useIsClient } from "usehooks-ts";
 
 import LogoLink from "@/components/core/LogoLink";
 import AccountInformation from "@/components/layout/AccountInformation";
+import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import NotificationCenter from "@/components/notifications/NotificationsCenter";
@@ -56,6 +57,7 @@ const HeaderActions = () => {
 
         {session ? (
           <HStack>
+            <OrganizationSwitcher />
             <NotificationCenter />
 
             <AccountInformation />
@@ -83,6 +85,7 @@ const HeaderActions = () => {
       <ThemeToggle />
 
       <HStack>
+        {session && <OrganizationSwitcher />}
         {session && <NotificationCenter />}
 
         <Drawer

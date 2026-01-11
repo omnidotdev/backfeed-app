@@ -5438,6 +5438,7 @@ export type Workspace = {
   /** Reads and enables pagination through a set of `Member`. */
   members: MemberConnection;
   name: Scalars['String']['output'];
+  organizationId?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
@@ -5515,6 +5516,8 @@ export type WorkspaceCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
@@ -5559,6 +5562,8 @@ export type WorkspaceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
@@ -5602,6 +5607,8 @@ export type WorkspaceFilter = {
   not?: InputMaybe<WorkspaceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<WorkspaceFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `projects` relation. */
   projects?: InputMaybe<WorkspaceToManyProjectFilter>;
   /** Some related `projects` exist. */
@@ -5628,6 +5635,7 @@ export enum WorkspaceGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  OrganizationId = 'ORGANIZATION_ID',
   SubscriptionId = 'SUBSCRIPTION_ID',
   Tier = 'TIER',
   UpdatedAt = 'UPDATED_AT',
@@ -5700,6 +5708,7 @@ export type WorkspaceInput = {
   billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name: Scalars['String']['input'];
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -5738,6 +5747,8 @@ export enum WorkspaceOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
@@ -5811,6 +5822,7 @@ export type WorkspacePatch = {
   billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;

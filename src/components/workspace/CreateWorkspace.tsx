@@ -15,6 +15,7 @@ import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { fetchSession } from "@/server/functions/auth";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -57,6 +58,7 @@ interface Props {
  */
 const CreateWorkspace = ({ isHotkeyEnabled = true }: Props) => {
   const { queryClient } = useRouteContext({ from: "__root__" });
+  const { currentOrganization } = useOrganization();
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -117,6 +119,7 @@ const CreateWorkspace = ({ isHotkeyEnabled = true }: Props) => {
             workspace: {
               name: value.name,
               slug: generateSlug(value.name)!,
+              organizationId: currentOrganization.id,
             },
           },
         }),

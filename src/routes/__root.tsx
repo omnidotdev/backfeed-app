@@ -37,9 +37,12 @@ interface ExtendedUser {
   username?: string;
 }
 
+import type { OrganizationClaim } from "@/lib/auth/getAuth";
+
 interface ExtendedSession extends Omit<Session, "user"> {
   user: ExtendedUser;
   accessToken?: string;
+  organizations?: OrganizationClaim[];
 }
 
 dayjs.extend(relativeTime);

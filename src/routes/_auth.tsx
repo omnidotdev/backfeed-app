@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import NotFound from "@/components/layout/NotFound";
+import OrganizationProvider from "@/providers/OrganizationProvider";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context: { session } }) => {
@@ -11,5 +12,11 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function AuthenticatedLayout() {
-  return <Outlet />;
+  const { session } = Route.useRouteContext();
+
+  return (
+    <OrganizationProvider organizations={session?.organizations ?? []}>
+      <Outlet />
+    </OrganizationProvider>
+  );
 }
