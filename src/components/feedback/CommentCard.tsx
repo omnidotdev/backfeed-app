@@ -40,10 +40,10 @@ interface Props extends StackProps {
  */
 const CommentCard = ({ comment, canReply, ...rest }: Props) => {
   const { session, queryClient, hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
   const { feedbackId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);

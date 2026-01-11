@@ -58,7 +58,7 @@ interface Props extends DialogProps {
  */
 const UpdateFeedback = ({ feedback, ...rest }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout",
+    from: "/_public/workspaces/$workspaceSlug/_layout",
   });
 
   const isClient = useIsClient();

@@ -41,7 +41,7 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 )({
   validateSearch: projectSearchSchema,
   loaderDeps: ({ search }) => search,
@@ -107,7 +107,7 @@ export const Route = createFileRoute(
 
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
-  const { hasAdminPrivileges } = Route.useRouteContext();
+  const { hasAdminPrivileges, isAuthenticated } = Route.useRouteContext();
 
   const { data: project } = useQuery({
     ...projectOptions({ workspaceSlug, projectSlug }),
@@ -136,38 +136,38 @@ function ProjectPage() {
 
   return (
     <Page
-      breadcrumbs={breadcrumbs}
+      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: project?.name!,
         description: project?.description!,
         headerProps: {
           children: <ProjectLinks />,
         },
-        cta: [
-          {
-            label: app.projectPage.header.cta.viewAllProjects.label,
-            // `className` used to apply default recipe styles as `Icon` is not compatible in RSCs
-            icon: <Icon src={HiOutlineFolder} />,
-            variant: "outline",
-            linkOptions: {
-              to: "/workspaces/$workspaceSlug/projects",
-              params: { workspaceSlug },
-            },
-          },
-          ...(hasAdminPrivileges
-            ? [
-                {
-                  label: app.projectPage.header.cta.settings.label,
-                  icon: <Icon src={LuSettings} />,
-                  linkOptions: {
-                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-                    params: { workspaceSlug, projectSlug },
-                  },
-                  // NB: required because of the spread. The type inference of `to` is not narrowed to the required union otherwise
-                } satisfies ActionButton,
-              ]
-            : []),
-        ],
+        cta: isAuthenticated
+          ? [
+              {
+                label: app.projectPage.header.cta.viewAllProjects.label,
+                icon: <Icon src={HiOutlineFolder} />,
+                variant: "outline",
+                linkOptions: {
+                  to: "/workspaces/$workspaceSlug/projects",
+                  params: { workspaceSlug },
+                },
+              },
+              ...(hasAdminPrivileges
+                ? [
+                    {
+                      label: app.projectPage.header.cta.settings.label,
+                      icon: <Icon src={LuSettings} />,
+                      linkOptions: {
+                        to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                        params: { workspaceSlug, projectSlug },
+                      },
+                    } satisfies ActionButton,
+                  ]
+                : []),
+            ]
+          : [],
       }}
     >
       <Grid columns={{ lg: 8 }} gap={6}>

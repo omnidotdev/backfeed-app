@@ -27,7 +27,7 @@ const workspaceSearchSchema = z.object({
   search: z.string().default(""),
 });
 
-export const Route = createFileRoute("/_auth/workspaces/")({
+export const Route = createFileRoute("/_public/workspaces/")({
   validateSearch: workspaceSearchSchema,
   search: {
     middlewares: [stripSearchParams({ page: 1, pageSize: 10, search: "" })],
@@ -55,18 +55,23 @@ export const Route = createFileRoute("/_auth/workspaces/")({
 });
 
 function WorkspacesPage() {
+  const { session } = Route.useRouteContext();
+  const isAuthenticated = !!session?.user?.rowId;
+
   return (
     <Page
-      breadcrumbs={breadcrumbs}
+      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: app.workspacesPage.header.title,
-        cta: [
-          {
-            label: app.workspacesPage.header.cta.newWorkspace.label,
-            icon: <Icon src={LuCirclePlus} />,
-            dialogType: DialogType.CreateWorkspace,
-          },
-        ],
+        cta: isAuthenticated
+          ? [
+              {
+                label: app.workspacesPage.header.cta.newWorkspace.label,
+                icon: <Icon src={LuCirclePlus} />,
+                dialogType: DialogType.CreateWorkspace,
+              },
+            ]
+          : undefined,
       }}
     >
       <WorkspaceFilters />
@@ -74,7 +79,7 @@ function WorkspacesPage() {
       <WorkspaceList />
 
       {/* dialogs */}
-      <CreateWorkspace />
+      {isAuthenticated && <CreateWorkspace />}
     </Page>
   );
 }

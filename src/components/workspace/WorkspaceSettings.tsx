@@ -66,13 +66,13 @@ interface Props {
 /** Workspace settings. */
 const WorkspaceSettings = ({ workspace, prices }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const { isOwner, membershipId, queryClient, workspaceId } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const { subscription } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const navigate = useNavigate();
 

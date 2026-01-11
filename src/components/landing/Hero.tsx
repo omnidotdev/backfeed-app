@@ -1,4 +1,5 @@
 import { Button, Flex, Icon, Text, VStack } from "@omnidev/sigil";
+import { useSearch } from "@tanstack/react-router";
 import { BsMegaphone } from "react-icons/bs";
 import { FiArrowRight } from "react-icons/fi";
 
@@ -21,6 +22,11 @@ interface ActionProps extends ButtonProps {
  * Landing page hero section.
  */
 const Hero = () => {
+  const { returnTo } = useSearch({ from: "/" });
+
+  // Use returnTo if available, otherwise redirect to dashboard after login
+  const redirectUrl = returnTo || `${BASE_URL}/dashboard`;
+
   const actions: ActionProps[] = [
     {
       label: {
@@ -28,7 +34,7 @@ const Hero = () => {
         long: app.landingPage.hero.cta.collect.label.long,
       },
       icon: FiArrowRight,
-      onClick: () => signIn({ redirectUrl: BASE_URL! }),
+      onClick: () => signIn({ redirectUrl }),
     },
     {
       label: {

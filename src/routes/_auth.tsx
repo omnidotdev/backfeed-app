@@ -4,8 +4,14 @@ import NotFound from "@/components/layout/NotFound";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: async ({ context: { session } }) => {
-    if (!session?.user.rowId) throw redirect({ to: "/" });
+  beforeLoad: async ({ context: { session }, location }) => {
+    if (!session?.user.rowId) {
+      // Preserve the original URL so user can return after login
+      throw redirect({
+        to: "/",
+        search: { returnTo: location.href },
+      });
+    }
   },
   notFoundComponent: NotFound,
   component: AuthenticatedLayout,

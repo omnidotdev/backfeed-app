@@ -12,7 +12,7 @@ const billingBypassSlugs: string[] =
     .filter(Boolean) ?? [];
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout",
+  "/_public/workspaces/$workspaceSlug/_layout",
 )({
   beforeLoad: async ({
     context: { queryClient, session },
@@ -25,14 +25,21 @@ export const Route = createFileRoute(
 
     if (!workspaceByName) throw notFound();
 
-    const { memberByUserIdAndWorkspaceId: member } =
-      await queryClient.ensureQueryData({
-        ...workspaceRoleOptions({
-          userId: session?.user?.rowId!,
-          workspaceId: workspaceByName.rowId,
-        }),
-        revalidateIfStale: true,
-      });
+    // For unauthenticated users, provide minimal context
+    const isAuthenticated = !!session?.user?.rowId;
+
+    let member = null;
+    if (isAuthenticated) {
+      const { memberByUserIdAndWorkspaceId } =
+        await queryClient.ensureQueryData({
+          ...workspaceRoleOptions({
+            userId: session.user.rowId!,
+            workspaceId: workspaceByName.rowId,
+          }),
+          revalidateIfStale: true,
+        });
+      member = memberByUserIdAndWorkspaceId;
+    }
 
     // Bypass tier limits for exempt workspaces
     const isBillingExempt = billingBypassSlugs.includes(workspaceSlug);
@@ -40,10 +47,10 @@ export const Route = createFileRoute(
     return {
       workspaceId: workspaceByName.rowId,
       workspaceName: workspaceByName.name,
-      role: member?.role,
+      role: member?.role ?? null,
       subscriptionId: workspaceByName.subscriptionId,
       isOwner: member?.role === Role.Owner,
-      membershipId: member?.rowId,
+      membershipId: member?.rowId ?? null,
       hasAdminPrivileges:
         member?.role === Role.Admin || member?.role === Role.Owner,
       hasBasicTierPrivileges:
@@ -51,6 +58,7 @@ export const Route = createFileRoute(
       hasTeamTierPrivileges:
         isBillingExempt ||
         ![Tier.Free, Tier.Basic].includes(workspaceByName.tier),
+      isAuthenticated,
     };
   },
   component: WorkspaceLayout,

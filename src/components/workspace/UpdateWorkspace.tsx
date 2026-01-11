@@ -58,10 +58,10 @@ const updateWorkspaceSchema = z
  */
 const UpdateWorkspace = () => {
   const { hasAdminPrivileges, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const navigate = useNavigate();
 

@@ -36,7 +36,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   });
 
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
 
   const isLargeViewport = useViewportSize({

@@ -1,6 +1,6 @@
 import { Divider, Stack } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
@@ -17,8 +17,17 @@ import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
 )({
+  beforeLoad: async ({ context: { session }, location }) => {
+    // Settings requires authentication
+    if (!session?.user?.rowId) {
+      throw redirect({
+        to: "/",
+        search: { returnTo: location.href },
+      });
+    }
+  },
   loader: async ({
     context: { queryClient },
     params: { workspaceSlug, projectSlug },

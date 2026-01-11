@@ -24,7 +24,7 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/projects/",
+  "/_public/workspaces/$workspaceSlug/_layout/projects/",
 )({
   validateSearch: projectSearchSchema,
   search: {
@@ -56,8 +56,12 @@ export const Route = createFileRoute(
 
 function ProjectsPage() {
   const { workspaceSlug } = Route.useParams();
-  const { hasAdminPrivileges, hasBasicTierPrivileges, hasTeamTierPrivileges } =
-    Route.useRouteContext();
+  const {
+    hasAdminPrivileges,
+    hasBasicTierPrivileges,
+    hasTeamTierPrivileges,
+    isAuthenticated,
+  } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({ name: workspaceSlug }),
@@ -90,20 +94,21 @@ function ProjectsPage() {
 
   return (
     <Page
-      breadcrumbs={breadcrumbs}
+      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: app.projectsPage.header.title,
-        cta: hasAdminPrivileges
-          ? [
-              {
-                label: app.projectsPage.header.cta.newProject.label,
-                icon: <Icon src={LuCirclePlus} />,
-                disabled: !canCreateProjects,
-                dialogType: DialogType.CreateProject,
-                tooltip: app.projectsPage.header.cta.newProject.tooltip,
-              },
-            ]
-          : undefined,
+        cta:
+          isAuthenticated && hasAdminPrivileges
+            ? [
+                {
+                  label: app.projectsPage.header.cta.newProject.label,
+                  icon: <Icon src={LuCirclePlus} />,
+                  disabled: !canCreateProjects,
+                  dialogType: DialogType.CreateProject,
+                  tooltip: app.projectsPage.header.cta.newProject.tooltip,
+                },
+              ]
+            : undefined,
       }}
     >
       <ProjectFilters />

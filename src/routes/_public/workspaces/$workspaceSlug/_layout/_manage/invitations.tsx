@@ -13,7 +13,7 @@ import { workspaceOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/_manage/invitations",
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
 )({
   loader: async ({
     context: { queryClient, role, workspaceId, workspaceName },

@@ -9,7 +9,7 @@ import useHandleSearch from "@/lib/hooks/useHandleSearch";
  */
 const WorkspaceFilters = () => {
   const search = useSearch({
-    from: "/_auth/workspaces/",
+    from: "/_public/workspaces/",
     select: ({ search }) => search,
   });
 

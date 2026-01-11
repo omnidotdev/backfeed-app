@@ -8,7 +8,7 @@ import {
   Stack,
 } from "@omnidev/sigil";
 import { useRouteContext } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useIsClient } from "usehooks-ts";
@@ -22,7 +22,6 @@ import NotificationCenter from "@/components/notifications/NotificationsCenter";
 import { token } from "@/generated/panda/tokens";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
-import { BASE_URL } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
@@ -32,6 +31,12 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 const HeaderActions = () => {
   const isClient = useIsClient();
   const { session } = useRouteContext({ from: "__root__" });
+
+  // Use current URL as return destination after login
+  const handleSignIn = useCallback(() => {
+    const redirectUrl = window.location.href;
+    signIn({ redirectUrl });
+  }, []);
 
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
@@ -64,16 +69,11 @@ const HeaderActions = () => {
           </HStack>
         ) : (
           <HStack>
-            <Button
-              variant="outline"
-              onClick={() => signIn({ redirectUrl: BASE_URL! })}
-            >
+            <Button variant="outline" onClick={handleSignIn}>
               {app.auth.signIn.label}
             </Button>
 
-            <Button onClick={() => signIn({ redirectUrl: BASE_URL! })}>
-              {app.auth.signUp.label}
-            </Button>
+            <Button onClick={handleSignIn}>{app.auth.signUp.label}</Button>
           </HStack>
         )}
       </Flex>
@@ -137,16 +137,11 @@ const HeaderActions = () => {
               <AccountInformation />
             ) : (
               <Stack>
-                <Button
-                  variant="outline"
-                  onClick={() => signIn({ redirectUrl: BASE_URL! })}
-                >
+                <Button variant="outline" onClick={handleSignIn}>
                   {app.auth.signIn.label}
                 </Button>
 
-                <Button onClick={() => signIn({ redirectUrl: BASE_URL! })}>
-                  {app.auth.signUp.label}
-                </Button>
+                <Button onClick={handleSignIn}>{app.auth.signUp.label}</Button>
               </Stack>
             )}
           </Stack>

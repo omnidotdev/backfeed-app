@@ -14,7 +14,7 @@ import { getSubscription } from "@/server/functions/subscriptions";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/_manage/settings",
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
 )({
   loader: async ({
     context: { queryClient, subscriptionId, workspaceId, workspaceName },

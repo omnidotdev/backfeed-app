@@ -28,7 +28,7 @@ interface WorkspaceMetric extends FlexProps {
  */
 const WorkspaceMetrics = () => {
   const { workspaceId } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
 
   const {

@@ -23,10 +23,10 @@ interface Props {
  */
 const ProjectList = ({ canCreateProjects }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
   });
   const { page, pageSize, search } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
   });
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects",

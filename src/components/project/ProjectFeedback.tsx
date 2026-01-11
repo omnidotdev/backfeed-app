@@ -71,13 +71,13 @@ const SORT_BY_OPTIONS = [
  */
 const ProjectFeedback = () => {
   const { session, hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { excludedStatuses, search, orderBy } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",

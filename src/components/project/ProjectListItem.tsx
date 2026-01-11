@@ -23,7 +23,7 @@ const ProjectListItem = ({
   project: { slug, workspace, name, description, posts },
 }: Props) => {
   const { hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
   });
 
   const AGGREGATES = [

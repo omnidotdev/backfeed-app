@@ -1,12 +1,22 @@
 import { Flex } from "@omnidev/sigil";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { z } from "zod";
 
 import Features from "@/components/landing/Features";
 import Hero from "@/components/landing/Hero";
 
+const searchSchema = z.object({
+  returnTo: z.string().optional(),
+});
+
 export const Route = createFileRoute("/")({
-  beforeLoad: async ({ context: { session } }) => {
-    if (session?.user.rowId) throw redirect({ to: "/dashboard" });
+  validateSearch: searchSchema,
+  beforeLoad: async ({ context: { session }, search }) => {
+    if (session?.user.rowId) {
+      // If authenticated and has returnTo, go there; otherwise dashboard
+      const destination = search.returnTo || "/dashboard";
+      throw redirect({ to: destination });
+    }
   },
   component: LandingPage,
 });

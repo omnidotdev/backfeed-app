@@ -43,10 +43,10 @@ interface Props {
  */
 const CreateComment = ({ canCreateComment }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
   const { workspaceSlug, projectSlug, feedbackId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({

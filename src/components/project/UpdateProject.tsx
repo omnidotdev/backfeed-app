@@ -36,10 +36,10 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
  */
 const UpdateProject = () => {
   const { queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
   });
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
   });
   const navigate = useNavigate();
 

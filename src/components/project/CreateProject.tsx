@@ -65,7 +65,7 @@ interface Props {
  */
 const CreateProject = ({ workspaceSlug }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout",
+    from: "/_public/workspaces/$workspaceSlug/_layout",
   });
   const navigate = useNavigate();
 

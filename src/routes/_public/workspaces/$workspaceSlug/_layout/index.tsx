@@ -23,7 +23,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/",
+  "/_public/workspaces/$workspaceSlug/_layout/",
 )({
   loader: async ({ context: { queryClient, workspaceId, workspaceName } }) => {
     await queryClient.ensureQueryData({
@@ -43,8 +43,12 @@ export const Route = createFileRoute(
 
 function WorkspacePage() {
   const { workspaceSlug } = Route.useParams();
-  const { hasAdminPrivileges, hasBasicTierPrivileges, hasTeamTierPrivileges } =
-    Route.useRouteContext();
+  const {
+    hasAdminPrivileges,
+    hasBasicTierPrivileges,
+    hasTeamTierPrivileges,
+    isAuthenticated,
+  } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({ name: workspaceSlug }),
@@ -72,7 +76,7 @@ function WorkspacePage() {
 
   return (
     <Page
-      breadcrumbs={breadcrumbs}
+      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: (
           <HStack gap={4}>
@@ -82,39 +86,43 @@ function WorkspacePage() {
             <Badge rounded="lg">{capitalizeFirstLetter(workspace?.tier)}</Badge>
           </HStack>
         ),
-        cta: [
-          {
-            label: app.workspacePage.header.cta.viewProjects.label,
-            variant: "outline",
-            icon: <Icon src={HiOutlineFolder} />,
-            linkOptions: {
-              to: "/workspaces/$workspaceSlug/projects",
-              params: { workspaceSlug },
-            },
-            disabled: !workspace?.projects.totalCount,
-            tooltip: app.workspacePage.header.cta.viewProjects.tooltip,
-          },
-          ...(hasAdminPrivileges
-            ? [
-                {
-                  label: app.workspacePage.header.cta.newProject.label,
-                  icon: <Icon src={LuCirclePlus} />,
-                  disabled: !canCreateProjects,
-                  dialogType: DialogType.CreateProject,
-                  tooltip: app.workspacePage.header.cta.newProject.tooltip,
+        cta: isAuthenticated
+          ? [
+              {
+                label: app.workspacePage.header.cta.viewProjects.label,
+                variant: "outline",
+                icon: <Icon src={HiOutlineFolder} />,
+                linkOptions: {
+                  to: "/workspaces/$workspaceSlug/projects",
+                  params: { workspaceSlug },
                 },
-              ]
-            : []),
-        ],
+                disabled: !workspace?.projects.totalCount,
+                tooltip: app.workspacePage.header.cta.viewProjects.tooltip,
+              },
+              ...(hasAdminPrivileges
+                ? [
+                    {
+                      label: app.workspacePage.header.cta.newProject.label,
+                      icon: <Icon src={LuCirclePlus} />,
+                      disabled: !canCreateProjects,
+                      dialogType: DialogType.CreateProject,
+                      tooltip: app.workspacePage.header.cta.newProject.tooltip,
+                    },
+                  ]
+                : []),
+            ]
+          : [],
       }}
     >
       <WorkspaceProjects canCreateProjects={canCreateProjects} />
 
-      <Grid columns={{ base: 1, md: 2 }} gap={6}>
-        <WorkspaceMetrics />
+      {isAuthenticated && (
+        <Grid columns={{ base: 1, md: 2 }} gap={6}>
+          <WorkspaceMetrics />
 
-        <WorkspaceManagement />
-      </Grid>
+          <WorkspaceManagement />
+        </Grid>
+      )}
 
       {/* dialogs */}
       {canCreateProjects && <CreateProject workspaceSlug={workspaceSlug} />}

@@ -105,10 +105,10 @@ const createInvitationsSchema = invitesSchema.superRefine(
 
 const InviteMember = () => {
   const { session, workspaceId, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/invitations",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
   });
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/invitations",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
   });
 
   const { data: workspace } = useQuery({

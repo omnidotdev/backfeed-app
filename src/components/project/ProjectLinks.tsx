@@ -24,7 +24,7 @@ import getSocialMediaLabel from "@/lib/util/getSocialMediaLabel";
  */
 const ProjectLinks = () => {
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const { data: project } = useQuery({

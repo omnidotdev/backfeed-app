@@ -31,7 +31,7 @@ const workspaceInviteDetails = app.workspaceInvitationsPage;
  */
 const Invitations = () => {
   const { isOwner, workspaceId } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/invitations",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
   });
 
   const { data: invitations } = useQuery({

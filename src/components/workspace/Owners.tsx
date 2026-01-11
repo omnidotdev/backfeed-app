@@ -62,7 +62,7 @@ const columns = [
  */
 const Owners = () => {
   const { workspaceId } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
   const { data: owners } = useQuery({

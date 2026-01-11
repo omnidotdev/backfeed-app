@@ -25,7 +25,7 @@ interface Props extends CollapsibleProps {
  */
 const Replies = ({ commentId, ...rest }: Props) => {
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const {

@@ -43,7 +43,7 @@ const MembershipMenu = ({
   ...rest
 }: Props) => {
   const { queryClient, isOwner } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
   const selectedRowsAreAdmins = selectedRows.every(

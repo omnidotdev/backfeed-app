@@ -16,7 +16,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 )({
   loader: async ({
     context: { session, queryClient },
@@ -49,7 +49,8 @@ export const Route = createFileRoute(
 });
 
 function FeedbackPage() {
-  const { session, hasAdminPrivileges } = Route.useRouteContext();
+  const { session, hasAdminPrivileges, isAuthenticated } =
+    Route.useRouteContext();
   const { workspaceSlug, projectSlug, feedbackId } = Route.useParams();
 
   const { data: feedback } = useQuery({
@@ -97,7 +98,7 @@ function FeedbackPage() {
   ];
 
   return (
-    <Page breadcrumbs={breadcrumbs}>
+    <Page breadcrumbs={isAuthenticated ? breadcrumbs : undefined}>
       <FeedbackCard
         canManageFeedback={hasAdminPrivileges}
         feedback={feedback!}

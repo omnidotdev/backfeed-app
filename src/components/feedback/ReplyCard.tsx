@@ -23,10 +23,10 @@ interface Props extends HstackProps {
  */
 const ReplyCard = ({ reply, ...rest }: Props) => {
   const { session, queryClient, hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
   const { feedbackId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { mutate: deleteReply, isPending: isDeletePending } =

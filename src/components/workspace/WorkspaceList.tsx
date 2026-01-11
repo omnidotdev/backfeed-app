@@ -20,7 +20,7 @@ import type { Workspace } from "@/generated/graphql";
  */
 const WorkspaceList = (props: StackProps) => {
   const { page, pageSize, search } = useSearch({
-    from: "/_auth/workspaces/",
+    from: "/_public/workspaces/",
   });
   const navigate = useNavigate({ from: "/workspaces" });
 

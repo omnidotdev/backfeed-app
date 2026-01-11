@@ -53,10 +53,10 @@ interface Props extends CollapsibleProps {
  */
 const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
   const { workspaceSlug, projectSlug, feedbackId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({

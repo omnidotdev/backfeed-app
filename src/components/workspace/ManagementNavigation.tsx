@@ -43,10 +43,10 @@ const ManagementNavigation = ({
   ...rest
 }: Props) => {
   const { role } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
   const navigate = useNavigate();
   const segment = useRouterState({

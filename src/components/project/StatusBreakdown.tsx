@@ -31,11 +31,11 @@ interface Status {
  */
 const StatusBreakdown = () => {
   const { workspaceId, projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const excludedStatuses = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
     select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({

@@ -49,7 +49,7 @@ const InvitationMenu = ({
   ...rest
 }: Props) => {
   const { session, workspaceId, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/invitations",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
   });
 
   const toastId = useRef<string>(undefined);

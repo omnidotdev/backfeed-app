@@ -45,10 +45,10 @@ const createFeedbackSchema = z.object({
  */
 const CreateFeedback = () => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally

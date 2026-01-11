@@ -28,10 +28,10 @@ const managementDetails = app.workspacePage.management;
  */
 const WorkspaceManagement = () => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
   const { role } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
   const navigate = useNavigate();
 

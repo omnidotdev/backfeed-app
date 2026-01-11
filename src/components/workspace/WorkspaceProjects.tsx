@@ -25,10 +25,10 @@ interface Props {
  */
 const WorkspaceProjects = ({ canCreateProjects }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/_layout",
+    from: "/_public/workspaces/$workspaceSlug/_layout",
   });
   const { hasAdminPrivileges } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/",
+    from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({

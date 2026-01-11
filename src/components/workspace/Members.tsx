@@ -34,10 +34,10 @@ const columnHelper = createColumnHelper<MemberFragment>();
  */
 const Members = () => {
   const { isOwner, workspaceId } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
   const { search, roles } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
   const { data: members } = useQuery({

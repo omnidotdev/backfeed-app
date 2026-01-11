@@ -22,7 +22,7 @@ const membersSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
 )({
   validateSearch: membersSearchSchema,
   search: {

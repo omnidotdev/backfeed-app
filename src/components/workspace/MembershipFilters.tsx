@@ -12,7 +12,7 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
  */
 const MembershipFilters = () => {
   const { search, roles } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/_layout/_manage/members",
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/members",

@@ -71,6 +71,8 @@ interface Props extends HstackProps {
   titleProps?: TextProps;
   /** Description props. */
   descriptionProps?: TextProps;
+  /** Whether the user is authenticated. */
+  isAuthenticated?: boolean;
 }
 
 /**
@@ -82,11 +84,15 @@ const FeedbackCard = ({
   projectStatuses,
   titleProps,
   descriptionProps,
+  isAuthenticated: isAuthenticatedProp,
   ...rest
 }: Props) => {
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/_layout",
+    from: "__root__",
   });
+
+  // Use prop if provided, otherwise derive from session
+  const isAuthenticated = isAuthenticatedProp ?? !!session?.user?.rowId;
   const {
     workspaceSlug,
     projectSlug,
@@ -307,6 +313,7 @@ const FeedbackCard = ({
             totalUpvotes={totalUpvotes}
             totalDownvotes={totalDownvotes}
             isFeedbackRoute={!!isFeedbackRoute}
+            isAuthenticated={isAuthenticated}
           />
         </HStack>
 

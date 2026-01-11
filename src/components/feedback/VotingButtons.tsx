@@ -7,6 +7,7 @@ import {
 } from "react-icons/pi";
 import { match } from "ts-pattern";
 
+import LoginPrompt from "@/components/auth/LoginPrompt";
 import { VoteType } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
@@ -26,6 +27,8 @@ interface Props {
   totalDownvotes: number;
   /** Whether voting is being handled from the dynamic feedback route. */
   isFeedbackRoute: boolean;
+  /** Whether the user is authenticated. */
+  isAuthenticated?: boolean;
 }
 
 const VotingButtons = ({
@@ -35,6 +38,7 @@ const VotingButtons = ({
   totalUpvotes,
   totalDownvotes,
   isFeedbackRoute,
+  isAuthenticated = true,
 }: Props) => {
   const { mutate: handleUpvote, isPending: isUpvotePending } =
     useHandleVoteMutation({
@@ -73,6 +77,35 @@ const VotingButtons = ({
       () => "brand.tertiary",
     )
     .otherwise(() => "brand.quinary");
+
+  // Show login prompt for unauthenticated users
+  if (!isAuthenticated) {
+    return (
+      <HStack
+        gap={1}
+        justify="center"
+        placeSelf="flex-start"
+        mr={-2.5}
+        mt={isFeedbackRoute ? -2 : -1}
+      >
+        <LoginPrompt action="vote" variant="ghost" size="xs">
+          <Icon src={PiArrowFatLineUp} w={5} h={5} color="brand.tertiary" />
+        </LoginPrompt>
+
+        <Text
+          color={netVotesColor}
+          whiteSpace="nowrap"
+          fontVariant="tabular-nums"
+        >
+          {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
+        </Text>
+
+        <LoginPrompt action="vote" variant="ghost" size="xs">
+          <Icon src={PiArrowFatLineDown} w={5} h={5} color="brand.quinary" />
+        </LoginPrompt>
+      </HStack>
+    );
+  }
 
   return (
     <HStack
