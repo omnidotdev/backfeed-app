@@ -15,6 +15,10 @@ const { AUTH_SECRET } = process.env;
  * Auth server client.
  */
 const auth = betterAuth({
+  advanced: {
+    // use custom cookie prefix to avoid collision with IDP cookies
+    cookiePrefix: "backfeed",
+  },
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
