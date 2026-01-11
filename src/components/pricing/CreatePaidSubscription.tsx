@@ -14,6 +14,7 @@ import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
@@ -33,11 +34,11 @@ const createWorkspaceSchema = z
 
     const sdk = await getSdk();
 
-    const { workspaceBySlug } = await sdk.Workspace({
-      slug,
+    const { workspaceByName } = await sdk.Workspace({
+      name: slug,
     });
 
-    if (workspaceBySlug) {
+    if (workspaceByName) {
       ctx.addIssue({
         code: "custom",
         message:
@@ -61,6 +62,7 @@ interface Props {
  */
 const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   const { queryClient } = useRouteContext({ from: "/pricing" });
+  const { currentOrganization } = useOrganization();
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -107,6 +109,7 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
             workspace: {
               name: value.name,
               slug: generateSlug(value.name)!,
+              organizationId: currentOrganization.id,
             },
           },
         }),

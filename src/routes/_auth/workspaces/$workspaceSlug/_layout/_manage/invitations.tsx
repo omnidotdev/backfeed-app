@@ -39,8 +39,8 @@ function WorkspaceInvitationsPage() {
   const { workspaceSlug } = Route.useParams();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ slug: workspaceSlug }),
-    select: (data) => data?.workspaceBySlug,
+    ...workspaceOptions({ name: workspaceSlug }),
+    select: (data) => data?.workspaceByName,
   });
 
   return (

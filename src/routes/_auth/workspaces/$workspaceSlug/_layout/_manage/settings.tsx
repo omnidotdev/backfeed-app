@@ -41,8 +41,8 @@ function WorkspaceSettingsPage() {
   const { prices, subscription } = Route.useLoaderData();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ slug: workspaceSlug }),
-    select: (data) => data?.workspaceBySlug,
+    ...workspaceOptions({ name: workspaceSlug }),
+    select: (data) => data?.workspaceByName,
   });
 
   return (

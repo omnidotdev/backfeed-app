@@ -8,7 +8,6 @@ import CharacterLimit from "@/components/core/CharacterLimit";
 import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
-import { uuidSchema } from "@/lib/constants/schema.constant";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import {
@@ -29,9 +28,6 @@ const feedbackSchemaErrors =
 
 /** Schema for defining the shape of the create feedback form fields, as well as validating the form. */
 const createFeedbackSchema = z.object({
-  statusTemplateId: uuidSchema,
-  projectId: uuidSchema,
-  userId: uuidSchema,
   title: z
     .string()
     .trim()
@@ -116,9 +112,6 @@ const CreateFeedback = () => {
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
       defaultValues: {
-        statusTemplateId: defaultStatusTemplateId ?? "",
-        projectId: projectId ?? "",
-        userId: session?.user?.rowId ?? "",
         title: "",
         description: "",
       },
@@ -126,14 +119,32 @@ const CreateFeedback = () => {
       validators: {
         onSubmitAsync: createFeedbackSchema,
       },
-      onSubmit: async ({ value }) =>
-        toaster.promise(
+      onSubmit: async ({ value }) => {
+        // Validate that required data is available before submitting
+        if (!projectId || !session?.user?.rowId) {
+          toaster.error({
+            title: app.projectPage.projectFeedback.action.error.title,
+            description: "Missing required data. Please try again.",
+          });
+          return;
+        }
+
+        if (!defaultStatusTemplateId) {
+          toaster.error({
+            title: app.projectPage.projectFeedback.action.error.title,
+            description:
+              "No status templates configured for this workspace. Please contact an administrator.",
+          });
+          return;
+        }
+
+        return toaster.promise(
           createFeedback({
             input: {
               post: {
-                statusTemplateId: value.statusTemplateId,
-                projectId: value.projectId,
-                userId: value.userId,
+                statusTemplateId: defaultStatusTemplateId,
+                projectId,
+                userId: session.user.rowId,
                 title: value.title.trim(),
                 description: value.description.trim(),
               },
@@ -154,7 +165,8 @@ const CreateFeedback = () => {
                 app.projectPage.projectFeedback.action.error.description,
             },
           },
-        ),
+        );
+      },
     },
   );
 

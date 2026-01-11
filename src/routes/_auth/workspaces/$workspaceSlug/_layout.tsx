@@ -18,18 +18,18 @@ export const Route = createFileRoute(
     context: { queryClient, session },
     params: { workspaceSlug },
   }) => {
-    const { workspaceBySlug } = await queryClient.ensureQueryData({
-      ...workspaceOptions({ slug: workspaceSlug }),
+    const { workspaceByName } = await queryClient.ensureQueryData({
+      ...workspaceOptions({ name: workspaceSlug }),
       revalidateIfStale: true,
     });
 
-    if (!workspaceBySlug) throw notFound();
+    if (!workspaceByName) throw notFound();
 
     const { memberByUserIdAndWorkspaceId: member } =
       await queryClient.ensureQueryData({
         ...workspaceRoleOptions({
           userId: session?.user?.rowId!,
-          workspaceId: workspaceBySlug.rowId,
+          workspaceId: workspaceByName.rowId,
         }),
         revalidateIfStale: true,
       });
@@ -38,19 +38,19 @@ export const Route = createFileRoute(
     const isBillingExempt = billingBypassSlugs.includes(workspaceSlug);
 
     return {
-      workspaceId: workspaceBySlug.rowId,
-      workspaceName: workspaceBySlug.name,
+      workspaceId: workspaceByName.rowId,
+      workspaceName: workspaceByName.name,
       role: member?.role,
-      subscriptionId: workspaceBySlug.subscriptionId,
+      subscriptionId: workspaceByName.subscriptionId,
       isOwner: member?.role === Role.Owner,
       membershipId: member?.rowId,
       hasAdminPrivileges:
         member?.role === Role.Admin || member?.role === Role.Owner,
       hasBasicTierPrivileges:
-        isBillingExempt || workspaceBySlug.tier !== Tier.Free,
+        isBillingExempt || workspaceByName.tier !== Tier.Free,
       hasTeamTierPrivileges:
         isBillingExempt ||
-        ![Tier.Free, Tier.Basic].includes(workspaceBySlug.tier),
+        ![Tier.Free, Tier.Basic].includes(workspaceByName.tier),
     };
   },
   component: WorkspaceLayout,

@@ -148,15 +148,21 @@ const ProjectFeedback = () => {
       const { input } = mutation.state
         .variables as CreateFeedbackMutationVariables;
 
+      const now = new Date();
+
       return {
         rowId: "pending",
         title: input.post.title,
         description: input.post.description,
+        statusUpdatedAt: now,
+        createdAt: now,
+        updatedAt: now,
         statusTemplate: defaultStatus!,
         project: {
           rowId: input.post.projectId,
-          name: "pending",
-          slug: "pending",
+          name: project?.name ?? "pending",
+          slug: project?.slug ?? "pending",
+          workspace: project?.workspace ?? null,
         },
         user: {
           rowId: session?.user?.rowId ?? "",

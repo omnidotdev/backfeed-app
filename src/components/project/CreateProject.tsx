@@ -85,10 +85,10 @@ const CreateProject = ({ workspaceSlug }: Props) => {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
-      slug: workspaceSlug,
+      name: workspaceSlug,
     }),
     enabled: !!session?.user?.rowId,
-    select: (data) => data?.workspaceBySlug,
+    select: (data) => data?.workspaceByName,
   });
 
   useHotkeys(

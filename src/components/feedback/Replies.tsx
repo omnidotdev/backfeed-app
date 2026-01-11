@@ -58,7 +58,9 @@ const Replies = ({ commentId, ...rest }: Props) => {
 
       return {
         rowId: "pending",
+        parentId: input.comment.parentId,
         message: input.comment.message,
+        createdAt: new Date(),
         user: {
           rowId: session?.user?.rowId!,
           username: session?.user?.username,

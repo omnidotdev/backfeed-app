@@ -47,8 +47,8 @@ function WorkspacePage() {
     Route.useRouteContext();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ slug: workspaceSlug }),
-    select: (data) => data.workspaceBySlug,
+    ...workspaceOptions({ name: workspaceSlug }),
+    select: (data) => data.workspaceByName,
   });
 
   // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the workspace is subscribed and validate tier based checks

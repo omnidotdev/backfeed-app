@@ -75,6 +75,7 @@ const Comments = () => {
       return {
         rowId: "pending",
         message: input.comment.message,
+        createdAt: new Date(),
         user: {
           rowId: session?.user?.rowId!,
           username: session?.user?.username,

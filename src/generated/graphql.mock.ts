@@ -1044,9 +1044,9 @@ export const mockWeeklyFeedbackQuery = (resolver: GraphQLResponseResolver<Types.
  * @example
  * mockWorkspaceQuery(
  *   ({ query, variables }) => {
- *     const { slug } = variables;
+ *     const { name } = variables;
  *     return HttpResponse.json({
- *       data: { workspaceBySlug }
+ *       data: { workspaceByName }
  *     })
  *   },
  *   requestOptions

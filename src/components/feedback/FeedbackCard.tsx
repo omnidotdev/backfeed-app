@@ -166,7 +166,9 @@ const FeedbackCard = ({
             {
               post: {
                 ...feedbackSnapshot.post!,
-                statusUpdatedAt: variables.patch.statusUpdatedAt,
+                statusUpdatedAt:
+                  variables.patch.statusUpdatedAt ??
+                  feedbackSnapshot.post!.statusUpdatedAt,
                 statusTemplate: {
                   ...feedbackSnapshot.post?.statusTemplate!,
                   rowId:

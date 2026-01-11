@@ -34,11 +34,11 @@ const createWorkspaceSchema = z
 
     const sdk = await getSdk();
 
-    const { workspaceBySlug } = await sdk.Workspace({
-      slug,
+    const { workspaceByName } = await sdk.Workspace({
+      name: slug,
     });
 
-    if (workspaceBySlug) {
+    if (workspaceByName) {
       ctx.addIssue({
         code: "custom",
         message:

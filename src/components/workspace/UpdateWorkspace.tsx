@@ -40,11 +40,11 @@ const updateWorkspaceSchema = z
 
     const sdk = await getSdk();
 
-    const { workspaceBySlug } = await sdk.Workspace({
-      slug: updatedSlug,
+    const { workspaceByName } = await sdk.Workspace({
+      name: updatedSlug,
     });
 
-    if (workspaceBySlug) {
+    if (workspaceByName) {
       ctx.addIssue({
         code: "custom",
         message: updateWorkspaceDetails.fields.workspaceSlug.errors.duplicate,
@@ -67,15 +67,15 @@ const UpdateWorkspace = () => {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
-      slug: workspaceSlug,
+      name: workspaceSlug,
     }),
-    select: (data) => data.workspaceBySlug,
+    select: (data) => data.workspaceByName,
   });
 
   const { mutateAsync: updateWorkspace } = useUpdateWorkspaceMutation({
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: workspaceOptions({ slug: workspaceSlug }).queryKey,
+        queryKey: workspaceOptions({ name: workspaceSlug }).queryKey,
       });
 
       navigate({

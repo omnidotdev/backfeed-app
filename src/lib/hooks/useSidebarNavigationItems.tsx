@@ -40,10 +40,10 @@ const useSidebarNavigationItems = () => {
 
   const { data: workspace } = useQuery({
       ...workspaceOptions({
-        slug: workspaceSlug!,
+        name: workspaceSlug!,
       }),
       enabled: !!session && !!workspaceSlug,
-      select: (data) => data?.workspaceBySlug,
+      select: (data) => data?.workspaceByName,
     }),
     { data: project } = useQuery({
       ...projectOptions({

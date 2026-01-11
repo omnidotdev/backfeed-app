@@ -62,8 +62,8 @@ function WorkspaceMembersPage() {
   const { role } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ slug: workspaceSlug }),
-    select: (data) => data.workspaceBySlug,
+    ...workspaceOptions({ name: workspaceSlug }),
+    select: (data) => data.workspaceByName,
   });
 
   return (

@@ -41,9 +41,9 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
     isError,
   } = useQuery({
     ...workspaceOptions({
-      slug: workspaceSlug,
+      name: workspaceSlug,
     }),
-    select: (data) => data?.workspaceBySlug?.projects?.nodes,
+    select: (data) => data?.workspaceByName?.projects?.nodes,
   });
 
   return (

@@ -47,9 +47,9 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
-      slug: workspaceSlug,
+      name: workspaceSlug,
     }),
-    select: (data) => data?.workspaceBySlug,
+    select: (data) => data?.workspaceByName,
   });
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
