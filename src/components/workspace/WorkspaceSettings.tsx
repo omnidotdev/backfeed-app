@@ -56,17 +56,9 @@ import type { ExpandedProductPrice } from "@/server/functions/prices";
 const deleteWorkspaceDetails = app.workspaceSettingsPage.cta.deleteWorkspace;
 const leaveWorkspaceDetails = app.workspaceSettingsPage.cta.leaveWorkspace;
 
-interface WorkspaceWithSubscription extends WorkspaceFragment {
-  subscription: {
-    subscriptionStatus: string;
-    toBeCanceled: boolean;
-    currentPeriodEnd: number | null | undefined;
-  };
-}
-
 interface Props {
-  /** Workspace details with subscription info. */
-  workspace: WorkspaceWithSubscription;
+  /** Workspace details. */
+  workspace: WorkspaceFragment;
   /** App subscription pricing options. */
   prices: ExpandedProductPrice[];
 }
@@ -249,7 +241,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
             <Button
               w="fit"
               onClick={async () => {
-                if (workspace.subscription.toBeCanceled) {
+                if (subscription.cancelAt) {
                   await renewSubscription({
                     data: { workspaceId },
                   });
@@ -258,8 +250,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
                 }
               }}
             >
-              {workspace.subscription.toBeCanceled ? "Renew" : "Manage"}{" "}
-              Subscription
+              {subscription.cancelAt ? "Renew" : "Manage"} Subscription
             </Button>
           ) : (
             <Menu
