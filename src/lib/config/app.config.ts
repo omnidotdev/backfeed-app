@@ -895,12 +895,23 @@ const app = {
       },
       feedbackTitle: {
         label: "Title",
-        placeholder: "This project has been a great success!",
+        placeholders: [
+          "Add dark mode support",
+          "Improve mobile navigation",
+          "Add keyboard shortcuts",
+          "Better error messages",
+          "Export data to CSV",
+        ],
       },
       feedbackDescription: {
         label: "Description",
-        placeholder:
-          "I really enjoy working with this project. It helped me learn a lot about the industry.",
+        placeholders: [
+          "It would be great to have a dark mode option for better visibility at night.",
+          "The mobile menu is hard to use on smaller screens. A hamburger menu would help.",
+          "Power users would love keyboard shortcuts for common actions like save and submit.",
+          "When something goes wrong, the error messages are confusing. More detail would help.",
+          "I need to export my data for reporting. A CSV export option would be really useful.",
+        ],
       },
       createFeedback: {
         title: "New Feedback",

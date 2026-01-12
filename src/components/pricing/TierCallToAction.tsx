@@ -27,10 +27,20 @@ const TierCallToAction = ({ priceId, tier, actionIcon, ...rest }: Props) => {
     type: DialogType.CreateWorkspace,
   });
 
+  // Determine button styles based on variant prop
+  const isOutline = rest.variant === "outline";
+  const buttonClassName = isOutline
+    ? "border-primary text-primary hover:bg-primary/10"
+    : "bg-primary text-primary-foreground hover:bg-primary/90";
+
   if (tier === Tier.Free) {
     return (
       <>
-        <Button onClick={() => setIsCreateWorkspaceOpen(true)} {...rest}>
+        <Button
+          className={buttonClassName}
+          onClick={() => setIsCreateWorkspaceOpen(true)}
+          {...rest}
+        >
           Create a Free Workspace
         </Button>
 
@@ -40,12 +50,20 @@ const TierCallToAction = ({ priceId, tier, actionIcon, ...rest }: Props) => {
   }
 
   if (tier === Tier.Enterprise) {
-    return <Button {...rest}>Contact sales</Button>;
+    return (
+      <Button className={buttonClassName} {...rest}>
+        Contact sales
+      </Button>
+    );
   }
 
   return (
     <>
-      <Button {...rest} onClick={() => setIsPaidSubscriptionDialogOpen(true)}>
+      <Button
+        className={buttonClassName}
+        {...rest}
+        onClick={() => setIsPaidSubscriptionDialogOpen(true)}
+      >
         {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
         Continue with {capitalizeFirstLetter(tier)}
       </Button>

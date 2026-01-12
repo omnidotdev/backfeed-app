@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -19,6 +20,7 @@ const viteConfig = defineConfig(({ command }) => ({
     devtools(),
     // NB: command is `serve` in development, `build` in production
     command === "serve" && mkcert(),
+    tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart(),
     nitroV2Plugin({ preset: "node-server" }),

@@ -113,13 +113,15 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
       onClick: () =>
         toaster.promise(
           async () => {
+            // Cancel any active subscription before deleting workspace
             if (subscription) {
-              const revokedSubscriptionId = await revokeSubscription({
-                data: { subscriptionId: subscription.id },
-              });
-
-              if (!revokedSubscriptionId)
-                throw new Error("Error revoking subscription");
+              try {
+                await revokeSubscription({
+                  data: { subscriptionId: subscription.id },
+                });
+              } catch {
+                // Subscription may not exist or already be canceled, continue with deletion
+              }
             }
 
             await deleteWorkspace({ rowId: workspaceId });

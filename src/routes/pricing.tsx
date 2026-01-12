@@ -91,8 +91,8 @@ function PricingPage() {
           rotate="10deg"
           fontSize="xs"
           fontWeight="semibold"
-          bgColor="brand.tertiary"
-          color="background.default"
+          bgColor={{ base: "brand.primary.500", _dark: "brand.primary.400" }}
+          color={{ base: "white", _dark: "neutral.900" }}
           px={2}
           borderRadius="sm"
           boxShadow="sm"

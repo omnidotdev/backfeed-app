@@ -1,5 +1,4 @@
-import { Button, Flex, Grid, Icon, Stack } from "@omnidev/sigil";
-import { FiArrowUpRight } from "react-icons/fi";
+import { Flex, Grid, Stack, css } from "@omnidev/sigil";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 
 import OverflowText from "@/components/core/OverflowText";
@@ -21,22 +20,22 @@ const WorkspaceCard = ({ workspace, ...rest }: Props) => (
     position="relative"
     direction="column"
     bgColor="card-item"
-    borderRadius="lg"
+    borderRadius="xl"
+    borderWidth="1px"
+    borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
     p={6}
+    cursor="pointer"
+    className={css({
+      transition: "all 0.2s ease",
+      _groupHover: {
+        bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+        borderColor: { base: "neutral.300", _dark: "neutral.700" },
+        transform: "translateY(-2px)",
+        boxShadow: "glow-card",
+      },
+    })}
     {...rest}
   >
-    <Button
-      position="absolute"
-      top={0}
-      right={0}
-      p={2}
-      variant="icon"
-      color={{ base: "foreground.muted", _groupHover: "brand.primary" }}
-      bgColor="transparent"
-    >
-      <Icon src={FiArrowUpRight} w={5} h={5} />
-    </Button>
-
     <Stack gap={6} h="100%" justify="space-between">
       <Stack minH={{ base: 16, md: 24 }}>
         <OverflowText

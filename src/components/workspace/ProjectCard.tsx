@@ -1,5 +1,4 @@
-import { Button, Flex, Grid, Icon, Stack, Text } from "@omnidev/sigil";
-import { FiArrowUpRight } from "react-icons/fi";
+import { Flex, Grid, Icon, Stack, Text, css } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -48,22 +47,22 @@ const ProjectCard = ({ project, ...rest }: Props) => {
       position="relative"
       direction="column"
       bgColor="card-item"
-      borderRadius="lg"
+      borderRadius="xl"
+      borderWidth="1px"
+      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
       p={8}
+      cursor="pointer"
+      className={css({
+        transition: "all 0.2s ease",
+        _groupHover: {
+          bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+          borderColor: { base: "neutral.300", _dark: "neutral.700" },
+          transform: "translateY(-2px)",
+          boxShadow: "glow-card",
+        },
+      })}
       {...rest}
     >
-      <Button
-        position="absolute"
-        top={1}
-        right={1}
-        p={2}
-        variant="icon"
-        color={{ base: "foreground.muted", _groupHover: "brand.primary" }}
-        bgColor="transparent"
-      >
-        <Icon src={FiArrowUpRight} w={5} h={5} />
-      </Button>
-
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
           <OverflowText

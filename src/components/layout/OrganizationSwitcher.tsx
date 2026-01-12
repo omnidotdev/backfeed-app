@@ -1,7 +1,7 @@
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
 import { LuBuilding2, LuChevronDown, LuUser } from "react-icons/lu";
 
-import { useOrganizationSafe } from "@/providers/OrganizationProvider";
+import { useOrganization } from "@/providers/OrganizationProvider";
 
 /**
  * Organization switcher component.
@@ -9,7 +9,7 @@ import { useOrganizationSafe } from "@/providers/OrganizationProvider";
  * Safe to use outside OrganizationProvider (renders nothing).
  */
 const OrganizationSwitcher = () => {
-  const orgContext = useOrganizationSafe();
+  const orgContext = useOrganization();
 
   // Not in auth context or no organizations
   if (!orgContext) return null;

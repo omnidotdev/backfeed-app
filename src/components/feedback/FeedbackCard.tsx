@@ -8,6 +8,7 @@ import {
   MenuItemGroup,
   Stack,
   Text,
+  css,
   sigil,
 } from "@omnidev/sigil";
 import {
@@ -263,64 +264,64 @@ const FeedbackCard = ({
   return (
     <HStack
       position="relative"
-      bgColor="background.default"
-      borderRadius="lg"
+      bgColor={{ base: "white", _dark: "neutral.900/80" }}
+      borderRadius="xl"
+      borderWidth="1px"
+      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
       p={4}
       opacity={actionIsPending ? 0.5 : 1}
+      className={css({
+        transition: "all 0.2s ease",
+        _hover: {
+          bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+          borderColor: { base: "neutral.300", _dark: "neutral.700" },
+        },
+      })}
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
-      <Stack h="full" w="full" gap={2}>
-        <HStack justify="space-between">
-          <Stack gap={1}>
+      {/* Voting buttons on the left */}
+      <VotingButtons
+        feedbackId={feedback.rowId!}
+        projectId={feedback?.project?.rowId!}
+        userVote={userVote}
+        totalUpvotes={totalUpvotes}
+        totalDownvotes={totalDownvotes}
+        isFeedbackRoute={!!isFeedbackRoute}
+        isAuthenticated={isAuthenticated}
+      />
+
+      {/* Content on the right */}
+      <Stack h="full" w="full" gap={1} flex={1}>
+        <HStack justify="space-between" alignItems="flex-start">
+          <Stack gap={0.5}>
             <Text
               wordBreak="break-word"
               fontWeight="semibold"
-              fontSize="lg"
-              // TODO: figure out container queries for this. The sizing feels off across different pages on both the projects page and feedback page
-              maxW={{ base: "40svw", xl: "xl" }}
+              fontSize={{ base: "md", md: "lg" }}
+              lineHeight={1.3}
               {...titleProps}
             >
               {feedback.title}
             </Text>
 
-            <Stack
-              direction={{ base: "column", sm: "row" }}
-              fontSize="sm"
-              gap={{ base: 1, sm: 2 }}
-            >
-              <Text color="foreground.subtle">{feedback.user?.username}</Text>
-
-              <Circle
-                size={1}
-                bgColor="foreground.subtle"
-                placeSelf="center"
-                display={{ baseToSm: "none" }}
-              />
-
-              <Text color="foreground.subtle">
+            <HStack fontSize="xs" gap={1.5} color="foreground.subtle">
+              <Text>{feedback.user?.username}</Text>
+              <Circle size={1} bgColor="foreground.subtle" />
+              <Text>
                 {dayjs(
                   isFeedbackPending ? new Date() : feedback.createdAt,
                 ).fromNow()}
               </Text>
-            </Stack>
+            </HStack>
           </Stack>
-
-          <VotingButtons
-            feedbackId={feedback.rowId!}
-            projectId={feedback?.project?.rowId!}
-            userVote={userVote}
-            totalUpvotes={totalUpvotes}
-            totalDownvotes={totalDownvotes}
-            isFeedbackRoute={!!isFeedbackRoute}
-            isAuthenticated={isAuthenticated}
-          />
         </HStack>
 
         <Text
           wordBreak="break-word"
           color="foreground.muted"
-          flex={1}
+          fontSize="sm"
+          lineHeight={1.5}
           {...descriptionProps}
         >
           {feedback.description?.split("\n").map((line, index) => (

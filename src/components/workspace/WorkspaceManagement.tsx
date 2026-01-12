@@ -92,7 +92,12 @@ const WorkspaceManagement = () => {
       <Grid gap={4}>
         {WORKSPACE_ACTIONS.filter(({ disabled }) => !disabled).map(
           ({ label, icon, ...rest }) => (
-            <Button key={label} variant="outline" {...rest}>
+            <Button
+              key={label}
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10"
+              {...rest}
+            >
               <Icon src={icon} w={4} h={4} />
 
               {label}

@@ -58,7 +58,7 @@ interface Props {
  */
 const CreateWorkspace = ({ isHotkeyEnabled = true }: Props) => {
   const { queryClient } = useRouteContext({ from: "__root__" });
-  const { currentOrganization } = useOrganization();
+  const orgContext = useOrganization();
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -142,6 +142,11 @@ const CreateWorkspace = ({ isHotkeyEnabled = true }: Props) => {
   });
 
   if (!isClient) return null;
+
+  // Don't render if no organization context (e.g., on pricing page without auth)
+  if (!orgContext) return null;
+
+  const { currentOrganization } = orgContext;
 
   return (
     <Dialog

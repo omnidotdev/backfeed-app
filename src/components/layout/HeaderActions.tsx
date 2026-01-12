@@ -69,7 +69,11 @@ const HeaderActions = () => {
           </HStack>
         ) : (
           <HStack>
-            <Button variant="outline" onClick={handleSignIn}>
+            <Button
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10"
+              onClick={handleSignIn}
+            >
               {app.auth.signIn.label}
             </Button>
 
@@ -137,7 +141,11 @@ const HeaderActions = () => {
               <AccountInformation />
             ) : (
               <Stack>
-                <Button variant="outline" onClick={handleSignIn}>
+                <Button
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary/10"
+                  onClick={handleSignIn}
+                >
                   {app.auth.signIn.label}
                 </Button>
 

@@ -63,24 +63,9 @@ const OrganizationProvider = ({
 
 /**
  * Hook to access organization context.
- * Throws if used outside OrganizationProvider.
+ * Returns null if used outside OrganizationProvider.
  */
 export const useOrganization = () => {
-  const val = use(OrganizationContext);
-
-  if (!val)
-    throw new Error(
-      "`useOrganization` called outside of `<OrganizationProvider />`",
-    );
-
-  return val;
-};
-
-/**
- * Safe hook that returns null if outside OrganizationProvider.
- * Use this in components that may render outside auth context.
- */
-export const useOrganizationSafe = () => {
   return use(OrganizationContext);
 };
 

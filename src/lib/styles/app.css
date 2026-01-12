@@ -1,2 +1,228 @@
 @layer reset, base, tokens, recipes, utilities;
 @import url("@omnidev/sigil/index.css");
+
+/* Tailwind CSS v4 */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Map Sigil's CSS variables to Tailwind utilities */
+  --color-primary: var(--colors-brand-primary);
+  --color-primary-foreground: oklch(0.985 0.001 0);
+  --color-secondary: var(--colors-brand-secondary);
+  --color-muted: var(--colors-background-muted);
+  --color-muted-foreground: var(--colors-foreground-muted);
+  --color-border: var(--colors-border-default);
+  --color-background: var(--colors-background-default);
+  --color-foreground: var(--colors-foreground-default);
+  --color-card: var(--colors-background-card);
+  --color-accent: var(--colors-accent-default);
+  --color-accent-foreground: var(--colors-accent-foreground);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+}
+
+/* ============================================
+   Backfeed Space Ruby Theme
+
+   This file extends the Sigil design system
+   with Backfeed-specific ruby gemstone branding.
+
+   The brand.primary token is overridden in
+   panda.config.ts to use omni.ruby colors.
+   ============================================ */
+
+:root {
+  /* Ruby glow colors for effects */
+  --glow-ruby: oklch(0.65 0.22 6 / 0.4);
+  --glow-magenta: oklch(0.667 0.251 323 / 0.3);
+}
+
+.dark {
+  /* Enhanced glow in dark mode */
+  --glow-ruby: oklch(0.75 0.185 8 / 0.5);
+  --glow-magenta: oklch(0.74 0.203 323 / 0.4);
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+@layer base {
+  * {
+    border-color: var(--colors-border-default);
+  }
+
+  html {
+    overscroll-behavior-y: none;
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--colors-background-default);
+    color: var(--colors-foreground-default);
+    overscroll-behavior-y: none;
+    overflow-x: clip;
+  }
+
+  /* Autofill handling - Light mode */
+  :is(input, textarea, select):-webkit-autofill:is(
+      :hover,
+      :focus,
+      :active,
+      :not(:hover):not(:focus):not(:active)
+    ) {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    box-shadow: 0 0 0px 1000px white inset;
+    -webkit-text-fill-color: var(--colors-foreground-default);
+    color: var(--colors-foreground-default);
+    caret-color: var(--colors-foreground-default);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Autofill handling - Dark mode */
+  .dark
+  :is(input, textarea, select):-webkit-autofill:is(
+    :hover,
+    :focus,
+    :active,
+    :not(:hover):not(:focus):not(:active)
+  ) {
+    -webkit-box-shadow: 0 0 0px 1000px var(--colors-neutral-950) inset;
+    box-shadow: 0 0 0px 1000px var(--colors-neutral-950) inset;
+    -webkit-text-fill-color: var(--colors-foreground-default);
+    color: var(--colors-foreground-default);
+    caret-color: var(--colors-foreground-default);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+@layer utilities {
+  /* Hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Custom scrollbar with ruby accent */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--colors-brand-primary) var(--colors-background-muted);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--colors-background-muted);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--colors-brand-primary);
+    border-radius: 10px;
+    border: 2px solid var(--colors-background-muted);
+    background-clip: content-box;
+  }
+
+  /* Border glow on hover */
+  .border-glow-hover {
+    transition:
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .border-glow-hover:hover {
+    border-color: color-mix(
+      in oklch,
+      var(--colors-brand-primary) 50%,
+      transparent
+    );
+    box-shadow:
+      0 0 20px color-mix(in oklch, var(--colors-brand-primary) 25%, transparent),
+      inset 0 0 20px
+      color-mix(in oklch, var(--colors-brand-primary) 5%, transparent);
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: color-mix(
+      in oklch,
+      var(--colors-background-default) 80%,
+      transparent
+    );
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .glass {
+    background: color-mix(in oklch, var(--colors-neutral-900) 60%, transparent);
+  }
+
+  /* Card hover lift */
+  .card-hover {
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px
+      color-mix(in oklch, var(--colors-brand-primary) 20%, transparent);
+  }
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover:hover {
+    transform: none;
+  }
+}

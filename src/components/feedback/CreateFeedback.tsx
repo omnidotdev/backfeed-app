@@ -2,18 +2,19 @@ import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
+import { useEnsureStatusTemplates } from "@/lib/hooks/useEnsureStatusTemplates";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import {
   projectMetricsOptions,
   projectOptions,
-  projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -44,7 +45,7 @@ const createFeedbackSchema = z.object({
  * Create feedback form.
  */
 const CreateFeedback = () => {
-  const { session, queryClient } = useRouteContext({
+  const { session, queryClient, hasAdminPrivileges } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { workspaceSlug, projectSlug } = useParams({
@@ -70,21 +71,14 @@ const CreateFeedback = () => {
   const projectId = project?.rowId;
   const workspaceId = project?.workspace?.rowId;
 
-  const { data: defaultStatusTemplateId } = useQuery({
-    ...projectStatusesOptions({
-      workspaceId: workspaceId!,
-    }),
+  const {
+    defaultStatusTemplateId,
+    isLoading: isLoadingTemplates,
+    error: templateError,
+  } = useEnsureStatusTemplates({
+    workspaceId,
+    hasAdminPrivileges,
     enabled: !!workspaceId,
-    select: (data) => {
-      // find the default status from project status configs, or fall back to first template
-      const templates = data?.statusTemplates?.nodes;
-      const configs = data?.projectStatusConfigs?.nodes;
-      const defaultConfig = configs?.find((c) => c?.isDefault);
-      if (defaultConfig) {
-        return defaultConfig.statusTemplateId;
-      }
-      return templates?.[0]?.rowId;
-    },
   });
 
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
@@ -130,10 +124,27 @@ const CreateFeedback = () => {
         }
 
         if (!defaultStatusTemplateId) {
+          if (isLoadingTemplates) {
+            toaster.info({
+              title: "Please wait",
+              description: "Setting up feedback categories...",
+            });
+            return;
+          }
+
+          if (templateError) {
+            toaster.error({
+              title: app.projectPage.projectFeedback.action.error.title,
+              description: templateError,
+            });
+            return;
+          }
+
+          // Fallback for non-admin users when templates don't exist
           toaster.error({
             title: app.projectPage.projectFeedback.action.error.title,
             description:
-              "No status templates configured for this workspace. Please contact an administrator.",
+              "Status templates are not configured. Please contact a workspace admin.",
           });
           return;
         }
@@ -175,6 +186,22 @@ const CreateFeedback = () => {
     (store) => store.values.description.length,
   );
 
+  // Pick a random placeholder index on mount (same index for title and description)
+  const placeholderIndex = useMemo(() => {
+    const placeholders =
+      app.projectPage.projectFeedback.feedbackTitle.placeholders;
+    return Math.floor(Math.random() * placeholders.length);
+  }, []);
+
+  const titlePlaceholder =
+    app.projectPage.projectFeedback.feedbackTitle.placeholders[
+      placeholderIndex
+    ];
+  const descriptionPlaceholder =
+    app.projectPage.projectFeedback.feedbackDescription.placeholders[
+      placeholderIndex
+    ];
+
   return (
     <Collapsible
       onOpenChange={({ open }) => {
@@ -198,9 +225,7 @@ const CreateFeedback = () => {
           {({ InputField }) => (
             <InputField
               label={app.projectPage.projectFeedback.feedbackTitle.label}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackTitle.placeholder
-              }
+              placeholder={titlePlaceholder}
               disabled={!session?.user || !canCreateFeedback}
             />
           )}
@@ -210,9 +235,7 @@ const CreateFeedback = () => {
           {({ TextareaField }) => (
             <TextareaField
               label={app.projectPage.projectFeedback.feedbackDescription.label}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackDescription.placeholder
-              }
+              placeholder={descriptionPlaceholder}
               rows={3}
               maxLength={MAX_DESCRIPTION_LENGTH}
               disabled={!session?.user || !canCreateFeedback}

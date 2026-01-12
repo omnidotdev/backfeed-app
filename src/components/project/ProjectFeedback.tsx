@@ -260,17 +260,8 @@ const ProjectFeedback = () => {
           top={{ base: 4, sm: 6 }}
           right={{ base: 4, sm: 6 }}
           variant="outline"
-          colorPalette="brand.primary"
-          color={{ base: "brand.primary", _disabled: "foreground.muted" }}
+          className="border-primary text-primary hover:bg-primary/10 disabled:opacity-50 disabled:hover:bg-transparent"
           mt={{ base: 2, sm: 0 }}
-          bgColor={{
-            _hover: {
-              base: "brand.primary.50",
-              _dark: "brand.primary.950/30",
-              _disabled: "transparent",
-            },
-          }}
-          opacity={{ _disabled: 0.5 }}
           onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
           // TODO: add tooltip for disabled state. Discuss copy
           disabled={!canCreateFeedback}

@@ -48,6 +48,7 @@ const EmptyState = ({ message, action, ...rest }: Props) => (
           <Button
             asChild
             variant="outline"
+            className="border-primary text-primary hover:bg-primary/10"
             size="sm"
             disabled={action.disabled}
             onClick={action.onClick}

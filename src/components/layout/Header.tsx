@@ -4,7 +4,6 @@ import { LuExternalLink } from "react-icons/lu";
 
 import LogoLink from "@/components/core/LogoLink";
 import HeaderActions from "@/components/layout/HeaderActions";
-import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 
 /**
@@ -19,10 +18,14 @@ const Header = () => {
       w="full"
       h="full"
       py={2}
-      // TODO: fix styles not appropriately being applied, See: https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues
-      style={{
-        borderBottom: "1px solid",
-        borderColor: token("colors.border.subtle"),
+      borderBottomWidth="1px"
+      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
+      bgColor={{ base: "white/90", _dark: "neutral.900/80" }}
+      backdropFilter="blur(12px)"
+      style={{ WebkitBackdropFilter: "blur(12px)" }}
+      _dark={{
+        backdropFilter: "blur(16px)",
+        boxShadow: "0 1px 0 0 rgba(255, 255, 255, 0.05)",
       }}
     >
       <Flex align="center" justify="space-between" w="full" px={4}>
@@ -36,16 +39,35 @@ const Header = () => {
                   h={10}
                   px={4}
                   align="center"
+                  borderRadius="md"
                   color={{
-                    base: "foreground.muted",
-                    _groupHover: "foreground.default",
+                    base:
+                      pathname === "/pricing"
+                        ? "brand.primary.600"
+                        : "foreground.muted",
+                    _groupHover:
+                      pathname === "/pricing"
+                        ? "brand.primary.600"
+                        : "foreground.default",
+                    _dark:
+                      pathname === "/pricing"
+                        ? "brand.primary.400"
+                        : "neutral.400",
                   }}
                   bgColor={
-                    pathname === "/pricing" ? "background.muted" : "transparent"
+                    pathname === "/pricing"
+                      ? {
+                          base: "brand.primary.50",
+                          _dark: "brand.primary.950/30",
+                        }
+                      : "transparent"
                   }
-                  borderRadius="md"
+                  transition="all 0.2s ease"
+                  _hover={{
+                    color: { _dark: "neutral.100" },
+                  }}
                 >
-                  {app.header.routes.pricing.label}
+                  Pricing
                 </Flex>
               </Link>
             </Flex>
@@ -53,15 +75,20 @@ const Header = () => {
             <SigilLink
               href={app.docsUrl}
               display={{ base: "none", sm: "flex" }}
-              color="foreground.muted"
-              _hover={{ color: "foreground.default" }}
+              color={{ base: "foreground.muted", _dark: "neutral.400" }}
+              _hover={{
+                color: {
+                  base: "brand.primary.600",
+                  _dark: "brand.primary.400",
+                },
+              }}
               isExternal
               textDecoration="none"
               h={10}
               px={4}
+              transition="all 0.2s ease"
             >
-              {app.header.routes.docs.label}
-
+              Docs
               <Icon src={LuExternalLink} h={3.5} w={3.5} />
             </SigilLink>
           </HStack>

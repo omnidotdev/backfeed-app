@@ -62,7 +62,7 @@ interface Props {
  */
 const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   const { queryClient } = useRouteContext({ from: "/pricing" });
-  const { currentOrganization } = useOrganization();
+  const orgContext = useOrganization();
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -132,6 +132,11 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   });
 
   if (!isClient) return null;
+
+  // Don't render if no organization context (e.g., on pricing page without auth)
+  if (!orgContext) return null;
+
+  const { currentOrganization } = orgContext;
 
   return (
     <Dialog

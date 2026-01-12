@@ -197,6 +197,11 @@ const PricingCard = ({ price, ...rest }: Props) => {
               fontSize="lg"
               disabled={isEnterpriseTier}
               variant={isRecommendedTier ? "solid" : "outline"}
+              className={
+                isRecommendedTier
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "border-primary text-primary hover:bg-primary/10"
+              }
               onClick={() => signIn({ redirectUrl: `${BASE_URL}/pricing` })}
             >
               {actionIcon && <Icon src={actionIcon} h={4} w={4} />}

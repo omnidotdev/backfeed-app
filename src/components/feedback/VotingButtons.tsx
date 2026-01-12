@@ -1,10 +1,5 @@
-import { HStack, Icon, Text, Tooltip } from "@omnidev/sigil";
-import {
-  PiArrowFatLineDown,
-  PiArrowFatLineDownFill,
-  PiArrowFatLineUp,
-  PiArrowFatLineUpFill,
-} from "react-icons/pi";
+import { Flex, Icon, Text, Tooltip, css } from "@omnidev/sigil";
+import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import LoginPrompt from "@/components/auth/LoginPrompt";
@@ -70,64 +65,90 @@ const VotingButtons = ({
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
-  const netVotesColor = match(netTotalVotes)
-    .with(0, () => "gray.400")
-    .when(
-      (net) => net > 0,
-      () => "brand.tertiary",
-    )
-    .otherwise(() => "brand.quinary");
+  const voteColor = match(true)
+    .with(hasUpvote, () => ({ base: "primary.500", _dark: "primary.400" }))
+    .with(hasDownvote, () => ({ base: "red.500", _dark: "red.400" }))
+    .otherwise(() => ({
+      base: "foreground.default",
+      _dark: "foreground.default",
+    }));
+
+  const borderColor = match(true)
+    .with(hasUpvote, () => ({ base: "primary.200", _dark: "primary.800" }))
+    .with(hasDownvote, () => ({ base: "red.200", _dark: "red.800" }))
+    .otherwise(() => ({ base: "neutral.200", _dark: "neutral.700" }));
+
+  const bgColor = match(true)
+    .with(hasUpvote, () => ({ base: "primary.50", _dark: "primary.950/30" }))
+    .with(hasDownvote, () => ({ base: "red.50", _dark: "red.950/30" }))
+    .otherwise(() => ({ base: "white", _dark: "neutral.800" }));
 
   // Show login prompt for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <HStack
-        gap={1}
+      <Flex
+        direction="column"
+        align="center"
         justify="center"
-        placeSelf="flex-start"
-        mr={-2.5}
-        mt={isFeedbackRoute ? -2 : -1}
+        minW={12}
+        py={2}
+        borderRadius="lg"
+        borderWidth="1px"
+        borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
+        bgColor={{ base: "white", _dark: "neutral.800" }}
+        className={css({ transition: "all 0.2s ease" })}
       >
-        <LoginPrompt action="vote" variant="ghost" size="xs">
-          <Icon src={PiArrowFatLineUp} w={5} h={5} color="brand.tertiary" />
+        <LoginPrompt action="vote" variant="ghost" size="xs" p={0}>
+          <Icon
+            src={LuArrowUp}
+            w={4}
+            h={4}
+            color={{ base: "primary.500", _dark: "primary.400" }}
+          />
         </LoginPrompt>
-
         <Text
-          color={netVotesColor}
-          whiteSpace="nowrap"
-          fontVariant="tabular-nums"
+          fontSize="sm"
+          fontWeight="bold"
+          color="foreground.default"
+          mt={0.5}
         >
-          {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
+          {netTotalVotes}
         </Text>
-
-        <LoginPrompt action="vote" variant="ghost" size="xs">
-          <Icon src={PiArrowFatLineDown} w={5} h={5} color="brand.quinary" />
-        </LoginPrompt>
-      </HStack>
+      </Flex>
     );
   }
 
   return (
-    <HStack
-      gap={1}
+    <Flex
+      direction="column"
+      align="center"
       justify="center"
-      placeSelf="flex-start"
-      mr={-2.5}
-      mt={isFeedbackRoute ? -2 : -1}
+      minW={12}
+      py={2}
+      borderRadius="lg"
+      borderWidth="1px"
+      borderColor={borderColor}
+      bgColor={bgColor}
+      className={css({ transition: "all 0.2s ease" })}
     >
       <Tooltip
         hasArrow={false}
         trigger={
-          <Icon
-            src={hasUpvote ? PiArrowFatLineUpFill : PiArrowFatLineUp}
-            w={5}
-            h={5}
-          />
+          <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
         }
         triggerProps={{
-          variant: "icon",
-          bgColor: "transparent",
-          color: "brand.tertiary",
+          variant: "ghost",
+          size: "xs",
+          p: 0,
+          minW: "auto",
+          h: "auto",
+          color: hasUpvote
+            ? { base: "primary.500", _dark: "primary.400" }
+            : { base: "foreground.muted", _dark: "foreground.muted" },
+          _hover: {
+            color: { base: "primary.500", _dark: "primary.400" },
+            bgColor: "transparent",
+          },
           onClick: (e) => {
             e.stopPropagation();
             handleUpvote();
@@ -138,27 +159,33 @@ const VotingButtons = ({
         {app.feedbackPage.details.upvote}
       </Tooltip>
 
-      <Text
-        color={netVotesColor}
-        whiteSpace="nowrap"
-        fontVariant="tabular-nums"
-      >
-        {`${netTotalVotes > 0 ? "+" : ""}${netTotalVotes}`}
+      <Text fontSize="sm" fontWeight="bold" color={voteColor} mt={0.5}>
+        {netTotalVotes}
       </Text>
 
       <Tooltip
         hasArrow={false}
         trigger={
           <Icon
-            src={hasDownvote ? PiArrowFatLineDownFill : PiArrowFatLineDown}
-            w={5}
-            h={5}
+            src={LuArrowDown}
+            w={4}
+            h={4}
+            strokeWidth={hasDownvote ? 3 : 2}
           />
         }
         triggerProps={{
-          variant: "icon",
-          bgColor: "transparent",
-          color: "brand.quinary",
+          variant: "ghost",
+          size: "xs",
+          p: 0,
+          minW: "auto",
+          h: "auto",
+          color: hasDownvote
+            ? { base: "red.500", _dark: "red.400" }
+            : { base: "foreground.muted", _dark: "foreground.muted" },
+          _hover: {
+            color: { base: "red.500", _dark: "red.400" },
+            bgColor: "transparent",
+          },
           onClick: (e) => {
             e.stopPropagation();
             handleDownvote();
@@ -168,7 +195,7 @@ const VotingButtons = ({
       >
         {app.feedbackPage.details.downvote}
       </Tooltip>
-    </HStack>
+    </Flex>
   );
 };
 

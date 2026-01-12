@@ -95,7 +95,11 @@ const MembershipMenu = ({
   return (
     <Menu
       trigger={
-        <Button size="sm" variant="outline">
+        <Button
+          size="sm"
+          variant="outline"
+          className="border-primary text-primary hover:bg-primary/10"
+        >
           {`${selectedRows.length} Selected`}
 
           <Icon src={LuChevronDown} />

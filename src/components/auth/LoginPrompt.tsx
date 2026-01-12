@@ -23,7 +23,13 @@ const LoginPrompt = ({ action, children, ...rest }: Props) => {
     <Tooltip
       hasArrow={false}
       trigger={
-        <Button onClick={handleClick} variant="outline" size="sm" {...rest}>
+        <Button
+          onClick={handleClick}
+          variant="outline"
+          size="sm"
+          className="border-primary text-primary hover:bg-primary/10"
+          {...rest}
+        >
           {children ?? `Log in to ${action}`}
         </Button>
       }
