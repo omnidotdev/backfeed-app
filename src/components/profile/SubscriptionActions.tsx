@@ -285,9 +285,7 @@ const SubscriptionActions = ({ workspace }: Props) => {
             fontSize="md"
             px={0}
             disabled={
-              isBillingPortalPending ||
-              !workspace.subscriptionId ||
-              workspace.subscription.toBeCanceled
+              isBillingPortalPending || !hasSubscription || toBeCanceled
             }
             onClick={async () => await openBillingPortal()}
           >
