@@ -21,6 +21,8 @@ const knipConfig: KnipConfig = {
   },
   ignoreExportsUsedInFile: true,
   ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
+  // CSS-only dependencies imported in app.css
+  ignoreDependencies: ["tw-animate-css"],
 };
 
 export default knipConfig;
