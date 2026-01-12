@@ -4,12 +4,10 @@ import { z } from "zod";
 import app from "@/lib/config/app.config";
 import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
-import { authMiddleware, customerMiddleware } from "@/server/middleware";
+import { customerMiddleware } from "@/server/middleware";
 
-import type Stripe from "stripe";
-
-const subscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_").nullable(),
+const workspaceSchema = z.object({
+  workspaceId: z.guid(),
 });
 
 const billingPortalSchema = z.object({
@@ -23,65 +21,76 @@ const createSubscriptionSchema = z.object({
   successUrl: z.url(),
 });
 
-const renewSubscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_"),
-});
+/**
+ * Get subscription details for a workspace via billing service.
+ */
+export const getSubscription = createServerFn()
+  .inputValidator((data) => workspaceSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.session) return null;
 
-export const getSubscriptions = createServerFn()
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const { data: customers } = await payments.customers.search({
-      query: `metadata["externalId"]:"${context.session.user.identityProviderId!}"`,
-    });
+    try {
+      const response = await fetch(
+        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${context.session.accessToken}`,
+          },
+        },
+      );
 
-    if (!customers.length) return undefined;
+      if (!response.ok) {
+        console.error("Failed to fetch subscription:", await response.text());
+        return null;
+      }
 
-    const { data: subscriptions } = await payments.subscriptions.list({
-      customer: customers[0].id,
-      status: "active",
-    });
-
-    return subscriptions.map((sub) => ({
-      id: sub.id,
-      subscriptionStatus: sub.status,
-      toBeCanceled: !!sub.cancel_at,
-      currentPeriodEnd: sub.items.data[0].current_period_end,
-    }));
+      const { subscription } = await response.json();
+      return subscription as {
+        id: string;
+        status: string;
+        cancelAt: number | null;
+        currentPeriodEnd: number;
+        priceId: string;
+        product: {
+          id: string;
+          name: string;
+          description: string | null;
+          marketing_features: Array<{ name: string }>;
+        } | null;
+      } | null;
+    } catch (error) {
+      console.error("Failed to fetch subscription:", error);
+      return null;
+    }
   });
 
-export const getSubscription = createServerFn()
-  .inputValidator((data) => subscriptionSchema.parse(data))
-  .handler(async ({ data }) => {
-    if (!data.subscriptionId) return null;
+/**
+ * Cancel a subscription for a workspace via billing service.
+ */
+export const revokeSubscription = createServerFn({ method: "POST" })
+  .inputValidator((data) => workspaceSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.session) throw new Error("Unauthorized");
 
-    const subscription = await payments.subscriptions.retrieve(
-      data.subscriptionId,
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/cancel`,
       {
-        expand: ["items.data.price.product"],
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${context.session.accessToken}`,
+        },
       },
     );
 
-    return {
-      id: subscription.id,
-      status: subscription.status,
-      cancelAt: subscription.cancel_at,
-      currentPeriodEnd: subscription.items.data[0].current_period_end,
-      priceId: subscription.items.data[0].price.id,
-      product: subscription.items.data[0].price.product as Stripe.Product,
-    };
-  });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "Failed to cancel subscription");
+    }
 
-export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => subscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    const subscription = await payments.subscriptions.cancel(
-      data.subscriptionId!,
-    );
-
-    return subscription.id;
+    const { id } = await response.json();
+    return id as string;
   });
 
 /**
@@ -151,13 +160,27 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
     return checkout.url!;
   });
 
+/**
+ * Renew a subscription (remove scheduled cancellation) via billing service.
+ */
 export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => renewSubscriptionSchema.parse(data))
+  .inputValidator((data) => workspaceSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
+    if (!context.session) throw new Error("Unauthorized");
 
-    await payments.subscriptions.update(data.subscriptionId, {
-      cancel_at: null,
-    });
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/renew`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${context.session.accessToken}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "Failed to renew subscription");
+    }
   });

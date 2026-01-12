@@ -1,15 +1,13 @@
 import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import {
   createColumnHelper,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import dayjs from "dayjs";
 import { LuPlus } from "react-icons/lu";
-import { P, match } from "ts-pattern";
 
 import DataTable from "@/components/core/DataTable";
 import SubscriptionActions from "@/components/profile/SubscriptionActions";
@@ -20,16 +18,9 @@ import { workspacesOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
-import type Stripe from "stripe";
 import type { WorkspaceFragment } from "@/generated/graphql";
 
-export interface WorkspaceRow extends WorkspaceFragment {
-  subscription: {
-    subscriptionStatus: Stripe.Subscription.Status;
-    toBeCanceled: boolean;
-    currentPeriodEnd: number | null | undefined;
-  };
-}
+export type WorkspaceRow = WorkspaceFragment;
 
 const columnHelper = createColumnHelper<WorkspaceRow>();
 
@@ -58,59 +49,32 @@ const columns = [
     header: "Tier",
     cell: (info) => capitalizeFirstLetter(info.getValue()),
   }),
-  columnHelper.accessor("subscription.subscriptionStatus", {
-    header: "Subscription Status",
-    cell: (info) => {
-      const isFreeTier = info.row.original.tier === Tier.Free;
+  columnHelper.display({
+    id: "subscription_status",
+    header: "Status",
+    cell: ({ row }) => {
+      const isFreeTier = row.original.tier === Tier.Free;
+      const hasSubscription = !!row.original.subscriptionId;
 
       if (isFreeTier) return "-";
 
-      const toBeCanceled = info.row.original.subscription.toBeCanceled;
-
-      const color = match({
-        status: info.getValue(),
-        toBeCanceled,
-      })
-        .with({ status: "active", toBeCanceled: true }, () => "yellow")
-        .with({ status: "active" }, () => "green")
-        .with(
-          {
-            status: P.union("past_due", "unpaid", "canceled"),
-          },
-          () => "red",
-        )
-        .otherwise(() => "gray");
-
       return (
         <HStack>
-          <Box h={2} w={2} rounded="full" bgColor={color} />
-          <Text>
-            {toBeCanceled
-              ? "To Be Canceled"
-              : info
-                  .getValue()
-                  .split("_")
-                  .map((word) => capitalizeFirstLetter(word))
-                  .join(" ")}
-          </Text>
+          <Box
+            h={2}
+            w={2}
+            rounded="full"
+            bgColor={hasSubscription ? "green" : "gray"}
+          />
+          <Text>{hasSubscription ? "Active" : "Inactive"}</Text>
         </HStack>
       );
     },
-  }),
-  columnHelper.accessor("subscription.currentPeriodEnd", {
-    header: "Renewal Date",
-    cell: (info) =>
-      info.getValue() && !info.row.original.subscription.toBeCanceled
-        ? dayjs.unix(info.getValue()!).format("MM/DD/YYYY")
-        : "-",
   }),
 ];
 
 const UserWorkspaces = () => {
   const { user } = useRouteContext({
-    from: "/_auth/profile/$userId/_layout/workspaces",
-  });
-  const { subscriptions } = useLoaderData({
     from: "/_auth/profile/$userId/_layout/workspaces",
   });
 
@@ -121,27 +85,7 @@ const UserWorkspaces = () => {
       orderBy: WorkspaceOrderBy.CreatedAtAsc,
     }),
     select: (data) =>
-      data.workspaces?.nodes?.map((workspace) => {
-        const currentSubscription = subscriptions?.find(
-          (sub) => sub.id === workspace?.subscriptionId,
-        );
-
-        if (!currentSubscription) {
-          return {
-            ...workspace!,
-            subscription: {
-              subscriptionStatus: "incomplete" as Stripe.Subscription.Status,
-              toBeCanceled: false,
-              currentPeriodEnd: null,
-            },
-          };
-        }
-
-        return {
-          ...workspace!,
-          subscription: currentSubscription,
-        };
-      }) ?? [],
+      data.workspaces?.nodes?.map((workspace) => workspace!) ?? [],
   });
 
   const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({

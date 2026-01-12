@@ -8,15 +8,13 @@ import app from "@/lib/config/app.config";
 import { workspacesOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
-import { getSubscriptions } from "@/server/functions/subscriptions";
 
 export const Route = createFileRoute(
   "/_auth/profile/$userId/_layout/workspaces",
 )({
   loader: async ({ context: { queryClient, session } }) => {
-    const [prices, subscriptions] = await Promise.all([
+    const [prices] = await Promise.all([
       getPrices(),
-      getSubscriptions(),
       queryClient.ensureQueryData({
         ...workspacesOptions({
           userId: session?.user?.rowId!,
@@ -27,7 +25,7 @@ export const Route = createFileRoute(
       }),
     ]);
 
-    return { prices, subscriptions };
+    return { prices };
   },
   head: () => ({ meta: createMetaTags({ title: "User Workspaces" }) }),
   component: UserWorkspacesPage,

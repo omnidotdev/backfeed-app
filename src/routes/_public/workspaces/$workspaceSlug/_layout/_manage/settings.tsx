@@ -16,12 +16,10 @@ import type { ExpandedProductPrice } from "@/server/functions/prices";
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
 )({
-  loader: async ({
-    context: { queryClient, subscriptionId, workspaceId, workspaceName },
-  }) => {
+  loader: async ({ context: { queryClient, workspaceId, workspaceName } }) => {
     const [prices, subscription] = await Promise.all([
       getPrices(),
-      getSubscription({ data: { subscriptionId } }),
+      getSubscription({ data: { workspaceId } }),
       queryClient.ensureQueryData({
         ...membersOptions({ workspaceId, roles: [Role.Owner] }),
         revalidateIfStale: true,

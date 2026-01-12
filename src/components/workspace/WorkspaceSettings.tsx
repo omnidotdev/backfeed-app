@@ -117,7 +117,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
             if (subscription) {
               try {
                 await revokeSubscription({
-                  data: { subscriptionId: subscription.id },
+                  data: { workspaceId },
                 });
               } catch {
                 // Subscription may not exist or already be canceled, continue with deletion
@@ -243,7 +243,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
               onClick={async () => {
                 if (workspace.subscription.toBeCanceled) {
                   await renewSubscription({
-                    data: { subscriptionId: subscription.id },
+                    data: { workspaceId },
                   });
                 } else {
                   await openBillingPortal();

@@ -11,7 +11,7 @@ import {
   Text,
   Tooltip,
 } from "@omnidev/sigil";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
   useNavigate,
@@ -21,11 +21,13 @@ import { useState } from "react";
 import { FiArrowUpCircle } from "react-icons/fi";
 import { LuPencil, LuRepeat2, LuTrash2 } from "react-icons/lu";
 
+import { Tier } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import {
   getBillingPortalUrl,
   getCreateSubscriptionUrl,
+  getSubscription,
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
@@ -49,6 +51,16 @@ const SubscriptionActions = ({ workspace }: Props) => {
   const navigate = useNavigate();
 
   const [isUpgradePlanMenuOpen, setIsUpgradePlanMenuOpen] = useState(false);
+
+  // Fetch subscription details for this workspace (only if not free tier)
+  const { data: subscription } = useQuery({
+    queryKey: ["subscription", workspace.rowId],
+    queryFn: () => getSubscription({ data: { workspaceId: workspace.rowId } }),
+    enabled: workspace.tier !== Tier.Free,
+  });
+
+  const hasSubscription = !!subscription;
+  const toBeCanceled = !!subscription?.cancelAt;
 
   const { mutateAsync: openBillingPortal, isPending: isBillingPortalPending } =
     useMutation({
@@ -90,14 +102,14 @@ const SubscriptionActions = ({ workspace }: Props) => {
     mutationFn: async () =>
       await renewSubscription({
         data: {
-          subscriptionId: workspace.subscriptionId!,
+          workspaceId: workspace.rowId,
         },
       }),
   });
 
   return (
     <HStack py={2} justify="center">
-      {workspace.subscription.toBeCanceled ? (
+      {toBeCanceled ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -130,7 +142,7 @@ const SubscriptionActions = ({ workspace }: Props) => {
         >
           Renew Subscription
         </Tooltip>
-      ) : workspace.subscriptionId ? (
+      ) : hasSubscription ? (
         <Tooltip
           positioning={{
             placement: "top",
@@ -284,16 +296,11 @@ const SubscriptionActions = ({ workspace }: Props) => {
         }
         triggerProps={{
           style: { all: "unset" },
-          disabled:
-            isBillingPortalPending ||
-            !workspace.subscriptionId ||
-            workspace.subscription.toBeCanceled,
+          disabled: isBillingPortalPending || !hasSubscription || toBeCanceled,
         }}
         contentProps={{
           display:
-            isBillingPortalPending ||
-            !workspace.subscriptionId ||
-            workspace.subscription.toBeCanceled
+            isBillingPortalPending || !hasSubscription || toBeCanceled
               ? "none"
               : undefined,
           zIndex: "foreground",
