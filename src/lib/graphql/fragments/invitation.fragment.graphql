@@ -3,7 +3,7 @@ fragment Invitation on Invitation {
   email
   workspaceId
   workspace {
-    name
+    organizationId
   }
   createdAt
   updatedAt

@@ -35,7 +35,7 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
  * Form for updating project details.
  */
 const UpdateProject = () => {
-  const { queryClient } = useRouteContext({
+  const { queryClient, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
   });
   const { workspaceSlug, projectSlug } = useParams({
@@ -48,7 +48,7 @@ const UpdateProject = () => {
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
-      workspaceSlug,
+      workspaceOrganizationId: organizationId,
     }),
     placeholderData: keepPreviousData,
     select: (data) => data.projects?.nodes?.[0],
@@ -79,7 +79,7 @@ const UpdateProject = () => {
       projectSocials: (project?.projectSocials?.nodes?.length
         ? project?.projectSocials?.nodes
         : [DEFAULT_PENDING_SOCIAL]) as ProjectSocial[],
-      workspaceSlug: project?.workspace?.slug ?? "",
+      workspaceOrganizationId: organizationId,
       currentSlug: project?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,

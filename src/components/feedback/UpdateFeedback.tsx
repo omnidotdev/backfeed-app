@@ -172,7 +172,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
             <InputField
               label={app.projectPage.projectFeedback.feedbackTitle.label}
               placeholder={
-                app.projectPage.projectFeedback.feedbackTitle.placeholder
+                app.projectPage.projectFeedback.feedbackTitle.placeholders[0]
               }
               onClick={(evt) => {
                 evt.preventDefault();
@@ -187,7 +187,8 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
             <TextareaField
               label={app.projectPage.projectFeedback.feedbackDescription.label}
               placeholder={
-                app.projectPage.projectFeedback.feedbackDescription.placeholder
+                app.projectPage.projectFeedback.feedbackDescription
+                  .placeholders[0]
               }
               rows={5}
               minH={32}

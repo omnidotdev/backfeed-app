@@ -25,6 +25,10 @@ const invitations = app.header.routes.invitations;
 const NotificationCenter = () => {
   const { queryClient, session } = useRouteContext({ from: "__root__" });
 
+  // Helper to get org name from session by organizationId
+  const getOrgName = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId)?.name;
+
   const { data: notifications } = useQuery({
     ...notificationsOptions({ email: session?.user?.email! }),
     enabled: !!session?.user?.email,
@@ -33,7 +37,7 @@ const NotificationCenter = () => {
         rowId: inv?.rowId!,
         workspaceId: inv?.workspaceId!,
         // TODO: Might need to update when notifications expand beyond invites. For now, the popover description provides the context
-        message: `${invitations.join} ${inv?.workspace?.name}`,
+        message: `${invitations.join} ${getOrgName(inv?.workspace?.organizationId!) ?? "a workspace"}`,
       })) ?? [],
   });
 

@@ -1,5 +1,5 @@
-query Workspace($name: String!) {
-  workspaceByName(name: $name) {
+query Workspace($organizationId: String!) {
+  workspaceByOrganizationId(organizationId: $organizationId) {
     ...Workspace
     updatedAt
     projects(first: 6, orderBy: POSTS_COUNT_DESC) {

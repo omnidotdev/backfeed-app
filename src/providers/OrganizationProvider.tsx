@@ -8,6 +8,8 @@ interface OrganizationContext {
   currentOrganization: OrganizationClaim;
   setCurrentOrganization: (orgId: string) => void;
   hasMultipleOrgs: boolean;
+  /** Resolve organization details by ID. Returns undefined if not found. */
+  getOrganizationById: (orgId: string) => OrganizationClaim | undefined;
 }
 
 const OrganizationContext = createContext<OrganizationContext | null>(null);
@@ -45,6 +47,10 @@ const OrganizationProvider = ({
     if (org) setCurrentOrgState(org);
   };
 
+  const getOrganizationById = (orgId: string) => {
+    return organizations.find((o) => o.id === orgId);
+  };
+
   const hasMultipleOrgs = organizations.length > 1;
 
   return (
@@ -54,6 +60,7 @@ const OrganizationProvider = ({
         currentOrganization,
         setCurrentOrganization,
         hasMultipleOrgs,
+        getOrganizationById,
       }}
     >
       {children}

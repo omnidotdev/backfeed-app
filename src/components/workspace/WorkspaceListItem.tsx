@@ -11,12 +11,20 @@ import type { Workspace } from "@/generated/graphql";
 interface Props {
   /** Workspace details. */
   workspace: Partial<Workspace>;
+  /** Workspace name from organization context. */
+  workspaceName?: string;
+  /** Workspace slug from organization context. */
+  workspaceSlug?: string;
 }
 
 /**
  * Workspace list item.
  */
-const WorkspaceListItem = ({ workspace }: Props) => {
+const WorkspaceListItem = ({
+  workspace,
+  workspaceName,
+  workspaceSlug,
+}: Props) => {
   const AGGREGATES = [
     {
       type: "user",
@@ -47,7 +55,7 @@ const WorkspaceListItem = ({ workspace }: Props) => {
         <Stack maxW="65svw">
           <Link
             to="/workspaces/$workspaceSlug"
-            params={{ workspaceSlug: workspace.slug! }}
+            params={{ workspaceSlug: workspaceSlug! }}
             role="group"
           >
             <Stack gap={1}>
@@ -62,7 +70,7 @@ const WorkspaceListItem = ({ workspace }: Props) => {
                   },
                 }}
               >
-                {workspace?.name}
+                {workspaceName}
               </OverflowText>
 
               <Text

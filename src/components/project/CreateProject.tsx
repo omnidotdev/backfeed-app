@@ -64,7 +64,7 @@ interface Props {
  * Dialog for creating a new project.
  */
 const CreateProject = ({ workspaceSlug }: Props) => {
-  const { session, queryClient } = useRouteContext({
+  const { session, queryClient, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout",
   });
   const navigate = useNavigate();
@@ -85,10 +85,10 @@ const CreateProject = ({ workspaceSlug }: Props) => {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
-      name: workspaceSlug,
+      organizationId,
     }),
     enabled: !!session?.user?.rowId,
-    select: (data) => data?.workspaceByName,
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   useHotkeys(
@@ -114,7 +114,7 @@ const CreateProject = ({ workspaceSlug }: Props) => {
         queryKey: workspacesOptions({
           userId: session?.user?.rowId!,
           isMember: true,
-          slug: workspaceSlug,
+          organizationId,
           excludeRoles: [Role.Member],
         }).queryKey,
       });
@@ -151,7 +151,7 @@ const CreateProject = ({ workspaceSlug }: Props) => {
             navigate({
               to: "/workspaces/$workspaceSlug/projects/$projectSlug",
               params: {
-                workspaceSlug: projectData.project?.workspace?.slug!,
+                workspaceSlug,
                 projectSlug: projectData.project?.slug!,
               },
             });

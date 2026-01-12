@@ -36,17 +36,17 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceInvitationsPage() {
-  const { workspaceSlug } = Route.useParams();
+  const { organizationId, workspaceName } = Route.useRouteContext();
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data?.workspaceByName,
+  useQuery({
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   return (
     <Page
       header={{
-        title: `${workspace?.name} ${app.workspaceInvitationsPage.breadcrumb}`,
+        title: `${workspaceName} ${app.workspaceInvitationsPage.breadcrumb}`,
         description: app.workspaceInvitationsPage.description,
         // TODO: re-enable when per-seat pricing is implemented
         cta: [

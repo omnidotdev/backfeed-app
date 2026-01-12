@@ -14,13 +14,16 @@ import type { Project } from "@/generated/graphql";
 interface Props {
   /** Project details. */
   project: Partial<Project>;
+  /** Workspace slug from organization context. */
+  workspaceSlug: string;
 }
 
 /**
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { slug, workspace, name, description, posts },
+  project: { slug, name, description, posts },
+  workspaceSlug,
 }: Props) => {
   const { hasAdminPrivileges } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
@@ -57,7 +60,7 @@ const ProjectListItem = ({
             <Link
               to="/workspaces/$workspaceSlug/projects/$projectSlug"
               params={{
-                workspaceSlug: workspace?.slug!,
+                workspaceSlug,
                 projectSlug: slug!,
               }}
               role="group"
@@ -83,7 +86,7 @@ const ProjectListItem = ({
               <Link
                 to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
                 params={{
-                  workspaceSlug: workspace?.slug!,
+                  workspaceSlug,
                   projectSlug: slug!,
                 }}
               >

@@ -6,15 +6,20 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
-import { useCreateFeedbackMutation } from "@/generated/graphql";
+import {
+  useCreateFeedbackMutation,
+  useCreateStatusTemplateMutation,
+} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
+import { DEFAULT_STATUS_TEMPLATES } from "@/lib/constants/defaultStatusTemplates.constant";
 import { useEnsureStatusTemplates } from "@/lib/hooks/useEnsureStatusTemplates";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import {
   projectMetricsOptions,
   projectOptions,
+  projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -45,10 +50,11 @@ const createFeedbackSchema = z.object({
  * Create feedback form.
  */
 const CreateFeedback = () => {
-  const { session, queryClient, hasAdminPrivileges } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
-  const { workspaceSlug, projectSlug } = useParams({
+  const { session, queryClient, hasAdminPrivileges, organizationId } =
+    useRouteContext({
+      from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+    });
+  const { projectSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
@@ -57,13 +63,16 @@ const CreateFeedback = () => {
     type: DialogType.CreateFeedback,
   });
   const { data: canCreateFeedback } = useQuery(
-    freeTierFeedbackOptions({ workspaceSlug, projectSlug }),
+    freeTierFeedbackOptions({
+      workspaceOrganizationId: organizationId,
+      projectSlug,
+    }),
   );
 
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
-      workspaceSlug,
+      workspaceOrganizationId: organizationId,
     }),
     select: (data) => data?.projects?.nodes?.[0],
   });
@@ -81,6 +90,9 @@ const CreateFeedback = () => {
     enabled: !!workspaceId,
   });
 
+  const { mutateAsync: createStatusTemplate } =
+    useCreateStatusTemplateMutation();
+
   const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
     onSettled: async () => {
       reset();
@@ -93,7 +105,10 @@ const CreateFeedback = () => {
           queryKey: projectMetricsOptions({ projectId: projectId! }).queryKey,
         }),
         queryClient.invalidateQueries(
-          freeTierFeedbackOptions({ workspaceSlug, projectSlug }),
+          freeTierFeedbackOptions({
+            workspaceOrganizationId: organizationId,
+            projectSlug,
+          }),
         ),
       ]);
 
@@ -123,7 +138,10 @@ const CreateFeedback = () => {
           return;
         }
 
-        if (!defaultStatusTemplateId) {
+        // If no status template exists, try to create defaults on-demand
+        let statusTemplateId = defaultStatusTemplateId;
+
+        if (!statusTemplateId) {
           if (isLoadingTemplates) {
             toaster.info({
               title: "Please wait",
@@ -132,28 +150,70 @@ const CreateFeedback = () => {
             return;
           }
 
-          if (templateError) {
+          // Try to create default templates on-demand
+          if (workspaceId) {
+            try {
+              toaster.info({
+                title: "Setting up",
+                description: "Creating feedback categories...",
+              });
+
+              // Create templates sequentially
+              for (const template of DEFAULT_STATUS_TEMPLATES) {
+                const result = await createStatusTemplate({
+                  input: {
+                    statusTemplate: {
+                      workspaceId,
+                      name: template.name,
+                      displayName: template.displayName,
+                      color: template.color,
+                      description: template.description,
+                      sortOrder: template.sortOrder,
+                    },
+                  },
+                });
+
+                // Use the "open" template as default, or first one created
+                if (template.name === "open" || !statusTemplateId) {
+                  statusTemplateId =
+                    result.createStatusTemplate?.statusTemplate?.rowId;
+                }
+              }
+
+              // Invalidate cache so templates are available next time
+              await queryClient.invalidateQueries({
+                queryKey: projectStatusesOptions({ workspaceId }).queryKey,
+              });
+            } catch (err) {
+              console.error(
+                "[CreateFeedback] Failed to create templates on-demand:",
+                err,
+              );
+              toaster.error({
+                title: app.projectPage.projectFeedback.action.error.title,
+                description:
+                  "Failed to set up feedback categories. Please try again.",
+              });
+              return;
+            }
+          }
+
+          // If still no template after trying to create, show error
+          if (!statusTemplateId) {
             toaster.error({
               title: app.projectPage.projectFeedback.action.error.title,
-              description: templateError,
+              description:
+                "Status templates are not configured. Please contact a workspace admin.",
             });
             return;
           }
-
-          // Fallback for non-admin users when templates don't exist
-          toaster.error({
-            title: app.projectPage.projectFeedback.action.error.title,
-            description:
-              "Status templates are not configured. Please contact a workspace admin.",
-          });
-          return;
         }
 
         return toaster.promise(
           createFeedback({
             input: {
               post: {
-                statusTemplateId: defaultStatusTemplateId,
+                statusTemplateId: statusTemplateId,
                 projectId,
                 userId: session.user.rowId,
                 title: value.title.trim(),

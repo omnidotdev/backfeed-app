@@ -24,7 +24,7 @@ query RecentFeedback($userId: UUID!, $after: Cursor) {
           name
           slug
           workspace {
-            slug
+            organizationId
           }
         }
         statusTemplate {

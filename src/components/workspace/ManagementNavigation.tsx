@@ -42,7 +42,7 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { role } = useRouteContext({
+  const { role, organizationId, workspaceName } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
   const { workspaceSlug } = useParams({
@@ -58,9 +58,9 @@ const ManagementNavigation = ({
     },
   });
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data?.workspaceByName,
+  useQuery({
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
@@ -112,7 +112,7 @@ const ManagementNavigation = ({
         alignItems="center"
       >
         {/* TODO: update with workspace image */}
-        <Avatar size="xs" name={workspace?.name} />
+        <Avatar size="xs" name={workspaceName} />
 
         {isOpen && (
           <OverflowText
@@ -122,7 +122,7 @@ const ManagementNavigation = ({
             fontSize="sm"
             fontWeight="semibold"
           >
-            {workspace?.name}
+            {workspaceName}
           </OverflowText>
         )}
       </Flex>

@@ -32,15 +32,19 @@ import type {
  * Feedback comments section.
  */
 const Comments = () => {
-  const { session } = useRouteContext({
+  const { session, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
-  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+  const { projectSlug, feedbackId } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
   const { data: canCreateComment } = useQuery(
-    freeTierCommentsOptions({ projectSlug, workspaceSlug, feedbackId }),
+    freeTierCommentsOptions({
+      projectSlug,
+      workspaceOrganizationId: organizationId,
+      feedbackId,
+    }),
   );
 
   const {

@@ -5,8 +5,7 @@ query Workspaces(
   $isMember: Boolean
   $userId: UUID
   $excludeRoles: [Role!]
-  $search: String
-  $slug: String
+  $organizationId: String
   $workspaceId: UUID
 ) {
   workspaces(
@@ -15,8 +14,7 @@ query Workspaces(
     orderBy: $orderBy
     filter: {
       rowId: { equalTo: $workspaceId }
-      name: { includesInsensitive: $search }
-      slug: { equalTo: $slug }
+      organizationId: { equalTo: $organizationId }
       or: [
         {
           membersExist: $isMember

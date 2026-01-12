@@ -32,20 +32,23 @@ export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
   });
 
 export const freeTierCommentsOptions = ({
-  workspaceSlug,
+  workspaceOrganizationId,
   projectSlug,
   feedbackId,
 }: {
-  workspaceSlug: string;
+  workspaceOrganizationId: string;
   projectSlug: string;
   feedbackId: string;
 }) =>
   queryOptions({
-    queryKey: ["FreeTierComments", { workspaceSlug, projectSlug, feedbackId }],
+    queryKey: [
+      "FreeTierComments",
+      { workspaceOrganizationId, projectSlug, feedbackId },
+    ],
     queryFn: async () => {
       try {
         const { projects } = await useProjectQuery.fetcher({
-          workspaceSlug,
+          workspaceOrganizationId,
           projectSlug,
         })();
 

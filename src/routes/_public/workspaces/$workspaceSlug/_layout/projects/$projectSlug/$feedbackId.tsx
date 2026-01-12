@@ -19,8 +19,8 @@ export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 )({
   loader: async ({
-    context: { session, queryClient },
-    params: { workspaceSlug, projectSlug, feedbackId },
+    context: { session, queryClient, organizationId },
+    params: { projectSlug, feedbackId },
   }) => {
     await Promise.all([
       queryClient.ensureQueryData({
@@ -36,7 +36,7 @@ export const Route = createFileRoute(
       }),
       queryClient.ensureQueryData({
         ...freeTierCommentsOptions({
-          workspaceSlug,
+          workspaceOrganizationId: organizationId,
           projectSlug,
           feedbackId,
         }),
@@ -49,7 +49,7 @@ export const Route = createFileRoute(
 });
 
 function FeedbackPage() {
-  const { session, hasAdminPrivileges, isAuthenticated } =
+  const { session, hasAdminPrivileges, isAuthenticated, workspaceName } =
     Route.useRouteContext();
   const { workspaceSlug, projectSlug, feedbackId } = Route.useParams();
 
@@ -78,7 +78,7 @@ function FeedbackPage() {
       to: "/workspaces",
     },
     {
-      label: feedback?.project?.workspace?.name!,
+      label: workspaceName,
       to: "/workspaces/$workspaceSlug",
       params: { workspaceSlug },
     },

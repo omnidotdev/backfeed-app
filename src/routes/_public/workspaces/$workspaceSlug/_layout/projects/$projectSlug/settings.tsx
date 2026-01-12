@@ -29,11 +29,14 @@ export const Route = createFileRoute(
     }
   },
   loader: async ({
-    context: { queryClient },
-    params: { workspaceSlug, projectSlug },
+    context: { queryClient, organizationId },
+    params: { projectSlug },
   }) => {
     const { projects } = await queryClient.ensureQueryData({
-      ...projectOptions({ workspaceSlug, projectSlug }),
+      ...projectOptions({
+        workspaceOrganizationId: organizationId,
+        projectSlug,
+      }),
       revalidateIfStale: true,
     });
 
@@ -48,12 +51,16 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
-  const { session, queryClient } = Route.useRouteContext();
+  const { session, queryClient, organizationId, workspaceName } =
+    Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceSlug, projectSlug }),
+    ...projectOptions({
+      workspaceOrganizationId: organizationId,
+      projectSlug,
+    }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
@@ -63,7 +70,7 @@ function ProjectSettingsPage() {
       to: "/workspaces",
     },
     {
-      label: project?.workspace?.name!,
+      label: workspaceName,
       to: "/workspaces/$workspaceSlug",
       params: { workspaceSlug },
     },
@@ -94,7 +101,7 @@ function ProjectSettingsPage() {
         queryKey: workspacesOptions({
           userId: session?.user.rowId!,
           isMember: true,
-          slug: workspaceSlug,
+          organizationId,
           excludeRoles: [Role.Member],
         }).queryKey,
       });

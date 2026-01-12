@@ -1,6 +1,10 @@
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -19,10 +23,15 @@ import type { Workspace } from "@/generated/graphql";
  * Workspace list.
  */
 const WorkspaceList = (props: StackProps) => {
-  const { page, pageSize, search } = useSearch({
+  const { session } = useRouteContext({ from: "__root__" });
+  const { page, pageSize } = useSearch({
     from: "/_public/workspaces/",
   });
   const navigate = useNavigate({ from: "/workspaces" });
+
+  // Helper to get org info from session by organizationId
+  const getOrgInfo = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId);
 
   const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({
     type: DialogType.CreateWorkspace,
@@ -33,7 +42,6 @@ const WorkspaceList = (props: StackProps) => {
       pageSize,
       offset: (page - 1) * pageSize,
       orderBy: [WorkspaceOrderBy.MembersCountDesc],
-      search,
       isMember: false,
     }),
     placeholderData: keepPreviousData,
@@ -71,12 +79,17 @@ const WorkspaceList = (props: StackProps) => {
   return (
     <Stack align="center" justify="space-between" h="100%" {...props}>
       <Stack w="100%">
-        {workspaces.map((workspace) => (
-          <WorkspaceListItem
-            key={workspace?.rowId}
-            workspace={workspace as Partial<Workspace>}
-          />
-        ))}
+        {workspaces.map((workspace) => {
+          const org = getOrgInfo(workspace?.organizationId!);
+          return (
+            <WorkspaceListItem
+              key={workspace?.rowId}
+              workspace={workspace as Partial<Workspace>}
+              workspaceName={org?.name}
+              workspaceSlug={org?.slug}
+            />
+          );
+        })}
       </Stack>
 
       <Pagination

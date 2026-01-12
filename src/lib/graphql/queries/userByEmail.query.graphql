@@ -3,8 +3,7 @@ query userByEmail($email: String!) {
     rowId
     identityProviderId
     username
-    firstName
-    lastName
+    name
     email
   }
 }

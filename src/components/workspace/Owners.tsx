@@ -31,7 +31,7 @@ const columns = [
     cell: ({ row }) => (
       <Stack py={4}>
         <Text fontSize="lg" fontWeight="medium">
-          {row.original.user?.firstName} {row.original.user?.lastName}
+          {row.original.user?.name}
         </Text>
 
         <Text color="foreground.subtle" fontWeight="medium">

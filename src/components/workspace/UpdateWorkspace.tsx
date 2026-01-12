@@ -16,50 +16,31 @@ import {
   slugSchema,
   workspaceNameSchema,
 } from "@/lib/constants/schema.constant";
-import getSdk from "@/lib/graphql/getSdk";
 import useForm from "@/lib/hooks/useForm";
 import { workspaceOptions } from "@/lib/options/workspaces";
-import generateSlug from "@/lib/util/generateSlug";
-import { fetchSession } from "@/server/functions/auth";
 
 const updateWorkspaceDetails = app.workspaceSettingsPage.cta.updateWorkspace;
 
-/** Schema for defining the shape of the update workspace form fields, as well as validating the form. */
-const updateWorkspaceSchema = z
-  .object({
-    name: workspaceNameSchema,
-    currentSlug: slugSchema,
-  })
-  .superRefine(async ({ name, currentSlug }, ctx) => {
-    const { session } = await fetchSession();
-
-    const updatedSlug = generateSlug(name);
-
-    if (!updatedSlug?.length || updatedSlug === currentSlug || !session)
-      return z.NEVER;
-
-    const sdk = await getSdk();
-
-    const { workspaceByName } = await sdk.Workspace({
-      name: updatedSlug,
-    });
-
-    if (workspaceByName) {
-      ctx.addIssue({
-        code: "custom",
-        message: updateWorkspaceDetails.fields.workspaceSlug.errors.duplicate,
-        path: ["name"],
-      });
-    }
-  });
+/**
+ * Schema for defining the shape of the update workspace form fields.
+ *
+ * Note: Workspace name/slug validation for duplicates is no longer needed
+ * since org identity (name/slug) is now owned by Gatekeeper (IDP), not the app DB.
+ * This form only updates app-specific workspace settings.
+ */
+const updateWorkspaceSchema = z.object({
+  name: workspaceNameSchema,
+  currentSlug: slugSchema,
+});
 
 /**
  * Form for updating workspace details.
  */
 const UpdateWorkspace = () => {
-  const { hasAdminPrivileges, queryClient } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
-  });
+  const { hasAdminPrivileges, queryClient, organizationId, workspaceName } =
+    useRouteContext({
+      from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
+    });
   const { workspaceSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
@@ -67,21 +48,22 @@ const UpdateWorkspace = () => {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
-      name: workspaceSlug,
+      organizationId,
     }),
-    select: (data) => data.workspaceByName,
+    select: (data) => data.workspaceByOrganizationId,
   });
 
   const { mutateAsync: updateWorkspace } = useUpdateWorkspaceMutation({
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: workspaceOptions({ name: workspaceSlug }).queryKey,
+        queryKey: workspaceOptions({ organizationId }).queryKey,
       });
 
+      // Workspace slug comes from org context, not DB
       navigate({
         to: "/workspaces/$workspaceSlug/settings",
         params: {
-          workspaceSlug: data?.updateWorkspace?.workspace?.slug!,
+          workspaceSlug,
         },
         replace: true,
       });
@@ -92,20 +74,22 @@ const UpdateWorkspace = () => {
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      name: workspace?.name ?? "",
-      currentSlug: workspace?.slug ?? "",
+      // Workspace name comes from org context (Gatekeeper), not DB
+      name: workspaceName ?? "",
+      currentSlug: workspaceSlug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     validators: {
       onSubmitAsync: updateWorkspaceSchema,
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async () => {
+      // Note: Workspace name/slug updates should go through Gatekeeper (IDP).
+      // This form now only updates app-specific settings like updatedAt.
+      // TODO: Redirect to Gatekeeper org settings for name/slug changes.
       try {
         await updateWorkspace({
           rowId: workspace?.rowId!,
           patch: {
-            name: value.name,
-            slug: generateSlug(value.name),
             updatedAt: new Date(),
           },
         });

@@ -20,63 +20,69 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { WorkspaceFragment } from "@/generated/graphql";
 
-export type WorkspaceRow = WorkspaceFragment;
+export type WorkspaceRow = WorkspaceFragment & { workspaceName?: string };
 
 const columnHelper = createColumnHelper<WorkspaceRow>();
 
-const columns = [
-  columnHelper.display({
-    id: "workspace_actions",
-    header: "Actions",
-    cell: ({ row }) => <SubscriptionActions workspace={row.original} />,
-    meta: {
-      tableCellProps: {
-        pr: 0,
-        style: {
-          width: token("sizes.20"),
-        },
-      },
-      headerProps: {
-        justify: "center",
-      },
-    },
-  }),
-  columnHelper.accessor("name", {
-    header: "Name",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("tier", {
-    header: "Tier",
-    cell: (info) => capitalizeFirstLetter(info.getValue()),
-  }),
-  columnHelper.display({
-    id: "subscription_status",
-    header: "Status",
-    cell: ({ row }) => {
-      const isFreeTier = row.original.tier === Tier.Free;
-      const hasSubscription = !!row.original.subscriptionId;
-
-      if (isFreeTier) return "-";
-
-      return (
-        <HStack>
-          <Box
-            h={2}
-            w={2}
-            rounded="full"
-            bgColor={hasSubscription ? "green" : "gray"}
-          />
-          <Text>{hasSubscription ? "Active" : "Inactive"}</Text>
-        </HStack>
-      );
-    },
-  }),
-];
-
 const UserWorkspaces = () => {
-  const { user } = useRouteContext({
+  const { user, session } = useRouteContext({
     from: "/_auth/profile/$userId/_layout/workspaces",
   });
+
+  // Helper to get org name from session by organizationId
+  const getOrgName = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId)?.name;
+
+  const columns = [
+    columnHelper.display({
+      id: "workspace_actions",
+      header: "Actions",
+      cell: ({ row }) => <SubscriptionActions workspace={row.original} />,
+      meta: {
+        tableCellProps: {
+          pr: 0,
+          style: {
+            width: token("sizes.20"),
+          },
+        },
+        headerProps: {
+          justify: "center",
+        },
+      },
+    }),
+    columnHelper.display({
+      id: "name",
+      header: "Name",
+      cell: ({ row }) =>
+        getOrgName(row.original.organizationId) ?? row.original.organizationId,
+    }),
+    columnHelper.accessor("tier", {
+      header: "Tier",
+      cell: (info) => capitalizeFirstLetter(info.getValue()),
+    }),
+    columnHelper.display({
+      id: "subscription_status",
+      header: "Status",
+      cell: ({ row }) => {
+        const isFreeTier = row.original.tier === Tier.Free;
+        const hasSubscription = !!row.original.subscriptionId;
+
+        if (isFreeTier) return "-";
+
+        return (
+          <HStack>
+            <Box
+              h={2}
+              w={2}
+              rounded="full"
+              bgColor={hasSubscription ? "green" : "gray"}
+            />
+            <Text>{hasSubscription ? "Active" : "Inactive"}</Text>
+          </HStack>
+        );
+      },
+    }),
+  ];
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions({

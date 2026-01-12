@@ -73,7 +73,7 @@ export function useEnsureStatusTemplates({
 
   // Auto-create templates if polling exhausted and user has admin privileges
   const createDefaultTemplates = useCallback(async () => {
-    if (!workspaceId || !hasAdminPrivileges || hasAttemptedCreation.current) {
+    if (!workspaceId || hasAttemptedCreation.current) {
       return;
     }
 
@@ -107,14 +107,17 @@ export function useEnsureStatusTemplates({
         "[useEnsureStatusTemplates] Failed to create templates:",
         err,
       );
-      setError("Failed to create status templates. Please contact support.");
+      // Only show error if user should have been able to create templates
+      if (hasAdminPrivileges) {
+        setError("Failed to create status templates. Please try again.");
+      }
       hasAttemptedCreation.current = false; // Allow retry
     } finally {
       setIsCreating(false);
     }
   }, [workspaceId, hasAdminPrivileges, createStatusTemplate, queryClient]);
 
-  // Trigger creation after polling exhausted
+  // Trigger creation after polling exhausted - try for admins
   useEffect(() => {
     if (
       pollCountRef.current >= MAX_POLL_ATTEMPTS &&

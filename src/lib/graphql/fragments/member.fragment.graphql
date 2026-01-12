@@ -4,8 +4,7 @@ fragment Member on Member {
   userId
   role
   user {
-    firstName
-    lastName
+    name
     username
   }
 }

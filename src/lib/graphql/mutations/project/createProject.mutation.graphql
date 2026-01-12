@@ -4,7 +4,7 @@ mutation CreateProject($input: CreateProjectInput!) {
       rowId
       slug
       workspace {
-        slug
+        organizationId
       }
     }
   }

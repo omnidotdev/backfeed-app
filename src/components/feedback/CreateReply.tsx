@@ -52,10 +52,10 @@ interface Props extends CollapsibleProps {
  * Create reply form.
  */
 const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
-  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+  const { projectSlug, feedbackId } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
-  const { session, queryClient } = useRouteContext({
+  const { session, queryClient, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
@@ -78,7 +78,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
         }),
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            workspaceSlug,
+            workspaceOrganizationId: organizationId,
             projectSlug,
             feedbackId,
           }),

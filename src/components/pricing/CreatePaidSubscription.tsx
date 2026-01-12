@@ -8,45 +8,25 @@ import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import { workspaceNameSchema } from "@/lib/constants/schema.constant";
-import getSdk from "@/lib/graphql/getSdk";
 import useCreateWorkspaceMutation from "@/lib/hooks/mutations/useCreateWorkspaceMutation";
 import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
-import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import { fetchSession } from "@/server/functions/auth";
 import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
-/** Schema for defining the shape of the create workspace form fields, as well as validating the form. */
-const createWorkspaceSchema = z
-  .object({
-    name: workspaceNameSchema,
-  })
-  .superRefine(async ({ name }, ctx) => {
-    const { session } = await fetchSession();
-
-    const slug = generateSlug(name);
-
-    if (!slug?.length || !session) return z.NEVER;
-
-    const sdk = await getSdk();
-
-    const { workspaceByName } = await sdk.Workspace({
-      name: slug,
-    });
-
-    if (workspaceByName) {
-      ctx.addIssue({
-        code: "custom",
-        message:
-          app.dashboardPage.cta.newWorkspace.workspaceSlug.error.duplicate,
-        path: ["name"],
-      });
-    }
-  });
+/**
+ * Schema for defining the shape of the create workspace form fields.
+ *
+ * Note: Workspace name/slug validation for duplicates is no longer needed
+ * since org identity (name/slug) is now owned by Gatekeeper (IDP), not the app DB.
+ * Workspaces are 1:1 with organizations, so duplicate checking happens at the org level.
+ */
+const createWorkspaceSchema = z.object({
+  name: workspaceNameSchema,
+});
 
 interface Props {
   /** Price ID. */
@@ -67,6 +47,9 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
 
   const isClient = useIsClient();
 
+  // Extract currentOrganization early (may be undefined if no context)
+  const currentOrganization = orgContext?.currentOrganization;
+
   const isSmallViewport = useViewportSize({
     minWidth: token("breakpoints.sm"),
   });
@@ -83,7 +66,8 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
           data: {
             workspaceId: data.workspace?.rowId!,
             priceId,
-            successUrl: `${BASE_URL}/workspaces/${data.workspace?.slug!}`,
+            // Use org slug from context, not from workspace DB
+            successUrl: `${BASE_URL}/workspaces/${currentOrganization!.slug}`,
           },
         });
 
@@ -102,14 +86,12 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
     validators: {
       onSubmitAsync: createWorkspaceSchema,
     },
-    onSubmit: async ({ value }) =>
+    onSubmit: async () =>
       toaster.promise(
         createWorkspace({
           input: {
             workspace: {
-              name: value.name,
-              slug: generateSlug(value.name)!,
-              organizationId: currentOrganization.id,
+              organizationId: currentOrganization!.id,
             },
           },
         }),
@@ -134,9 +116,7 @@ const CreatePaidSubscription = ({ priceId, isOpen, setIsOpen }: Props) => {
   if (!isClient) return null;
 
   // Don't render if no organization context (e.g., on pricing page without auth)
-  if (!orgContext) return null;
-
-  const { currentOrganization } = orgContext;
+  if (!orgContext || !currentOrganization) return null;
 
   return (
     <Dialog

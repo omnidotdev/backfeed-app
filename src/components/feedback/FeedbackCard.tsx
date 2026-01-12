@@ -264,17 +264,13 @@ const FeedbackCard = ({
   return (
     <HStack
       position="relative"
-      bgColor={{ base: "white", _dark: "neutral.900/80" }}
       borderRadius="xl"
-      borderWidth="1px"
-      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
       p={4}
       opacity={actionIsPending ? 0.5 : 1}
       className={css({
-        transition: "all 0.2s ease",
+        transition: "background 0.2s ease",
         _hover: {
           bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
-          borderColor: { base: "neutral.300", _dark: "neutral.700" },
         },
       })}
       {...rest}

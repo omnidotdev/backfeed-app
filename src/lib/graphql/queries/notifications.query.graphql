@@ -6,7 +6,7 @@ query Notifications($email: String!) {
       email
       workspaceId
       workspace {
-        name
+        organizationId
       }
     }
   }

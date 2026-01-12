@@ -70,7 +70,7 @@ const SORT_BY_OPTIONS = [
  * Project feedback.
  */
 const ProjectFeedback = () => {
-  const { session, hasAdminPrivileges } = useRouteContext({
+  const { session, hasAdminPrivileges, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
   const { workspaceSlug, projectSlug } = useParams({
@@ -88,7 +88,10 @@ const ProjectFeedback = () => {
   }));
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceSlug, projectSlug }),
+    ...projectOptions({
+      workspaceOrganizationId: organizationId,
+      projectSlug,
+    }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
@@ -96,7 +99,7 @@ const ProjectFeedback = () => {
 
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
-      workspaceSlug,
+      workspaceOrganizationId: organizationId,
       projectSlug,
     }),
   );

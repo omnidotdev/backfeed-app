@@ -24,6 +24,10 @@ const PinnedWorkspaces = () => {
     type: DialogType.CreateWorkspace,
   });
 
+  // Helper to get org info from session by organizationId
+  const getOrgInfo = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId);
+
   const {
     data: pinnedWorkspaces,
     isLoading,
@@ -62,16 +66,22 @@ const PinnedWorkspaces = () => {
           {isLoading ? (
             <SkeletonArray count={3} h={48} />
           ) : pinnedWorkspaces?.length ? (
-            pinnedWorkspaces?.map((workspace) => (
-              <Link
-                key={workspace?.rowId}
-                to="/workspaces/$workspaceSlug"
-                params={{ workspaceSlug: workspace?.slug! }}
-                role="group"
-              >
-                <WorkspaceCard workspace={workspace as Partial<Workspace>} />
-              </Link>
-            ))
+            pinnedWorkspaces?.map((workspace) => {
+              const org = getOrgInfo(workspace?.organizationId!);
+              return (
+                <Link
+                  key={workspace?.rowId}
+                  to="/workspaces/$workspaceSlug"
+                  params={{ workspaceSlug: org?.slug! }}
+                  role="group"
+                >
+                  <WorkspaceCard
+                    workspace={workspace as Partial<Workspace>}
+                    workspaceName={org?.name}
+                  />
+                </Link>
+              );
+            })
           ) : (
             <EmptyState
               message={app.dashboardPage.workspaces.emptyState.message}

@@ -1,7 +1,8 @@
 mutation UpdateWorkspace($rowId: UUID!, $patch: WorkspacePatch!) {
   updateWorkspace(input: { rowId: $rowId, patch: $patch }) {
     workspace {
-      slug
+      rowId
+      organizationId
     }
   }
 }

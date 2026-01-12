@@ -33,16 +33,12 @@ export const Route = createFileRoute("/_public/workspaces/")({
     middlewares: [stripSearchParams({ page: 1, pageSize: 10, search: "" })],
   },
   loaderDeps: ({ search }) => search,
-  loader: async ({
-    context: { queryClient },
-    deps: { page, pageSize, search },
-  }) => {
+  loader: async ({ context: { queryClient }, deps: { page, pageSize } }) => {
     await queryClient.ensureQueryData({
       ...workspacesOptions({
         pageSize,
         offset: (page - 1) * pageSize,
         orderBy: [WorkspaceOrderBy.MembersCountDesc],
-        search,
         isMember: false,
       }),
       revalidateIfStale: true,

@@ -7,7 +7,11 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouterState } from "@tanstack/react-router";
+import {
+  useParams,
+  useRouteContext,
+  useRouterState,
+} from "@tanstack/react-router";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { useDebounceValue, useIsClient, useLocalStorage } from "usehooks-ts";
 
@@ -39,17 +43,21 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
 
+  const { organizationId, workspaceName } = useRouteContext({
+    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
+  });
+
   const isLargeViewport = useViewportSize({
     minWidth: token("breakpoints.lg"),
   });
 
   const isClient = useIsClient();
 
-  const { data: workspace } = useQuery({
+  useQuery({
     ...workspaceOptions({
-      name: workspaceSlug,
+      organizationId,
     }),
-    select: (data) => data?.workspaceByName,
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
@@ -75,7 +83,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
       to: "/workspaces",
     },
     {
-      label: workspace?.name ?? workspaceSlug,
+      label: workspaceName ?? workspaceSlug,
       to: "/workspaces/$workspaceSlug",
       params: { workspaceSlug },
     },

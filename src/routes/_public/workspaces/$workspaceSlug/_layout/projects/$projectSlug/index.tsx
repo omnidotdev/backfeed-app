@@ -55,12 +55,15 @@ export const Route = createFileRoute(
     ],
   },
   loader: async ({
-    context: { session, queryClient },
-    params: { workspaceSlug, projectSlug },
+    context: { session, queryClient, organizationId },
+    params: { projectSlug },
     deps: { search, excludedStatuses, orderBy },
   }) => {
     const { projects } = await queryClient.ensureQueryData({
-      ...projectOptions({ workspaceSlug, projectSlug }),
+      ...projectOptions({
+        workspaceOrganizationId: organizationId,
+        projectSlug,
+      }),
       revalidateIfStale: true,
     });
 
@@ -82,7 +85,10 @@ export const Route = createFileRoute(
       }),
       queryClient.ensureQueryData(projectMetricsOptions({ projectId })),
       queryClient.ensureQueryData({
-        ...freeTierFeedbackOptions({ workspaceSlug, projectSlug }),
+        ...freeTierFeedbackOptions({
+          workspaceOrganizationId: organizationId,
+          projectSlug,
+        }),
         revalidateIfStale: true,
       }),
       queryClient.ensureInfiniteQueryData({
@@ -107,10 +113,11 @@ export const Route = createFileRoute(
 
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
-  const { hasAdminPrivileges, isAuthenticated } = Route.useRouteContext();
+  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
+    Route.useRouteContext();
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceSlug, projectSlug }),
+    ...projectOptions({ workspaceOrganizationId: organizationId, projectSlug }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
@@ -120,7 +127,7 @@ function ProjectPage() {
       to: "/workspaces",
     },
     {
-      label: project?.workspace?.name!,
+      label: workspaceName,
       to: "/workspaces/$workspaceSlug",
       params: { workspaceSlug },
     },

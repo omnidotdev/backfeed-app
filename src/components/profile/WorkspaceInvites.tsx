@@ -24,74 +24,80 @@ import type { InvitationFragment } from "@/generated/graphql";
 
 const columnHelper = createColumnHelper<InvitationFragment>();
 
-const columns = [
-  columnHelper.accessor("rowId", {
-    header: ({ table }) => (
-      <Checkbox
-        size="sm"
-        // explicit width to prevent CLS with row selection
-        w={48}
-        // Prevent spacing between checkbox and label. See note for label `onClick` handler below
-        gap={0}
-        labelProps={{
-          px: 4,
-          fontWeight: "bold",
-          // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
-          onClick: (e) => e.preventDefault(),
-        }}
-        label={
-          table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
-            <InvitationMenu
-              selectedRows={table.getSelectedRowModel().rows}
-              toggleRowSelection={table.toggleAllRowsSelected}
-            />
-          ) : (
-            app.profileInvitationsPage.table.headers.workspaceName
-          )
-        }
-        checked={
-          table.getIsAllRowsSelected()
-            ? true
-            : table.getIsSomeRowsSelected()
-              ? "indeterminate"
-              : false
-        }
-        onCheckedChange={({ checked }) =>
-          table.toggleAllRowsSelected(checked as boolean)
-        }
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        size="sm"
-        gap={4}
-        labelProps={{
-          fontWeight: "bold",
-          // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
-          onClick: (e) => e.preventDefault(),
-        }}
-        label={row.original.workspace?.name}
-        checked={row.getIsSelected()}
-        onCheckedChange={({ checked }) =>
-          row.toggleSelected(checked as boolean)
-        }
-      />
-    ),
-  }),
-
-  columnHelper.accessor("createdAt", {
-    header: app.profileInvitationsPage.table.headers.invitationDate,
-    cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
-  }),
-];
-
 /**
  * User's workspace invitations table.
  */
 const WorkspaceInvites = () => {
-  const { user } = useRouteContext({
+  const { user, session } = useRouteContext({
     from: "/_auth/profile/$userId/_layout/invitations",
   });
+
+  // Helper to get org name from session by organizationId
+  const getOrgName = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId)?.name;
+
+  const columns = [
+    columnHelper.accessor("rowId", {
+      header: ({ table }) => (
+        <Checkbox
+          size="sm"
+          // explicit width to prevent CLS with row selection
+          w={48}
+          // Prevent spacing between checkbox and label. See note for label `onClick` handler below
+          gap={0}
+          labelProps={{
+            px: 4,
+            fontWeight: "bold",
+            // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+            onClick: (e) => e.preventDefault(),
+          }}
+          label={
+            table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
+              <InvitationMenu
+                selectedRows={table.getSelectedRowModel().rows}
+                toggleRowSelection={table.toggleAllRowsSelected}
+              />
+            ) : (
+              app.profileInvitationsPage.table.headers.workspaceName
+            )
+          }
+          checked={
+            table.getIsAllRowsSelected()
+              ? true
+              : table.getIsSomeRowsSelected()
+                ? "indeterminate"
+                : false
+          }
+          onCheckedChange={({ checked }) =>
+            table.toggleAllRowsSelected(checked as boolean)
+          }
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          size="sm"
+          gap={4}
+          labelProps={{
+            fontWeight: "bold",
+            // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
+            onClick: (e) => e.preventDefault(),
+          }}
+          label={
+            getOrgName(row.original.workspace?.organizationId!) ?? "Workspace"
+          }
+          checked={row.getIsSelected()}
+          onCheckedChange={({ checked }) =>
+            row.toggleSelected(checked as boolean)
+          }
+        />
+      ),
+    }),
+
+    columnHelper.accessor("createdAt", {
+      header: app.profileInvitationsPage.table.headers.invitationDate,
+      cell: ({ cell }) => dayjs(cell.getValue()).format("M/D/YYYY"),
+    }),
+  ];
 
   const {
     data: invitations,

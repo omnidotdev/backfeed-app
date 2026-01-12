@@ -1,4 +1,4 @@
-import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { Flex, Icon, Stack, Text, css } from "@omnidev/sigil";
 
 import type { FlexProps, TextProps } from "@omnidev/sigil";
 import type { ReactNode } from "react";
@@ -34,11 +34,20 @@ const SectionContainer = ({
 }: Props) => (
   <Stack
     position="relative"
-    bgColor="background.default"
-    borderRadius="lg"
-    boxShadow="card"
+    borderRadius="2xl"
+    borderWidth="1px"
+    borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
+    bgColor={{ base: "white/90", _dark: "neutral.900/80" }}
+    backdropFilter="blur(12px)"
+    overflow="hidden"
     p={{ base: 4, sm: 6 }}
     gap={6}
+    className={css({
+      boxShadow: {
+        base: "0 25px 50px -12px oklch(0 0 0 / 0.15)",
+        _dark: "0 25px 50px -12px oklch(0 0 0 / 0.5)",
+      },
+    })}
     {...rest}
   >
     <Stack>

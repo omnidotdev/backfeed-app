@@ -288,11 +288,8 @@ const app = {
       username: {
         label: "Username",
       },
-      firstName: {
-        label: "First Name",
-      },
-      lastName: {
-        label: "Last Name",
+      name: {
+        label: "Name",
       },
       email: {
         label: "Email",

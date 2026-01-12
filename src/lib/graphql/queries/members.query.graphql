@@ -11,8 +11,7 @@ query Members(
       role: { in: $roles, notIn: $excludeRoles }
       user: {
         or: [
-          { firstName: { includesInsensitive: $search } }
-          { lastName: { includesInsensitive: $search } }
+          { name: { includesInsensitive: $search } }
           { username: { includesInsensitive: $search } }
         ]
       }

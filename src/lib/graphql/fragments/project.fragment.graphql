@@ -6,8 +6,7 @@ fragment Project on Project {
   website
   workspace {
     rowId
-    name
-    slug
+    organizationId
     tier
   }
   projectSocials(orderBy: CREATED_AT_ASC) {

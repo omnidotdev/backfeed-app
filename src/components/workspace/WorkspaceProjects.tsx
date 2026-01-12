@@ -27,7 +27,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
   const { workspaceSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout",
   });
-  const { hasAdminPrivileges } = useRouteContext({
+  const { hasAdminPrivileges, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
 
@@ -41,9 +41,9 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
     isError,
   } = useQuery({
     ...workspaceOptions({
-      name: workspaceSlug,
+      organizationId,
     }),
-    select: (data) => data?.workspaceByName?.projects?.nodes,
+    select: (data) => data?.workspaceByOrganizationId?.projects?.nodes,
   });
 
   return (

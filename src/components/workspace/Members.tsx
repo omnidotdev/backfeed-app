@@ -102,9 +102,7 @@ const Members = () => {
             }}
             label={
               <Stack py={4}>
-                <Text fontSize="lg">
-                  {row.original.user?.firstName} {row.original.user?.lastName}
-                </Text>
+                <Text fontSize="lg">{row.original.user?.name}</Text>
                 <Text color="foreground.subtle">
                   {row.original.user?.username}
                 </Text>

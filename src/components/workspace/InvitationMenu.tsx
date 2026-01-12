@@ -48,7 +48,7 @@ const InvitationMenu = ({
   toggleRowSelection,
   ...rest
 }: Props) => {
-  const { session, workspaceId, queryClient } = useRouteContext({
+  const { session, workspaceId, workspaceName, queryClient } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
   });
 
@@ -103,7 +103,7 @@ const InvitationMenu = ({
             inviterEmail: session?.user?.email,
             inviterUsername: session?.user?.name,
             recipientEmail: invitation.email,
-            workspaceName: invitation.workspace?.name,
+            workspaceName,
           }),
         }),
         inviteToWorkspace({

@@ -58,18 +58,17 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceMembersPage() {
-  const { workspaceSlug } = Route.useParams();
-  const { role } = Route.useRouteContext();
+  const { role, organizationId, workspaceName } = Route.useRouteContext();
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data.workspaceByName,
+  useQuery({
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data.workspaceByOrganizationId,
   });
 
   return (
     <Page
       header={{
-        title: `${workspace?.name} ${app.workspaceMembersPage.breadcrumb}`,
+        title: `${workspaceName} ${app.workspaceMembersPage.breadcrumb}`,
         description: app.workspaceMembersPage.description,
         cta:
           // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.

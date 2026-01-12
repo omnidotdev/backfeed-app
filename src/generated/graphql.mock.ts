@@ -472,7 +472,7 @@ export const mockUpdateStatusTemplateMutation = (resolver: GraphQLResponseResolv
  * @example
  * mockCreateUserMutation(
  *   ({ query, variables }) => {
- *     const { identityProviderId, username, firstName, lastName, email } = variables;
+ *     const { identityProviderId, username, name, email } = variables;
  *     return HttpResponse.json({
  *       data: { createUser }
  *     })
@@ -802,7 +802,7 @@ export const mockPostsQuery = (resolver: GraphQLResponseResolver<Types.PostsQuer
  * @example
  * mockProjectQuery(
  *   ({ query, variables }) => {
- *     const { projectSlug, workspaceSlug, userId } = variables;
+ *     const { projectSlug, workspaceOrganizationId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { projects }
  *     })
@@ -890,7 +890,7 @@ export const mockProjectStatusesQuery = (resolver: GraphQLResponseResolver<Types
  * @example
  * mockProjectsQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, offset, workspaceSlug, search } = variables;
+ *     const { pageSize, offset, workspaceOrganizationId, search } = variables;
  *     return HttpResponse.json({
  *       data: { projects }
  *     })
@@ -1044,9 +1044,9 @@ export const mockWeeklyFeedbackQuery = (resolver: GraphQLResponseResolver<Types.
  * @example
  * mockWorkspaceQuery(
  *   ({ query, variables }) => {
- *     const { name } = variables;
+ *     const { organizationId } = variables;
  *     return HttpResponse.json({
- *       data: { workspaceByName }
+ *       data: { workspaceByOrganizationId }
  *     })
  *   },
  *   requestOptions
@@ -1110,7 +1110,7 @@ export const mockWorkspaceRoleQuery = (resolver: GraphQLResponseResolver<Types.W
  * @example
  * mockWorkspacesQuery(
  *   ({ query, variables }) => {
- *     const { pageSize, offset, orderBy, isMember, userId, excludeRoles, search, slug, workspaceId } = variables;
+ *     const { pageSize, offset, orderBy, isMember, userId, excludeRoles, organizationId, workspaceId } = variables;
  *     return HttpResponse.json({
  *       data: { workspaces }
  *     })

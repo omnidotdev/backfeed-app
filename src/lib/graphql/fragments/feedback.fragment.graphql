@@ -11,8 +11,7 @@ fragment Feedback on Post {
     slug
     workspace {
       rowId
-      name
-      slug
+      organizationId
     }
   }
   statusTemplate {

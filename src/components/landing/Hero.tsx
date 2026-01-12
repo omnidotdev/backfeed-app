@@ -1,6 +1,11 @@
 import { Button, Flex, Icon, Text, VStack, css } from "@omnidev/sigil";
 import { useSearch } from "@tanstack/react-router";
-import { FiArrowRight, FiArrowUp, FiMessageCircle } from "react-icons/fi";
+import {
+  FiArrowDown,
+  FiArrowRight,
+  FiArrowUp,
+  FiMessageCircle,
+} from "react-icons/fi";
 
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
@@ -14,7 +19,8 @@ const MOCK_FEEDBACK = [
   {
     title: "Dark mode support",
     description: "Add a dark theme option for the dashboard",
-    votes: 42,
+    upvotes: 47,
+    downvotes: 5,
     comments: 12,
     status: "In Progress",
     statusColor: "blue",
@@ -22,7 +28,8 @@ const MOCK_FEEDBACK = [
   {
     title: "Export to CSV",
     description: "Allow exporting feedback data to spreadsheets",
-    votes: 28,
+    upvotes: 31,
+    downvotes: 3,
     comments: 5,
     status: "Planned",
     statusColor: "purple",
@@ -30,7 +37,8 @@ const MOCK_FEEDBACK = [
   {
     title: "Slack integration",
     description: "Get notified when new feedback is submitted",
-    votes: 19,
+    upvotes: 24,
+    downvotes: 5,
     comments: 8,
     status: "Under Review",
     statusColor: "amber",
@@ -260,39 +268,9 @@ const Hero = () => {
             borderColor={{ base: "neutral.100", _dark: "neutral.800" }}
             bgColor={{ base: "neutral.50", _dark: "neutral.900" }}
           >
-            <Flex align="center" gap={2}>
-              <Flex gap={1.5}>
-                <Flex
-                  w={3}
-                  h={3}
-                  borderRadius="full"
-                  bgColor="red.400"
-                  opacity={0.8}
-                />
-                <Flex
-                  w={3}
-                  h={3}
-                  borderRadius="full"
-                  bgColor="amber.400"
-                  opacity={0.8}
-                />
-                <Flex
-                  w={3}
-                  h={3}
-                  borderRadius="full"
-                  bgColor="green.400"
-                  opacity={0.8}
-                />
-              </Flex>
-              <Text
-                fontSize="sm"
-                fontWeight="medium"
-                color="foreground.muted"
-                ml={2}
-              >
-                Feature Requests
-              </Text>
-            </Flex>
+            <Text fontSize="sm" fontWeight="medium" color="foreground.muted">
+              Feature Requests
+            </Text>
             <Flex
               px={2.5}
               py={1}
@@ -361,8 +339,14 @@ const Hero = () => {
                     color="foreground.default"
                     mt={0.5}
                   >
-                    {item.votes}
+                    {item.upvotes - item.downvotes}
                   </Text>
+                  <Icon
+                    src={FiArrowDown}
+                    w={4}
+                    h={4}
+                    color="foreground.muted"
+                  />
                 </Flex>
 
                 {/* Content */}

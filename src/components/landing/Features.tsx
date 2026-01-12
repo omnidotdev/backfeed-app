@@ -173,14 +173,14 @@ const Features = () => (
               w={14}
               h={14}
               borderRadius="xl"
-              bgGradient={{
-                base: "to-br",
-                gradientFrom: "brand.primary.100",
-                gradientTo: "brand.primary.50",
-                _dark: {
-                  gradientFrom: "brand.primary.900/60",
-                  gradientTo: "brand.primary.950/40",
-                },
+              bgGradient="to-br"
+              gradientFrom={{
+                base: "brand.primary.100",
+                _dark: "brand.primary.900/60",
+              }}
+              gradientTo={{
+                base: "brand.primary.50",
+                _dark: "brand.primary.950/40",
               }}
               borderWidth="1px"
               borderColor={{

@@ -28,12 +28,8 @@ function UserAccountPage() {
         value: user?.username ?? "",
       },
       {
-        id: app.profileAccountPage.fields.firstName.label,
-        value: user?.firstName ?? "",
-      },
-      {
-        id: app.profileAccountPage.fields.lastName.label,
-        value: user?.lastName ?? "",
+        id: app.profileAccountPage.fields.name.label,
+        value: user?.name ?? "",
       },
       {
         id: app.profileAccountPage.fields.email.label,

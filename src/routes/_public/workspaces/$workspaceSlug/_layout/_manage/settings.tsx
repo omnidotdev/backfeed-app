@@ -35,18 +35,18 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceSettingsPage() {
-  const { workspaceSlug } = Route.useParams();
   const { prices } = Route.useLoaderData();
+  const { organizationId, workspaceName } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data?.workspaceByName,
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   return (
     <Page
       header={{
-        title: `${workspace?.name} ${app.workspaceSettingsPage.breadcrumb}`,
+        title: `${workspaceName} ${app.workspaceSettingsPage.breadcrumb}`,
       }}
       pt={0}
     >

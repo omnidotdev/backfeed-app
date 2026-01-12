@@ -32,16 +32,15 @@ export const Route = createFileRoute(
   },
   loaderDeps: ({ search }) => search,
   loader: async ({
-    context: { queryClient, workspaceName },
+    context: { queryClient, workspaceName, organizationId },
     deps: { page, pageSize, search },
-    params: { workspaceSlug },
   }) => {
     await queryClient.ensureQueryData({
       ...projectsOptions({
         pageSize,
         offset: (page - 1) * pageSize,
         search,
-        workspaceSlug,
+        workspaceOrganizationId: organizationId,
       }),
       revalidateIfStale: true,
     });
@@ -61,11 +60,13 @@ function ProjectsPage() {
     hasBasicTierPrivileges,
     hasTeamTierPrivileges,
     isAuthenticated,
+    organizationId,
+    workspaceName,
   } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data.workspaceByName,
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data.workspaceByOrganizationId,
   });
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -74,7 +75,7 @@ function ProjectsPage() {
       to: "/workspaces",
     },
     {
-      label: workspace?.name!,
+      label: workspaceName,
       to: "/workspaces/$workspaceSlug",
       params: { workspaceSlug },
     },

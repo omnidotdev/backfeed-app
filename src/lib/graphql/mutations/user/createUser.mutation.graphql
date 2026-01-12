@@ -1,8 +1,7 @@
 mutation CreateUser(
   $identityProviderId: UUID!
   $username: String
-  $firstName: String
-  $lastName: String
+  $name: String!
   $email: String!
 ) {
   createUser(
@@ -10,8 +9,7 @@ mutation CreateUser(
       user: {
         identityProviderId: $identityProviderId
         username: $username
-        firstName: $firstName
-        lastName: $lastName
+        name: $name
         email: $email
       }
     }

@@ -2,7 +2,7 @@ import { Dialog, Stack, TagsInput, Text, sigil } from "@omnidev/sigil";
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -104,16 +104,14 @@ const createInvitationsSchema = invitesSchema.superRefine(
 );
 
 const InviteMember = () => {
-  const { session, workspaceId, queryClient } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
-  });
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
-  });
+  const { session, workspaceId, queryClient, organizationId, workspaceName } =
+    useRouteContext({
+      from: "/_public/workspaces/$workspaceSlug/_layout/_manage/invitations",
+    });
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data?.workspaceByName,
+  useQuery({
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data?.workspaceByOrganizationId,
   });
 
   const toastId = useRef<string>(undefined);
@@ -173,7 +171,7 @@ const InviteMember = () => {
             inviterEmail: invite.inviterEmail,
             inviterUsername: invite.inviterUsername,
             recipientEmail: invite.email,
-            workspaceName: workspace?.name!,
+            workspaceName: workspaceName,
           }),
         }),
         inviteToWorkspace({

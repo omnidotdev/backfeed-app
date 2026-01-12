@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useState } from "react";
 import { FaGlobe } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -23,12 +23,15 @@ import getSocialMediaLabel from "@/lib/util/getSocialMediaLabel";
  * Project links component.
  */
 const ProjectLinks = () => {
-  const { workspaceSlug, projectSlug } = useParams({
+  const { organizationId } = useRouteContext({
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  });
+  const { projectSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceSlug, projectSlug }),
+    ...projectOptions({ workspaceOrganizationId: organizationId, projectSlug }),
     select: (data) => data.projects?.nodes?.[0],
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);

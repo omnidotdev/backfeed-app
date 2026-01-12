@@ -20,6 +20,10 @@ import type { Post } from "@/generated/graphql";
  */
 const RecentFeedback = () => {
   const { session } = useRouteContext({ from: "/_auth/dashboard" });
+
+  // Helper to get org info from session by organizationId
+  const getOrgInfo = (organizationId: string) =>
+    session?.organizations?.find((org) => org.id === organizationId);
   const {
     data: recentFeedback,
     isLoading,
@@ -67,27 +71,32 @@ const RecentFeedback = () => {
             <SkeletonArray count={5} h={24} w="100%" />
           ) : recentFeedback?.length ? (
             <VStack gap={0} p={1}>
-              {recentFeedback?.map((feedback) => (
-                <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
-                  <Link
-                    to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
-                    params={{
-                      workspaceSlug: feedback?.project?.workspace?.slug!,
-                      projectSlug: feedback?.project?.slug!,
-                      feedbackId: feedback?.rowId!,
-                    }}
-                  >
-                    <Response
-                      feedback={feedback as Partial<Post>}
-                      p={2}
-                      _hover={{
-                        bgColor: "background.muted/40",
-                        borderRadius: "sm",
+              {recentFeedback?.map((feedback) => {
+                const org = getOrgInfo(
+                  feedback?.project?.workspace?.organizationId!,
+                );
+                return (
+                  <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
+                    <Link
+                      to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+                      params={{
+                        workspaceSlug: org?.slug!,
+                        projectSlug: feedback?.project?.slug!,
+                        feedbackId: feedback?.rowId!,
                       }}
-                    />
-                  </Link>
-                </Flex>
-              ))}
+                    >
+                      <Response
+                        feedback={feedback as Partial<Post>}
+                        p={2}
+                        _hover={{
+                          bgColor: "background.muted/40",
+                          borderRadius: "sm",
+                        }}
+                      />
+                    </Link>
+                  </Flex>
+                );
+              })}
 
               {hasNextPage ? (
                 <Spinner ref={loaderRef} my={4} />

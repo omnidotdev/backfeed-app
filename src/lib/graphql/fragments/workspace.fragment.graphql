@@ -1,7 +1,6 @@
 fragment Workspace on Workspace {
   rowId
-  name
-  slug
+  organizationId
   tier
   subscriptionId
   members {

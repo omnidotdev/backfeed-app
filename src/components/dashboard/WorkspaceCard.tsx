@@ -10,12 +10,14 @@ import type { Workspace } from "@/generated/graphql";
 interface Props extends FlexProps {
   /** Workspace details. */
   workspace: Partial<Workspace>;
+  /** Workspace name from organization context. */
+  workspaceName?: string;
 }
 
 /**
  * Workspace card.
  */
-const WorkspaceCard = ({ workspace, ...rest }: Props) => (
+const WorkspaceCard = ({ workspace, workspaceName, ...rest }: Props) => (
   <Flex
     position="relative"
     direction="column"
@@ -44,7 +46,7 @@ const WorkspaceCard = ({ workspace, ...rest }: Props) => (
           lineHeight={1.2}
           lineClamp={2}
         >
-          {workspace?.name}
+          {workspaceName}
         </OverflowText>
       </Stack>
 

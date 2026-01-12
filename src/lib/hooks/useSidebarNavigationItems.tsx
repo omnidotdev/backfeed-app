@@ -38,19 +38,28 @@ const useSidebarNavigationItems = () => {
   const { workspaceSlug, projectSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 
+  // workspaceSlug in the URL is the org slug from JWT claims
+  // Resolve it to organizationId to query the workspace
+  const orgFromSlug = session?.organizations?.find(
+    (org) => org.slug === workspaceSlug,
+  );
+  const organizationId = orgFromSlug?.id;
+  // Use org name from JWT claims
+  const workspaceName = orgFromSlug?.name ?? workspaceSlug;
+
   const { data: workspace } = useQuery({
       ...workspaceOptions({
-        name: workspaceSlug!,
+        organizationId: organizationId!,
       }),
-      enabled: !!session && !!workspaceSlug,
-      select: (data) => data?.workspaceByName,
+      enabled: !!session && !!organizationId,
+      select: (data) => data?.workspaceByOrganizationId,
     }),
     { data: project } = useQuery({
       ...projectOptions({
         projectSlug: projectSlug!,
-        workspaceSlug: workspaceSlug!,
+        workspaceOrganizationId: organizationId!,
       }),
-      enabled: !!session && !!projectSlug && !!workspace,
+      enabled: !!session && !!projectSlug && !!organizationId && !!workspace,
       select: (data) => data?.projects?.nodes[0],
     });
 
@@ -77,7 +86,7 @@ const useSidebarNavigationItems = () => {
           {
             to: "/workspaces/$workspaceSlug",
             params: { workspaceSlug },
-            label: workspace?.name ?? workspaceSlug!,
+            label: workspaceName!,
             isVisible: !!workspaceSlug,
             isActive: pathname === `/workspaces/${workspaceSlug}`,
           },
@@ -108,7 +117,7 @@ const useSidebarNavigationItems = () => {
         ],
       },
     ],
-    [session, workspace, workspaceSlug, pathname, project, projectSlug],
+    [session, workspaceSlug, pathname, project, projectSlug, workspaceName],
   );
 
   return routes.filter((route) => route.isVisible);

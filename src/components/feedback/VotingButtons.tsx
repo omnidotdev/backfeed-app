@@ -1,6 +1,5 @@
 import { Flex, Icon, Text, Tooltip, css } from "@omnidev/sigil";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
-import { match } from "ts-pattern";
 
 import LoginPrompt from "@/components/auth/LoginPrompt";
 import { VoteType } from "@/generated/graphql";
@@ -65,23 +64,23 @@ const VotingButtons = ({
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
-  const voteColor = match(true)
-    .with(hasUpvote, () => ({ base: "primary.500", _dark: "primary.400" }))
-    .with(hasDownvote, () => ({ base: "red.500", _dark: "red.400" }))
-    .otherwise(() => ({
-      base: "foreground.default",
-      _dark: "foreground.default",
-    }));
+  const voteColor = hasUpvote
+    ? { base: "primary.500", _dark: "primary.400" }
+    : hasDownvote
+      ? { base: "red.500", _dark: "red.400" }
+      : { base: "foreground.default", _dark: "foreground.default" };
 
-  const borderColor = match(true)
-    .with(hasUpvote, () => ({ base: "primary.200", _dark: "primary.800" }))
-    .with(hasDownvote, () => ({ base: "red.200", _dark: "red.800" }))
-    .otherwise(() => ({ base: "neutral.200", _dark: "neutral.700" }));
+  const borderColor = hasUpvote
+    ? { base: "primary.200", _dark: "primary.800" }
+    : hasDownvote
+      ? { base: "red.200", _dark: "red.800" }
+      : { base: "neutral.200", _dark: "neutral.700" };
 
-  const bgColor = match(true)
-    .with(hasUpvote, () => ({ base: "primary.50", _dark: "primary.950/30" }))
-    .with(hasDownvote, () => ({ base: "red.50", _dark: "red.950/30" }))
-    .otherwise(() => ({ base: "white", _dark: "neutral.800" }));
+  const bgColor = hasUpvote
+    ? { base: "primary.50", _dark: "primary.950/30" }
+    : hasDownvote
+      ? { base: "red.50", _dark: "red.950/30" }
+      : { base: "white", _dark: "neutral.800" };
 
   // Show login prompt for unauthenticated users
   if (!isAuthenticated) {
@@ -142,13 +141,15 @@ const VotingButtons = ({
           p: 0,
           minW: "auto",
           h: "auto",
-          color: hasUpvote
-            ? { base: "primary.500", _dark: "primary.400" }
-            : { base: "foreground.muted", _dark: "foreground.muted" },
-          _hover: {
-            color: { base: "primary.500", _dark: "primary.400" },
-            bgColor: "transparent",
-          },
+          className: css({
+            color: hasUpvote
+              ? { base: "primary.500", _dark: "primary.400" }
+              : { base: "foreground.muted", _dark: "foreground.muted" },
+            _hover: {
+              color: { base: "primary.500", _dark: "primary.400" },
+              bgColor: "transparent",
+            },
+          }),
           onClick: (e) => {
             e.stopPropagation();
             handleUpvote();
@@ -179,13 +180,15 @@ const VotingButtons = ({
           p: 0,
           minW: "auto",
           h: "auto",
-          color: hasDownvote
-            ? { base: "red.500", _dark: "red.400" }
-            : { base: "foreground.muted", _dark: "foreground.muted" },
-          _hover: {
-            color: { base: "red.500", _dark: "red.400" },
-            bgColor: "transparent",
-          },
+          className: css({
+            color: hasDownvote
+              ? { base: "red.500", _dark: "red.400" }
+              : { base: "foreground.muted", _dark: "foreground.muted" },
+            _hover: {
+              color: { base: "red.500", _dark: "red.400" },
+              bgColor: "transparent",
+            },
+          }),
           onClick: (e) => {
             e.stopPropagation();
             handleDownvote();

@@ -50,9 +50,11 @@ function WorkspacePage() {
     isAuthenticated,
   } = Route.useRouteContext();
 
+  const { organizationId, workspaceName } = Route.useRouteContext();
+
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ name: workspaceSlug }),
-    select: (data) => data.workspaceByName,
+    ...workspaceOptions({ organizationId }),
+    select: (data) => data.workspaceByOrganizationId,
   });
 
   // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the workspace is subscribed and validate tier based checks
@@ -70,7 +72,7 @@ function WorkspacePage() {
       to: "/workspaces",
     },
     {
-      label: workspace?.name!,
+      label: workspaceName,
     },
   ];
 
@@ -81,7 +83,7 @@ function WorkspacePage() {
         title: (
           <HStack gap={4}>
             <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
-              {workspace?.name}
+              {workspaceName}
             </Text>
             <Badge rounded="lg">{capitalizeFirstLetter(workspace?.tier)}</Badge>
           </HStack>

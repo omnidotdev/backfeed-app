@@ -42,10 +42,10 @@ interface Props {
  * Create comment form.
  */
 const CreateComment = ({ canCreateComment }: Props) => {
-  const { session, queryClient } = useRouteContext({
+  const { session, queryClient, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
-  const { workspaceSlug, projectSlug, feedbackId } = useParams({
+  const { projectSlug, feedbackId } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
   });
 
@@ -56,7 +56,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
       await Promise.all([
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            workspaceSlug,
+            workspaceOrganizationId: organizationId,
             projectSlug,
             feedbackId,
           }),

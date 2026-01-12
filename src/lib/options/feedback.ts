@@ -36,18 +36,18 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
   });
 
 export const freeTierFeedbackOptions = ({
-  workspaceSlug,
+  workspaceOrganizationId,
   projectSlug,
 }: {
-  workspaceSlug: string;
+  workspaceOrganizationId: string;
   projectSlug: string;
 }) =>
   queryOptions({
-    queryKey: ["FreeTierFeedback", { workspaceSlug, projectSlug }],
+    queryKey: ["FreeTierFeedback", { workspaceOrganizationId, projectSlug }],
     queryFn: async () => {
       try {
         const { projects } = await useProjectQuery.fetcher({
-          workspaceSlug,
+          workspaceOrganizationId,
           projectSlug,
         })();
 

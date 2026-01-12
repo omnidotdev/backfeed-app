@@ -1,6 +1,11 @@
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import {
+  useNavigate,
+  useParams,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -22,6 +27,9 @@ interface Props {
  * Project list.
  */
 const ProjectList = ({ canCreateProjects }: Props) => {
+  const { organizationId } = useRouteContext({
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
+  });
   const { workspaceSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
   });
@@ -40,7 +48,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     ...projectsOptions({
       pageSize,
       offset: (page - 1) * pageSize,
-      workspaceSlug,
+      workspaceOrganizationId: organizationId,
       search,
     }),
     placeholderData: keepPreviousData,
@@ -87,7 +95,11 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     <Stack align="center" justify="space-between" h="100%">
       <Stack w="100%">
         {projects.map((project) => (
-          <ProjectListItem key={project?.rowId} project={project as Project} />
+          <ProjectListItem
+            key={project?.rowId}
+            project={project as Project}
+            workspaceSlug={workspaceSlug}
+          />
         ))}
       </Stack>
 
