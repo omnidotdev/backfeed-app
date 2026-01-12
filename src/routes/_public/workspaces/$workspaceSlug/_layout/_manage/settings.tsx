@@ -36,7 +36,7 @@ export const Route = createFileRoute(
 
 function WorkspaceSettingsPage() {
   const { workspaceSlug } = Route.useParams();
-  const { prices, subscription } = Route.useLoaderData();
+  const { prices } = Route.useLoaderData();
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({ name: workspaceSlug }),
@@ -52,14 +52,7 @@ function WorkspaceSettingsPage() {
     >
       <WorkspaceSettings
         prices={prices as ExpandedProductPrice[]}
-        workspace={{
-          ...workspace!,
-          subscription: {
-            subscriptionStatus: subscription?.status ?? "canceled",
-            toBeCanceled: !!subscription?.cancelAt,
-            currentPeriodEnd: subscription?.currentPeriodEnd,
-          },
-        }}
+        workspace={workspace!}
       />
     </Page>
   );

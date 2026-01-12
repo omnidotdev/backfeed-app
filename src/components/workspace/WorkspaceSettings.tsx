@@ -78,7 +78,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
 
   const subscriptionPrice = prices.find(
     (price) =>
-      price.product.id === subscription?.product.id &&
+      price.product.id === subscription?.product?.id &&
       price.id === subscription?.priceId,
   );
 
