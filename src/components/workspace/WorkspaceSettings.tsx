@@ -50,15 +50,23 @@ import {
 } from "@/server/functions/subscriptions";
 
 import type { DestructiveActionProps } from "@/components/core/DestructiveAction";
-import type { WorkspaceRow } from "@/components/profile/UserWorkspaces";
+import type { WorkspaceFragment } from "@/generated/graphql";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 const deleteWorkspaceDetails = app.workspaceSettingsPage.cta.deleteWorkspace;
 const leaveWorkspaceDetails = app.workspaceSettingsPage.cta.leaveWorkspace;
 
+interface WorkspaceWithSubscription extends WorkspaceFragment {
+  subscription: {
+    subscriptionStatus: string;
+    toBeCanceled: boolean;
+    currentPeriodEnd: number | null | undefined;
+  };
+}
+
 interface Props {
-  /** Workspace details. */
-  workspace: WorkspaceRow;
+  /** Workspace details with subscription info. */
+  workspace: WorkspaceWithSubscription;
   /** App subscription pricing options. */
   prices: ExpandedProductPrice[];
 }

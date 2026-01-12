@@ -20,7 +20,16 @@ const knipConfig: KnipConfig = {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
   ignoreExportsUsedInFile: true,
-  ignore: ["panda.config.ts", "src/__mocks__/**", "src/generated/**"],
+  ignore: [
+    "panda.config.ts",
+    "src/__mocks__/**",
+    "src/generated/**",
+    // Tier enforcement hooks - ready for use when needed
+    "src/lib/permissions.ts",
+    "src/lib/hooks/useCanManageWorkspace.ts",
+    "src/lib/hooks/useMaxProjectsReached.ts",
+    "src/lib/hooks/useMaxFeedbackReached.ts",
+  ],
   // CSS-only dependencies imported in app.css
   ignoreDependencies: ["tw-animate-css"],
 };
