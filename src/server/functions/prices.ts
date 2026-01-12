@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
+import app from "@/lib/config/app.config";
 import payments from "@/lib/payments";
 
 import type Stripe from "stripe";
@@ -13,7 +14,7 @@ export interface ExpandedProductPrice extends Stripe.Price {
 
 export const getPrices = createServerFn().handler(async () => {
   const prices = await payments.prices.search({
-    query: 'active:"true" AND metadata["app"]:"backfeed"',
+    query: `active:"true" AND metadata["app"]:"${app.name.toLowerCase()}"`,
     expand: ["data.product"],
   });
 
