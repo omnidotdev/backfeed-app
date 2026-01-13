@@ -13,7 +13,6 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiInviteRouteImport } from './routes/api/invite'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as PublicWorkspacesIndexRouteImport } from './routes/_public/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -22,12 +21,10 @@ import { Route as AuthProfileUserIdLayoutRouteImport } from './routes/_auth/prof
 import { Route as PublicWorkspacesWorkspaceSlugLayoutIndexRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/index'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutManageRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/_manage'
 import { Route as AuthProfileUserIdLayoutWorkspacesRouteImport } from './routes/_auth/profile/$userId/_layout/workspaces'
-import { Route as AuthProfileUserIdLayoutInvitationsRouteImport } from './routes/_auth/profile/$userId/_layout/invitations'
 import { Route as AuthProfileUserIdLayoutAccountRouteImport } from './routes/_auth/profile/$userId/_layout/account'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/projects/index'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/_manage/settings'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutManageMembersRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/_manage/members'
-import { Route as PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/_manage/invitations'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/index'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
@@ -48,11 +45,6 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiInviteRoute = ApiInviteRouteImport.update({
-  id: '/api/invite',
-  path: '/api/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
@@ -98,12 +90,6 @@ const AuthProfileUserIdLayoutWorkspacesRoute =
     path: '/workspaces',
     getParentRoute: () => AuthProfileUserIdLayoutRoute,
   } as any)
-const AuthProfileUserIdLayoutInvitationsRoute =
-  AuthProfileUserIdLayoutInvitationsRouteImport.update({
-    id: '/invitations',
-    path: '/invitations',
-    getParentRoute: () => AuthProfileUserIdLayoutRoute,
-  } as any)
 const AuthProfileUserIdLayoutAccountRoute =
   AuthProfileUserIdLayoutAccountRouteImport.update({
     id: '/account',
@@ -126,12 +112,6 @@ const PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute =
   PublicWorkspacesWorkspaceSlugLayoutManageMembersRouteImport.update({
     id: '/members',
     path: '/members',
-    getParentRoute: () => PublicWorkspacesWorkspaceSlugLayoutManageRoute,
-  } as any)
-const PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute =
-  PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRouteImport.update({
-    id: '/invitations',
-    path: '/invitations',
     getParentRoute: () => PublicWorkspacesWorkspaceSlugLayoutManageRoute,
   } as any)
 const PublicWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute =
@@ -163,16 +143,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
-  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof PublicWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/workspaces/$workspaceSlug': typeof PublicWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
-  '/profile/$userId/invitations': typeof AuthProfileUserIdLayoutInvitationsRoute
   '/profile/$userId/workspaces': typeof AuthProfileUserIdLayoutWorkspacesRoute
   '/workspaces/$workspaceSlug/': typeof PublicWorkspacesWorkspaceSlugLayoutIndexRoute
-  '/workspaces/$workspaceSlug/invitations': typeof PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute
   '/workspaces/$workspaceSlug/members': typeof PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/workspaces/$workspaceSlug/settings': typeof PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof PublicWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
@@ -184,15 +161,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
-  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof PublicWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
-  '/profile/$userId/invitations': typeof AuthProfileUserIdLayoutInvitationsRoute
   '/profile/$userId/workspaces': typeof AuthProfileUserIdLayoutWorkspacesRoute
   '/workspaces/$workspaceSlug': typeof PublicWorkspacesWorkspaceSlugLayoutIndexRoute
-  '/workspaces/$workspaceSlug/invitations': typeof PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute
   '/workspaces/$workspaceSlug/members': typeof PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/workspaces/$workspaceSlug/settings': typeof PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof PublicWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
@@ -207,17 +181,14 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/pricing': typeof PricingRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
-  '/api/invite': typeof ApiInviteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_public/workspaces/': typeof PublicWorkspacesIndexRoute
   '/_auth/profile/$userId/_layout': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/_public/workspaces/$workspaceSlug/_layout': typeof PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren
   '/_auth/profile/$userId/_layout/account': typeof AuthProfileUserIdLayoutAccountRoute
-  '/_auth/profile/$userId/_layout/invitations': typeof AuthProfileUserIdLayoutInvitationsRoute
   '/_auth/profile/$userId/_layout/workspaces': typeof AuthProfileUserIdLayoutWorkspacesRoute
   '/_public/workspaces/$workspaceSlug/_layout/_manage': typeof PublicWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
   '/_public/workspaces/$workspaceSlug/_layout/': typeof PublicWorkspacesWorkspaceSlugLayoutIndexRoute
-  '/_public/workspaces/$workspaceSlug/_layout/_manage/invitations': typeof PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute
   '/_public/workspaces/$workspaceSlug/_layout/_manage/members': typeof PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/_public/workspaces/$workspaceSlug/_layout/_manage/settings': typeof PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute
   '/_public/workspaces/$workspaceSlug/_layout/projects/': typeof PublicWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
@@ -231,16 +202,13 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
-    | '/api/invite'
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
     | '/workspaces/$workspaceSlug'
     | '/profile/$userId/account'
-    | '/profile/$userId/invitations'
     | '/profile/$userId/workspaces'
     | '/workspaces/$workspaceSlug/'
-    | '/workspaces/$workspaceSlug/invitations'
     | '/workspaces/$workspaceSlug/members'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -252,15 +220,12 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
-    | '/api/invite'
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
     | '/profile/$userId/account'
-    | '/profile/$userId/invitations'
     | '/profile/$userId/workspaces'
     | '/workspaces/$workspaceSlug'
-    | '/workspaces/$workspaceSlug/invitations'
     | '/workspaces/$workspaceSlug/members'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -274,17 +239,14 @@ export interface FileRouteTypes {
     | '/_public'
     | '/pricing'
     | '/_auth/dashboard'
-    | '/api/invite'
     | '/api/auth/$'
     | '/_public/workspaces/'
     | '/_auth/profile/$userId/_layout'
     | '/_public/workspaces/$workspaceSlug/_layout'
     | '/_auth/profile/$userId/_layout/account'
-    | '/_auth/profile/$userId/_layout/invitations'
     | '/_auth/profile/$userId/_layout/workspaces'
     | '/_public/workspaces/$workspaceSlug/_layout/_manage'
     | '/_public/workspaces/$workspaceSlug/_layout/'
-    | '/_public/workspaces/$workspaceSlug/_layout/_manage/invitations'
     | '/_public/workspaces/$workspaceSlug/_layout/_manage/members'
     | '/_public/workspaces/$workspaceSlug/_layout/_manage/settings'
     | '/_public/workspaces/$workspaceSlug/_layout/projects/'
@@ -298,7 +260,6 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   PricingRoute: typeof PricingRoute
-  ApiInviteRoute: typeof ApiInviteRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -330,13 +291,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/invite': {
-      id: '/api/invite'
-      path: '/api/invite'
-      fullPath: '/api/invite'
-      preLoaderRoute: typeof ApiInviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/dashboard': {
@@ -395,13 +349,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthProfileUserIdLayoutWorkspacesRouteImport
       parentRoute: typeof AuthProfileUserIdLayoutRoute
     }
-    '/_auth/profile/$userId/_layout/invitations': {
-      id: '/_auth/profile/$userId/_layout/invitations'
-      path: '/invitations'
-      fullPath: '/profile/$userId/invitations'
-      preLoaderRoute: typeof AuthProfileUserIdLayoutInvitationsRouteImport
-      parentRoute: typeof AuthProfileUserIdLayoutRoute
-    }
     '/_auth/profile/$userId/_layout/account': {
       id: '/_auth/profile/$userId/_layout/account'
       path: '/account'
@@ -430,13 +377,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageMembersRouteImport
       parentRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageRoute
     }
-    '/_public/workspaces/$workspaceSlug/_layout/_manage/invitations': {
-      id: '/_public/workspaces/$workspaceSlug/_layout/_manage/invitations'
-      path: '/invitations'
-      fullPath: '/workspaces/$workspaceSlug/invitations'
-      preLoaderRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRouteImport
-      parentRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageRoute
-    }
     '/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/': {
       id: '/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/'
       path: '/projects/$projectSlug'
@@ -463,15 +403,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthProfileUserIdLayoutRouteChildren {
   AuthProfileUserIdLayoutAccountRoute: typeof AuthProfileUserIdLayoutAccountRoute
-  AuthProfileUserIdLayoutInvitationsRoute: typeof AuthProfileUserIdLayoutInvitationsRoute
   AuthProfileUserIdLayoutWorkspacesRoute: typeof AuthProfileUserIdLayoutWorkspacesRoute
 }
 
 const AuthProfileUserIdLayoutRouteChildren: AuthProfileUserIdLayoutRouteChildren =
   {
     AuthProfileUserIdLayoutAccountRoute: AuthProfileUserIdLayoutAccountRoute,
-    AuthProfileUserIdLayoutInvitationsRoute:
-      AuthProfileUserIdLayoutInvitationsRoute,
     AuthProfileUserIdLayoutWorkspacesRoute:
       AuthProfileUserIdLayoutWorkspacesRoute,
   }
@@ -494,15 +431,12 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicWorkspacesWorkspaceSlugLayoutManageRouteChildren {
-  PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute
   PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute
   PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute: typeof PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute
 }
 
 const PublicWorkspacesWorkspaceSlugLayoutManageRouteChildren: PublicWorkspacesWorkspaceSlugLayoutManageRouteChildren =
   {
-    PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute:
-      PublicWorkspacesWorkspaceSlugLayoutManageInvitationsRoute,
     PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute:
       PublicWorkspacesWorkspaceSlugLayoutManageMembersRoute,
     PublicWorkspacesWorkspaceSlugLayoutManageSettingsRoute:
@@ -563,7 +497,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   PricingRoute: PricingRoute,
-  ApiInviteRoute: ApiInviteRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

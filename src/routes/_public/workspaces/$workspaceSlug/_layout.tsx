@@ -1,15 +1,9 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
-import { Role, Tier } from "@/generated/graphql";
-import {
-  workspaceOptions,
-  workspaceRoleOptions,
-} from "@/lib/options/workspaces";
+import { workspaceOptions } from "@/lib/options/workspaces";
+import { isAdminOrOwner, isOwner } from "@/lib/permissions";
 
-const billingBypassOrgIds: string[] =
-  import.meta.env.VITE_BILLING_BYPASS_ORG_IDS?.split(",")
-    .map((s: string) => s.trim())
-    .filter(Boolean) ?? [];
+import type { IdpRole } from "@/lib/permissions";
 
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout",
@@ -26,50 +20,41 @@ export const Route = createFileRoute(
 
     if (!orgFromSlug) throw notFound();
 
-    const { workspaceByOrganizationId } = await queryClient.ensureQueryData({
+    const data = await queryClient.ensureQueryData({
       ...workspaceOptions({ organizationId: orgFromSlug.id }),
       revalidateIfStale: true,
     });
 
-    if (!workspaceByOrganizationId) throw notFound();
+    const workspace = data?.workspaces?.nodes?.[0];
 
-    // Alias for backwards compatibility in the rest of the function
-    const workspace = workspaceByOrganizationId;
+    if (!workspace) throw notFound();
 
     // For unauthenticated users, provide minimal context
     const isAuthenticated = !!session?.user?.rowId;
 
-    let member = null;
-    if (isAuthenticated) {
-      const { memberByUserIdAndWorkspaceId } =
-        await queryClient.ensureQueryData({
-          ...workspaceRoleOptions({
-            userId: session.user.rowId!,
-            workspaceId: workspace.rowId,
-          }),
-          revalidateIfStale: true,
-        });
-      member = memberByUserIdAndWorkspaceId;
-    }
-
-    // Bypass tier limits for exempt workspaces
-    const isBillingExempt = billingBypassOrgIds.includes(orgFromSlug.id);
+    // Role comes from JWT organization claims, not local DB
+    // roles is an array, take the highest privilege role
+    const roles = orgFromSlug.roles ?? [];
+    const role: IdpRole | null = roles.includes("owner")
+      ? "owner"
+      : roles.includes("admin")
+        ? "admin"
+        : roles.includes("member")
+          ? "member"
+          : null;
 
     return {
       workspaceId: workspace.rowId,
       // Org name comes from JWT claims, not DB
       workspaceName: orgFromSlug.name ?? orgFromSlug.slug,
       organizationId: orgFromSlug.id,
-      role: member?.role ?? null,
+      role,
       subscriptionId: workspace.subscriptionId,
-      isOwner: member?.role === Role.Owner,
-      membershipId: member?.rowId ?? null,
-      hasAdminPrivileges:
-        member?.role === Role.Admin || member?.role === Role.Owner,
-      hasBasicTierPrivileges: isBillingExempt || workspace.tier !== Tier.Free,
-      hasTeamTierPrivileges:
-        isBillingExempt || ![Tier.Free, Tier.Basic].includes(workspace.tier),
+      isOwner: isOwner(role),
+      hasAdminPrivileges: isAdminOrOwner(role),
       isAuthenticated,
+      // Pass session for Gatekeeper API calls
+      session,
     };
   },
   component: WorkspaceLayout,

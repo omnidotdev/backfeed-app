@@ -1,5 +1,5 @@
-import { Flex, Grid, Stack, css } from "@omnidev/sigil";
-import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
+import { Flex, Stack, css } from "@omnidev/sigil";
+import { HiOutlineFolder } from "react-icons/hi2";
 
 import OverflowText from "@/components/core/OverflowText";
 import DashboardMetric from "@/components/dashboard/DashboardMetric";
@@ -50,19 +50,11 @@ const WorkspaceCard = ({ workspace, workspaceName, ...rest }: Props) => (
         </OverflowText>
       </Stack>
 
-      <Grid columns={2} w="full" alignItems="start">
-        <DashboardMetric
-          type="member"
-          value={workspace?.members?.totalCount}
-          icon={HiOutlineUserGroup}
-        />
-
-        <DashboardMetric
-          type="project"
-          value={workspace?.projects?.totalCount}
-          icon={HiOutlineFolder}
-        />
-      </Grid>
+      <DashboardMetric
+        type="project"
+        value={workspace?.projects?.totalCount}
+        icon={HiOutlineFolder}
+      />
     </Stack>
   </Flex>
 );

@@ -24,6 +24,9 @@ const PinnedWorkspaces = () => {
     type: DialogType.CreateWorkspace,
   });
 
+  // Get org IDs from session for filtering
+  const organizationIds = session?.organizations?.map((org) => org.id) ?? [];
+
   // Helper to get org info from session by organizationId
   const getOrgInfo = (organizationId: string) =>
     session?.organizations?.find((org) => org.id === organizationId);
@@ -36,11 +39,11 @@ const PinnedWorkspaces = () => {
     ...workspacesOptions({
       pageSize: 3,
       offset: 0,
-      orderBy: [WorkspaceOrderBy.MembersCountDesc],
-      userId: session?.user.rowId!,
-      isMember: true,
+      orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
+      organizationIds,
     }),
     select: (data) => data?.workspaces?.nodes,
+    enabled: organizationIds.length > 0,
   });
 
   return (
@@ -53,6 +56,8 @@ const PinnedWorkspaces = () => {
         <ErrorBoundary message="Error fetching workspaces" h={48} />
       ) : (
         <Grid
+          // NB: The padding is necessary to prevent clipping of the card borders/box shadows
+          p="1px"
           gap={6}
           columns={{
             base: 1,
@@ -78,6 +83,8 @@ const PinnedWorkspaces = () => {
                   <WorkspaceCard
                     workspace={workspace as Partial<Workspace>}
                     workspaceName={org?.name}
+                    // NB: min height ensures consistent card sizing while allowing growth for longer content
+                    minH={48}
                   />
                 </Link>
               );

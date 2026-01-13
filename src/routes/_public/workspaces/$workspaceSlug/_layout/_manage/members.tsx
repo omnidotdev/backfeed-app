@@ -1,53 +1,31 @@
 import { Icon } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
-import { z } from "zod";
 
 import Page from "@/components/layout/Page";
 import Members from "@/components/workspace/Members";
-import MembershipFilters from "@/components/workspace/MembershipFilters";
 import Owners from "@/components/workspace/Owners";
-import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { isDevEnv } from "@/lib/config/env.config";
-import { membersOptions } from "@/lib/options/members";
-import { workspaceOptions } from "@/lib/options/workspaces";
+import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
-
-const membersSearchSchema = z.object({
-  search: z.string().default(""),
-  roles: z.array(z.enum(Role)).default([]),
-});
 
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
 )({
-  validateSearch: membersSearchSchema,
-  search: {
-    middlewares: [stripSearchParams({ search: "", roles: [] })],
-  },
-  loaderDeps: ({ search }) => search,
   loader: async ({
-    context: { queryClient, workspaceId, workspaceName },
-    deps: { search, roles },
+    context: { queryClient, organizationId, workspaceName, session },
   }) => {
-    await Promise.all([
-      queryClient.ensureQueryData({
-        ...membersOptions({ workspaceId, roles: [Role.Owner] }),
-        revalidateIfStale: true,
-      }),
-      queryClient.ensureQueryData({
-        ...membersOptions({
-          workspaceId,
-          roles,
-          search,
-          excludeRoles: [Role.Owner],
+    // Prefetch organization members from Gatekeeper
+    if (organizationId && session?.accessToken) {
+      await queryClient.prefetchQuery({
+        ...organizationMembersOptions({
+          organizationId,
+          accessToken: session.accessToken,
         }),
-        revalidateIfStale: true,
-      }),
-    ]);
+      });
+    }
 
     return { workspaceName };
   },
@@ -58,12 +36,7 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceMembersPage() {
-  const { role, organizationId, workspaceName } = Route.useRouteContext();
-
-  useQuery({
-    ...workspaceOptions({ organizationId }),
-    select: (data) => data.workspaceByOrganizationId,
-  });
+  const { role, workspaceName } = Route.useRouteContext();
 
   return (
     <Page
@@ -72,7 +45,7 @@ function WorkspaceMembersPage() {
         description: app.workspaceMembersPage.description,
         cta:
           // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.
-          role === Role.Owner && isDevEnv
+          role === "owner" && isDevEnv
             ? [
                 {
                   label: app.workspaceMembersPage.cta.addOwner.label,
@@ -85,8 +58,6 @@ function WorkspaceMembersPage() {
       pt={0}
     >
       <Owners />
-
-      <MembershipFilters />
 
       <Members />
     </Page>

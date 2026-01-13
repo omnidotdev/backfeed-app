@@ -9,15 +9,17 @@
  * by preventing users from attempting actions they cannot perform.
  */
 
-import { Role } from "@/generated/graphql";
+/** IDP role type */
+export type IdpRole = "owner" | "admin" | "member";
 
 /**
  * Check if user has admin or owner role.
  */
-export const isAdminOrOwner = (role: Role): boolean =>
-  role === Role.Admin || role === Role.Owner;
+export const isAdminOrOwner = (role: IdpRole | null | undefined): boolean =>
+  role === "admin" || role === "owner";
 
 /**
  * Check if user is the workspace owner.
  */
-export const isOwner = (role: Role): boolean => role === Role.Owner;
+export const isOwner = (role: IdpRole | null | undefined): boolean =>
+  role === "owner";

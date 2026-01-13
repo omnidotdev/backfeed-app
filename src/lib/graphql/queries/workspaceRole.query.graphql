@@ -1,6 +1,0 @@
-query WorkspaceRole($userId: UUID!, $workspaceId: UUID!) {
-  memberByUserIdAndWorkspaceId(userId: $userId, workspaceId: $workspaceId) {
-    rowId
-    role
-  }
-}

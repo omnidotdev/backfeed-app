@@ -8,8 +8,8 @@ import {
   TableRow,
   Text,
 } from "@omnidev/sigil";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useRouteContext, useSearch } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
@@ -20,40 +20,39 @@ import { useMemo } from "react";
 import { match } from "ts-pattern";
 
 import MembershipMenu from "@/components/workspace/MembershipMenu";
-import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { membersOptions } from "@/lib/options/members";
+import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
-import type { MemberFragment } from "@/generated/graphql";
+import type { IdpMember } from "@/lib/idp";
 
-const columnHelper = createColumnHelper<MemberFragment>();
+const columnHelper = createColumnHelper<IdpMember>();
 
 /**
  * Workspace members table.
+ * Fetches member data from IDP (single source of truth).
  */
 const Members = () => {
-  const { isOwner, workspaceId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
-  });
-  const { search, roles } = useSearch({
+  const { isOwner, organizationId, session } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
-  const { data: members } = useQuery({
-    ...membersOptions({
-      workspaceId,
-      roles,
-      search,
-      excludeRoles: [Role.Owner],
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: organizationId!,
+      accessToken: session?.accessToken!,
     }),
-    placeholderData: keepPreviousData,
-    select: (data) => data.members?.nodes,
   });
+
+  // Filter out owners - they're shown in the Owners component
+  const members = useMemo(
+    () => membersData?.members?.filter((m) => m.role !== "owner") ?? [],
+    [membersData],
+  );
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("rowId", {
+      columnHelper.accessor("id", {
         header: ({ table }) => (
           <Checkbox
             size="sm"
@@ -102,10 +101,8 @@ const Members = () => {
             }}
             label={
               <Stack py={4}>
-                <Text fontSize="lg">{row.original.user?.name}</Text>
-                <Text color="foreground.subtle">
-                  {row.original.user?.username}
-                </Text>
+                <Text fontSize="lg">{row.original.user.name}</Text>
+                <Text color="foreground.subtle">{row.original.user.email}</Text>
               </Stack>
             }
             controlProps={{
@@ -123,8 +120,8 @@ const Members = () => {
         header: app.workspaceMembersPage.membersTable.headers.role,
         cell: (info) => {
           const accentColor = match(info.getValue())
-            .with(Role.Admin, () => "brand.secondary")
-            .with(Role.Member, () => "brand.tertiary")
+            .with("admin", () => "brand.secondary")
+            .with("member", () => "brand.tertiary")
             .otherwise(() => undefined);
 
           return (
@@ -146,7 +143,7 @@ const Members = () => {
   );
 
   const table = useReactTable({
-    data: members as MemberFragment[],
+    data: members,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

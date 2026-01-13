@@ -1,17 +1,10 @@
-import {
-  infiniteQueryOptions,
-  keepPreviousData,
-  queryOptions,
-} from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import {
-  Tier,
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
   usePostsQuery,
-  useProjectQuery,
 } from "@/generated/graphql";
-import MAX_UNIQUE_USERS_FOR_FEEDBACK from "@/lib/constants/numberOfFreeTierUniqueUsers.constant";
 
 import type {
   FeedbackByIdQueryVariables,
@@ -33,60 +26,4 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
       lastPage?.posts?.pageInfo?.hasNextPage
         ? { after: lastPage?.posts?.pageInfo?.endCursor }
         : undefined,
-  });
-
-export const freeTierFeedbackOptions = ({
-  workspaceOrganizationId,
-  projectSlug,
-}: {
-  workspaceOrganizationId: string;
-  projectSlug: string;
-}) =>
-  queryOptions({
-    queryKey: ["FreeTierFeedback", { workspaceOrganizationId, projectSlug }],
-    queryFn: async () => {
-      try {
-        const { projects } = await useProjectQuery.fetcher({
-          workspaceOrganizationId,
-          projectSlug,
-        })();
-
-        if (!projects?.nodes.length) return null;
-
-        const project = projects.nodes[0];
-
-        const subscriptionTier = project?.workspace?.tier;
-
-        const activeUserCount = Number(
-          project?.posts.aggregates?.distinctCount?.userId ?? 0,
-        );
-
-        const hasUserSubmittedFeedback = !!project?.userPosts.nodes.length;
-
-        return {
-          subscriptionTier,
-          activeUserCount,
-          hasUserSubmittedFeedback,
-        };
-      } catch (_err) {
-        return null;
-      }
-    },
-    placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data?.subscriptionTier) {
-        return false;
-      }
-
-      // NB: If the workspace is on the `free` tier, then there is a maximum of 15 unique users that are allowed to provide feedback.
-      // This first checks if the user has already provided feedback (if so, allow user to submit more feedback), and then checks against the total number of unique users to provide feedback
-      if (data.subscriptionTier === Tier.Free) {
-        return (
-          data.hasUserSubmittedFeedback ||
-          data.activeUserCount < MAX_UNIQUE_USERS_FOR_FEEDBACK
-        );
-      }
-
-      return true;
-    },
   });

@@ -1,13 +1,14 @@
 /** @knipignore */
 
-import { Role } from "@/generated/graphql";
 import { isAdminOrOwner, isOwner } from "@/lib/permissions";
+
+import type { IdpRole } from "@/lib/permissions";
 
 /**
  * Hook for workspace management permission checks.
  * Returns permission flags for workspace-related actions based on role.
  */
-export const useCanManageWorkspace = (role: Role | null | undefined) => {
+export const useCanManageWorkspace = (role: IdpRole | null | undefined) => {
   if (!role) {
     return {
       canInvite: false,
@@ -34,14 +35,14 @@ export const useCanManageWorkspace = (role: Role | null | undefined) => {
  * Admins cannot modify owners.
  */
 export const canModifyMember = (
-  currentUserRole: Role,
-  targetMemberRole: Role,
+  currentUserRole: IdpRole,
+  targetMemberRole: IdpRole,
 ): boolean => {
   // owners can modify anyone except other owners
-  if (isOwner(currentUserRole)) return targetMemberRole !== Role.Owner;
+  if (isOwner(currentUserRole)) return targetMemberRole !== "owner";
 
   // admins can only modify members (not other admins or owners)
-  if (currentUserRole === Role.Admin) return targetMemberRole === Role.Member;
+  if (currentUserRole === "admin") return targetMemberRole === "member";
 
   // members cannot modify anyone
   return false;

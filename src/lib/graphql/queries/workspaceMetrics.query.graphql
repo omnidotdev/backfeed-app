@@ -6,8 +6,4 @@ query WorkspaceMetrics($workspaceId: UUID!) {
   posts(filter: { project: { workspaceId: { equalTo: $workspaceId } } }) {
     totalCount
   }
-
-  members(condition: { workspaceId: $workspaceId }) {
-    totalCount
-  }
 }

@@ -48,20 +48,21 @@ const useSidebarNavigationItems = () => {
   const workspaceName = orgFromSlug?.name ?? workspaceSlug;
 
   const { data: workspace } = useQuery({
-      ...workspaceOptions({
-        organizationId: organizationId!,
-      }),
-      enabled: !!session && !!organizationId,
-      select: (data) => data?.workspaceByOrganizationId,
+    ...workspaceOptions({
+      organizationId: organizationId!,
     }),
-    { data: project } = useQuery({
-      ...projectOptions({
-        projectSlug: projectSlug!,
-        workspaceOrganizationId: organizationId!,
-      }),
-      enabled: !!session && !!projectSlug && !!organizationId && !!workspace,
-      select: (data) => data?.projects?.nodes[0],
-    });
+    enabled: !!session && !!organizationId,
+    select: (data) => data?.workspaces?.nodes?.[0],
+  });
+
+  const { data: project } = useQuery({
+    ...projectOptions({
+      projectSlug: projectSlug!,
+      workspaceOrganizationId: organizationId!,
+    }),
+    enabled: !!session && !!projectSlug && !!organizationId && !!workspace,
+    select: (data) => data?.projects?.nodes[0],
+  });
 
   const routes = useMemo<NavItem[]>(
     () => [

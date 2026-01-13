@@ -1,9 +1,7 @@
-query WeeklyFeedback($userId: UUID!, $startDate: Datetime!) {
+query WeeklyFeedback($organizationIds: [String!], $startDate: Datetime!) {
   posts(
     filter: {
-      project: {
-        workspace: { members: { some: { userId: { equalTo: $userId } } } }
-      }
+      project: { workspace: { organizationId: { in: $organizationIds } } }
       createdAt: { greaterThanOrEqualTo: $startDate }
     }
   ) {

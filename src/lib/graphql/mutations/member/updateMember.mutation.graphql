@@ -1,5 +1,0 @@
-mutation UpdateMember($rowId: UUID!, $patch: MemberPatch!) {
-  updateMember(input: { rowId: $rowId, patch: $patch }) {
-    clientMutationId
-  }
-}

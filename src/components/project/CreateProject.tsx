@@ -5,7 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
-import { Role, useCreateProjectMutation } from "@/generated/graphql";
+import { useCreateProjectMutation } from "@/generated/graphql";
 import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -88,7 +88,7 @@ const CreateProject = ({ workspaceSlug }: Props) => {
       organizationId,
     }),
     enabled: !!session?.user?.rowId,
-    select: (data) => data?.workspaceByOrganizationId,
+    select: (data) => data?.workspaces?.nodes?.[0],
   });
 
   useHotkeys(
@@ -109,13 +109,10 @@ const CreateProject = ({ workspaceSlug }: Props) => {
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
     onSettled: () => {
-      // ! NB: needed to invalidate the number of projects for a workspace
+      // Invalidate workspace queries to refresh project count
       queryClient?.invalidateQueries({
         queryKey: workspacesOptions({
-          userId: session?.user?.rowId!,
-          isMember: true,
           organizationId,
-          excludeRoles: [Role.Member],
         }).queryKey,
       });
     },

@@ -21,9 +21,13 @@ import type { Post } from "@/generated/graphql";
 const RecentFeedback = () => {
   const { session } = useRouteContext({ from: "/_auth/dashboard" });
 
+  // Get org IDs from session for filtering
+  const organizationIds = session?.organizations?.map((org) => org.id) ?? [];
+
   // Helper to get org info from session by organizationId
   const getOrgInfo = (organizationId: string) =>
     session?.organizations?.find((org) => org.id === organizationId);
+
   const {
     data: recentFeedback,
     isLoading,
@@ -32,12 +36,13 @@ const RecentFeedback = () => {
     fetchNextPage,
   } = useInfiniteQuery({
     ...recentFeedbackOptions({
-      userId: session?.user.rowId!,
+      organizationIds,
     }),
     select: (data) =>
       data?.pages?.flatMap((page) =>
         page?.posts?.edges?.map((edge) => edge?.node),
       ),
+    enabled: organizationIds.length > 0,
   });
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({

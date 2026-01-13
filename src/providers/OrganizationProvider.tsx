@@ -10,6 +10,8 @@ interface OrganizationContext {
   hasMultipleOrgs: boolean;
   /** Resolve organization details by ID. Returns undefined if not found. */
   getOrganizationById: (orgId: string) => OrganizationClaim | undefined;
+  /** True if organizations couldn't be loaded from IDP (degraded mode). */
+  isDegradedMode: boolean;
 }
 
 const OrganizationContext = createContext<OrganizationContext | null>(null);
@@ -29,11 +31,18 @@ function getDefaultOrganization(
 /**
  * Global organization context provider.
  * Manages the current organization selection for multi-org users.
+ *
+ * When organizations array is empty (IDP unavailable or error), the provider
+ * enters "degraded mode" which can be detected via `isDegradedMode` flag.
  */
 const OrganizationProvider = ({
   children,
   organizations,
 }: PropsWithChildren<{ organizations: OrganizationClaim[] }>) => {
+  // Detect degraded mode: authenticated user should always have at least
+  // a personal org. Empty array indicates IDP data couldn't be loaded.
+  const isDegradedMode = organizations.length === 0;
+
   const defaultOrg = useMemo(
     () => getDefaultOrganization(organizations),
     [organizations],
@@ -61,6 +70,7 @@ const OrganizationProvider = ({
         setCurrentOrganization,
         hasMultipleOrgs,
         getOrganizationById,
+        isDegradedMode,
       }}
     >
       {children}

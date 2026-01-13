@@ -43,7 +43,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
     ...workspaceOptions({
       organizationId,
     }),
-    select: (data) => data?.workspaceByOrganizationId?.projects?.nodes,
+    select: (data) => data?.workspaces?.nodes?.[0]?.projects?.nodes,
   });
 
   return (
@@ -56,9 +56,6 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
         <ErrorBoundary message="Error fetching projects" h={48} p={8} />
       ) : (
         <Grid
-          maxH="md"
-          overflow="auto"
-          scrollbar="hidden"
           // NB: The padding is necessary to prevent clipping of the card borders/box shadows
           p="1px"
           gap={6}
@@ -83,8 +80,8 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
               >
                 <ProjectCard
                   project={project as Partial<Project>}
-                  // ! NB: explicitly set the height of the card to prevent CLS issues with loading and error states.
-                  h={48}
+                  // NB: min height ensures consistent card sizing while allowing growth for longer content
+                  minH={48}
                 />
               </Link>
             ))

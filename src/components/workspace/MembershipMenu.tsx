@@ -3,17 +3,16 @@ import { useRouteContext } from "@tanstack/react-router";
 import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import {
-  Role,
-  useRemoveMemberMutation,
-  useUpdateMemberMutation,
-} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import {
+  useRemoveMember,
+  useUpdateMemberRole,
+} from "@/lib/hooks/useOrganizationMembers";
 
 import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
-import type { MemberFragment } from "@/generated/graphql";
 import type { JsxStyleProps } from "@/generated/panda/types";
+import type { IdpMember } from "@/lib/idp";
 
 enum MenuAction {
   MakeAdmin = "admin",
@@ -29,7 +28,7 @@ const menuItemStyles: JsxStyleProps = {
 
 interface Props extends MenuProps {
   /** The selected rows in the membership table */
-  selectedRows: Row<MemberFragment>[];
+  selectedRows: Row<IdpMember>[];
   /** Toggle the selection state of the rows. */
   toggleRowSelection: (value?: boolean) => void;
 }
@@ -42,22 +41,16 @@ const MembershipMenu = ({
   toggleRowSelection,
   ...rest
 }: Props) => {
-  const { queryClient, isOwner } = useRouteContext({
+  const { isOwner, organizationId, session } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
   const selectedRowsAreAdmins = selectedRows.every(
-    (row) => row.original.role === Role.Admin,
+    (row) => row.original.role === "admin",
   );
 
-  const onSettled = () =>
-    queryClient.invalidateQueries({
-      queryKey: ["Members"],
-    });
-
-  // TODO: handle query invalidates for `MembersQuery` across different `roles` variable options
-  const { mutate: updateMember } = useUpdateMemberMutation({ onSettled });
-  const { mutate: removeMember } = useRemoveMemberMutation({ onSettled });
+  const { mutate: updateMemberRole } = useUpdateMemberRole();
+  const { mutate: removeMember } = useRemoveMember();
 
   const handleMenuAction = ({ type }: { type: MenuAction }) => {
     // NB: this is safe as owners are already filtered out by default from the query.
@@ -66,24 +59,26 @@ const MembershipMenu = ({
 
       match(type)
         .with(MenuAction.MakeAdmin, () =>
-          updateMember({
-            rowId: member.rowId,
-            patch: {
-              role: Role.Admin,
-            },
+          updateMemberRole({
+            organizationId: organizationId!,
+            memberId: member.id,
+            role: "admin",
+            accessToken: session?.accessToken!,
           }),
         )
         .with(MenuAction.RemoveAdmin, () =>
-          updateMember({
-            rowId: member.rowId,
-            patch: {
-              role: Role.Member,
-            },
+          updateMemberRole({
+            organizationId: organizationId!,
+            memberId: member.id,
+            role: "member",
+            accessToken: session?.accessToken!,
           }),
         )
         .with(MenuAction.RemoveMember, () =>
           removeMember({
-            rowId: member.rowId,
+            organizationId: organizationId!,
+            memberId: member.id,
+            accessToken: session?.accessToken!,
           }),
         )
         .exhaustive();

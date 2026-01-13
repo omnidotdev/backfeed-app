@@ -1,19 +1,21 @@
 query Workspace($organizationId: String!) {
-  workspaceByOrganizationId(organizationId: $organizationId) {
-    ...Workspace
-    updatedAt
-    projects(first: 6, orderBy: POSTS_COUNT_DESC) {
-      totalCount
-      nodes {
-        rowId
-        name
-        description
-        slug
-        posts {
-          totalCount
-          aggregates {
-            distinctCount {
-              userId
+  workspaces(condition: { organizationId: $organizationId }, first: 1) {
+    nodes {
+      ...Workspace
+      updatedAt
+      projects(first: 6, orderBy: POSTS_COUNT_DESC) {
+        totalCount
+        nodes {
+          rowId
+          name
+          description
+          slug
+          posts {
+            totalCount
+            aggregates {
+              distinctCount {
+                userId
+              }
             }
           }
         }

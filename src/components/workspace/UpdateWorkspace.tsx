@@ -50,7 +50,7 @@ const UpdateWorkspace = () => {
     ...workspaceOptions({
       organizationId,
     }),
-    select: (data) => data.workspaceByOrganizationId,
+    select: (data) => data.workspaces?.nodes?.[0],
   });
 
   const { mutateAsync: updateWorkspace } = useUpdateWorkspaceMutation({

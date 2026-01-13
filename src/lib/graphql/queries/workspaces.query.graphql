@@ -2,10 +2,8 @@ query Workspaces(
   $pageSize: Int
   $offset: Int
   $orderBy: [WorkspaceOrderBy!]
-  $isMember: Boolean
-  $userId: UUID
-  $excludeRoles: [Role!]
   $organizationId: String
+  $organizationIds: [String!]
   $workspaceId: UUID
 ) {
   workspaces(
@@ -14,19 +12,7 @@ query Workspaces(
     orderBy: $orderBy
     filter: {
       rowId: { equalTo: $workspaceId }
-      organizationId: { equalTo: $organizationId }
-      or: [
-        {
-          membersExist: $isMember
-          members: {
-            some: {
-              userId: { equalTo: $userId }
-              role: { notIn: $excludeRoles }
-            }
-          }
-        }
-        { rowId: { isNull: $isMember } }
-      ]
+      organizationId: { equalTo: $organizationId, in: $organizationIds }
     }
   ) {
     totalCount

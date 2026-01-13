@@ -1,12 +1,10 @@
-query RecentFeedback($userId: UUID!, $after: Cursor) {
+query RecentFeedback($organizationIds: [String!], $after: Cursor) {
   posts(
     first: 10
     after: $after
     orderBy: CREATED_AT_DESC
     filter: {
-      project: {
-        workspace: { members: { some: { userId: { equalTo: $userId } } } }
-      }
+      project: { workspace: { organizationId: { in: $organizationIds } } }
     }
   ) {
     totalCount

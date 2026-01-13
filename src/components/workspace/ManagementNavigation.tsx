@@ -60,7 +60,7 @@ const ManagementNavigation = ({
 
   useQuery({
     ...workspaceOptions({ organizationId }),
-    select: (data) => data?.workspaceByOrganizationId,
+    select: (data) => data?.workspaces?.nodes?.[0],
   });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [

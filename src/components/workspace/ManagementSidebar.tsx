@@ -57,7 +57,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     ...workspaceOptions({
       organizationId,
     }),
-    select: (data) => data?.workspaceByOrganizationId,
+    select: (data) => data?.workspaces?.nodes?.[0],
   });
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(

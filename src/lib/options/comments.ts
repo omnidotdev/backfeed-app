@@ -1,19 +1,11 @@
-import {
-  infiniteQueryOptions,
-  keepPreviousData,
-  queryOptions,
-} from "@tanstack/react-query";
+import { infiniteQueryOptions } from "@tanstack/react-query";
 
 import {
-  Tier,
   useCommentsQuery,
-  useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useInfiniteRepliesQuery,
-  useProjectQuery,
   useRepliesQuery,
 } from "@/generated/graphql";
-import MAX_FREE_TIER_COMMENTS from "@/lib/constants/numberOfFreeTierComments.constant";
 
 import type {
   CommentsQueryVariables,
@@ -29,59 +21,6 @@ export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
       lastPage?.comments?.pageInfo?.hasNextPage
         ? { after: lastPage?.comments?.pageInfo?.endCursor }
         : undefined,
-  });
-
-export const freeTierCommentsOptions = ({
-  workspaceOrganizationId,
-  projectSlug,
-  feedbackId,
-}: {
-  workspaceOrganizationId: string;
-  projectSlug: string;
-  feedbackId: string;
-}) =>
-  queryOptions({
-    queryKey: [
-      "FreeTierComments",
-      { workspaceOrganizationId, projectSlug, feedbackId },
-    ],
-    queryFn: async () => {
-      try {
-        const { projects } = await useProjectQuery.fetcher({
-          workspaceOrganizationId,
-          projectSlug,
-        })();
-
-        if (!projects?.nodes.length) return null;
-
-        const project = projects.nodes[0]!;
-
-        const subscriptionTier = project.workspace?.tier;
-
-        const { post: feedback } = await useFeedbackByIdQuery.fetcher({
-          rowId: feedbackId,
-        })();
-
-        return {
-          subscriptionTier,
-          totalComments: feedback?.commentsWithReplies.totalCount ?? 0,
-        };
-      } catch (_err) {
-        return null;
-      }
-    },
-    placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data?.subscriptionTier) {
-        return false;
-      }
-
-      if (data.subscriptionTier === Tier.Free) {
-        return data.totalComments < MAX_FREE_TIER_COMMENTS;
-      }
-
-      return true;
-    },
   });
 
 export const infiniteRepliesOptions = (variables: RepliesQueryVariables) =>

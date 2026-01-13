@@ -1,9 +1,5 @@
 fragment Workspace on Workspace {
   rowId
   organizationId
-  tier
   subscriptionId
-  members {
-    totalCount
-  }
 }

@@ -1,6 +1,6 @@
 import { Grid, Icon } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -26,6 +26,27 @@ import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute("/_auth/dashboard")({
+  beforeLoad: async ({ context: { queryClient, session } }) => {
+    if (!session?.user.rowId) return;
+
+    // Check if user has no organizations (first-time user)
+    const hasOrganizations = (session.organizations?.length ?? 0) > 0;
+
+    if (!hasOrganizations) {
+      // Double-check by querying workspaces directly
+      const data = await queryClient.fetchQuery({
+        ...workspacesOptions({
+          userId: session.user.rowId,
+          isMember: true,
+        }),
+      });
+
+      if (!data?.workspaces?.nodes?.length) {
+        // Redirect to onboarding for first-time users
+        throw redirect({ to: "/onboarding" });
+      }
+    }
+  },
   loader: async ({ context: { session, queryClient } }) => {
     const oneWeekAgo = dayjs()
       .utc()

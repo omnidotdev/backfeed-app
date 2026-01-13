@@ -18,7 +18,6 @@ import AccountInformation from "@/components/layout/AccountInformation";
 import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
-import NotificationCenter from "@/components/notifications/NotificationsCenter";
 import { token } from "@/generated/panda/tokens";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
@@ -63,8 +62,6 @@ const HeaderActions = () => {
         {session ? (
           <HStack>
             <OrganizationSwitcher />
-            <NotificationCenter />
-
             <AccountInformation />
           </HStack>
         ) : (
@@ -90,7 +87,6 @@ const HeaderActions = () => {
 
       <HStack>
         {session && <OrganizationSwitcher />}
-        {session && <NotificationCenter />}
 
         <Drawer
           open={isMobileSidebarOpen}

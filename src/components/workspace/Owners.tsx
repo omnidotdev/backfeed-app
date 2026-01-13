@@ -15,27 +15,27 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo } from "react";
 
-import { Role } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { membersOptions } from "@/lib/options/members";
+import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
-import type { MemberFragment } from "@/generated/graphql";
+import type { IdpMember } from "@/lib/idp";
 
-const columnHelper = createColumnHelper<MemberFragment>();
+const columnHelper = createColumnHelper<IdpMember>();
 
 const columns = [
-  columnHelper.accessor("rowId", {
+  columnHelper.accessor("id", {
     header: app.workspaceMembersPage.ownersTable.headers.owners,
     cell: ({ row }) => (
       <Stack py={4}>
         <Text fontSize="lg" fontWeight="medium">
-          {row.original.user?.name}
+          {row.original.user.name}
         </Text>
 
         <Text color="foreground.subtle" fontWeight="medium">
-          {row.original.user?.username}
+          {row.original.user.email}
         </Text>
       </Stack>
     ),
@@ -59,19 +59,28 @@ const columns = [
 
 /**
  * Workspace owners table.
+ * Fetches owner data from Gatekeeper (single source of truth).
  */
 const Owners = () => {
-  const { workspaceId } = useRouteContext({
+  const { organizationId, session } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
   });
 
-  const { data: owners } = useQuery({
-    ...membersOptions({ workspaceId, roles: [Role.Owner] }),
-    select: (data) => data.members?.nodes,
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: organizationId!,
+      accessToken: session?.accessToken!,
+    }),
   });
 
+  // Filter to only owners
+  const owners = useMemo(
+    () => membersData?.members?.filter((m) => m.role === "owner") ?? [],
+    [membersData],
+  );
+
   const table = useReactTable({
-    data: owners as MemberFragment[],
+    data: owners,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

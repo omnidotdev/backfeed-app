@@ -33,6 +33,9 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
     minWidth: token("breakpoints.lg"),
   });
 
+  // Get org IDs from session for filtering
+  const organizationIds = session?.organizations?.map((org) => org.id) ?? [];
+
   const getFormattedDate = (diff: number) =>
     dayjs(oneWeekAgo).add(diff, "day").format("ddd");
 
@@ -42,7 +45,7 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
     isError,
   } = useQuery({
     ...weeklyFeedbackOptions({
-      userId: session?.user.rowId!,
+      organizationIds,
       startDate: oneWeekAgo,
     }),
     select: (data) =>
@@ -50,6 +53,7 @@ const FeedbackOverview = ({ oneWeekAgo }: Props) => {
         name: dayjs(aggregate.keys?.[0]).utc().format("ddd"),
         total: Number(aggregate.distinctCount?.rowId),
       })),
+    enabled: organizationIds.length > 0,
   });
 
   const getDailyTotal = (date: string) =>

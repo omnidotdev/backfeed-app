@@ -4,11 +4,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
+import { useCreateWorkspaceMutation } from "@/generated/graphql";
 import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import { workspaceNameSchema } from "@/lib/constants/schema.constant";
-import useCreateWorkspaceMutation from "@/lib/hooks/mutations/useCreateWorkspaceMutation";
 import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -102,6 +102,9 @@ const CreateWorkspace = ({ isHotkeyEnabled = true }: Props) => {
           input: {
             workspace: {
               organizationId: currentOrganization!.id,
+              // Workspace inherits name/slug from organization (1:1 relationship)
+              name: currentOrganization!.name,
+              slug: currentOrganization!.slug,
             },
           },
         }),

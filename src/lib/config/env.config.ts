@@ -10,9 +10,6 @@ export const {
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
-  // emails
-  VITE_FROM_EMAIL_ADDRESS: FROM_EMAIL_ADDRESS,
-  VITE_TO_EMAIL_ADDRESS: TO_EMAIL_ADDRESS,
 } = { ...import.meta.env, ...process.env };
 
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
