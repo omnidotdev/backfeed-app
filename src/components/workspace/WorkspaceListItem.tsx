@@ -1,7 +1,7 @@
 import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
+import { HiOutlineFolder } from "react-icons/hi2";
 
 import OverflowText from "@/components/core/OverflowText";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
@@ -25,12 +25,8 @@ const WorkspaceListItem = ({
   workspaceName,
   workspaceSlug,
 }: Props) => {
+  // Members are now managed via Gatekeeper IDP, not stored locally
   const AGGREGATES = [
-    {
-      type: "user",
-      icon: HiOutlineUserGroup,
-      value: workspace?.members?.totalCount,
-    },
     {
       type: "project",
       icon: HiOutlineFolder,

@@ -80,15 +80,12 @@ const CreateFeedback = () => {
   const projectId = project?.rowId;
   const workspaceId = project?.workspace?.rowId;
 
-  const {
-    defaultStatusTemplateId,
-    isLoading: isLoadingTemplates,
-    error: templateError,
-  } = useEnsureStatusTemplates({
-    workspaceId,
-    hasAdminPrivileges,
-    enabled: !!workspaceId,
-  });
+  const { defaultStatusTemplateId, isLoading: isLoadingTemplates } =
+    useEnsureStatusTemplates({
+      workspaceId,
+      hasAdminPrivileges,
+      enabled: !!workspaceId,
+    });
 
   const { mutateAsync: createStatusTemplate } =
     useCreateStatusTemplateMutation();

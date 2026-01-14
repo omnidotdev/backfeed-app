@@ -15,7 +15,7 @@ import {
   Text,
   sigil,
 } from "@omnidev/sigil";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   useLoaderData,
   useNavigate,
@@ -23,24 +23,15 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
-import { RiUserSharedLine } from "react-icons/ri";
 
 import DangerZoneAction from "@/components/core/DangerZoneAction";
 import SectionContainer from "@/components/layout/SectionContainer";
-import {
-  FREE_PRODUCT_DETAILS,
-  sortBenefits,
-} from "@/components/pricing/PricingCard";
 import UpdateWorkspace from "@/components/workspace/UpdateWorkspace";
-import {
-  Role,
-  useDeleteWorkspaceMutation,
-  useLeaveWorkspaceMutation,
-} from "@/generated/graphql";
+import { useDeleteWorkspaceMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
-import { membersOptions } from "@/lib/options/members";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
 import toaster from "@/lib/util/toaster";
 import {
   getBillingPortalUrl,
@@ -54,7 +45,6 @@ import type { WorkspaceFragment } from "@/generated/graphql";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 const deleteWorkspaceDetails = app.workspaceSettingsPage.cta.deleteWorkspace;
-const leaveWorkspaceDetails = app.workspaceSettingsPage.cta.leaveWorkspace;
 
 interface Props {
   /** Workspace details. */
@@ -68,7 +58,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
   const { workspaceSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
-  const { isOwner, membershipId, queryClient, workspaceId } = useRouteContext({
+  const { isOwner, queryClient, workspaceId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const { subscription } = useLoaderData({
@@ -82,26 +72,19 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
       price.id === subscription?.priceId,
   );
 
-  const { data: numberOfOwners } = useQuery({
-    ...membersOptions({
-      workspaceId,
-      roles: [Role.Owner],
-    }),
-    select: (data) => data.members?.totalCount,
-  });
+  // Derive tier from subscription - if no subscription, it's free tier
+  const tier = subscription
+    ? (subscriptionPrice?.metadata?.tier ?? "basic")
+    : "free";
+
+  // Members are now managed via IDP (Gatekeeper)
+  // To leave a workspace, users should update their membership in Gatekeeper
 
   const { mutateAsync: deleteWorkspace } = useDeleteWorkspaceMutation({
-      onMutate: () => navigate({ to: "/", replace: true }),
-      // NB: when a workspace is deleted, we want to invalidate all queries as any of them could have data for said workspace associated with the user
-      onSettled: async () => queryClient.invalidateQueries(),
-    }),
-    { mutate: leaveWorkspace } = useLeaveWorkspaceMutation({
-      onMutate: () => navigate({ to: "/", replace: true }),
-      // NB: when a user leaves a workspace, we want to invalidate all queries as any of them could have data for said workspace associated with the user
-      onSettled: async () => queryClient.invalidateQueries(),
-    });
-
-  const isOnlyOwner = isOwner && numberOfOwners === 1;
+    onMutate: () => navigate({ to: "/", replace: true }),
+    // NB: when a workspace is deleted, we want to invalidate all queries as any of them could have data for said workspace associated with the user
+    onSettled: async () => queryClient.invalidateQueries(),
+  });
 
   const DELETE_WORKSPACE: DestructiveActionProps = {
     title: deleteWorkspaceDetails.destruciveAction.title,
@@ -151,20 +134,6 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
     ),
   };
 
-  const LEAVE_WORKSPACE: DestructiveActionProps = {
-    title: leaveWorkspaceDetails.destruciveAction.title,
-    description: leaveWorkspaceDetails.destruciveAction.description,
-    triggerLabel: leaveWorkspaceDetails.destruciveAction.actionLabel,
-    icon: RiUserSharedLine,
-    action: {
-      label: leaveWorkspaceDetails.destruciveAction.actionLabel,
-      onClick: () =>
-        leaveWorkspace({
-          rowId: membershipId!,
-        }),
-    },
-  };
-
   const {
     mutateAsync: createSubscription,
     isPending: isCreateSubscriptionPending,
@@ -209,7 +178,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
           <Text>
             This workspace is currently on the Backfeed{" "}
             <sigil.span color="brand.primary">
-              {capitalizeFirstLetter(workspace?.tier)}
+              {capitalizeFirstLetter(tier)}
             </sigil.span>{" "}
             tier. Benefits included in this plan are:
           </Text>
@@ -311,23 +280,15 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
         </SectionContainer>
       )}
 
-      <SectionContainer
-        title={app.workspaceSettingsPage.dangerZone.title}
-        description={app.workspaceSettingsPage.dangerZone.description}
-        outline="1px solid"
-        outlineColor="omni.ruby"
-      >
-        <Divider />
+      {isOwner && (
+        <SectionContainer
+          title={app.workspaceSettingsPage.dangerZone.title}
+          description={app.workspaceSettingsPage.dangerZone.description}
+          outline="1px solid"
+          outlineColor="omni.ruby"
+        >
+          <Divider />
 
-        {!isOnlyOwner && (
-          <DangerZoneAction
-            title={leaveWorkspaceDetails.title}
-            description={leaveWorkspaceDetails.description}
-            actionProps={LEAVE_WORKSPACE}
-          />
-        )}
-
-        {isOwner && (
           <Stack gap={6}>
             {/* TODO: add ownership transfer when functionality is resolved. Added scope: must transfer subscription. */}
 
@@ -337,8 +298,8 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
               actionProps={DELETE_WORKSPACE}
             />
           </Stack>
-        )}
-      </SectionContainer>
+        </SectionContainer>
+      )}
     </Stack>
   );
 };

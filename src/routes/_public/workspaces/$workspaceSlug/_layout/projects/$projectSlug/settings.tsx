@@ -6,7 +6,7 @@ import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateProject from "@/components/project/UpdateProject";
-import { Role, useDeleteProjectMutation } from "@/generated/graphql";
+import { useDeleteProjectMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { projectOptions } from "@/lib/options/projects";
 import { workspacesOptions } from "@/lib/options/workspaces";
@@ -51,7 +51,7 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
-  const { session, queryClient, organizationId, workspaceName } =
+  const { queryClient, organizationId, workspaceName } =
     Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
   const navigate = Route.useNavigate();
@@ -96,13 +96,10 @@ function ProjectSettingsPage() {
         replace: true,
       }),
     onSettled: () => {
-      // ! NB: needed to invalidate the number of projects for a workspace in the `CreateProject` dialog
+      // Invalidate workspace queries to refresh project count
       queryClient.invalidateQueries({
         queryKey: workspacesOptions({
-          userId: session?.user.rowId!,
-          isMember: true,
           organizationId,
-          excludeRoles: [Role.Member],
         }).queryKey,
       });
       queryClient.invalidateQueries({

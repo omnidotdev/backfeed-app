@@ -41,8 +41,7 @@ const WorkspaceList = (props: StackProps) => {
     ...workspacesOptions({
       pageSize,
       offset: (page - 1) * pageSize,
-      orderBy: [WorkspaceOrderBy.MembersCountDesc],
-      isMember: false,
+      orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
     }),
     placeholderData: keepPreviousData,
     select: (data) => ({

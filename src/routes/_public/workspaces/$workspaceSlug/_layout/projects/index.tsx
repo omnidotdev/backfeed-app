@@ -57,8 +57,7 @@ function ProjectsPage() {
   const { workspaceSlug } = Route.useParams();
   const {
     hasAdminPrivileges,
-    hasBasicTierPrivileges,
-    hasTeamTierPrivileges,
+    subscriptionId,
     isAuthenticated,
     organizationId,
     workspaceName,
@@ -66,8 +65,11 @@ function ProjectsPage() {
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({ organizationId }),
-    select: (data) => data.workspaceByOrganizationId,
+    select: (data) => data.workspaces?.nodes?.[0],
   });
+
+  // Tier is determined by subscription status
+  const hasPaidSubscription = !!subscriptionId;
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -84,13 +86,12 @@ function ProjectsPage() {
     },
   ];
 
-  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the workspace is subscribed and validate tier based checks
-  // We do not want to derive this from loader data as the permissions are dynamic upon project creation(s). We want to use invalidation patterns for the workspace query
+  // To create projects, user must have administrative privileges
+  // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
   const canCreateProjects =
     hasAdminPrivileges &&
-    (hasBasicTierPrivileges
-      ? hasTeamTierPrivileges ||
-        (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
+    (hasPaidSubscription
+      ? (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
       : !workspace?.projects.totalCount);
 
   return (

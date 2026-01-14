@@ -45,25 +45,26 @@ function WorkspacePage() {
   const { workspaceSlug } = Route.useParams();
   const {
     hasAdminPrivileges,
-    hasBasicTierPrivileges,
-    hasTeamTierPrivileges,
+    subscriptionId,
     isAuthenticated,
+    organizationId,
+    workspaceName,
   } = Route.useRouteContext();
-
-  const { organizationId, workspaceName } = Route.useRouteContext();
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({ organizationId }),
-    select: (data) => data.workspaceByOrganizationId,
+    select: (data) => data.workspaces?.nodes?.[0],
   });
 
-  // NB: To create projects, user must have administrative privileges. If so, we validate that the owner of the workspace is subscribed and validate tier based checks
-  // We do not want to derive this from loader data as the permissions are dynamic upon project creation(s). We want to use invalidation patterns for the workspace query
+  // Tier is determined by subscription status
+  const hasPaidSubscription = !!subscriptionId;
+
+  // To create projects, user must have administrative privileges
+  // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
   const canCreateProjects =
     hasAdminPrivileges &&
-    (hasBasicTierPrivileges
-      ? hasTeamTierPrivileges ||
-        (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
+    (hasPaidSubscription
+      ? (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
       : !workspace?.projects.totalCount);
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -85,7 +86,9 @@ function WorkspacePage() {
             <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
               {workspaceName}
             </Text>
-            <Badge rounded="lg">{capitalizeFirstLetter(workspace?.tier)}</Badge>
+            <Badge rounded="lg">
+              {capitalizeFirstLetter(hasPaidSubscription ? "paid" : "free")}
+            </Badge>
           </HStack>
         ),
         cta: isAuthenticated

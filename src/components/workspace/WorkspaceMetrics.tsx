@@ -1,11 +1,7 @@
 import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
-import {
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineFolder,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
+import { HiOutlineChatBubbleLeftRight, HiOutlineFolder } from "react-icons/hi2";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import app from "@/lib/config/app.config";
@@ -39,10 +35,10 @@ const WorkspaceMetrics = () => {
     ...workspaceMetricsOptions({
       workspaceId,
     }),
+    // Members are now managed via Gatekeeper IDP, not stored locally
     select: (data) => ({
       totalProjects: data?.projects?.totalCount,
       totalFeedback: data?.posts?.totalCount,
-      activeUsers: data?.members?.totalCount,
     }),
   });
 
@@ -56,11 +52,6 @@ const WorkspaceMetrics = () => {
       title: app.workspacePage.metrics.data.totalFeedback.title,
       value: workspaceMetrics?.totalFeedback ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
-    },
-    {
-      title: app.workspacePage.metrics.data.activeUsers.title,
-      value: workspaceMetrics?.activeUsers ?? 0,
-      icon: HiOutlineUserGroup,
     },
   ];
 

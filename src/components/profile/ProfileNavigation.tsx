@@ -1,16 +1,14 @@
-import { Avatar, Badge, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
+import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   useNavigate,
   useParams,
   useRouteContext,
   useRouterState,
 } from "@tanstack/react-router";
-import { PiCreditCardLight, PiUserCircle, PiUserPlus } from "react-icons/pi";
+import { PiCreditCardLight, PiUserCircle } from "react-icons/pi";
 
 import OverflowText from "@/components/core/OverflowText";
 import app from "@/lib/config/app.config";
-import { invitationsOptions } from "@/lib/options/invitations";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -20,8 +18,6 @@ interface NavigationItem extends ButtonProps {
   label: string;
   /** Navigation item icon. */
   icon: IconType;
-  /** Navigation badge indicator.  */
-  badgeCount?: number;
 }
 
 interface Props extends StackProps {
@@ -56,17 +52,7 @@ const ProfileNavigation = ({
     },
   });
 
-  const { data: usersTotalInvitations } = useQuery({
-    ...invitationsOptions({
-      email: session?.user?.email!,
-    }),
-    enabled: !!session?.user?.email,
-    select: (data) => {
-      const count = data?.invitations?.totalCount;
-      return count && count > 0 ? count : undefined;
-    },
-  });
-
+  // Invitations are now managed via Gatekeeper IDP
   const SIDEBAR_NAVIGATION: NavigationItem[] = [
     {
       label: app.profileAccountPage.breadcrumb,
@@ -75,18 +61,6 @@ const ProfileNavigation = ({
         onClose?.();
         navigate({
           to: "/profile/$userId/account",
-          params: { userId },
-        });
-      },
-    },
-    {
-      label: app.profileInvitationsPage.breadcrumb,
-      badgeCount: usersTotalInvitations,
-      icon: PiUserPlus,
-      onClick: () => {
-        onClose?.();
-        navigate({
-          to: "/profile/$userId/invitations",
           params: { userId },
         });
       },
@@ -127,7 +101,7 @@ const ProfileNavigation = ({
         )}
       </Flex>
 
-      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick, badgeCount }) => (
+      {SIDEBAR_NAVIGATION.map(({ label, icon, onClick }) => (
         <Button
           key={label}
           variant="ghost"
@@ -152,17 +126,7 @@ const ProfileNavigation = ({
         >
           <Icon src={icon} h={5} w={5} />
 
-          {(isOpen || !truncateText) && (
-            <Flex justifyContent="space-between" w="full">
-              <Text>{label}</Text>
-
-              {badgeCount && (
-                <Badge variant="solid" colorPalette="omni" size="sm">
-                  {badgeCount}
-                </Badge>
-              )}
-            </Flex>
-          )}
+          {(isOpen || !truncateText) && <Text>{label}</Text>}
         </Button>
       ))}
     </Stack>

@@ -34,12 +34,12 @@ export const Route = createFileRoute("/_public/workspaces/")({
   },
   loaderDeps: ({ search }) => search,
   loader: async ({ context: { queryClient }, deps: { page, pageSize } }) => {
+    // Public workspaces listing - shows all workspaces
     await queryClient.ensureQueryData({
       ...workspacesOptions({
         pageSize,
         offset: (page - 1) * pageSize,
-        orderBy: [WorkspaceOrderBy.MembersCountDesc],
-        isMember: false,
+        orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
       }),
       revalidateIfStale: true,
     });

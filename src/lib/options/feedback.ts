@@ -1,15 +1,23 @@
-import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+} from "@tanstack/react-query";
 
 import {
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
   usePostsQuery,
+  useProjectQuery,
 } from "@/generated/graphql";
 
 import type {
   FeedbackByIdQueryVariables,
   PostsQueryVariables,
 } from "@/generated/graphql";
+
+/** Maximum unique users allowed to submit feedback on free tier */
+const MAX_FREE_TIER_UNIQUE_USERS = 15;
 
 export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>
   queryOptions({
@@ -26,4 +34,56 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
       lastPage?.posts?.pageInfo?.hasNextPage
         ? { after: lastPage?.posts?.pageInfo?.endCursor }
         : undefined,
+  });
+
+/**
+ * Check if user can create feedback based on free tier limits.
+ * Free tier workspaces (no subscriptionId) have limited unique users.
+ */
+export const freeTierFeedbackOptions = ({
+  workspaceOrganizationId,
+  projectSlug,
+}: {
+  workspaceOrganizationId: string;
+  projectSlug: string;
+}) =>
+  queryOptions({
+    queryKey: ["FreeTierFeedback", { workspaceOrganizationId, projectSlug }],
+    queryFn: async () => {
+      try {
+        const { projects } = await useProjectQuery.fetcher({
+          workspaceOrganizationId,
+          projectSlug,
+        })();
+
+        if (!projects?.nodes.length) return null;
+
+        const project = projects.nodes[0];
+
+        const activeUserCount = Number(
+          project?.posts.aggregates?.distinctCount?.userId ?? 0,
+        );
+
+        const hasUserSubmittedFeedback = !!project?.userPosts.nodes.length;
+
+        return {
+          activeUserCount,
+          hasUserSubmittedFeedback,
+        };
+      } catch {
+        return null;
+      }
+    },
+    placeholderData: keepPreviousData,
+    // For now, allow based on user count - subscription checks should be done at API level
+    // This removes the client-side tier check since subscriptionId isn't available in ProjectQuery
+    select: (data) => {
+      if (!data) return false;
+
+      // Allow if user already submitted feedback, or under user limit
+      return (
+        data.hasUserSubmittedFeedback ||
+        data.activeUserCount < MAX_FREE_TIER_UNIQUE_USERS
+      );
+    },
   });

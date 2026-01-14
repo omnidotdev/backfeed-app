@@ -1,0 +1,80 @@
+import { Button, Icon } from "@omnidev/sigil";
+import { useState } from "react";
+
+import CreatePaidSubscription from "@/components/pricing/CreatePaidSubscription";
+import CreateWorkspace from "@/components/workspace/CreateWorkspace";
+import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+import { Tier } from "@/lib/types/tier";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+
+import type { ButtonProps } from "@omnidev/sigil";
+import type { IconType } from "react-icons";
+
+interface Props extends ButtonProps {
+  /** Price ID. */
+  priceId: string;
+  /** Subscription tier. */
+  tier: Tier;
+  /** Action icon. */
+  actionIcon?: IconType;
+}
+
+const TierCallToAction = ({ priceId, tier, actionIcon, ...rest }: Props) => {
+  const [isPaidSubscriptionDialogOpen, setIsPaidSubscriptionDialogOpen] =
+    useState(false);
+
+  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+    type: DialogType.CreateWorkspace,
+  });
+
+  // Determine button styles based on variant prop
+  const isOutline = rest.variant === "outline";
+  const buttonClassName = isOutline
+    ? "border-primary text-primary hover:bg-primary/10"
+    : "bg-primary text-primary-foreground hover:bg-primary/90";
+
+  if (tier === Tier.Free) {
+    return (
+      <>
+        <Button
+          className={buttonClassName}
+          onClick={() => setIsCreateWorkspaceOpen(true)}
+          {...rest}
+        >
+          Create a Free Workspace
+        </Button>
+
+        <CreateWorkspace isHotkeyEnabled={false} />
+      </>
+    );
+  }
+
+  if (tier === Tier.Enterprise) {
+    return (
+      <Button className={buttonClassName} {...rest}>
+        Contact sales
+      </Button>
+    );
+  }
+
+  return (
+    <>
+      <Button
+        className={buttonClassName}
+        {...rest}
+        onClick={() => setIsPaidSubscriptionDialogOpen(true)}
+      >
+        {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+        Continue with {capitalizeFirstLetter(tier)}
+      </Button>
+
+      <CreatePaidSubscription
+        priceId={priceId}
+        isOpen={isPaidSubscriptionDialogOpen}
+        setIsOpen={setIsPaidSubscriptionDialogOpen}
+      />
+    </>
+  );
+};
+
+export default TierCallToAction;
