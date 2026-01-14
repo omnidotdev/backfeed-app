@@ -11,20 +11,12 @@ import type { Workspace } from "@/generated/graphql";
 interface Props {
   /** Workspace details. */
   workspace: Partial<Workspace>;
-  /** Workspace name from organization context. */
-  workspaceName?: string;
-  /** Workspace slug from organization context. */
-  workspaceSlug?: string;
 }
 
 /**
  * Workspace list item.
  */
-const WorkspaceListItem = ({
-  workspace,
-  workspaceName,
-  workspaceSlug,
-}: Props) => {
+const WorkspaceListItem = ({ workspace }: Props) => {
   // Members are now managed via Gatekeeper IDP, not stored locally
   const AGGREGATES = [
     {
@@ -51,7 +43,7 @@ const WorkspaceListItem = ({
         <Stack maxW="65svw">
           <Link
             to="/workspaces/$workspaceSlug"
-            params={{ workspaceSlug: workspaceSlug! }}
+            params={{ workspaceSlug: workspace.slug! }}
             role="group"
           >
             <Stack gap={1}>
@@ -66,7 +58,7 @@ const WorkspaceListItem = ({
                   },
                 }}
               >
-                {workspaceName}
+                {workspace.name}
               </OverflowText>
 
               <Text

@@ -1,6 +1,6 @@
 import { Button, Icon, Stack } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { LuPlus } from "react-icons/lu";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -19,16 +19,9 @@ import type { Workspace } from "@/generated/graphql";
  * Shows workspaces the user has access to based on their organization memberships.
  */
 const UserWorkspaces = () => {
-  const { session } = useRouteContext({
-    from: "/_auth/profile/$userId/_layout/workspaces",
-  });
   const { organizationIds } = useLoaderData({
     from: "/_auth/profile/$userId/_layout/workspaces",
   });
-
-  // Helper to get org info from session by organizationId
-  const getOrgInfo = (organizationId: string) =>
-    session?.organizations?.find((org) => org.id === organizationId);
 
   const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({
     type: DialogType.CreateWorkspace,
@@ -85,17 +78,12 @@ const UserWorkspaces = () => {
       </Button>
 
       <Stack w="100%">
-        {workspaces.map((workspace) => {
-          const org = getOrgInfo(workspace?.organizationId!);
-          return (
-            <WorkspaceListItem
-              key={workspace?.rowId}
-              workspace={workspace as Partial<Workspace>}
-              workspaceName={org?.name}
-              workspaceSlug={org?.slug}
-            />
-          );
-        })}
+        {workspaces.map((workspace) => (
+          <WorkspaceListItem
+            key={workspace?.rowId}
+            workspace={workspace as Partial<Workspace>}
+          />
+        ))}
       </Stack>
     </Stack>
   );

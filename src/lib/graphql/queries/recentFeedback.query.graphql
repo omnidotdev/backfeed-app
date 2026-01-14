@@ -23,6 +23,7 @@ query RecentFeedback($organizationIds: [String!], $after: Cursor) {
           slug
           workspace {
             organizationId
+            slug
           }
         }
         statusTemplate {

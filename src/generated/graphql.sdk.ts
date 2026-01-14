@@ -5005,7 +5005,7 @@ export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: 
 
 export type UserFragment = { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string };
 
-export type WorkspaceFragment = { __typename?: 'Workspace', rowId: string, organizationId: string, subscriptionId?: string | null };
+export type WorkspaceFragment = { __typename?: 'Workspace', rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null };
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
@@ -5262,7 +5262,7 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, workspace?: { __typename?: 'Workspace', organizationId: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, workspace?: { __typename?: 'Workspace', organizationId: string, slug: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type RepliesQueryVariables = Exact<{
   commentId: Scalars['UUID']['input'];
@@ -5307,7 +5307,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null> } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null> } | null };
 
 export type WorkspaceMetricsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -5326,7 +5326,7 @@ export type WorkspacesQueryVariables = Exact<{
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', totalCount: number, nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', totalCount: number, nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null> } | null };
 
 export const CommentFragmentDoc = gql`
     fragment Comment on Comment {
@@ -5451,6 +5451,8 @@ export const WorkspaceFragmentDoc = gql`
     fragment Workspace on Workspace {
   rowId
   organizationId
+  name
+  slug
   subscriptionId
 }
     `;
@@ -5866,6 +5868,7 @@ export const RecentFeedbackDocument = gql`
           slug
           workspace {
             organizationId
+            slug
           }
         }
         statusTemplate {
