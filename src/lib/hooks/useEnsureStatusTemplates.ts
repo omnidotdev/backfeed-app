@@ -6,7 +6,7 @@ import { DEFAULT_STATUS_TEMPLATES } from "@/lib/constants/defaultStatusTemplates
 import { projectStatusesOptions } from "@/lib/options/projects";
 
 interface UseEnsureStatusTemplatesOptions {
-  workspaceId: string | undefined;
+  organizationId: string | undefined;
   hasAdminPrivileges: boolean;
   enabled?: boolean;
 }
@@ -26,14 +26,14 @@ const MAX_POLL_ATTEMPTS = 5;
 const POLL_INTERVAL_MS = 1000;
 
 /**
- * Hook to ensure status templates exist for a workspace.
+ * Hook to ensure status templates exist for an organization.
  *
  * Handles two scenarios:
  * 1. Race condition: Templates being seeded async - polls until available
- * 2. Legacy workspaces: No templates exist - creates defaults (admin only)
+ * 2. Legacy organizations: No templates exist - creates defaults (admin only)
  */
 export function useEnsureStatusTemplates({
-  workspaceId,
+  organizationId,
   hasAdminPrivileges,
   enabled = true,
 }: UseEnsureStatusTemplatesOptions): UseEnsureStatusTemplatesResult {
@@ -48,8 +48,8 @@ export function useEnsureStatusTemplates({
 
   // Query for existing templates with polling capability
   const { data: templates, isLoading: isQueryLoading } = useQuery({
-    ...projectStatusesOptions({ workspaceId: workspaceId! }),
-    enabled: !!workspaceId && enabled,
+    ...projectStatusesOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId && enabled,
     select: (data) => data?.statusTemplates?.nodes ?? [],
     refetchInterval: (query) => {
       // Note: query.state.data is the raw data before select
@@ -73,7 +73,7 @@ export function useEnsureStatusTemplates({
 
   // Auto-create templates if polling exhausted and user has admin privileges
   const createDefaultTemplates = useCallback(async () => {
-    if (!workspaceId || hasAttemptedCreation.current) {
+    if (!organizationId || hasAttemptedCreation.current) {
       return;
     }
 
@@ -87,7 +87,7 @@ export function useEnsureStatusTemplates({
         await createStatusTemplate({
           input: {
             statusTemplate: {
-              workspaceId,
+              organizationId,
               name: template.name,
               displayName: template.displayName,
               color: template.color,
@@ -115,7 +115,7 @@ export function useEnsureStatusTemplates({
     } finally {
       setIsCreating(false);
     }
-  }, [workspaceId, hasAdminPrivileges, createStatusTemplate, queryClient]);
+  }, [organizationId, hasAdminPrivileges, createStatusTemplate, queryClient]);
 
   // Trigger creation after polling exhausted - try for admins
   useEffect(() => {

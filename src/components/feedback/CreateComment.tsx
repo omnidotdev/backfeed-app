@@ -56,7 +56,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
       await Promise.all([
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            workspaceOrganizationId: organizationId,
+            organizationId,
             projectSlug,
             feedbackId,
           }),

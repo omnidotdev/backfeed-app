@@ -671,39 +671,6 @@ export type CreateVotePayloadVoteEdgeArgs = {
   orderBy?: Array<VoteOrderBy>;
 };
 
-/** All input for the create `Workspace` mutation. */
-export type CreateWorkspaceInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `Workspace` to be created by this mutation. */
-  workspace: WorkspaceInput;
-};
-
-/** The output of our create `Workspace` mutation. */
-export type CreateWorkspacePayload = {
-  __typename?: 'CreateWorkspacePayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** The `Workspace` that was created by this mutation. */
-  workspace?: Maybe<Workspace>;
-  /** An edge for our `Workspace`. May be used by Relay 1. */
-  workspaceEdge?: Maybe<WorkspaceEdge>;
-};
-
-
-/** The output of our create `Workspace` mutation. */
-export type CreateWorkspacePayloadWorkspaceEdgeArgs = {
-  orderBy?: Array<WorkspaceOrderBy>;
-};
-
 /** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
 export type DatetimeFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -986,38 +953,6 @@ export type DeleteVotePayloadVoteEdgeArgs = {
   orderBy?: Array<VoteOrderBy>;
 };
 
-/** All input for the `deleteWorkspace` mutation. */
-export type DeleteWorkspaceInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `Workspace` mutation. */
-export type DeleteWorkspacePayload = {
-  __typename?: 'DeleteWorkspacePayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** The `Workspace` that was deleted by this mutation. */
-  workspace?: Maybe<Workspace>;
-  /** An edge for our `Workspace`. May be used by Relay 1. */
-  workspaceEdge?: Maybe<WorkspaceEdge>;
-};
-
-
-/** The output of our delete `Workspace` mutation. */
-export type DeleteWorkspacePayloadWorkspaceEdgeArgs = {
-  orderBy?: Array<WorkspaceOrderBy>;
-};
-
 export type HavingDatetimeFilter = {
   equalTo?: InputMaybe<Scalars['Datetime']['input']>;
   greaterThan?: InputMaybe<Scalars['Datetime']['input']>;
@@ -1081,8 +1016,6 @@ export type Mutation = {
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `Vote`. */
   createVote?: Maybe<CreateVotePayload>;
-  /** Creates a single `Workspace`. */
-  createWorkspace?: Maybe<CreateWorkspacePayload>;
   /** Deletes a single `Comment` using a unique key. */
   deleteComment?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Post` using a unique key. */
@@ -1099,8 +1032,6 @@ export type Mutation = {
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Deletes a single `Vote` using a unique key. */
   deleteVote?: Maybe<DeleteVotePayload>;
-  /** Deletes a single `Workspace` using a unique key. */
-  deleteWorkspace?: Maybe<DeleteWorkspacePayload>;
   /** Updates a single `Comment` using a unique key and a patch. */
   updateComment?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
@@ -1117,8 +1048,6 @@ export type Mutation = {
   updateUser?: Maybe<UpdateUserPayload>;
   /** Updates a single `Vote` using a unique key and a patch. */
   updateVote?: Maybe<UpdateVotePayload>;
-  /** Updates a single `Workspace` using a unique key and a patch. */
-  updateWorkspace?: Maybe<UpdateWorkspacePayload>;
 };
 
 
@@ -1171,12 +1100,6 @@ export type MutationCreateVoteArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateWorkspaceArgs = {
-  input: CreateWorkspaceInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteCommentArgs = {
   input: DeleteCommentInput;
 };
@@ -1225,12 +1148,6 @@ export type MutationDeleteVoteArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteWorkspaceArgs = {
-  input: DeleteWorkspaceInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateCommentArgs = {
   input: UpdateCommentInput;
 };
@@ -1275,12 +1192,6 @@ export type MutationUpdateUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateVoteArgs = {
   input: UpdateVoteInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateWorkspaceArgs = {
-  input: UpdateWorkspaceInput;
 };
 
 /** An object with a globally unique `ID`. */
@@ -1695,6 +1606,7 @@ export type Project = {
   description?: Maybe<Scalars['String']['output']>;
   image?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   /** Reads and enables pagination through a set of `ProjectSocial`. */
@@ -1705,9 +1617,6 @@ export type Project = {
   slug: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
   website?: Maybe<Scalars['String']['output']>;
-  /** Reads a single `Workspace` that is related to this `Project`. */
-  workspace?: Maybe<Workspace>;
-  workspaceId: Scalars['UUID']['output'];
 };
 
 
@@ -1753,14 +1662,6 @@ export type ProjectAggregates = {
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
-/** A filter to be used against aggregates of `Project` object types. */
-export type ProjectAggregatesFilter = {
-  /** Distinct count aggregate over matching `Project` objects. */
-  distinctCount?: InputMaybe<ProjectDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `Project` object to be included within the aggregate. */
-  filter?: InputMaybe<ProjectFilter>;
-};
-
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ProjectCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -1771,6 +1672,8 @@ export type ProjectCondition = {
   image?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
@@ -1779,8 +1682,6 @@ export type ProjectCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `website` field. */
   website?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A connection to a list of `Project` values. */
@@ -1807,18 +1708,6 @@ export type ProjectConnectionGroupedAggregatesArgs = {
   having?: InputMaybe<ProjectHavingInput>;
 };
 
-export type ProjectDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  description?: InputMaybe<BigIntFilter>;
-  image?: InputMaybe<BigIntFilter>;
-  name?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  slug?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  website?: InputMaybe<BigIntFilter>;
-  workspaceId?: InputMaybe<BigIntFilter>;
-};
-
 export type ProjectDistinctCountAggregates = {
   __typename?: 'ProjectDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
@@ -1829,6 +1718,8 @@ export type ProjectDistinctCountAggregates = {
   image?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
@@ -1837,8 +1728,6 @@ export type ProjectDistinctCountAggregates = {
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of website across the matching connection */
   website?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of workspaceId across the matching connection */
-  workspaceId?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Project` edge in the connection. */
@@ -1866,6 +1755,8 @@ export type ProjectFilter = {
   not?: InputMaybe<ProjectFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ProjectFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<ProjectToManyPostFilter>;
   /** Some related `posts` exist. */
@@ -1886,10 +1777,6 @@ export type ProjectFilter = {
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `website` field. */
   website?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `workspace` relation. */
-  workspace?: InputMaybe<WorkspaceFilter>;
-  /** Filter by the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<UuidFilter>;
 };
 
 /** Grouping methods for `Project` for usage during aggregation. */
@@ -1900,12 +1787,12 @@ export enum ProjectGroupBy {
   Description = 'DESCRIPTION',
   Image = 'IMAGE',
   Name = 'NAME',
+  OrganizationId = 'ORGANIZATION_ID',
   Slug = 'SLUG',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  Website = 'WEBSITE',
-  WorkspaceId = 'WORKSPACE_ID'
+  Website = 'WEBSITE'
 }
 
 export type ProjectHavingAverageInput = {
@@ -1974,11 +1861,11 @@ export type ProjectInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
-  workspaceId: Scalars['UUID']['input'];
 };
 
 /** Methods to use when ordering `Project`. */
@@ -1992,6 +1879,8 @@ export enum ProjectOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -2069,9 +1958,7 @@ export enum ProjectOrderBy {
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   WebsiteAsc = 'WEBSITE_ASC',
-  WebsiteDesc = 'WEBSITE_DESC',
-  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
-  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
+  WebsiteDesc = 'WEBSITE_DESC'
 }
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
@@ -2080,11 +1967,11 @@ export type ProjectPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type ProjectSocial = {
@@ -2761,7 +2648,7 @@ export type Query = Node & {
   /** Get a single `Project`. */
   project?: Maybe<Project>;
   /** Get a single `Project`. */
-  projectBySlugAndWorkspaceId?: Maybe<Project>;
+  projectBySlugAndOrganizationId?: Maybe<Project>;
   /** Get a single `ProjectSocial`. */
   projectSocial?: Maybe<ProjectSocial>;
   /** Reads and enables pagination through a set of `ProjectSocial`. */
@@ -2782,7 +2669,7 @@ export type Query = Node & {
   /** Get a single `StatusTemplate`. */
   statusTemplate?: Maybe<StatusTemplate>;
   /** Get a single `StatusTemplate`. */
-  statusTemplateByWorkspaceIdAndName?: Maybe<StatusTemplate>;
+  statusTemplateByOrganizationIdAndName?: Maybe<StatusTemplate>;
   /** Reads and enables pagination through a set of `StatusTemplate`. */
   statusTemplates?: Maybe<StatusTemplateConnection>;
   /** Get a single `User`. */
@@ -2801,10 +2688,6 @@ export type Query = Node & {
   voteByPostIdAndUserId?: Maybe<Vote>;
   /** Reads and enables pagination through a set of `Vote`. */
   votes?: Maybe<VoteConnection>;
-  /** Get a single `Workspace`. */
-  workspace?: Maybe<Workspace>;
-  /** Reads and enables pagination through a set of `Workspace`. */
-  workspaces?: Maybe<WorkspaceConnection>;
 };
 
 
@@ -2859,9 +2742,9 @@ export type QueryProjectArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryProjectBySlugAndWorkspaceIdArgs = {
+export type QueryProjectBySlugAndOrganizationIdArgs = {
+  organizationId: Scalars['UUID']['input'];
   slug: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
 };
 
 
@@ -2930,9 +2813,9 @@ export type QueryStatusTemplateArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryStatusTemplateByWorkspaceIdAndNameArgs = {
+export type QueryStatusTemplateByOrganizationIdAndNameArgs = {
   name: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
 };
 
 
@@ -3011,25 +2894,6 @@ export type QueryVotesArgs = {
   orderBy?: InputMaybe<Array<VoteOrderBy>>;
 };
 
-
-/** The root query type which gives access points into the data universe. */
-export type QueryWorkspaceArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryWorkspacesArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<WorkspaceCondition>;
-  filter?: InputMaybe<WorkspaceFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<WorkspaceOrderBy>>;
-};
-
 export type StatusTemplate = {
   __typename?: 'StatusTemplate';
   color?: Maybe<Scalars['String']['output']>;
@@ -3037,6 +2901,7 @@ export type StatusTemplate = {
   description?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
@@ -3044,9 +2909,6 @@ export type StatusTemplate = {
   rowId: Scalars['UUID']['output'];
   sortOrder?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['Datetime']['output'];
-  /** Reads a single `Workspace` that is related to this `StatusTemplate`. */
-  workspace?: Maybe<Workspace>;
-  workspaceId: Scalars['UUID']['output'];
 };
 
 
@@ -3096,34 +2958,6 @@ export type StatusTemplateAggregates = {
   varianceSample?: Maybe<StatusTemplateVarianceSampleAggregates>;
 };
 
-/** A filter to be used against aggregates of `StatusTemplate` object types. */
-export type StatusTemplateAggregatesFilter = {
-  /** Mean average aggregate over matching `StatusTemplate` objects. */
-  average?: InputMaybe<StatusTemplateAverageAggregateFilter>;
-  /** Distinct count aggregate over matching `StatusTemplate` objects. */
-  distinctCount?: InputMaybe<StatusTemplateDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `StatusTemplate` object to be included within the aggregate. */
-  filter?: InputMaybe<StatusTemplateFilter>;
-  /** Maximum aggregate over matching `StatusTemplate` objects. */
-  max?: InputMaybe<StatusTemplateMaxAggregateFilter>;
-  /** Minimum aggregate over matching `StatusTemplate` objects. */
-  min?: InputMaybe<StatusTemplateMinAggregateFilter>;
-  /** Population standard deviation aggregate over matching `StatusTemplate` objects. */
-  stddevPopulation?: InputMaybe<StatusTemplateStddevPopulationAggregateFilter>;
-  /** Sample standard deviation aggregate over matching `StatusTemplate` objects. */
-  stddevSample?: InputMaybe<StatusTemplateStddevSampleAggregateFilter>;
-  /** Sum aggregate over matching `StatusTemplate` objects. */
-  sum?: InputMaybe<StatusTemplateSumAggregateFilter>;
-  /** Population variance aggregate over matching `StatusTemplate` objects. */
-  variancePopulation?: InputMaybe<StatusTemplateVariancePopulationAggregateFilter>;
-  /** Sample variance aggregate over matching `StatusTemplate` objects. */
-  varianceSample?: InputMaybe<StatusTemplateVarianceSampleAggregateFilter>;
-};
-
-export type StatusTemplateAverageAggregateFilter = {
-  sortOrder?: InputMaybe<BigFloatFilter>;
-};
-
 export type StatusTemplateAverageAggregates = {
   __typename?: 'StatusTemplateAverageAggregates';
   /** Mean average of sortOrder across the matching connection */
@@ -3145,14 +2979,14 @@ export type StatusTemplateCondition = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `sortOrder` field. */
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A connection to a list of `StatusTemplate` values. */
@@ -3179,18 +3013,6 @@ export type StatusTemplateConnectionGroupedAggregatesArgs = {
   having?: InputMaybe<StatusTemplateHavingInput>;
 };
 
-export type StatusTemplateDistinctCountAggregateFilter = {
-  color?: InputMaybe<BigIntFilter>;
-  createdAt?: InputMaybe<BigIntFilter>;
-  description?: InputMaybe<BigIntFilter>;
-  displayName?: InputMaybe<BigIntFilter>;
-  name?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  sortOrder?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  workspaceId?: InputMaybe<BigIntFilter>;
-};
-
 export type StatusTemplateDistinctCountAggregates = {
   __typename?: 'StatusTemplateDistinctCountAggregates';
   /** Distinct count of color across the matching connection */
@@ -3203,14 +3025,14 @@ export type StatusTemplateDistinctCountAggregates = {
   displayName?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of sortOrder across the matching connection */
   sortOrder?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of workspaceId across the matching connection */
-  workspaceId?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `StatusTemplate` edge in the connection. */
@@ -3240,6 +3062,8 @@ export type StatusTemplateFilter = {
   not?: InputMaybe<StatusTemplateFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<StatusTemplateFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<StatusTemplateToManyPostFilter>;
   /** Some related `posts` exist. */
@@ -3254,10 +3078,6 @@ export type StatusTemplateFilter = {
   sortOrder?: InputMaybe<IntFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `workspace` relation. */
-  workspace?: InputMaybe<WorkspaceFilter>;
-  /** Filter by the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<UuidFilter>;
 };
 
 /** Grouping methods for `StatusTemplate` for usage during aggregation. */
@@ -3269,11 +3089,11 @@ export enum StatusTemplateGroupBy {
   Description = 'DESCRIPTION',
   DisplayName = 'DISPLAY_NAME',
   Name = 'NAME',
+  OrganizationId = 'ORGANIZATION_ID',
   SortOrder = 'SORT_ORDER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  WorkspaceId = 'WORKSPACE_ID'
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
 }
 
 export type StatusTemplateHavingAverageInput = {
@@ -3352,24 +3172,16 @@ export type StatusTemplateInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   displayName: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  workspaceId: Scalars['UUID']['input'];
-};
-
-export type StatusTemplateMaxAggregateFilter = {
-  sortOrder?: InputMaybe<IntFilter>;
 };
 
 export type StatusTemplateMaxAggregates = {
   __typename?: 'StatusTemplateMaxAggregates';
   /** Maximum of sortOrder across the matching connection */
   sortOrder?: Maybe<Scalars['Int']['output']>;
-};
-
-export type StatusTemplateMinAggregateFilter = {
-  sortOrder?: InputMaybe<IntFilter>;
 };
 
 export type StatusTemplateMinAggregates = {
@@ -3391,6 +3203,8 @@ export enum StatusTemplateOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -3454,9 +3268,7 @@ export enum StatusTemplateOrderBy {
   SortOrderAsc = 'SORT_ORDER_ASC',
   SortOrderDesc = 'SORT_ORDER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
-  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
 /** Represents an update to a `StatusTemplate`. Fields that are set will be updated. */
@@ -3466,14 +3278,10 @@ export type StatusTemplatePatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-export type StatusTemplateStddevPopulationAggregateFilter = {
-  sortOrder?: InputMaybe<BigFloatFilter>;
 };
 
 export type StatusTemplateStddevPopulationAggregates = {
@@ -3482,18 +3290,10 @@ export type StatusTemplateStddevPopulationAggregates = {
   sortOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
-export type StatusTemplateStddevSampleAggregateFilter = {
-  sortOrder?: InputMaybe<BigFloatFilter>;
-};
-
 export type StatusTemplateStddevSampleAggregates = {
   __typename?: 'StatusTemplateStddevSampleAggregates';
   /** Sample standard deviation of sortOrder across the matching connection */
   sortOrder?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type StatusTemplateSumAggregateFilter = {
-  sortOrder?: InputMaybe<BigIntFilter>;
 };
 
 export type StatusTemplateSumAggregates = {
@@ -3526,18 +3326,10 @@ export type StatusTemplateToManyProjectStatusConfigFilter = {
   some?: InputMaybe<ProjectStatusConfigFilter>;
 };
 
-export type StatusTemplateVariancePopulationAggregateFilter = {
-  sortOrder?: InputMaybe<BigFloatFilter>;
-};
-
 export type StatusTemplateVariancePopulationAggregates = {
   __typename?: 'StatusTemplateVariancePopulationAggregates';
   /** Population variance of sortOrder across the matching connection */
   sortOrder?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type StatusTemplateVarianceSampleAggregateFilter = {
-  sortOrder?: InputMaybe<BigFloatFilter>;
 };
 
 export type StatusTemplateVarianceSampleAggregates = {
@@ -3920,40 +3712,6 @@ export type UpdateVotePayload = {
 /** The output of our update `Vote` mutation. */
 export type UpdateVotePayloadVoteEdgeArgs = {
   orderBy?: Array<VoteOrderBy>;
-};
-
-/** All input for the `updateWorkspace` mutation. */
-export type UpdateWorkspaceInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Workspace` being updated. */
-  patch: WorkspacePatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `Workspace` mutation. */
-export type UpdateWorkspacePayload = {
-  __typename?: 'UpdateWorkspacePayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** The `Workspace` that was updated by this mutation. */
-  workspace?: Maybe<Workspace>;
-  /** An edge for our `Workspace`. May be used by Relay 1. */
-  workspaceEdge?: Maybe<WorkspaceEdge>;
-};
-
-
-/** The output of our update `Workspace` mutation. */
-export type UpdateWorkspacePayloadWorkspaceEdgeArgs = {
-  orderBy?: Array<WorkspaceOrderBy>;
 };
 
 export type User = {
@@ -4603,409 +4361,15 @@ export type VoteTypeFilter = {
   notIn?: InputMaybe<Array<VoteType>>;
 };
 
-export type Workspace = {
-  __typename?: 'Workspace';
-  billingAccountId?: Maybe<Scalars['String']['output']>;
-  createdAt: Scalars['Datetime']['output'];
-  deletedAt?: Maybe<Scalars['Datetime']['output']>;
-  deletionReason?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  organizationId: Scalars['String']['output'];
-  /** Reads and enables pagination through a set of `Project`. */
-  projects: ProjectConnection;
-  rowId: Scalars['UUID']['output'];
-  slug: Scalars['String']['output'];
-  /** Reads and enables pagination through a set of `StatusTemplate`. */
-  statusTemplates: StatusTemplateConnection;
-  subscriptionId?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['Datetime']['output'];
-};
-
-
-export type WorkspaceProjectsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<ProjectCondition>;
-  filter?: InputMaybe<ProjectFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ProjectOrderBy>>;
-};
-
-
-export type WorkspaceStatusTemplatesArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<StatusTemplateCondition>;
-  filter?: InputMaybe<StatusTemplateFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<StatusTemplateOrderBy>>;
-};
-
-export type WorkspaceAggregates = {
-  __typename?: 'WorkspaceAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<WorkspaceDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/**
- * A condition to be used against `Workspace` object types. All fields are tested
- * for equality and combined with a logical ‘and.’
- */
-export type WorkspaceCondition = {
-  /** Checks for equality with the object’s `billingAccountId` field. */
-  billingAccountId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `deletedAt` field. */
-  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `deletionReason` field. */
-  deletionReason?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `slug` field. */
-  slug?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A connection to a list of `Workspace` values. */
-export type WorkspaceConnection = {
-  __typename?: 'WorkspaceConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<WorkspaceAggregates>;
-  /** A list of edges which contains the `Workspace` and cursor to aid in pagination. */
-  edges: Array<Maybe<WorkspaceEdge>>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<WorkspaceAggregates>>;
-  /** A list of `Workspace` objects. */
-  nodes: Array<Maybe<Workspace>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `Workspace` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `Workspace` values. */
-export type WorkspaceConnectionGroupedAggregatesArgs = {
-  groupBy: Array<WorkspaceGroupBy>;
-  having?: InputMaybe<WorkspaceHavingInput>;
-};
-
-export type WorkspaceDistinctCountAggregates = {
-  __typename?: 'WorkspaceDistinctCountAggregates';
-  /** Distinct count of billingAccountId across the matching connection */
-  billingAccountId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of deletedAt across the matching connection */
-  deletedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of deletionReason across the matching connection */
-  deletionReason?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of name across the matching connection */
-  name?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of organizationId across the matching connection */
-  organizationId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of slug across the matching connection */
-  slug?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of subscriptionId across the matching connection */
-  subscriptionId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `Workspace` edge in the connection. */
-export type WorkspaceEdge = {
-  __typename?: 'WorkspaceEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `Workspace` at the end of the edge. */
-  node?: Maybe<Workspace>;
-};
-
-/** A filter to be used against `Workspace` object types. All fields are combined with a logical ‘and.’ */
-export type WorkspaceFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<WorkspaceFilter>>;
-  /** Filter by the object’s `billingAccountId` field. */
-  billingAccountId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `deletedAt` field. */
-  deletedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `deletionReason` field. */
-  deletionReason?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `name` field. */
-  name?: InputMaybe<StringFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<WorkspaceFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<WorkspaceFilter>>;
-  /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `projects` relation. */
-  projects?: InputMaybe<WorkspaceToManyProjectFilter>;
-  /** Some related `projects` exist. */
-  projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `slug` field. */
-  slug?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `statusTemplates` relation. */
-  statusTemplates?: InputMaybe<WorkspaceToManyStatusTemplateFilter>;
-  /** Some related `statusTemplates` exist. */
-  statusTemplatesExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-};
-
-/** Grouping methods for `Workspace` for usage during aggregation. */
-export enum WorkspaceGroupBy {
-  BillingAccountId = 'BILLING_ACCOUNT_ID',
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  DeletedAt = 'DELETED_AT',
-  DeletedAtTruncatedToDay = 'DELETED_AT_TRUNCATED_TO_DAY',
-  DeletedAtTruncatedToHour = 'DELETED_AT_TRUNCATED_TO_HOUR',
-  DeletionReason = 'DELETION_REASON',
-  Name = 'NAME',
-  OrganizationId = 'ORGANIZATION_ID',
-  Slug = 'SLUG',
-  SubscriptionId = 'SUBSCRIPTION_ID',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
-}
-
-export type WorkspaceHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `Workspace` aggregates. */
-export type WorkspaceHavingInput = {
-  AND?: InputMaybe<Array<WorkspaceHavingInput>>;
-  OR?: InputMaybe<Array<WorkspaceHavingInput>>;
-  average?: InputMaybe<WorkspaceHavingAverageInput>;
-  distinctCount?: InputMaybe<WorkspaceHavingDistinctCountInput>;
-  max?: InputMaybe<WorkspaceHavingMaxInput>;
-  min?: InputMaybe<WorkspaceHavingMinInput>;
-  stddevPopulation?: InputMaybe<WorkspaceHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<WorkspaceHavingStddevSampleInput>;
-  sum?: InputMaybe<WorkspaceHavingSumInput>;
-  variancePopulation?: InputMaybe<WorkspaceHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<WorkspaceHavingVarianceSampleInput>;
-};
-
-export type WorkspaceHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type WorkspaceHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  deletedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `Workspace` */
-export type WorkspaceInput = {
-  billingAccountId?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  deletionReason?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  organizationId: Scalars['String']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  slug: Scalars['String']['input'];
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** Methods to use when ordering `Workspace`. */
-export enum WorkspaceOrderBy {
-  BillingAccountIdAsc = 'BILLING_ACCOUNT_ID_ASC',
-  BillingAccountIdDesc = 'BILLING_ACCOUNT_ID_DESC',
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  DeletedAtAsc = 'DELETED_AT_ASC',
-  DeletedAtDesc = 'DELETED_AT_DESC',
-  DeletionReasonAsc = 'DELETION_REASON_ASC',
-  DeletionReasonDesc = 'DELETION_REASON_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  Natural = 'NATURAL',
-  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
-  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
-  ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
-  ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
-  ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
-  ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
-  ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
-  ProjectsDistinctCountImageAsc = 'PROJECTS_DISTINCT_COUNT_IMAGE_ASC',
-  ProjectsDistinctCountImageDesc = 'PROJECTS_DISTINCT_COUNT_IMAGE_DESC',
-  ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
-  ProjectsDistinctCountNameDesc = 'PROJECTS_DISTINCT_COUNT_NAME_DESC',
-  ProjectsDistinctCountRowIdAsc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_ASC',
-  ProjectsDistinctCountRowIdDesc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_DESC',
-  ProjectsDistinctCountSlugAsc = 'PROJECTS_DISTINCT_COUNT_SLUG_ASC',
-  ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
-  ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ProjectsDistinctCountWebsiteAsc = 'PROJECTS_DISTINCT_COUNT_WEBSITE_ASC',
-  ProjectsDistinctCountWebsiteDesc = 'PROJECTS_DISTINCT_COUNT_WEBSITE_DESC',
-  ProjectsDistinctCountWorkspaceIdAsc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
-  ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  SlugAsc = 'SLUG_ASC',
-  SlugDesc = 'SLUG_DESC',
-  StatusTemplatesAverageSortOrderAsc = 'STATUS_TEMPLATES_AVERAGE_SORT_ORDER_ASC',
-  StatusTemplatesAverageSortOrderDesc = 'STATUS_TEMPLATES_AVERAGE_SORT_ORDER_DESC',
-  StatusTemplatesCountAsc = 'STATUS_TEMPLATES_COUNT_ASC',
-  StatusTemplatesCountDesc = 'STATUS_TEMPLATES_COUNT_DESC',
-  StatusTemplatesDistinctCountColorAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_COLOR_ASC',
-  StatusTemplatesDistinctCountColorDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_COLOR_DESC',
-  StatusTemplatesDistinctCountCreatedAtAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_CREATED_AT_ASC',
-  StatusTemplatesDistinctCountCreatedAtDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_CREATED_AT_DESC',
-  StatusTemplatesDistinctCountDescriptionAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_DESCRIPTION_ASC',
-  StatusTemplatesDistinctCountDescriptionDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_DESCRIPTION_DESC',
-  StatusTemplatesDistinctCountDisplayNameAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_DISPLAY_NAME_ASC',
-  StatusTemplatesDistinctCountDisplayNameDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_DISPLAY_NAME_DESC',
-  StatusTemplatesDistinctCountNameAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_NAME_ASC',
-  StatusTemplatesDistinctCountNameDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_NAME_DESC',
-  StatusTemplatesDistinctCountRowIdAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_ROW_ID_ASC',
-  StatusTemplatesDistinctCountRowIdDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_ROW_ID_DESC',
-  StatusTemplatesDistinctCountSortOrderAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_SORT_ORDER_ASC',
-  StatusTemplatesDistinctCountSortOrderDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_SORT_ORDER_DESC',
-  StatusTemplatesDistinctCountUpdatedAtAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_UPDATED_AT_ASC',
-  StatusTemplatesDistinctCountUpdatedAtDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_UPDATED_AT_DESC',
-  StatusTemplatesDistinctCountWorkspaceIdAsc = 'STATUS_TEMPLATES_DISTINCT_COUNT_WORKSPACE_ID_ASC',
-  StatusTemplatesDistinctCountWorkspaceIdDesc = 'STATUS_TEMPLATES_DISTINCT_COUNT_WORKSPACE_ID_DESC',
-  StatusTemplatesMaxSortOrderAsc = 'STATUS_TEMPLATES_MAX_SORT_ORDER_ASC',
-  StatusTemplatesMaxSortOrderDesc = 'STATUS_TEMPLATES_MAX_SORT_ORDER_DESC',
-  StatusTemplatesMinSortOrderAsc = 'STATUS_TEMPLATES_MIN_SORT_ORDER_ASC',
-  StatusTemplatesMinSortOrderDesc = 'STATUS_TEMPLATES_MIN_SORT_ORDER_DESC',
-  StatusTemplatesStddevPopulationSortOrderAsc = 'STATUS_TEMPLATES_STDDEV_POPULATION_SORT_ORDER_ASC',
-  StatusTemplatesStddevPopulationSortOrderDesc = 'STATUS_TEMPLATES_STDDEV_POPULATION_SORT_ORDER_DESC',
-  StatusTemplatesStddevSampleSortOrderAsc = 'STATUS_TEMPLATES_STDDEV_SAMPLE_SORT_ORDER_ASC',
-  StatusTemplatesStddevSampleSortOrderDesc = 'STATUS_TEMPLATES_STDDEV_SAMPLE_SORT_ORDER_DESC',
-  StatusTemplatesSumSortOrderAsc = 'STATUS_TEMPLATES_SUM_SORT_ORDER_ASC',
-  StatusTemplatesSumSortOrderDesc = 'STATUS_TEMPLATES_SUM_SORT_ORDER_DESC',
-  StatusTemplatesVariancePopulationSortOrderAsc = 'STATUS_TEMPLATES_VARIANCE_POPULATION_SORT_ORDER_ASC',
-  StatusTemplatesVariancePopulationSortOrderDesc = 'STATUS_TEMPLATES_VARIANCE_POPULATION_SORT_ORDER_DESC',
-  StatusTemplatesVarianceSampleSortOrderAsc = 'STATUS_TEMPLATES_VARIANCE_SAMPLE_SORT_ORDER_ASC',
-  StatusTemplatesVarianceSampleSortOrderDesc = 'STATUS_TEMPLATES_VARIANCE_SAMPLE_SORT_ORDER_DESC',
-  SubscriptionIdAsc = 'SUBSCRIPTION_ID_ASC',
-  SubscriptionIdDesc = 'SUBSCRIPTION_ID_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
-}
-
-/** Represents an update to a `Workspace`. Fields that are set will be updated. */
-export type WorkspacePatch = {
-  billingAccountId?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  deletionReason?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
-export type WorkspaceToManyProjectFilter = {
-  /** Aggregates across related `Project` match the filter criteria. */
-  aggregates?: InputMaybe<ProjectAggregatesFilter>;
-  /** Every related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<ProjectFilter>;
-  /** No related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<ProjectFilter>;
-  /** Some related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<ProjectFilter>;
-};
-
-/** A filter to be used against many `StatusTemplate` object types. All fields are combined with a logical ‘and.’ */
-export type WorkspaceToManyStatusTemplateFilter = {
-  /** Aggregates across related `StatusTemplate` match the filter criteria. */
-  aggregates?: InputMaybe<StatusTemplateAggregatesFilter>;
-  /** Every related `StatusTemplate` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<StatusTemplateFilter>;
-  /** No related `StatusTemplate` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<StatusTemplateFilter>;
-  /** Some related `StatusTemplate` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<StatusTemplateFilter>;
-};
-
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organizationId: string, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string };
-
-export type WorkspaceFragment = { __typename?: 'Workspace', rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null };
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
@@ -5048,7 +4412,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string, slug: string, workspace?: { __typename?: 'Workspace', organizationId: string } | null } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string, slug: string, organizationId: string } | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -5155,28 +4519,6 @@ export type UpdateVoteMutationVariables = Exact<{
 
 export type UpdateVoteMutation = { __typename?: 'Mutation', updateVote?: { __typename?: 'UpdateVotePayload', clientMutationId?: string | null, vote?: { __typename?: 'Vote', rowId: string, voteType: VoteType } | null } | null };
 
-export type CreateWorkspaceMutationVariables = Exact<{
-  input: CreateWorkspaceInput;
-}>;
-
-
-export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace?: { __typename?: 'CreateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null } | null };
-
-export type DeleteWorkspaceMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
-
-export type UpdateWorkspaceMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-  patch: WorkspacePatch;
-}>;
-
-
-export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null } | null };
-
 export type CommentsQueryVariables = Exact<{
   feedbackId: Scalars['UUID']['input'];
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -5187,7 +4529,7 @@ export type CommentsQueryVariables = Exact<{
 export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
 export type DashboardAggregatesQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
 }>;
 
 
@@ -5199,7 +4541,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5212,24 +4554,24 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
-  workspaceOrganizationId: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
   userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organizationId: string, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
 }>;
 
 
-export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndWorkspaceId?: { __typename?: 'Project', rowId: string, name: string } | null };
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string } | null };
 
 export type ProjectMetricsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5239,7 +4581,7 @@ export type ProjectMetricsQueryVariables = Exact<{
 export type ProjectMetricsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', createdAt: Date, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null, upvotes?: { __typename?: 'VoteConnection', totalCount: number } | null, downvotes?: { __typename?: 'VoteConnection', totalCount: number } | null };
 
 export type ProjectStatusesQueryVariables = Exact<{
-  workspaceId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
   isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
@@ -5249,20 +4591,20 @@ export type ProjectStatusesQuery = { __typename?: 'Query', statusTemplates?: { _
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
-  workspaceOrganizationId: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string } | null, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
   after?: InputMaybe<Scalars['Cursor']['input']>;
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, workspace?: { __typename?: 'Workspace', organizationId: string, slug: string } | null } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type RepliesQueryVariables = Exact<{
   commentId: Scalars['UUID']['input'];
@@ -5295,7 +4637,7 @@ export type UserByEmailQueryVariables = Exact<{
 export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
 
 export type WeeklyFeedbackQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
   startDate: Scalars['Datetime']['input'];
 }>;
 
@@ -5303,30 +4645,18 @@ export type WeeklyFeedbackQueryVariables = Exact<{
 export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type WorkspaceQueryVariables = Exact<{
-  organizationId: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } } | null> } | null };
+export type WorkspaceQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type WorkspaceMetricsQueryVariables = Exact<{
-  workspaceId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID']['input'];
 }>;
 
 
 export type WorkspaceMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null };
-
-export type WorkspacesQueryVariables = Exact<{
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<WorkspaceOrderBy> | WorkspaceOrderBy>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  organizationIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-}>;
-
-
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', totalCount: number, nodes: Array<{ __typename?: 'Workspace', updatedAt: Date, rowId: string, organizationId: string, name: string, slug: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null> } | null };
 
 export const CommentFragmentDoc = gql`
     fragment Comment on Comment {
@@ -5354,10 +4684,7 @@ export const FeedbackFragmentDoc = gql`
     rowId
     name
     slug
-    workspace {
-      rowId
-      organizationId
-    }
+    organizationId
   }
   statusTemplate {
     rowId
@@ -5401,10 +4728,7 @@ export const ProjectFragmentDoc = gql`
   description
   slug
   website
-  workspace {
-    rowId
-    organizationId
-  }
+  organizationId
   projectSocials(orderBy: CREATED_AT_ASC) {
     nodes {
       rowId
@@ -5445,15 +4769,6 @@ export const UserFragmentDoc = gql`
   username
   name
   email
-}
-    `;
-export const WorkspaceFragmentDoc = gql`
-    fragment Workspace on Workspace {
-  rowId
-  organizationId
-  name
-  slug
-  subscriptionId
 }
     `;
 export const CreateCommentDocument = gql`
@@ -5497,9 +4812,7 @@ export const CreateProjectDocument = gql`
     project {
       rowId
       slug
-      workspace {
-        organizationId
-      }
+      organizationId
     }
   }
 }
@@ -5654,35 +4967,6 @@ export const UpdateVoteDocument = gql`
   }
 }
     `;
-export const CreateWorkspaceDocument = gql`
-    mutation CreateWorkspace($input: CreateWorkspaceInput!) {
-  createWorkspace(input: $input) {
-    workspace {
-      rowId
-      organizationId
-    }
-  }
-}
-    `;
-export const DeleteWorkspaceDocument = gql`
-    mutation DeleteWorkspace($rowId: UUID!) {
-  deleteWorkspace(input: {rowId: $rowId}) {
-    workspace {
-      rowId
-    }
-  }
-}
-    `;
-export const UpdateWorkspaceDocument = gql`
-    mutation UpdateWorkspace($rowId: UUID!, $patch: WorkspacePatch!) {
-  updateWorkspace(input: {rowId: $rowId, patch: $patch}) {
-    workspace {
-      rowId
-      organizationId
-    }
-  }
-}
-    `;
 export const CommentsDocument = gql`
     query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
   comments(
@@ -5705,8 +4989,8 @@ export const CommentsDocument = gql`
 }
     ${CommentFragmentDoc}`;
 export const DashboardAggregatesDocument = gql`
-    query DashboardAggregates($organizationIds: [String!]) {
-  posts(filter: {project: {workspace: {organizationId: {in: $organizationIds}}}}) {
+    query DashboardAggregates($organizationIds: [UUID!]) {
+  posts(filter: {project: {organizationId: {in: $organizationIds}}}) {
     totalCount
   }
 }
@@ -5740,11 +5024,10 @@ export const PostsDocument = gql`
 }
     ${FeedbackFragmentDoc}`;
 export const ProjectDocument = gql`
-    query Project($projectSlug: String!, $workspaceOrganizationId: String!, $userId: UUID) {
+    query Project($projectSlug: String!, $organizationId: UUID!, $userId: UUID) {
   projects(
     first: 1
-    condition: {slug: $projectSlug}
-    filter: {workspace: {organizationId: {equalTo: $workspaceOrganizationId}}}
+    condition: {slug: $projectSlug, organizationId: $organizationId}
   ) {
     nodes {
       ...Project
@@ -5753,8 +5036,8 @@ export const ProjectDocument = gql`
 }
     ${ProjectFragmentDoc}`;
 export const ProjectBySlugDocument = gql`
-    query ProjectBySlug($slug: String!, $workspaceId: UUID!) {
-  projectBySlugAndWorkspaceId(slug: $slug, workspaceId: $workspaceId) {
+    query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+  projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
     name
   }
@@ -5786,9 +5069,9 @@ export const ProjectMetricsDocument = gql`
 }
     `;
 export const ProjectStatusesDocument = gql`
-    query ProjectStatuses($workspaceId: UUID!, $isEnabled: Boolean) {
+    query ProjectStatuses($organizationId: UUID!, $isEnabled: Boolean) {
   statusTemplates(
-    condition: {workspaceId: $workspaceId}
+    condition: {organizationId: $organizationId}
     orderBy: [SORT_ORDER_ASC, CREATED_AT_ASC]
   ) {
     nodes {
@@ -5815,12 +5098,12 @@ export const ProjectStatusesDocument = gql`
 }
     `;
 export const ProjectsDocument = gql`
-    query Projects($pageSize: Int!, $offset: Int!, $workspaceOrganizationId: String!, $search: String) {
+    query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
   projects(
     orderBy: POSTS_COUNT_DESC
     first: $pageSize
     offset: $offset
-    filter: {name: {includesInsensitive: $search}, workspace: {organizationId: {equalTo: $workspaceOrganizationId}}}
+    filter: {name: {includesInsensitive: $search}, organizationId: {equalTo: $organizationId}}
   ) {
     totalCount
     nodes {
@@ -5828,10 +5111,7 @@ export const ProjectsDocument = gql`
       name
       description
       slug
-      workspace {
-        rowId
-        organizationId
-      }
+      organizationId
       posts {
         totalCount
         aggregates {
@@ -5845,12 +5125,12 @@ export const ProjectsDocument = gql`
 }
     `;
 export const RecentFeedbackDocument = gql`
-    query RecentFeedback($organizationIds: [String!], $after: Cursor) {
+    query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
   posts(
     first: 10
     after: $after
     orderBy: CREATED_AT_DESC
-    filter: {project: {workspace: {organizationId: {in: $organizationIds}}}}
+    filter: {project: {organizationId: {in: $organizationIds}}}
   ) {
     totalCount
     pageInfo {
@@ -5866,10 +5146,7 @@ export const RecentFeedbackDocument = gql`
         project {
           name
           slug
-          workspace {
-            organizationId
-            slug
-          }
+          organizationId
         }
         statusTemplate {
           rowId
@@ -5937,9 +5214,9 @@ export const UserByEmailDocument = gql`
 }
     `;
 export const WeeklyFeedbackDocument = gql`
-    query WeeklyFeedback($organizationIds: [String!], $startDate: Datetime!) {
+    query WeeklyFeedback($organizationIds: [UUID!], $startDate: Datetime!) {
   posts(
-    filter: {project: {workspace: {organizationId: {in: $organizationIds}}}, createdAt: {greaterThanOrEqualTo: $startDate}}
+    filter: {project: {organizationId: {in: $organizationIds}}, createdAt: {greaterThanOrEqualTo: $startDate}}
   ) {
     groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
       keys
@@ -5951,61 +5228,41 @@ export const WeeklyFeedbackDocument = gql`
 }
     `;
 export const WorkspaceDocument = gql`
-    query Workspace($organizationId: String!) {
-  workspaces(condition: {organizationId: $organizationId}, first: 1) {
+    query Workspace($organizationId: UUID!) {
+  projects(
+    condition: {organizationId: $organizationId}
+    first: 6
+    orderBy: POSTS_COUNT_DESC
+  ) {
+    totalCount
     nodes {
-      ...Workspace
-      updatedAt
-      projects(first: 6, orderBy: POSTS_COUNT_DESC) {
+      rowId
+      name
+      description
+      slug
+      organizationId
+      posts {
         totalCount
-        nodes {
-          rowId
-          name
-          description
-          slug
-          posts {
-            totalCount
-            aggregates {
-              distinctCount {
-                userId
-              }
-            }
+        aggregates {
+          distinctCount {
+            userId
           }
         }
       }
     }
   }
 }
-    ${WorkspaceFragmentDoc}`;
+    `;
 export const WorkspaceMetricsDocument = gql`
-    query WorkspaceMetrics($workspaceId: UUID!) {
-  projects(condition: {workspaceId: $workspaceId}) {
+    query WorkspaceMetrics($organizationId: UUID!) {
+  projects(condition: {organizationId: $organizationId}) {
     totalCount
   }
-  posts(filter: {project: {workspaceId: {equalTo: $workspaceId}}}) {
+  posts(filter: {project: {organizationId: {equalTo: $organizationId}}}) {
     totalCount
   }
 }
     `;
-export const WorkspacesDocument = gql`
-    query Workspaces($pageSize: Int, $offset: Int, $orderBy: [WorkspaceOrderBy!], $organizationId: String, $organizationIds: [String!], $workspaceId: UUID) {
-  workspaces(
-    first: $pageSize
-    offset: $offset
-    orderBy: $orderBy
-    filter: {rowId: {equalTo: $workspaceId}, organizationId: {equalTo: $organizationId, in: $organizationIds}}
-  ) {
-    totalCount
-    nodes {
-      ...Workspace
-      updatedAt
-      projects {
-        totalCount
-      }
-    }
-  }
-}
-    ${WorkspaceFragmentDoc}`;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -6074,15 +5331,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateVote(variables: UpdateVoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateVoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateVoteMutation>({ document: UpdateVoteDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateVote', 'mutation', variables);
     },
-    CreateWorkspace(variables: CreateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateWorkspaceMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateWorkspaceMutation>({ document: CreateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateWorkspace', 'mutation', variables);
-    },
-    DeleteWorkspace(variables: DeleteWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteWorkspaceMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DeleteWorkspaceMutation>({ document: DeleteWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteWorkspace', 'mutation', variables);
-    },
-    UpdateWorkspace(variables: UpdateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceMutation>({ document: UpdateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspace', 'mutation', variables);
-    },
     Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CommentsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>({ document: CommentsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Comments', 'query', variables);
     },
@@ -6133,9 +5381,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     WorkspaceMetrics(variables: WorkspaceMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceMetricsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspaceMetricsQuery>({ document: WorkspaceMetricsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'WorkspaceMetrics', 'query', variables);
-    },
-    Workspaces(variables?: WorkspacesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspacesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<WorkspacesQuery>({ document: WorkspacesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Workspaces', 'query', variables);
     }
   };
 }

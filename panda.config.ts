@@ -47,10 +47,35 @@ const pandaConfig = defineConfig({
   theme: {
     extend: {
       recipes: {
-        // Override button recipe to use primary (ruby) as default colorPalette
+        // Override button recipe to use primary (ruby) with glow effects
         button: {
           base: {
             colorPalette: "primary",
+            transition: "all 0.2s ease",
+          },
+          variants: {
+            variant: {
+              solid: {
+                boxShadow: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.2)",
+                _hover: {
+                  boxShadow: "0 8px 20px -4px oklch(0.650 0.220 6 / 0.3)",
+                  transform: "translateY(-1px)",
+                },
+                _active: {
+                  transform: "translateY(0)",
+                },
+              },
+              outline: {
+                _hover: {
+                  borderColor: "primary",
+                  color: "primary",
+                  transform: "translateY(-1px)",
+                },
+                _active: {
+                  transform: "translateY(0)",
+                },
+              },
+            },
           },
         },
       },

@@ -1,4 +1,4 @@
-import { HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -6,11 +6,24 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import OverflowText from "@/components/core/OverflowText";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
-import type { Workspace } from "@/generated/graphql";
+/**
+ * Workspace/org data shape for display purposes.
+ * Organization data comes from JWT claims, not a local database table.
+ */
+interface WorkspaceData {
+  rowId?: string;
+  name?: string;
+  slug?: string;
+  organizationId?: string;
+  updatedAt?: Date | string;
+  projects?: {
+    totalCount?: number;
+  };
+}
 
 interface Props {
   /** Workspace details. */
-  workspace: Partial<Workspace>;
+  workspace: Partial<WorkspaceData>;
 }
 
 /**
@@ -27,25 +40,36 @@ const WorkspaceListItem = ({ workspace }: Props) => {
   ];
 
   return (
-    <Stack
-      p={4}
-      boxShadow="card"
-      borderRadius="sm"
-      w="full"
-      maxW="100%"
-      mx="auto"
-      h={36}
-      justify="space-between"
-      position="relative"
+    <Link
+      to="/workspaces/$workspaceSlug"
+      params={{ workspaceSlug: workspace.slug! }}
+      role="group"
     >
-      <HStack alignItems="flex-start" justify="space-between">
-        {/* ! NB: explicit maxW prevents overflow from pushing the dialog trigger outside of the container on smaller viewports */}
-        <Stack maxW="65svw">
-          <Link
-            to="/workspaces/$workspaceSlug"
-            params={{ workspaceSlug: workspace.slug! }}
-            role="group"
-          >
+      <Stack
+        p={4}
+        bgColor="card-item"
+        borderRadius="xl"
+        borderWidth="1px"
+        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
+        w="full"
+        maxW="100%"
+        mx="auto"
+        h={36}
+        justify="space-between"
+        position="relative"
+        cursor="pointer"
+        className={css({
+          transition: "all 0.2s ease",
+          _groupHover: {
+            bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+            borderColor: { base: "neutral.300", _dark: "neutral.700" },
+            transform: "translateY(-2px)",
+            boxShadow: "glow-card",
+          },
+        })}
+      >
+        <HStack alignItems="flex-start" justify="space-between">
+          <Stack maxW="65svw">
             <Stack gap={1}>
               <OverflowText
                 fontWeight="semibold"
@@ -66,26 +90,26 @@ const WorkspaceListItem = ({ workspace }: Props) => {
                 color="foreground.muted"
               >{`Updated ${dayjs(workspace.updatedAt).fromNow()}`}</Text>
             </Stack>
-          </Link>
-        </Stack>
-      </HStack>
+          </Stack>
+        </HStack>
 
-      <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
-        {AGGREGATES.map(({ icon, value = 0, type }) => (
-          <HStack key={type} gap={1} flexWrap="wrap">
-            <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+        <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
+          {AGGREGATES.map(({ icon, value = 0, type }) => (
+            <HStack key={type} gap={1} flexWrap="wrap">
+              <Icon src={icon} w={5} h={5} color="foreground.subtle" />
 
-            <Text
-              fontSize="sm"
-              color="foreground.subtle"
-              fontVariant="tabular-nums"
-            >
-              {value} {setSingularOrPlural({ value, label: type })}
-            </Text>
-          </HStack>
-        ))}
-      </HStack>
-    </Stack>
+              <Text
+                fontSize="sm"
+                color="foreground.subtle"
+                fontVariant="tabular-nums"
+              >
+                {value} {setSingularOrPlural({ value, label: type })}
+              </Text>
+            </HStack>
+          ))}
+        </HStack>
+      </Stack>
+    </Link>
   );
 };
 

@@ -157,10 +157,8 @@ const app = {
       title: "Workspaces",
       description: "Quickly view workspaces that you are a member of",
       emptyState: {
-        message: "No workspaces found. Would you like to create one?",
-        cta: {
-          label: "Create Workspace",
-        },
+        message:
+          "No workspaces found. Create your first organization to get started.",
       },
     },
     recentFeedback: {

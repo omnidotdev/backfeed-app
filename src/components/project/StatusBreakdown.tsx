@@ -1,6 +1,11 @@
 import { Checkbox, Flex, HStack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
 import StatusBadge from "@/components/core/StatusBadge";
@@ -30,7 +35,10 @@ interface Status {
  * Feedback status breakdown for a project.
  */
 const StatusBreakdown = () => {
-  const { workspaceId, projectId } = useLoaderData({
+  const { projectId } = useLoaderData({
+    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  });
+  const { organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
   });
 
@@ -69,7 +77,7 @@ const StatusBreakdown = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      workspaceId,
+      organizationId,
     }),
     select: (data) =>
       data?.statusTemplates?.nodes?.map((status) => ({

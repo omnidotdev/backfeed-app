@@ -5,11 +5,24 @@ import OverflowText from "@/components/core/OverflowText";
 import DashboardMetric from "@/components/dashboard/DashboardMetric";
 
 import type { FlexProps } from "@omnidev/sigil";
-import type { Workspace } from "@/generated/graphql";
+
+/**
+ * Workspace/org data shape for display purposes.
+ * Organization data comes from JWT claims, not a local database table.
+ */
+interface WorkspaceData {
+  rowId?: string;
+  name?: string;
+  slug?: string;
+  organizationId?: string;
+  projects?: {
+    totalCount?: number;
+  };
+}
 
 interface Props extends FlexProps {
   /** Workspace details. */
-  workspace: Partial<Workspace>;
+  workspace: Partial<WorkspaceData>;
 }
 
 /**

@@ -1,7 +1,6 @@
 import { Format } from "@ark-ui/react";
 import {
   Button,
-  Divider,
   Grid,
   GridItem,
   HStack,
@@ -24,41 +23,34 @@ import {
 } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 
-import DangerZoneAction from "@/components/core/DangerZoneAction";
 import SectionContainer from "@/components/layout/SectionContainer";
-import UpdateWorkspace from "@/components/workspace/UpdateWorkspace";
-import { useDeleteWorkspaceMutation } from "@/generated/graphql";
-import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
-import toaster from "@/lib/util/toaster";
 import {
   getBillingPortalUrl,
   getCreateSubscriptionUrl,
   renewSubscription,
-  revokeSubscription,
 } from "@/server/functions/subscriptions";
 
-import type { DestructiveActionProps } from "@/components/core/DestructiveAction";
-import type { WorkspaceFragment } from "@/generated/graphql";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
-const deleteWorkspaceDetails = app.workspaceSettingsPage.cta.deleteWorkspace;
-
 interface Props {
-  /** Workspace details. */
-  workspace: WorkspaceFragment;
   /** App subscription pricing options. */
   prices: ExpandedProductPrice[];
 }
 
-/** Workspace settings. */
-const WorkspaceSettings = ({ workspace, prices }: Props) => {
+/**
+ * Workspace settings.
+ *
+ * Organization name/slug are managed by Gatekeeper (IDP), not this app.
+ * This component handles subscription management at the organization level.
+ */
+const WorkspaceSettings = ({ prices }: Props) => {
   const { workspaceSlug } = useParams({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
-  const { isOwner, queryClient, workspaceId } = useRouteContext({
+  const { isOwner, organizationId, workspaceName } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
   });
   const { subscription } = useLoaderData({
@@ -77,63 +69,6 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
     ? (subscriptionPrice?.metadata?.tier ?? "basic")
     : "free";
 
-  // Members are now managed via IDP (Gatekeeper)
-  // To leave a workspace, users should update their membership in Gatekeeper
-
-  const { mutateAsync: deleteWorkspace } = useDeleteWorkspaceMutation({
-    onMutate: () => navigate({ to: "/", replace: true }),
-    // NB: when a workspace is deleted, we want to invalidate all queries as any of them could have data for said workspace associated with the user
-    onSettled: async () => queryClient.invalidateQueries(),
-  });
-
-  const DELETE_WORKSPACE: DestructiveActionProps = {
-    title: deleteWorkspaceDetails.destruciveAction.title,
-    description: deleteWorkspaceDetails.destruciveAction.description,
-    triggerLabel: deleteWorkspaceDetails.destruciveAction.actionLabel,
-    destructiveInput: deleteWorkspaceDetails.destruciveAction.prompt,
-    action: {
-      label: deleteWorkspaceDetails.destruciveAction.actionLabel,
-      onClick: () =>
-        toaster.promise(
-          async () => {
-            // Cancel any active subscription before deleting workspace
-            if (subscription) {
-              try {
-                await revokeSubscription({
-                  data: { workspaceId },
-                });
-              } catch {
-                // Subscription may not exist or already be canceled, continue with deletion
-              }
-            }
-
-            await deleteWorkspace({ rowId: workspaceId });
-          },
-          {
-            loading: {
-              title: "Deleting workspace...",
-            },
-            success: {
-              title: "Successfully deleted workspace.",
-            },
-            error: {
-              title: "Error",
-              description:
-                "Sorry, there was an issue with deleting your workspace. Please try again.",
-            },
-          },
-        ),
-    },
-    children: (
-      <Text whiteSpace="wrap" fontWeight="medium">
-        The workspace will be <sigil.span color="red">permanently</sigil.span>{" "}
-        deleted, including its projects, posts and comments. Any subscription
-        associated with the workspace will be immediately{" "}
-        <sigil.span color="red">revoked</sigil.span>.
-      </Text>
-    ),
-  };
-
   const {
     mutateAsync: createSubscription,
     isPending: isCreateSubscriptionPending,
@@ -142,7 +77,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
       const checkoutUrl = await getCreateSubscriptionUrl({
         data: {
           priceId,
-          workspaceId,
+          organizationId,
           successUrl: `${BASE_URL}/workspaces/${workspaceSlug}/settings`,
         },
       });
@@ -156,7 +91,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
     mutationFn: async () => {
       const portalUrl = await getBillingPortalUrl({
         data: {
-          workspaceId,
+          organizationId,
           returnUrl: `${BASE_URL}/workspaces/${workspaceSlug}/settings`,
         },
       });
@@ -168,7 +103,19 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
 
   return (
     <Stack gap={6}>
-      <UpdateWorkspace />
+      {/* Organization name/slug are managed in Gatekeeper */}
+      <SectionContainer
+        title="Organization Settings"
+        description="Organization details are managed in your identity provider."
+      >
+        <Text>
+          <sigil.span fontWeight="semibold">Name:</sigil.span> {workspaceName}
+        </Text>
+        <Text color="fg.muted" fontSize="sm">
+          To update organization name or slug, visit your organization settings
+          in Gatekeeper.
+        </Text>
+      </SectionContainer>
 
       {isOwner && (
         <SectionContainer
@@ -212,7 +159,7 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
               onClick={async () => {
                 if (subscription.cancelAt) {
                   await renewSubscription({
-                    data: { workspaceId },
+                    data: { organizationId },
                   });
                 } else {
                   await openBillingPortal();
@@ -277,27 +224,6 @@ const WorkspaceSettings = ({ workspace, prices }: Props) => {
               </MenuItemGroup>
             </Menu>
           )}
-        </SectionContainer>
-      )}
-
-      {isOwner && (
-        <SectionContainer
-          title={app.workspaceSettingsPage.dangerZone.title}
-          description={app.workspaceSettingsPage.dangerZone.description}
-          outline="1px solid"
-          outlineColor="omni.ruby"
-        >
-          <Divider />
-
-          <Stack gap={6}>
-            {/* TODO: add ownership transfer when functionality is resolved. Added scope: must transfer subscription. */}
-
-            <DangerZoneAction
-              title={deleteWorkspaceDetails.title}
-              description={deleteWorkspaceDetails.description}
-              actionProps={DELETE_WORKSPACE}
-            />
-          </Stack>
         </SectionContainer>
       )}
     </Stack>

@@ -1,10 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import Page from "@/components/layout/Page";
 import WorkspaceSettings from "@/components/workspace/WorkspaceSettings";
 import app from "@/lib/config/app.config";
-import { workspaceOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscription } from "@/server/functions/subscriptions";
@@ -14,11 +12,11 @@ import type { ExpandedProductPrice } from "@/server/functions/prices";
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
 )({
-  loader: async ({ context: { workspaceId, workspaceName } }) => {
-    // Members are now managed via IDP (Gatekeeper), not local DB
+  loader: async ({ context: { organizationId, workspaceName } }) => {
+    // Members are managed via IDP (Gatekeeper), billing via Aether
     const [prices, subscription] = await Promise.all([
       getPrices(),
-      getSubscription({ data: { workspaceId } }),
+      getSubscription({ data: { organizationId } }),
     ]);
 
     return { prices, subscription, workspaceName };
@@ -31,12 +29,7 @@ export const Route = createFileRoute(
 
 function WorkspaceSettingsPage() {
   const { prices } = Route.useLoaderData();
-  const { organizationId, workspaceName } = Route.useRouteContext();
-
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ organizationId }),
-    select: (data) => data?.workspaces?.nodes?.[0],
-  });
+  const { workspaceName } = Route.useRouteContext();
 
   return (
     <Page
@@ -45,10 +38,7 @@ function WorkspaceSettingsPage() {
       }}
       pt={0}
     >
-      <WorkspaceSettings
-        prices={prices as ExpandedProductPrice[]}
-        workspace={workspace!}
-      />
+      <WorkspaceSettings prices={prices as ExpandedProductPrice[]} />
     </Page>
   );
 }

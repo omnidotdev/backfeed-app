@@ -48,7 +48,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     ...projectsOptions({
       pageSize,
       offset: (page - 1) * pageSize,
-      workspaceOrganizationId: organizationId,
+      organizationId,
       search,
     }),
     placeholderData: keepPreviousData,

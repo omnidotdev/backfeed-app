@@ -45,43 +45,37 @@ export const infiniteRepliesOptions = (variables: RepliesQueryVariables) =>
 
 /**
  * Check if user can create comments based on free tier limits.
- * Free tier workspaces (no subscriptionId) have limited comments per feedback.
+ * Free tier organizations (no subscriptionId) have limited comments per feedback.
  */
 export const freeTierCommentsOptions = ({
-  workspaceOrganizationId,
+  organizationId,
   projectSlug,
   feedbackId,
 }: {
-  workspaceOrganizationId: string;
+  organizationId: string;
   projectSlug: string;
   feedbackId: string;
 }) =>
   queryOptions({
-    queryKey: [
-      "FreeTierComments",
-      { workspaceOrganizationId, projectSlug, feedbackId },
-    ],
+    queryKey: ["FreeTierComments", { organizationId, projectSlug, feedbackId }],
     queryFn: async () => {
       try {
         // Get project to verify it exists
         const { projects } = await useProjectQuery.fetcher({
-          workspaceOrganizationId,
+          organizationId,
           projectSlug,
         })();
 
         if (!projects?.nodes.length) return null;
 
         const project = projects.nodes[0]!;
-        const workspaceId = project.workspace?.rowId;
-
-        if (!workspaceId) return null;
 
         const { post: feedback } = await useFeedbackByIdQuery.fetcher({
           rowId: feedbackId,
         })();
 
         return {
-          workspaceId,
+          organizationId: project.organizationId,
           totalComments: feedback?.commentsWithReplies.totalCount ?? 0,
         };
       } catch {

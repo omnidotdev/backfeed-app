@@ -23,7 +23,7 @@ interface WorkspaceMetric extends FlexProps {
  * Workspace metrics.
  */
 const WorkspaceMetrics = () => {
-  const { workspaceId } = useRouteContext({
+  const { organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/",
   });
 
@@ -33,9 +33,8 @@ const WorkspaceMetrics = () => {
     isError,
   } = useQuery({
     ...workspaceMetricsOptions({
-      workspaceId,
+      organizationId,
     }),
-    // Members are now managed via Gatekeeper IDP, not stored locally
     select: (data) => ({
       totalProjects: data?.projects?.totalCount,
       totalFeedback: data?.posts?.totalCount,

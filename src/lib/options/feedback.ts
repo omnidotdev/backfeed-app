@@ -38,21 +38,21 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
 
 /**
  * Check if user can create feedback based on free tier limits.
- * Free tier workspaces (no subscriptionId) have limited unique users.
+ * Free tier organizations (no subscriptionId) have limited unique users.
  */
 export const freeTierFeedbackOptions = ({
-  workspaceOrganizationId,
+  organizationId,
   projectSlug,
 }: {
-  workspaceOrganizationId: string;
+  organizationId: string;
   projectSlug: string;
 }) =>
   queryOptions({
-    queryKey: ["FreeTierFeedback", { workspaceOrganizationId, projectSlug }],
+    queryKey: ["FreeTierFeedback", { organizationId, projectSlug }],
     queryFn: async () => {
       try {
         const { projects } = await useProjectQuery.fetcher({
-          workspaceOrganizationId,
+          organizationId,
           projectSlug,
         })();
 

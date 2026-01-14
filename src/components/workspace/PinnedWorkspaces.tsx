@@ -1,46 +1,26 @@
-import { Grid } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
+import { Button, Flex, Grid, Icon } from "@omnidev/sigil";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
+import { LuBuilding2, LuPlus } from "react-icons/lu";
 
-import SkeletonArray from "@/components/core/SkeletonArray";
 import WorkspaceCard from "@/components/dashboard/WorkspaceCard";
-import EmptyState from "@/components/layout/EmptyState";
-import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import SectionContainer from "@/components/layout/SectionContainer";
-import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { workspacesOptions } from "@/lib/options/workspaces";
-import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
-
-import type { Workspace } from "@/generated/graphql";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
 /**
  * Pinned workspaces section.
+ *
+ * Shows the user's organizations from JWT claims. Organizations are managed
+ * by Gatekeeper (IDP), not the local database.
  */
 const PinnedWorkspaces = () => {
   const { session } = useRouteContext({ from: "/_auth/dashboard" });
-  const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
 
-  // Get org IDs from session for filtering
-  const organizationIds = session?.organizations?.map((org) => org.id) ?? [];
+  // Organizations come from JWT claims, not a local workspace table
+  const organizations = session?.organizations ?? [];
 
-  const {
-    data: pinnedWorkspaces,
-    isLoading,
-    isError,
-  } = useQuery({
-    ...workspacesOptions({
-      pageSize: 3,
-      offset: 0,
-      orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
-      organizationIds,
-    }),
-    select: (data) => data?.workspaces?.nodes,
-    enabled: organizationIds.length > 0,
-  });
+  // Take first 3 organizations to display
+  const pinnedOrgs = organizations.slice(0, 3);
 
   return (
     <SectionContainer
@@ -48,52 +28,59 @@ const PinnedWorkspaces = () => {
       description={app.dashboardPage.workspaces.description}
       icon={LuBuilding2}
     >
-      {isError ? (
-        <ErrorBoundary message="Error fetching workspaces" h={48} />
-      ) : (
-        <Grid
-          // NB: The padding is necessary to prevent clipping of the card borders/box shadows
-          p="1px"
-          gap={6}
-          columns={{
-            base: 1,
-            md: isLoading
-              ? 3
-              : pinnedWorkspaces?.length
-                ? Math.min(3, pinnedWorkspaces.length)
-                : 1,
-          }}
-        >
-          {isLoading ? (
-            <SkeletonArray count={3} h={48} />
-          ) : pinnedWorkspaces?.length ? (
-            pinnedWorkspaces?.map((workspace) => (
-              <Link
-                key={workspace?.rowId}
-                to="/workspaces/$workspaceSlug"
-                params={{ workspaceSlug: workspace?.slug! }}
-                role="group"
-              >
-                <WorkspaceCard
-                  workspace={workspace as Partial<Workspace>}
-                  // NB: min height ensures consistent card sizing while allowing growth for longer content
-                  minH={48}
-                />
-              </Link>
-            ))
-          ) : (
-            <EmptyState
-              message={app.dashboardPage.workspaces.emptyState.message}
-              action={{
-                label: app.dashboardPage.workspaces.emptyState.cta.label,
-                onClick: () => setIsCreateWorkspaceDialogOpen(true),
-                icon: LuCirclePlus,
-              }}
-              h={48}
-            />
-          )}
-        </Grid>
-      )}
+      <Grid
+        // NB: The padding is necessary to prevent clipping of the card borders/box shadows
+        p="1px"
+        gap={6}
+        columns={{
+          base: 1,
+          md: pinnedOrgs.length ? Math.min(3, pinnedOrgs.length) : 1,
+        }}
+      >
+        {pinnedOrgs.length ? (
+          pinnedOrgs.map((org) => (
+            <Link
+              key={org.id}
+              to="/workspaces/$workspaceSlug"
+              params={{ workspaceSlug: org.slug }}
+              role="group"
+            >
+              <WorkspaceCard
+                workspace={{
+                  rowId: org.id,
+                  name: org.name ?? org.slug,
+                  slug: org.slug,
+                  organizationId: org.id,
+                }}
+                // NB: min height ensures consistent card sizing while allowing growth for longer content
+                minH={48}
+              />
+            </Link>
+          ))
+        ) : (
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            textAlign="center"
+            borderRadius="md"
+            borderWidth="1px"
+            borderStyle="dashed"
+            gap={4}
+            p={6}
+            h={48}
+          >
+            {app.dashboardPage.workspaces.emptyState.message}
+
+            <Button variant="outline" size="sm" asChild>
+              <a href={`${AUTH_BASE_URL}/profile`}>
+                <Icon src={LuPlus} />
+                Create Organization
+              </a>
+            </Button>
+          </Flex>
+        )}
+      </Grid>
     </SectionContainer>
   );
 };

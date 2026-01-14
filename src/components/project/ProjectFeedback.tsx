@@ -89,7 +89,7 @@ const ProjectFeedback = () => {
 
   const { data: project } = useQuery({
     ...projectOptions({
-      workspaceOrganizationId: organizationId,
+      organizationId,
       projectSlug,
     }),
     select: (data) => data?.projects?.nodes?.[0],
@@ -99,16 +99,16 @@ const ProjectFeedback = () => {
 
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
-      workspaceOrganizationId: organizationId,
+      organizationId,
       projectSlug,
     }),
   );
 
   const { data: defaultStatus } = useQuery({
     ...projectStatusesOptions({
-      workspaceId: project?.workspace?.rowId!,
+      organizationId,
     }),
-    enabled: !!project?.workspace?.rowId,
+    enabled: !!organizationId,
     select: (data) => {
       // find the default status from project status configs, or fall back to first template
       const templates = data?.statusTemplates?.nodes;
@@ -165,7 +165,7 @@ const ProjectFeedback = () => {
           rowId: input.post.projectId,
           name: project?.name ?? "pending",
           slug: project?.slug ?? "pending",
-          workspace: project?.workspace ?? null,
+          organizationId: project?.organizationId ?? organizationId,
         },
         user: {
           rowId: session?.user?.rowId ?? "",
@@ -200,9 +200,9 @@ const ProjectFeedback = () => {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      workspaceId: project?.workspace?.rowId!,
+      organizationId,
     }),
-    enabled: hasAdminPrivileges && !!project?.workspace?.rowId,
+    enabled: hasAdminPrivileges && !!organizationId,
     select: (data) =>
       data?.statusTemplates?.nodes.map((status) => ({
         rowId: status?.rowId,

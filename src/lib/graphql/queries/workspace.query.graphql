@@ -1,22 +1,21 @@
-query Workspace($organizationId: String!) {
-  workspaces(condition: { organizationId: $organizationId }, first: 1) {
+query Workspace($organizationId: UUID!) {
+  projects(
+    condition: { organizationId: $organizationId }
+    first: 6
+    orderBy: POSTS_COUNT_DESC
+  ) {
+    totalCount
     nodes {
-      ...Workspace
-      updatedAt
-      projects(first: 6, orderBy: POSTS_COUNT_DESC) {
+      rowId
+      name
+      description
+      slug
+      organizationId
+      posts {
         totalCount
-        nodes {
-          rowId
-          name
-          description
-          slug
-          posts {
-            totalCount
-            aggregates {
-              distinctCount {
-                userId
-              }
-            }
+        aggregates {
+          distinctCount {
+            userId
           }
         }
       }

@@ -31,7 +31,7 @@ const ProjectLinks = () => {
   });
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceOrganizationId: organizationId, projectSlug }),
+    ...projectOptions({ organizationId, projectSlug }),
     select: (data) => data.projects?.nodes?.[0],
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);

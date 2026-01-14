@@ -6,10 +6,12 @@ import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateProject from "@/components/project/UpdateProject";
-import { useDeleteProjectMutation } from "@/generated/graphql";
+import {
+  useDeleteProjectMutation,
+  useProjectsQuery,
+} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { projectOptions } from "@/lib/options/projects";
-import { workspacesOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
@@ -34,7 +36,7 @@ export const Route = createFileRoute(
   }) => {
     const { projects } = await queryClient.ensureQueryData({
       ...projectOptions({
-        workspaceOrganizationId: organizationId,
+        organizationId,
         projectSlug,
       }),
       revalidateIfStale: true,
@@ -58,7 +60,7 @@ function ProjectSettingsPage() {
 
   const { data: project } = useQuery({
     ...projectOptions({
-      workspaceOrganizationId: organizationId,
+      organizationId,
       projectSlug,
     }),
     select: (data) => data?.projects?.nodes?.[0],
@@ -96,11 +98,10 @@ function ProjectSettingsPage() {
         replace: true,
       }),
     onSettled: () => {
-      // Invalidate workspace queries to refresh project count
+      // Invalidate project queries to refresh project count
+      // Use partial queryKey to match all Projects queries for this org
       queryClient.invalidateQueries({
-        queryKey: workspacesOptions({
-          organizationId,
-        }).queryKey,
+        queryKey: useProjectsQuery.getKey({ organizationId } as never),
       });
       queryClient.invalidateQueries({
         queryKey: ["Projects"],

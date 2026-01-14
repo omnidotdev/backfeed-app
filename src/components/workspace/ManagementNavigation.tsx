@@ -1,5 +1,4 @@
 import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
 import {
   useNavigate,
   useParams,
@@ -12,7 +11,6 @@ import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
 import app from "@/lib/config/app.config";
-import { workspaceOptions } from "@/lib/options/workspaces";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -42,7 +40,7 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { role, organizationId, workspaceName } = useRouteContext({
+  const { role, workspaceName } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
   const { workspaceSlug } = useParams({
@@ -56,11 +54,6 @@ const ManagementNavigation = ({
         : state.location;
       return currentLocation?.pathname.split("/").at(-1);
     },
-  });
-
-  useQuery({
-    ...workspaceOptions({ organizationId }),
-    select: (data) => data?.workspaces?.nodes?.[0],
   });
 
   const SIDEBAR_NAVIGATION: NavigationItem[] = [

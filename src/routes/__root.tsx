@@ -6,8 +6,10 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouteContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { createServerFn } from "@tanstack/react-start";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
@@ -16,7 +18,7 @@ import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import app from "@/lib/config/app.config";
-import { isDevEnv } from "@/lib/config/env.config";
+import { getIsMaintenanceMode } from "@/lib/flags";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import toaster from "@/lib/util/toaster";
@@ -49,14 +51,25 @@ interface ExtendedSession extends Omit<Session, "user"> {
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
+const fetchMaintenanceMode = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { session } = await fetchSession();
+    const isMaintenanceMode = await getIsMaintenanceMode(session);
+
+    return { isMaintenanceMode };
+  },
+);
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
+  isMaintenanceMode: boolean;
 }>()({
   beforeLoad: async () => {
     const { session } = await fetchSession();
+    const { isMaintenanceMode } = await fetchMaintenanceMode();
 
-    return { session };
+    return { session, isMaintenanceMode };
   },
   loader: () => getTheme(),
   head: () => ({
@@ -86,32 +99,30 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
-// Note: Production teaser is intentionally disabled for this app
-// To enable, uncomment the isDevEnv check in RootComponent
-function ComingSoon() {
+function MaintenancePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-cyan-900 to-cyan-800">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-cyan-900 to-cyan-800 p-8 text-white">
       <div className="text-center">
-        <div className="text-9xl">🔄</div>
+        <div className="mb-6 text-9xl">🔄</div>
+        <h1 className="mb-4 text-4xl font-bold">Looping Back</h1>
+        <p className="max-w-md text-lg text-cyan-200">
+          We're cycling through updates. Backfeed will return shortly.
+        </p>
       </div>
     </div>
   );
 }
 
 function RootComponent() {
-  // Production teaser disabled - always show full app
-  // To enable teaser in production, uncomment the following:
-  // if (!isDevEnv) {
-  //   return (
-  //     <RootDocument>
-  //       <ComingSoon />
-  //     </RootDocument>
-  //   );
-  // }
+  const { isMaintenanceMode } = useRouteContext({ from: "__root__" });
 
-  // Suppress unused variable warning when teaser is disabled
-  void isDevEnv;
-  void ComingSoon;
+  if (isMaintenanceMode) {
+    return (
+      <RootDocument>
+        <MaintenancePage />
+      </RootDocument>
+    );
+  }
 
   return (
     <RootDocument>

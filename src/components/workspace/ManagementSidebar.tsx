@@ -6,7 +6,6 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
 import {
   useParams,
   useRouteContext,
@@ -20,7 +19,6 @@ import ManagementNavigation from "@/components/workspace/ManagementNavigation";
 import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
-import { workspaceOptions } from "@/lib/options/workspaces";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { PropsWithChildren } from "react";
@@ -43,7 +41,7 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
 
-  const { organizationId, workspaceName } = useRouteContext({
+  const { workspaceName } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
   });
 
@@ -52,13 +50,6 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   });
 
   const isClient = useIsClient();
-
-  useQuery({
-    ...workspaceOptions({
-      organizationId,
-    }),
-    select: (data) => data?.workspaces?.nodes?.[0],
-  });
 
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
     "workspace-management-sidebar",

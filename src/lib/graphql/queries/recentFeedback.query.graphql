@@ -1,11 +1,9 @@
-query RecentFeedback($organizationIds: [String!], $after: Cursor) {
+query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
   posts(
     first: 10
     after: $after
     orderBy: CREATED_AT_DESC
-    filter: {
-      project: { workspace: { organizationId: { in: $organizationIds } } }
-    }
+    filter: { project: { organizationId: { in: $organizationIds } } }
   ) {
     totalCount
     pageInfo {
@@ -21,10 +19,7 @@ query RecentFeedback($organizationIds: [String!], $after: Cursor) {
         project {
           name
           slug
-          workspace {
-            organizationId
-            slug
-          }
+          organizationId
         }
         statusTemplate {
           rowId

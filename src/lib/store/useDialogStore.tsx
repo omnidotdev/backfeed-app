@@ -3,8 +3,6 @@ import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 
 export enum DialogType {
-  /** Dialog for creating a new workspace. */
-  CreateWorkspace = "createWorkspace",
   /** Dialog for creating a new project. */
   CreateProject = "createProject",
   /** Dialog for creating feedback. */

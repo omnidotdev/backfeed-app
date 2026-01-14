@@ -1,7 +1,0 @@
-mutation DeleteWorkspace($rowId: UUID!) {
-  deleteWorkspace(input: { rowId: $rowId }) {
-    workspace {
-      rowId
-    }
-  }
-}

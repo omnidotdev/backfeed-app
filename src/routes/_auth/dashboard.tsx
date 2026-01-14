@@ -1,48 +1,29 @@
 import { Grid, Icon } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
-import { LuBuilding2, LuCirclePlus } from "react-icons/lu";
+import { LuBuilding2 } from "react-icons/lu";
 
 import Aggregate from "@/components/dashboard/Aggregate";
 import FeedbackOverview from "@/components/dashboard/FeedbackOverview";
 import RecentFeedback from "@/components/dashboard/RecentFeedback";
 import Page from "@/components/layout/Page";
-import CreateWorkspace from "@/components/workspace/CreateWorkspace";
 import PinnedWorkspaces from "@/components/workspace/PinnedWorkspaces";
-import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import {
   dashboardAggregatesOptions,
   recentFeedbackOptions,
   weeklyFeedbackOptions,
 } from "@/lib/options/dashboard";
-import { workspacesOptions } from "@/lib/options/workspaces";
-import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute("/_auth/dashboard")({
-  beforeLoad: async ({ context: { queryClient, session } }) => {
+  beforeLoad: async ({ context: { session } }) => {
     if (!session?.user.rowId) return;
 
-    // Get user's org IDs for filtering workspaces
+    // Get user's org IDs from JWT claims
     const organizationIds = session.organizations?.map((o) => o.id) ?? [];
-
-    // Check if user has no organizations (first-time user)
-    const hasOrganizations = organizationIds.length > 0;
-
-    if (!hasOrganizations) {
-      // Double-check by querying workspaces directly
-      const data = await queryClient.fetchQuery({
-        ...workspacesOptions({ organizationIds }),
-      });
-
-      if (!data?.workspaces?.nodes?.length) {
-        // Redirect to dashboard - onboarding is handled by Gatekeeper
-        throw redirect({ to: "/dashboard" });
-      }
-    }
 
     return { organizationIds };
   },
@@ -61,15 +42,6 @@ export const Route = createFileRoute("/_auth/dashboard")({
       .toDate();
 
     await Promise.all([
-      queryClient.ensureQueryData({
-        ...workspacesOptions({
-          pageSize: 3,
-          offset: 0,
-          orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
-          organizationIds,
-        }),
-        revalidateIfStale: true,
-      }),
       queryClient.ensureQueryData({
         ...dashboardAggregatesOptions({
           organizationIds,
@@ -136,11 +108,6 @@ function DashboardPage() {
             icon: <Icon src={LuBuilding2} />,
             linkOptions: { to: "/workspaces" },
           },
-          {
-            label: app.dashboardPage.cta.newWorkspace.label,
-            icon: <Icon src={LuCirclePlus} />,
-            dialogType: DialogType.CreateWorkspace,
-          },
         ],
       }}
     >
@@ -164,9 +131,6 @@ function DashboardPage() {
 
         <RecentFeedback />
       </Grid>
-
-      {/* dialogs */}
-      <CreateWorkspace />
     </Page>
   );
 }

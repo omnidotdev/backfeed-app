@@ -1,9 +1,9 @@
-query WorkspaceMetrics($workspaceId: UUID!) {
-  projects(condition: { workspaceId: $workspaceId }) {
+query WorkspaceMetrics($organizationId: UUID!) {
+  projects(condition: { organizationId: $organizationId }) {
     totalCount
   }
 
-  posts(filter: { project: { workspaceId: { equalTo: $workspaceId } } }) {
+  posts(filter: { project: { organizationId: { equalTo: $organizationId } } }) {
     totalCount
   }
 }

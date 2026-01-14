@@ -1,5 +1,4 @@
 import { Dialog, sigil } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
@@ -12,12 +11,11 @@ import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import {
   projectDescriptionSchema,
   projectNameSchema,
-  uuidSchema,
 } from "@/lib/constants/schema.constant";
 import getSdk from "@/lib/graphql/getSdk";
 import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
-import { workspaceOptions, workspacesOptions } from "@/lib/options/workspaces";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
 import toaster from "@/lib/util/toaster";
@@ -25,28 +23,33 @@ import { fetchSession } from "@/server/functions/auth";
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
-/** Schema for defining the shape of the create project form fields, as well as validating the form. */
+/**
+ * Schema for create project form fields.
+ * Note: organizationId is passed as the workspace identifier since workspaces
+ * are now 1:1 with organizations (no separate workspace table).
+ */
 const createProjectSchema = z
   .object({
-    workspaceId: uuidSchema,
+    organizationId: z.string(),
     name: projectNameSchema,
     description: projectDescriptionSchema,
   })
-  .superRefine(async ({ workspaceId, name }, ctx) => {
+  .superRefine(async ({ organizationId, name }, ctx) => {
     const { session } = await fetchSession();
 
     const slug = generateSlug(name);
 
-    if (!workspaceId.length || !slug?.length || !session) return z.NEVER;
+    if (!organizationId.length || !slug?.length || !session) return z.NEVER;
 
     const sdk = await getSdk();
 
-    const { projectBySlugAndWorkspaceId } = await sdk.ProjectBySlug({
-      workspaceId,
+    // Check if project with this slug already exists in the organization
+    const { projectBySlugAndOrganizationId } = await sdk.ProjectBySlug({
+      organizationId,
       slug,
     });
 
-    if (projectBySlugAndWorkspaceId) {
+    if (projectBySlugAndOrganizationId) {
       ctx.addIssue({
         code: "custom",
         message: app.dashboardPage.cta.newProject.projectSlug.error.duplicate,
@@ -64,7 +67,7 @@ interface Props {
  * Dialog for creating a new project.
  */
 const CreateProject = ({ workspaceSlug }: Props) => {
-  const { session, queryClient, organizationId } = useRouteContext({
+  const { queryClient, organizationId } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout",
   });
   const navigate = useNavigate();
@@ -75,20 +78,8 @@ const CreateProject = ({ workspaceSlug }: Props) => {
     minWidth: token("breakpoints.sm"),
   });
 
-  const { isOpen: isCreateWorkspaceDialogOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
-
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateProject,
-  });
-
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({
-      organizationId,
-    }),
-    enabled: !!session?.user?.rowId,
-    select: (data) => data?.workspaces?.nodes?.[0],
   });
 
   useHotkeys(
@@ -98,29 +89,25 @@ const CreateProject = ({ workspaceSlug }: Props) => {
       reset();
     },
     {
-      enabled: !isCreateWorkspaceDialogOpen && !!workspace,
-      // enabled even if a form field is focused. For available options, see: https://github.com/JohannesKlauss/react-hotkeys-hook?tab=readme-ov-file#api
+      enabled: !!organizationId,
       enableOnFormTags: true,
-      // prevent default browser behavior on keystroke. NOTE: certain keystrokes are not preventable.
       preventDefault: true,
     },
-    [isOpen, isCreateWorkspaceDialogOpen, workspace],
+    [isOpen, organizationId],
   );
 
   const { mutateAsync: createProject, isPending } = useCreateProjectMutation({
     onSettled: () => {
-      // Invalidate workspace queries to refresh project count
+      // Invalidate workspace metrics to refresh project count
       queryClient?.invalidateQueries({
-        queryKey: workspacesOptions({
-          organizationId,
-        }).queryKey,
+        queryKey: workspaceMetricsOptions({ organizationId }).queryKey,
       });
     },
   });
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
     defaultValues: {
-      workspaceId: workspace?.rowId ?? "",
+      organizationId: organizationId ?? "",
       name: "",
       description: "",
     },
@@ -131,15 +118,14 @@ const CreateProject = ({ workspaceSlug }: Props) => {
     onSubmit: async ({ value }) =>
       toaster.promise(
         async () => {
-          // NB: status templates are now workspace-level, so projects automatically
-          // inherit them. No need to create per-project statuses.
+          // Status templates are workspace-level (org-level), projects inherit them
           const { createProject: projectData } = await createProject({
             input: {
               project: {
                 name: value.name,
                 description: value.description,
                 slug: generateSlug(value.name)!,
-                workspaceId: value.workspaceId,
+                organizationId: value.organizationId,
               },
             },
           });

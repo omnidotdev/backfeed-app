@@ -64,7 +64,7 @@ const CreateFeedback = () => {
   });
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
-      workspaceOrganizationId: organizationId,
+      organizationId,
       projectSlug,
     }),
   );
@@ -72,19 +72,18 @@ const CreateFeedback = () => {
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug,
-      workspaceOrganizationId: organizationId,
+      organizationId,
     }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
   const projectId = project?.rowId;
-  const workspaceId = project?.workspace?.rowId;
 
   const { defaultStatusTemplateId, isLoading: isLoadingTemplates } =
     useEnsureStatusTemplates({
-      workspaceId,
+      organizationId,
       hasAdminPrivileges,
-      enabled: !!workspaceId,
+      enabled: !!organizationId,
     });
 
   const { mutateAsync: createStatusTemplate } =
@@ -103,7 +102,7 @@ const CreateFeedback = () => {
         }),
         queryClient.invalidateQueries(
           freeTierFeedbackOptions({
-            workspaceOrganizationId: organizationId,
+            organizationId,
             projectSlug,
           }),
         ),
@@ -148,7 +147,7 @@ const CreateFeedback = () => {
           }
 
           // Try to create default templates on-demand
-          if (workspaceId) {
+          if (organizationId) {
             try {
               toaster.info({
                 title: "Setting up",
@@ -160,7 +159,7 @@ const CreateFeedback = () => {
                 const result = await createStatusTemplate({
                   input: {
                     statusTemplate: {
-                      workspaceId,
+                      organizationId,
                       name: template.name,
                       displayName: template.displayName,
                       color: template.color,
@@ -179,7 +178,7 @@ const CreateFeedback = () => {
 
               // Invalidate cache so templates are available next time
               await queryClient.invalidateQueries({
-                queryKey: projectStatusesOptions({ workspaceId }).queryKey,
+                queryKey: projectStatusesOptions({ organizationId }).queryKey,
               });
             } catch (err) {
               console.error(

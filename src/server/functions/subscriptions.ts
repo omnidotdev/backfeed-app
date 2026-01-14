@@ -6,33 +6,38 @@ import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
-const workspaceSchema = z.object({
-  workspaceId: z.guid(),
+/**
+ * Schema for organization-based billing operations.
+ * Billing is tied to organizations (from Gatekeeper), not local workspace tables.
+ */
+const organizationSchema = z.object({
+  organizationId: z.string(),
 });
 
 const billingPortalSchema = z.object({
-  workspaceId: z.guid(),
+  organizationId: z.string(),
   returnUrl: z.url(),
 });
 
 const createSubscriptionSchema = z.object({
-  workspaceId: z.guid(),
+  organizationId: z.string(),
   priceId: z.string().startsWith("price_"),
   successUrl: z.url(),
 });
 
 /**
- * Get subscription details for a workspace via billing service.
+ * Get subscription details for an organization via billing service.
  */
 export const getSubscription = createServerFn()
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) return null;
 
     try {
+      // Aether billing APIs use organization ID to look up billing accounts
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
+        `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}`,
         {
           headers: {
             Authorization: `Bearer ${context.session.accessToken}`,
@@ -66,16 +71,17 @@ export const getSubscription = createServerFn()
   });
 
 /**
- * Cancel a subscription for a workspace via billing service.
+ * Cancel a subscription for an organization via billing service.
+ * @knipignore - exported for future subscription cancellation UI
  */
 export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/cancel`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -96,7 +102,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
 /**
  * Get billing portal URL.
  * This creates a Stripe billing portal session through Aether,
- * which looks up the billing account by workspace ID.
+ * which looks up the billing account by organization ID.
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => billingPortalSchema.parse(data))
@@ -105,7 +111,7 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/workspace/${data.workspaceId}`,
+      `${BILLING_BASE_URL}/billing-portal/organization/${data.organizationId}`,
       {
         method: "POST",
         headers: {
@@ -151,7 +157,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       line_items: [{ price: data.priceId, quantity: 1 }],
       subscription_data: {
         metadata: {
-          workspaceId: data.workspaceId,
+          organizationId: data.organizationId,
           omniProduct: app.name.toLowerCase(),
         },
       },
@@ -164,13 +170,13 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
  * Renew a subscription (remove scheduled cancellation) via billing service.
  */
 export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/renew`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}/renew`,
       {
         method: "POST",
         headers: {

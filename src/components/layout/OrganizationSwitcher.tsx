@@ -1,6 +1,14 @@
-import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
-import { LuBuilding2, LuChevronDown, LuUser } from "react-icons/lu";
+import {
+  Button,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemGroup,
+  MenuSeparator,
+} from "@omnidev/sigil";
+import { LuBuilding2, LuChevronDown, LuPlus, LuUser } from "react-icons/lu";
 
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 /**
@@ -52,6 +60,17 @@ const OrganizationSwitcher = () => {
             {org.type === "personal" && " (Personal)"}
           </MenuItem>
         ))}
+      </MenuItemGroup>
+
+      <MenuSeparator />
+
+      <MenuItemGroup>
+        <MenuItem value="create-org" asChild>
+          <a href={`${AUTH_BASE_URL}/profile`}>
+            <Icon src={LuPlus} />
+            Create Organization
+          </a>
+        </MenuItem>
       </MenuItemGroup>
     </Menu>
   );

@@ -9,10 +9,7 @@ fragment Feedback on Post {
     rowId
     name
     slug
-    workspace {
-      rowId
-      organizationId
-    }
+    organizationId
   }
   statusTemplate {
     rowId

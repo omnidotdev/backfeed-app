@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Icon, Tooltip } from "@omnidev/sigil";
+import { Button, Center, Flex, Icon, Tooltip, css } from "@omnidev/sigil";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
@@ -48,7 +48,13 @@ const EmptyState = ({ message, action, ...rest }: Props) => (
           <Button
             asChild
             variant="outline"
-            className="border-primary text-primary hover:bg-primary/10"
+            className={css({
+              borderColor: { base: "ruby.500", _dark: "ruby.400" },
+              color: { base: "ruby.500", _dark: "ruby.400" },
+              _hover: {
+                bgColor: { base: "ruby.50", _dark: "ruby.950/30" },
+              },
+            })}
             size="sm"
             disabled={action.disabled}
             onClick={action.onClick}

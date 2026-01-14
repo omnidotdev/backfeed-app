@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouteContext, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
 
 import {
   PostOrderBy,
@@ -34,6 +34,8 @@ interface Options {
   voteType: VoteType;
   /** Whether voting is being handled from the dynamic feedback route */
   isFeedbackRoute: boolean;
+  /** Current user's rowId for vote ownership */
+  userId?: string;
   /** Mutation options */
   mutationOptions?: UseMutationOptions;
 }
@@ -50,13 +52,12 @@ const useHandleVoteMutation = ({
   userVote,
   voteType,
   isFeedbackRoute,
+  userId,
   mutationOptions,
 }: Options) => {
   const queryClient = useQueryClient();
 
   const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
-
-  const { session } = useRouteContext({ from: "/_auth" });
 
   const { mutateAsync: createVote } = useCreateVoteMutation();
   const { mutateAsync: updateVote } = useUpdateVoteMutation();
@@ -86,7 +87,7 @@ const useHandleVoteMutation = ({
           input: {
             vote: {
               postId: feedbackId,
-              userId: session?.user?.rowId!,
+              userId: userId!,
               voteType,
             },
           },
@@ -97,7 +98,7 @@ const useHandleVoteMutation = ({
       const feedbackSnapshot = queryClient.getQueryData(
         feedbackByIdOptions({
           rowId: feedbackId,
-          userId: session?.user?.rowId,
+          userId: userId,
         }).queryKey,
       ) as FeedbackByIdQuery;
 
@@ -108,7 +109,7 @@ const useHandleVoteMutation = ({
           ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
           : undefined,
         search,
-        userId: session?.user?.rowId,
+        userId: userId,
       }).queryKey;
 
       const postsSnapshot = queryClient.getQueryData(
@@ -180,7 +181,7 @@ const useHandleVoteMutation = ({
         queryClient.setQueryData(
           feedbackByIdOptions({
             rowId: feedbackId,
-            userId: session?.user?.rowId,
+            userId: userId,
           }).queryKey,
           {
             post: {
@@ -241,7 +242,7 @@ const useHandleVoteMutation = ({
         return queryClient.invalidateQueries({
           queryKey: feedbackByIdOptions({
             rowId: feedbackId,
-            userId: session?.user?.rowId,
+            userId: userId,
           }).queryKey,
         });
       }
@@ -250,7 +251,7 @@ const useHandleVoteMutation = ({
         queryClient.invalidateQueries({
           queryKey: feedbackByIdOptions({
             rowId: feedbackId,
-            userId: session?.user?.rowId,
+            userId: userId,
           }).queryKey,
         }),
         queryClient.invalidateQueries({

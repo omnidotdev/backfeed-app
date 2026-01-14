@@ -1,4 +1,4 @@
-import { Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
+import { Button, Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -43,28 +43,40 @@ const ProjectListItem = ({
   ];
 
   return (
-    <Stack
-      p={4}
-      boxShadow="card"
-      borderRadius="sm"
-      w="full"
-      maxW="100%"
-      mx="auto"
-      h={40}
-      justify="space-between"
-      position="relative"
+    <Link
+      to="/workspaces/$workspaceSlug/projects/$projectSlug"
+      params={{
+        workspaceSlug,
+        projectSlug: slug!,
+      }}
+      role="group"
     >
-      <Stack gap={0}>
-        <HStack alignItems="center" justify="space-between">
-          <Stack maxW="65svw">
-            <Link
-              to="/workspaces/$workspaceSlug/projects/$projectSlug"
-              params={{
-                workspaceSlug,
-                projectSlug: slug!,
-              }}
-              role="group"
-            >
+      <Stack
+        p={4}
+        bgColor="card-item"
+        borderRadius="xl"
+        borderWidth="1px"
+        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
+        w="full"
+        maxW="100%"
+        mx="auto"
+        h={40}
+        justify="space-between"
+        position="relative"
+        cursor="pointer"
+        className={css({
+          transition: "all 0.2s ease",
+          _groupHover: {
+            bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+            borderColor: { base: "neutral.300", _dark: "neutral.700" },
+            transform: "translateY(-2px)",
+            boxShadow: "glow-card",
+          },
+        })}
+      >
+        <Stack gap={0}>
+          <HStack alignItems="center" justify="space-between">
+            <Stack maxW="65svw">
               <OverflowText
                 fontWeight="semibold"
                 whiteSpace="nowrap"
@@ -78,47 +90,53 @@ const ProjectListItem = ({
               >
                 {name}
               </OverflowText>
-            </Link>
-          </Stack>
+            </Stack>
 
-          {hasAdminPrivileges && (
-            <Flex position="absolute" right={0} top={0} m={2}>
-              <Link
-                to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
-                params={{
-                  workspaceSlug,
-                  projectSlug: slug!,
-                }}
-              >
-                <Button variant="ghost" px="2">
-                  <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
-                </Button>
-              </Link>
-            </Flex>
-          )}
-        </HStack>
-
-        <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
-          {description}
-        </OverflowText>
-      </Stack>
-
-      <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
-        {AGGREGATES.map(({ icon, value, type }) => (
-          <HStack key={type} gap={1} flexWrap="wrap">
-            <Icon src={icon} w={5} h={5} color="foreground.subtle" />
-
-            <Text
-              fontSize="sm"
-              color="foreground.subtle"
-              fontVariant="tabular-nums"
-            >
-              {value} {setSingularOrPlural({ value: +value, label: type })}
-            </Text>
+            {hasAdminPrivileges && (
+              <Flex position="absolute" right={0} top={0} m={2}>
+                <Link
+                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
+                  params={{
+                    workspaceSlug,
+                    projectSlug: slug!,
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="ghost" px="2">
+                    <Icon
+                      src={LuSettings}
+                      w={5}
+                      h={5}
+                      color="foreground.muted"
+                    />
+                  </Button>
+                </Link>
+              </Flex>
+            )}
           </HStack>
-        ))}
-      </HStack>
-    </Stack>
+
+          <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
+            {description}
+          </OverflowText>
+        </Stack>
+
+        <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
+          {AGGREGATES.map(({ icon, value, type }) => (
+            <HStack key={type} gap={1} flexWrap="wrap">
+              <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+
+              <Text
+                fontSize="sm"
+                color="foreground.subtle"
+                fontVariant="tabular-nums"
+              >
+                {value} {setSingularOrPlural({ value: +value, label: type })}
+              </Text>
+            </HStack>
+          ))}
+        </HStack>
+      </Stack>
+    </Link>
   );
 };
 

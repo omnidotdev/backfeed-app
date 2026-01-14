@@ -12,10 +12,7 @@ import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";
 import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
-import {
-  workspaceMetricsOptions,
-  workspaceOptions,
-} from "@/lib/options/workspaces";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -25,10 +22,12 @@ import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/",
 )({
-  loader: async ({ context: { queryClient, workspaceId, workspaceName } }) => {
+  loader: async ({
+    context: { queryClient, organizationId, workspaceName },
+  }) => {
     await queryClient.ensureQueryData({
       ...workspaceMetricsOptions({
-        workspaceId,
+        organizationId,
       }),
       revalidateIfStale: true,
     });
@@ -43,29 +42,26 @@ export const Route = createFileRoute(
 
 function WorkspacePage() {
   const { workspaceSlug } = Route.useParams();
-  const {
-    hasAdminPrivileges,
-    subscriptionId,
-    isAuthenticated,
-    organizationId,
-    workspaceName,
-  } = Route.useRouteContext();
+  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
+    Route.useRouteContext();
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ organizationId }),
-    select: (data) => data.workspaces?.nodes?.[0],
+  const { data: metrics } = useQuery({
+    ...workspaceMetricsOptions({ organizationId }),
   });
 
-  // Tier is determined by subscription status
-  const hasPaidSubscription = !!subscriptionId;
+  const projectCount = metrics?.projects?.totalCount ?? 0;
+
+  // TODO: Get subscription status from Aether billing API instead of local DB
+  // For now, assume free tier until billing integration is updated
+  const hasPaidSubscription = false;
 
   // To create projects, user must have administrative privileges
   // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
   const canCreateProjects =
     hasAdminPrivileges &&
     (hasPaidSubscription
-      ? (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
-      : !workspace?.projects.totalCount);
+      ? projectCount < MAX_NUMBER_OF_PROJECTS
+      : projectCount === 0);
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -101,7 +97,7 @@ function WorkspacePage() {
                   to: "/workspaces/$workspaceSlug/projects",
                   params: { workspaceSlug },
                 },
-                disabled: !workspace?.projects.totalCount,
+                disabled: !projectCount,
                 tooltip: app.workspacePage.header.cta.viewProjects.tooltip,
               },
               ...(hasAdminPrivileges

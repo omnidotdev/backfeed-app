@@ -156,7 +156,7 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
               opacity={{ _disabled: 0.8, _hover: 0.8 }}
               gap={1}
               fontSize="sm"
-              color="brand.senary"
+              color={{ base: "ruby.500", _dark: "ruby.400" }}
               onClick={onToggleReplyForm}
               disabled={actionIsPending || !canReply}
             >

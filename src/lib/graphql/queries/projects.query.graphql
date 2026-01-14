@@ -1,7 +1,7 @@
 query Projects(
   $pageSize: Int!
   $offset: Int!
-  $workspaceOrganizationId: String!
+  $organizationId: UUID!
   $search: String
 ) {
   projects(
@@ -10,7 +10,7 @@ query Projects(
     offset: $offset
     filter: {
       name: { includesInsensitive: $search }
-      workspace: { organizationId: { equalTo: $workspaceOrganizationId } }
+      organizationId: { equalTo: $organizationId }
     }
   ) {
     totalCount
@@ -19,10 +19,7 @@ query Projects(
       name
       description
       slug
-      workspace {
-        rowId
-        organizationId
-      }
+      organizationId
       posts {
         totalCount
         aggregates {

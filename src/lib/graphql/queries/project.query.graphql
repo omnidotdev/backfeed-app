@@ -1,14 +1,7 @@
-query Project(
-  $projectSlug: String!
-  $workspaceOrganizationId: String!
-  $userId: UUID
-) {
+query Project($projectSlug: String!, $organizationId: UUID!, $userId: UUID) {
   projects(
     first: 1
-    condition: { slug: $projectSlug }
-    filter: {
-      workspace: { organizationId: { equalTo: $workspaceOrganizationId } }
-    }
+    condition: { slug: $projectSlug, organizationId: $organizationId }
   ) {
     nodes {
       ...Project

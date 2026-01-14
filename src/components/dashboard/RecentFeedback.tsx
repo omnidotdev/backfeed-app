@@ -77,7 +77,11 @@ const RecentFeedback = () => {
                   <Link
                     to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
                     params={{
-                      workspaceSlug: feedback?.project?.workspace?.slug!,
+                      // Resolve org slug from session's organizations using organizationId
+                      workspaceSlug:
+                        session?.organizations?.find(
+                          (org) => org.id === feedback?.project?.organizationId,
+                        )?.slug ?? "",
                       projectSlug: feedback?.project?.slug!,
                       feedbackId: feedback?.rowId!,
                     }}

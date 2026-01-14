@@ -152,6 +152,7 @@ const DestructiveAction = ({
           minWidth: isSmallViewport ? token("sizes.md") : "80%",
           maxWidth: token("sizes.lg"),
           cursor: "default",
+          zIndex: 50,
         },
       }}
       {...rest}

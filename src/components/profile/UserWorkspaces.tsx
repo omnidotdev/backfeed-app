@@ -1,90 +1,42 @@
-import { Button, Icon, Stack } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
-import { LuPlus } from "react-icons/lu";
+import { Stack } from "@omnidev/sigil";
+import { useRouteContext } from "@tanstack/react-router";
 
-import SkeletonArray from "@/components/core/SkeletonArray";
 import EmptyState from "@/components/layout/EmptyState";
-import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import WorkspaceListItem from "@/components/workspace/WorkspaceListItem";
-import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { workspacesOptions } from "@/lib/options/workspaces";
-import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
-
-import type { Workspace } from "@/generated/graphql";
 
 /**
  * User workspaces list for profile page.
- * Shows workspaces the user has access to based on their organization memberships.
+ * Shows workspaces (organizations) the user has access to from JWT claims.
  */
 const UserWorkspaces = () => {
-  const { organizationIds } = useLoaderData({
-    from: "/_auth/profile/$userId/_layout/workspaces",
-  });
+  const { session } = useRouteContext({ from: "__root__" });
 
-  const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
+  // Organizations come from JWT claims, not a database query
+  const organizations = session?.organizations ?? [];
 
-  const {
-    data: workspaces,
-    isLoading,
-    isError,
-  } = useQuery({
-    ...workspacesOptions({
-      organizationIds,
-      orderBy: [WorkspaceOrderBy.CreatedAtAsc],
-    }),
-    select: (data) => data.workspaces?.nodes ?? [],
-  });
-
-  if (isError) {
-    return <ErrorBoundary message="Error fetching workspaces" minH={48} />;
-  }
-
-  if (isLoading) {
-    return (
-      <Stack>
-        <SkeletonArray count={3} h={36} borderRadius="sm" />
-      </Stack>
-    );
-  }
-
-  if (!workspaces?.length) {
+  if (!organizations.length) {
     return (
       <EmptyState
         message={app.profileWorkspacesPage.table.emptyState.label}
-        action={{
-          label: "Create Workspace",
-          icon: LuPlus,
-          onClick: () => setIsCreateWorkspaceDialogOpen(true),
-        }}
         minH={48}
       />
     );
   }
 
   return (
-    <Stack gap={4}>
-      <Button
-        size="sm"
-        variant="outline"
-        w="fit"
-        onClick={() => setIsCreateWorkspaceDialogOpen(true)}
-        alignSelf="flex-end"
-      >
-        <Icon src={LuPlus} /> Create Workspace
-      </Button>
-
-      <Stack w="100%">
-        {workspaces.map((workspace) => (
-          <WorkspaceListItem
-            key={workspace?.rowId}
-            workspace={workspace as Partial<Workspace>}
-          />
-        ))}
-      </Stack>
+    <Stack gap={4} w="100%">
+      {organizations.map((org) => (
+        <WorkspaceListItem
+          key={org.id}
+          workspace={{
+            rowId: org.id,
+            name: org.name,
+            slug: org.slug,
+            updatedAt: new Date().toISOString(),
+          }}
+        />
+      ))}
     </Stack>
   );
 };

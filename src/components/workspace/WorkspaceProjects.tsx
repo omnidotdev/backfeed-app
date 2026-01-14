@@ -43,7 +43,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
     ...workspaceOptions({
       organizationId,
     }),
-    select: (data) => data?.workspaces?.nodes?.[0]?.projects?.nodes,
+    select: (data) => data?.projects?.nodes,
   });
 
   return (

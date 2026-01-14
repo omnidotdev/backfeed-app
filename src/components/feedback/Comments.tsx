@@ -42,7 +42,7 @@ const Comments = () => {
   const { data: canCreateComment } = useQuery(
     freeTierCommentsOptions({
       projectSlug,
-      workspaceOrganizationId: organizationId,
+      organizationId,
       feedbackId,
     }),
   );

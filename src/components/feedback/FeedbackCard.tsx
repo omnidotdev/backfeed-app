@@ -1,11 +1,14 @@
-import { Format } from "@ark-ui/react";
+import { Format, Portal } from "@ark-ui/react";
 import {
   Circle,
   HStack,
   Icon,
-  Menu,
+  MenuContent,
   MenuItem,
   MenuItemGroup,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
   Stack,
   Text,
   css,
@@ -285,12 +288,13 @@ const FeedbackCard = ({
         totalDownvotes={totalDownvotes}
         isFeedbackRoute={!!isFeedbackRoute}
         isAuthenticated={isAuthenticated}
+        userId={session?.user?.rowId}
       />
 
       {/* Content on the right */}
       <Stack h="full" w="full" gap={1} flex={1}>
         <HStack justify="space-between" alignItems="flex-start">
-          <Stack gap={0.5}>
+          <Stack gap={0.5} flex={1}>
             <Text
               wordBreak="break-word"
               fontWeight="semibold"
@@ -311,6 +315,65 @@ const FeedbackCard = ({
               </Text>
             </HStack>
           </Stack>
+
+          <MenuRoot
+            onOpenChange={({ open }) =>
+              open ? setIsStatusMenuOpen(true) : undefined
+            }
+            onExitComplete={() => setIsStatusMenuOpen(false)}
+            positioning={{ strategy: "fixed" }}
+          >
+            <MenuTrigger
+              asChild
+              disabled={
+                !canManageFeedback || actionIsPending || isUpdateStatusPending
+              }
+            >
+              <StatusBadge
+                status={feedback.statusTemplate!}
+                cursor={canManageFeedback ? "pointer" : "default"}
+                onClick={(evt) => evt.stopPropagation()}
+              >
+                {canManageFeedback && <Icon src={LuChevronDown} />}
+              </StatusBadge>
+            </MenuTrigger>
+
+            <Portal>
+              <MenuPositioner>
+                <MenuContent>
+                  <MenuItemGroup>
+                    {projectStatuses?.map((status) => (
+                      <MenuItem
+                        key={status.rowId}
+                        value={status.rowId!}
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        style={
+                          status.color ? { color: status.color } : undefined
+                        }
+                        onClick={() =>
+                          updateStatus({
+                            rowId: feedback.rowId!,
+                            patch: {
+                              statusTemplateId: status.rowId!,
+                              statusUpdatedAt: new Date(),
+                            },
+                          })
+                        }
+                      >
+                        {status.displayName}
+
+                        {status.rowId === feedback.statusTemplate?.rowId && (
+                          <Icon src={LuCheck} h={4} w={4} color="green.500" />
+                        )}
+                      </MenuItem>
+                    ))}
+                  </MenuItemGroup>
+                </MenuContent>
+              </MenuPositioner>
+            </Portal>
+          </MenuRoot>
         </HStack>
 
         <Text
@@ -329,122 +392,74 @@ const FeedbackCard = ({
           ))}
         </Text>
 
-        <Stack justify="space-between" gap={4} mt={2}>
-          <HStack justify="space-between">
-            <HStack>
-              <Menu
-                onOpenChange={({ open }) =>
-                  open ? setIsStatusMenuOpen(true) : undefined
-                }
-                onExitComplete={() => setIsStatusMenuOpen(false)}
-                trigger={
-                  <StatusBadge
-                    status={feedback.statusTemplate!}
-                    cursor={canManageFeedback ? "pointer" : "default"}
-                    onClick={(evt) => evt.stopPropagation()}
-                  >
-                    {canManageFeedback && <Icon src={LuChevronDown} />}
-                  </StatusBadge>
-                }
-                triggerProps={{
-                  disabled:
-                    !canManageFeedback ||
-                    actionIsPending ||
-                    isUpdateStatusPending,
-                }}
-                positioning={{ strategy: "fixed" }}
-              >
-                <MenuItemGroup>
-                  {projectStatuses?.map((status) => (
-                    <MenuItem
-                      key={status.rowId}
-                      value={status.rowId!}
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      // NB: Needs to be analyzed at runtime.
-                      // TODO: Implement check to validate that the status color is a valid color
-                      style={status.color ? { color: status.color } : undefined}
-                      onClick={() =>
-                        updateStatus({
-                          rowId: feedback.rowId!,
-                          patch: {
-                            statusTemplateId: status.rowId!,
-                            statusUpdatedAt: new Date(),
-                          },
-                        })
-                      }
-                    >
-                      {status.displayName}
+        <HStack justify="space-between" mt={2}>
+          {isFeedbackRoute && (
+            <Text
+              display={{ base: "none", sm: "inline-flex" }}
+              fontSize="sm"
+              color="foreground.subtle"
+            >
+              {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+            </Text>
+          )}
 
-                      {status.rowId === feedback.statusTemplate?.rowId && (
-                        <Icon src={LuCheck} h={4} w={4} color="green.500" />
-                      )}
-                    </MenuItem>
-                  ))}
-                </MenuItemGroup>
-              </Menu>
+          <HStack ml="auto">
+            {canAdjustFeedback && (
+              <HStack>
+                <UpdateFeedback
+                  feedback={feedback}
+                  triggerProps={{
+                    disabled: actionIsPending,
+                    onClick: (evt) => evt.stopPropagation(),
+                  }}
+                />
 
-              {isFeedbackRoute && (
-                <Text
-                  display={{ base: "none", sm: "inline-flex" }}
-                  fontSize="sm"
-                  color="foreground.subtle"
-                >
-                  {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
-                </Text>
-              )}
-            </HStack>
-
-            <HStack mb={-2}>
-              {canAdjustFeedback && (
-                <HStack>
-                  <UpdateFeedback
-                    feedback={feedback}
-                    triggerProps={{
-                      disabled: actionIsPending,
-                      onClick: (evt) => evt.stopPropagation(),
-                    }}
-                  />
-
-                  <DestructiveAction
-                    title={app.projectPage.projectFeedback.deleteFeedback.title}
-                    description={
-                      app.projectPage.projectFeedback.deleteFeedback.description
-                    }
-                    action={{
-                      label:
-                        app.projectPage.projectFeedback.deleteFeedback.action
-                          .label,
-                      onClick: () =>
-                        deleteFeedback({ postId: feedback.rowId! }),
-                    }}
-                    triggerProps={{
-                      "aria-label":
-                        app.projectPage.projectFeedback.deleteFeedback.title,
-                      px: 2,
-                      color: "omni.ruby",
-                      backgroundColor: "transparent",
-                      disabled: actionIsPending,
-                      onClick: (evt) => evt.stopPropagation(),
-                    }}
-                  />
-                </HStack>
-              )}
-
-              <HStack color="foreground.subtle" gap={1} ml={2} py={2}>
-                <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-
-                <Format.Number
-                  value={feedback.comments?.totalCount ?? 0}
-                  notation="compact"
+                <DestructiveAction
+                  title={app.projectPage.projectFeedback.deleteFeedback.title}
+                  description={
+                    app.projectPage.projectFeedback.deleteFeedback.description
+                  }
+                  action={{
+                    label:
+                      app.projectPage.projectFeedback.deleteFeedback.action
+                        .label,
+                    onClick: () => deleteFeedback({ postId: feedback.rowId! }),
+                  }}
+                  triggerProps={{
+                    "aria-label":
+                      app.projectPage.projectFeedback.deleteFeedback.title,
+                    variant: "ghost",
+                    size: "xs",
+                    p: 0,
+                    minW: "auto",
+                    h: "auto",
+                    backgroundColor: "transparent",
+                    disabled: actionIsPending,
+                    onClick: (evt) => evt.stopPropagation(),
+                  }}
+                  iconProps={{
+                    h: 4.5,
+                    w: 4.5,
+                    color: "red.500",
+                    cursor: "pointer",
+                  }}
                 />
               </HStack>
+            )}
+
+            <HStack color="foreground.subtle" gap={1} ml={2}>
+              <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+
+              <Format.Number
+                value={feedback.comments?.totalCount ?? 0}
+                notation="compact"
+              />
             </HStack>
           </HStack>
-        </Stack>
+        </HStack>
       </Stack>
     </HStack>
   );
 };
+
 export default FeedbackCard;

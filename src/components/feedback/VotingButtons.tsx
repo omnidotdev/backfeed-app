@@ -1,9 +1,8 @@
-import { Flex, Icon, Text, Tooltip, css } from "@omnidev/sigil";
+import { Button, Flex, Icon, Text, css } from "@omnidev/sigil";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
 import LoginPrompt from "@/components/auth/LoginPrompt";
 import { VoteType } from "@/generated/graphql";
-import app from "@/lib/config/app.config";
 import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
 
 import type { Post, Project, Vote } from "@/generated/graphql";
@@ -23,6 +22,8 @@ interface Props {
   isFeedbackRoute: boolean;
   /** Whether the user is authenticated. */
   isAuthenticated?: boolean;
+  /** Current user's rowId for vote ownership. */
+  userId?: string;
 }
 
 const VotingButtons = ({
@@ -33,6 +34,7 @@ const VotingButtons = ({
   totalDownvotes,
   isFeedbackRoute,
   isAuthenticated = true,
+  userId,
 }: Props) => {
   const { mutate: handleUpvote, isPending: isUpvotePending } =
     useHandleVoteMutation({
@@ -41,6 +43,7 @@ const VotingButtons = ({
       userVote,
       voteType: VoteType.Up,
       isFeedbackRoute,
+      userId,
     });
 
   const { mutate: handleDownvote, isPending: isDownvotePending } =
@@ -50,6 +53,7 @@ const VotingButtons = ({
       userVote,
       voteType: VoteType.Down,
       isFeedbackRoute,
+      userId,
     });
 
   const hasUpvote = userVote?.voteType === VoteType.Up;
@@ -65,19 +69,19 @@ const VotingButtons = ({
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
   const voteColor = hasUpvote
-    ? { base: "primary.500", _dark: "primary.400" }
+    ? { base: "ruby.500", _dark: "ruby.400" }
     : hasDownvote
       ? { base: "red.500", _dark: "red.400" }
       : { base: "foreground.default", _dark: "foreground.default" };
 
   const borderColor = hasUpvote
-    ? { base: "primary.200", _dark: "primary.800" }
+    ? { base: "ruby.200", _dark: "ruby.800" }
     : hasDownvote
       ? { base: "red.200", _dark: "red.800" }
       : { base: "neutral.200", _dark: "neutral.700" };
 
   const bgColor = hasUpvote
-    ? { base: "primary.50", _dark: "primary.950/30" }
+    ? { base: "ruby.50", _dark: "ruby.950/30" }
     : hasDownvote
       ? { base: "red.50", _dark: "red.950/30" }
       : { base: "white", _dark: "neutral.800" };
@@ -102,7 +106,7 @@ const VotingButtons = ({
             src={LuArrowUp}
             w={4}
             h={4}
-            color={{ base: "primary.500", _dark: "primary.400" }}
+            color={{ base: "ruby.500", _dark: "ruby.400" }}
           />
         </LoginPrompt>
         <Text
@@ -122,82 +126,66 @@ const VotingButtons = ({
       direction="column"
       align="center"
       justify="center"
-      minW={12}
-      py={2}
+      minW={10}
+      py={1.5}
+      px={1}
       borderRadius="lg"
       borderWidth="1px"
       borderColor={borderColor}
       bgColor={bgColor}
       className={css({ transition: "all 0.2s ease" })}
     >
-      <Tooltip
-        hasArrow={false}
-        trigger={
-          <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
-        }
-        triggerProps={{
-          variant: "ghost",
-          size: "xs",
-          p: 0,
-          minW: "auto",
-          h: "auto",
-          className: css({
-            color: hasUpvote
-              ? { base: "primary.500", _dark: "primary.400" }
-              : { base: "foreground.muted", _dark: "foreground.muted" },
-            _hover: {
-              color: { base: "primary.500", _dark: "primary.400" },
-              bgColor: "transparent",
-            },
-          }),
-          onClick: (e) => {
-            e.stopPropagation();
-            handleUpvote();
+      <Button
+        variant="ghost"
+        size="xs"
+        p={0}
+        minW="auto"
+        h="auto"
+        className={css({
+          color: hasUpvote
+            ? { base: "ruby.500", _dark: "ruby.400" }
+            : { base: "foreground.muted", _dark: "foreground.muted" },
+          _hover: {
+            color: { base: "ruby.500", _dark: "ruby.400" },
+            bgColor: "transparent",
           },
-          disabled: isVotePending || isOptimistic,
+        })}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleUpvote();
         }}
+        disabled={isVotePending || isOptimistic}
       >
-        {app.feedbackPage.details.upvote}
-      </Tooltip>
+        <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
+      </Button>
 
-      <Text fontSize="sm" fontWeight="bold" color={voteColor} mt={0.5}>
+      <Text fontSize="sm" fontWeight="bold" color={voteColor}>
         {netTotalVotes}
       </Text>
 
-      <Tooltip
-        hasArrow={false}
-        trigger={
-          <Icon
-            src={LuArrowDown}
-            w={4}
-            h={4}
-            strokeWidth={hasDownvote ? 3 : 2}
-          />
-        }
-        triggerProps={{
-          variant: "ghost",
-          size: "xs",
-          p: 0,
-          minW: "auto",
-          h: "auto",
-          className: css({
-            color: hasDownvote
-              ? { base: "red.500", _dark: "red.400" }
-              : { base: "foreground.muted", _dark: "foreground.muted" },
-            _hover: {
-              color: { base: "red.500", _dark: "red.400" },
-              bgColor: "transparent",
-            },
-          }),
-          onClick: (e) => {
-            e.stopPropagation();
-            handleDownvote();
+      <Button
+        variant="ghost"
+        size="xs"
+        p={0}
+        minW="auto"
+        h="auto"
+        className={css({
+          color: hasDownvote
+            ? { base: "red.500", _dark: "red.400" }
+            : { base: "foreground.muted", _dark: "foreground.muted" },
+          _hover: {
+            color: { base: "red.500", _dark: "red.400" },
+            bgColor: "transparent",
           },
-          disabled: isVotePending || isOptimistic,
+        })}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDownvote();
         }}
+        disabled={isVotePending || isOptimistic}
       >
-        {app.feedbackPage.details.downvote}
-      </Tooltip>
+        <Icon src={LuArrowDown} w={4} h={4} strokeWidth={hasDownvote ? 3 : 2} />
+      </Button>
     </Flex>
   );
 };

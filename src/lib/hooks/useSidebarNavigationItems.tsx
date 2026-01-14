@@ -10,7 +10,6 @@ import { LuBuilding2 } from "react-icons/lu";
 
 import app from "@/lib/config/app.config";
 import { projectOptions } from "@/lib/options/projects";
-import { workspaceOptions } from "@/lib/options/workspaces";
 
 import type { LinkOptions } from "@tanstack/react-router";
 import type { IconType } from "react-icons";
@@ -39,7 +38,7 @@ const useSidebarNavigationItems = () => {
   const { pathname } = useLocation();
 
   // workspaceSlug in the URL is the org slug from JWT claims
-  // Resolve it to organizationId to query the workspace
+  // Resolve it to organizationId to query projects
   const orgFromSlug = session?.organizations?.find(
     (org) => org.slug === workspaceSlug,
   );
@@ -47,20 +46,12 @@ const useSidebarNavigationItems = () => {
   // Use org name from JWT claims
   const workspaceName = orgFromSlug?.name ?? workspaceSlug;
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({
-      organizationId: organizationId!,
-    }),
-    enabled: !!session && !!organizationId,
-    select: (data) => data?.workspaces?.nodes?.[0],
-  });
-
   const { data: project } = useQuery({
     ...projectOptions({
       projectSlug: projectSlug!,
-      workspaceOrganizationId: organizationId!,
+      organizationId: organizationId!,
     }),
-    enabled: !!session && !!projectSlug && !!organizationId && !!workspace,
+    enabled: !!session && !!projectSlug && !!organizationId,
     select: (data) => data?.projects?.nodes[0],
   });
 

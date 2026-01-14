@@ -33,14 +33,11 @@ const updateProjectSchema = z
     description: projectDescriptionSchema,
     website: urlSchema.or(z.literal("")),
     projectSocials: z.array(projectSocialSchema),
-    workspaceOrganizationId: z.string(),
+    organizationId: z.string(),
     currentSlug: slugSchema,
   })
   .superRefine(
-    async (
-      { name, workspaceOrganizationId, currentSlug, projectSocials },
-      ctx,
-    ) => {
+    async ({ name, organizationId, currentSlug, projectSocials }, ctx) => {
       const uniqueSocials = new Set();
 
       for (const social of projectSocials) {
@@ -68,7 +65,7 @@ const updateProjectSchema = z
 
       const { projects } = await sdk.Project({
         projectSlug: updatedSlug,
-        workspaceOrganizationId,
+        organizationId,
       });
 
       if (projects?.nodes?.length) {

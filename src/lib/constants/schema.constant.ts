@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import app from "@/lib/config/app.config";
 
-const workspaceErrors = app.forms.errors.workspace;
 const projectErrors = app.forms.errors.project;
 
 const emptyStringAsUndefined = z.literal("").transform(() => undefined);
@@ -26,10 +25,6 @@ export const standardRegexSchema = z
   .trim()
   // biome-ignore lint: do not override regex
   .regex(/^[\p{L}\p{N}\s,!'?.\-\(\)]+$/u, app.forms.errors.regex.invalid);
-
-export const workspaceNameSchema = standardRegexSchema
-  .min(3, workspaceErrors.name.minLength)
-  .max(90, workspaceErrors.name.maxLength);
 
 export const projectNameSchema = standardRegexSchema
   .min(3, projectErrors.name.minLength)

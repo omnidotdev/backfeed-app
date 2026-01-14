@@ -36,7 +36,7 @@ export const Route = createFileRoute(
       }),
       queryClient.ensureQueryData({
         ...freeTierCommentsOptions({
-          workspaceOrganizationId: organizationId,
+          organizationId,
           projectSlug,
           feedbackId,
         }),
@@ -49,8 +49,13 @@ export const Route = createFileRoute(
 });
 
 function FeedbackPage() {
-  const { session, hasAdminPrivileges, isAuthenticated, workspaceName } =
-    Route.useRouteContext();
+  const {
+    session,
+    hasAdminPrivileges,
+    isAuthenticated,
+    workspaceName,
+    organizationId,
+  } = Route.useRouteContext();
   const { workspaceSlug, projectSlug, feedbackId } = Route.useParams();
 
   const { data: feedback } = useQuery({
@@ -60,9 +65,9 @@ function FeedbackPage() {
 
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
-      workspaceId: feedback?.project?.workspace?.rowId!,
+      organizationId,
     }),
-    enabled: !!hasAdminPrivileges && !!feedback?.project?.workspace?.rowId,
+    enabled: !!hasAdminPrivileges,
     select: (data) =>
       data?.statusTemplates?.nodes.map((status) => ({
         rowId: status?.rowId,

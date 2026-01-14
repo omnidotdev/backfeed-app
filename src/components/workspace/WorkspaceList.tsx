@@ -1,78 +1,67 @@
 import { Pagination, Stack } from "@omnidev/sigil";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { LuCirclePlus } from "react-icons/lu";
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
+import { useMemo } from "react";
 
-import SkeletonArray from "@/components/core/SkeletonArray";
 import EmptyState from "@/components/layout/EmptyState";
-import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import WorkspaceListItem from "@/components/workspace/WorkspaceListItem";
-import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { workspacesOptions } from "@/lib/options/workspaces";
-import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { StackProps } from "@omnidev/sigil";
-import type { Workspace } from "@/generated/graphql";
 
 /**
  * Workspace list.
+ *
+ * Shows organizations from JWT claims. Organizations are managed by
+ * Gatekeeper (IDP), not a local workspace table.
  */
 const WorkspaceList = (props: StackProps) => {
-  const { page, pageSize } = useSearch({
+  const { page, pageSize, search } = useSearch({
     from: "/_public/workspaces/",
   });
   const navigate = useNavigate({ from: "/workspaces" });
+  const { session } = useRouteContext({ from: "/_public/workspaces/" });
 
-  const { setIsOpen: setIsCreateWorkspaceDialogOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
+  // Organizations come from JWT claims
+  const organizations = session?.organizations ?? [];
 
-  const { data, isLoading, isError } = useQuery({
-    ...workspacesOptions({
-      pageSize,
-      offset: (page - 1) * pageSize,
-      orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
-    }),
-    placeholderData: keepPreviousData,
-    select: (data) => ({
-      totalCount: data?.workspaces?.totalCount,
-      workspaces: data?.workspaces?.nodes,
-    }),
-  });
-
-  const workspaces = data?.workspaces;
-
-  if (isError)
-    return <ErrorBoundary message="Error fetching workspaces" minH={48} />;
-
-  if (isLoading)
-    return (
-      <Stack>
-        <SkeletonArray count={6} h={36} borderRadius="sm" />
-      </Stack>
+  // Filter by search term if provided
+  const filteredOrgs = useMemo(() => {
+    if (!search) return organizations;
+    const searchLower = search.toLowerCase();
+    return organizations.filter(
+      (org) =>
+        org.name?.toLowerCase().includes(searchLower) ||
+        org.slug.toLowerCase().includes(searchLower),
     );
+  }, [organizations, search]);
 
-  if (!workspaces?.length)
+  // Paginate
+  const paginatedOrgs = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredOrgs.slice(start, start + pageSize);
+  }, [filteredOrgs, page, pageSize]);
+
+  if (!filteredOrgs.length)
     return (
-      <EmptyState
-        message={app.workspacesPage.emptyState.message}
-        action={{
-          label: app.workspacesPage.emptyState.cta.label,
-          icon: LuCirclePlus,
-          onClick: () => setIsCreateWorkspaceDialogOpen(true),
-        }}
-        minH={64}
-      />
+      <EmptyState message={app.workspacesPage.emptyState.message} minH={64} />
     );
 
   return (
     <Stack align="center" justify="space-between" h="100%" {...props}>
       <Stack w="100%">
-        {workspaces.map((workspace) => (
+        {paginatedOrgs.map((org) => (
           <WorkspaceListItem
-            key={workspace?.rowId}
-            workspace={workspace as Partial<Workspace>}
+            key={org.id}
+            workspace={{
+              rowId: org.id,
+              name: org.name ?? org.slug,
+              slug: org.slug,
+              organizationId: org.id,
+            }}
           />
         ))}
       </Stack>
@@ -84,7 +73,7 @@ const WorkspaceList = (props: StackProps) => {
         itemProps={{
           display: { base: "none", sm: "flex" },
         }}
-        count={data?.totalCount ?? 0}
+        count={filteredOrgs.length}
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) =>

@@ -1,9 +1,5 @@
-query DashboardAggregates($organizationIds: [String!]) {
-  posts(
-    filter: {
-      project: { workspace: { organizationId: { in: $organizationIds } } }
-    }
-  ) {
+query DashboardAggregates($organizationIds: [UUID!]) {
+  posts(filter: { project: { organizationId: { in: $organizationIds } } }) {
     totalCount
   }
 }

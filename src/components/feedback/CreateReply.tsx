@@ -78,7 +78,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
         }),
         queryClient.invalidateQueries(
           freeTierCommentsOptions({
-            workspaceOrganizationId: organizationId,
+            organizationId,
             projectSlug,
             feedbackId,
           }),

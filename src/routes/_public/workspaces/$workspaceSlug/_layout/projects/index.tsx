@@ -1,5 +1,5 @@
 import { Icon } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
 import { z } from "zod";
@@ -11,11 +11,19 @@ import ProjectList from "@/components/project/ProjectList";
 import app from "@/lib/config/app.config";
 import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
 import { projectsOptions } from "@/lib/options/projects";
-import { workspaceOptions } from "@/lib/options/workspaces";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { getSubscription } from "@/server/functions/subscriptions";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
+
+const subscriptionOptions = (organizationId: string) =>
+  queryOptions({
+    queryKey: ["subscription", organizationId],
+    queryFn: () => getSubscription({ data: { organizationId } }),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
 const projectSearchSchema = z.object({
   page: z.number().nonnegative().default(1),
@@ -40,7 +48,7 @@ export const Route = createFileRoute(
         pageSize,
         offset: (page - 1) * pageSize,
         search,
-        workspaceOrganizationId: organizationId,
+        organizationId,
       }),
       revalidateIfStale: true,
     });
@@ -55,21 +63,22 @@ export const Route = createFileRoute(
 
 function ProjectsPage() {
   const { workspaceSlug } = Route.useParams();
-  const {
-    hasAdminPrivileges,
-    subscriptionId,
-    isAuthenticated,
-    organizationId,
-    workspaceName,
-  } = Route.useRouteContext();
+  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
+    Route.useRouteContext();
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({ organizationId }),
-    select: (data) => data.workspaces?.nodes?.[0],
+  const { data: workspaceMetrics } = useQuery({
+    ...workspaceMetricsOptions({ organizationId }),
+  });
+
+  // Query subscription status from billing service
+  const { data: subscription } = useQuery({
+    ...subscriptionOptions(organizationId),
+    enabled: isAuthenticated,
   });
 
   // Tier is determined by subscription status
-  const hasPaidSubscription = !!subscriptionId;
+  const hasPaidSubscription = !!subscription?.id;
+  const projectCount = workspaceMetrics?.projects?.totalCount ?? 0;
 
   const breadcrumbs: BreadcrumbRecord[] = [
     {
@@ -91,8 +100,8 @@ function ProjectsPage() {
   const canCreateProjects =
     hasAdminPrivileges &&
     (hasPaidSubscription
-      ? (workspace?.projects.totalCount ?? 0) < MAX_NUMBER_OF_PROJECTS
-      : !workspace?.projects.totalCount);
+      ? projectCount < MAX_NUMBER_OF_PROJECTS
+      : projectCount === 0);
 
   return (
     <Page

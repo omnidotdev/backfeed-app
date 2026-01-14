@@ -61,7 +61,7 @@ export const Route = createFileRoute(
   }) => {
     const { projects } = await queryClient.ensureQueryData({
       ...projectOptions({
-        workspaceOrganizationId: organizationId,
+        organizationId,
         projectSlug,
       }),
       revalidateIfStale: true,
@@ -72,7 +72,6 @@ export const Route = createFileRoute(
     const project = projects.nodes[0]!;
     const projectId = project.rowId;
     const projectName = project.name;
-    const workspaceId = project.workspace?.rowId!;
 
     await Promise.all([
       queryClient.ensureQueryData({
@@ -80,13 +79,13 @@ export const Route = createFileRoute(
         revalidateIfStale: true,
       }),
       queryClient.ensureQueryData({
-        ...projectStatusesOptions({ workspaceId }),
+        ...projectStatusesOptions({ organizationId }),
         revalidateIfStale: true,
       }),
       queryClient.ensureQueryData(projectMetricsOptions({ projectId })),
       queryClient.ensureQueryData({
         ...freeTierFeedbackOptions({
-          workspaceOrganizationId: organizationId,
+          organizationId,
           projectSlug,
         }),
         revalidateIfStale: true,
@@ -103,7 +102,7 @@ export const Route = createFileRoute(
       }),
     ]);
 
-    return { projectId, projectName, workspaceId };
+    return { projectId, projectName };
   },
   head: ({ loaderData }) => ({
     meta: createMetaTags({ title: loaderData?.projectName }),
@@ -117,7 +116,7 @@ function ProjectPage() {
     Route.useRouteContext();
 
   const { data: project } = useQuery({
-    ...projectOptions({ workspaceOrganizationId: organizationId, projectSlug }),
+    ...projectOptions({ organizationId, projectSlug }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 

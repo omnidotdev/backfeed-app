@@ -101,6 +101,46 @@
 }
 
 /* ============================================
+   Button Glow Effects (Panda recipe overrides)
+   ============================================ */
+
+/* Solid buttons - ruby glow shadow */
+.button--variant_solid:not(:disabled):not([disabled]):not([data-disabled]) {
+  box-shadow: 0 4px 12px -2px oklch(0.65 0.22 6 / 0.2);
+  transition: all 0.2s ease;
+}
+
+.button--variant_solid:not(:disabled):not([disabled]):not(
+    [data-disabled]
+  ):hover {
+  box-shadow: 0 8px 20px -4px oklch(0.65 0.22 6 / 0.3);
+  transform: translateY(-1px);
+}
+
+.button--variant_solid:not(:disabled):not([disabled]):not(
+    [data-disabled]
+  ):active {
+  transform: translateY(0);
+}
+
+/* Outline buttons - subtle lift on hover */
+.button--variant_outline:not(:disabled):not([disabled]):not([data-disabled]) {
+  transition: all 0.2s ease;
+}
+
+.button--variant_outline:not(:disabled):not([disabled]):not(
+    [data-disabled]
+  ):hover {
+  transform: translateY(-1px);
+}
+
+.button--variant_outline:not(:disabled):not([disabled]):not(
+    [data-disabled]
+  ):active {
+  transform: translateY(0);
+}
+
+/* ============================================
    Utility Classes
    ============================================ */
 

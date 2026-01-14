@@ -1,7 +1,0 @@
-fragment Workspace on Workspace {
-  rowId
-  organizationId
-  name
-  slug
-  subscriptionId
-}

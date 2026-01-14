@@ -1,16 +1,10 @@
-import { Icon } from "@omnidev/sigil";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
-import { LuCirclePlus } from "react-icons/lu";
 import { z } from "zod";
 
 import Page from "@/components/layout/Page";
-import CreateWorkspace from "@/components/workspace/CreateWorkspace";
 import WorkspaceFilters from "@/components/workspace/WorkspaceFilters";
 import WorkspaceList from "@/components/workspace/WorkspaceList";
-import { WorkspaceOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import { workspacesOptions } from "@/lib/options/workspaces";
-import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
@@ -33,17 +27,7 @@ export const Route = createFileRoute("/_public/workspaces/")({
     middlewares: [stripSearchParams({ page: 1, pageSize: 10, search: "" })],
   },
   loaderDeps: ({ search }) => search,
-  loader: async ({ context: { queryClient }, deps: { page, pageSize } }) => {
-    // Public workspaces listing - shows all workspaces
-    await queryClient.ensureQueryData({
-      ...workspacesOptions({
-        pageSize,
-        offset: (page - 1) * pageSize,
-        orderBy: [WorkspaceOrderBy.UpdatedAtDesc],
-      }),
-      revalidateIfStale: true,
-    });
-  },
+  // Organizations come from JWT claims, no data fetching needed
   head: () => ({
     meta: createMetaTags({ title: app.workspacesPage.breadcrumb }),
   }),
@@ -59,23 +43,11 @@ function WorkspacesPage() {
       breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: app.workspacesPage.header.title,
-        cta: isAuthenticated
-          ? [
-              {
-                label: app.workspacesPage.header.cta.newWorkspace.label,
-                icon: <Icon src={LuCirclePlus} />,
-                dialogType: DialogType.CreateWorkspace,
-              },
-            ]
-          : undefined,
       }}
     >
       <WorkspaceFilters />
 
       <WorkspaceList />
-
-      {/* dialogs */}
-      {isAuthenticated && <CreateWorkspace />}
     </Page>
   );
 }
