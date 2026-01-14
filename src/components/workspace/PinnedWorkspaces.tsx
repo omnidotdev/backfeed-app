@@ -72,10 +72,11 @@ const PinnedWorkspaces = () => {
           >
             {app.dashboardPage.workspaces.emptyState.message}
 
+            {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
             <Button variant="outline" size="sm" asChild>
-              <a href={`${AUTH_BASE_URL}/profile`}>
+              <a href={AUTH_BASE_URL}>
                 <Icon src={LuPlus} />
-                Create Organization
+                Manage Organizations
               </a>
             </Button>
           </Flex>

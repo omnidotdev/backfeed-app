@@ -64,11 +64,12 @@ const OrganizationSwitcher = () => {
 
       <MenuSeparator />
 
+      {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
       <MenuItemGroup>
-        <MenuItem value="create-org" asChild>
-          <a href={`${AUTH_BASE_URL}/profile`}>
+        <MenuItem value="manage-orgs" asChild>
+          <a href={AUTH_BASE_URL}>
             <Icon src={LuPlus} />
-            Create Organization
+            Manage Organizations
           </a>
         </MenuItem>
       </MenuItemGroup>

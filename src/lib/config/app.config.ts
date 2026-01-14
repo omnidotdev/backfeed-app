@@ -158,7 +158,7 @@ const app = {
       description: "Quickly view workspaces that you are a member of",
       emptyState: {
         message:
-          "No workspaces found. Create your first organization to get started.",
+          "No workspaces found. Manage your organizations via Omni to get started.",
       },
     },
     recentFeedback: {
