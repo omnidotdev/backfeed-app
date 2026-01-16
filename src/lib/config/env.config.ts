@@ -19,6 +19,7 @@ export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // environment helpers
 export const isDevEnv = import.meta.env.DEV;
+/** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
 // NB: `APP_ENV` is used instead of `NODE_ENV` because `next dev` shadows `NODE_ENV`, so even if `NODE_ENV=test` is injected into the environment, it will be overwritten to "development". See https://github.com/vercel/next.js/issues/17032
 const isTestEnv = import.meta.env.NODE_ENV === "test";

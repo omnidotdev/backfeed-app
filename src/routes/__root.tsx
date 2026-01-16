@@ -18,7 +18,7 @@ import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import app from "@/lib/config/app.config";
-import { getIsMaintenanceMode } from "@/lib/flags";
+import { fetchMaintenanceMode } from "@/lib/flags";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import toaster from "@/lib/util/toaster";
@@ -51,14 +51,16 @@ interface ExtendedSession extends Omit<Session, "user"> {
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
-const fetchMaintenanceMode = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const { session } = await fetchSession();
-    const isMaintenanceMode = await getIsMaintenanceMode(session);
+const fetchSessionAndMaintenanceMode = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  const [{ session }, { isMaintenanceMode }] = await Promise.all([
+    fetchSession(),
+    fetchMaintenanceMode(),
+  ]);
 
-    return { isMaintenanceMode };
-  },
-);
+  return { session, isMaintenanceMode };
+});
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -66,10 +68,21 @@ export const Route = createRootRouteWithContext<{
   isMaintenanceMode: boolean;
 }>()({
   beforeLoad: async () => {
-    const { session } = await fetchSession();
-    const { isMaintenanceMode } = await fetchMaintenanceMode();
+    const { session, isMaintenanceMode } =
+      await fetchSessionAndMaintenanceMode();
 
-    return { session, isMaintenanceMode };
+    // Allow admin users to bypass maintenance mode
+    const adminDomain = process.env.ADMIN_EMAIL_DOMAIN;
+    const isAdminUser = adminDomain
+      ? (session?.user?.email?.endsWith(`@${adminDomain}`) ?? false)
+      : false;
+    const effectiveMaintenanceMode = isMaintenanceMode && !isAdminUser;
+
+    // Skip auth when maintenance page is shown
+    if (effectiveMaintenanceMode)
+      return { session: null, isMaintenanceMode: effectiveMaintenanceMode };
+
+    return { session, isMaintenanceMode: effectiveMaintenanceMode };
   },
   loader: () => getTheme(),
   head: () => ({
