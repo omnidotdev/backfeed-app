@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { isEnabled } from "./client";
 
 export const FLAGS = {
-  MAINTENANCE: "backfeed-maintenance-mode",
+  MAINTENANCE: "backfeed-app-maintenance-mode",
 } as const;
 
 /**
