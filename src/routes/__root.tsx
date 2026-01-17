@@ -1,4 +1,4 @@
-import { Flex, Toaster, css, sigil } from "@omnidev/sigil";
+import { Flex, Text, Toaster, css, sigil } from "@omnidev/sigil";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
@@ -114,15 +114,29 @@ export const Route = createRootRouteWithContext<{
 
 function MaintenancePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-cyan-900 to-cyan-800 p-8 text-white">
-      <div className="text-center">
-        <div className="mb-6 text-9xl">🔄</div>
-        <h1 className="mb-4 text-4xl font-bold">Looping Back</h1>
-        <p className="max-w-md text-lg text-cyan-200">
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      minH="100dvh"
+      p={8}
+      bgGradient="to-br"
+      gradientFrom="cyan.900"
+      gradientTo="cyan.800"
+      color="white"
+    >
+      <Flex direction="column" align="center" textAlign="center">
+        <Text fontSize="9xl" mb={6}>
+          🔄
+        </Text>
+        <Text as="h1" fontSize="4xl" fontWeight="bold" mb={4}>
+          Looping Back
+        </Text>
+        <Text maxW="md" fontSize="lg" color="cyan.200">
           We're cycling through updates. Backfeed will return shortly.
-        </p>
-      </div>
-    </div>
+        </Text>
+      </Flex>
+    </Flex>
   );
 }
 
