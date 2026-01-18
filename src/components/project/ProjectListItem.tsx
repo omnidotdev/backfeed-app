@@ -1,5 +1,5 @@
 import { Button, Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -25,6 +25,7 @@ const ProjectListItem = ({
   project: { slug, name, description, posts },
   workspaceSlug,
 }: Props) => {
+  const navigate = useNavigate();
   const { hasAdminPrivileges } = useRouteContext({
     from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
   });
@@ -78,10 +79,9 @@ const ProjectListItem = ({
                 fontWeight="semibold"
                 whiteSpace="nowrap"
                 color={{
-                  base: "brand.primary.700",
+                  base: "primary.text",
                   _groupHover: {
-                    base: "brand.primary.800",
-                    _dark: "brand.primary.600",
+                    base: "primary.emphasized",
                   },
                 }}
               >
@@ -91,23 +91,20 @@ const ProjectListItem = ({
 
             {hasAdminPrivileges && (
               <Flex position="absolute" right={0} top={0} m={2}>
-                <Link
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
-                  params={{
-                    workspaceSlug,
-                    projectSlug: slug!,
+                <Button
+                  variant="ghost"
+                  px="2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate({
+                      to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                      params: { workspaceSlug, projectSlug: slug! },
+                    });
                   }}
-                  onClick={(e) => e.stopPropagation()}
                 >
-                  <Button variant="ghost" px="2">
-                    <Icon
-                      src={LuSettings}
-                      w={5}
-                      h={5}
-                      color="foreground.muted"
-                    />
-                  </Button>
-                </Link>
+                  <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
+                </Button>
               </Flex>
             )}
           </HStack>

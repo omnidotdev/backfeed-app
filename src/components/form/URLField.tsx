@@ -1,6 +1,7 @@
-import { Button, HStack, Icon, Input, Label, Text } from "@omnidev/sigil";
-import { FiX } from "react-icons/fi";
+import { Button, HStack, Icon, Input, Label } from "@omnidev/sigil";
+import { LuX } from "react-icons/lu";
 
+import Favicon from "@/components/core/Favicon";
 import Field from "@/components/form/Field";
 import { token } from "@/generated/panda/tokens";
 import { useFieldContext } from "@/lib/hooks/useForm";
@@ -12,11 +13,8 @@ import type {
   TextProps,
 } from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
-import type { IconType } from "react-icons";
 
 interface Props extends InputProps {
-  /** URL icon. */
-  icon: IconType;
   /** Label for the input field. */
   label?: string;
   /** Field container props. */
@@ -33,9 +31,9 @@ interface Props extends InputProps {
 
 /**
  * URL field component for form inputs.
+ * Accepts full URLs and displays favicon preview.
  */
 const URLField = ({
-  icon,
   label,
   containerProps,
   errorMap,
@@ -51,7 +49,7 @@ const URLField = ({
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <HStack>
-        <Icon src={icon} />
+        <Favicon url={state.value} size={5} color="foreground.subtle" />
 
         <HStack
           gap={0}
@@ -68,25 +66,11 @@ const URLField = ({
             boxShadow: `0 0 0 1px ${token("colors.accent.default")}`,
           }}
         >
-          <Text p={2} bgColor="background.subtle">
-            https://
-          </Text>
-
           <Input
             id={name}
-            placeholder="github.com/..."
-            value={state.value.replace(/^(https:\/\/|http:\/\/)/i, "")}
-            onChange={(evt) => {
-              const updatedValue = evt.target.value.replace(
-                /^(https:\/\/|http:\/\/)/i,
-                "",
-              );
-
-              updatedValue.length
-                ? handleChange(`https://${updatedValue}`)
-                : handleChange("");
-            }}
-            borderLeftRadius={0}
+            placeholder="https://example.com"
+            value={state.value}
+            onChange={(evt) => handleChange(evt.target.value)}
             borderWidth={0}
             _focus={{
               boxShadow: "none",
@@ -109,7 +93,7 @@ const URLField = ({
             opacity={{ _disabled: 0.8 }}
             {...removeFieldProps}
           >
-            <Icon src={FiX} />
+            <Icon src={LuX} />
           </Button>
         )}
       </HStack>

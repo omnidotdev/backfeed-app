@@ -184,19 +184,19 @@ export const mockUpdateProjectMutation = (resolver: GraphQLResponseResolver<Type
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockCreateProjectSocialMutation(
+ * mockCreateProjectLinkMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
  *     return HttpResponse.json({
- *       data: { createProjectSocial }
+ *       data: { createProjectLink }
  *     })
  *   },
  *   requestOptions
  * )
  */
-export const mockCreateProjectSocialMutation = (resolver: GraphQLResponseResolver<Types.CreateProjectSocialMutation, Types.CreateProjectSocialMutationVariables>, options?: RequestHandlerOptions) =>
-  graphql.mutation<Types.CreateProjectSocialMutation, Types.CreateProjectSocialMutationVariables>(
-    'CreateProjectSocial',
+export const mockCreateProjectLinkMutation = (resolver: GraphQLResponseResolver<Types.CreateProjectLinkMutation, Types.CreateProjectLinkMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateProjectLinkMutation, Types.CreateProjectLinkMutationVariables>(
+    'CreateProjectLink',
     resolver,
     options
   )
@@ -206,19 +206,19 @@ export const mockCreateProjectSocialMutation = (resolver: GraphQLResponseResolve
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockDeleteProjectSocialMutation(
+ * mockDeleteProjectLinkMutation(
  *   ({ query, variables }) => {
- *     const { socialId } = variables;
+ *     const { linkId } = variables;
  *     return HttpResponse.json({
- *       data: { deleteProjectSocial }
+ *       data: { deleteProjectLink }
  *     })
  *   },
  *   requestOptions
  * )
  */
-export const mockDeleteProjectSocialMutation = (resolver: GraphQLResponseResolver<Types.DeleteProjectSocialMutation, Types.DeleteProjectSocialMutationVariables>, options?: RequestHandlerOptions) =>
-  graphql.mutation<Types.DeleteProjectSocialMutation, Types.DeleteProjectSocialMutationVariables>(
-    'DeleteProjectSocial',
+export const mockDeleteProjectLinkMutation = (resolver: GraphQLResponseResolver<Types.DeleteProjectLinkMutation, Types.DeleteProjectLinkMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteProjectLinkMutation, Types.DeleteProjectLinkMutationVariables>(
+    'DeleteProjectLink',
     resolver,
     options
   )

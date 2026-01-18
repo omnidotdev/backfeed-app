@@ -74,6 +74,7 @@ const PinnedWorkspaces = () => {
               name: org.name ?? org.slug,
               slug: org.slug,
               organizationId: org.id,
+              type: org.type,
             }}
             minH={32}
           />

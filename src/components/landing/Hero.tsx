@@ -68,7 +68,7 @@ const Hero = () => {
         long: "Start Collecting Feedback",
       },
       icon: FiArrowRight,
-      onClick: () => signIn({ redirectUrl }),
+      onClick: () => signIn({ redirectUrl, action: "sign-up" }),
     },
     {
       label: {

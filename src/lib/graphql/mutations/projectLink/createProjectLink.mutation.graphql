@@ -1,0 +1,5 @@
+mutation CreateProjectLink($input: CreateProjectLinkInput!) {
+  createProjectLink(input: $input) {
+    clientMutationId
+  }
+}

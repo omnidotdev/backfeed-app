@@ -17,8 +17,6 @@ import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
-
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/",
 )({
@@ -63,19 +61,8 @@ function WorkspacePage() {
       ? projectCount < MAX_NUMBER_OF_PROJECTS
       : projectCount === 0);
 
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.workspacesPage.breadcrumb,
-      to: "/dashboard",
-    },
-    {
-      label: workspaceName,
-    },
-  ];
-
   return (
     <Page
-      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: (
           <HStack gap={4}>
@@ -87,6 +74,10 @@ function WorkspacePage() {
             </Badge>
           </HStack>
         ),
+        backLink: {
+          label: "Dashboard",
+          to: "/",
+        },
         cta: isAuthenticated
           ? [
               {

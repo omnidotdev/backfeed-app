@@ -770,7 +770,7 @@ const app = {
               duplicate: "Project already exists.",
             },
           },
-          projectSocials: {
+          projectLinks: {
             errors: {
               unique: "URLs must be unique.",
             },

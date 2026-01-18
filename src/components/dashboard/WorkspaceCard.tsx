@@ -1,6 +1,6 @@
-import { Flex, Icon, Stack, Text, css } from "@omnidev/sigil";
+import { Badge, Flex, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { LuChevronRight } from "react-icons/lu";
+import { LuBuilding2, LuChevronRight, LuUser } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
 
@@ -15,6 +15,7 @@ interface WorkspaceData {
   name?: string;
   slug?: string;
   organizationId?: string;
+  type?: "personal" | "team";
   projects?: {
     totalCount?: number;
   };
@@ -30,6 +31,7 @@ interface Props extends FlexProps {
  */
 const WorkspaceCard = ({ workspace, ...rest }: Props) => {
   const projectCount = workspace?.projects?.totalCount ?? 0;
+  const isPersonal = workspace?.type === "personal";
 
   return (
     <Flex
@@ -54,14 +56,26 @@ const WorkspaceCard = ({ workspace, ...rest }: Props) => {
       {...rest}
     >
       <Stack gap={3}>
-        <OverflowText
-          fontSize="md"
-          fontWeight="semibold"
-          lineHeight={1.3}
-          lineClamp={2}
-        >
-          {workspace.name}
-        </OverflowText>
+        <Flex align="center" gap={2}>
+          <OverflowText
+            fontSize="md"
+            fontWeight="semibold"
+            lineHeight={1.3}
+            lineClamp={2}
+          >
+            {workspace.name}
+          </OverflowText>
+
+          <Badge
+            size="sm"
+            variant="outline"
+            colorPalette={isPersonal ? "neutral" : "blue"}
+            flexShrink={0}
+          >
+            <Icon src={isPersonal ? LuUser : LuBuilding2} w={3} h={3} />
+            {isPersonal ? "Personal" : "Team"}
+          </Badge>
+        </Flex>
 
         <Flex align="center" gap={1.5} color="foreground.subtle" fontSize="sm">
           <Icon src={HiOutlineFolder} w={4} h={4} />

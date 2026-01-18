@@ -10,7 +10,7 @@ import { BASE_URL } from "@/lib/config/env.config";
  */
 const CTA = () => {
   const handleGetStarted = () => {
-    signIn({ redirectUrl: `${BASE_URL}/dashboard` });
+    signIn({ redirectUrl: `${BASE_URL}/dashboard`, action: "sign-up" });
   };
 
   return (

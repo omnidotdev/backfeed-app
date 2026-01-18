@@ -31,10 +31,15 @@ const HeaderActions = () => {
   const isClient = useIsClient();
   const { session } = useRouteContext({ from: "__root__" });
 
-  // Use current URL as return destination after login
+  // Use current URL as return destination after authentication
   const handleSignIn = useCallback(() => {
     const redirectUrl = window.location.href;
     signIn({ redirectUrl });
+  }, []);
+
+  const handleSignUp = useCallback(() => {
+    const redirectUrl = window.location.href;
+    signIn({ redirectUrl, action: "sign-up" });
   }, []);
 
   const isSmallViewport = useViewportSize({
@@ -81,7 +86,7 @@ const HeaderActions = () => {
               {app.auth.signIn.label}
             </Button>
 
-            <Button onClick={handleSignIn}>{app.auth.signUp.label}</Button>
+            <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
           </HStack>
         )}
       </Flex>
@@ -152,7 +157,7 @@ const HeaderActions = () => {
                   {app.auth.signIn.label}
                 </Button>
 
-                <Button onClick={handleSignIn}>{app.auth.signUp.label}</Button>
+                <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
               </Stack>
             )}
           </Stack>

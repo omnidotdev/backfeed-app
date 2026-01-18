@@ -483,6 +483,39 @@ export type CreateProjectInput = {
   project: ProjectInput;
 };
 
+/** All input for the create `ProjectLink` mutation. */
+export type CreateProjectLinkInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `ProjectLink` to be created by this mutation. */
+  projectLink: ProjectLinkInput;
+};
+
+/** The output of our create `ProjectLink` mutation. */
+export type CreateProjectLinkPayload = {
+  __typename?: 'CreateProjectLinkPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectLink` that was created by this mutation. */
+  projectLink?: Maybe<ProjectLink>;
+  /** An edge for our `ProjectLink`. May be used by Relay 1. */
+  projectLinkEdge?: Maybe<ProjectLinkEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `ProjectLink` mutation. */
+export type CreateProjectLinkPayloadProjectLinkEdgeArgs = {
+  orderBy?: Array<ProjectLinkOrderBy>;
+};
+
 /** The output of our create `Project` mutation. */
 export type CreateProjectPayload = {
   __typename?: 'CreateProjectPayload';
@@ -503,39 +536,6 @@ export type CreateProjectPayload = {
 /** The output of our create `Project` mutation. */
 export type CreateProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
-};
-
-/** All input for the create `ProjectSocial` mutation. */
-export type CreateProjectSocialInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `ProjectSocial` to be created by this mutation. */
-  projectSocial: ProjectSocialInput;
-};
-
-/** The output of our create `ProjectSocial` mutation. */
-export type CreateProjectSocialPayload = {
-  __typename?: 'CreateProjectSocialPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `ProjectSocial` that was created by this mutation. */
-  projectSocial?: Maybe<ProjectSocial>;
-  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
-  projectSocialEdge?: Maybe<ProjectSocialEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `ProjectSocial` mutation. */
-export type CreateProjectSocialPayloadProjectSocialEdgeArgs = {
-  orderBy?: Array<ProjectSocialOrderBy>;
 };
 
 /** All input for the create `ProjectStatusConfig` mutation. */
@@ -770,6 +770,38 @@ export type DeleteProjectInput = {
   rowId: Scalars['UUID']['input'];
 };
 
+/** All input for the `deleteProjectLink` mutation. */
+export type DeleteProjectLinkInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `ProjectLink` mutation. */
+export type DeleteProjectLinkPayload = {
+  __typename?: 'DeleteProjectLinkPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectLink` that was deleted by this mutation. */
+  projectLink?: Maybe<ProjectLink>;
+  /** An edge for our `ProjectLink`. May be used by Relay 1. */
+  projectLinkEdge?: Maybe<ProjectLinkEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `ProjectLink` mutation. */
+export type DeleteProjectLinkPayloadProjectLinkEdgeArgs = {
+  orderBy?: Array<ProjectLinkOrderBy>;
+};
+
 /** The output of our delete `Project` mutation. */
 export type DeleteProjectPayload = {
   __typename?: 'DeleteProjectPayload';
@@ -790,38 +822,6 @@ export type DeleteProjectPayload = {
 /** The output of our delete `Project` mutation. */
 export type DeleteProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
-};
-
-/** All input for the `deleteProjectSocial` mutation. */
-export type DeleteProjectSocialInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `ProjectSocial` mutation. */
-export type DeleteProjectSocialPayload = {
-  __typename?: 'DeleteProjectSocialPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `ProjectSocial` that was deleted by this mutation. */
-  projectSocial?: Maybe<ProjectSocial>;
-  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
-  projectSocialEdge?: Maybe<ProjectSocialEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `ProjectSocial` mutation. */
-export type DeleteProjectSocialPayloadProjectSocialEdgeArgs = {
-  orderBy?: Array<ProjectSocialOrderBy>;
 };
 
 /** All input for the `deleteProjectStatusConfig` mutation. */
@@ -1005,8 +1005,8 @@ export type Mutation = {
   createPost?: Maybe<CreatePostPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
-  /** Creates a single `ProjectSocial`. */
-  createProjectSocial?: Maybe<CreateProjectSocialPayload>;
+  /** Creates a single `ProjectLink`. */
+  createProjectLink?: Maybe<CreateProjectLinkPayload>;
   /** Creates a single `ProjectStatusConfig`. */
   createProjectStatusConfig?: Maybe<CreateProjectStatusConfigPayload>;
   /** Creates a single `StatusTemplate`. */
@@ -1021,8 +1021,8 @@ export type Mutation = {
   deletePost?: Maybe<DeletePostPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProject?: Maybe<DeleteProjectPayload>;
-  /** Deletes a single `ProjectSocial` using a unique key. */
-  deleteProjectSocial?: Maybe<DeleteProjectSocialPayload>;
+  /** Deletes a single `ProjectLink` using a unique key. */
+  deleteProjectLink?: Maybe<DeleteProjectLinkPayload>;
   /** Deletes a single `ProjectStatusConfig` using a unique key. */
   deleteProjectStatusConfig?: Maybe<DeleteProjectStatusConfigPayload>;
   /** Deletes a single `StatusTemplate` using a unique key. */
@@ -1037,8 +1037,8 @@ export type Mutation = {
   updatePost?: Maybe<UpdatePostPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProject?: Maybe<UpdateProjectPayload>;
-  /** Updates a single `ProjectSocial` using a unique key and a patch. */
-  updateProjectSocial?: Maybe<UpdateProjectSocialPayload>;
+  /** Updates a single `ProjectLink` using a unique key and a patch. */
+  updateProjectLink?: Maybe<UpdateProjectLinkPayload>;
   /** Updates a single `ProjectStatusConfig` using a unique key and a patch. */
   updateProjectStatusConfig?: Maybe<UpdateProjectStatusConfigPayload>;
   /** Updates a single `StatusTemplate` using a unique key and a patch. */
@@ -1069,8 +1069,8 @@ export type MutationCreateProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateProjectSocialArgs = {
-  input: CreateProjectSocialInput;
+export type MutationCreateProjectLinkArgs = {
+  input: CreateProjectLinkInput;
 };
 
 
@@ -1117,8 +1117,8 @@ export type MutationDeleteProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectSocialArgs = {
-  input: DeleteProjectSocialInput;
+export type MutationDeleteProjectLinkArgs = {
+  input: DeleteProjectLinkInput;
 };
 
 
@@ -1165,8 +1165,8 @@ export type MutationUpdateProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectSocialArgs = {
-  input: UpdateProjectSocialInput;
+export type MutationUpdateProjectLinkArgs = {
+  input: UpdateProjectLinkInput;
 };
 
 
@@ -1618,14 +1618,13 @@ export type Project = {
   organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
-  /** Reads and enables pagination through a set of `ProjectSocial`. */
-  projectSocials: ProjectSocialConnection;
+  /** Reads and enables pagination through a set of `ProjectLink`. */
+  projectLinks: ProjectLinkConnection;
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
   projectStatusConfigs: ProjectStatusConfigConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
-  website?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -1641,15 +1640,15 @@ export type ProjectPostsArgs = {
 };
 
 
-export type ProjectProjectSocialsArgs = {
+export type ProjectProjectLinksArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<ProjectSocialCondition>;
-  filter?: InputMaybe<ProjectSocialFilter>;
+  condition?: InputMaybe<ProjectLinkCondition>;
+  filter?: InputMaybe<ProjectLinkFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ProjectSocialOrderBy>>;
+  orderBy?: InputMaybe<Array<ProjectLinkOrderBy>>;
 };
 
 
@@ -1689,8 +1688,6 @@ export type ProjectCondition = {
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `website` field. */
-  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A connection to a list of `Project` values. */
@@ -1735,8 +1732,6 @@ export type ProjectDistinctCountAggregates = {
   slug?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of website across the matching connection */
-  website?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Project` edge in the connection. */
@@ -1770,10 +1765,10 @@ export type ProjectFilter = {
   posts?: InputMaybe<ProjectToManyPostFilter>;
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `projectSocials` relation. */
-  projectSocials?: InputMaybe<ProjectToManyProjectSocialFilter>;
-  /** Some related `projectSocials` exist. */
-  projectSocialsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `projectLinks` relation. */
+  projectLinks?: InputMaybe<ProjectToManyProjectLinkFilter>;
+  /** Some related `projectLinks` exist. */
+  projectLinksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `projectStatusConfigs` relation. */
   projectStatusConfigs?: InputMaybe<ProjectToManyProjectStatusConfigFilter>;
   /** Some related `projectStatusConfigs` exist. */
@@ -1784,8 +1779,6 @@ export type ProjectFilter = {
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `website` field. */
-  website?: InputMaybe<StringFilter>;
 };
 
 /** Grouping methods for `Project` for usage during aggregation. */
@@ -1800,8 +1793,7 @@ export enum ProjectGroupBy {
   Slug = 'SLUG',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  Website = 'WEBSITE'
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
 }
 
 export type ProjectHavingAverageInput = {
@@ -1874,7 +1866,380 @@ export type ProjectInput = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ProjectLink = {
+  __typename?: 'ProjectLink';
+  createdAt: Scalars['Datetime']['output'];
+  order: Scalars['Int']['output'];
+  /** Reads a single `Project` that is related to this `ProjectLink`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type ProjectLinkAggregates = {
+  __typename?: 'ProjectLinkAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ProjectLinkAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ProjectLinkDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ProjectLinkMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ProjectLinkMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ProjectLinkStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ProjectLinkStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ProjectLinkSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ProjectLinkVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ProjectLinkVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `ProjectLink` object types. */
+export type ProjectLinkAggregatesFilter = {
+  /** Mean average aggregate over matching `ProjectLink` objects. */
+  average?: InputMaybe<ProjectLinkAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `ProjectLink` objects. */
+  distinctCount?: InputMaybe<ProjectLinkDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `ProjectLink` object to be included within the aggregate. */
+  filter?: InputMaybe<ProjectLinkFilter>;
+  /** Maximum aggregate over matching `ProjectLink` objects. */
+  max?: InputMaybe<ProjectLinkMaxAggregateFilter>;
+  /** Minimum aggregate over matching `ProjectLink` objects. */
+  min?: InputMaybe<ProjectLinkMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `ProjectLink` objects. */
+  stddevPopulation?: InputMaybe<ProjectLinkStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `ProjectLink` objects. */
+  stddevSample?: InputMaybe<ProjectLinkStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `ProjectLink` objects. */
+  sum?: InputMaybe<ProjectLinkSumAggregateFilter>;
+  /** Population variance aggregate over matching `ProjectLink` objects. */
+  variancePopulation?: InputMaybe<ProjectLinkVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `ProjectLink` objects. */
+  varianceSample?: InputMaybe<ProjectLinkVarianceSampleAggregateFilter>;
+};
+
+export type ProjectLinkAverageAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectLinkAverageAggregates = {
+  __typename?: 'ProjectLinkAverageAggregates';
+  /** Mean average of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `ProjectLink` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type ProjectLinkCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `order` field. */
+  order?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `url` field. */
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A connection to a list of `ProjectLink` values. */
+export type ProjectLinkConnection = {
+  __typename?: 'ProjectLinkConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ProjectLinkAggregates>;
+  /** A list of edges which contains the `ProjectLink` and cursor to aid in pagination. */
+  edges: Array<Maybe<ProjectLinkEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ProjectLinkAggregates>>;
+  /** A list of `ProjectLink` objects. */
+  nodes: Array<Maybe<ProjectLink>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ProjectLink` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `ProjectLink` values. */
+export type ProjectLinkConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ProjectLinkGroupBy>;
+  having?: InputMaybe<ProjectLinkHavingInput>;
+};
+
+export type ProjectLinkDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  order?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  url?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectLinkDistinctCountAggregates = {
+  __typename?: 'ProjectLinkDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of order across the matching connection */
+  order?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of url across the matching connection */
+  url?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `ProjectLink` edge in the connection. */
+export type ProjectLinkEdge = {
+  __typename?: 'ProjectLinkEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `ProjectLink` at the end of the edge. */
+  node?: Maybe<ProjectLink>;
+};
+
+/** A filter to be used against `ProjectLink` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectLinkFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ProjectLinkFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ProjectLinkFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ProjectLinkFilter>>;
+  /** Filter by the object’s `order` field. */
+  order?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `url` field. */
+  url?: InputMaybe<StringFilter>;
+};
+
+/** Grouping methods for `ProjectLink` for usage during aggregation. */
+export enum ProjectLinkGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Order = 'ORDER',
+  ProjectId = 'PROJECT_ID',
+  Title = 'TITLE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  Url = 'URL'
+}
+
+export type ProjectLinkHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `ProjectLink` aggregates. */
+export type ProjectLinkHavingInput = {
+  AND?: InputMaybe<Array<ProjectLinkHavingInput>>;
+  OR?: InputMaybe<Array<ProjectLinkHavingInput>>;
+  average?: InputMaybe<ProjectLinkHavingAverageInput>;
+  distinctCount?: InputMaybe<ProjectLinkHavingDistinctCountInput>;
+  max?: InputMaybe<ProjectLinkHavingMaxInput>;
+  min?: InputMaybe<ProjectLinkHavingMinInput>;
+  stddevPopulation?: InputMaybe<ProjectLinkHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ProjectLinkHavingStddevSampleInput>;
+  sum?: InputMaybe<ProjectLinkHavingSumInput>;
+  variancePopulation?: InputMaybe<ProjectLinkHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ProjectLinkHavingVarianceSampleInput>;
+};
+
+export type ProjectLinkHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectLinkHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `ProjectLink` */
+export type ProjectLinkInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  url: Scalars['String']['input'];
+};
+
+export type ProjectLinkMaxAggregateFilter = {
+  order?: InputMaybe<IntFilter>;
+};
+
+export type ProjectLinkMaxAggregates = {
+  __typename?: 'ProjectLinkMaxAggregates';
+  /** Maximum of order across the matching connection */
+  order?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ProjectLinkMinAggregateFilter = {
+  order?: InputMaybe<IntFilter>;
+};
+
+export type ProjectLinkMinAggregates = {
+  __typename?: 'ProjectLinkMinAggregates';
+  /** Minimum of order across the matching connection */
+  order?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `ProjectLink`. */
+export enum ProjectLinkOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  OrderAsc = 'ORDER_ASC',
+  OrderDesc = 'ORDER_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UrlAsc = 'URL_ASC',
+  UrlDesc = 'URL_DESC'
+}
+
+/** Represents an update to a `ProjectLink`. Fields that are set will be updated. */
+export type ProjectLinkPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ProjectLinkStddevPopulationAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectLinkStddevPopulationAggregates = {
+  __typename?: 'ProjectLinkStddevPopulationAggregates';
+  /** Population standard deviation of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectLinkStddevSampleAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectLinkStddevSampleAggregates = {
+  __typename?: 'ProjectLinkStddevSampleAggregates';
+  /** Sample standard deviation of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectLinkSumAggregateFilter = {
+  order?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectLinkSumAggregates = {
+  __typename?: 'ProjectLinkSumAggregates';
+  /** Sum of order across the matching connection */
+  order: Scalars['BigInt']['output'];
+};
+
+export type ProjectLinkVariancePopulationAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectLinkVariancePopulationAggregates = {
+  __typename?: 'ProjectLinkVariancePopulationAggregates';
+  /** Population variance of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectLinkVarianceSampleAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectLinkVarianceSampleAggregates = {
+  __typename?: 'ProjectLinkVarianceSampleAggregates';
+  /** Sample variance of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** Methods to use when ordering `Project`. */
@@ -1912,18 +2277,38 @@ export enum ProjectOrderBy {
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectSocialsCountAsc = 'PROJECT_SOCIALS_COUNT_ASC',
-  ProjectSocialsCountDesc = 'PROJECT_SOCIALS_COUNT_DESC',
-  ProjectSocialsDistinctCountCreatedAtAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_CREATED_AT_ASC',
-  ProjectSocialsDistinctCountCreatedAtDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_CREATED_AT_DESC',
-  ProjectSocialsDistinctCountProjectIdAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_PROJECT_ID_ASC',
-  ProjectSocialsDistinctCountProjectIdDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_PROJECT_ID_DESC',
-  ProjectSocialsDistinctCountRowIdAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_ROW_ID_ASC',
-  ProjectSocialsDistinctCountRowIdDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_ROW_ID_DESC',
-  ProjectSocialsDistinctCountUpdatedAtAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  ProjectSocialsDistinctCountUpdatedAtDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ProjectSocialsDistinctCountUrlAsc = 'PROJECT_SOCIALS_DISTINCT_COUNT_URL_ASC',
-  ProjectSocialsDistinctCountUrlDesc = 'PROJECT_SOCIALS_DISTINCT_COUNT_URL_DESC',
+  ProjectLinksAverageOrderAsc = 'PROJECT_LINKS_AVERAGE_ORDER_ASC',
+  ProjectLinksAverageOrderDesc = 'PROJECT_LINKS_AVERAGE_ORDER_DESC',
+  ProjectLinksCountAsc = 'PROJECT_LINKS_COUNT_ASC',
+  ProjectLinksCountDesc = 'PROJECT_LINKS_COUNT_DESC',
+  ProjectLinksDistinctCountCreatedAtAsc = 'PROJECT_LINKS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ProjectLinksDistinctCountCreatedAtDesc = 'PROJECT_LINKS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ProjectLinksDistinctCountOrderAsc = 'PROJECT_LINKS_DISTINCT_COUNT_ORDER_ASC',
+  ProjectLinksDistinctCountOrderDesc = 'PROJECT_LINKS_DISTINCT_COUNT_ORDER_DESC',
+  ProjectLinksDistinctCountProjectIdAsc = 'PROJECT_LINKS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  ProjectLinksDistinctCountProjectIdDesc = 'PROJECT_LINKS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  ProjectLinksDistinctCountRowIdAsc = 'PROJECT_LINKS_DISTINCT_COUNT_ROW_ID_ASC',
+  ProjectLinksDistinctCountRowIdDesc = 'PROJECT_LINKS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectLinksDistinctCountTitleAsc = 'PROJECT_LINKS_DISTINCT_COUNT_TITLE_ASC',
+  ProjectLinksDistinctCountTitleDesc = 'PROJECT_LINKS_DISTINCT_COUNT_TITLE_DESC',
+  ProjectLinksDistinctCountUpdatedAtAsc = 'PROJECT_LINKS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ProjectLinksDistinctCountUpdatedAtDesc = 'PROJECT_LINKS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ProjectLinksDistinctCountUrlAsc = 'PROJECT_LINKS_DISTINCT_COUNT_URL_ASC',
+  ProjectLinksDistinctCountUrlDesc = 'PROJECT_LINKS_DISTINCT_COUNT_URL_DESC',
+  ProjectLinksMaxOrderAsc = 'PROJECT_LINKS_MAX_ORDER_ASC',
+  ProjectLinksMaxOrderDesc = 'PROJECT_LINKS_MAX_ORDER_DESC',
+  ProjectLinksMinOrderAsc = 'PROJECT_LINKS_MIN_ORDER_ASC',
+  ProjectLinksMinOrderDesc = 'PROJECT_LINKS_MIN_ORDER_DESC',
+  ProjectLinksStddevPopulationOrderAsc = 'PROJECT_LINKS_STDDEV_POPULATION_ORDER_ASC',
+  ProjectLinksStddevPopulationOrderDesc = 'PROJECT_LINKS_STDDEV_POPULATION_ORDER_DESC',
+  ProjectLinksStddevSampleOrderAsc = 'PROJECT_LINKS_STDDEV_SAMPLE_ORDER_ASC',
+  ProjectLinksStddevSampleOrderDesc = 'PROJECT_LINKS_STDDEV_SAMPLE_ORDER_DESC',
+  ProjectLinksSumOrderAsc = 'PROJECT_LINKS_SUM_ORDER_ASC',
+  ProjectLinksSumOrderDesc = 'PROJECT_LINKS_SUM_ORDER_DESC',
+  ProjectLinksVariancePopulationOrderAsc = 'PROJECT_LINKS_VARIANCE_POPULATION_ORDER_ASC',
+  ProjectLinksVariancePopulationOrderDesc = 'PROJECT_LINKS_VARIANCE_POPULATION_ORDER_DESC',
+  ProjectLinksVarianceSampleOrderAsc = 'PROJECT_LINKS_VARIANCE_SAMPLE_ORDER_ASC',
+  ProjectLinksVarianceSampleOrderDesc = 'PROJECT_LINKS_VARIANCE_SAMPLE_ORDER_DESC',
   ProjectStatusConfigsAverageSortOrderAsc = 'PROJECT_STATUS_CONFIGS_AVERAGE_SORT_ORDER_ASC',
   ProjectStatusConfigsAverageSortOrderDesc = 'PROJECT_STATUS_CONFIGS_AVERAGE_SORT_ORDER_DESC',
   ProjectStatusConfigsCountAsc = 'PROJECT_STATUS_CONFIGS_COUNT_ASC',
@@ -1965,9 +2350,7 @@ export enum ProjectOrderBy {
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  WebsiteAsc = 'WEBSITE_ASC',
-  WebsiteDesc = 'WEBSITE_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
@@ -1980,234 +2363,6 @@ export type ProjectPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ProjectSocial = {
-  __typename?: 'ProjectSocial';
-  createdAt: Scalars['Datetime']['output'];
-  /** Reads a single `Project` that is related to this `ProjectSocial`. */
-  project?: Maybe<Project>;
-  projectId: Scalars['UUID']['output'];
-  rowId: Scalars['UUID']['output'];
-  updatedAt: Scalars['Datetime']['output'];
-  url: Scalars['String']['output'];
-};
-
-export type ProjectSocialAggregates = {
-  __typename?: 'ProjectSocialAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<ProjectSocialDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/** A filter to be used against aggregates of `ProjectSocial` object types. */
-export type ProjectSocialAggregatesFilter = {
-  /** Distinct count aggregate over matching `ProjectSocial` objects. */
-  distinctCount?: InputMaybe<ProjectSocialDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `ProjectSocial` object to be included within the aggregate. */
-  filter?: InputMaybe<ProjectSocialFilter>;
-};
-
-/**
- * A condition to be used against `ProjectSocial` object types. All fields are
- * tested for equality and combined with a logical ‘and.’
- */
-export type ProjectSocialCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `projectId` field. */
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `url` field. */
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** A connection to a list of `ProjectSocial` values. */
-export type ProjectSocialConnection = {
-  __typename?: 'ProjectSocialConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<ProjectSocialAggregates>;
-  /** A list of edges which contains the `ProjectSocial` and cursor to aid in pagination. */
-  edges: Array<Maybe<ProjectSocialEdge>>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<ProjectSocialAggregates>>;
-  /** A list of `ProjectSocial` objects. */
-  nodes: Array<Maybe<ProjectSocial>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `ProjectSocial` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `ProjectSocial` values. */
-export type ProjectSocialConnectionGroupedAggregatesArgs = {
-  groupBy: Array<ProjectSocialGroupBy>;
-  having?: InputMaybe<ProjectSocialHavingInput>;
-};
-
-export type ProjectSocialDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  projectId?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  url?: InputMaybe<BigIntFilter>;
-};
-
-export type ProjectSocialDistinctCountAggregates = {
-  __typename?: 'ProjectSocialDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of projectId across the matching connection */
-  projectId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of url across the matching connection */
-  url?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `ProjectSocial` edge in the connection. */
-export type ProjectSocialEdge = {
-  __typename?: 'ProjectSocialEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `ProjectSocial` at the end of the edge. */
-  node?: Maybe<ProjectSocial>;
-};
-
-/** A filter to be used against `ProjectSocial` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectSocialFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<ProjectSocialFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<ProjectSocialFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<ProjectSocialFilter>>;
-  /** Filter by the object’s `project` relation. */
-  project?: InputMaybe<ProjectFilter>;
-  /** Filter by the object’s `projectId` field. */
-  projectId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `url` field. */
-  url?: InputMaybe<StringFilter>;
-};
-
-/** Grouping methods for `ProjectSocial` for usage during aggregation. */
-export enum ProjectSocialGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  ProjectId = 'PROJECT_ID',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  Url = 'URL'
-}
-
-export type ProjectSocialHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `ProjectSocial` aggregates. */
-export type ProjectSocialHavingInput = {
-  AND?: InputMaybe<Array<ProjectSocialHavingInput>>;
-  OR?: InputMaybe<Array<ProjectSocialHavingInput>>;
-  average?: InputMaybe<ProjectSocialHavingAverageInput>;
-  distinctCount?: InputMaybe<ProjectSocialHavingDistinctCountInput>;
-  max?: InputMaybe<ProjectSocialHavingMaxInput>;
-  min?: InputMaybe<ProjectSocialHavingMinInput>;
-  stddevPopulation?: InputMaybe<ProjectSocialHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<ProjectSocialHavingStddevSampleInput>;
-  sum?: InputMaybe<ProjectSocialHavingSumInput>;
-  variancePopulation?: InputMaybe<ProjectSocialHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<ProjectSocialHavingVarianceSampleInput>;
-};
-
-export type ProjectSocialHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectSocialHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `ProjectSocial` */
-export type ProjectSocialInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  projectId: Scalars['UUID']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  url: Scalars['String']['input'];
-};
-
-/** Methods to use when ordering `ProjectSocial`. */
-export enum ProjectSocialOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  Natural = 'NATURAL',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectIdAsc = 'PROJECT_ID_ASC',
-  ProjectIdDesc = 'PROJECT_ID_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  UrlAsc = 'URL_ASC',
-  UrlDesc = 'URL_DESC'
-}
-
-/** Represents an update to a `ProjectSocial`. Fields that are set will be updated. */
-export type ProjectSocialPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ProjectStatusConfig = {
@@ -2615,16 +2770,16 @@ export type ProjectToManyPostFilter = {
   some?: InputMaybe<PostFilter>;
 };
 
-/** A filter to be used against many `ProjectSocial` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectToManyProjectSocialFilter = {
-  /** Aggregates across related `ProjectSocial` match the filter criteria. */
-  aggregates?: InputMaybe<ProjectSocialAggregatesFilter>;
-  /** Every related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<ProjectSocialFilter>;
-  /** No related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<ProjectSocialFilter>;
-  /** Some related `ProjectSocial` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<ProjectSocialFilter>;
+/** A filter to be used against many `ProjectLink` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyProjectLinkFilter = {
+  /** Aggregates across related `ProjectLink` match the filter criteria. */
+  aggregates?: InputMaybe<ProjectLinkAggregatesFilter>;
+  /** Every related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ProjectLinkFilter>;
+  /** No related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ProjectLinkFilter>;
+  /** Some related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ProjectLinkFilter>;
 };
 
 /** A filter to be used against many `ProjectStatusConfig` object types. All fields are combined with a logical ‘and.’ */
@@ -2663,10 +2818,10 @@ export type Query = Node & {
   project?: Maybe<Project>;
   /** Get a single `Project`. */
   projectBySlugAndOrganizationId?: Maybe<Project>;
-  /** Get a single `ProjectSocial`. */
-  projectSocial?: Maybe<ProjectSocial>;
-  /** Reads and enables pagination through a set of `ProjectSocial`. */
-  projectSocials?: Maybe<ProjectSocialConnection>;
+  /** Get a single `ProjectLink`. */
+  projectLink?: Maybe<ProjectLink>;
+  /** Reads and enables pagination through a set of `ProjectLink`. */
+  projectLinks?: Maybe<ProjectLinkConnection>;
   /** Get a single `ProjectStatusConfig`. */
   projectStatusConfig?: Maybe<ProjectStatusConfig>;
   /** Get a single `ProjectStatusConfig`. */
@@ -2763,21 +2918,21 @@ export type QueryProjectBySlugAndOrganizationIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryProjectSocialArgs = {
+export type QueryProjectLinkArgs = {
   rowId: Scalars['UUID']['input'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryProjectSocialsArgs = {
+export type QueryProjectLinksArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<ProjectSocialCondition>;
-  filter?: InputMaybe<ProjectSocialFilter>;
+  condition?: InputMaybe<ProjectLinkCondition>;
+  filter?: InputMaybe<ProjectLinkFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ProjectSocialOrderBy>>;
+  orderBy?: InputMaybe<Array<ProjectLinkOrderBy>>;
 };
 
 
@@ -3536,6 +3691,40 @@ export type UpdateProjectInput = {
   rowId: Scalars['UUID']['input'];
 };
 
+/** All input for the `updateProjectLink` mutation. */
+export type UpdateProjectLinkInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `ProjectLink` being updated. */
+  patch: ProjectLinkPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `ProjectLink` mutation. */
+export type UpdateProjectLinkPayload = {
+  __typename?: 'UpdateProjectLinkPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectLink` that was updated by this mutation. */
+  projectLink?: Maybe<ProjectLink>;
+  /** An edge for our `ProjectLink`. May be used by Relay 1. */
+  projectLinkEdge?: Maybe<ProjectLinkEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `ProjectLink` mutation. */
+export type UpdateProjectLinkPayloadProjectLinkEdgeArgs = {
+  orderBy?: Array<ProjectLinkOrderBy>;
+};
+
 /** The output of our update `Project` mutation. */
 export type UpdateProjectPayload = {
   __typename?: 'UpdateProjectPayload';
@@ -3556,40 +3745,6 @@ export type UpdateProjectPayload = {
 /** The output of our update `Project` mutation. */
 export type UpdateProjectPayloadProjectEdgeArgs = {
   orderBy?: Array<ProjectOrderBy>;
-};
-
-/** All input for the `updateProjectSocial` mutation. */
-export type UpdateProjectSocialInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `ProjectSocial` being updated. */
-  patch: ProjectSocialPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `ProjectSocial` mutation. */
-export type UpdateProjectSocialPayload = {
-  __typename?: 'UpdateProjectSocialPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `ProjectSocial` that was updated by this mutation. */
-  projectSocial?: Maybe<ProjectSocial>;
-  /** An edge for our `ProjectSocial`. May be used by Relay 1. */
-  projectSocialEdge?: Maybe<ProjectSocialEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `ProjectSocial` mutation. */
-export type UpdateProjectSocialPayloadProjectSocialEdgeArgs = {
-  orderBy?: Array<ProjectSocialOrderBy>;
 };
 
 /** All input for the `updateProjectStatusConfig` mutation. */
@@ -4379,7 +4534,7 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organizationId: string, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null };
 
@@ -4443,19 +4598,19 @@ export type UpdateProjectMutationVariables = Exact<{
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', slug: string } | null } | null };
 
-export type CreateProjectSocialMutationVariables = Exact<{
-  input: CreateProjectSocialInput;
+export type CreateProjectLinkMutationVariables = Exact<{
+  input: CreateProjectLinkInput;
 }>;
 
 
-export type CreateProjectSocialMutation = { __typename?: 'Mutation', createProjectSocial?: { __typename?: 'CreateProjectSocialPayload', clientMutationId?: string | null } | null };
+export type CreateProjectLinkMutation = { __typename?: 'Mutation', createProjectLink?: { __typename?: 'CreateProjectLinkPayload', clientMutationId?: string | null } | null };
 
-export type DeleteProjectSocialMutationVariables = Exact<{
-  socialId: Scalars['UUID']['input'];
+export type DeleteProjectLinkMutationVariables = Exact<{
+  linkId: Scalars['UUID']['input'];
 }>;
 
 
-export type DeleteProjectSocialMutation = { __typename?: 'Mutation', deleteProjectSocial?: { __typename?: 'DeleteProjectSocialPayload', clientMutationId?: string | null } | null };
+export type DeleteProjectLinkMutation = { __typename?: 'Mutation', deleteProjectLink?: { __typename?: 'DeleteProjectLinkPayload', clientMutationId?: string | null } | null };
 
 export type CreateProjectStatusConfigMutationVariables = Exact<{
   input: CreateProjectStatusConfigInput;
@@ -4583,7 +4738,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, website?: string | null, organizationId: string, projectSocials: { __typename?: 'ProjectSocialConnection', nodes: Array<{ __typename?: 'ProjectSocial', rowId: string, projectId: string, url: string } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4740,13 +4895,14 @@ export const ProjectFragmentDoc = `
   name
   description
   slug
-  website
   organizationId
-  projectSocials(orderBy: CREATED_AT_ASC) {
+  projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId
       projectId
       url
+      title
+      order
     }
   }
   posts {
@@ -5000,57 +5156,57 @@ useUpdateProjectMutation.getKey = () => ['UpdateProject'];
 
 useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
 
-export const CreateProjectSocialDocument = `
-    mutation CreateProjectSocial($input: CreateProjectSocialInput!) {
-  createProjectSocial(input: $input) {
+export const CreateProjectLinkDocument = `
+    mutation CreateProjectLink($input: CreateProjectLinkInput!) {
+  createProjectLink(input: $input) {
     clientMutationId
   }
 }
     `;
 
-export const useCreateProjectSocialMutation = <
+export const useCreateProjectLinkMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<CreateProjectSocialMutation, TError, CreateProjectSocialMutationVariables, TContext>) => {
+    >(options?: UseMutationOptions<CreateProjectLinkMutation, TError, CreateProjectLinkMutationVariables, TContext>) => {
     
-    return useMutation<CreateProjectSocialMutation, TError, CreateProjectSocialMutationVariables, TContext>(
+    return useMutation<CreateProjectLinkMutation, TError, CreateProjectLinkMutationVariables, TContext>(
       {
-    mutationKey: ['CreateProjectSocial'],
-    mutationFn: (variables?: CreateProjectSocialMutationVariables) => graphqlFetch<CreateProjectSocialMutation, CreateProjectSocialMutationVariables>(CreateProjectSocialDocument, variables)(),
+    mutationKey: ['CreateProjectLink'],
+    mutationFn: (variables?: CreateProjectLinkMutationVariables) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables)(),
     ...options
   }
     )};
 
-useCreateProjectSocialMutation.getKey = () => ['CreateProjectSocial'];
+useCreateProjectLinkMutation.getKey = () => ['CreateProjectLink'];
 
 
-useCreateProjectSocialMutation.fetcher = (variables: CreateProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectSocialMutation, CreateProjectSocialMutationVariables>(CreateProjectSocialDocument, variables, options);
+useCreateProjectLinkMutation.fetcher = (variables: CreateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables, options);
 
-export const DeleteProjectSocialDocument = `
-    mutation DeleteProjectSocial($socialId: UUID!) {
-  deleteProjectSocial(input: {rowId: $socialId}) {
+export const DeleteProjectLinkDocument = `
+    mutation DeleteProjectLink($linkId: UUID!) {
+  deleteProjectLink(input: {rowId: $linkId}) {
     clientMutationId
   }
 }
     `;
 
-export const useDeleteProjectSocialMutation = <
+export const useDeleteProjectLinkMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<DeleteProjectSocialMutation, TError, DeleteProjectSocialMutationVariables, TContext>) => {
+    >(options?: UseMutationOptions<DeleteProjectLinkMutation, TError, DeleteProjectLinkMutationVariables, TContext>) => {
     
-    return useMutation<DeleteProjectSocialMutation, TError, DeleteProjectSocialMutationVariables, TContext>(
+    return useMutation<DeleteProjectLinkMutation, TError, DeleteProjectLinkMutationVariables, TContext>(
       {
-    mutationKey: ['DeleteProjectSocial'],
-    mutationFn: (variables?: DeleteProjectSocialMutationVariables) => graphqlFetch<DeleteProjectSocialMutation, DeleteProjectSocialMutationVariables>(DeleteProjectSocialDocument, variables)(),
+    mutationKey: ['DeleteProjectLink'],
+    mutationFn: (variables?: DeleteProjectLinkMutationVariables) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables)(),
     ...options
   }
     )};
 
-useDeleteProjectSocialMutation.getKey = () => ['DeleteProjectSocial'];
+useDeleteProjectLinkMutation.getKey = () => ['DeleteProjectLink'];
 
 
-useDeleteProjectSocialMutation.fetcher = (variables: DeleteProjectSocialMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectSocialMutation, DeleteProjectSocialMutationVariables>(DeleteProjectSocialDocument, variables, options);
+useDeleteProjectLinkMutation.fetcher = (variables: DeleteProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables, options);
 
 export const CreateProjectStatusConfigDocument = `
     mutation CreateProjectStatusConfig($input: CreateProjectStatusConfigInput!) {

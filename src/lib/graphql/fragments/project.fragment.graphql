@@ -3,13 +3,14 @@ fragment Project on Project {
   name
   description
   slug
-  website
   organizationId
-  projectSocials(orderBy: CREATED_AT_ASC) {
+  projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId
       projectId
       url
+      title
+      order
     }
   }
   posts {

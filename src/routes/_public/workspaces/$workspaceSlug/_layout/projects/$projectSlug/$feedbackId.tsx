@@ -4,7 +4,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import Comments from "@/components/feedback/Comments";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
 import Page from "@/components/layout/Page";
-import app from "@/lib/config/app.config";
 import {
   freeTierCommentsOptions,
   infiniteCommentsOptions,
@@ -12,8 +11,6 @@ import {
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectStatusesOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
-
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
@@ -52,11 +49,10 @@ function FeedbackPage() {
   const {
     session,
     hasAdminPrivileges,
-    isAuthenticated,
-    workspaceName,
+
     organizationId,
   } = Route.useRouteContext();
-  const { workspaceSlug, projectSlug, feedbackId } = Route.useParams();
+  const { feedbackId } = Route.useParams();
 
   const { data: feedback } = useQuery({
     ...feedbackByIdOptions({ rowId: feedbackId, userId: session?.user?.rowId }),
@@ -77,33 +73,8 @@ function FeedbackPage() {
       })),
   });
 
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.workspacesPage.breadcrumb,
-      to: "/dashboard",
-    },
-    {
-      label: workspaceName,
-      to: "/workspaces/$workspaceSlug",
-      params: { workspaceSlug },
-    },
-    {
-      label: app.projectsPage.breadcrumb,
-      to: "/workspaces/$workspaceSlug/projects",
-      params: { workspaceSlug },
-    },
-    {
-      label: feedback?.project?.name!,
-      to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-      params: { workspaceSlug, projectSlug },
-    },
-    {
-      label: app.feedbackPage.breadcrumb,
-    },
-  ];
-
   return (
-    <Page breadcrumbs={isAuthenticated ? breadcrumbs : undefined}>
+    <Page>
       <FeedbackCard
         canManageFeedback={hasAdminPrivileges}
         feedback={feedback!}

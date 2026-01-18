@@ -28,7 +28,6 @@ import {
 } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 import type { ActionButton } from "@/components/core/CallToAction";
 
 const projectSearchSchema = z.object({
@@ -112,7 +111,7 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
   const { projectId } = Route.useLoaderData();
-  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
+  const { hasAdminPrivileges, isAuthenticated, organizationId } =
     Route.useRouteContext();
 
   const { data: project } = useQuery({
@@ -136,29 +135,8 @@ function ProjectPage() {
     }),
   });
 
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.workspacesPage.breadcrumb,
-      to: "/dashboard",
-    },
-    {
-      label: workspaceName,
-      to: "/workspaces/$workspaceSlug",
-      params: { workspaceSlug },
-    },
-    {
-      label: app.projectsPage.breadcrumb,
-      to: "/workspaces/$workspaceSlug/projects",
-      params: { workspaceSlug },
-    },
-    {
-      label: project?.name!,
-    },
-  ];
-
   return (
     <Page
-      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: (
           <HStack gap={3} alignItems="center">

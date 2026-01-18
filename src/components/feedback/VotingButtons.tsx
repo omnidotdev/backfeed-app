@@ -1,7 +1,7 @@
 import { Button, Flex, Icon, Text, css } from "@omnidev/sigil";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
-import LoginPrompt from "@/components/auth/LoginPrompt";
+import SignInPrompt from "@/components/auth/SignInPrompt";
 import { VoteType } from "@/generated/graphql";
 import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
 
@@ -89,37 +89,43 @@ const VotingButtons = ({
   // Show login prompt for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <Flex
-        direction="column"
-        align="center"
-        justify="center"
-        minW={12}
-        py={2}
-        mr={3}
-        borderRadius="lg"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
-        bgColor={{ base: "white", _dark: "neutral.800" }}
-        className={css({ transition: "all 0.2s ease" })}
-      >
-        <LoginPrompt action="vote" variant="ghost" size="xs" p={0}>
+      <SignInPrompt action="vote">
+        <Flex
+          direction="column"
+          align="center"
+          justify="center"
+          minW={12}
+          py={2}
+          mr={3}
+          borderRadius="lg"
+          borderWidth="1px"
+          borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
+          bgColor={{ base: "white", _dark: "neutral.800" }}
+          className={css({ transition: "all 0.2s ease" })}
+        >
           <Icon
             src={LuArrowUp}
             w={4}
             h={4}
-            color={{ base: "ruby.500", _dark: "ruby.400" }}
+            color={{ base: "foreground.muted", _dark: "foreground.muted" }}
           />
-        </LoginPrompt>
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          color="foreground.default"
-          lineHeight={1}
-          my={1}
-        >
-          {netTotalVotes}
-        </Text>
-      </Flex>
+          <Text
+            fontSize="lg"
+            fontWeight="bold"
+            color="foreground.default"
+            lineHeight={1}
+            my={1}
+          >
+            {netTotalVotes}
+          </Text>
+          <Icon
+            src={LuArrowDown}
+            w={4}
+            h={4}
+            color={{ base: "foreground.muted", _dark: "foreground.muted" }}
+          />
+        </Flex>
+      </SignInPrompt>
     );
   }
 

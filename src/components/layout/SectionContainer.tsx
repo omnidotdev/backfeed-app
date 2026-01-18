@@ -43,21 +43,23 @@ const SectionContainer = ({
     gap={6}
     {...rest}
   >
-    {(title || headerActions) && (
-      <Flex align="center" gap={2} {...titleProps}>
-        {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
+    {(title || headerActions || description) && (
+      <Stack gap={1}>
+        <Flex align="center" gap={2} {...titleProps}>
+          {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
 
-        {title && (
-          <Text
-            fontWeight="semibold"
-            lineHeight={1.2}
-            fontSize={{ base: "xl", lg: "2xl" }}
-          >
-            {title}
-          </Text>
-        )}
+          {title && (
+            <Text
+              fontWeight="semibold"
+              lineHeight={1.2}
+              fontSize={{ base: "xl", lg: "2xl" }}
+            >
+              {title}
+            </Text>
+          )}
 
-        {headerActions && headerActions}
+          {headerActions && headerActions}
+        </Flex>
 
         {description && (
           <Text
@@ -68,7 +70,7 @@ const SectionContainer = ({
             {description}
           </Text>
         )}
-      </Flex>
+      </Stack>
     )}
 
     {children}

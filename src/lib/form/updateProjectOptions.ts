@@ -17,40 +17,41 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
-const projectSocialSchema = z.object({
+const projectLinkSchema = z.object({
   rowId: uuidSchema.or(z.literal("pending")),
   projectId: uuidSchema,
-  // NB: need to allow an empty url for inital `pending` placeholder, this allows users to update other aspects of the form without needing to add a project social.
+  // NB: need to allow an empty url for initial `pending` placeholder, this allows users to update other aspects of the form without needing to add a project link.
   url: urlSchema.or(z.literal("")),
+  title: z.string().optional(),
+  order: z.number(),
 });
 
-export type ProjectSocial = z.infer<typeof projectSocialSchema>;
+export type ProjectLink = z.infer<typeof projectLinkSchema>;
 
 /** Schema for defining the shape of the update project form fields, as well as validating the form. */
 const updateProjectSchema = z
   .object({
     name: projectNameSchema,
     description: projectDescriptionSchema,
-    website: urlSchema.or(z.literal("")),
-    projectSocials: z.array(projectSocialSchema),
+    projectLinks: z.array(projectLinkSchema),
     organizationId: z.string(),
     currentSlug: slugSchema,
   })
   .superRefine(
-    async ({ name, organizationId, currentSlug, projectSocials }, ctx) => {
-      const uniqueSocials = new Set();
+    async ({ name, organizationId, currentSlug, projectLinks }, ctx) => {
+      const uniqueLinks = new Set();
 
-      for (const social of projectSocials) {
-        const url = social.url;
+      for (const link of projectLinks) {
+        const url = link.url;
 
-        if (uniqueSocials.has(url)) {
+        if (url && uniqueLinks.has(url)) {
           ctx.addIssue({
             code: "custom",
-            message: updateProjectDetails.fields.projectSocials.errors.unique,
-            path: ["projectSocials", projectSocials.indexOf(social), "url"],
+            message: updateProjectDetails.fields.projectLinks.errors.unique,
+            path: ["projectLinks", projectLinks.indexOf(link), "url"],
           });
-        } else {
-          uniqueSocials.add(url);
+        } else if (url) {
+          uniqueLinks.add(url);
         }
       }
 

@@ -9,14 +9,12 @@ import {
   useParams,
   useRouteContext,
 } from "@tanstack/react-router";
-import dayjs from "dayjs";
-import { FaGlobe } from "react-icons/fa6";
 
 import SectionContainer from "@/components/layout/SectionContainer";
-import UpdateSocials from "@/components/project/UpdateSocials";
+import UpdateLinks from "@/components/project/UpdateLinks";
 import {
-  useCreateProjectSocialMutation,
-  useDeleteProjectSocialMutation,
+  useCreateProjectLinkMutation,
+  useDeleteProjectLinkMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
@@ -27,7 +25,7 @@ import useForm from "@/lib/hooks/useForm";
 import { projectOptions } from "@/lib/options/projects";
 import generateSlug from "@/lib/util/generateSlug";
 
-import type { ProjectSocial } from "@/lib/form/updateProjectOptions";
+import type { ProjectLink } from "@/lib/form/updateProjectOptions";
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
@@ -54,20 +52,21 @@ const UpdateProject = () => {
     select: (data) => data.projects?.nodes?.[0],
   });
 
-  const { mutateAsync: createProjectSocial } = useCreateProjectSocialMutation({
-    mutationKey: ["Project", "CreateProjectSocial"],
+  const { mutateAsync: createProjectLink } = useCreateProjectLinkMutation({
+    mutationKey: ["Project", "CreateProjectLink"],
   });
-  const { mutateAsync: deleteProjectSocial } = useDeleteProjectSocialMutation({
-    mutationKey: ["Project", "DeleteProjectSocial"],
+  const { mutateAsync: deleteProjectLink } = useDeleteProjectLinkMutation({
+    mutationKey: ["Project", "DeleteProjectLink"],
   });
   const { mutateAsync: updateProject } = useUpdateProjectMutation({
     mutationKey: ["Project", "UpdateProject"],
   });
 
-  const DEFAULT_PENDING_SOCIAL: ProjectSocial = {
-    rowId: "pending",
+  const DEFAULT_PENDING_LINK: ProjectLink = {
+    rowId: `pending-${Date.now()}`,
     projectId: project?.rowId ?? "",
     url: "",
+    order: 0,
   };
 
   const form = useForm({
@@ -75,27 +74,29 @@ const UpdateProject = () => {
     defaultValues: {
       name: project?.name ?? "",
       description: project?.description ?? "",
-      website: project?.website ?? "",
-      projectSocials: (project?.projectSocials?.nodes?.length
-        ? project?.projectSocials?.nodes
-        : [DEFAULT_PENDING_SOCIAL]) as ProjectSocial[],
+      projectLinks: (project?.projectLinks?.nodes?.length
+        ? project?.projectLinks?.nodes.map((link, index) => ({
+            ...link,
+            order: link?.order ?? index,
+          }))
+        : [DEFAULT_PENDING_LINK]) as ProjectLink[],
       organizationId,
       currentSlug: project?.slug ?? "",
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     onSubmit: async ({ value, formApi }) => {
-      // NB: filter out any socials that were reset
-      const currentSocials = value.projectSocials.filter(
-        (social) => !!social.url.length,
+      // Filter out any links that were reset (empty URLs)
+      const currentLinks = value.projectLinks.filter(
+        (link) => !!link.url.length,
       );
 
       try {
-        // NB: for project socials we always want to delete existing socials, then create new ones with a dynamic `createdAt` date for proper ordering and eliminating potential duplicate key errors when reordering / updating
-        if (project?.projectSocials.nodes.length) {
+        // Delete existing links, then create new ones with proper order
+        if (project?.projectLinks.nodes.length) {
           await Promise.all(
-            project?.projectSocials.nodes?.map((social) =>
-              deleteProjectSocial({
-                socialId: social?.rowId!,
+            project?.projectLinks.nodes?.map((link) =>
+              deleteProjectLink({
+                linkId: link?.rowId!,
               }),
             ),
           );
@@ -108,18 +109,17 @@ const UpdateProject = () => {
               name: value.name,
               description: value.description,
               slug: generateSlug(value.name)!,
-              website: value.website || null,
               updatedAt: new Date(),
             },
           }),
-          currentSocials.map((social, index) =>
-            createProjectSocial({
+          ...currentLinks.map((link, index) =>
+            createProjectLink({
               input: {
-                projectSocial: {
-                  projectId: social.projectId,
-                  url: social.url,
-                  // ! NB: we use the created by date to order project statuses throughout the app. This ensures that the created by date will line up with the order defined from the form
-                  createdAt: dayjs(new Date()).add(index, "minutes").toDate(),
+                projectLink: {
+                  projectId: link.projectId,
+                  url: link.url,
+                  title: link.title || null,
+                  order: index,
                 },
               },
             }),
@@ -170,20 +170,9 @@ const UpdateProject = () => {
                 />
               )}
             </form.AppField>
-
-            <form.AppField name="website">
-              {({ URLField }) => (
-                <URLField
-                  icon={FaGlobe}
-                  label="Website"
-                  placeholder="backfeed.omni.dev"
-                  displayRemoveTrigger={false}
-                />
-              )}
-            </form.AppField>
           </Stack>
 
-          <UpdateSocials form={form} projectId={project?.rowId!} />
+          <UpdateLinks form={form} projectId={project?.rowId!} />
         </Grid>
 
         <form.AppForm>
@@ -191,6 +180,7 @@ const UpdateProject = () => {
             action={updateProjectDetails.action}
             isPending={!!isUpdatingProject}
             mt={4}
+            ml="auto"
           />
         </form.AppForm>
       </sigil.form>

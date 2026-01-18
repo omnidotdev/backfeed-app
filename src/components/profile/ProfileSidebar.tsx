@@ -6,30 +6,17 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useRouterState } from "@tanstack/react-router";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
-import Breadcrumb from "@/components/core/Breadcrumb";
 import ProfileNavigation from "@/components/profile/ProfileNavigation";
-import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { PropsWithChildren } from "react";
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 /**
  * Sidebar for profile page. Uses drawer/modal pattern to prevent layout shift.
  */
 const ProfileSidebar = ({ children }: PropsWithChildren) => {
-  const segment = useRouterState({
-    select: (state) => {
-      const currentLocation = state.isLoading
-        ? state.resolvedLocation
-        : state.location;
-      return currentLocation?.pathname.split("/").at(-1);
-    },
-  });
-
   const isClient = useIsClient();
 
   const {
@@ -39,12 +26,6 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
   } = useDisclosure({
     defaultIsOpen: false,
   });
-
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: capitalizeFirstLetter(segment)!,
-    },
-  ];
 
   if (!isClient) return null;
 
@@ -103,8 +84,6 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
           >
             <Icon src={LuPanelLeftOpen} h={5} w={5} />
           </Button>
-
-          <Breadcrumb breadcrumbs={breadcrumbs} />
         </HStack>
         {children}
       </Stack>

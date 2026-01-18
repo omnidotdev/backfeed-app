@@ -16,8 +16,6 @@ import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getSubscription } from "@/server/functions/subscriptions";
 
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
-
 const subscriptionOptions = (organizationId: string) =>
   queryOptions({
     queryKey: ["subscription", organizationId],
@@ -40,7 +38,7 @@ export const Route = createFileRoute(
   },
   loaderDeps: ({ search }) => search,
   loader: async ({
-    context: { queryClient, workspaceName, organizationId },
+    context: { queryClient, organizationId, workspaceName },
     deps: { page, pageSize, search },
   }) => {
     await queryClient.ensureQueryData({
@@ -63,7 +61,7 @@ export const Route = createFileRoute(
 
 function ProjectsPage() {
   const { workspaceSlug } = Route.useParams();
-  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
+  const { hasAdminPrivileges, isAuthenticated, organizationId } =
     Route.useRouteContext();
 
   const { data: workspaceMetrics } = useQuery({
@@ -80,21 +78,6 @@ function ProjectsPage() {
   const hasPaidSubscription = !!subscription?.id;
   const projectCount = workspaceMetrics?.projects?.totalCount ?? 0;
 
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.workspacesPage.breadcrumb,
-      to: "/dashboard",
-    },
-    {
-      label: workspaceName,
-      to: "/workspaces/$workspaceSlug",
-      params: { workspaceSlug },
-    },
-    {
-      label: app.projectsPage.breadcrumb,
-    },
-  ];
-
   // To create projects, user must have administrative privileges
   // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
   const canCreateProjects =
@@ -105,9 +88,13 @@ function ProjectsPage() {
 
   return (
     <Page
-      breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
         title: app.projectsPage.header.title,
+        backLink: {
+          label: "Workspace",
+          to: "/workspaces/$workspaceSlug",
+          params: { workspaceSlug },
+        },
         cta:
           isAuthenticated && hasAdminPrivileges
             ? [

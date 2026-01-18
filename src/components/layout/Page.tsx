@@ -1,16 +1,15 @@
-import { Flex, HStack, Stack, Text } from "@omnidev/sigil";
+import { Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
+import { Link } from "@tanstack/react-router";
+import { LuArrowLeft } from "react-icons/lu";
 
-import Breadcrumb from "@/components/core/Breadcrumb";
 import CallToAction from "@/components/core/CallToAction";
 
 import type { FlexProps, StackProps } from "@omnidev/sigil";
+import type { LinkProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 import type { ActionButton } from "@/components/core/CallToAction";
 
 interface Props extends StackProps {
-  /** Page breadcrumbs for navigation. */
-  breadcrumbs?: BreadcrumbRecord[];
   /** Page header props. */
   header?: {
     /** Header section title. */
@@ -19,6 +18,12 @@ interface Props extends StackProps {
     description?: string;
     /** Header section call to action buttons. */
     cta?: ActionButton[];
+    /** Back link displayed above the title. */
+    backLink?: {
+      label: string;
+      to: LinkProps["to"];
+      params?: LinkProps["params"];
+    };
     /** Props to pass to the header section. */
     headerProps?: FlexProps;
   };
@@ -27,7 +32,7 @@ interface Props extends StackProps {
 /**
  * Page layout.
  */
-const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
+const Page = ({ header, children, ...rest }: Props) => (
   <Stack
     h="100%"
     w="full"
@@ -39,10 +44,27 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
     gap={6}
     {...rest}
   >
-    {breadcrumbs && <Breadcrumb breadcrumbs={breadcrumbs} />}
-
     {header && (
       <Flex direction="column" w="100%" {...header.headerProps}>
+        {header.backLink && (
+          <Link
+            to={header.backLink.to}
+            params={header.backLink.params}
+            className={css({
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 1,
+              color: "foreground.muted",
+              fontSize: "sm",
+              mb: 2,
+              w: "fit-content",
+              _hover: { color: "foreground.default" },
+            })}
+          >
+            <Icon src={LuArrowLeft} w={4} h={4} />
+            {header.backLink.label}
+          </Link>
+        )}
         <Flex
           direction={{ base: "column", md: "row" }}
           align={{ base: "flex-start", md: "center" }}

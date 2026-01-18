@@ -12,15 +12,14 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useState } from "react";
-import { FaGlobe } from "react-icons/fa6";
-import { HiDotsHorizontal } from "react-icons/hi";
+import { LuEllipsis } from "react-icons/lu";
 
-import SocialMediaIcon from "@/components/core/SocialMediaIcon";
+import Favicon from "@/components/core/Favicon";
 import { projectOptions } from "@/lib/options/projects";
-import getSocialMediaLabel from "@/lib/util/getSocialMediaLabel";
+import getDomainLabel from "@/lib/util/getDomainLabel";
 
 /**
- * Project links component.
+ * Project links component. Displays project links with auto-fetched favicons.
  */
 const ProjectLinks = () => {
   const { organizationId } = useRouteContext({
@@ -36,12 +35,19 @@ const ProjectLinks = () => {
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const firstSocial = project?.projectSocials?.nodes?.[0];
-  const remainingSocials = project?.projectSocials?.nodes?.slice(1);
+  // Get links from projectLinks, sorted by order
+  const allLinks = (project?.projectLinks?.nodes ?? [])
+    .filter((link) => link?.url)
+    .sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0))
+    .map((link) => ({
+      url: link?.url ?? "",
+      rowId: link?.rowId ?? "",
+    }));
 
-  const hasLinks = project?.website || firstSocial;
+  const visibleLinks = allLinks.slice(0, 3);
+  const overflowLinks = allLinks.slice(3);
 
-  if (!hasLinks) return null;
+  if (!allLinks.length) return null;
 
   return (
     <HStack
@@ -51,12 +57,13 @@ const ProjectLinks = () => {
       borderLeftWidth="1px"
       borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
     >
-      {project?.website && (
+      {visibleLinks.map((link) => (
         <Tooltip
+          key={link.rowId}
           hasArrow={false}
           trigger={
             <Link
-              href={project.website}
+              href={link.url}
               isExternal
               color="foreground.muted"
               p={1.5}
@@ -66,7 +73,7 @@ const ProjectLinks = () => {
                 bgColor: { base: "neutral.100", _dark: "neutral.800" },
               }}
             >
-              <Icon src={FaGlobe} h={4} w={4} />
+              <Favicon url={link.url} size={4} />
             </Link>
           }
           triggerProps={{
@@ -78,42 +85,11 @@ const ProjectLinks = () => {
             display: isMenuOpen ? "none" : undefined,
           }}
         >
-          Website
+          {getDomainLabel(link.url)}
         </Tooltip>
-      )}
+      ))}
 
-      {firstSocial && (
-        <Tooltip
-          hasArrow={false}
-          trigger={
-            <Link
-              href={firstSocial.url}
-              isExternal
-              color="foreground.muted"
-              p={1.5}
-              borderRadius="md"
-              _hover={{
-                color: "foreground.default",
-                bgColor: { base: "neutral.100", _dark: "neutral.800" },
-              }}
-            >
-              <SocialMediaIcon url={firstSocial.url} h={4} w={4} />
-            </Link>
-          }
-          triggerProps={{
-            style: { all: "unset" },
-          }}
-          contentProps={{
-            zIndex: "foreground",
-            fontSize: "sm",
-            display: isMenuOpen ? "none" : undefined,
-          }}
-        >
-          {getSocialMediaLabel(firstSocial.url)}
-        </Tooltip>
-      )}
-
-      {!!remainingSocials?.length && (
+      {!!overflowLinks.length && (
         <Menu
           open={isMenuOpen}
           onOpenChange={({ open }) => setIsMenuOpen(open)}
@@ -130,19 +106,18 @@ const ProjectLinks = () => {
                 bgColor: { base: "neutral.100", _dark: "neutral.800" },
               }}
             >
-              <Icon src={HiDotsHorizontal} h={4} w={4} />
+              <Icon src={LuEllipsis} h={4} w={4} />
             </Button>
           }
           positioning={{ gutter: -4, shift: 8 }}
         >
           <MenuItemGroup>
-            {remainingSocials.map((social) => (
-              <MenuItem key={social?.rowId} value={social?.url!} asChild>
-                <Link href={social?.url} isExternal p={2} textDecoration="none">
-                  <SocialMediaIcon url={social?.url!} h={4} w={4} />
-
+            {overflowLinks.map((link) => (
+              <MenuItem key={link.rowId} value={link.url} asChild>
+                <Link href={link.url} isExternal p={2} textDecoration="none">
+                  <Favicon url={link.url} size={4} />
                   <Text color="foreground.subtle">
-                    {getSocialMediaLabel(social?.url!)}
+                    {getDomainLabel(link.url)}
                   </Text>
                 </Link>
               </MenuItem>

@@ -110,18 +110,7 @@ const RecentFeedback = () => {
                 </Link>
               ))}
 
-              {hasNextPage ? (
-                <Spinner ref={loaderRef} my={4} />
-              ) : (
-                <Text
-                  py={4}
-                  fontSize="xs"
-                  color="foreground.subtle"
-                  textAlign="center"
-                >
-                  End of list
-                </Text>
-              )}
+              {hasNextPage && <Spinner ref={loaderRef} my={4} />}
             </VStack>
           ) : (
             <EmptyState

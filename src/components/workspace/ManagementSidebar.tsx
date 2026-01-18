@@ -6,43 +6,17 @@ import {
   Stack,
   useDisclosure,
 } from "@omnidev/sigil";
-import {
-  useParams,
-  useRouteContext,
-  useRouterState,
-} from "@tanstack/react-router";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
-import Breadcrumb from "@/components/core/Breadcrumb";
 import ManagementNavigation from "@/components/workspace/ManagementNavigation";
-import app from "@/lib/config/app.config";
-import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { PropsWithChildren } from "react";
-import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 /**
  * Sidebar for workspace management. Uses drawer/modal pattern to prevent layout shift.
  */
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
-  const segment = useRouterState({
-    select: (state) => {
-      const currentLocation = state.isLoading
-        ? state.resolvedLocation
-        : state.location;
-      return currentLocation?.pathname.split("/").at(-1);
-    },
-  });
-
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
-  });
-
-  const { workspaceName } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
-  });
-
   const isClient = useIsClient();
 
   const {
@@ -52,21 +26,6 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
   } = useDisclosure({
     defaultIsOpen: false,
   });
-
-  const breadcrumbs: BreadcrumbRecord[] = [
-    {
-      label: app.workspacesPage.breadcrumb,
-      to: "/dashboard",
-    },
-    {
-      label: workspaceName ?? workspaceSlug,
-      to: "/workspaces/$workspaceSlug",
-      params: { workspaceSlug },
-    },
-    {
-      label: capitalizeFirstLetter(segment)!,
-    },
-  ];
 
   if (!isClient) return null;
 
@@ -125,8 +84,6 @@ const ManagementSidebar = ({ children }: PropsWithChildren) => {
           >
             <Icon src={LuPanelLeftOpen} h={5} w={5} />
           </Button>
-
-          <Breadcrumb breadcrumbs={breadcrumbs} />
         </HStack>
         {children}
       </Stack>
