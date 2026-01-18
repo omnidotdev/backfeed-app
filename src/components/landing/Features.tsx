@@ -12,28 +12,24 @@ const FEATURES = [
     description:
       "Let users vote on what matters. See what's trending and prioritize based on real demand from your community.",
     icon: IoArrowUpCircleOutline,
-    span: { base: 1, md: 2 },
   },
   {
     title: "Status Tracking",
     description:
       "Track feedback from New to Completed. Keep your community informed with visual status updates.",
     icon: IoGitNetworkOutline,
-    span: 1,
   },
   {
     title: "Threaded Discussions",
     description:
       "Dive deeper with comments and replies. Have real conversations about each piece of feedback.",
     icon: IoChatbubblesOutline,
-    span: 1,
   },
   {
     title: "Real-time Analytics",
     description:
       "See feedback trends at a glance. Weekly charts, status breakdowns, and engagement metrics to guide your decisions.",
     icon: IoBarChartOutline,
-    span: { base: 1, md: 2 },
   },
 ];
 
@@ -90,10 +86,10 @@ const Features = () => (
       w="full"
       maxW="6xl"
       gap={4}
-      columns={{ base: 1, md: 4 }}
+      columns={{ base: 1, lg: 2 }}
       gridAutoRows="minmax(220px, auto)"
     >
-      {FEATURES.map(({ title, description, icon, span }) => (
+      {FEATURES.map(({ title, description, icon }) => (
         <Flex
           key={title}
           position="relative"
@@ -105,10 +101,6 @@ const Features = () => (
           borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
           bgColor={{ base: "white", _dark: "neutral.900/50" }}
           overflow="hidden"
-          gridColumn={{
-            base: "span 1",
-            md: `span ${typeof span === "object" ? span.md : span}`,
-          }}
           className={css({
             backdropFilter: "blur(8px)",
             transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",

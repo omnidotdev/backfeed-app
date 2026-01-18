@@ -73,7 +73,7 @@ const Hero = () => {
     {
       label: {
         short: "Docs",
-        long: "See How It Works",
+        long: "View Docs",
       },
       variant: "outline",
       onClick: () => window.open(app.docsUrl, "_blank", "noopener,noreferrer"),
@@ -244,6 +244,7 @@ const Hero = () => {
           w="full"
           maxW="3xl"
           mt={16}
+          mb={12}
           borderRadius="2xl"
           borderWidth="1px"
           borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
@@ -255,7 +256,6 @@ const Hero = () => {
               base: "0 25px 50px -12px oklch(0 0 0 / 0.15)",
               _dark: "0 25px 50px -12px oklch(0 0 0 / 0.5)",
             },
-            animation: "float 6s ease-in-out infinite",
           })}
         >
           {/* Header bar */}
