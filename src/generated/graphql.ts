@@ -1199,6 +1199,16 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
+/** The currently authenticated user. */
+export type Observer = {
+  __typename?: 'Observer';
+  email: Scalars['String']['output'];
+  identityProviderId: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  username?: Maybe<Scalars['String']['output']>;
+};
+
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -2640,6 +2650,11 @@ export type Query = Node & {
   id: Scalars['ID']['output'];
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
+  /**
+   * Returns the currently authenticated user (observer).
+   * Returns null if not authenticated.
+   */
+  observer?: Maybe<Observer>;
   /** Get a single `Post`. */
   post?: Maybe<Post>;
   /** Reads and enables pagination through a set of `Post`. */
@@ -4527,12 +4542,13 @@ export type CommentsQueryVariables = Exact<{
 
 export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
-export type DashboardAggregatesQueryVariables = Exact<{
+export type DashboardMetricsQueryVariables = Exact<{
   organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  sevenDaysAgo: Scalars['Datetime']['input'];
 }>;
 
 
-export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null };
+export type DashboardMetricsQuery = { __typename?: 'Query', needsReview?: { __typename?: 'PostConnection', totalCount: number } | null, openItems?: { __typename?: 'PostConnection', totalCount: number } | null, resolvedThisWeek?: { __typename?: 'PostConnection', totalCount: number } | null };
 
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4541,6 +4557,11 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+
+export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ObserverQuery = { __typename?: 'Query', observer?: { __typename?: 'Observer', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4634,14 +4655,6 @@ export type UserByEmailQueryVariables = Exact<{
 
 
 export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
-
-export type WeeklyFeedbackQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
-  startDate: Scalars['Datetime']['input'];
-}>;
-
-
-export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -5411,55 +5424,67 @@ useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comme
 
 useCommentsQuery.fetcher = (variables: CommentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, variables, options);
 
-export const DashboardAggregatesDocument = `
-    query DashboardAggregates($organizationIds: [UUID!]) {
-  posts(filter: {project: {organizationId: {in: $organizationIds}}}) {
+export const DashboardMetricsDocument = `
+    query DashboardMetrics($organizationIds: [UUID!], $sevenDaysAgo: Datetime!) {
+  needsReview: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplateId: {isNull: true}}
+  ) {
+    totalCount
+  }
+  openItems: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["open", "in_progress", "under_review"]}}}
+  ) {
+    totalCount
+  }
+  resolvedThisWeek: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["completed", "closed"]}}, statusUpdatedAt: {greaterThanOrEqualTo: $sevenDaysAgo}}
+  ) {
     totalCount
   }
 }
     `;
 
-export const useDashboardAggregatesQuery = <
-      TData = DashboardAggregatesQuery,
+export const useDashboardMetricsQuery = <
+      TData = DashboardMetricsQuery,
       TError = unknown
     >(
-      variables?: DashboardAggregatesQueryVariables,
-      options?: Omit<UseQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+      variables: DashboardMetricsQueryVariables,
+      options?: Omit<UseQueryOptions<DashboardMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardMetricsQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<DashboardAggregatesQuery, TError, TData>(
+    return useQuery<DashboardMetricsQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['DashboardAggregates'] : ['DashboardAggregates', variables],
-    queryFn: graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables),
+    queryKey: ['DashboardMetrics', variables],
+    queryFn: graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, variables),
     ...options
   }
     )};
 
-useDashboardAggregatesQuery.getKey = (variables?: DashboardAggregatesQueryVariables) => variables === undefined ? ['DashboardAggregates'] : ['DashboardAggregates', variables];
+useDashboardMetricsQuery.getKey = (variables: DashboardMetricsQueryVariables) => ['DashboardMetrics', variables];
 
-export const useInfiniteDashboardAggregatesQuery = <
-      TData = InfiniteData<DashboardAggregatesQuery>,
+export const useInfiniteDashboardMetricsQuery = <
+      TData = InfiniteData<DashboardMetricsQuery>,
       TError = unknown
     >(
-      variables: DashboardAggregatesQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardAggregatesQuery, TError, TData>['queryKey'] }
+      variables: DashboardMetricsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<DashboardMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardMetricsQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useInfiniteQuery<DashboardAggregatesQuery, TError, TData>(
+    return useInfiniteQuery<DashboardMetricsQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['DashboardAggregates.infinite'] : ['DashboardAggregates.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryKey: optionsQueryKey ?? ['DashboardMetrics.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteDashboardAggregatesQuery.getKey = (variables?: DashboardAggregatesQueryVariables) => variables === undefined ? ['DashboardAggregates.infinite'] : ['DashboardAggregates.infinite', variables];
+useInfiniteDashboardMetricsQuery.getKey = (variables: DashboardMetricsQueryVariables) => ['DashboardMetrics.infinite', variables];
 
 
-useDashboardAggregatesQuery.fetcher = (variables?: DashboardAggregatesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardAggregatesQuery, DashboardAggregatesQueryVariables>(DashboardAggregatesDocument, variables, options);
+useDashboardMetricsQuery.fetcher = (variables: DashboardMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, variables, options);
 
 export const FeedbackByIdDocument = `
     query FeedbackById($rowId: UUID!, $userId: UUID) {
@@ -5510,6 +5535,60 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 
 
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
+
+export const ObserverDocument = `
+    query Observer {
+  observer {
+    rowId
+    identityProviderId
+    username
+    name
+    email
+  }
+}
+    `;
+
+export const useObserverQuery = <
+      TData = ObserverQuery,
+      TError = unknown
+    >(
+      variables?: ObserverQueryVariables,
+      options?: Omit<UseQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ObserverQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Observer'] : ['Observer', variables],
+    queryFn: graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables),
+    ...options
+  }
+    )};
+
+useObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer'] : ['Observer', variables];
+
+export const useInfiniteObserverQuery = <
+      TData = InfiniteData<ObserverQuery>,
+      TError = unknown
+    >(
+      variables: ObserverQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ObserverQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables];
+
+
+useObserverQuery.fetcher = (variables?: ObserverQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables, options);
 
 export const PostsDocument = `
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
@@ -6194,63 +6273,6 @@ useInfiniteUserByEmailQuery.getKey = (variables: UserByEmailQueryVariables) => [
 
 
 useUserByEmailQuery.fetcher = (variables: UserByEmailQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByEmailQuery, UserByEmailQueryVariables>(UserByEmailDocument, variables, options);
-
-export const WeeklyFeedbackDocument = `
-    query WeeklyFeedback($organizationIds: [UUID!], $startDate: Datetime!) {
-  posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, createdAt: {greaterThanOrEqualTo: $startDate}}
-  ) {
-    groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
-      keys
-      distinctCount {
-        rowId
-      }
-    }
-  }
-}
-    `;
-
-export const useWeeklyFeedbackQuery = <
-      TData = WeeklyFeedbackQuery,
-      TError = unknown
-    >(
-      variables: WeeklyFeedbackQueryVariables,
-      options?: Omit<UseQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<WeeklyFeedbackQuery, TError, TData>(
-      {
-    queryKey: ['WeeklyFeedback', variables],
-    queryFn: graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, variables),
-    ...options
-  }
-    )};
-
-useWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback', variables];
-
-export const useInfiniteWeeklyFeedbackQuery = <
-      TData = InfiniteData<WeeklyFeedbackQuery>,
-      TError = unknown
-    >(
-      variables: WeeklyFeedbackQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WeeklyFeedbackQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<WeeklyFeedbackQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['WeeklyFeedback.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteWeeklyFeedbackQuery.getKey = (variables: WeeklyFeedbackQueryVariables) => ['WeeklyFeedback.infinite', variables];
-
-
-useWeeklyFeedbackQuery.fetcher = (variables: WeeklyFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WeeklyFeedbackQuery, WeeklyFeedbackQueryVariables>(WeeklyFeedbackDocument, variables, options);
 
 export const WorkspaceDocument = `
     query Workspace($organizationId: UUID!) {

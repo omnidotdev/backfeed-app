@@ -70,12 +70,6 @@ const useSidebarNavigationItems = () => {
         isVisible: !!session,
         children: [
           {
-            to: "/workspaces",
-            label: app.dashboardPage.cta.viewWorkspaces.label,
-            isVisible: true,
-            isActive: pathname === "/workspaces",
-          },
-          {
             to: "/workspaces/$workspaceSlug",
             params: { workspaceSlug },
             label: workspaceName!,

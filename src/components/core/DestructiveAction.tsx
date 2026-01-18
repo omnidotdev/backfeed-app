@@ -49,7 +49,8 @@ interface Action extends ButtonProps {
   label: string;
 }
 
-export interface DestructiveActionProps extends DialogProps {
+export interface DestructiveActionProps
+  extends Omit<DialogProps, "triggerProps"> {
   /** Dialog title. */
   title: string;
   /** Dialog description. */
@@ -66,6 +67,8 @@ export interface DestructiveActionProps extends DialogProps {
   triggerLabel?: string;
   /** Icon props. */
   iconProps?: Omit<IconProps, "src">;
+  /** Trigger button props. */
+  triggerProps?: ButtonProps;
 }
 
 /**
@@ -143,7 +146,6 @@ const DestructiveAction = ({
           )}
         </Button>
       }
-      triggerProps={triggerProps}
       contentProps={{
         // NB: `onClick` and `cursor` are to change behavior due to render of dialog being unknown. We do not want to propagate events.
         onClick: (e) => e.stopPropagation(),

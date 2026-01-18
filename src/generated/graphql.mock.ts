@@ -470,19 +470,19 @@ export const mockCommentsQuery = (resolver: GraphQLResponseResolver<Types.Commen
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockDashboardAggregatesQuery(
+ * mockDashboardMetricsQuery(
  *   ({ query, variables }) => {
- *     const { organizationIds } = variables;
+ *     const { organizationIds, sevenDaysAgo } = variables;
  *     return HttpResponse.json({
- *       data: { posts }
+ *       data: { posts, posts, posts }
  *     })
  *   },
  *   requestOptions
  * )
  */
-export const mockDashboardAggregatesQuery = (resolver: GraphQLResponseResolver<Types.DashboardAggregatesQuery, Types.DashboardAggregatesQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.DashboardAggregatesQuery, Types.DashboardAggregatesQueryVariables>(
-    'DashboardAggregates',
+export const mockDashboardMetricsQuery = (resolver: GraphQLResponseResolver<Types.DashboardMetricsQuery, Types.DashboardMetricsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.DashboardMetricsQuery, Types.DashboardMetricsQueryVariables>(
+    'DashboardMetrics',
     resolver,
     options
   )
@@ -505,6 +505,27 @@ export const mockDashboardAggregatesQuery = (resolver: GraphQLResponseResolver<T
 export const mockFeedbackByIdQuery = (resolver: GraphQLResponseResolver<Types.FeedbackByIdQuery, Types.FeedbackByIdQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.FeedbackByIdQuery, Types.FeedbackByIdQueryVariables>(
     'FeedbackById',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockObserverQuery(
+ *   ({ query, variables }) => {
+ *     return HttpResponse.json({
+ *       data: { observer }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockObserverQuery = (resolver: GraphQLResponseResolver<Types.ObserverQuery, Types.ObserverQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.ObserverQuery, Types.ObserverQueryVariables>(
+    'Observer',
     resolver,
     options
   )
@@ -747,28 +768,6 @@ export const mockUserQuery = (resolver: GraphQLResponseResolver<Types.UserQuery,
 export const mockUserByEmailQuery = (resolver: GraphQLResponseResolver<Types.UserByEmailQuery, Types.UserByEmailQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.UserByEmailQuery, Types.UserByEmailQueryVariables>(
     'userByEmail',
-    resolver,
-    options
-  )
-
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockWeeklyFeedbackQuery(
- *   ({ query, variables }) => {
- *     const { organizationIds, startDate } = variables;
- *     return HttpResponse.json({
- *       data: { posts }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockWeeklyFeedbackQuery = (resolver: GraphQLResponseResolver<Types.WeeklyFeedbackQuery, Types.WeeklyFeedbackQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.WeeklyFeedbackQuery, Types.WeeklyFeedbackQueryVariables>(
-    'WeeklyFeedback',
     resolver,
     options
   )

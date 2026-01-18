@@ -18,26 +18,26 @@ const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
     flex={1}
     h="100%"
     bgColor="background.default"
-    borderRadius="lg"
-    boxShadow="card"
-    overflow="auto"
+    borderRadius="xl"
+    borderWidth="1px"
+    borderColor="border.subtle"
+    overflow="hidden"
     {...rest}
   >
     <Text
-      position="absolute"
-      top={0}
       w="full"
-      backgroundColor="background.subtle"
-      fontSize="2xl"
+      fontSize="sm"
       fontWeight="semibold"
-      boxShadow="xs"
-      lineHeight={0.7}
-      p={6}
+      color="foreground.default"
+      borderBottomWidth="1px"
+      borderColor="border.subtle"
+      px={5}
+      py={4}
     >
       {title}
     </Text>
 
-    <Stack flex={1} mt={16} {...contentProps}>
+    <Stack flex={1} overflow="auto" {...contentProps}>
       {children}
     </Stack>
   </Stack>

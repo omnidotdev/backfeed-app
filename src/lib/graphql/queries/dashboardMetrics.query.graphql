@@ -1,0 +1,32 @@
+query DashboardMetrics($organizationIds: [UUID!], $sevenDaysAgo: Datetime!) {
+  # Needs Review - posts with no status assigned
+  needsReview: posts(
+    filter: {
+      project: { organizationId: { in: $organizationIds } }
+      statusTemplateId: { isNull: true }
+    }
+  ) {
+    totalCount
+  }
+
+  # Open items - posts with open-type statuses
+  openItems: posts(
+    filter: {
+      project: { organizationId: { in: $organizationIds } }
+      statusTemplate: { name: { in: ["open", "in_progress", "under_review"] } }
+    }
+  ) {
+    totalCount
+  }
+
+  # Resolved this week - posts marked completed/closed recently
+  resolvedThisWeek: posts(
+    filter: {
+      project: { organizationId: { in: $organizationIds } }
+      statusTemplate: { name: { in: ["completed", "closed"] } }
+      statusUpdatedAt: { greaterThanOrEqualTo: $sevenDaysAgo }
+    }
+  ) {
+    totalCount
+  }
+}

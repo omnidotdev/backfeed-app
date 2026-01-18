@@ -179,9 +179,6 @@ const app = {
       },
     },
     cta: {
-      viewWorkspaces: {
-        label: "View All Workspaces",
-      },
       newWorkspace: {
         action: {
           submit: "Create Workspace",

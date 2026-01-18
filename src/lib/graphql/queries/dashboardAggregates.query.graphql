@@ -1,5 +1,0 @@
-query DashboardAggregates($organizationIds: [UUID!]) {
-  posts(filter: { project: { organizationId: { in: $organizationIds } } }) {
-    totalCount
-  }
-}

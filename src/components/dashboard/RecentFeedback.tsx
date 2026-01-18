@@ -1,22 +1,21 @@
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
+import { useMemo } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import GradientMask from "@/components/core/GradientMask";
 import SkeletonArray from "@/components/core/SkeletonArray";
 import Spinner from "@/components/core/Spinner";
 import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import Response from "@/components/dashboard/Response";
 import EmptyState from "@/components/layout/EmptyState";
-import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import app from "@/lib/config/app.config";
 import { recentFeedbackOptions } from "@/lib/options/dashboard";
 
 import type { Post } from "@/generated/graphql";
 
 /**
- * Recent feedback section.
+ * Needs Attention section.
+ * Shows feedback items prioritized by those needing review (no status assigned).
  */
 const RecentFeedback = () => {
   const { session } = useRouteContext({ from: "/_auth/dashboard" });
@@ -25,7 +24,7 @@ const RecentFeedback = () => {
   const organizationIds = session?.organizations?.map((org) => org.id) ?? [];
 
   const {
-    data: recentFeedback,
+    data: feedbackData,
     isLoading,
     isError,
     hasNextPage,
@@ -41,6 +40,18 @@ const RecentFeedback = () => {
     enabled: organizationIds.length > 0,
   });
 
+  // Sort to show items without status (needs review) first
+  const sortedFeedback = useMemo(() => {
+    if (!feedbackData) return [];
+    return [...feedbackData].sort((a, b) => {
+      const aHasStatus = !!a?.statusTemplate;
+      const bHasStatus = !!b?.statusTemplate;
+      if (!aHasStatus && bHasStatus) return -1;
+      if (aHasStatus && !bHasStatus) return 1;
+      return 0;
+    });
+  }, [feedbackData]);
+
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: hasNextPage,
@@ -51,72 +62,76 @@ const RecentFeedback = () => {
   return (
     <FeedbackSection
       ref={rootRef}
-      title="Recent Feedback"
-      maxH="xl"
+      title="Needs Attention"
       contentProps={{
         overflow: "auto",
         scrollbar: "hidden",
       }}
     >
       {isError ? (
-        <ErrorBoundary
-          message="Error fetching recent feedback"
-          minH={40}
-          h="full"
-          w="full"
-        />
+        <Flex align="center" justify="center" h="full" p={8}>
+          <Text color="foreground.subtle" fontSize="sm">
+            Unable to load feedback
+          </Text>
+        </Flex>
       ) : (
-        // NB: the margin is necessary to prevent clipping of the card borders/box shadows
-        <Stack w="full" gap={2} h="full" mb="1px">
+        <Stack w="full" h="full">
           {isLoading ? (
-            <SkeletonArray count={5} h={24} w="100%" />
-          ) : recentFeedback?.length ? (
-            <VStack gap={0} p={1}>
-              {recentFeedback?.map((feedback) => (
-                <Flex key={feedback?.rowId} direction="column" w="full" p={1}>
-                  <Link
-                    to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
-                    params={{
-                      // Resolve org slug from session's organizations using organizationId
-                      workspaceSlug:
-                        session?.organizations?.find(
-                          (org) => org.id === feedback?.project?.organizationId,
-                        )?.slug ?? "",
-                      projectSlug: feedback?.project?.slug!,
-                      feedbackId: feedback?.rowId!,
+            <Stack p={4} gap={3}>
+              <SkeletonArray count={5} h={16} w="100%" borderRadius="lg" />
+            </Stack>
+          ) : sortedFeedback?.length ? (
+            <VStack gap={0}>
+              {sortedFeedback?.map((feedback) => (
+                <Link
+                  key={feedback?.rowId}
+                  to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+                  params={{
+                    workspaceSlug:
+                      session?.organizations?.find(
+                        (org) => org.id === feedback?.project?.organizationId,
+                      )?.slug ?? "",
+                    projectSlug: feedback?.project?.slug!,
+                    feedbackId: feedback?.rowId!,
+                  }}
+                  style={{ width: "100%" }}
+                >
+                  <Response
+                    feedback={feedback as Partial<Post>}
+                    px={5}
+                    py={3}
+                    borderBottomWidth="1px"
+                    borderColor="border.subtle"
+                    transition="background 0.1s ease"
+                    _hover={{
+                      bgColor: "background.subtle",
                     }}
-                  >
-                    <Response
-                      feedback={feedback as Partial<Post>}
-                      p={2}
-                      _hover={{
-                        bgColor: "background.muted/40",
-                        borderRadius: "sm",
-                      }}
-                    />
-                  </Link>
-                </Flex>
+                  />
+                </Link>
               ))}
 
               {hasNextPage ? (
                 <Spinner ref={loaderRef} my={4} />
               ) : (
-                <Text mb={4} py={2} fontSize="sm">
-                  {app.dashboardPage.recentFeedback.endOf}
+                <Text
+                  py={4}
+                  fontSize="xs"
+                  color="foreground.subtle"
+                  textAlign="center"
+                >
+                  End of list
                 </Text>
               )}
             </VStack>
           ) : (
             <EmptyState
-              message={app.dashboardPage.recentFeedback.emptyState.message}
+              message="No feedback items yet"
               minH={40}
               h="full"
               w="full"
               borderColor="transparent"
             />
           )}
-
-          {!!recentFeedback?.length && <GradientMask bottom={0} />}
         </Stack>
       )}
     </FeedbackSection>

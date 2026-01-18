@@ -1,32 +1,22 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import {
-  useDashboardAggregatesQuery,
+  useDashboardMetricsQuery,
   useInfiniteRecentFeedbackQuery,
   useRecentFeedbackQuery,
-  useWeeklyFeedbackQuery,
 } from "@/generated/graphql";
 
 import type {
-  DashboardAggregatesQueryVariables,
+  DashboardMetricsQueryVariables,
   RecentFeedbackQueryVariables,
-  WeeklyFeedbackQueryVariables,
 } from "@/generated/graphql";
 
-export const dashboardAggregatesOptions = (
-  variables: DashboardAggregatesQueryVariables,
+export const dashboardMetricsOptions = (
+  variables: DashboardMetricsQueryVariables,
 ) =>
   queryOptions({
-    queryKey: useDashboardAggregatesQuery.getKey(variables),
-    queryFn: useDashboardAggregatesQuery.fetcher(variables),
-  });
-
-export const weeklyFeedbackOptions = (
-  variables: WeeklyFeedbackQueryVariables,
-) =>
-  queryOptions({
-    queryKey: useWeeklyFeedbackQuery.getKey(variables),
-    queryFn: useWeeklyFeedbackQuery.fetcher(variables),
+    queryKey: useDashboardMetricsQuery.getKey(variables),
+    queryFn: useDashboardMetricsQuery.fetcher(variables),
   });
 
 export const recentFeedbackOptions = (

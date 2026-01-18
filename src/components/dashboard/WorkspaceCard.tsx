@@ -1,8 +1,8 @@
-import { Flex, Stack, css } from "@omnidev/sigil";
+import { Flex, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
+import { LuChevronRight } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
-import DashboardMetric from "@/components/dashboard/DashboardMetric";
 
 import type { FlexProps } from "@omnidev/sigil";
 
@@ -28,46 +28,66 @@ interface Props extends FlexProps {
 /**
  * Workspace card.
  */
-const WorkspaceCard = ({ workspace, ...rest }: Props) => (
-  <Flex
-    position="relative"
-    direction="column"
-    bgColor="card-item"
-    borderRadius="xl"
-    borderWidth="1px"
-    borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-    p={6}
-    cursor="pointer"
-    className={css({
-      transition: "all 0.2s ease",
-      _groupHover: {
-        bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
-        borderColor: { base: "neutral.300", _dark: "neutral.700" },
-        transform: "translateY(-2px)",
-        boxShadow: "glow-card",
-      },
-    })}
-    {...rest}
-  >
-    <Stack gap={6} h="100%" justify="space-between">
-      <Stack minH={{ base: 16, md: 24 }}>
+const WorkspaceCard = ({ workspace, ...rest }: Props) => {
+  const projectCount = workspace?.projects?.totalCount ?? 0;
+
+  return (
+    <Flex
+      position="relative"
+      direction="column"
+      justify="space-between"
+      bgColor="background.default"
+      borderRadius="xl"
+      borderWidth="1px"
+      borderColor="border.subtle"
+      p={5}
+      cursor="pointer"
+      h="100%"
+      className={css({
+        transition: "all 0.15s ease",
+        _groupHover: {
+          borderColor: { base: "neutral.400", _dark: "neutral.500" },
+          bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+          boxShadow: "0 4px 12px -2px oklch(0 0 0 / 0.08)",
+        },
+      })}
+      {...rest}
+    >
+      <Stack gap={3}>
         <OverflowText
-          fontSize={{ base: "md", lg: "lg" }}
+          fontSize="md"
           fontWeight="semibold"
-          lineHeight={1.2}
+          lineHeight={1.3}
           lineClamp={2}
         >
           {workspace.name}
         </OverflowText>
+
+        <Flex align="center" gap={1.5} color="foreground.subtle" fontSize="sm">
+          <Icon src={HiOutlineFolder} w={4} h={4} />
+          <Text>
+            {projectCount} {projectCount === 1 ? "project" : "projects"}
+          </Text>
+        </Flex>
       </Stack>
 
-      <DashboardMetric
-        type="project"
-        value={workspace?.projects?.totalCount}
-        icon={HiOutlineFolder}
-      />
-    </Stack>
-  </Flex>
-);
+      <Flex
+        align="center"
+        justify="flex-end"
+        mt={4}
+        color="foreground.subtle"
+        className={css({
+          transition: "all 0.15s ease",
+          _groupHover: {
+            color: "foreground.default",
+            transform: "translateX(2px)",
+          },
+        })}
+      >
+        <Icon src={LuChevronRight} w={4} h={4} />
+      </Flex>
+    </Flex>
+  );
+};
 
 export default WorkspaceCard;

@@ -14,7 +14,6 @@ import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
-import { Route as PublicWorkspacesIndexRouteImport } from './routes/_public/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout'
 import { Route as AuthProfileUserIdLayoutRouteImport } from './routes/_auth/profile/$userId/_layout'
@@ -51,11 +50,6 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
-} as any)
-const PublicWorkspacesIndexRoute = PublicWorkspacesIndexRouteImport.update({
-  id: '/workspaces/',
-  path: '/workspaces/',
-  getParentRoute: () => PublicRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -144,7 +138,6 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/workspaces': typeof PublicWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/workspaces/$workspaceSlug': typeof PublicWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
@@ -162,7 +155,6 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/workspaces': typeof PublicWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
   '/profile/$userId/workspaces': typeof AuthProfileUserIdLayoutWorkspacesRoute
@@ -182,7 +174,6 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/_public/workspaces/': typeof PublicWorkspacesIndexRoute
   '/_auth/profile/$userId/_layout': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/_public/workspaces/$workspaceSlug/_layout': typeof PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren
   '/_auth/profile/$userId/_layout/account': typeof AuthProfileUserIdLayoutAccountRoute
@@ -203,7 +194,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard'
     | '/api/auth/$'
-    | '/workspaces'
     | '/profile/$userId'
     | '/workspaces/$workspaceSlug'
     | '/profile/$userId/account'
@@ -221,7 +211,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard'
     | '/api/auth/$'
-    | '/workspaces'
     | '/profile/$userId'
     | '/profile/$userId/account'
     | '/profile/$userId/workspaces'
@@ -240,7 +229,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/_auth/dashboard'
     | '/api/auth/$'
-    | '/_public/workspaces/'
     | '/_auth/profile/$userId/_layout'
     | '/_public/workspaces/$workspaceSlug/_layout'
     | '/_auth/profile/$userId/_layout/account'
@@ -299,13 +287,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
-    }
-    '/_public/workspaces/': {
-      id: '/_public/workspaces/'
-      path: '/workspaces'
-      fullPath: '/workspaces'
-      preLoaderRoute: typeof PublicWorkspacesIndexRouteImport
-      parentRoute: typeof PublicRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -479,12 +460,10 @@ const PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren =
   )
 
 interface PublicRouteChildren {
-  PublicWorkspacesIndexRoute: typeof PublicWorkspacesIndexRoute
   PublicWorkspacesWorkspaceSlugLayoutRoute: typeof PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
-  PublicWorkspacesIndexRoute: PublicWorkspacesIndexRoute,
   PublicWorkspacesWorkspaceSlugLayoutRoute:
     PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren,
 }

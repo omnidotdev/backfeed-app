@@ -1,0 +1,9 @@
+query Observer {
+  observer {
+    rowId
+    identityProviderId
+    username
+    name
+    email
+  }
+}

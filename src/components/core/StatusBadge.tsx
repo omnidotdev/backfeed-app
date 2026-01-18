@@ -1,37 +1,56 @@
-import { Badge } from "@omnidev/sigil";
+import { Flex, Text } from "@omnidev/sigil";
+import Color from "colorjs.io";
 
-import type { BadgeProps } from "@omnidev/sigil";
+import type { FlexProps } from "@omnidev/sigil";
 import type { StatusTemplate } from "@/generated/graphql";
 
-interface Props extends BadgeProps {
+interface Props extends FlexProps {
   /** The status template for the post. */
   status: Partial<StatusTemplate> | null;
 }
 
+/**
+ * Get background color with opacity from status color.
+ */
+const getBackgroundColor = (
+  color: string | null | undefined,
+): string | undefined => {
+  if (!color) return undefined;
+  try {
+    const parsed = new Color(color);
+    parsed.alpha = 0.15;
+    return parsed.toString({ format: "rgba" });
+  } catch {
+    return undefined;
+  }
+};
+
 /*
  * Badge representing the status for feedback.
  */
-const StatusBadge = ({ status, children, ...rest }: Props) => (
-  <Badge
-    variant="outline"
-    // NB: Needs to be analyzed at runtime.
-    // TODO: Implement check to validate that the status color is a valid color
-    style={
-      status?.color
-        ? {
-            color: status.color,
-            borderColor: status.color,
-            // TODO: Implement when `status.color` is validated first (breaks if not a valid color, i.e. seeded data)
-            // backgroundColor: parseColor(status.color).decrementChannel("alpha", 0.95).toString("rgba"),
-          }
-        : undefined
-    }
-    {...rest}
-  >
-    {status?.displayName ?? "Unknown"}
+const StatusBadge = ({ status, children, ...rest }: Props) => {
+  const bgColor = getBackgroundColor(status?.color);
 
-    {children}
-  </Badge>
-);
+  return (
+    <Flex
+      align="center"
+      gap={1}
+      px={2.5}
+      py={1}
+      borderRadius="full"
+      style={{
+        backgroundColor: bgColor,
+        color: status?.color ?? undefined,
+      }}
+      {...rest}
+    >
+      <Text fontSize="xs" fontWeight="medium" whiteSpace="nowrap">
+        {status?.displayName ?? "Unknown"}
+      </Text>
+
+      {children}
+    </Flex>
+  );
+};
 
 export default StatusBadge;

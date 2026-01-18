@@ -11,7 +11,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/")({
   validateSearch: searchSchema,
   beforeLoad: async ({ context: { session }, search }) => {
-    if (session?.user.rowId) {
+    if (session?.user?.rowId) {
       const destination = search.returnTo || "/dashboard";
       throw redirect({ to: destination });
     }

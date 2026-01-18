@@ -66,7 +66,7 @@ function WorkspacePage() {
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: app.workspacesPage.breadcrumb,
-      to: "/workspaces",
+      to: "/dashboard",
     },
     {
       label: workspaceName,

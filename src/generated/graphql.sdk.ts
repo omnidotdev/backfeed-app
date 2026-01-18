@@ -1200,6 +1200,16 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
+/** The currently authenticated user. */
+export type Observer = {
+  __typename?: 'Observer';
+  email: Scalars['String']['output'];
+  identityProviderId: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  username?: Maybe<Scalars['String']['output']>;
+};
+
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -2641,6 +2651,11 @@ export type Query = Node & {
   id: Scalars['ID']['output'];
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
+  /**
+   * Returns the currently authenticated user (observer).
+   * Returns null if not authenticated.
+   */
+  observer?: Maybe<Observer>;
   /** Get a single `Post`. */
   post?: Maybe<Post>;
   /** Reads and enables pagination through a set of `Post`. */
@@ -4528,12 +4543,13 @@ export type CommentsQueryVariables = Exact<{
 
 export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
-export type DashboardAggregatesQueryVariables = Exact<{
+export type DashboardMetricsQueryVariables = Exact<{
   organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  sevenDaysAgo: Scalars['Datetime']['input'];
 }>;
 
 
-export type DashboardAggregatesQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number } | null };
+export type DashboardMetricsQuery = { __typename?: 'Query', needsReview?: { __typename?: 'PostConnection', totalCount: number } | null, openItems?: { __typename?: 'PostConnection', totalCount: number } | null, resolvedThisWeek?: { __typename?: 'PostConnection', totalCount: number } | null };
 
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4542,6 +4558,11 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+
+export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ObserverQuery = { __typename?: 'Query', observer?: { __typename?: 'Observer', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
 
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4635,14 +4656,6 @@ export type UserByEmailQueryVariables = Exact<{
 
 
 export type UserByEmailQuery = { __typename?: 'Query', userByEmail?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
-
-export type WeeklyFeedbackQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
-  startDate: Scalars['Datetime']['input'];
-}>;
-
-
-export type WeeklyFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -4988,9 +5001,21 @@ export const CommentsDocument = gql`
   }
 }
     ${CommentFragmentDoc}`;
-export const DashboardAggregatesDocument = gql`
-    query DashboardAggregates($organizationIds: [UUID!]) {
-  posts(filter: {project: {organizationId: {in: $organizationIds}}}) {
+export const DashboardMetricsDocument = gql`
+    query DashboardMetrics($organizationIds: [UUID!], $sevenDaysAgo: Datetime!) {
+  needsReview: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplateId: {isNull: true}}
+  ) {
+    totalCount
+  }
+  openItems: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["open", "in_progress", "under_review"]}}}
+  ) {
+    totalCount
+  }
+  resolvedThisWeek: posts(
+    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["completed", "closed"]}}, statusUpdatedAt: {greaterThanOrEqualTo: $sevenDaysAgo}}
+  ) {
     totalCount
   }
 }
@@ -5002,6 +5027,17 @@ export const FeedbackByIdDocument = gql`
   }
 }
     ${FeedbackFragmentDoc}`;
+export const ObserverDocument = gql`
+    query Observer {
+  observer {
+    rowId
+    identityProviderId
+    username
+    name
+    email
+  }
+}
+    `;
 export const PostsDocument = gql`
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
   posts(
@@ -5213,20 +5249,6 @@ export const UserByEmailDocument = gql`
   }
 }
     `;
-export const WeeklyFeedbackDocument = gql`
-    query WeeklyFeedback($organizationIds: [UUID!], $startDate: Datetime!) {
-  posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, createdAt: {greaterThanOrEqualTo: $startDate}}
-  ) {
-    groupedAggregates(groupBy: [CREATED_AT_TRUNCATED_TO_DAY]) {
-      keys
-      distinctCount {
-        rowId
-      }
-    }
-  }
-}
-    `;
 export const WorkspaceDocument = gql`
     query Workspace($organizationId: UUID!) {
   projects(
@@ -5334,11 +5356,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CommentsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>({ document: CommentsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Comments', 'query', variables);
     },
-    DashboardAggregates(variables?: DashboardAggregatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DashboardAggregatesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DashboardAggregatesQuery>({ document: DashboardAggregatesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DashboardAggregates', 'query', variables);
+    DashboardMetrics(variables: DashboardMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DashboardMetricsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DashboardMetricsQuery>({ document: DashboardMetricsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DashboardMetrics', 'query', variables);
     },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>({ document: FeedbackByIdDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'FeedbackById', 'query', variables);
+    },
+    Observer(variables?: ObserverQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ObserverQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ObserverQuery>({ document: ObserverDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Observer', 'query', variables);
     },
     Posts(variables: PostsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<PostsQuery>({ document: PostsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Posts', 'query', variables);
@@ -5372,9 +5397,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     userByEmail(variables: UserByEmailQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserByEmailQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserByEmailQuery>({ document: UserByEmailDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'userByEmail', 'query', variables);
-    },
-    WeeklyFeedback(variables: WeeklyFeedbackQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WeeklyFeedbackQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<WeeklyFeedbackQuery>({ document: WeeklyFeedbackDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'WeeklyFeedback', 'query', variables);
     },
     Workspace(variables: WorkspaceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspaceQuery>({ document: WorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Workspace', 'query', variables);

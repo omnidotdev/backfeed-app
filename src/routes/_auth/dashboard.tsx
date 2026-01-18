@@ -1,20 +1,17 @@
-import { Grid, Icon } from "@omnidev/sigil";
+import { Flex, Grid, Stack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
-import { LuBuilding2 } from "react-icons/lu";
+import { LuCircleCheckBig, LuCircleDot, LuInbox } from "react-icons/lu";
 
 import Aggregate from "@/components/dashboard/Aggregate";
-import FeedbackOverview from "@/components/dashboard/FeedbackOverview";
 import RecentFeedback from "@/components/dashboard/RecentFeedback";
 import Page from "@/components/layout/Page";
 import PinnedWorkspaces from "@/components/workspace/PinnedWorkspaces";
 import app from "@/lib/config/app.config";
 import {
-  dashboardAggregatesOptions,
+  dashboardMetricsOptions,
   recentFeedbackOptions,
-  weeklyFeedbackOptions,
 } from "@/lib/options/dashboard";
 import createMetaTags from "@/lib/util/createMetaTags";
 
@@ -35,23 +32,17 @@ export const Route = createFileRoute("/_auth/dashboard")({
       session?.organizations?.map((o) => o.id) ??
       [];
 
-    const oneWeekAgo = dayjs()
+    const sevenDaysAgo = dayjs()
       .utc()
-      .subtract(6, "days")
+      .subtract(7, "days")
       .startOf("day")
       .toDate();
 
     await Promise.all([
       queryClient.ensureQueryData({
-        ...dashboardAggregatesOptions({
+        ...dashboardMetricsOptions({
           organizationIds,
-        }),
-        revalidateIfStale: true,
-      }),
-      queryClient.ensureQueryData({
-        ...weeklyFeedbackOptions({
-          organizationIds,
-          startDate: oneWeekAgo,
+          sevenDaysAgo,
         }),
         revalidateIfStale: true,
       }),
@@ -64,7 +55,7 @@ export const Route = createFileRoute("/_auth/dashboard")({
     ]);
 
     return {
-      oneWeekAgo: dayjs().utc().subtract(6, "days").startOf("day").toDate(),
+      sevenDaysAgo,
       organizationIds,
     };
   },
@@ -73,64 +64,73 @@ export const Route = createFileRoute("/_auth/dashboard")({
 });
 
 function DashboardPage() {
-  const { oneWeekAgo, organizationIds } = Route.useLoaderData();
+  const { sevenDaysAgo, organizationIds } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
 
   const {
-    data: dashboardAggregates,
+    data: metrics,
     isLoading,
     isError,
   } = useQuery({
-    ...dashboardAggregatesOptions({ organizationIds }),
+    ...dashboardMetricsOptions({ organizationIds, sevenDaysAgo }),
     enabled: organizationIds.length > 0,
-    select: (data) => ({
-      totalFeedback: data?.posts?.totalCount ?? 0,
-    }),
   });
-
-  const aggregates = [
-    {
-      title: app.dashboardPage.aggregates.totalFeedback.title,
-      value: dashboardAggregates?.totalFeedback ?? 0,
-      icon: HiOutlineChatBubbleLeftRight,
-    },
-  ];
 
   return (
     <Page
       header={{
         title: `${app.dashboardPage.welcomeMessage}, ${session?.user?.username}!`,
         description: app.dashboardPage.description,
-        cta: [
-          {
-            label: app.dashboardPage.cta.viewWorkspaces.label,
-            variant: "outline",
-            icon: <Icon src={LuBuilding2} />,
-            linkOptions: { to: "/workspaces" },
-          },
-        ],
       }}
     >
-      <PinnedWorkspaces />
-
-      <Grid gap={6} alignItems="center" columns={{ base: 1, md: 2 }} w="100%">
-        {aggregates.map(({ title, value, icon }) => (
+      <Stack gap={6}>
+        {/* Metrics Row */}
+        <Grid gap={4} columns={{ base: 1, sm: 3 }}>
           <Aggregate
-            key={title}
-            title={title}
-            value={value}
-            icon={icon}
+            title="Needs Review"
+            value={metrics?.needsReview?.totalCount ?? 0}
+            icon={LuInbox}
+            accentColor="amber"
             isLoaded={!isLoading}
             isError={isError}
           />
-        ))}
-      </Grid>
 
-      <Grid h="100%" w="100%" gap={6} columns={{ base: 1, md: 2 }}>
-        <FeedbackOverview oneWeekAgo={oneWeekAgo} />
+          <Aggregate
+            title="Open"
+            value={metrics?.openItems?.totalCount ?? 0}
+            icon={LuCircleDot}
+            accentColor="sky"
+            isLoaded={!isLoading}
+            isError={isError}
+          />
 
-        <RecentFeedback />
-      </Grid>
+          <Aggregate
+            title="Resolved (7d)"
+            value={metrics?.resolvedThisWeek?.totalCount ?? 0}
+            icon={LuCircleCheckBig}
+            accentColor="emerald"
+            isLoaded={!isLoading}
+            isError={isError}
+          />
+        </Grid>
+
+        {/* Main Content Grid */}
+        <Grid gap={6} columns={{ base: 1, lg: 2 }}>
+          {/* Workspaces Section */}
+          <Stack gap={4}>
+            <Flex align="center" justify="space-between">
+              <Text fontSize="sm" fontWeight="semibold">
+                Your Workspaces
+              </Text>
+            </Flex>
+
+            <PinnedWorkspaces />
+          </Stack>
+
+          {/* Needs Attention Section */}
+          <RecentFeedback />
+        </Grid>
+      </Stack>
     </Page>
   );
 }
