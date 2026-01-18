@@ -59,6 +59,47 @@
   html {
     overscroll-behavior-y: none;
     overflow-x: clip;
+    overflow-y: scroll;
+
+    /* Themed scrollbar - Light mode */
+    scrollbar-width: thin;
+    scrollbar-color: var(--colors-neutral-300) var(--colors-neutral-100);
+
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--colors-neutral-100);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--colors-neutral-300);
+      border-radius: 6px;
+      border: 3px solid var(--colors-neutral-100);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--colors-neutral-400);
+    }
+  }
+
+  html.dark {
+    /* Themed scrollbar - Dark mode */
+    scrollbar-color: var(--colors-neutral-700) var(--colors-neutral-900);
+
+    &::-webkit-scrollbar-track {
+      background: var(--colors-neutral-900);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--colors-neutral-700);
+      border-color: var(--colors-neutral-900);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--colors-neutral-600);
+    }
   }
 
   body {
@@ -114,30 +155,11 @@
     [data-disabled]
   ):hover {
   box-shadow: 0 8px 20px -4px oklch(0.65 0.22 6 / 0.3);
-  transform: translateY(-1px);
 }
 
-.button--variant_solid:not(:disabled):not([disabled]):not(
-    [data-disabled]
-  ):active {
-  transform: translateY(0);
-}
-
-/* Outline buttons - subtle lift on hover */
+/* Outline buttons */
 .button--variant_outline:not(:disabled):not([disabled]):not([data-disabled]) {
   transition: all 0.2s ease;
-}
-
-.button--variant_outline:not(:disabled):not([disabled]):not(
-    [data-disabled]
-  ):hover {
-  transform: translateY(-1px);
-}
-
-.button--variant_outline:not(:disabled):not([disabled]):not(
-    [data-disabled]
-  ):active {
-  transform: translateY(0);
 }
 
 /* ============================================

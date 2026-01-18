@@ -8,7 +8,6 @@ import {
   Input,
   Select,
   Stack,
-  Text,
 } from "@omnidev/sigil";
 import {
   keepPreviousData,
@@ -22,18 +21,17 @@ import {
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
-import { HiOutlineFolder } from "react-icons/hi2";
+import { useMemo } from "react";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-import GradientMask from "@/components/core/GradientMask";
 import SkeletonArray from "@/components/core/SkeletonArray";
 import Spinner from "@/components/core/Spinner";
 import CreateFeedback from "@/components/feedback/CreateFeedback";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import SectionContainer from "@/components/layout/SectionContainer";
+import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
@@ -83,9 +81,7 @@ const ProjectFeedback = () => {
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
-  const { viewState } = useProjectViewStore(({ viewState }) => ({
-    viewState,
-  }));
+  const viewState = useProjectViewStore((state) => state.viewState);
 
   const { data: project } = useQuery({
     ...projectOptions({
@@ -123,6 +119,8 @@ const ProjectFeedback = () => {
     },
   });
 
+  const projectId = project?.rowId;
+
   const {
     data: posts,
     isLoading,
@@ -131,38 +129,43 @@ const ProjectFeedback = () => {
     fetchNextPage,
   } = useInfiniteQuery({
     ...infiniteFeedbackOptions({
-      projectId: project?.rowId!,
+      projectId: projectId!,
       excludedStatuses,
       orderBy: [orderBy, PostOrderBy.CreatedAtDesc],
       search,
       userId: session?.user?.rowId,
     }),
+    enabled: !!projectId,
     placeholderData: keepPreviousData,
     select: (data) =>
       data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
   });
 
-  const pendingFeedback = useMutationState<FeedbackFragment>({
+  const pendingMutations = useMutationState({
     filters: {
       mutationKey: useCreateFeedbackMutation.getKey(),
       status: "pending",
     },
-    select: (mutation) => {
-      const { input } = mutation.state
-        .variables as CreateFeedbackMutationVariables;
+    select: (mutation) =>
+      mutation.state.variables as CreateFeedbackMutationVariables,
+  });
 
+  const pendingFeedback = useMemo(() => {
+    if (!defaultStatus) return [];
+
+    return pendingMutations.map((variables) => {
       const now = new Date();
 
       return {
         rowId: "pending",
-        title: input.post.title,
-        description: input.post.description,
+        title: variables.input.post.title,
+        description: variables.input.post.description,
         statusUpdatedAt: now,
         createdAt: now,
         updatedAt: now,
-        statusTemplate: defaultStatus!,
+        statusTemplate: defaultStatus,
         project: {
-          rowId: input.post.projectId,
+          rowId: variables.input.post.projectId,
           name: project?.name ?? "pending",
           slug: project?.slug ?? "pending",
           organizationId: project?.organizationId ?? organizationId,
@@ -189,9 +192,9 @@ const ProjectFeedback = () => {
         userDownvotes: {
           nodes: [],
         },
-      };
-    },
-  });
+      } as FeedbackFragment;
+    });
+  }, [pendingMutations, defaultStatus, project, session, organizationId]);
 
   const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
     useDialogStore({
@@ -220,14 +223,12 @@ const ProjectFeedback = () => {
 
   const allPosts = [
     ...(showPendingFeedback
-      ? [
-          ...pendingFeedback.filter((feedback) =>
-            // NB: search filter is a bit different than the others. If `showPendingFeedback` is true, we only want to optimistically add feedback that would be included with the search
-            feedback.title
-              ?.toLowerCase()
-              .includes(search.toLowerCase()),
-          ),
-        ]
+      ? pendingFeedback.filter((feedback) =>
+          // NB: search filter is a bit different than the others. If `showPendingFeedback` is true, we only want to optimistically add feedback that would be included with the search
+          feedback.title
+            ?.toLowerCase()
+            .includes(search.toLowerCase()),
+        )
       : []),
     ...(posts ?? []),
   ];
@@ -240,54 +241,44 @@ const ProjectFeedback = () => {
   });
 
   return (
-    <SectionContainer
+    <Stack
       ref={rootRef}
-      title={app.projectPage.projectFeedback.title}
-      icon={HiOutlineFolder}
-      headerActions={
-        <SwitchFeedbackView
-          position={{ baseToSm: "absolute" }}
-          right={{ baseToSm: 4 }}
-        />
-      }
-      p={0}
-      gap={2}
-      pr={{ base: 4, sm: 6 }}
-      pl={{ base: 4, sm: 6 }}
-      pt={{ base: 4, sm: 6 }}
+      position="relative"
+      borderRadius="2xl"
+      borderWidth="1px"
+      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
+      bgColor={{ base: "white", _dark: "neutral.900" }}
+      overflow="visible"
+      p={{ base: 4, sm: 6 }}
+      gap={5}
     >
-      {session && (
-        <Button
-          position={{ base: undefined, sm: "absolute" }}
+      {/* Toolbar Row */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        align={{ base: "stretch", md: "center" }}
+        justify="space-between"
+        gap={3}
+      >
+        {/* Left: Search */}
+        <Input
+          placeholder={app.projectPage.projectFeedback.search.placeholder}
+          borderColor="border.subtle"
+          onChange={onSearchChange}
+          maxW={{ base: "full", md: "sm" }}
           size="sm"
-          top={{ base: 4, sm: 6 }}
-          right={{ base: 4, sm: 6 }}
-          variant="outline"
-          className="border-primary text-primary hover:bg-primary/10 disabled:opacity-50 disabled:hover:bg-transparent"
-          mt={{ base: 2, sm: 0 }}
-          onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
-          // TODO: add tooltip for disabled state. Discuss copy
-          disabled={!canCreateFeedback}
+        />
+
+        {/* Right: Controls */}
+        <Flex
+          align="center"
+          gap={2}
+          justify={{ base: "space-between", md: "flex-end" }}
+          flexShrink={0}
         >
-          <Icon src={LuPlus} />
-
-          {app.projectPage.projectFeedback.createFeedback.title}
-        </Button>
-      )}
-
-      {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
-      <Stack gap={0} position="relative" mb="1px">
-        {!!session && <CreateFeedback />}
-
-        <Stack mt={4} direction={{ base: "column", sm: "row" }}>
-          <Input
-            placeholder={app.projectPage.projectFeedback.search.placeholder}
-            borderColor="border.subtle"
-            onChange={onSearchChange}
-          />
-
           <Select
-            maxW={{ base: undefined, sm: 64 }}
+            w={{ base: "auto", sm: "auto" }}
+            minW={36}
+            size="sm"
             label={app.projectPage.projectFeedback.sortBy.label}
             collection={createListCollection({
               items: SORT_BY_OPTIONS,
@@ -311,86 +302,99 @@ const ProjectFeedback = () => {
               });
             }}
           />
-        </Stack>
 
-        {isError ? (
-          <ErrorBoundary message="Error fetching feedback" h="sm" my={4} />
-        ) : (
-          <Grid
-            gap={2}
-            mt={4}
-            columns={{ base: 1, lg: viewState === ViewState.List ? 1 : 2 }}
-            maxH={isCreateFeedbackOpen ? "xl" : { base: "xl", md: "3xl" }}
-            transitionDuration="250ms"
-            transitionProperty="max-height"
-            transitionTimingFunction="default"
-            overflow="auto"
-            scrollbar="hidden"
-            // NB: the padding is necessary to prevent clipping of the card borders/box shadows
-            p="1px"
-          >
-            {isLoading ? (
-              <SkeletonArray count={5} h={21} />
-            ) : allPosts.length ? (
-              <>
-                {allPosts.map((feedback) => {
-                  const isPending = feedback?.rowId === "pending";
+          <SwitchFeedbackView />
 
-                  return (
-                    <GridItem
-                      key={feedback?.rowId}
-                      colSpan={{ base: 1, lg: allPosts.length === 1 ? 2 : 1 }}
-                    >
-                      <FeedbackCard
-                        canManageFeedback={hasAdminPrivileges}
-                        feedback={feedback!}
-                        projectStatuses={projectStatuses}
-                        h="full"
-                        w="full"
-                        minH={21}
-                        titleProps={
-                          viewState === ViewState.Grid
-                            ? {
-                                // TODO: figure out how to expand this beyond line clamp of 2
-                                lineClamp: 2,
-                                overflow: "hidden",
-                              }
-                            : undefined
-                        }
-                        descriptionProps={
-                          viewState === ViewState.Grid
-                            ? {
-                                // TODO: figure out how to expand this beyond line clamp of 2
-                                lineClamp: 2,
-                                overflow: "hidden",
-                              }
-                            : undefined
-                        }
-                        borderRadius="md"
-                        bgColor="card-item"
-                        cursor={isPending ? "not-allowed" : "pointer"}
-                        _hover={{ boxShadow: "card" }}
-                        onClick={() =>
-                          !isPending
-                            ? navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
-                                params: {
-                                  workspaceSlug,
-                                  projectSlug,
-                                  feedbackId: feedback?.rowId!,
-                                },
-                              })
-                            : undefined
-                        }
-                      />
-                    </GridItem>
-                  );
-                })}
+          {session && (
+            <Button
+              size="sm"
+              variant="solid"
+              onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
+              disabled={!canCreateFeedback}
+            >
+              <Icon src={LuPlus} />
+              <Flex display={{ base: "none", sm: "flex" }}>
+                {app.projectPage.projectFeedback.createFeedback.title}
+              </Flex>
+            </Button>
+          )}
+        </Flex>
+      </Flex>
 
+      {/* Status Filter Pills */}
+      <StatusFilterPills />
+
+      {/* Create Feedback Form */}
+      {!!session && <CreateFeedback />}
+
+      {/* Feedback List */}
+      {isError ? (
+        <ErrorBoundary message="Error fetching feedback" h="sm" />
+      ) : (
+        <Grid
+          gap={3}
+          columns={{ base: 1, md: viewState === ViewState.List ? 1 : 2 }}
+        >
+          {isLoading ? (
+            <SkeletonArray count={5} h={21} />
+          ) : allPosts.length ? (
+            <>
+              {allPosts.map((feedback) => {
+                const isPending = feedback?.rowId === "pending";
+
+                return (
+                  <GridItem
+                    key={feedback?.rowId}
+                    colSpan={{ base: 1, md: allPosts.length === 1 ? 2 : 1 }}
+                  >
+                    <FeedbackCard
+                      canManageFeedback={hasAdminPrivileges}
+                      feedback={feedback!}
+                      projectStatuses={projectStatuses}
+                      h="full"
+                      w="full"
+                      minH={21}
+                      titleProps={
+                        viewState === ViewState.Grid
+                          ? {
+                              lineClamp: 2,
+                              overflow: "hidden",
+                            }
+                          : undefined
+                      }
+                      descriptionProps={
+                        viewState === ViewState.Grid
+                          ? {
+                              lineClamp: 2,
+                              overflow: "hidden",
+                            }
+                          : undefined
+                      }
+                      borderRadius="xl"
+                      bgColor="card-item"
+                      cursor={isPending ? "not-allowed" : "pointer"}
+                      onClick={() =>
+                        !isPending
+                          ? navigate({
+                              to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                              params: {
+                                workspaceSlug,
+                                projectSlug,
+                                feedbackId: feedback?.rowId!,
+                              },
+                            })
+                          : undefined
+                      }
+                    />
+                  </GridItem>
+                );
+              })}
+
+              {hasNextPage && (
                 <GridItem
                   colSpan={{
                     base: 1,
-                    lg:
+                    md:
                       allPosts.length === 1 || viewState === ViewState.Grid
                         ? 2
                         : 1,
@@ -398,30 +402,23 @@ const ProjectFeedback = () => {
                   my={5}
                 >
                   <Flex justify="center">
-                    {hasNextPage ? (
-                      <Spinner ref={loaderRef} />
-                    ) : (
-                      <Text>{app.projectPage.projectFeedback.endOf}</Text>
-                    )}
+                    <Spinner ref={loaderRef} />
                   </Flex>
                 </GridItem>
-              </>
-            ) : (
-              <GridItem colSpan={viewState === ViewState.Grid ? 2 : 1}>
-                <EmptyState
-                  message={app.projectPage.projectFeedback.emptyState.message}
-                  h="xs"
-                  w="full"
-                  mb={4}
-                />
-              </GridItem>
-            )}
-          </Grid>
-        )}
-
-        {!!allPosts.length && <GradientMask bottom={0} />}
-      </Stack>
-    </SectionContainer>
+              )}
+            </>
+          ) : (
+            <GridItem colSpan={viewState === ViewState.Grid ? 2 : 1}>
+              <EmptyState
+                message={app.projectPage.projectFeedback.emptyState.message}
+                h="xs"
+                w="full"
+              />
+            </GridItem>
+          )}
+        </Grid>
+      )}
+    </Stack>
   );
 };
 

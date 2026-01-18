@@ -101,8 +101,8 @@ const AccountInformation = () => {
           <MenuSeparator />
 
           <MenuItem value="logout" onClick={handleLogout}>
-            <HStack gap={2} color="red">
-              <Icon src={FiLogOut} size="sm" color="red" />
+            <HStack gap={2} color="primary">
+              <Icon src={FiLogOut} size="sm" color="primary" />
 
               {app.auth.signOut.label}
             </HStack>
@@ -124,9 +124,13 @@ const AccountInformation = () => {
             </HStack>
           </Button>
 
-          <Button variant="outline" onClick={handleLogout} borderColor="red">
-            <HStack gap={2} color="red">
-              <Icon src={FiLogOut} size="sm" color="red" />
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            borderColor="primary"
+          >
+            <HStack gap={2} color="primary">
+              <Icon src={FiLogOut} size="sm" color="primary" />
 
               {app.auth.signOut.label}
             </HStack>

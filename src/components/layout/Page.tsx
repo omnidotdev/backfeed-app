@@ -49,14 +49,15 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
           justify="space-between"
           gap={4}
         >
-          <Stack>
-            <HStack gap={1}>
+          <Stack gap={1}>
+            <HStack gap={2} alignItems="center">
               {typeof header.title === "string" ? (
                 <Text
                   as="h1"
-                  fontSize="3xl"
-                  fontWeight="semibold"
-                  lineHeight={1.3}
+                  fontSize={{ base: "2xl", md: "3xl" }}
+                  fontWeight="bold"
+                  lineHeight={1.2}
+                  letterSpacing="-0.02em"
                 >
                   {header.title}
                 </Text>
@@ -71,24 +72,28 @@ const Page = ({ breadcrumbs, header, children, ...rest }: Props) => (
               <Text
                 as="h2"
                 fontSize={{ base: "sm", sm: "md" }}
-                fontWeight="medium"
-                color="foreground.subtle"
+                fontWeight="normal"
+                color="foreground.muted"
+                maxW="2xl"
+                lineHeight={1.5}
               >
                 {header.description}
               </Text>
             )}
           </Stack>
 
-          <Flex
-            gap={4}
-            width={{ base: "full", md: "auto" }}
-            direction={{ base: "column", sm: "row" }}
-            placeSelf="flex-start"
-          >
-            {header.cta?.map((action) => (
-              <CallToAction key={action.label} action={action} />
-            ))}
-          </Flex>
+          {!!header.cta?.length && (
+            <Flex
+              gap={2}
+              width={{ base: "full", md: "auto" }}
+              direction={{ base: "column", sm: "row" }}
+              flexShrink={0}
+            >
+              {header.cta?.map((action) => (
+                <CallToAction key={action.label} action={action} />
+              ))}
+            </Flex>
+          )}
         </Flex>
       </Flex>
     )}

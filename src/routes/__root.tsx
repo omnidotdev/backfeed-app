@@ -191,7 +191,6 @@ function RootDocument({
             w="100%"
             h="100dvh"
             gap={0}
-            paddingLeft="calc(100vw - 100%)"
           >
             <sigil.main
               w="full"

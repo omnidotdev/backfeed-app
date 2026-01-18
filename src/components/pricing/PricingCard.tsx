@@ -93,7 +93,7 @@ const PricingCard = ({ price, ...rest }: Props) => {
           borderRadius={1}
         >
           <Badge color="brand.secondary" height={8} borderRadius={4}>
-            No Subscription Required
+            No Credit Card Required
           </Badge>
         </Stack>
       )}

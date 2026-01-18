@@ -8,7 +8,7 @@ import {
 } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useRouteContext } from "@tanstack/react-router";
-import { FiEdit } from "react-icons/fi";
+import { LuPencil } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
@@ -36,12 +36,11 @@ const updateFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(3, updateFeedbackDetails.errors.title.minLength)
+    .min(1, updateFeedbackDetails.errors.title.minLength)
     .max(90, updateFeedbackDetails.errors.title.maxLength),
   description: z
     .string()
     .trim()
-    .min(10, updateFeedbackDetails.errors.description.minLength)
     .max(
       MAX_DESCRIPTION_LENGTH,
       updateFeedbackDetails.errors.description.maxLength,
@@ -136,7 +135,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
           <Icon
             cursor="pointer"
             color="brand.senary"
-            src={FiEdit}
+            src={LuPencil}
             h={4.5}
             w={4.5}
           />
@@ -150,8 +149,8 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
         // NB: `onClick` and `cursor` are to change behavior due to render of dialog being scope to an individual feedback card.
         onClick: (evt) => evt.stopPropagation(),
         style: {
-          // TODO: adjust minW upstream in Sigil for mobile viewports
-          minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          width: isSmallViewport ? token("sizes.md") : "calc(100vw - 2rem)",
+          maxWidth: token("sizes.lg"),
           cursor: "default",
         },
       }}

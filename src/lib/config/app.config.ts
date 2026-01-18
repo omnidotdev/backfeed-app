@@ -748,13 +748,13 @@ const app = {
         },
         fields: {
           projectName: {
-            label: "Project Name",
+            label: "Name",
             errors: {
               minLength: "Must be at least 3 characters.",
             },
           },
           projectDescription: {
-            label: "Project Description",
+            label: "Description",
             errors: {
               minLength: "Must be at least 10 characters.",
               maxLength: "Must be at most 240 characters.",
@@ -762,7 +762,7 @@ const app = {
             },
           },
           projectSlug: {
-            label: "Project Slug",
+            label: "Slug",
             errors: {
               invalidFormat: "Invalid slug format.",
               minLength: "Must be at least 3 characters.",
@@ -910,11 +910,10 @@ const app = {
         errors: {
           invalid: "Invalid format",
           title: {
-            minLength: "Must be at least 3 characters.",
+            minLength: "Must be at least 1 character.",
             maxLength: "Must be at most 90 characters.",
           },
           description: {
-            minLength: "Must be at least 10 characters.",
             maxLength: "Must be at most 500 characters.",
           },
         },
@@ -923,11 +922,10 @@ const app = {
         errors: {
           invalid: "Invalid format",
           title: {
-            minLength: "Must be at least 3 characters.",
+            minLength: "Must be at least 1 character.",
             maxLength: "Must be at most 90 characters.",
           },
           description: {
-            minLength: "Must be at least 10 characters.",
             maxLength: "Must be at most 500 characters.",
           },
         },

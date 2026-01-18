@@ -33,7 +33,7 @@ const Field = ({ errorMap, errorProps, children, ...rest }: Props) => {
           right={0}
           h={5}
           fontSize="sm"
-          color="red"
+          color="primary"
           {...errorProps}
         >
           {errors[0].message}

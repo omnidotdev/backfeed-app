@@ -7,20 +7,18 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { useRouterState } from "@tanstack/react-router";
-import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { useDebounceValue, useIsClient, useLocalStorage } from "usehooks-ts";
+import { LuPanelLeftOpen } from "react-icons/lu";
+import { useIsClient } from "usehooks-ts";
 
 import Breadcrumb from "@/components/core/Breadcrumb";
 import ProfileNavigation from "@/components/profile/ProfileNavigation";
-import { token } from "@/generated/panda/tokens";
-import useViewportSize from "@/lib/hooks/useViewportSize";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { PropsWithChildren } from "react";
 import type { BreadcrumbRecord } from "@/components/core/Breadcrumb";
 
 /**
- * Sidebar for profile page. Used for navigation between profile pages.
+ * Sidebar for profile page. Uses drawer/modal pattern to prevent layout shift.
  */
 const ProfileSidebar = ({ children }: PropsWithChildren) => {
   const segment = useRouterState({
@@ -32,18 +30,7 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
     },
   });
 
-  const isLargeViewport = useViewportSize({
-    minWidth: token("breakpoints.lg"),
-  });
-
   const isClient = useIsClient();
-
-  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(
-    "profile-management-sidebar",
-    true,
-  );
-
-  const onToggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const {
     isOpen: isDrawerOpen,
@@ -53,91 +40,55 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
     defaultIsOpen: false,
   });
 
-  const [debouncedIsOpen] = useDebounceValue(isSidebarOpen, 100);
-
   const breadcrumbs: BreadcrumbRecord[] = [
     {
       label: capitalizeFirstLetter(segment)!,
     },
   ];
 
-  const isOpen = isLargeViewport ? isSidebarOpen : isDrawerOpen;
-
   if (!isClient) return null;
 
   return (
-    <HStack h="full" w="full" gap={0}>
-      {/* TODO: extract ternary part into a separate component. Use early returns there, and import above to separate logic from rendering. */}
-      {isLargeViewport ? (
-        <Stack
-          ref={() => {
-            if (isDrawerOpen) {
-              onCloseDrawer();
-            }
-          }}
-          position="relative"
-          h="full"
-          w={isSidebarOpen ? "xs" : 16}
-          borderRightWidth="1px"
-          borderColor="border.subtle"
-          transition="all 200ms ease-in-out"
-          gap={0}
-        >
-          <ProfileNavigation
-            isOpen={debouncedIsOpen}
-            truncateText={!debouncedIsOpen}
-            position="sticky"
-            gap={0}
-            top="header"
-            zIndex="sticky"
-          />
-        </Stack>
-      ) : (
-        <Drawer
-          placement="left"
-          open={isDrawerOpen}
-          onOpenChange={onToggleDrawer}
-          bodyProps={{
-            p: 0,
-            pb: 6,
-            borderLeftRadius: "full",
-            alignItems: "center",
-            justifyContent: "space-between",
-            overflow: "hidden",
-            gap: 6,
-          }}
-          positionerProps={{
-            width: { base: "80%", sm: "sm" },
-          }}
-        >
-          <ProfileNavigation
-            isOpen={isDrawerOpen}
-            onClose={onCloseDrawer}
-            gap={4}
-            w="full"
-          />
-
-          <Stack w="full" px={6}>
-            <Button variant="ghost" onClick={onCloseDrawer}>
-              Close
-            </Button>
-          </Stack>
-        </Drawer>
-      )}
-
-      <Stack
-        position="relative"
-        w="full"
-        placeSelf="flex-start"
-        px={{ base: 0, lg: 4 }}
-        h="full"
+    <>
+      {/* Drawer overlay sidebar - no layout shift */}
+      <Drawer
+        placement="left"
+        open={isDrawerOpen}
+        onOpenChange={onToggleDrawer}
+        bodyProps={{
+          p: 0,
+          pb: 6,
+          borderLeftRadius: "full",
+          alignItems: "center",
+          justifyContent: "space-between",
+          overflow: "hidden",
+          gap: 6,
+        }}
+        positionerProps={{
+          width: { base: "80%", sm: "sm" },
+        }}
       >
+        <ProfileNavigation
+          isOpen={isDrawerOpen}
+          onClose={onCloseDrawer}
+          gap={4}
+          w="full"
+        />
+
+        <Stack w="full" px={6}>
+          <Button variant="ghost" onClick={onCloseDrawer}>
+            Close
+          </Button>
+        </Stack>
+      </Drawer>
+
+      {/* Main content - full width, no sidebar space reserved */}
+      <Stack position="relative" w="full" px={{ base: 0, lg: 4 }} h="full">
         <HStack
           position="sticky"
           top="header"
           zIndex="foreground"
           py={2}
-          ml={{ base: 0, lg: -4 }}
           minH={14}
           gap={2}
           style={{ backdropFilter: "blur(12px)" }}
@@ -146,22 +97,18 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
             variant="icon"
             bgColor={{ base: "transparent", _hover: "background.subtle" }}
             color="foreground.default"
-            aria-label="Toggle Sidebar"
-            onClick={isLargeViewport ? onToggleSidebar : onToggleDrawer}
+            aria-label="Open Sidebar"
+            onClick={onToggleDrawer}
             ml={2}
           >
-            <Icon
-              src={isOpen ? LuPanelLeftClose : LuPanelLeftOpen}
-              h={5}
-              w={5}
-            />
+            <Icon src={LuPanelLeftOpen} h={5} w={5} />
           </Button>
 
           <Breadcrumb breadcrumbs={breadcrumbs} />
         </HStack>
         {children}
       </Stack>
-    </HStack>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import {
 import getSdk from "@/lib/graphql/getSdk";
 import useForm from "@/lib/hooks/useForm";
 import useViewportSize from "@/lib/hooks/useViewportSize";
+import { projectOptions } from "@/lib/options/projects";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
@@ -131,11 +132,21 @@ const CreateProject = ({ workspaceSlug }: Props) => {
           });
 
           if (projectData) {
+            const projectSlug = projectData.project?.slug!;
+
+            // Invalidate project query so the route loader fetches fresh data
+            await queryClient?.invalidateQueries({
+              queryKey: projectOptions({
+                organizationId,
+                projectSlug,
+              }).queryKey,
+            });
+
             navigate({
               to: "/workspaces/$workspaceSlug/projects/$projectSlug",
               params: {
                 workspaceSlug,
-                projectSlug: projectData.project?.slug!,
+                projectSlug,
               },
             });
 

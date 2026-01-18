@@ -269,11 +269,12 @@ const FeedbackCard = ({
       position="relative"
       borderRadius="xl"
       p={4}
+      alignItems="flex-start"
       opacity={actionIsPending ? 0.5 : 1}
       className={css({
-        transition: "background 0.2s ease",
+        transition: "all 0.15s ease",
         _hover: {
-          bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
+          bgColor: { base: "neutral.100", _dark: "neutral.800" },
         },
       })}
       {...rest}
@@ -440,7 +441,7 @@ const FeedbackCard = ({
                   iconProps={{
                     h: 4.5,
                     w: 4.5,
-                    color: "red.500",
+                    color: "primary",
                     cursor: "pointer",
                   }}
                 />

@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { useState } from "react";
-import { HiOutlineTrash } from "react-icons/hi2";
+import { LuTrash2 } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
 import { token } from "@/generated/panda/tokens";
@@ -29,8 +29,8 @@ import type { IconType } from "react-icons";
 const destructiveButtonStyles: JsxStyleProps = {
   color: "white",
   backgroundColor: {
-    base: "red",
-    _hover: { base: "destructive.hover", _disabled: "red" },
+    base: "destructive",
+    _hover: { base: "destructive.hover", _disabled: "destructive" },
     _active: "destructive.active",
     _focus: "destructive.focus",
   },
@@ -78,7 +78,7 @@ const DestructiveAction = ({
   title,
   description,
   action,
-  icon = HiOutlineTrash,
+  icon = LuTrash2,
   triggerProps,
   iconProps,
   children,
@@ -150,8 +150,7 @@ const DestructiveAction = ({
         // NB: `onClick` and `cursor` are to change behavior due to render of dialog being unknown. We do not want to propagate events.
         onClick: (e) => e.stopPropagation(),
         style: {
-          // TODO: adjust minW upstream in Sigil for mobile viewports
-          minWidth: isSmallViewport ? token("sizes.md") : "80%",
+          width: isSmallViewport ? token("sizes.md") : "calc(100vw - 2rem)",
           maxWidth: token("sizes.lg"),
           cursor: "default",
           zIndex: 50,
@@ -165,7 +164,7 @@ const DestructiveAction = ({
         <Stack gap={2}>
           <Label
             _selection={{
-              backgroundColor: "red",
+              backgroundColor: "primary",
             }}
           >
             {`Type "${destructiveInput}" below to confirm`}
@@ -174,8 +173,8 @@ const DestructiveAction = ({
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            borderColor={{ base: "border.default", _focus: "red" }}
-            boxShadow={{ _focus: "0 0 0 1px red" }}
+            borderColor={{ base: "border.default", _focus: "primary" }}
+            boxShadow={{ _focus: "0 0 0 1px token(colors.primary)" }}
             mb={4}
           />
         </Stack>

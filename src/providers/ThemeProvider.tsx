@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { createContext, use } from "react";
+import { createContext, use, useState } from "react";
 
 import { setTheme as setThemeServerFn } from "@/server/functions/theme";
 
@@ -18,12 +18,20 @@ const ThemeContext = createContext<ThemeContext | null>(null);
  */
 const ThemeProvider = ({
   children,
-  theme,
+  theme: initialTheme,
 }: PropsWithChildren<{ theme: Theme }>) => {
   const router = useRouter();
+  const [theme, setThemeState] = useState(initialTheme);
 
-  const setTheme = (val: Theme) =>
+  const setTheme = (val: Theme) => {
+    // Immediately update local state and DOM for instant feedback
+    setThemeState(val);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(val);
+
+    // Persist to server in background
     setThemeServerFn({ data: val }).then(() => router.invalidate());
+  };
 
   return <ThemeContext value={{ theme, setTheme }}>{children}</ThemeContext>;
 };

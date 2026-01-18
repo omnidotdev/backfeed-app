@@ -2,7 +2,7 @@ import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
@@ -37,12 +37,11 @@ const createFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(3, feedbackSchemaErrors.title.minLength)
+    .min(1, feedbackSchemaErrors.title.minLength)
     .max(90, feedbackSchemaErrors.title.maxLength),
   description: z
     .string()
     .trim()
-    .min(10, feedbackSchemaErrors.description.minLength)
     .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
 });
 
@@ -89,30 +88,8 @@ const CreateFeedback = () => {
   const { mutateAsync: createStatusTemplate } =
     useCreateStatusTemplateMutation();
 
-  const { mutateAsync: createFeedback, isPending } = useCreateFeedbackMutation({
-    onSettled: async () => {
-      reset();
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: statusBreakdownOptions({ projectId: projectId! }).queryKey,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: projectMetricsOptions({ projectId: projectId! }).queryKey,
-        }),
-        queryClient.invalidateQueries(
-          freeTierFeedbackOptions({
-            organizationId,
-            projectSlug,
-          }),
-        ),
-      ]);
-
-      return queryClient.invalidateQueries({
-        queryKey: ["Posts.infinite"],
-      });
-    },
-  });
+  const { mutateAsync: createFeedback, isPending } =
+    useCreateFeedbackMutation();
 
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
@@ -216,6 +193,33 @@ const CreateFeedback = () => {
                 description: value.description.trim(),
               },
             },
+          }).then(async () => {
+            reset();
+
+            const invalidations: Promise<void>[] = [
+              queryClient.invalidateQueries(
+                freeTierFeedbackOptions({
+                  organizationId,
+                  projectSlug,
+                }),
+              ),
+              queryClient.invalidateQueries({
+                queryKey: ["Posts.infinite"],
+              }),
+            ];
+
+            if (projectId) {
+              invalidations.push(
+                queryClient.invalidateQueries({
+                  queryKey: statusBreakdownOptions({ projectId }).queryKey,
+                }),
+                queryClient.invalidateQueries({
+                  queryKey: projectMetricsOptions({ projectId }).queryKey,
+                }),
+              );
+            }
+
+            await Promise.all(invalidations);
           }),
           {
             loading: {
@@ -242,11 +246,13 @@ const CreateFeedback = () => {
     (store) => store.values.description.length,
   );
 
-  // Pick a random placeholder index on mount (same index for title and description)
-  const placeholderIndex = useMemo(() => {
+  // Pick a random placeholder index on client only (same index for title and description)
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  useEffect(() => {
     const placeholders =
       app.projectPage.projectFeedback.feedbackTitle.placeholders;
-    return Math.floor(Math.random() * placeholders.length);
+    setPlaceholderIndex(Math.floor(Math.random() * placeholders.length));
   }, []);
 
   const titlePlaceholder =

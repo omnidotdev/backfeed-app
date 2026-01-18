@@ -71,19 +71,19 @@ const VotingButtons = ({
   const voteColor = hasUpvote
     ? { base: "ruby.500", _dark: "ruby.400" }
     : hasDownvote
-      ? { base: "red.500", _dark: "red.400" }
+      ? { base: "ruby.500", _dark: "ruby.400" }
       : { base: "foreground.default", _dark: "foreground.default" };
 
   const borderColor = hasUpvote
     ? { base: "ruby.200", _dark: "ruby.800" }
     : hasDownvote
-      ? { base: "red.200", _dark: "red.800" }
+      ? { base: "ruby.200", _dark: "ruby.800" }
       : { base: "neutral.200", _dark: "neutral.700" };
 
   const bgColor = hasUpvote
     ? { base: "ruby.50", _dark: "ruby.950/30" }
     : hasDownvote
-      ? { base: "red.50", _dark: "red.950/30" }
+      ? { base: "ruby.50", _dark: "ruby.950/30" }
       : { base: "white", _dark: "neutral.800" };
 
   // Show login prompt for unauthenticated users
@@ -95,6 +95,7 @@ const VotingButtons = ({
         justify="center"
         minW={12}
         py={2}
+        mr={3}
         borderRadius="lg"
         borderWidth="1px"
         borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
@@ -110,10 +111,11 @@ const VotingButtons = ({
           />
         </LoginPrompt>
         <Text
-          fontSize="sm"
+          fontSize="lg"
           fontWeight="bold"
           color="foreground.default"
-          mt={0.5}
+          lineHeight={1}
+          my={1}
         >
           {netTotalVotes}
         </Text>
@@ -128,6 +130,7 @@ const VotingButtons = ({
       justify="center"
       minW={12}
       py={2}
+      mr={3}
       borderRadius="lg"
       borderWidth="1px"
       borderColor={borderColor}
@@ -158,7 +161,13 @@ const VotingButtons = ({
         <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
       </Button>
 
-      <Text fontSize="sm" fontWeight="bold" color={voteColor}>
+      <Text
+        fontSize="lg"
+        fontWeight="bold"
+        color={voteColor}
+        lineHeight={1}
+        my={1}
+      >
         {netTotalVotes}
       </Text>
 
@@ -170,10 +179,10 @@ const VotingButtons = ({
         h="auto"
         className={css({
           color: hasDownvote
-            ? { base: "red.500", _dark: "red.400" }
+            ? { base: "ruby.500", _dark: "ruby.400" }
             : { base: "foreground.muted", _dark: "foreground.muted" },
           _hover: {
-            color: { base: "red.500", _dark: "red.400" },
+            color: { base: "ruby.500", _dark: "ruby.400" },
             bgColor: "transparent",
           },
         })}

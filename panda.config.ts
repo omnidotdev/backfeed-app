@@ -59,20 +59,12 @@ const pandaConfig = defineConfig({
                 boxShadow: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.2)",
                 _hover: {
                   boxShadow: "0 8px 20px -4px oklch(0.650 0.220 6 / 0.3)",
-                  transform: "translateY(-1px)",
-                },
-                _active: {
-                  transform: "translateY(0)",
                 },
               },
               outline: {
                 _hover: {
                   borderColor: "primary",
                   color: "primary",
-                  transform: "translateY(-1px)",
-                },
-                _active: {
-                  transform: "translateY(0)",
                 },
               },
             },
@@ -306,16 +298,20 @@ const pandaConfig = defineConfig({
         },
         colors: {
           destructive: {
+            DEFAULT: {
+              value: "{colors.omni.ruby.500}",
+              description: "Destructive default color.",
+            },
             hover: {
-              value: "#dc2626",
+              value: "{colors.omni.ruby.600}",
               description: "Destructive hover color.",
             },
             active: {
-              value: "#b91c1c",
+              value: "{colors.omni.ruby.700}",
               description: "Destructive active color.",
             },
             focus: {
-              value: "#b91c1c",
+              value: "{colors.omni.ruby.700}",
               description: "Destructive focus color.",
             },
           },

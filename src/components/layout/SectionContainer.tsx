@@ -6,7 +6,7 @@ import type { IconType } from "react-icons";
 
 interface Props extends FlexProps {
   /** Container title */
-  title: string;
+  title?: string;
   /** Container description */
   description?: string;
   /** Visual icon */
@@ -37,39 +37,39 @@ const SectionContainer = ({
     borderRadius="2xl"
     borderWidth="1px"
     borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-    bgColor={{ base: "white/90", _dark: "neutral.900/80" }}
-    backdropFilter="blur(12px)"
+    bgColor={{ base: "white", _dark: "neutral.900" }}
     overflow="visible"
     p={{ base: 4, sm: 6 }}
     gap={6}
     {...rest}
   >
-    <Stack>
-      <Flex
-        align="center"
-        gap={2}
-        fontSize={{ base: "xl", lg: "2xl" }}
-        {...titleProps}
-      >
+    {(title || headerActions) && (
+      <Flex align="center" gap={2} {...titleProps}>
         {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
 
-        <Text fontWeight="semibold" lineHeight={1.2}>
-          {title}
-        </Text>
+        {title && (
+          <Text
+            fontWeight="semibold"
+            lineHeight={1.2}
+            fontSize={{ base: "xl", lg: "2xl" }}
+          >
+            {title}
+          </Text>
+        )}
 
         {headerActions && headerActions}
-      </Flex>
 
-      {description && (
-        <Text
-          color="foreground.subtle"
-          fontSize={{ base: "xs", lg: "sm" }}
-          {...descriptionProps}
-        >
-          {description}
-        </Text>
-      )}
-    </Stack>
+        {description && (
+          <Text
+            color="foreground.subtle"
+            fontSize={{ base: "xs", lg: "sm" }}
+            {...descriptionProps}
+          >
+            {description}
+          </Text>
+        )}
+      </Flex>
+    )}
 
     {children}
   </Stack>

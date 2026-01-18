@@ -39,8 +39,18 @@ const ProjectLinks = () => {
   const firstSocial = project?.projectSocials?.nodes?.[0];
   const remainingSocials = project?.projectSocials?.nodes?.slice(1);
 
+  const hasLinks = project?.website || firstSocial;
+
+  if (!hasLinks) return null;
+
   return (
-    <HStack gap={1}>
+    <HStack
+      gap={0.5}
+      pl={3}
+      ml={1}
+      borderLeftWidth="1px"
+      borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
+    >
       {project?.website && (
         <Tooltip
           hasArrow={false}
@@ -48,9 +58,13 @@ const ProjectLinks = () => {
             <Link
               href={project.website}
               isExternal
-              color="foreground.default"
-              p={2}
-              opacity={{ _hover: 0.8 }}
+              color="foreground.muted"
+              p={1.5}
+              borderRadius="md"
+              _hover={{
+                color: "foreground.default",
+                bgColor: { base: "neutral.100", _dark: "neutral.800" },
+              }}
             >
               <Icon src={FaGlobe} h={4} w={4} />
             </Link>
@@ -75,9 +89,13 @@ const ProjectLinks = () => {
             <Link
               href={firstSocial.url}
               isExternal
-              color="foreground.default"
-              p={2}
-              opacity={{ _hover: 0.8 }}
+              color="foreground.muted"
+              p={1.5}
+              borderRadius="md"
+              _hover={{
+                color: "foreground.default",
+                bgColor: { base: "neutral.100", _dark: "neutral.800" },
+              }}
             >
               <SocialMediaIcon url={firstSocial.url} h={4} w={4} />
             </Link>
@@ -101,11 +119,16 @@ const ProjectLinks = () => {
           onOpenChange={({ open }) => setIsMenuOpen(open)}
           trigger={
             <Button
-              variant="icon"
-              bgColor="transparent"
-              color="foreground.default"
-              opacity={{ _hover: 0.8 }}
-              _focusVisible={{ outlineColor: "transparent" }}
+              variant="ghost"
+              size="xs"
+              p={1.5}
+              minW="auto"
+              h="auto"
+              color="foreground.muted"
+              _hover={{
+                color: "foreground.default",
+                bgColor: { base: "neutral.100", _dark: "neutral.800" },
+              }}
             >
               <Icon src={HiDotsHorizontal} h={4} w={4} />
             </Button>

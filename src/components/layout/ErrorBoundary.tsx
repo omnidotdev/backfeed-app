@@ -15,9 +15,9 @@ const ErrorBoundary = ({ message, ...rest }: Props) => (
     align="center"
     justify="center"
     borderRadius="md"
-    borderColor="red"
+    borderColor="primary"
     borderWidth="1px"
-    color="red"
+    color="primary"
     borderStyle="dashed"
     {...rest}
   >

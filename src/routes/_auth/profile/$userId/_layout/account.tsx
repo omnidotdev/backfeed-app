@@ -1,8 +1,8 @@
 import { Button, Flex, Icon, Input, Label, Stack } from "@omnidev/sigil";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { LuPencil } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
 import app from "@/lib/config/app.config";
@@ -48,7 +48,7 @@ function UserAccountPage() {
         cta: [
           {
             label: app.profileAccountPage.cta.updateProfile.label,
-            icon: <Icon src={FaRegEdit} />,
+            icon: <Icon src={LuPencil} />,
             linkOptions: {
               href: AUTH_BASE_URL!,
             },

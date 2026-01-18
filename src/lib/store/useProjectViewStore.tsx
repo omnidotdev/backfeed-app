@@ -1,4 +1,5 @@
 import { persist } from "zustand/middleware";
+import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 export enum ViewState {
@@ -30,6 +31,7 @@ const useProjectViewStore = createWithEqualityFn<
       name: "project-view-store",
     },
   ),
+  shallow,
 );
 
 export default useProjectViewStore;

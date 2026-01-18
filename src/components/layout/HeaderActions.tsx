@@ -52,15 +52,22 @@ const HeaderActions = () => {
     }
   }, [isSmallViewport, setIsMobileSidebarOpen]);
 
-  if (!isClient) return null;
+  // Render placeholder with fixed dimensions to prevent layout shift during hydration
+  if (!isClient) {
+    return (
+      <Flex alignItems="center" gap={2} minW={48} h={10} justify="flex-end">
+        <ThemeToggle />
+      </Flex>
+    );
+  }
 
   if (isSmallViewport) {
     return (
-      <Flex alignItems="center" gap={1}>
+      <Flex alignItems="center" gap={2} minW={48} justify="flex-end">
         <ThemeToggle />
 
         {session ? (
-          <HStack>
+          <HStack gap={2}>
             <OrganizationSwitcher />
             <AccountInformation />
           </HStack>
@@ -82,10 +89,10 @@ const HeaderActions = () => {
   }
 
   return (
-    <Flex alignItems="center" gap={1}>
+    <Flex alignItems="center" gap={2} minW={48} justify="flex-end">
       <ThemeToggle />
 
-      <HStack>
+      <HStack gap={2}>
         {session && <OrganizationSwitcher />}
 
         <Drawer

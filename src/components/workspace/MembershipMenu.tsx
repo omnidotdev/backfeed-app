@@ -106,7 +106,7 @@ const MembershipMenu = ({
         {selectedRowsAreAdmins ? (
           <MenuItem
             value={MenuAction.RemoveAdmin}
-            color="red"
+            color="primary"
             disabled={!isOwner}
             {...menuItemStyles}
             onClick={() => handleMenuAction({ type: MenuAction.RemoveAdmin })}
@@ -126,7 +126,7 @@ const MembershipMenu = ({
 
         <MenuItem
           value={MenuAction.RemoveMember}
-          color="red"
+          color="primary"
           disabled={!isOwner}
           {...menuItemStyles}
           onClick={() => handleMenuAction({ type: MenuAction.RemoveMember })}

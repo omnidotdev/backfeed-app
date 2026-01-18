@@ -251,7 +251,7 @@ const PricingMatrix = (props: TableProps) => (
                 {features[feature]?.value ? (
                   <Icon src={FaCheck} color="green.500" />
                 ) : (
-                  <Icon src={FaX} color="red.500" />
+                  <Icon src={FaX} color="primary" />
                 )}
               </TableCell>
             ))}

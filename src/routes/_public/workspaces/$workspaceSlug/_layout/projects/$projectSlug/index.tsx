@@ -1,20 +1,19 @@
-import { Grid, GridItem, Icon, Stack } from "@omnidev/sigil";
+import { Grid, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   notFound,
   stripSearchParams,
 } from "@tanstack/react-router";
-import { HiOutlineFolder } from "react-icons/hi2";
+import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
+import { TbHeartbeat } from "react-icons/tb";
 import { z } from "zod";
 
+import Aggregate from "@/components/dashboard/Aggregate";
 import Page from "@/components/layout/Page";
-import FeedbackMetrics from "@/components/project/FeedbackMetrics";
 import ProjectFeedback from "@/components/project/ProjectFeedback";
-import ProjectInformation from "@/components/project/ProjectInformation";
 import ProjectLinks from "@/components/project/ProjectLinks";
-import StatusBreakdown from "@/components/project/StatusBreakdown";
 import { PostOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import {
@@ -112,12 +111,29 @@ export const Route = createFileRoute(
 
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
+  const { projectId } = Route.useLoaderData();
   const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
     Route.useRouteContext();
 
   const { data: project } = useQuery({
     ...projectOptions({ organizationId, projectSlug }),
     select: (data) => data?.projects?.nodes?.[0],
+  });
+
+  const {
+    data: projectMetrics,
+    isLoading: isMetricsLoading,
+    isError: isMetricsError,
+  } = useQuery({
+    ...projectMetricsOptions({ projectId }),
+    select: (data) => ({
+      totalFeedback: data?.project?.posts.totalCount ?? 0,
+      activeUsers: Number(
+        data?.project?.posts.aggregates?.distinctCount?.userId ?? 0,
+      ),
+      totalEngagement:
+        (data?.upvotes?.totalCount ?? 0) + (data?.downvotes?.totalCount ?? 0),
+    }),
   });
 
   const breadcrumbs: BreadcrumbRecord[] = [
@@ -144,11 +160,21 @@ function ProjectPage() {
     <Page
       breadcrumbs={isAuthenticated ? breadcrumbs : undefined}
       header={{
-        title: project?.name!,
+        title: (
+          <HStack gap={3} alignItems="center">
+            <Text
+              as="h1"
+              fontSize={{ base: "2xl", md: "3xl" }}
+              fontWeight="bold"
+              lineHeight={1.2}
+              letterSpacing="-0.02em"
+            >
+              {project?.name}
+            </Text>
+            <ProjectLinks />
+          </HStack>
+        ),
         description: project?.description!,
-        headerProps: {
-          children: <ProjectLinks />,
-        },
         cta: isAuthenticated
           ? [
               {
@@ -165,6 +191,7 @@ function ProjectPage() {
                     {
                       label: app.projectPage.header.cta.settings.label,
                       icon: <Icon src={LuSettings} />,
+                      variant: "outline",
                       linkOptions: {
                         to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
                         params: { workspaceSlug, projectSlug },
@@ -176,21 +203,40 @@ function ProjectPage() {
           : [],
       }}
     >
-      <Grid columns={{ lg: 8 }} gap={6}>
-        <GridItem colSpan={{ lg: 6 }}>
-          <ProjectFeedback />
-        </GridItem>
+      <Stack gap={6}>
+        {/* KPI Metrics Row */}
+        <Grid gap={4} columns={{ base: 1, sm: 3 }}>
+          <Aggregate
+            title="Total Feedback"
+            value={projectMetrics?.totalFeedback ?? 0}
+            icon={HiOutlineFolder}
+            accentColor="amber"
+            isLoaded={!isMetricsLoading}
+            isError={isMetricsError}
+          />
 
-        <GridItem colSpan={{ lg: 2 }}>
-          <Stack gap={6}>
-            <ProjectInformation />
+          <Aggregate
+            title="Active Users"
+            value={projectMetrics?.activeUsers ?? 0}
+            icon={HiOutlineUserGroup}
+            accentColor="sky"
+            isLoaded={!isMetricsLoading}
+            isError={isMetricsError}
+          />
 
-            <FeedbackMetrics />
+          <Aggregate
+            title="Total Engagement"
+            value={projectMetrics?.totalEngagement ?? 0}
+            icon={TbHeartbeat}
+            accentColor="emerald"
+            isLoaded={!isMetricsLoading}
+            isError={isMetricsError}
+          />
+        </Grid>
 
-            <StatusBreakdown />
-          </Stack>
-        </GridItem>
-      </Grid>
+        {/* Feedback List (full width) */}
+        <ProjectFeedback />
+      </Stack>
     </Page>
   );
 }

@@ -67,10 +67,7 @@ const ProjectListItem = ({
         className={css({
           transition: "all 0.2s ease",
           _groupHover: {
-            bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
-            borderColor: { base: "neutral.300", _dark: "neutral.700" },
-            transform: "translateY(-2px)",
-            boxShadow: "glow-card",
+            bgColor: { base: "neutral.100", _dark: "neutral.800" },
           },
         })}
       >

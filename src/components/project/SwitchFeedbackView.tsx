@@ -14,12 +14,8 @@ import type { ToggleGroupProps } from "@omnidev/sigil";
 const SwitchFeedbackView = (props: ToggleGroupProps) => {
   const isClient = useIsClient();
 
-  const { viewState, setViewState } = useProjectViewStore(
-    ({ viewState, setViewState }) => ({
-      viewState,
-      setViewState,
-    }),
-  );
+  const viewState = useProjectViewStore((state) => state.viewState);
+  const setViewState = useProjectViewStore((state) => state.setViewState);
 
   if (!isClient) return null;
 
@@ -27,8 +23,6 @@ const SwitchFeedbackView = (props: ToggleGroupProps) => {
     <ToggleGroup
       size="sm"
       variant="ghost"
-      mb={-1}
-      ml={1}
       value={[viewState]}
       onValueChange={({ value }) =>
         // NB: length check prevents deselecting a selected value
@@ -36,11 +30,39 @@ const SwitchFeedbackView = (props: ToggleGroupProps) => {
       }
       {...props}
     >
-      <ToggleGroupItem value={ViewState.List} h={7} minW={7}>
+      <ToggleGroupItem
+        value={ViewState.List}
+        h={8}
+        w={8}
+        p={2}
+        borderRadius="md"
+        color="foreground.muted"
+        _hover={{
+          bgColor: { base: "neutral.100", _dark: "neutral.800" },
+        }}
+        _selected={{
+          color: "foreground.default",
+          bgColor: { base: "neutral.200", _dark: "neutral.700" },
+        }}
+      >
         <Icon src={LuList} size="sm" />
       </ToggleGroupItem>
 
-      <ToggleGroupItem value={ViewState.Grid} h={7} minW={7}>
+      <ToggleGroupItem
+        value={ViewState.Grid}
+        h={8}
+        w={8}
+        p={2}
+        borderRadius="md"
+        color="foreground.muted"
+        _hover={{
+          bgColor: { base: "neutral.100", _dark: "neutral.800" },
+        }}
+        _selected={{
+          color: "foreground.default",
+          bgColor: { base: "neutral.200", _dark: "neutral.700" },
+        }}
+      >
         <Icon src={LuLayoutGrid} size="sm" />
       </ToggleGroupItem>
     </ToggleGroup>

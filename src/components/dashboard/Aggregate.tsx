@@ -20,16 +20,22 @@ interface Props extends FlexProps {
 
 const accentStyles = {
   amber: {
-    bg: { base: "amber.100", _dark: "amber.900/30" },
-    icon: { base: "amber.600", _dark: "amber.400" },
+    bgLight: "amber.100",
+    bgDark: "neutral.800",
+    iconLight: "amber.600",
+    iconDark: "amber.700",
   },
   emerald: {
-    bg: { base: "emerald.100", _dark: "emerald.900/30" },
-    icon: { base: "emerald.600", _dark: "emerald.400" },
+    bgLight: "emerald.100",
+    bgDark: "neutral.800",
+    iconLight: "emerald.600",
+    iconDark: "emerald.700",
   },
   sky: {
-    bg: { base: "sky.100", _dark: "sky.900/30" },
-    icon: { base: "sky.600", _dark: "sky.400" },
+    bgLight: "sky.100",
+    bgDark: "neutral.800",
+    iconLight: "sky.600",
+    iconDark: "sky.700",
   },
 };
 
@@ -65,13 +71,21 @@ const Aggregate = ({
           w={8}
           h={8}
           borderRadius="lg"
-          bgColor={accent?.bg ?? "background.subtle"}
+          bgColor={
+            accent
+              ? { base: accent.bgLight, _dark: accent.bgDark }
+              : "background.subtle"
+          }
         >
           <Icon
             src={icon}
             w={4}
             h={4}
-            color={accent?.icon ?? "foreground.subtle"}
+            color={
+              accent
+                ? { base: accent.iconLight, _dark: accent.iconDark }
+                : "foreground.subtle"
+            }
           />
         </Flex>
 

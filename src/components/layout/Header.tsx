@@ -45,10 +45,6 @@ const Header = () => {
                       pathname === "/pricing"
                         ? "brand.primary.600"
                         : "foreground.muted",
-                    _groupHover:
-                      pathname === "/pricing"
-                        ? "brand.primary.600"
-                        : "foreground.default",
                     _dark:
                       pathname === "/pricing"
                         ? "brand.primary.400"
@@ -64,7 +60,10 @@ const Header = () => {
                   }
                   transition="all 0.2s ease"
                   _hover={{
-                    color: { _dark: "neutral.100" },
+                    color: {
+                      base: "brand.primary.600",
+                      _dark: "brand.primary.400",
+                    },
                   }}
                 >
                   Pricing
