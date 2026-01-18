@@ -145,7 +145,7 @@ function RootComponent() {
 
   if (isMaintenanceMode) {
     return (
-      <RootDocument>
+      <RootDocument isMaintenanceMode>
         <MaintenancePage />
       </RootDocument>
     );
@@ -158,7 +158,10 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({
+  children,
+  isMaintenanceMode = false,
+}: Readonly<{ children: ReactNode; isMaintenanceMode?: boolean }>) {
   const theme = Route.useLoaderData();
 
   return (
@@ -169,17 +172,18 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 
       <body>
         <ThemeProvider theme={theme}>
-          {/* NB: needs to be outside of main container in order to stay fixed to top of page, see: https://github.com/tailwindlabs/tailwindcss/discussions/3096#discussioncomment-212263 */}
-          <Flex
-            position="fixed"
-            top={0}
-            zIndex="sticky"
-            h="header"
-            w="full"
-            style={{ backdropFilter: "blur(12px)" }}
-          >
-            <Header />
-          </Flex>
+          {!isMaintenanceMode && (
+            <Flex
+              position="fixed"
+              top={0}
+              zIndex="sticky"
+              h="header"
+              w="full"
+              style={{ backdropFilter: "blur(12px)" }}
+            >
+              <Header />
+            </Flex>
+          )}
 
           <Flex
             direction="column"
@@ -187,22 +191,22 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             w="100%"
             h="100dvh"
             gap={0}
-            // ! NB: This helps prevent CLS on pages when the content size is dynamic, and therefore the scrollbar may or may not be visible. See: https://stackoverflow.com/a/30293718
             paddingLeft="calc(100vw - 100%)"
           >
-            {/* TODO fix styles not appropriately being applied (https://linear.app/omnidev/issue/OMNI-109/look-into-panda-css-styling-issues) */}
-            <sigil.main w="full" flex={1} css={css.raw({ mt: "header" })}>
+            <sigil.main
+              w="full"
+              flex={1}
+              css={css.raw({ mt: isMaintenanceMode ? 0 : "header" })}
+            >
               {children}
             </sigil.main>
 
-            <Footer />
+            {!isMaintenanceMode && <Footer />}
 
-            {/* toaster */}
             <Toaster toaster={toaster} />
           </Flex>
         </ThemeProvider>
 
-        {/* dev tools (only included in development) */}
         <TanStackDevtools
           plugins={[
             {
