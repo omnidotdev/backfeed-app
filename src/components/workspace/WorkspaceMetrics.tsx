@@ -37,7 +37,7 @@ const WorkspaceMetrics = () => {
     }),
     select: (data) => ({
       totalProjects: data?.projects?.totalCount,
-      totalFeedback: data?.posts?.totalCount,
+      totalPosts: data?.posts?.totalCount,
     }),
   });
 
@@ -48,8 +48,8 @@ const WorkspaceMetrics = () => {
       icon: HiOutlineFolder,
     },
     {
-      title: app.workspacePage.metrics.data.totalFeedback.title,
-      value: workspaceMetrics?.totalFeedback ?? 0,
+      title: app.workspacePage.metrics.data.totalPosts.title,
+      value: workspaceMetrics?.totalPosts ?? 0,
       icon: HiOutlineChatBubbleLeftRight,
     },
   ];

@@ -101,14 +101,14 @@ const ReplyCard = ({ reply, ...rest }: Props) => {
 
       {(isSender || hasAdminPrivileges) && (
         <DestructiveAction
-          title={app.feedbackPage.comments.deleteReply.title}
-          description={app.feedbackPage.comments.deleteReply.description}
+          title={app.postPage.comments.deleteReply.title}
+          description={app.postPage.comments.deleteReply.description}
           action={{
-            label: app.feedbackPage.comments.deleteReply.action.label,
+            label: app.postPage.comments.deleteReply.action.label,
             onClick: () => deleteReply({ rowId: reply.rowId }),
           }}
           triggerProps={{
-            "aria-label": app.feedbackPage.comments.deleteReply.title,
+            "aria-label": app.postPage.comments.deleteReply.title,
             tabIndex: -1,
             color: "omni.ruby",
             backgroundColor: "transparent",

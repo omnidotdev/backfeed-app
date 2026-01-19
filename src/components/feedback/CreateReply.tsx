@@ -35,7 +35,7 @@ const createReplySchema = z.object({
     .trim()
     .max(
       MAX_COMMENT_LENGTH,
-      app.feedbackPage.comments.createReply.errors.maxLengthMessage,
+      app.postPage.comments.createReply.errors.maxLengthMessage,
     ),
 });
 
@@ -117,7 +117,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
               },
             },
           }),
-          app.feedbackPage.comments.createReply,
+          app.postPage.comments.createReply,
         ),
     },
   );
@@ -152,7 +152,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
           <AppField name="message">
             {({ TextareaField }) => (
               <TextareaField
-                placeholder={app.feedbackPage.comments.textAreaPlaceholder}
+                placeholder={app.postPage.comments.textAreaPlaceholder}
                 fontSize="sm"
                 minH={16}
                 borderWidth={0}
@@ -189,7 +189,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
 
             <AppForm>
               <SubmitForm
-                action={app.feedbackPage.comments.createReply.action}
+                action={app.postPage.comments.createReply.action}
                 size="sm"
                 isPending={isPending}
                 disabled={!canReply}

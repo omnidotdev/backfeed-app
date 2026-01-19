@@ -56,9 +56,9 @@ const createMetaTags = ({
           { property: "og:image:height", content: "630" },
         ]
       : [
-          { name: "twitter:image", content: `${BASE_URL}/img/logo.png` },
+          { name: "twitter:image", content: `${BASE_URL}/og.png` },
           { name: "twitter:card", content: "summary_large_image" },
-          { property: "og:image", content: `${BASE_URL}/img/logo.png` },
+          { property: "og:image", content: `${BASE_URL}/og.png` },
           { property: "og:image:width", content: "1200" },
           { property: "og:image:height", content: "630" },
         ]),

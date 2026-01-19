@@ -198,7 +198,7 @@ const ProjectFeedback = () => {
 
   const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
     useDialogStore({
-      type: DialogType.CreateFeedback,
+      type: DialogType.CreatePost,
     });
 
   const { data: projectStatuses } = useQuery({
@@ -314,7 +314,7 @@ const ProjectFeedback = () => {
             >
               <Icon src={LuPlus} />
               <Flex display={{ base: "none", sm: "flex" }}>
-                {app.projectPage.projectFeedback.createFeedback.title}
+                {app.projectPage.projectFeedback.createPost.title}
               </Flex>
             </Button>
           )}

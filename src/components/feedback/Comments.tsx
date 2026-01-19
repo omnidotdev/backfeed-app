@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack, Text, VStack } from "@omnidev/sigil";
+import { Divider, Grid, Stack, VStack } from "@omnidev/sigil";
 import {
   useInfiniteQuery,
   useMutationState,
@@ -103,8 +103,8 @@ const Comments = () => {
   return (
     <SectionContainer
       ref={rootRef}
-      title={app.feedbackPage.comments.title}
-      description={app.feedbackPage.comments.description}
+      title={app.postPage.comments.title}
+      description={app.postPage.comments.description}
       icon={LuMessageSquare}
       p={0}
       pr={{ base: 4, sm: 6 }}
@@ -135,15 +135,11 @@ const Comments = () => {
                   />
                 ))}
 
-                {hasNextPage ? (
-                  <Spinner ref={loaderRef} my={4} />
-                ) : (
-                  <Text my={5}>{app.feedbackPage.comments.endOf}</Text>
-                )}
+                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
               </VStack>
             ) : (
               <EmptyState
-                message={app.feedbackPage.comments.emptyState.message}
+                message={app.postPage.comments.emptyState.message}
                 h="xs"
                 w="full"
                 mb={4}

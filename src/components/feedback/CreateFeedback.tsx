@@ -27,8 +27,7 @@ import toaster from "@/lib/util/toaster";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
-const feedbackSchemaErrors =
-  app.projectPage.projectFeedback.createFeedback.errors;
+const postSchemaErrors = app.projectPage.projectFeedback.createPost.errors;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -37,12 +36,12 @@ const createFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(1, feedbackSchemaErrors.title.minLength)
-    .max(90, feedbackSchemaErrors.title.maxLength),
+    .min(1, postSchemaErrors.title.minLength)
+    .max(90, postSchemaErrors.title.maxLength),
   description: z
     .string()
     .trim()
-    .max(MAX_DESCRIPTION_LENGTH, feedbackSchemaErrors.description.maxLength),
+    .max(MAX_DESCRIPTION_LENGTH, postSchemaErrors.description.maxLength),
 });
 
 /**
@@ -59,7 +58,7 @@ const CreateFeedback = () => {
 
   // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
   const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.CreateFeedback,
+    type: DialogType.CreatePost,
   });
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({

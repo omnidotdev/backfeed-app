@@ -126,7 +126,7 @@ function ProjectPage() {
   } = useQuery({
     ...projectMetricsOptions({ projectId }),
     select: (data) => ({
-      totalFeedback: data?.project?.posts.totalCount ?? 0,
+      totalPosts: data?.project?.posts.totalCount ?? 0,
       activeUsers: Number(
         data?.project?.posts.aggregates?.distinctCount?.userId ?? 0,
       ),
@@ -185,8 +185,8 @@ function ProjectPage() {
         {/* KPI Metrics Row */}
         <Grid gap={4} columns={{ base: 1, sm: 3 }}>
           <Aggregate
-            title="Total Feedback"
-            value={projectMetrics?.totalFeedback ?? 0}
+            title={app.projectPage.feedbackMetrics.totalPosts}
+            value={projectMetrics?.totalPosts ?? 0}
             icon={HiOutlineFolder}
             accentColor="amber"
             isLoaded={!isMetricsLoading}

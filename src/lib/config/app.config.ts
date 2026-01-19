@@ -403,14 +403,13 @@ const app = {
     },
     metrics: {
       title: "Workspace Metrics",
-      description:
-        "Overview of all projects and feedback within this workspace",
+      description: "Overview of all projects and posts within this workspace",
       data: {
         totalProjects: {
           title: "Total Projects",
         },
-        totalFeedback: {
-          title: "Total Feedback",
+        totalPosts: {
+          title: "Total Posts",
         },
         activeUsers: {
           title: "Active Users",
@@ -872,11 +871,10 @@ const app = {
       },
     },
     projectFeedback: {
-      title: "Project Feedback",
-      endOf: "End of Feedback",
-      disabled: "Maximum amount of feedback reached.",
+      title: "Board",
+      disabled: "Maximum number of posts reached.",
       search: {
-        placeholder: "Search feedback...",
+        placeholder: "Search posts...",
       },
       sortBy: {
         label: {
@@ -905,8 +903,8 @@ const app = {
           "I need to export my data for reporting. A CSV export option would be really useful.",
         ],
       },
-      createFeedback: {
-        title: "New Feedback",
+      createPost: {
+        title: "New Post",
         errors: {
           invalid: "Invalid format",
           title: {
@@ -918,7 +916,7 @@ const app = {
           },
         },
       },
-      updateFeedback: {
+      updatePost: {
         errors: {
           invalid: "Invalid format",
           title: {
@@ -937,17 +935,17 @@ const app = {
           submit: "Update",
           success: {
             title: "Success!",
-            description: "Your feedback has been successfully updated.",
+            description: "Post updated.",
           },
           error: {
             title: "Error",
-            description: "An error occurred while updating your feedback.",
+            description: "An error occurred while updating this post.",
           },
         },
       },
-      deleteFeedback: {
-        title: "Delete Feedback",
-        description: "Are you sure you want to delete this feedback?",
+      deletePost: {
+        title: "Delete Post",
+        description: "Are you sure you want to delete this post?",
         action: {
           label: "Delete",
         },
@@ -957,18 +955,18 @@ const app = {
         submit: "Submit",
         success: {
           title: "Success!",
-          description: "Your feedback has been successfully submitted.",
+          description: "Post created.",
         },
         error: {
           title: "Error",
-          description: "An error occurred while submitting your feedback.",
+          description: "An error occurred while creating this post.",
         },
       },
       totalResponses: "Total Responses",
       details: {
         upvote: "Upvote",
         downvote: "Downvote",
-        feedbackLink: "View Feedback",
+        postLink: "View Post",
       },
       emptyState: {
         message: "No posts found based on the selected filters.",
@@ -980,8 +978,8 @@ const app = {
       created: "Created",
     },
     feedbackMetrics: {
-      title: "Feedback Metrics",
-      totalFeedback: "Total Feedback",
+      title: "Board Metrics",
+      totalPosts: "Total Posts",
       totalEngagement: "Total Engagement",
     },
     statusBreakdown: {
@@ -994,20 +992,19 @@ const app = {
       },
     },
   },
-  feedbackPage: {
-    breadcrumb: "Feedback",
+  postPage: {
+    breadcrumb: "Post",
     details: {
       upvote: "Upvote",
       downvote: "Downvote",
     },
     comments: {
-      endOf: "End of Comments",
       disabled: "Maximum number of comments reached.",
       createComment: {
         pending: "Adding comment...",
         success: {
           title: "Success!",
-          description: "Your comment has been successfully added.",
+          description: "Comment added.",
         },
         error: {
           title: "Error",
@@ -1023,7 +1020,7 @@ const app = {
         },
         success: {
           title: "Success!",
-          description: "Your reply has been successfully added.",
+          description: "Reply added.",
         },
         error: {
           title: "Error",
@@ -1045,7 +1042,7 @@ const app = {
         },
       },
       title: "Comments",
-      description: "View all feedback comments.",
+      description: "View all comments on this post.",
       textAreaPlaceholder: "I agree! This sounds like a great idea.",
       action: {
         pending: "Adding Comment...",
@@ -1065,7 +1062,7 @@ const app = {
     },
     statusHistory: {
       title: "Status History",
-      description: "View feedback status history.",
+      description: "View post status history.",
       currentStatus: "Current Status",
       created: "Created",
       updated: "Updated",

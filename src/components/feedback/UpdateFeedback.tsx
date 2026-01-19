@@ -27,7 +27,7 @@ import type { FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
-const updateFeedbackDetails = app.projectPage.projectFeedback.updateFeedback;
+const updatePostDetails = app.projectPage.projectFeedback.updatePost;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -36,14 +36,14 @@ const updateFeedbackSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(1, updateFeedbackDetails.errors.title.minLength)
-    .max(90, updateFeedbackDetails.errors.title.maxLength),
+    .min(1, updatePostDetails.errors.title.minLength)
+    .max(90, updatePostDetails.errors.title.maxLength),
   description: z
     .string()
     .trim()
     .max(
       MAX_DESCRIPTION_LENGTH,
-      updateFeedbackDetails.errors.description.maxLength,
+      updatePostDetails.errors.description.maxLength,
     ),
 });
 
@@ -110,7 +110,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
               updatedAt: new Date(),
             },
           }),
-          updateFeedbackDetails.action,
+          updatePostDetails.action,
         ),
     },
   );
@@ -209,7 +209,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
 
           <AppForm>
             <SubmitForm
-              action={updateFeedbackDetails.action}
+              action={updatePostDetails.action}
               isPending={isPending}
               w="fit-content"
               placeSelf="flex-end"

@@ -5,8 +5,8 @@ import { useStoreWithEqualityFn } from "zustand/traditional";
 export enum DialogType {
   /** Dialog for creating a new project. */
   CreateProject = "createProject",
-  /** Dialog for creating feedback. */
-  CreateFeedback = "createFeedback",
+  /** Dialog for creating a post. */
+  CreatePost = "createPost",
   /** Dialog for adding an owner to a workspace. */
   AddOwner = "addOwner",
   /** Dialog for managing the mobile sidebar navigation and actions. */

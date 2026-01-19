@@ -112,7 +112,7 @@ const FeedbackCard = ({
     }),
   );
 
-  const { mutate: deleteFeedback, isPending: isDeleteFeedbackPending } =
+  const { mutate: deletePost, isPending: isDeleteFeedbackPending } =
     useDeletePostMutation({
       onSettled: () =>
         Promise.all([
@@ -416,19 +416,18 @@ const FeedbackCard = ({
                 />
 
                 <DestructiveAction
-                  title={app.projectPage.projectFeedback.deleteFeedback.title}
+                  title={app.projectPage.projectFeedback.deletePost.title}
                   description={
-                    app.projectPage.projectFeedback.deleteFeedback.description
+                    app.projectPage.projectFeedback.deletePost.description
                   }
                   action={{
                     label:
-                      app.projectPage.projectFeedback.deleteFeedback.action
-                        .label,
-                    onClick: () => deleteFeedback({ postId: feedback.rowId! }),
+                      app.projectPage.projectFeedback.deletePost.action.label,
+                    onClick: () => deletePost({ postId: feedback.rowId! }),
                   }}
                   triggerProps={{
                     "aria-label":
-                      app.projectPage.projectFeedback.deleteFeedback.title,
+                      app.projectPage.projectFeedback.deletePost.title,
                     variant: "ghost",
                     size: "xs",
                     p: 0,

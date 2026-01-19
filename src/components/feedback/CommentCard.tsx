@@ -200,14 +200,14 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
 
       {(isSender || hasAdminPrivileges) && (
         <DestructiveAction
-          title={app.feedbackPage.comments.delete.title}
-          description={app.feedbackPage.comments.delete.description}
+          title={app.postPage.comments.delete.title}
+          description={app.postPage.comments.delete.description}
           action={{
-            label: app.feedbackPage.comments.delete.action.label,
+            label: app.postPage.comments.delete.action.label,
             onClick: () => deleteComment({ rowId: comment.rowId }),
           }}
           triggerProps={{
-            "aria-label": app.feedbackPage.comments.delete.title,
+            "aria-label": app.postPage.comments.delete.title,
             tabIndex: -1,
             color: "omni.ruby",
             backgroundColor: "transparent",

@@ -29,7 +29,7 @@ const createCommentSchema = z.object({
     .trim()
     .max(
       MAX_COMMENT_LENGTH,
-      app.feedbackPage.comments.createComment.errors.maxLengthMessage,
+      app.postPage.comments.createComment.errors.maxLengthMessage,
     ),
 });
 
@@ -101,17 +101,17 @@ const CreateComment = ({ canCreateComment }: Props) => {
           }),
           {
             loading: {
-              title: app.feedbackPage.comments.createComment.pending,
+              title: app.postPage.comments.createComment.pending,
             },
             success: {
-              title: app.feedbackPage.comments.createComment.success.title,
+              title: app.postPage.comments.createComment.success.title,
               description:
-                app.feedbackPage.comments.createComment.success.description,
+                app.postPage.comments.createComment.success.description,
             },
             error: {
-              title: app.feedbackPage.comments.createComment.error.title,
+              title: app.postPage.comments.createComment.error.title,
               description:
-                app.feedbackPage.comments.createComment.error.description,
+                app.postPage.comments.createComment.error.description,
             },
           },
         ),
@@ -134,11 +134,11 @@ const CreateComment = ({ canCreateComment }: Props) => {
       <AppField name="message">
         {({ TextareaField }) => (
           <TextareaField
-            placeholder={app.feedbackPage.comments.textAreaPlaceholder}
+            placeholder={app.postPage.comments.textAreaPlaceholder}
             fontSize="sm"
             minH={16}
             disabled={!session || !canCreateComment}
-            tooltip={app.feedbackPage.comments.disabled}
+            tooltip={app.postPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               top: -6,
@@ -156,7 +156,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
 
         <AppForm>
           <SubmitForm
-            action={app.feedbackPage.comments.action}
+            action={app.postPage.comments.action}
             isPending={isPending}
             disabled={!session || !canCreateComment}
           />
