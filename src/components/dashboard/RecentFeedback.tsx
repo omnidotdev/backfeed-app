@@ -83,33 +83,38 @@ const RecentFeedback = () => {
             </Stack>
           ) : sortedFeedback?.length ? (
             <VStack gap={0}>
-              {sortedFeedback?.map((feedback) => (
-                <Link
-                  key={feedback?.rowId}
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
-                  params={{
-                    workspaceSlug:
-                      session?.organizations?.find(
-                        (org) => org.id === feedback?.project?.organizationId,
-                      )?.slug ?? "",
-                    projectSlug: feedback?.project?.slug!,
-                    feedbackId: feedback?.rowId!,
-                  }}
-                  style={{ width: "100%" }}
-                >
-                  <Response
-                    feedback={feedback as Partial<Post>}
-                    px={5}
-                    py={3}
-                    borderBottomWidth="1px"
-                    borderColor="border.subtle"
-                    transition="background 0.1s ease"
-                    _hover={{
-                      bgColor: "background.subtle",
+              {sortedFeedback?.map((feedback, index) => {
+                const isLast =
+                  index === sortedFeedback.length - 1 && !hasNextPage;
+                return (
+                  <Link
+                    key={feedback?.rowId}
+                    to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+                    params={{
+                      workspaceSlug:
+                        session?.organizations?.find(
+                          (org) => org.id === feedback?.project?.organizationId,
+                        )?.slug ?? "",
+                      projectSlug: feedback?.project?.slug!,
+                      feedbackId: feedback?.rowId!,
                     }}
-                  />
-                </Link>
-              ))}
+                    style={{ width: "100%" }}
+                  >
+                    <Response
+                      feedback={feedback as Partial<Post>}
+                      px={5}
+                      py={3}
+                      borderBottomWidth={isLast ? 0 : "1px"}
+                      borderBottomRadius={isLast ? "xl" : undefined}
+                      borderColor="border.subtle"
+                      transition="background 0.1s ease"
+                      _hover={{
+                        bgColor: "background.subtle",
+                      }}
+                    />
+                  </Link>
+                );
+              })}
 
               {hasNextPage && (
                 <Flex ref={loaderRef} justify="center" my={4}>
