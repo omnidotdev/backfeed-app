@@ -28,6 +28,7 @@ const RecentFeedback = () => {
     isLoading,
     isError,
     hasNextPage,
+    isFetchingNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
     ...recentFeedbackOptions({
@@ -110,7 +111,11 @@ const RecentFeedback = () => {
                 </Link>
               ))}
 
-              {hasNextPage && <Spinner ref={loaderRef} my={4} />}
+              {hasNextPage && (
+                <Flex ref={loaderRef} justify="center" my={4}>
+                  {isFetchingNextPage && <Spinner />}
+                </Flex>
+              )}
             </VStack>
           ) : (
             <EmptyState
