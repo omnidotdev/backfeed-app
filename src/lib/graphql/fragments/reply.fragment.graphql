@@ -5,6 +5,7 @@ fragment Reply on Comment {
   user {
     rowId
     username
+    avatarUrl
   }
   createdAt
 }

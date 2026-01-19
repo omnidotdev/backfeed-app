@@ -4,6 +4,7 @@ fragment Comment on Comment {
   user {
     rowId
     username
+    avatarUrl
   }
   createdAt
   childComments {

@@ -87,7 +87,11 @@ const ProfileNavigation = ({
         bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
         alignItems="center"
       >
-        <Avatar size="xs" name={session?.user?.username} />
+        <Avatar
+          size="xs"
+          imageSrc={session?.user?.image ?? undefined}
+          name={session?.user?.username}
+        />
 
         {isOpen && (
           <OverflowText

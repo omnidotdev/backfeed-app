@@ -74,7 +74,10 @@ const AccountInformation = () => {
       <Menu
         trigger={
           <Button variant="ghost">
-            <Avatar name={session?.user?.username} />
+            <Avatar
+              imageSrc={session?.user?.image ?? undefined}
+              name={session?.user?.username}
+            />
           </Button>
         }
         triggerProps={{
@@ -148,7 +151,10 @@ const AccountInformation = () => {
       >
         <HStack justifyContent="space-between" w="full">
           <HStack alignItems="center">
-            <Avatar name={session?.user?.name} />
+            <Avatar
+              imageSrc={session?.user?.image ?? undefined}
+              name={session?.user?.name}
+            />
 
             <Stack gap={1} textAlign="left">
               <Text lineHeight={1}>{session?.user?.name}</Text>

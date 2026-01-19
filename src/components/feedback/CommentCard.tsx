@@ -92,7 +92,11 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
     >
       <HStack>
         <Stack gap={0} placeSelf="flex-start" h="full" align="center">
-          <Avatar name={comment?.user?.username} size="xs" />
+          <Avatar
+            imageSrc={comment?.user?.avatarUrl}
+            name={comment?.user?.username}
+            size="xs"
+          />
 
           <Divider
             orientation="vertical"
