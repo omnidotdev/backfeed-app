@@ -1228,6 +1228,7 @@ export type Post = {
   comments: CommentConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  number?: Maybe<Scalars['Int']['output']>;
   /** Reads a single `Project` that is related to this `Post`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -1271,17 +1272,59 @@ export type PostVotesArgs = {
 
 export type PostAggregates = {
   __typename?: 'PostAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<PostAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<PostDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<PostMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<PostMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<PostStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<PostStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<PostSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<PostVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<PostVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `Post` object types. */
 export type PostAggregatesFilter = {
+  /** Mean average aggregate over matching `Post` objects. */
+  average?: InputMaybe<PostAverageAggregateFilter>;
   /** Distinct count aggregate over matching `Post` objects. */
   distinctCount?: InputMaybe<PostDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `Post` object to be included within the aggregate. */
   filter?: InputMaybe<PostFilter>;
+  /** Maximum aggregate over matching `Post` objects. */
+  max?: InputMaybe<PostMaxAggregateFilter>;
+  /** Minimum aggregate over matching `Post` objects. */
+  min?: InputMaybe<PostMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `Post` objects. */
+  stddevPopulation?: InputMaybe<PostStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `Post` objects. */
+  stddevSample?: InputMaybe<PostStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `Post` objects. */
+  sum?: InputMaybe<PostSumAggregateFilter>;
+  /** Population variance aggregate over matching `Post` objects. */
+  variancePopulation?: InputMaybe<PostVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `Post` objects. */
+  varianceSample?: InputMaybe<PostVarianceSampleAggregateFilter>;
+};
+
+export type PostAverageAggregateFilter = {
+  number?: InputMaybe<BigFloatFilter>;
+};
+
+export type PostAverageAggregates = {
+  __typename?: 'PostAverageAggregates';
+  /** Mean average of number across the matching connection */
+  number?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A condition to be used against `Post` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -1290,6 +1333,8 @@ export type PostCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `number` field. */
+  number?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -1333,6 +1378,7 @@ export type PostConnectionGroupedAggregatesArgs = {
 export type PostDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  number?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   statusTemplateId?: InputMaybe<BigIntFilter>;
@@ -1348,6 +1394,8 @@ export type PostDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of number across the matching connection */
+  number?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -1387,6 +1435,8 @@ export type PostFilter = {
   description?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `number` field. */
+  number?: InputMaybe<IntFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
   /** Filter by the object’s `project` relation. */
@@ -1423,6 +1473,7 @@ export enum PostGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  Number = 'NUMBER',
   ProjectId = 'PROJECT_ID',
   StatusTemplateId = 'STATUS_TEMPLATE_ID',
   StatusUpdatedAt = 'STATUS_UPDATED_AT',
@@ -1437,12 +1488,14 @@ export enum PostGroupBy {
 
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -1464,42 +1517,49 @@ export type PostHavingInput = {
 
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  number?: InputMaybe<HavingIntFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -1508,6 +1568,7 @@ export type PostHavingVarianceSampleInput = {
 export type PostInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  number?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1515,6 +1576,26 @@ export type PostInput = {
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
+};
+
+export type PostMaxAggregateFilter = {
+  number?: InputMaybe<IntFilter>;
+};
+
+export type PostMaxAggregates = {
+  __typename?: 'PostMaxAggregates';
+  /** Maximum of number across the matching connection */
+  number?: Maybe<Scalars['Int']['output']>;
+};
+
+export type PostMinAggregateFilter = {
+  number?: InputMaybe<IntFilter>;
+};
+
+export type PostMinAggregates = {
+  __typename?: 'PostMinAggregates';
+  /** Minimum of number across the matching connection */
+  number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `Post`. */
@@ -1540,6 +1621,8 @@ export enum PostOrderBy {
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
   Natural = 'NATURAL',
+  NumberAsc = 'NUMBER_ASC',
+  NumberDesc = 'NUMBER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
@@ -1576,6 +1659,7 @@ export enum PostOrderBy {
 export type PostPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  number?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1583,6 +1667,36 @@ export type PostPatch = {
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type PostStddevPopulationAggregateFilter = {
+  number?: InputMaybe<BigFloatFilter>;
+};
+
+export type PostStddevPopulationAggregates = {
+  __typename?: 'PostStddevPopulationAggregates';
+  /** Population standard deviation of number across the matching connection */
+  number?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type PostStddevSampleAggregateFilter = {
+  number?: InputMaybe<BigFloatFilter>;
+};
+
+export type PostStddevSampleAggregates = {
+  __typename?: 'PostStddevSampleAggregates';
+  /** Sample standard deviation of number across the matching connection */
+  number?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type PostSumAggregateFilter = {
+  number?: InputMaybe<BigIntFilter>;
+};
+
+export type PostSumAggregates = {
+  __typename?: 'PostSumAggregates';
+  /** Sum of number across the matching connection */
+  number: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `Comment` object types. All fields are combined with a logical ‘and.’ */
@@ -1609,12 +1723,33 @@ export type PostToManyVoteFilter = {
   some?: InputMaybe<VoteFilter>;
 };
 
+export type PostVariancePopulationAggregateFilter = {
+  number?: InputMaybe<BigFloatFilter>;
+};
+
+export type PostVariancePopulationAggregates = {
+  __typename?: 'PostVariancePopulationAggregates';
+  /** Population variance of number across the matching connection */
+  number?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type PostVarianceSampleAggregateFilter = {
+  number?: InputMaybe<BigFloatFilter>;
+};
+
+export type PostVarianceSampleAggregates = {
+  __typename?: 'PostVarianceSampleAggregates';
+  /** Sample variance of number across the matching connection */
+  number?: Maybe<Scalars['BigFloat']['output']>;
+};
+
 export type Project = {
   __typename?: 'Project';
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   image?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  nextPostNumber: Scalars['Int']['output'];
   organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
@@ -1665,9 +1800,31 @@ export type ProjectProjectStatusConfigsArgs = {
 
 export type ProjectAggregates = {
   __typename?: 'ProjectAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ProjectAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<ProjectDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ProjectMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ProjectMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ProjectStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ProjectStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ProjectSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ProjectVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ProjectVarianceSampleAggregates>;
+};
+
+export type ProjectAverageAggregates = {
+  __typename?: 'ProjectAverageAggregates';
+  /** Mean average of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -1680,6 +1837,8 @@ export type ProjectCondition = {
   image?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `nextPostNumber` field. */
+  nextPostNumber?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -1724,6 +1883,8 @@ export type ProjectDistinctCountAggregates = {
   image?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of organizationId across the matching connection */
   organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -1755,6 +1916,8 @@ export type ProjectFilter = {
   image?: InputMaybe<StringFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `nextPostNumber` field. */
+  nextPostNumber?: InputMaybe<IntFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ProjectFilter>;
   /** Checks for any expressions in this list. */
@@ -1789,6 +1952,7 @@ export enum ProjectGroupBy {
   Description = 'DESCRIPTION',
   Image = 'IMAGE',
   Name = 'NAME',
+  NextPostNumber = 'NEXT_POST_NUMBER',
   OrganizationId = 'ORGANIZATION_ID',
   Slug = 'SLUG',
   UpdatedAt = 'UPDATED_AT',
@@ -1798,11 +1962,13 @@ export enum ProjectGroupBy {
 
 export type ProjectHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -1823,36 +1989,43 @@ export type ProjectHavingInput = {
 
 export type ProjectHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  nextPostNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -1862,6 +2035,7 @@ export type ProjectInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  nextPostNumber?: InputMaybe<Scalars['Int']['input']>;
   organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
@@ -2242,6 +2416,18 @@ export type ProjectLinkVarianceSampleAggregates = {
   order?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+export type ProjectMaxAggregates = {
+  __typename?: 'ProjectMaxAggregates';
+  /** Maximum of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ProjectMinAggregates = {
+  __typename?: 'ProjectMinAggregates';
+  /** Minimum of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Methods to use when ordering `Project`. */
 export enum ProjectOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
@@ -2253,14 +2439,20 @@ export enum ProjectOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  NextPostNumberAsc = 'NEXT_POST_NUMBER_ASC',
+  NextPostNumberDesc = 'NEXT_POST_NUMBER_DESC',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PostsAverageNumberAsc = 'POSTS_AVERAGE_NUMBER_ASC',
+  PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
+  PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -2275,6 +2467,20 @@ export enum ProjectOrderBy {
   PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
+  PostsMaxNumberAsc = 'POSTS_MAX_NUMBER_ASC',
+  PostsMaxNumberDesc = 'POSTS_MAX_NUMBER_DESC',
+  PostsMinNumberAsc = 'POSTS_MIN_NUMBER_ASC',
+  PostsMinNumberDesc = 'POSTS_MIN_NUMBER_DESC',
+  PostsStddevPopulationNumberAsc = 'POSTS_STDDEV_POPULATION_NUMBER_ASC',
+  PostsStddevPopulationNumberDesc = 'POSTS_STDDEV_POPULATION_NUMBER_DESC',
+  PostsStddevSampleNumberAsc = 'POSTS_STDDEV_SAMPLE_NUMBER_ASC',
+  PostsStddevSampleNumberDesc = 'POSTS_STDDEV_SAMPLE_NUMBER_DESC',
+  PostsSumNumberAsc = 'POSTS_SUM_NUMBER_ASC',
+  PostsSumNumberDesc = 'POSTS_SUM_NUMBER_DESC',
+  PostsVariancePopulationNumberAsc = 'POSTS_VARIANCE_POPULATION_NUMBER_ASC',
+  PostsVariancePopulationNumberDesc = 'POSTS_VARIANCE_POPULATION_NUMBER_DESC',
+  PostsVarianceSampleNumberAsc = 'POSTS_VARIANCE_SAMPLE_NUMBER_ASC',
+  PostsVarianceSampleNumberDesc = 'POSTS_VARIANCE_SAMPLE_NUMBER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectLinksAverageOrderAsc = 'PROJECT_LINKS_AVERAGE_ORDER_ASC',
@@ -2359,6 +2565,7 @@ export type ProjectPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  nextPostNumber?: InputMaybe<Scalars['Int']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
@@ -2758,6 +2965,24 @@ export type ProjectStatusConfigVarianceSampleAggregates = {
   sortOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+export type ProjectStddevPopulationAggregates = {
+  __typename?: 'ProjectStddevPopulationAggregates';
+  /** Population standard deviation of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectStddevSampleAggregates = {
+  __typename?: 'ProjectStddevSampleAggregates';
+  /** Sample standard deviation of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectSumAggregates = {
+  __typename?: 'ProjectSumAggregates';
+  /** Sum of nextPostNumber across the matching connection */
+  nextPostNumber: Scalars['BigInt']['output'];
+};
+
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -2794,6 +3019,18 @@ export type ProjectToManyProjectStatusConfigFilter = {
   some?: InputMaybe<ProjectStatusConfigFilter>;
 };
 
+export type ProjectVariancePopulationAggregates = {
+  __typename?: 'ProjectVariancePopulationAggregates';
+  /** Population variance of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectVarianceSampleAggregates = {
+  __typename?: 'ProjectVarianceSampleAggregates';
+  /** Sample variance of nextPostNumber across the matching connection */
+  nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
+};
+
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
@@ -2812,6 +3049,8 @@ export type Query = Node & {
   observer?: Maybe<Observer>;
   /** Get a single `Post`. */
   post?: Maybe<Post>;
+  /** Get a single `Post`. */
+  postByProjectIdAndNumber?: Maybe<Post>;
   /** Reads and enables pagination through a set of `Post`. */
   posts?: Maybe<PostConnection>;
   /** Get a single `Project`. */
@@ -2888,6 +3127,13 @@ export type QueryNodeArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryPostArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostByProjectIdAndNumberArgs = {
+  number: Scalars['Int']['input'];
+  projectId: Scalars['UUID']['input'];
 };
 
 
@@ -3374,12 +3620,16 @@ export enum StatusTemplateOrderBy {
   Natural = 'NATURAL',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PostsAverageNumberAsc = 'POSTS_AVERAGE_NUMBER_ASC',
+  PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
+  PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -3394,6 +3644,20 @@ export enum StatusTemplateOrderBy {
   PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
+  PostsMaxNumberAsc = 'POSTS_MAX_NUMBER_ASC',
+  PostsMaxNumberDesc = 'POSTS_MAX_NUMBER_DESC',
+  PostsMinNumberAsc = 'POSTS_MIN_NUMBER_ASC',
+  PostsMinNumberDesc = 'POSTS_MIN_NUMBER_DESC',
+  PostsStddevPopulationNumberAsc = 'POSTS_STDDEV_POPULATION_NUMBER_ASC',
+  PostsStddevPopulationNumberDesc = 'POSTS_STDDEV_POPULATION_NUMBER_DESC',
+  PostsStddevSampleNumberAsc = 'POSTS_STDDEV_SAMPLE_NUMBER_ASC',
+  PostsStddevSampleNumberDesc = 'POSTS_STDDEV_SAMPLE_NUMBER_DESC',
+  PostsSumNumberAsc = 'POSTS_SUM_NUMBER_ASC',
+  PostsSumNumberDesc = 'POSTS_SUM_NUMBER_DESC',
+  PostsVariancePopulationNumberAsc = 'POSTS_VARIANCE_POPULATION_NUMBER_ASC',
+  PostsVariancePopulationNumberDesc = 'POSTS_VARIANCE_POPULATION_NUMBER_DESC',
+  PostsVarianceSampleNumberAsc = 'POSTS_VARIANCE_SAMPLE_NUMBER_ASC',
+  PostsVarianceSampleNumberDesc = 'POSTS_VARIANCE_SAMPLE_NUMBER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectStatusConfigsAverageSortOrderAsc = 'PROJECT_STATUS_CONFIGS_AVERAGE_SORT_ORDER_ASC',
@@ -4168,12 +4432,16 @@ export enum UserOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  PostsAverageNumberAsc = 'POSTS_AVERAGE_NUMBER_ASC',
+  PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
+  PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -4188,6 +4456,20 @@ export enum UserOrderBy {
   PostsDistinctCountUpdatedAtDesc = 'POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   PostsDistinctCountUserIdAsc = 'POSTS_DISTINCT_COUNT_USER_ID_ASC',
   PostsDistinctCountUserIdDesc = 'POSTS_DISTINCT_COUNT_USER_ID_DESC',
+  PostsMaxNumberAsc = 'POSTS_MAX_NUMBER_ASC',
+  PostsMaxNumberDesc = 'POSTS_MAX_NUMBER_DESC',
+  PostsMinNumberAsc = 'POSTS_MIN_NUMBER_ASC',
+  PostsMinNumberDesc = 'POSTS_MIN_NUMBER_DESC',
+  PostsStddevPopulationNumberAsc = 'POSTS_STDDEV_POPULATION_NUMBER_ASC',
+  PostsStddevPopulationNumberDesc = 'POSTS_STDDEV_POPULATION_NUMBER_DESC',
+  PostsStddevSampleNumberAsc = 'POSTS_STDDEV_SAMPLE_NUMBER_ASC',
+  PostsStddevSampleNumberDesc = 'POSTS_STDDEV_SAMPLE_NUMBER_DESC',
+  PostsSumNumberAsc = 'POSTS_SUM_NUMBER_ASC',
+  PostsSumNumberDesc = 'POSTS_SUM_NUMBER_DESC',
+  PostsVariancePopulationNumberAsc = 'POSTS_VARIANCE_POPULATION_NUMBER_ASC',
+  PostsVariancePopulationNumberDesc = 'POSTS_VARIANCE_POPULATION_NUMBER_DESC',
+  PostsVarianceSampleNumberAsc = 'POSTS_VARIANCE_SAMPLE_NUMBER_ASC',
+  PostsVarianceSampleNumberDesc = 'POSTS_VARIANCE_SAMPLE_NUMBER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -4532,9 +4814,9 @@ export type VoteTypeFilter = {
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, nextPostNumber: number, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null };
 
@@ -4711,7 +4993,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
 
 export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4729,7 +5011,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -4738,7 +5020,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, nextPostNumber: number, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -4844,6 +5126,7 @@ export const CommentFragmentDoc = `
 export const FeedbackFragmentDoc = `
     fragment Feedback on Post {
   rowId
+  number
   title
   description
   statusUpdatedAt
@@ -4897,6 +5180,7 @@ export const ProjectFragmentDoc = `
   description
   slug
   organizationId
+  nextPostNumber
   projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId

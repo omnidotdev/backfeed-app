@@ -4,6 +4,7 @@ fragment Project on Project {
   description
   slug
   organizationId
+  nextPostNumber
   projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId

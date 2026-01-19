@@ -1,5 +1,6 @@
 fragment Feedback on Post {
   rowId
+  number
   title
   description
   statusUpdatedAt

@@ -307,6 +307,10 @@ const FeedbackCard = ({
             </Text>
 
             <HStack fontSize="xs" gap={1.5} color="foreground.subtle">
+              <Text fontFamily="mono">
+                {feedback.project?.slug?.toUpperCase()}-{feedback.number}
+              </Text>
+              <Circle size={1} bgColor="foreground.subtle" />
               <Text>{feedback.user?.username}</Text>
               <Circle size={1} bgColor="foreground.subtle" />
               <Text>
