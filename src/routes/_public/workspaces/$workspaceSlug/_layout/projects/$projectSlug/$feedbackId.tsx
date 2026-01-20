@@ -79,7 +79,7 @@ function FeedbackPage() {
         canManageFeedback={hasAdminPrivileges}
         feedback={feedback!}
         projectStatuses={projectStatuses}
-        boxShadow="card"
+        disableHover
       />
 
       <Comments />

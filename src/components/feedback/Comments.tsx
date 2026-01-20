@@ -140,7 +140,7 @@ const Comments = () => {
             ) : (
               <EmptyState
                 message={app.postPage.comments.emptyState.message}
-                h="xs"
+                h={24}
                 w="full"
                 mb={4}
               />

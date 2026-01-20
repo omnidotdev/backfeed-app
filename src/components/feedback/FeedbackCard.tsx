@@ -77,6 +77,8 @@ interface Props extends HstackProps {
   descriptionProps?: TextProps;
   /** Whether the user is authenticated. */
   isAuthenticated?: boolean;
+  /** Whether to disable hover styles (e.g., on detail page). */
+  disableHover?: boolean;
 }
 
 /**
@@ -89,6 +91,7 @@ const FeedbackCard = ({
   titleProps,
   descriptionProps,
   isAuthenticated: isAuthenticatedProp,
+  disableHover,
   ...rest
 }: Props) => {
   const { session, queryClient } = useRouteContext({
@@ -271,12 +274,16 @@ const FeedbackCard = ({
       p={4}
       alignItems="flex-start"
       opacity={actionIsPending ? 0.5 : 1}
-      className={css({
-        transition: "all 0.15s ease",
-        _hover: {
-          bgColor: { base: "neutral.100", _dark: "neutral.800" },
-        },
-      })}
+      className={
+        disableHover
+          ? undefined
+          : css({
+              transition: "all 0.15s ease",
+              _hover: {
+                bgColor: { base: "neutral.100", _dark: "neutral.800" },
+              },
+            })
+      }
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
