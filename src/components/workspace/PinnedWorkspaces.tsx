@@ -114,10 +114,10 @@ const PinnedWorkspaces = () => {
         )}
       </Grid>
 
-      {hasMore && session?.user?.id && (
+      {hasMore && session?.user?.identityProviderId && (
         <Link
           to="/profile/$userId/workspaces"
-          params={{ userId: session.user.id }}
+          params={{ userId: session.user.identityProviderId }}
         >
           <Flex
             align="center"
