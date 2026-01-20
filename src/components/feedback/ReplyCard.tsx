@@ -64,7 +64,7 @@ const ReplyCard = ({ reply, ...rest }: Props) => {
     >
       <HStack pl={{ baseToSm: 2 }}>
         <Avatar
-          imageSrc={reply.user?.avatarUrl}
+          imageSrc={reply.user?.avatarUrl ?? undefined}
           name={reply.user?.username}
           size="xs"
           placeSelf="flex-start"
