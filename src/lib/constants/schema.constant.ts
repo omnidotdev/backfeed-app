@@ -33,3 +33,12 @@ export const projectNameSchema = standardRegexSchema
 export const projectDescriptionSchema = emptyStringAsUndefined.or(
   z.string().trim().max(240, projectErrors.description.maxLength),
 );
+
+export const projectPrefixSchema = emptyStringAsUndefined.or(
+  z
+    .string()
+    .trim()
+    .toUpperCase()
+    .min(3, projectErrors.prefix.minLength)
+    .max(10, projectErrors.prefix.maxLength),
+);

@@ -158,6 +158,7 @@ const ProjectFeedback = () => {
 
       return {
         rowId: "pending",
+        number: variables.input.post.number,
         title: variables.input.post.title,
         description: variables.input.post.description,
         statusUpdatedAt: now,
@@ -168,6 +169,7 @@ const ProjectFeedback = () => {
           rowId: variables.input.post.projectId,
           name: project?.name ?? "pending",
           slug: project?.slug ?? "pending",
+          prefix: project?.prefix ?? "",
           organizationId: project?.organizationId ?? organizationId,
         },
         user: {

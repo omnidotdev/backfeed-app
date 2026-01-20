@@ -74,6 +74,7 @@ const UpdateProject = () => {
     defaultValues: {
       name: project?.name ?? "",
       description: project?.description ?? "",
+      prefix: project?.prefix ?? "",
       projectLinks: (project?.projectLinks?.nodes?.length
         ? project?.projectLinks?.nodes.map((link, index) => ({
             ...link,
@@ -108,6 +109,7 @@ const UpdateProject = () => {
             patch: {
               name: value.name,
               description: value.description,
+              prefix: value.prefix || null,
               slug: generateSlug(value.name)!,
               updatedAt: new Date(),
             },
@@ -167,6 +169,15 @@ const UpdateProject = () => {
               {({ InputField }) => (
                 <InputField
                   label={updateProjectDetails.fields.projectDescription.label}
+                />
+              )}
+            </form.AppField>
+
+            <form.AppField name="prefix">
+              {({ InputField }) => (
+                <InputField
+                  label={updateProjectDetails.fields.projectPrefix.label}
+                  placeholder={project?.slug?.toUpperCase()}
                 />
               )}
             </form.AppField>

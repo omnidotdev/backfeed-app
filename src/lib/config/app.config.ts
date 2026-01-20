@@ -47,6 +47,10 @@ const app = {
         description: {
           maxLength: "Must be at most 240 characters.",
         },
+        prefix: {
+          minLength: "Must be at least 3 characters.",
+          maxLength: "Must be at most 10 characters.",
+        },
       },
     },
   },
@@ -767,6 +771,13 @@ const app = {
               minLength: "Must be at least 3 characters.",
               maxLength: "Must be at most 50 characters.",
               duplicate: "Project already exists.",
+            },
+          },
+          projectPrefix: {
+            label: "Prefix",
+            errors: {
+              minLength: "Must be at least 3 characters.",
+              maxLength: "Must be at most 10 characters.",
             },
           },
           projectLinks: {

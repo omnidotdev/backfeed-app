@@ -5,6 +5,7 @@ import app from "@/lib/config/app.config";
 import {
   projectDescriptionSchema,
   projectNameSchema,
+  projectPrefixSchema,
   slugSchema,
   urlSchema,
   uuidSchema,
@@ -33,6 +34,7 @@ const updateProjectSchema = z
   .object({
     name: projectNameSchema,
     description: projectDescriptionSchema,
+    prefix: projectPrefixSchema,
     projectLinks: z.array(projectLinkSchema),
     organizationId: z.string(),
     currentSlug: slugSchema,

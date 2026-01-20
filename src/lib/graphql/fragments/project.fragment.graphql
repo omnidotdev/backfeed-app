@@ -3,6 +3,7 @@ fragment Project on Project {
   name
   description
   slug
+  prefix
   organizationId
   nextPostNumber
   projectLinks(orderBy: ORDER_ASC) {

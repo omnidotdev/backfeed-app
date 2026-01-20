@@ -109,6 +109,9 @@ const PinnedWorkspaces = () => {
               <Text fontSize="sm" fontWeight="medium">
                 Add Workspace
               </Text>
+              <Text fontSize="xs" color="foreground.muted">
+                via Omni Organizations
+              </Text>
             </Flex>
           </a>
         )}

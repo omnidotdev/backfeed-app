@@ -190,6 +190,7 @@ const CreateFeedback = () => {
                 userId: session.user.rowId,
                 title: value.title.trim(),
                 description: value.description.trim(),
+                number: project?.nextPostNumber ?? 1,
               },
             },
           }).then(async () => {
