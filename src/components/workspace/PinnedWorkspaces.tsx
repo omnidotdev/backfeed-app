@@ -59,57 +59,80 @@ const PinnedWorkspaces = () => {
     );
   }
 
-  return (
-    <Grid gap={4} columns={{ base: 1, sm: 2 }}>
-      {pinnedOrgs.map((org) => (
-        <Link
-          key={org.id}
-          to="/workspaces/$workspaceSlug"
-          params={{ workspaceSlug: org.slug }}
-          role="group"
-        >
-          <WorkspaceCard
-            workspace={{
-              rowId: org.id,
-              name: org.name ?? org.slug,
-              slug: org.slug,
-              organizationId: org.id,
-              type: org.type,
-            }}
-            minH={32}
-          />
-        </Link>
-      ))}
+  const hasMore = organizations.length > 4;
 
-      {pinnedOrgs.length < 4 && (
-        <a href={AUTH_BASE_URL}>
+  return (
+    <Flex direction="column" gap={3}>
+      <Grid gap={4} columns={{ base: 1, sm: 2 }}>
+        {pinnedOrgs.map((org) => (
+          <Link
+            key={org.id}
+            to="/workspaces/$workspaceSlug"
+            params={{ workspaceSlug: org.slug }}
+            role="group"
+          >
+            <WorkspaceCard
+              workspace={{
+                rowId: org.id,
+                name: org.name ?? org.slug,
+                slug: org.slug,
+                organizationId: org.id,
+                type: org.type,
+              }}
+              minH={32}
+            />
+          </Link>
+        ))}
+
+        {pinnedOrgs.length < 4 && (
+          <a href={AUTH_BASE_URL}>
+            <Flex
+              direction="column"
+              align="center"
+              justify="center"
+              textAlign="center"
+              borderRadius="xl"
+              borderWidth="1px"
+              borderStyle="dashed"
+              borderColor="border.subtle"
+              gap={2}
+              p={5}
+              minH={32}
+              color="foreground.subtle"
+              transition="all 0.15s ease"
+              _hover={{
+                borderColor: "border.default",
+                color: "foreground.default",
+              }}
+            >
+              <Icon src={LuPlus} w={5} h={5} />
+              <Text fontSize="sm" fontWeight="medium">
+                Add Workspace
+              </Text>
+            </Flex>
+          </a>
+        )}
+      </Grid>
+
+      {hasMore && session?.user?.id && (
+        <Link
+          to="/profile/$userId/workspaces"
+          params={{ userId: session.user.id }}
+        >
           <Flex
-            direction="column"
             align="center"
             justify="center"
-            textAlign="center"
-            borderRadius="xl"
-            borderWidth="1px"
-            borderStyle="dashed"
-            borderColor="border.subtle"
-            gap={2}
-            p={5}
-            minH={32}
+            gap={1.5}
             color="foreground.subtle"
-            transition="all 0.15s ease"
-            _hover={{
-              borderColor: "border.default",
-              color: "foreground.default",
-            }}
+            fontSize="sm"
+            fontWeight="medium"
+            _hover={{ color: "foreground.default" }}
           >
-            <Icon src={LuPlus} w={5} h={5} />
-            <Text fontSize="sm" fontWeight="medium">
-              Add Workspace
-            </Text>
+            View all {organizations.length} workspaces
           </Flex>
-        </a>
+        </Link>
       )}
-    </Grid>
+    </Flex>
   );
 };
 
