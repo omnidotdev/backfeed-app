@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import Comments from "@/components/feedback/Comments";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
@@ -9,7 +9,7 @@ import {
   infiniteCommentsOptions,
 } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
-import { projectStatusesOptions } from "@/lib/options/projects";
+import { projectOptions, projectStatusesOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
@@ -19,6 +19,18 @@ export const Route = createFileRoute(
     context: { session, queryClient, organizationId },
     params: { projectSlug, feedbackId },
   }) => {
+    const { projects } = await queryClient.ensureQueryData({
+      ...projectOptions({
+        organizationId,
+        projectSlug,
+      }),
+      revalidateIfStale: true,
+    });
+
+    if (!projects?.nodes.length) throw notFound();
+
+    const project = projects.nodes[0]!;
+
     await Promise.all([
       queryClient.ensureQueryData({
         ...feedbackByIdOptions({
@@ -40,8 +52,12 @@ export const Route = createFileRoute(
         revalidateIfStale: true,
       }),
     ]);
+
+    return { projectName: project.name };
   },
-  head: () => ({ meta: createMetaTags({ title: "Feedback" }) }),
+  head: ({ loaderData }) => ({
+    meta: createMetaTags({ title: loaderData?.projectName }),
+  }),
   component: FeedbackPage,
 });
 
@@ -52,7 +68,8 @@ function FeedbackPage() {
 
     organizationId,
   } = Route.useRouteContext();
-  const { feedbackId } = Route.useParams();
+  const { workspaceSlug, projectSlug, feedbackId } = Route.useParams();
+  const { projectName } = Route.useLoaderData();
 
   const { data: feedback } = useQuery({
     ...feedbackByIdOptions({ rowId: feedbackId, userId: session?.user?.rowId }),
@@ -74,7 +91,16 @@ function FeedbackPage() {
   });
 
   return (
-    <Page>
+    <Page
+      header={{
+        title: projectName,
+        backLink: {
+          label: `Back to ${projectName}`,
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          params: { workspaceSlug, projectSlug },
+        },
+      }}
+    >
       <FeedbackCard
         canManageFeedback={hasAdminPrivileges}
         feedback={feedback!}
