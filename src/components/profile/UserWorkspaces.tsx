@@ -1,4 +1,5 @@
 import { Stack, Text } from "@omnidev/sigil";
+import { useQueries } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { LuExternalLink, LuInfo } from "react-icons/lu";
 
@@ -6,6 +7,7 @@ import EmptyState from "@/components/layout/EmptyState";
 import WorkspaceListItem from "@/components/workspace/WorkspaceListItem";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 
 /**
  * User workspaces list for profile page.
@@ -16,6 +18,23 @@ const UserWorkspaces = () => {
 
   // Organizations come from JWT claims, not a database query
   const organizations = session?.organizations ?? [];
+
+  // Fetch project counts for each organization in parallel
+  const metricsQueries = useQueries({
+    queries: organizations.map((org) =>
+      workspaceMetricsOptions({ organizationId: org.id }),
+    ),
+  });
+
+  // Create a map of organization ID to project count
+  const projectCountsByOrgId = organizations.reduce<Record<string, number>>(
+    (acc, org, index) => {
+      const data = metricsQueries[index]?.data;
+      acc[org.id] = data?.projects?.totalCount ?? 0;
+      return acc;
+    },
+    {},
+  );
 
   if (!organizations.length) {
     return (
@@ -36,6 +55,9 @@ const UserWorkspaces = () => {
             name: org.name,
             slug: org.slug,
             updatedAt: new Date().toISOString(),
+            projects: {
+              totalCount: projectCountsByOrgId[org.id],
+            },
           }}
         />
       ))}

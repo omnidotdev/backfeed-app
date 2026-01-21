@@ -54,10 +54,14 @@ dayjs.extend(utc);
 const fetchSessionAndMaintenanceMode = createServerFn({
   method: "GET",
 }).handler(async () => {
-  const [{ session }, { isMaintenanceMode }] = await Promise.all([
-    fetchSession(),
-    fetchMaintenanceMode(),
-  ]);
+  // Fetch session first to get user email for maintenance mode bypass evaluation
+  const { session } = await fetchSession();
+
+  // Pass user context to Unleash for @omni.dev admin bypass
+  const context = session?.user?.email
+    ? { userId: session.user.id, email: session.user.email }
+    : undefined;
+  const { isMaintenanceMode } = await fetchMaintenanceMode({ data: context });
 
   return { session, isMaintenanceMode };
 });
@@ -71,18 +75,14 @@ export const Route = createRootRouteWithContext<{
     const { session, isMaintenanceMode } =
       await fetchSessionAndMaintenanceMode();
 
-    // Allow admin users to bypass maintenance mode
-    const adminDomain = process.env.ADMIN_EMAIL_DOMAIN;
-    const isAdminUser = adminDomain
-      ? (session?.user?.email?.endsWith(`@${adminDomain}`) ?? false)
-      : false;
-    const effectiveMaintenanceMode = isMaintenanceMode && !isAdminUser;
+    // Admin bypass (@omni.dev) is now handled by Unleash constraints.
+    // If isMaintenanceMode is true, Unleash has already evaluated the user's email
+    // and determined they should see maintenance mode.
 
     // Skip auth when maintenance page is shown
-    if (effectiveMaintenanceMode)
-      return { session: null, isMaintenanceMode: effectiveMaintenanceMode };
+    if (isMaintenanceMode) return { session: null, isMaintenanceMode };
 
-    return { session, isMaintenanceMode: effectiveMaintenanceMode };
+    return { session, isMaintenanceMode };
   },
   loader: () => getTheme(),
   head: () => ({
