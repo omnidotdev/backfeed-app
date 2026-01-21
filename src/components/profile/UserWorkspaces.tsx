@@ -54,7 +54,6 @@ const UserWorkspaces = () => {
             rowId: org.id,
             name: org.name,
             slug: org.slug,
-            updatedAt: new Date().toISOString(),
             projects: {
               totalCount: projectCountsByOrgId[org.id],
             },

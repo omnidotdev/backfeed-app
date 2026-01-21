@@ -14,6 +14,7 @@ import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
+import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as PublicWorkspacesWorkspaceSlugLayoutRouteImport } from './routes/_public/workspaces/$workspaceSlug/_layout'
 import { Route as AuthProfileUserIdLayoutRouteImport } from './routes/_auth/profile/$userId/_layout'
@@ -49,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
   getParentRoute: () => AuthRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/workspaces': typeof AuthWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/workspaces/$workspaceSlug': typeof PublicWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/workspaces': typeof AuthWorkspacesIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/profile/$userId/account': typeof AuthProfileUserIdLayoutAccountRoute
   '/profile/$userId/workspaces': typeof AuthProfileUserIdLayoutWorkspacesRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/profile/$userId/_layout': typeof AuthProfileUserIdLayoutRouteWithChildren
   '/_public/workspaces/$workspaceSlug/_layout': typeof PublicWorkspacesWorkspaceSlugLayoutRouteWithChildren
   '/_auth/profile/$userId/_layout/account': typeof AuthProfileUserIdLayoutAccountRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard'
     | '/api/auth/$'
+    | '/workspaces'
     | '/profile/$userId'
     | '/workspaces/$workspaceSlug'
     | '/profile/$userId/account'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard'
     | '/api/auth/$'
+    | '/workspaces'
     | '/profile/$userId'
     | '/profile/$userId/account'
     | '/profile/$userId/workspaces'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/_auth/dashboard'
     | '/api/auth/$'
+    | '/_auth/workspaces/'
     | '/_auth/profile/$userId/_layout'
     | '/_public/workspaces/$workspaceSlug/_layout'
     | '/_auth/profile/$userId/_layout/account'
@@ -286,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthDashboardRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/': {
+      id: '/_auth/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/api/auth/$': {
@@ -401,11 +420,13 @@ const AuthProfileUserIdLayoutRouteWithChildren =
 
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthProfileUserIdLayoutRoute: typeof AuthProfileUserIdLayoutRouteWithChildren
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthProfileUserIdLayoutRoute: AuthProfileUserIdLayoutRouteWithChildren,
 }
 

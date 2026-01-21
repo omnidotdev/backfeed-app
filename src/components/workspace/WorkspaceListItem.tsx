@@ -82,10 +82,12 @@ const WorkspaceListItem = ({ workspace }: Props) => {
                 {workspace.name}
               </OverflowText>
 
-              <Text
-                fontSize="sm"
-                color="foreground.muted"
-              >{`Updated ${dayjs(workspace.updatedAt).fromNow()}`}</Text>
+              {workspace.updatedAt && (
+                <Text
+                  fontSize="sm"
+                  color="foreground.muted"
+                >{`Updated ${dayjs(workspace.updatedAt).fromNow()}`}</Text>
+              )}
             </Stack>
           </Stack>
         </HStack>
