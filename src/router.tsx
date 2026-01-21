@@ -57,6 +57,7 @@ export function getRouter() {
     context: { queryClient, session: null, isMaintenanceMode: false },
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
+    scrollRestoration: true,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: NotFound,
   });

@@ -153,7 +153,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       gap={2}
       wrap="wrap"
       py={3}
-      borderTopWidth="1px"
+      borderBottomWidth="1px"
       borderColor={{ base: "neutral.100", _dark: "neutral.800" }}
       {...rest}
     >

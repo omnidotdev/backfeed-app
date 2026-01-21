@@ -79,6 +79,8 @@ interface Props extends HstackProps {
   isAuthenticated?: boolean;
   /** Whether to disable hover styles (e.g., on detail page). */
   disableHover?: boolean;
+  /** Index for alternating row backgrounds in list view. */
+  index?: number;
 }
 
 /**
@@ -92,6 +94,7 @@ const FeedbackCard = ({
   descriptionProps,
   isAuthenticated: isAuthenticatedProp,
   disableHover,
+  index,
   ...rest
 }: Props) => {
   const { session, queryClient } = useRouteContext({
@@ -267,6 +270,10 @@ const FeedbackCard = ({
 
   const actionIsPending = isFeedbackPending || isDeleteFeedbackPending;
 
+  // Alternating background for odd rows (when index is provided)
+  const hasAlternatingBg =
+    index !== undefined && index % 2 === 1 && !disableHover;
+
   return (
     <HStack
       position="relative"
@@ -274,6 +281,11 @@ const FeedbackCard = ({
       p={4}
       alignItems="flex-start"
       opacity={actionIsPending ? 0.5 : 1}
+      bgColor={
+        hasAlternatingBg
+          ? { base: "neutral.50", _dark: "neutral.900/50" }
+          : undefined
+      }
       className={
         disableHover
           ? undefined
@@ -314,12 +326,6 @@ const FeedbackCard = ({
             </Text>
 
             <HStack fontSize="xs" gap={1.5} color="foreground.subtle">
-              <Text fontFamily="mono">
-                {feedback.project?.prefix ||
-                  feedback.project?.slug?.toUpperCase()}
-                -{feedback.number}
-              </Text>
-              <Circle size={1} bgColor="foreground.subtle" />
               <Text>{feedback.user?.username}</Text>
               <Circle size={1} bgColor="foreground.subtle" />
               <Text>
@@ -327,6 +333,14 @@ const FeedbackCard = ({
                   isFeedbackPending ? new Date() : feedback.createdAt,
                 ).fromNow()}
               </Text>
+              <Circle size={1} bgColor="foreground.subtle" />
+              <HStack gap={0.5}>
+                <Icon src={LuMessageCircle} h={3.5} w={3.5} />
+                <Format.Number
+                  value={feedback.comments?.totalCount ?? 0}
+                  notation="compact"
+                />
+              </HStack>
             </HStack>
           </Stack>
 
@@ -459,15 +473,6 @@ const FeedbackCard = ({
                 />
               </HStack>
             )}
-
-            <HStack color="foreground.subtle" gap={1} ml={2}>
-              <Icon src={LuMessageCircle} h={4.5} w={4.5} />
-
-              <Format.Number
-                value={feedback.comments?.totalCount ?? 0}
-                notation="compact"
-              />
-            </HStack>
           </HStack>
         </HStack>
       </Stack>

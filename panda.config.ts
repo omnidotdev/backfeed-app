@@ -62,6 +62,7 @@ const pandaConfig = defineConfig({
                 },
               },
               outline: {
+                borderColor: { base: "neutral.200", _dark: "neutral.700" },
                 _hover: {
                   borderColor: "primary",
                   color: "primary",

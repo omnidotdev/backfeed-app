@@ -265,6 +265,7 @@ const ProjectFeedback = () => {
         <Input
           placeholder={app.projectPage.projectFeedback.search.placeholder}
           borderColor="border.subtle"
+          defaultValue={search}
           onChange={onSearchChange}
           maxW={{ base: "full", md: "sm" }}
           size="sm"
@@ -341,7 +342,7 @@ const ProjectFeedback = () => {
             <SkeletonArray count={5} h={21} />
           ) : allPosts.length ? (
             <>
-              {allPosts.map((feedback) => {
+              {allPosts.map((feedback, index) => {
                 const isPending = feedback?.rowId === "pending";
 
                 return (
@@ -353,6 +354,7 @@ const ProjectFeedback = () => {
                       canManageFeedback={hasAdminPrivileges}
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
+                      index={viewState === ViewState.List ? index : undefined}
                       h="full"
                       w="full"
                       minH={21}
