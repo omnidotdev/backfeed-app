@@ -15,13 +15,12 @@ interface Props extends FlexProps {
 const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
   <Stack
     position="relative"
-    flex={1}
-    h="100%"
     bgColor="background.default"
     borderRadius="xl"
     borderWidth="1px"
     borderColor="border.subtle"
     overflow="hidden"
+    gap={0}
     {...rest}
   >
     <Text
@@ -37,7 +36,7 @@ const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
       {title}
     </Text>
 
-    <Stack flex={1} overflow="auto" {...contentProps}>
+    <Stack overflow="auto" gap={0} {...contentProps}>
       {children}
     </Stack>
   </Stack>

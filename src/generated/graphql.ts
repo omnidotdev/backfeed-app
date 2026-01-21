@@ -4991,14 +4991,6 @@ export type CommentsQueryVariables = Exact<{
 
 export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
-export type DashboardMetricsQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
-  sevenDaysAgo: Scalars['Datetime']['input'];
-}>;
-
-
-export type DashboardMetricsQuery = { __typename?: 'Query', needsReview?: { __typename?: 'PostConnection', totalCount: number } | null, openItems?: { __typename?: 'PostConnection', totalCount: number } | null, resolvedThisWeek?: { __typename?: 'PostConnection', totalCount: number } | null };
-
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -5880,68 +5872,6 @@ useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comme
 
 
 useCommentsQuery.fetcher = (variables: CommentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, variables, options);
-
-export const DashboardMetricsDocument = `
-    query DashboardMetrics($organizationIds: [UUID!], $sevenDaysAgo: Datetime!) {
-  needsReview: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplateId: {isNull: true}}
-  ) {
-    totalCount
-  }
-  openItems: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["open", "in_progress", "under_review"]}}}
-  ) {
-    totalCount
-  }
-  resolvedThisWeek: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["completed", "closed"]}}, statusUpdatedAt: {greaterThanOrEqualTo: $sevenDaysAgo}}
-  ) {
-    totalCount
-  }
-}
-    `;
-
-export const useDashboardMetricsQuery = <
-      TData = DashboardMetricsQuery,
-      TError = unknown
-    >(
-      variables: DashboardMetricsQueryVariables,
-      options?: Omit<UseQueryOptions<DashboardMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<DashboardMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<DashboardMetricsQuery, TError, TData>(
-      {
-    queryKey: ['DashboardMetrics', variables],
-    queryFn: graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, variables),
-    ...options
-  }
-    )};
-
-useDashboardMetricsQuery.getKey = (variables: DashboardMetricsQueryVariables) => ['DashboardMetrics', variables];
-
-export const useInfiniteDashboardMetricsQuery = <
-      TData = InfiniteData<DashboardMetricsQuery>,
-      TError = unknown
-    >(
-      variables: DashboardMetricsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<DashboardMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<DashboardMetricsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<DashboardMetricsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['DashboardMetrics.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteDashboardMetricsQuery.getKey = (variables: DashboardMetricsQueryVariables) => ['DashboardMetrics.infinite', variables];
-
-
-useDashboardMetricsQuery.fetcher = (variables: DashboardMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<DashboardMetricsQuery, DashboardMetricsQueryVariables>(DashboardMetricsDocument, variables, options);
 
 export const FeedbackByIdDocument = `
     query FeedbackById($rowId: UUID!, $userId: UUID) {

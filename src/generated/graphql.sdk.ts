@@ -4992,14 +4992,6 @@ export type CommentsQueryVariables = Exact<{
 
 export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
-export type DashboardMetricsQueryVariables = Exact<{
-  organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
-  sevenDaysAgo: Scalars['Datetime']['input'];
-}>;
-
-
-export type DashboardMetricsQuery = { __typename?: 'Query', needsReview?: { __typename?: 'PostConnection', totalCount: number } | null, openItems?: { __typename?: 'PostConnection', totalCount: number } | null, resolvedThisWeek?: { __typename?: 'PostConnection', totalCount: number } | null };
-
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -5458,25 +5450,6 @@ export const CommentsDocument = gql`
   }
 }
     ${CommentFragmentDoc}`;
-export const DashboardMetricsDocument = gql`
-    query DashboardMetrics($organizationIds: [UUID!], $sevenDaysAgo: Datetime!) {
-  needsReview: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplateId: {isNull: true}}
-  ) {
-    totalCount
-  }
-  openItems: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["open", "in_progress", "under_review"]}}}
-  ) {
-    totalCount
-  }
-  resolvedThisWeek: posts(
-    filter: {project: {organizationId: {in: $organizationIds}}, statusTemplate: {name: {in: ["completed", "closed"]}}, statusUpdatedAt: {greaterThanOrEqualTo: $sevenDaysAgo}}
-  ) {
-    totalCount
-  }
-}
-    `;
 export const FeedbackByIdDocument = gql`
     query FeedbackById($rowId: UUID!, $userId: UUID) {
   post(rowId: $rowId) {
@@ -5812,9 +5785,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Comments(variables: CommentsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CommentsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CommentsQuery>({ document: CommentsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Comments', 'query', variables);
-    },
-    DashboardMetrics(variables: DashboardMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DashboardMetricsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DashboardMetricsQuery>({ document: DashboardMetricsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DashboardMetrics', 'query', variables);
     },
     FeedbackById(variables: FeedbackByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<FeedbackByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByIdQuery>({ document: FeedbackByIdDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'FeedbackById', 'query', variables);

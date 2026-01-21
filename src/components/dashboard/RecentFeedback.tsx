@@ -1,7 +1,6 @@
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { useMemo } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -11,13 +10,16 @@ import Response from "@/components/dashboard/Response";
 import EmptyState from "@/components/layout/EmptyState";
 import { recentFeedbackOptions } from "@/lib/options/dashboard";
 
+import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "@/generated/graphql";
 
+interface Props extends Pick<FlexProps, "minH"> {}
+
 /**
- * Needs Attention section.
- * Shows feedback items prioritized by those needing review (no status assigned).
+ * Recent Feedback section.
+ * Shows recent feedback items across all user's organizations.
  */
-const RecentFeedback = () => {
+const RecentFeedback = ({ minH }: Props) => {
   const { session } = useRouteContext({ from: "/_auth/dashboard" });
 
   // Get org IDs from session for filtering
@@ -41,18 +43,6 @@ const RecentFeedback = () => {
     enabled: organizationIds.length > 0,
   });
 
-  // Sort to show items without status (needs review) first
-  const sortedFeedback = useMemo(() => {
-    if (!feedbackData) return [];
-    return [...feedbackData].sort((a, b) => {
-      const aHasStatus = !!a?.statusTemplate;
-      const bHasStatus = !!b?.statusTemplate;
-      if (!aHasStatus && bHasStatus) return -1;
-      if (aHasStatus && !bHasStatus) return 1;
-      return 0;
-    });
-  }, [feedbackData]);
-
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: hasNextPage,
@@ -63,7 +53,8 @@ const RecentFeedback = () => {
   return (
     <FeedbackSection
       ref={rootRef}
-      title="Needs Attention"
+      title="Recent Feedback"
+      minH={minH}
       contentProps={{
         overflow: "auto",
         scrollbar: "hidden",
@@ -76,16 +67,16 @@ const RecentFeedback = () => {
           </Text>
         </Flex>
       ) : (
-        <Stack w="full" h="full">
+        <Stack w="full" h="full" gap={0}>
           {isLoading ? (
             <Stack p={4} gap={3}>
               <SkeletonArray count={5} h={16} w="100%" borderRadius="lg" />
             </Stack>
-          ) : sortedFeedback?.length ? (
+          ) : feedbackData?.length ? (
             <VStack gap={0}>
-              {sortedFeedback?.map((feedback, index) => {
+              {feedbackData?.map((feedback, index) => {
                 const isLast =
-                  index === sortedFeedback.length - 1 && !hasNextPage;
+                  index === feedbackData.length - 1 && !hasNextPage;
                 return (
                   <Link
                     key={feedback?.rowId}
@@ -105,7 +96,6 @@ const RecentFeedback = () => {
                       px={5}
                       py={3}
                       borderBottomWidth={isLast ? 0 : "1px"}
-                      borderBottomRadius={isLast ? "xl" : undefined}
                       borderColor="border.subtle"
                       transition="background 0.1s ease"
                       _hover={{

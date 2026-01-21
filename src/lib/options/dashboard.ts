@@ -1,23 +1,11 @@
-import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions } from "@tanstack/react-query";
 
 import {
-  useDashboardMetricsQuery,
   useInfiniteRecentFeedbackQuery,
   useRecentFeedbackQuery,
 } from "@/generated/graphql";
 
-import type {
-  DashboardMetricsQueryVariables,
-  RecentFeedbackQueryVariables,
-} from "@/generated/graphql";
-
-export const dashboardMetricsOptions = (
-  variables: DashboardMetricsQueryVariables,
-) =>
-  queryOptions({
-    queryKey: useDashboardMetricsQuery.getKey(variables),
-    queryFn: useDashboardMetricsQuery.fetcher(variables),
-  });
+import type { RecentFeedbackQueryVariables } from "@/generated/graphql";
 
 export const recentFeedbackOptions = (
   variables: RecentFeedbackQueryVariables,
