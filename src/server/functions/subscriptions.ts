@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import app from "@/lib/config/app.config";
-import { BILLING_BASE_URL } from "@/lib/config/env.config";
+import { BILLING_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
@@ -34,10 +33,13 @@ export const getSubscription = createServerFn()
   .handler(async ({ data, context }) => {
     if (!context.session) return null;
 
+    if (isSelfHosted) {
+      return null;
+    }
+
     try {
-      // Aether billing APIs use organization ID to look up billing accounts
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}`,
+        `${BILLING_BASE_URL}/billing-portal/subscription/backfeed/organization/${data.organizationId}`,
         {
           headers: {
             Authorization: `Bearer ${context.session.accessToken}`,
@@ -80,8 +82,12 @@ export const revokeSubscription = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}/cancel`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/backfeed/organization/${data.organizationId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -110,8 +116,12 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/organization/${data.organizationId}`,
+      `${BILLING_BASE_URL}/billing-portal/backfeed/organization/${data.organizationId}`,
       {
         method: "POST",
         headers: {
@@ -119,7 +129,6 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
           Authorization: `Bearer ${context.session.accessToken}`,
         },
         body: JSON.stringify({
-          productId: "backfeed",
           returnUrl: data.returnUrl,
         }),
       },
@@ -138,6 +147,10 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => createSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     let customer = context.customer;
 
     if (!customer) {
@@ -157,8 +170,9 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       line_items: [{ price: data.priceId, quantity: 1 }],
       subscription_data: {
         metadata: {
-          organizationId: data.organizationId,
-          omniProduct: app.name.toLowerCase(),
+          app_id: "backfeed",
+          entity_type: "organization",
+          entity_id: data.organizationId,
         },
       },
     });
@@ -175,8 +189,12 @@ export const renewSubscription = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/organization/${data.organizationId}/renew`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/backfeed/organization/${data.organizationId}/renew`,
       {
         method: "POST",
         headers: {
