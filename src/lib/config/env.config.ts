@@ -7,6 +7,8 @@ export const {
   VITE_API_BASE_URL: API_BASE_URL,
   VITE_AUTH_BASE_URL: AUTH_BASE_URL,
   VITE_BILLING_BASE_URL: BILLING_BASE_URL,
+  VITE_SELF_HOSTED,
+  SELF_HOSTED,
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
@@ -28,3 +30,6 @@ const isTestEnv = import.meta.env.NODE_ENV === "test";
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 /** @knipignore */
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
+/** @knipignore */
+export const isSelfHosted =
+  SELF_HOSTED === "true" || VITE_SELF_HOSTED === "true";

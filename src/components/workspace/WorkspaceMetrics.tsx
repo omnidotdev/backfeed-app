@@ -1,6 +1,6 @@
 import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { HiOutlineChatBubbleLeftRight, HiOutlineFolder } from "react-icons/hi2";
 
 import SectionContainer from "@/components/layout/SectionContainer";
@@ -9,6 +9,10 @@ import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
+
+const workspaceLayoutRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/",
+);
 
 interface WorkspaceMetric extends FlexProps {
   /** Human-readable title. */
@@ -23,9 +27,7 @@ interface WorkspaceMetric extends FlexProps {
  * Workspace metrics.
  */
 const WorkspaceMetrics = () => {
-  const { organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/",
-  });
+  const { organizationId } = workspaceLayoutRoute.useRouteContext();
 
   const {
     data: workspaceMetrics,

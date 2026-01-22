@@ -1,8 +1,7 @@
 import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import {
+  getRouteApi,
   useNavigate,
-  useParams,
-  useRouteContext,
   useRouterState,
 } from "@tanstack/react-router";
 import { FiUserPlus } from "react-icons/fi";
@@ -14,6 +13,10 @@ import app from "@/lib/config/app.config";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
+
+const manageRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/_manage",
+);
 
 interface NavigationItem extends ButtonProps {
   /** Navigation item label. */
@@ -40,12 +43,8 @@ const ManagementNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { role, workspaceName } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
-  });
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage",
-  });
+  const { role, workspaceName } = manageRoute.useRouteContext();
+  const { workspaceSlug } = manageRoute.useParams();
   const navigate = useNavigate();
   const segment = useRouterState({
     select: (state) => {

@@ -15,12 +15,7 @@ import {
   sigil,
 } from "@omnidev/sigil";
 import { useMutation } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
@@ -35,6 +30,10 @@ import {
 
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
+const settingsRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
+);
+
 interface Props {
   /** App subscription pricing options. */
   prices: ExpandedProductPrice[];
@@ -47,15 +46,10 @@ interface Props {
  * This component handles subscription management at the organization level.
  */
 const WorkspaceSettings = ({ prices }: Props) => {
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
-  });
-  const { isOwner, organizationId, workspaceName } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
-  });
-  const { subscription } = useLoaderData({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/settings",
-  });
+  const { workspaceSlug } = settingsRoute.useParams();
+  const { isOwner, organizationId, workspaceName } =
+    settingsRoute.useRouteContext();
+  const { subscription } = settingsRoute.useLoaderData();
   const navigate = useNavigate();
 
   const subscriptionPrice = prices.find(

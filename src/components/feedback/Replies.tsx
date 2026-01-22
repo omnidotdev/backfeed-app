@@ -1,6 +1,6 @@
 import { Button, Collapsible, Grid, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery, useMutationState } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
 import ReplyCard from "@/components/feedback/ReplyCard";
@@ -15,6 +15,10 @@ import type {
   ReplyFragment,
 } from "@/generated/graphql";
 
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
+
 interface Props extends CollapsibleProps {
   /** Comment ID. */
   commentId: Comment["rowId"];
@@ -24,9 +28,7 @@ interface Props extends CollapsibleProps {
  * Comment replies section.
  */
 const Replies = ({ commentId, ...rest }: Props) => {
-  const { session } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session } = feedbackRoute.useRouteContext();
 
   const {
     data: replies,

@@ -1,17 +1,18 @@
 import { Grid, GridItem, Input } from "@omnidev/sigil";
-import { useSearch } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 
 import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
+
+const projectsRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+);
 
 /**
  * Project filters.
  */
 const ProjectFilters = () => {
-  const search = useSearch({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
-    select: ({ search }) => search,
-  });
+  const search = projectsRoute.useSearch({ select: ({ search }) => search });
 
   const onSearchChange = useHandleSearch();
 

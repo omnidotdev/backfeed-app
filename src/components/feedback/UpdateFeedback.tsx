@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { LuPencil } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
@@ -26,6 +26,10 @@ import type { DialogProps } from "@omnidev/sigil";
 import type { FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
+
+const workspaceLayoutRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout",
+);
 
 const updatePostDetails = app.projectPage.projectFeedback.updatePost;
 
@@ -56,9 +60,7 @@ interface Props extends DialogProps {
  * Update feedback form.
  */
 const UpdateFeedback = ({ feedback, ...rest }: Props) => {
-  const { session, queryClient } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout",
-  });
+  const { session, queryClient } = workspaceLayoutRoute.useRouteContext();
 
   const isClient = useIsClient();
 

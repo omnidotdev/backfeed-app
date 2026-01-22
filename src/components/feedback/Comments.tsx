@@ -4,7 +4,7 @@ import {
   useMutationState,
   useQuery,
 } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -28,16 +28,26 @@ import type {
   CreateCommentMutationVariables,
 } from "@/generated/graphql";
 
+// Cache pending comment dates to maintain stable references and avoid infinite re-renders
+const pendingDateCache = new Map<number, Date>();
+
+const getPendingDate = (submittedAt: number): Date => {
+  if (!pendingDateCache.has(submittedAt)) {
+    pendingDateCache.set(submittedAt, new Date(submittedAt));
+  }
+  return pendingDateCache.get(submittedAt)!;
+};
+
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
+
 /**
  * Feedback comments section.
  */
 const Comments = () => {
-  const { session, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
-  const { projectSlug, feedbackId } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session, organizationId } = feedbackRoute.useRouteContext();
+  const { projectSlug, feedbackId } = feedbackRoute.useParams();
 
   const { data: canCreateComment } = useQuery(
     freeTierCommentsOptions({
@@ -79,7 +89,8 @@ const Comments = () => {
       return {
         rowId: "pending",
         message: input.comment.message,
-        createdAt: new Date(),
+        // Use cached Date to maintain stable reference and avoid infinite re-renders
+        createdAt: getPendingDate(mutation.state.submittedAt),
         user: {
           rowId: session?.user?.rowId!,
           username: session?.user?.username,

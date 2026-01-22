@@ -4,11 +4,7 @@ import {
   useIsMutating,
   useQuery,
 } from "@tanstack/react-query";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateLinks from "@/components/project/UpdateLinks";
@@ -27,18 +23,19 @@ import generateSlug from "@/lib/util/generateSlug";
 
 import type { ProjectLink } from "@/lib/form/updateProjectOptions";
 
+const projectSettingsRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+);
+
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 
 /**
  * Form for updating project details.
  */
 const UpdateProject = () => {
-  const { queryClient, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
-  });
-  const { workspaceSlug, projectSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
-  });
+  const { queryClient, organizationId } =
+    projectSettingsRoute.useRouteContext();
+  const { workspaceSlug, projectSlug } = projectSettingsRoute.useParams();
   const navigate = useNavigate();
 
   const isUpdatingProject = useIsMutating({ mutationKey: ["Project"] });

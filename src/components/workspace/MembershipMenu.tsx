@@ -1,5 +1,5 @@
 import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
@@ -13,6 +13,10 @@ import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
 import type { JsxStyleProps } from "@/generated/panda/types";
 import type { IdpMember } from "@/lib/idp";
+
+const membersRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
+);
 
 enum MenuAction {
   MakeAdmin = "admin",
@@ -41,9 +45,7 @@ const MembershipMenu = ({
   toggleRowSelection,
   ...rest
 }: Props) => {
-  const { isOwner, organizationId, session } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
-  });
+  const { isOwner, organizationId, session } = membersRoute.useRouteContext();
 
   const selectedRowsAreAdmins = selectedRows.every(
     (row) => row.original.role === "admin",

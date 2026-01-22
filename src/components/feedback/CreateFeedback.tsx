@@ -1,7 +1,7 @@
 import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
@@ -27,6 +27,10 @@ import toaster from "@/lib/util/toaster";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
+const projectRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+);
+
 const postSchemaErrors = app.projectPage.projectFeedback.createPost.errors;
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
@@ -49,12 +53,8 @@ const createFeedbackSchema = z.object({
  */
 const CreateFeedback = () => {
   const { session, queryClient, hasAdminPrivileges, organizationId } =
-    useRouteContext({
-      from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-    });
-  const { projectSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
+    projectRoute.useRouteContext();
+  const { projectSlug } = projectRoute.useParams();
 
   // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
   const { isOpen, setIsOpen } = useDialogStore({
@@ -190,7 +190,6 @@ const CreateFeedback = () => {
                 userId: session.user.rowId,
                 title: value.title.trim(),
                 description: value.description.trim(),
-                number: project?.nextPostNumber ?? 1,
               },
             },
           }).then(async () => {

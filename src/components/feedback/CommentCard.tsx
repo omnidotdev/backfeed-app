@@ -11,7 +11,7 @@ import {
   sigil,
   useDisclosure,
 } from "@omnidev/sigil";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
@@ -28,6 +28,10 @@ import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import type { StackProps } from "@omnidev/sigil";
 import type { CommentFragment } from "@/generated/graphql";
 
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
+
 interface Props extends StackProps {
   /** Comment. */
   comment: CommentFragment;
@@ -39,12 +43,9 @@ interface Props extends StackProps {
  * Comment card.
  */
 const CommentCard = ({ comment, canReply, ...rest }: Props) => {
-  const { session, queryClient, hasAdminPrivileges } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
-  const { feedbackId } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session, queryClient, hasAdminPrivileges } =
+    feedbackRoute.useRouteContext();
+  const { feedbackId } = feedbackRoute.useParams();
 
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
 

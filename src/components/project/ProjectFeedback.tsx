@@ -15,12 +15,7 @@ import {
   useMutationState,
   useQuery,
 } from "@tanstack/react-query";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -53,6 +48,10 @@ import type {
 
 // TODO: figure out how to properly handle refresh for view state management.
 
+const projectRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+);
+
 const SORT_BY_OPTIONS = [
   {
     label: "Created At",
@@ -68,15 +67,10 @@ const SORT_BY_OPTIONS = [
  * Project feedback.
  */
 const ProjectFeedback = () => {
-  const { session, hasAdminPrivileges, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
-  const { workspaceSlug, projectSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
-  const { excludedStatuses, search, orderBy } = useSearch({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
+  const { session, hasAdminPrivileges, organizationId } =
+    projectRoute.useRouteContext();
+  const { workspaceSlug, projectSlug } = projectRoute.useParams();
+  const { excludedStatuses, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });

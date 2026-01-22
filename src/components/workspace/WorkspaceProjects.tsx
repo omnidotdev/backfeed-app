@@ -1,6 +1,6 @@
 import { Grid } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams, useRouteContext } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
 
@@ -15,6 +15,10 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { Project } from "@/generated/graphql";
 
+const workspaceLayoutRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/",
+);
+
 interface Props {
   /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
@@ -24,12 +28,9 @@ interface Props {
  * Workspace projects overview.
  */
 const WorkspaceProjects = ({ canCreateProjects }: Props) => {
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout",
-  });
-  const { hasAdminPrivileges, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/",
-  });
+  const { workspaceSlug } = workspaceLayoutRoute.useParams();
+  const { hasAdminPrivileges, organizationId } =
+    workspaceLayoutRoute.useRouteContext();
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
     type: DialogType.CreateProject,

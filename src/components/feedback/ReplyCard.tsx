@@ -1,5 +1,5 @@
 import { Avatar, Circle, HStack, Stack, Text, sigil } from "@omnidev/sigil";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
@@ -13,6 +13,10 @@ import {
 import type { HstackProps } from "@omnidev/sigil";
 import type { ReplyFragment } from "@/generated/graphql";
 
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
+
 interface Props extends HstackProps {
   /** Reply. */
   reply: ReplyFragment;
@@ -22,12 +26,9 @@ interface Props extends HstackProps {
  * Reply card.
  */
 const ReplyCard = ({ reply, ...rest }: Props) => {
-  const { session, queryClient, hasAdminPrivileges } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
-  const { feedbackId } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session, queryClient, hasAdminPrivileges } =
+    feedbackRoute.useRouteContext();
+  const { feedbackId } = feedbackRoute.useParams();
 
   const { mutate: deleteReply, isPending: isDeletePending } =
     useDeleteCommentMutation({

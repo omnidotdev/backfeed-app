@@ -1,5 +1,5 @@
 import { Button, Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
-import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { Link, getRouteApi, useNavigate } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -10,6 +10,10 @@ import OverflowText from "@/components/core/OverflowText";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { Project } from "@/generated/graphql";
+
+const projectsRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+);
 
 interface Props {
   /** Project details. */
@@ -26,9 +30,7 @@ const ProjectListItem = ({
   workspaceSlug,
 }: Props) => {
   const navigate = useNavigate();
-  const { hasAdminPrivileges } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
-  });
+  const { hasAdminPrivileges } = projectsRoute.useRouteContext();
 
   const AGGREGATES = [
     {
