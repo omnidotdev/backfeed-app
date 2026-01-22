@@ -1,6 +1,6 @@
 import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -13,6 +13,8 @@ import { recentFeedbackOptions } from "@/lib/options/dashboard";
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "@/generated/graphql";
 
+const dashboardRoute = getRouteApi("/_auth/dashboard");
+
 interface Props extends Pick<FlexProps, "minH"> {}
 
 /**
@@ -20,7 +22,7 @@ interface Props extends Pick<FlexProps, "minH"> {}
  * Shows recent feedback items across all user's organizations.
  */
 const RecentFeedback = ({ minH }: Props) => {
-  const { session } = useRouteContext({ from: "/_auth/dashboard" });
+  const { session } = dashboardRoute.useRouteContext();
 
   // Get org IDs from session for filtering
   const organizationIds = session?.organizations?.map((org) => org.id) ?? [];

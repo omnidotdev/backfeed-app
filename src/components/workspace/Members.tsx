@@ -9,7 +9,7 @@ import {
   Text,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
@@ -26,6 +26,10 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { IdpMember } from "@/lib/idp";
 
+const membersRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
+);
+
 const columnHelper = createColumnHelper<IdpMember>();
 
 /**
@@ -33,9 +37,7 @@ const columnHelper = createColumnHelper<IdpMember>();
  * Fetches member data from IDP (single source of truth).
  */
 const Members = () => {
-  const { isOwner, organizationId, session } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
-  });
+  const { isOwner, organizationId, session } = membersRoute.useRouteContext();
 
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({

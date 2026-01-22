@@ -4,7 +4,7 @@ import {
   useMutationState,
   useQuery,
 } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -38,16 +38,16 @@ const getPendingDate = (submittedAt: number): Date => {
   return pendingDateCache.get(submittedAt)!;
 };
 
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
+
 /**
  * Feedback comments section.
  */
 const Comments = () => {
-  const { session, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
-  const { projectSlug, feedbackId } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session, organizationId } = feedbackRoute.useRouteContext();
+  const { projectSlug, feedbackId } = feedbackRoute.useParams();
 
   const { data: canCreateComment } = useQuery(
     freeTierCommentsOptions({

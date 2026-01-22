@@ -1,10 +1,12 @@
 import { Flex, Grid, Icon, Text } from "@omnidev/sigil";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import { LuBuilding2, LuPlus } from "react-icons/lu";
 
 import WorkspaceCard from "@/components/dashboard/WorkspaceCard";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
+
+const dashboardRoute = getRouteApi("/_auth/dashboard");
 
 /**
  * Pinned workspaces section.
@@ -13,7 +15,7 @@ import { AUTH_BASE_URL } from "@/lib/config/env.config";
  * by Gatekeeper (IDP), not the local database.
  */
 const PinnedWorkspaces = () => {
-  const { session } = useRouteContext({ from: "/_auth/dashboard" });
+  const { session } = dashboardRoute.useRouteContext();
 
   // Organizations come from JWT claims, not a local workspace table
   const organizations = session?.organizations ?? [];

@@ -1,11 +1,6 @@
 import { Flex, Text, css } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import Color from "colorjs.io";
 
 import {
@@ -15,6 +10,10 @@ import {
 
 import type { FlexProps } from "@omnidev/sigil";
 import type { StatusTemplate } from "@/generated/graphql";
+
+const projectRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+);
 
 interface Status {
   rowId: StatusTemplate["rowId"] | undefined;
@@ -46,15 +45,10 @@ const getBackgroundColor = (
  * Horizontal status filter pills for filtering feedback by status.
  */
 const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
-  const { projectId } = useLoaderData({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
-  const { organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
+  const { projectId } = projectRoute.useLoaderData();
+  const { organizationId } = projectRoute.useRouteContext();
 
-  const excludedStatuses = useSearch({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  const excludedStatuses = projectRoute.useSearch({
     select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({

@@ -1,11 +1,6 @@
 import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
@@ -18,6 +13,10 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { Project } from "@/generated/graphql";
 
+const projectsRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+);
+
 interface Props {
   /** Whether the user has necessary permissions to create projects. */
   canCreateProjects: boolean;
@@ -27,15 +26,9 @@ interface Props {
  * Project list.
  */
 const ProjectList = ({ canCreateProjects }: Props) => {
-  const { organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
-  });
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
-  });
-  const { page, pageSize, search } = useSearch({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/",
-  });
+  const { organizationId } = projectsRoute.useRouteContext();
+  const { workspaceSlug } = projectsRoute.useParams();
+  const { page, pageSize, search } = projectsRoute.useSearch();
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects",
   });

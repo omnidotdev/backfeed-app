@@ -1,5 +1,5 @@
 import { Dialog, sigil } from "@omnidev/sigil";
-import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
@@ -59,6 +59,10 @@ const createProjectSchema = z
     }
   });
 
+const workspaceLayoutRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout",
+);
+
 interface Props {
   /** Slug of the workspace to create the project under. */
   workspaceSlug: string;
@@ -68,9 +72,8 @@ interface Props {
  * Dialog for creating a new project.
  */
 const CreateProject = ({ workspaceSlug }: Props) => {
-  const { queryClient, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout",
-  });
+  const { queryClient, organizationId } =
+    workspaceLayoutRoute.useRouteContext();
   const navigate = useNavigate();
 
   const isClient = useIsClient();

@@ -1,8 +1,7 @@
 import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import {
+  getRouteApi,
   useNavigate,
-  useParams,
-  useRouteContext,
   useRouterState,
 } from "@tanstack/react-router";
 import { PiCreditCardLight, PiUserCircle } from "react-icons/pi";
@@ -12,6 +11,8 @@ import app from "@/lib/config/app.config";
 
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
+
+const profileLayoutRoute = getRouteApi("/_auth/profile/$userId/_layout");
 
 interface NavigationItem extends ButtonProps {
   /** Navigation item label. */
@@ -38,10 +39,8 @@ const ProfileNavigation = ({
   truncateText = false,
   ...rest
 }: Props) => {
-  const { session } = useRouteContext({
-    from: "/_auth/profile/$userId/_layout",
-  });
-  const { userId } = useParams({ from: "/_auth/profile/$userId/_layout" });
+  const { session } = profileLayoutRoute.useRouteContext();
+  const { userId } = profileLayoutRoute.useParams();
   const navigate = useNavigate();
   const segment = useRouterState({
     select: (state) => {

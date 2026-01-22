@@ -8,7 +8,7 @@ import {
   Text,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
@@ -22,6 +22,10 @@ import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { IdpMember } from "@/lib/idp";
+
+const membersRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
+);
 
 const columnHelper = createColumnHelper<IdpMember>();
 
@@ -62,9 +66,7 @@ const columns = [
  * Fetches owner data from Gatekeeper (single source of truth).
  */
 const Owners = () => {
-  const { organizationId, session } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
-  });
+  const { organizationId, session } = membersRoute.useRouteContext();
 
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({

@@ -1,9 +1,5 @@
 import { Button, Grid, Icon } from "@omnidev/sigil";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
@@ -13,6 +9,10 @@ import app from "@/lib/config/app.config";
 
 import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
+
+const workspaceLayoutRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/",
+);
 
 interface Action extends ButtonProps {
   /** Action label. */
@@ -27,12 +27,8 @@ const managementDetails = app.workspacePage.management;
  * Workspace management.
  */
 const WorkspaceManagement = () => {
-  const { workspaceSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/",
-  });
-  const { role } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/",
-  });
+  const { workspaceSlug } = workspaceLayoutRoute.useParams();
+  const { role } = workspaceLayoutRoute.useRouteContext();
   const navigate = useNavigate();
 
   const WORKSPACE_ACTIONS: Action[] = [

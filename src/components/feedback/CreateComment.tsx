@@ -1,6 +1,6 @@
 import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
@@ -17,6 +17,10 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
 const MAX_COMMENT_LENGTH = 500;
+
+const feedbackRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+);
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
@@ -42,12 +46,9 @@ interface Props {
  * Create comment form.
  */
 const CreateComment = ({ canCreateComment }: Props) => {
-  const { session, queryClient, organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
-  const { projectSlug, feedbackId } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
-  });
+  const { session, queryClient, organizationId } =
+    feedbackRoute.useRouteContext();
+  const { projectSlug, feedbackId } = feedbackRoute.useParams();
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
     onSettled: async () => {

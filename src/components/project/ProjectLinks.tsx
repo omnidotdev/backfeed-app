@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
 
@@ -18,16 +18,16 @@ import Favicon from "@/components/core/Favicon";
 import { projectOptions } from "@/lib/options/projects";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
+const projectRoute = getRouteApi(
+  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+);
+
 /**
  * Project links component. Displays project links with auto-fetched favicons.
  */
 const ProjectLinks = () => {
-  const { organizationId } = useRouteContext({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
-  const { projectSlug } = useParams({
-    from: "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-  });
+  const { organizationId } = projectRoute.useRouteContext();
+  const { projectSlug } = projectRoute.useParams();
 
   const { data: project } = useQuery({
     ...projectOptions({ organizationId, projectSlug }),
