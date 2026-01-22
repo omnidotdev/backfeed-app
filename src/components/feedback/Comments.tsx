@@ -28,6 +28,16 @@ import type {
   CreateCommentMutationVariables,
 } from "@/generated/graphql";
 
+// Cache pending comment dates to maintain stable references and avoid infinite re-renders
+const pendingDateCache = new Map<number, Date>();
+
+const getPendingDate = (submittedAt: number): Date => {
+  if (!pendingDateCache.has(submittedAt)) {
+    pendingDateCache.set(submittedAt, new Date(submittedAt));
+  }
+  return pendingDateCache.get(submittedAt)!;
+};
+
 /**
  * Feedback comments section.
  */
@@ -79,7 +89,8 @@ const Comments = () => {
       return {
         rowId: "pending",
         message: input.comment.message,
-        createdAt: new Date(),
+        // Use cached Date to maintain stable reference and avoid infinite re-renders
+        createdAt: getPendingDate(mutation.state.submittedAt),
         user: {
           rowId: session?.user?.rowId!,
           username: session?.user?.username,

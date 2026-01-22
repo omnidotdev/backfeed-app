@@ -12,7 +12,10 @@ import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";
 import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
-import { workspaceMetricsOptions } from "@/lib/options/workspaces";
+import {
+  workspaceMetricsOptions,
+  workspaceOptions,
+} from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -23,12 +26,15 @@ export const Route = createFileRoute(
   loader: async ({
     context: { queryClient, organizationId, workspaceName },
   }) => {
-    await queryClient.ensureQueryData({
-      ...workspaceMetricsOptions({
-        organizationId,
+    await Promise.all([
+      queryClient.ensureQueryData({
+        ...workspaceMetricsOptions({
+          organizationId,
+        }),
+        revalidateIfStale: true,
       }),
-      revalidateIfStale: true,
-    });
+      queryClient.ensureQueryData(workspaceOptions({ organizationId })),
+    ]);
 
     return { workspaceName };
   },
