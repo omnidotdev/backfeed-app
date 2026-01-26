@@ -23,7 +23,10 @@ const viteConfig = defineConfig(({ command }) => ({
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart(),
-    nitroV2Plugin({ preset: "node-server" }),
+    nitroV2Plugin({
+      preset: "node-server",
+      externals: { inline: ["srvx", "react-dom"] },
+    }),
     react(),
   ],
 }));

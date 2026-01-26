@@ -8,6 +8,7 @@ const app = {
   description: "Streamlined user feedback 📣",
   productionUrl: "https://backfeed.omni.dev",
   docsUrl: "https://docs.omni.dev/core/backfeed",
+  feedbackUrl: "https://backfeed.omni.dev/workspaces/omni/projects/backfeed",
   socials: {
     discord: "https://discord.gg/omnidotdev",
     x: "https://x.com/omnidotdev",

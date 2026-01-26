@@ -64,6 +64,22 @@ const Footer = () => (
         Docs
       </Link>
 
+      <Link
+        isExternal
+        href={app.feedbackUrl}
+        color={{ base: "neutral.500", _dark: "neutral.400" }}
+        fontSize="sm"
+        textDecoration="none"
+        transition="color 0.2s ease"
+        className={css({
+          _hover: {
+            color: { base: "foreground.default", _dark: "neutral.200" },
+          },
+        })}
+      >
+        Feedback
+      </Link>
+
       <Flex gap={3}>
         <Link
           isExternal
