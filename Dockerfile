@@ -8,7 +8,7 @@ FROM base AS builder
 COPY package.json bun.lock .env.production ./
 RUN bun install --frozen-lockfile --ignore-scripts
 COPY . .
-RUN bun run build
+RUN bun panda codegen && bun run build
 
 # TODO: Switch back to Bun runtime once module resolution is fixed
 # Bun doesn't properly resolve externalized Nitro packages (srvx, react-dom/server)
