@@ -22,6 +22,8 @@ const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
+  // Trust the app's own origin for auth requests
+  trustedOrigins: BASE_URL ? [BASE_URL] : [],
   session: {
     // extend session expiration to 30 days
     expiresIn: 60 * 60 * 24 * 30,
