@@ -6,7 +6,7 @@ WORKDIR /app
 # Build
 FROM base AS builder
 COPY package.json bun.lock .env.production ./
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN bun run build
 
