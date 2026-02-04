@@ -30,6 +30,14 @@ const isTestEnv = import.meta.env.NODE_ENV === "test";
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 /** @knipignore */
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
-/** @knipignore */
 export const isSelfHosted =
   SELF_HOSTED === "true" || VITE_SELF_HOSTED === "true";
+
+/**
+ * Billing provider to use.
+ * - "local" for self-hosted (all features unlocked)
+ * - "aether" for SaaS (billing service)
+ */
+export const billingProvider: "local" | "aether" = isSelfHosted
+  ? "local"
+  : "aether";
