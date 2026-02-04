@@ -19,6 +19,16 @@ export const {
 
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
+// Internal API URL for server-to-server communication (Docker service name)
+// Falls back to API_BASE_URL for non-Docker environments
+const API_INTERNAL_URL =
+  typeof window === "undefined"
+    ? process.env.API_INTERNAL_URL || API_BASE_URL
+    : API_BASE_URL;
+
+// Internal GraphQL URL for server-side requests
+export const API_INTERNAL_GRAPHQL_URL = `${API_INTERNAL_URL}/graphql`;
+
 // environment helpers
 export const isDevEnv = import.meta.env.DEV;
 /** @knipignore */

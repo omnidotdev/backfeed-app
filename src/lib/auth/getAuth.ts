@@ -1,12 +1,18 @@
-import { GraphQLClient } from "graphql-request";
+import { setCookie } from "@tanstack/react-start/server";
 import * as jose from "jose";
 import ms from "ms";
 
-import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
-import { API_GRAPHQL_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
+import {
+  COOKIE_NAME,
+  COOKIE_TTL_SECONDS,
+  OMNI_CLAIMS_ORGANIZATIONS,
+  encryptAuthData,
+  fetchRowIdFromApi,
+} from "@/lib/auth/rowIdCache";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
-const OMNI_CLAIMS_KEY = "https://manifold.omni.dev/@omni/claims/organizations";
+import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
 
 /**
  * OIDC Discovery document structure.
@@ -38,7 +44,9 @@ async function getOidcDiscovery(): Promise<OIDCDiscovery> {
     "/.well-known/openid-configuration",
     AUTH_BASE_URL,
   );
-  const response = await fetch(discoveryUrl);
+  const response = await fetch(discoveryUrl, {
+    signal: AbortSignal.timeout(15000), // 15 second timeout
+  });
 
   if (!response.ok)
     throw new Error(
@@ -67,19 +75,27 @@ async function getJwks(): Promise<jose.JWTVerifyGetKey> {
   }
 
   const discovery = await getOidcDiscovery();
-  jwksCache = jose.createRemoteJWKSet(new URL(discovery.jwks_uri));
+  jwksCache = jose.createRemoteJWKSet(new URL(discovery.jwks_uri), {
+    timeoutDuration: 15000, // 15 seconds - longer timeout for cross-service calls
+    cooldownDuration: 30000, // wait 30s before retrying after failure
+  });
   jwksCacheExpiry = now + JWKS_CACHE_TTL;
 
   return jwksCache;
 }
 
-export interface OrganizationClaim {
-  id: string;
-  name: string;
-  slug: string;
-  type: "personal" | "team";
-  roles: string[];
-  teams: Array<{ id: string; name: string }>;
+// Re-export from rowIdCache for backward compatibility
+export type { OrganizationClaim } from "@/lib/auth/rowIdCache";
+
+/**
+ * Extract organization claims from a JWT payload.
+ */
+function extractOrganizations(payload: jose.JWTPayload): OrganizationClaim[] {
+  const orgClaims = payload[OMNI_CLAIMS_ORGANIZATIONS];
+  if (Array.isArray(orgClaims)) {
+    return orgClaims as OrganizationClaim[];
+  }
+  return [];
 }
 
 export async function getAuth(request: Request) {
@@ -90,11 +106,30 @@ export async function getAuth(request: Request) {
 
     if (!session) return null;
 
-    // get access token and id token for GraphQL requests
+    // These will be populated from JWT claims or cache
     let accessToken: string | undefined;
-    let identityProviderId: string | undefined;
-    let organizations: OrganizationClaim[] | undefined;
+    let organizations: OrganizationClaim[] = [];
 
+    // Cast to access custom session properties added by customSession plugin
+    const customUser = session.user as typeof session.user & {
+      identityProviderId?: string | null;
+      rowId?: string | null;
+      organizations?: OrganizationClaim[];
+    };
+    let identityProviderId = customUser.identityProviderId;
+    let rowId = customUser.rowId;
+    const cachedOrganizations = customUser.organizations;
+
+    // Check if we have complete cached data (avoids API call on every request)
+    const hasCachedData =
+      rowId && identityProviderId && cachedOrganizations?.length;
+
+    if (hasCachedData) {
+      // Cache hit: use cached organizations
+      organizations = cachedOrganizations;
+    }
+
+    // Get tokens from HIDRA via Better Auth
     try {
       const tokenResult = await auth.api.getAccessToken({
         body: { providerId: "omni" },
@@ -102,7 +137,7 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
-      // extract claims from the ID token via JWKS verification
+      // Extract claims from ID token (verified via JWKS)
       if (tokenResult?.idToken) {
         try {
           const [discovery, jwks] = await Promise.all([
@@ -112,12 +147,15 @@ export async function getAuth(request: Request) {
           const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
             issuer: discovery.issuer,
           });
-          identityProviderId = payload.sub;
 
-          // extract organization claims from the ID token
-          const orgClaims = payload[OMNI_CLAIMS_KEY];
-          if (Array.isArray(orgClaims))
-            organizations = orgClaims as OrganizationClaim[];
+          if (!identityProviderId) {
+            identityProviderId = payload.sub ?? null;
+          }
+
+          // Extract orgs from JWT if not cached
+          if (!hasCachedData) {
+            organizations = extractOrganizations(payload);
+          }
         } catch (jwtError) {
           console.error("[getAuth] JWT verification failed:", jwtError);
         }
@@ -131,6 +169,7 @@ export async function getAuth(request: Request) {
             `${AUTH_BASE_URL}/oauth2/userinfo`,
             {
               headers: { Authorization: `Bearer ${accessToken}` },
+              signal: AbortSignal.timeout(15000),
             },
           );
 
@@ -139,43 +178,44 @@ export async function getAuth(request: Request) {
             identityProviderId = userInfo.sub;
 
             // Also extract org claims from userinfo if not already set
-            if (!organizations && Array.isArray(userInfo[OMNI_CLAIMS_KEY])) {
-              organizations = userInfo[OMNI_CLAIMS_KEY] as OrganizationClaim[];
+            if (
+              !hasCachedData &&
+              Array.isArray(userInfo[OMNI_CLAIMS_ORGANIZATIONS])
+            ) {
+              organizations = userInfo[
+                OMNI_CLAIMS_ORGANIZATIONS
+              ] as OrganizationClaim[];
             }
           }
         } catch (userInfoError) {
           console.error("[getAuth] Userinfo fetch failed:", userInfoError);
         }
       }
+
+      // Handle rowId cache miss - fetch from API and cache
+      if (!rowId && accessToken && identityProviderId) {
+        rowId = await fetchRowIdFromApi(accessToken);
+
+        if (rowId) {
+          const encrypted = await encryptAuthData({
+            rowId,
+            identityProviderId,
+            organizations,
+          });
+          setCookie(COOKIE_NAME, encrypted, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: COOKIE_TTL_SECONDS,
+          });
+        }
+      }
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
     }
 
-    let rowId: string | undefined;
-
-    // Fetch the current user via the observer query.
-    // The API's authentication plugin automatically upserts the user on authenticated requests,
-    // so the observer query returns the user directly from context (no separate DB lookup needed).
-    if (accessToken) {
-      try {
-        const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const sdk = getSdk(graphqlClient);
-        const result = await sdk.Observer();
-
-        if (result.observer) {
-          rowId = result.observer.rowId;
-        }
-      } catch (error) {
-        console.error("[getAuth] Error fetching user from GraphQL:", error);
-      }
-    }
-
-    const result = {
+    return {
       ...session,
       accessToken,
       organizations,
@@ -186,8 +226,6 @@ export async function getAuth(request: Request) {
         username: session.user.name || session.user.email,
       },
     };
-
-    return result;
   } catch (error) {
     console.error("[getAuth] Failed to get auth session:", error);
     return null;

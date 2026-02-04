@@ -308,7 +308,7 @@ const FeedbackCard = ({
         totalDownvotes={totalDownvotes}
         isFeedbackRoute={!!isFeedbackRoute}
         isAuthenticated={isAuthenticated}
-        userId={session?.user?.rowId}
+        userId={session?.user?.rowId ?? undefined}
       />
 
       {/* Content on the right */}

@@ -1,13 +1,17 @@
-import { betterAuth } from "better-auth/minimal";
-import { genericOAuth } from "better-auth/plugins";
+import { getCookie } from "@tanstack/react-start/server";
+import { betterAuth } from "better-auth";
+import { customSession, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
+import { COOKIE_NAME, decryptCache } from "@/lib/auth/rowIdCache";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
   BASE_URL,
 } from "@/lib/config/env.config";
+
+import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
 
 const { AUTH_SECRET } = process.env;
 
@@ -71,6 +75,35 @@ const auth = betterAuth({
           }),
         },
       ],
+    }),
+    customSession(async ({ user, session }) => {
+      // Try to get cached auth data (rowId, identityProviderId, organizations).
+      // This avoids API calls on every request.
+      let rowId: string | null = null;
+      let identityProviderId: string | null = null;
+      let organizations: OrganizationClaim[] = [];
+
+      const cachedValue = getCookie(COOKIE_NAME);
+      if (cachedValue) {
+        const cached = await decryptCache(cachedValue);
+        if (cached) {
+          rowId = cached.rowId;
+          identityProviderId = cached.identityProviderId;
+          organizations = cached.organizations;
+        }
+      }
+
+      // If cache miss, getAuth() will sync with the API and populate the cache.
+
+      return {
+        user: {
+          ...user,
+          rowId,
+          identityProviderId,
+          organizations,
+        },
+        session,
+      };
     }),
     // NB: must be the last plugin in the array
     tanstackStartCookies(),
