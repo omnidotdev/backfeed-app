@@ -13,6 +13,8 @@ export enum DialogType {
   MobileSidebar = "mobileSidebar",
   /** Dialog for inviting a member to a workspace. */
   InviteMember = "inviteMember",
+  /** Dialog for creating a new workspace from pricing page. */
+  CreateWorkspace = "createWorkspace",
   /** Fallback value to handle undefined cases. This value is not to be used to control any dialog states. */
   Fallback = "fallback",
 }

@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import app from "@/lib/config/app.config";
 import billing, { type Subscription } from "@/lib/providers/billing";
-import { customerMiddleware } from "@/server/middleware";
+import { authMiddleware, customerMiddleware } from "@/server/middleware";
 
 /**
  * Schema for organization-based billing operations.
@@ -22,6 +23,24 @@ const createSubscriptionSchema = z.object({
   priceId: z.string().startsWith("price_"),
   successUrl: z.url(),
 });
+
+const checkoutWithWorkspaceSchema = z
+  .object({
+    priceId: z.string().startsWith("price_"),
+    successUrl: z.string().url(),
+    cancelUrl: z.string().url(),
+    // Either workspaceId or createWorkspace must be provided
+    workspaceId: z.string().uuid().optional(),
+    createWorkspace: z
+      .object({
+        name: z.string().min(1).max(100),
+        slug: z.string().min(1).max(100).optional(),
+      })
+      .optional(),
+  })
+  .refine((data) => data.workspaceId || data.createWorkspace, {
+    message: "Either workspaceId or createWorkspace is required",
+  });
 
 /**
  * Get subscription details for an organization via billing service.
@@ -109,4 +128,25 @@ export const renewSubscription = createServerFn({ method: "POST" })
       data.organizationId,
       context.session.accessToken,
     );
+  });
+
+/**
+ * Create a checkout session with workspace creation/selection.
+ * Routes through Aether for orchestration.
+ */
+export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator((data) => checkoutWithWorkspaceSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    if (!context.session?.accessToken) throw new Error("Unauthorized");
+
+    return billing.createCheckoutWithWorkspace({
+      appId: app.name.toLowerCase(),
+      priceId: data.priceId,
+      successUrl: data.successUrl,
+      cancelUrl: data.cancelUrl,
+      accessToken: context.session.accessToken,
+      workspaceId: data.workspaceId,
+      createWorkspace: data.createWorkspace,
+    });
   });

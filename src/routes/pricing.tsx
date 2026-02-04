@@ -10,19 +10,44 @@ import PricingMatrix from "@/components/pricing/PricingMatrix";
 import app from "@/lib/config/app.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
+import { getSubscription } from "@/server/functions/subscriptions";
+
+import type { Subscription } from "@/lib/providers/billing";
 
 export const Route = createFileRoute("/pricing")({
-  loader: async () => {
+  loader: async ({ context }) => {
     const prices = await getPrices();
 
-    return { prices };
+    // Fetch subscriptions for all user's organizations
+    const orgSubscriptions: Record<string, Subscription | null> = {};
+    const organizations = context.session?.organizations ?? [];
+
+    if (organizations.length > 0) {
+      const subscriptionPromises = organizations.map(async (org) => {
+        try {
+          const subscription = await getSubscription({
+            data: { organizationId: org.id },
+          });
+          return { orgId: org.id, subscription };
+        } catch {
+          return { orgId: org.id, subscription: null };
+        }
+      });
+
+      const results = await Promise.all(subscriptionPromises);
+      for (const { orgId, subscription } of results) {
+        orgSubscriptions[orgId] = subscription;
+      }
+    }
+
+    return { prices, orgSubscriptions };
   },
   head: () => ({ meta: createMetaTags({ title: "Pricing" }) }),
   component: PricingPage,
 });
 
 function PricingPage() {
-  const { prices } = Route.useLoaderData();
+  const { prices, orgSubscriptions } = Route.useLoaderData();
 
   const pricingModel = useToggleGroup({
     defaultValue: ["month"],
@@ -109,10 +134,14 @@ function PricingPage() {
         gap={4}
         px={4}
       >
-        <PricingCard price={undefined} />
+        <PricingCard price={undefined} orgSubscriptions={orgSubscriptions} />
 
         {filteredPrices.map((price) => (
-          <PricingCard key={price.id} price={price} />
+          <PricingCard
+            key={price.id}
+            price={price}
+            orgSubscriptions={orgSubscriptions}
+          />
         ))}
       </Flex>
 
