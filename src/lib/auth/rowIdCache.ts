@@ -4,6 +4,10 @@ import * as jose from "jose";
 import { getSdk } from "@/generated/graphql.sdk";
 import { API_INTERNAL_GRAPHQL_URL } from "@/lib/config/env.config";
 
+import type { OrganizationClaim } from "@omnidotdev/providers";
+
+export type { OrganizationClaim } from "@omnidotdev/providers";
+
 export const COOKIE_NAME = "backfeed_rowid_cache";
 export const COOKIE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
@@ -41,17 +45,7 @@ async function getEncryptionKey(): Promise<Uint8Array> {
   return deriveKey("backfeed-rowid-cache", "encryption-key");
 }
 
-/** Organization claim structure - matches HIDRA Gatekeeper format. */
-export interface OrganizationClaim {
-  id: string;
-  name: string;
-  slug: string;
-  type: "personal" | "team";
-  roles: string[];
-  teams: Array<{ id: string; name: string }>;
-}
-
-/** Claim key for organization claims - same as HIDRA Gatekeeper. */
+/** Claim key for organization claims - same as HIDRA Gatekeeper */
 export const OMNI_CLAIMS_ORGANIZATIONS =
   "https://manifold.omni.dev/@omni/claims/organizations";
 
