@@ -17,6 +17,8 @@ export const {
   VITE_FLAGS_CLIENT_KEY: FLAGS_CLIENT_KEY,
 } = { ...import.meta.env, ...process.env };
 
+export const CONSOLE_URL = import.meta.env.VITE_CONSOLE_URL;
+
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // Internal API URL for server-to-server communication (Docker service name)

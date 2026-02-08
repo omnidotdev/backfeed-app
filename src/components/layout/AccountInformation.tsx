@@ -16,12 +16,13 @@ import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { HiChevronUpDown } from "react-icons/hi2";
+import { LuExternalLink } from "react-icons/lu";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { token } from "@/generated/panda/tokens";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { isDevEnv } from "@/lib/config/env.config";
+import { CONSOLE_URL, isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
@@ -101,6 +102,21 @@ const AccountInformation = () => {
             </HStack>
           </MenuItem>
 
+          {CONSOLE_URL && (
+            <>
+              <MenuSeparator />
+
+              <MenuItem value="manage-account" asChild>
+                <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
+                  <HStack gap={2}>
+                    <Icon src={LuExternalLink} size="sm" />
+                    Manage account
+                  </HStack>
+                </a>
+              </MenuItem>
+            </>
+          )}
+
           <MenuSeparator />
 
           <MenuItem value="logout" onClick={handleLogout}>
@@ -126,6 +142,17 @@ const AccountInformation = () => {
               {app.auth.profile.label}
             </HStack>
           </Button>
+
+          {CONSOLE_URL && (
+            <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                <HStack gap={2}>
+                  <Icon src={LuExternalLink} size="sm" />
+                  Manage account
+                </HStack>
+              </Button>
+            </a>
+          )}
 
           <Button
             variant="outline"
