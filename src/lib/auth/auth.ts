@@ -65,6 +65,7 @@ const auth = betterAuth({
           ],
           accessType: "offline",
           pkce: true,
+          prompt: "login",
           // Map OIDC standard claims to Better Auth user fields
           // TODO: Check if BA genericOAuth should auto-map `picture` → `image` by default
           mapProfileToUser: (profile) => ({
