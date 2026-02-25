@@ -18,7 +18,7 @@ import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import app from "@/lib/config/app.config";
-import { fetchMaintenanceMode } from "@/lib/flags";
+import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import toaster from "@/lib/util/toaster";
