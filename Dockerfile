@@ -18,9 +18,8 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
+# Nitro bundles production deps into .output/server/node_modules.
 COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
 
 EXPOSE 3000
 CMD ["node", ".output/server/index.mjs"]
