@@ -59,7 +59,7 @@ const fetchSessionAndMaintenanceMode = createServerFn({
 
   // Pass user context to Unleash for @omni.dev admin bypass
   const context = session?.user?.email
-    ? { userId: session.user.id, email: session.user.email }
+    ? { userId: session.user.id, properties: { email: session.user.email } }
     : undefined;
   const { isMaintenanceMode } = await fetchMaintenanceMode({ data: context });
 
