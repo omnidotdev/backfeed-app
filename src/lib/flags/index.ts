@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { isEnabled } from "./client";
+import { flags } from "@/lib/providers";
 
-import type { FlagContext } from "./client";
+import type { FlagContext } from "@omnidotdev/providers";
 
 export const FLAGS = {
   MAINTENANCE: "backfeed-app-maintenance-mode",
@@ -18,10 +18,6 @@ export const FLAGS = {
 export const fetchMaintenanceMode = createServerFn({ method: "GET" })
   .inputValidator((data: FlagContext | undefined) => data)
   .handler(async ({ data: context }) => {
-    const isMaintenanceMode = await isEnabled(
-      FLAGS.MAINTENANCE,
-      false,
-      context,
-    );
+    const isMaintenanceMode = await flags.isEnabled(FLAGS.MAINTENANCE, context);
     return { isMaintenanceMode };
   });
