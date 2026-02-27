@@ -137,16 +137,6 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
-      if (!accessToken) {
-        console.warn(
-          "[getAuth] getAccessToken returned no access token. tokenResult:",
-          JSON.stringify({
-            hasAccessToken: !!tokenResult?.accessToken,
-            hasIdToken: !!tokenResult?.idToken,
-          }),
-        );
-      }
-
       // Extract claims from ID token (verified via JWKS)
       if (tokenResult?.idToken) {
         try {
@@ -227,13 +217,11 @@ export async function getAuth(request: Request) {
 
     if (!rowId) {
       console.warn(
-        "[getAuth] Session exists but rowId is null. Debug state:",
+        "[getAuth] Session exists but rowId is null.",
         JSON.stringify({
           hasAccessToken: !!accessToken,
           hasIdentityProviderId: !!identityProviderId,
           hasCachedData: !!hasCachedData,
-          userId: session.user.id,
-          email: session.user.email,
         }),
       );
     }
