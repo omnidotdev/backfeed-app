@@ -65,6 +65,7 @@ const VotingButtons = ({
   );
 
   const isVotePending = isUpvotePending || isDownvotePending;
+  const isMissingUserId = isAuthenticated && !userId;
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
@@ -162,7 +163,7 @@ const VotingButtons = ({
           e.stopPropagation();
           handleUpvote();
         }}
-        disabled={isVotePending || isOptimistic}
+        disabled={isVotePending || isOptimistic || isMissingUserId}
       >
         <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
       </Button>
@@ -196,7 +197,7 @@ const VotingButtons = ({
           e.stopPropagation();
           handleDownvote();
         }}
-        disabled={isVotePending || isOptimistic}
+        disabled={isVotePending || isOptimistic || isMissingUserId}
       >
         <Icon src={LuArrowDown} w={4} h={4} strokeWidth={hasDownvote ? 3 : 2} />
       </Button>

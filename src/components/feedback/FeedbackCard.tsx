@@ -101,8 +101,8 @@ const FeedbackCard = ({
     from: "__root__",
   });
 
-  // Use prop if provided, otherwise derive from session
-  const isAuthenticated = isAuthenticatedProp ?? !!session?.user?.rowId;
+  // Use prop if provided, otherwise derive from session existence
+  const isAuthenticated = isAuthenticatedProp ?? !!session;
   const {
     workspaceSlug,
     projectSlug,

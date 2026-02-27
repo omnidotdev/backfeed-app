@@ -9,7 +9,7 @@ export const Route = createFileRoute(
   "/_public/workspaces/$workspaceSlug/_layout",
 )({
   beforeLoad: async ({ context: { session }, params: { workspaceSlug } }) => {
-    const isAuthenticated = !!session?.user?.rowId;
+    const isAuthenticated = !!session;
 
     // For authenticated users, resolve org from JWT claims
     const orgFromClaims = session?.organizations?.find(
