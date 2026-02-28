@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { customSession, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
-import { COOKIE_NAME, decryptCache } from "@/lib/auth/rowIdCache";
+import { authCache } from "@/lib/auth/authCache";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -11,7 +11,7 @@ import {
   BASE_URL,
 } from "@/lib/config/env.config";
 
-import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
+import type { OrganizationClaim } from "@omnidotdev/providers";
 
 const { AUTH_SECRET } = process.env;
 
@@ -84,9 +84,9 @@ const auth = betterAuth({
       let identityProviderId: string | null = null;
       let organizations: OrganizationClaim[] = [];
 
-      const cachedValue = getCookie(COOKIE_NAME);
+      const cachedValue = getCookie(authCache.cookieName);
       if (cachedValue) {
-        const cached = await decryptCache(cachedValue);
+        const cached = await authCache.decrypt(cachedValue);
         if (cached) {
           rowId = cached.rowId;
           identityProviderId = cached.identityProviderId;
