@@ -131,38 +131,66 @@ export async function getAuth(request: Request) {
 
     // Get tokens from HIDRA via Better Auth
     try {
+      const t0 = Date.now();
       const tokenResult = await auth.api.getAccessToken({
         body: { providerId: "omni" },
         headers: request.headers,
       });
       accessToken = tokenResult?.accessToken;
 
-      // Diagnostic: check token validity
-      if (accessToken) {
-        const parts = accessToken.split(".");
-        const isJwt = parts.length === 3;
-        if (isJwt) {
-          try {
-            const payload = JSON.parse(
-              Buffer.from(parts[1], "base64url").toString(),
+      console.warn("[getAuth] Token state:", {
+        hasToken: !!accessToken,
+        expiresAt: tokenResult?.accessTokenExpiresAt ?? "null",
+        fingerprint: accessToken?.slice(0, 8),
+        fetchMs: Date.now() - t0,
+      });
+
+      // Validate token against HIDRA userinfo before using it.
+      // If HIDRA rejects the token (401), the session has stale tokens
+      // and the user must re-authenticate to get fresh ones.
+      if (accessToken && !hasCachedData) {
+        try {
+          const userinfoResp = await fetch(`${AUTH_BASE_URL}/oauth2/userinfo`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            signal: AbortSignal.timeout(10000),
+          });
+
+          if (userinfoResp.status === 401) {
+            console.warn(
+              "[getAuth] Token rejected by identity provider (401). Revoking session to force re-authentication.",
             );
-            const exp = payload.exp ? payload.exp * 1000 : 0;
-            const now = Date.now();
-            console.warn("[getAuth] Token diagnostic:", {
-              isJwt: true,
-              expired: exp > 0 && now > exp,
-              expiresIn:
-                exp > 0 ? `${Math.round((exp - now) / 1000)}s` : "unknown",
-              iss: payload.iss,
-            });
-          } catch {
-            console.warn("[getAuth] Token diagnostic: JWT decode failed");
+            try {
+              await auth.api.revokeSession({
+                body: { token: session.session.token },
+                headers: request.headers,
+              });
+            } catch {
+              // Best effort - session cookie will expire naturally
+            }
+            return null;
           }
-        } else {
-          console.warn(
-            "[getAuth] Token diagnostic: opaque token, length:",
-            accessToken.length,
-          );
+
+          if (userinfoResp.ok) {
+            const userInfo = (await userinfoResp.json()) as Record<
+              string,
+              unknown
+            >;
+            if (!identityProviderId && typeof userInfo.sub === "string") {
+              identityProviderId = userInfo.sub;
+            }
+
+            if (
+              !hasCachedData &&
+              Array.isArray(userInfo[OMNI_CLAIMS_ORGANIZATIONS])
+            ) {
+              organizations = userInfo[
+                OMNI_CLAIMS_ORGANIZATIONS
+              ] as OrganizationClaim[];
+            }
+          }
+        } catch (userinfoError) {
+          // Network errors are transient — don't revoke session
+          console.error("[getAuth] Userinfo validation failed:", userinfoError);
         }
       }
 
@@ -187,37 +215,6 @@ export async function getAuth(request: Request) {
           }
         } catch (jwtError) {
           console.error("[getAuth] JWT verification failed:", jwtError);
-        }
-      }
-
-      // Fallback: if JWT verification failed but we have an access token,
-      // fetch user info from the userinfo endpoint to get the sub claim
-      if (accessToken && !identityProviderId) {
-        try {
-          const userInfoResponse = await fetch(
-            `${AUTH_BASE_URL}/oauth2/userinfo`,
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-              signal: AbortSignal.timeout(15000),
-            },
-          );
-
-          if (userInfoResponse.ok) {
-            const userInfo = await userInfoResponse.json();
-            identityProviderId = userInfo.sub;
-
-            // Also extract org claims from userinfo if not already set
-            if (
-              !hasCachedData &&
-              Array.isArray(userInfo[OMNI_CLAIMS_ORGANIZATIONS])
-            ) {
-              organizations = userInfo[
-                OMNI_CLAIMS_ORGANIZATIONS
-              ] as OrganizationClaim[];
-            }
-          }
-        } catch (userInfoError) {
-          console.error("[getAuth] Userinfo fetch failed:", userInfoError);
         }
       }
 

@@ -118,27 +118,6 @@ export async function fetchRowIdFromApi(
     const sdk = getSdk(graphqlClient);
     const { observer } = await sdk.Observer();
 
-    if (!observer) {
-      // Diagnostic: check if the token is valid at the userinfo endpoint directly
-      try {
-        const { AUTH_BASE_URL } = await import("@/lib/config/env.config");
-        const userinfoResp = await fetch(`${AUTH_BASE_URL}/oauth2/userinfo`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-          signal: AbortSignal.timeout(10000),
-        });
-        console.warn("[rowIdCache] Observer null. Direct userinfo check:", {
-          status: userinfoResp.status,
-          ok: userinfoResp.ok,
-          apiUrl: API_INTERNAL_GRAPHQL_URL,
-        });
-      } catch (e) {
-        console.warn(
-          "[rowIdCache] Observer null. Userinfo check failed:",
-          e instanceof Error ? e.message : e,
-        );
-      }
-    }
-
     return observer?.rowId ?? null;
   } catch (error) {
     console.error("[rowIdCache] Failed to fetch rowId:", error);
