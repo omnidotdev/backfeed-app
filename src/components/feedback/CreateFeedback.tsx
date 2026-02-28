@@ -6,20 +6,15 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
-import {
-  useCreateFeedbackMutation,
-  useCreateStatusTemplateMutation,
-} from "@/generated/graphql";
+import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
-import { DEFAULT_STATUS_TEMPLATES } from "@/lib/constants/defaultStatusTemplates.constant";
 import { useEnsureStatusTemplates } from "@/lib/hooks/useEnsureStatusTemplates";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import {
   projectMetricsOptions,
   projectOptions,
-  projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -84,9 +79,6 @@ const CreateFeedback = () => {
       enabled: !!organizationId,
     });
 
-  const { mutateAsync: createStatusTemplate } =
-    useCreateStatusTemplateMutation();
-
   const { mutateAsync: createFeedback, isPending } =
     useCreateFeedbackMutation();
 
@@ -110,82 +102,28 @@ const CreateFeedback = () => {
           return;
         }
 
-        // If no status template exists, try to create defaults on-demand
-        let statusTemplateId = defaultStatusTemplateId;
+        if (isLoadingTemplates) {
+          toaster.info({
+            title: "Please wait",
+            description: "Setting up feedback categories...",
+          });
+          return;
+        }
 
-        if (!statusTemplateId) {
-          if (isLoadingTemplates) {
-            toaster.info({
-              title: "Please wait",
-              description: "Setting up feedback categories...",
-            });
-            return;
-          }
-
-          // Try to create default templates on-demand
-          if (organizationId) {
-            try {
-              toaster.info({
-                title: "Setting up",
-                description: "Creating feedback categories...",
-              });
-
-              // Create templates sequentially
-              for (const template of DEFAULT_STATUS_TEMPLATES) {
-                const result = await createStatusTemplate({
-                  input: {
-                    statusTemplate: {
-                      organizationId,
-                      name: template.name,
-                      displayName: template.displayName,
-                      color: template.color,
-                      description: template.description,
-                      sortOrder: template.sortOrder,
-                    },
-                  },
-                });
-
-                // Use the "open" template as default, or first one created
-                if (template.name === "open" || !statusTemplateId) {
-                  statusTemplateId =
-                    result.createStatusTemplate?.statusTemplate?.rowId;
-                }
-              }
-
-              // Invalidate cache so templates are available next time
-              await queryClient.invalidateQueries({
-                queryKey: projectStatusesOptions({ organizationId }).queryKey,
-              });
-            } catch (err) {
-              console.error(
-                "[CreateFeedback] Failed to create templates on-demand:",
-                err,
-              );
-              toaster.error({
-                title: app.projectPage.projectFeedback.action.error.title,
-                description:
-                  "Failed to set up feedback categories. Please try again.",
-              });
-              return;
-            }
-          }
-
-          // If still no template after trying to create, show error
-          if (!statusTemplateId) {
-            toaster.error({
-              title: app.projectPage.projectFeedback.action.error.title,
-              description:
-                "Status templates are not configured. Please contact a workspace admin.",
-            });
-            return;
-          }
+        if (!defaultStatusTemplateId) {
+          toaster.error({
+            title: app.projectPage.projectFeedback.action.error.title,
+            description:
+              "Status templates are not configured. Please contact a workspace admin.",
+          });
+          return;
         }
 
         return toaster.promise(
           createFeedback({
             input: {
               post: {
-                statusTemplateId: statusTemplateId,
+                statusTemplateId: defaultStatusTemplateId,
                 projectId,
                 userId: session.user.rowId,
                 title: value.title.trim(),
