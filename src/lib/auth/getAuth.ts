@@ -220,7 +220,7 @@ export async function getAuth(request: Request) {
 
       // Handle rowId cache miss - fetch from API and cache
       if (!rowId && accessToken && identityProviderId) {
-        rowId = await fetchRowIdFromApi(accessToken);
+        rowId = await fetchRowIdFromApi(accessToken, identityProviderId);
 
         if (rowId) {
           const encrypted = await encryptAuthData({

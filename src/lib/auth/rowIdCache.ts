@@ -105,10 +105,11 @@ export async function decryptCache(
 }
 
 /**
- * Fetch rowId from GraphQL API.
+ * Fetch rowId from GraphQL API by identity provider ID.
  */
 export async function fetchRowIdFromApi(
   accessToken: string,
+  identityProviderId: string,
 ): Promise<string | null> {
   try {
     // Use internal URL for server-to-server communication in Docker
@@ -116,9 +117,11 @@ export async function fetchRowIdFromApi(
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const sdk = getSdk(graphqlClient);
-    const { observer } = await sdk.Observer();
+    const { userByIdentityProviderId } = await sdk.User({
+      identityProviderId,
+    });
 
-    return observer?.rowId ?? null;
+    return userByIdentityProviderId?.rowId ?? null;
   } catch (error) {
     console.error("[rowIdCache] Failed to fetch rowId:", error);
     return null;
