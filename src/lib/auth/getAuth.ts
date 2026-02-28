@@ -131,19 +131,11 @@ export async function getAuth(request: Request) {
 
     // Get tokens from HIDRA via Better Auth
     try {
-      const t0 = Date.now();
       const tokenResult = await auth.api.getAccessToken({
         body: { providerId: "omni" },
         headers: request.headers,
       });
       accessToken = tokenResult?.accessToken;
-
-      console.warn("[getAuth] Token state:", {
-        hasToken: !!accessToken,
-        expiresAt: tokenResult?.accessTokenExpiresAt ?? "null",
-        fingerprint: accessToken?.slice(0, 8),
-        fetchMs: Date.now() - t0,
-      });
 
       // Validate token against HIDRA userinfo before using it.
       // If HIDRA rejects the token (401), the session has stale tokens
@@ -239,17 +231,6 @@ export async function getAuth(request: Request) {
       }
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
-    }
-
-    if (!rowId) {
-      console.warn(
-        "[getAuth] Session exists but rowId is null.",
-        JSON.stringify({
-          hasAccessToken: !!accessToken,
-          hasIdentityProviderId: !!identityProviderId,
-          hasCachedData: !!hasCachedData,
-        }),
-      );
     }
 
     return {
