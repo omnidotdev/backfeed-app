@@ -137,6 +137,35 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
+      // Diagnostic: check token validity
+      if (accessToken) {
+        const parts = accessToken.split(".");
+        const isJwt = parts.length === 3;
+        if (isJwt) {
+          try {
+            const payload = JSON.parse(
+              Buffer.from(parts[1], "base64url").toString(),
+            );
+            const exp = payload.exp ? payload.exp * 1000 : 0;
+            const now = Date.now();
+            console.warn("[getAuth] Token diagnostic:", {
+              isJwt: true,
+              expired: exp > 0 && now > exp,
+              expiresIn:
+                exp > 0 ? `${Math.round((exp - now) / 1000)}s` : "unknown",
+              iss: payload.iss,
+            });
+          } catch {
+            console.warn("[getAuth] Token diagnostic: JWT decode failed");
+          }
+        } else {
+          console.warn(
+            "[getAuth] Token diagnostic: opaque token, length:",
+            accessToken.length,
+          );
+        }
+      }
+
       // Extract claims from ID token (verified via JWKS)
       if (tokenResult?.idToken) {
         try {
