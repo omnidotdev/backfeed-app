@@ -11,6 +11,7 @@ const app = {
   feedbackUrl: "https://backfeed.omni.dev/workspaces/omni/projects/backfeed",
   socials: {
     discord: "https://discord.gg/omnidotdev",
+    github: "https://github.com/omnidotdev/backfeed-stack",
     x: "https://x.com/omnidotdev",
   },
   organization: {

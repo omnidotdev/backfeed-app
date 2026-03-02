@@ -1,5 +1,5 @@
 import { Divider, Flex, Icon, Link, Text, css, sigil } from "@omnidev/sigil";
-import { FaDiscord, FaXTwitter as FaX } from "react-icons/fa6";
+import { FaDiscord, FaGithub, FaXTwitter as FaX } from "react-icons/fa6";
 
 import app from "@/lib/config/app.config";
 
@@ -81,6 +81,21 @@ const Footer = () => (
       </Link>
 
       <Flex gap={3}>
+        <Link
+          isExternal
+          href={app.socials.github}
+          color={{ base: "neutral.500", _dark: "neutral.400" }}
+          textDecoration="none"
+          transition="color 0.2s ease"
+          className={css({
+            _hover: {
+              color: { base: "foreground.default", _dark: "neutral.200" },
+            },
+          })}
+        >
+          <Icon src={FaGithub} h={5} w={5} />
+        </Link>
+
         <Link
           isExternal
           href={app.socials.discord}
