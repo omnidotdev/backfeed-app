@@ -67,7 +67,6 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   const tier = (price?.metadata.tier as Tier) ?? Tier.Free;
 
   const isFreeTier = tier === Tier.Free;
-  const isBasicTier = tier === Tier.Basic;
   const isTeamTier = tier === Tier.Team;
   const isRecommendedTier = isTeamTier;
   const isEnterpriseTier = tier === Tier.Enterprise;
@@ -88,20 +87,17 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
     return "free";
   };
 
-  // Filter organizations that can upgrade to this tier
-  const upgradeableOrgs =
-    session?.organizations?.filter((org) => {
-      const orgTier = getOrgTier(org.id);
-      // Free tier card: no upgrades shown (use "Get Started" flow)
-      if (isFreeTier) return false;
-      // Enterprise tier: not available yet
-      if (isEnterpriseTier) return false;
-      // Basic tier card: only show free orgs
-      if (isBasicTier) return orgTier === "free";
-      // Team tier card: show free and basic orgs
-      if (isTeamTier) return orgTier === "free" || orgTier === "basic";
-      return false;
-    }) ?? [];
+  const TIER_ORDER = [Tier.Free, Tier.Basic, Tier.Team, Tier.Enterprise];
+  const getTierIndex = (t: string): number => TIER_ORDER.indexOf(t as Tier);
+
+  // Categorize organizations by their upgrade eligibility for this tier
+  const allOrgs = session?.organizations ?? [];
+  const upgradeableOrgs = allOrgs.filter(
+    (org) => getTierIndex(getOrgTier(org.id)) < getTierIndex(tier),
+  );
+  const nonUpgradeableOrgs = allOrgs.filter(
+    (org) => getTierIndex(getOrgTier(org.id)) >= getTierIndex(tier),
+  );
 
   // Check if this card's tier matches the URL param (for post-sign-in auto-open)
   const shouldAutoOpen = search.tier === tier && !!session;
@@ -317,11 +313,11 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 }
                 positioning={{ sameWidth: true }}
               >
-                {upgradeableOrgs.length > 0 && (
+                {allOrgs.length > 0 && (
                   <>
                     <MenuItemGroup>
                       <MenuItemGroupLabel color="foreground.subtle">
-                        Upgrade existing workspace
+                        Your workspaces
                       </MenuItemGroupLabel>
 
                       {upgradeableOrgs.map((org) => (
@@ -341,9 +337,48 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                             >
                               {org.name}
                             </Text>
+                            <Badge color="brand.primary" fontSize="xs">
+                              Upgrade
+                            </Badge>
                           </HStack>
                         </MenuItem>
                       ))}
+
+                      {nonUpgradeableOrgs.map((org) => {
+                        const orgTier = getOrgTier(org.id);
+                        const isSameTier = orgTier === tier;
+
+                        return (
+                          <MenuItem
+                            key={org.id}
+                            value={org.id}
+                            disabled
+                            opacity={0.6}
+                          >
+                            <HStack w="full" gap={2}>
+                              <Icon
+                                src={LuBuilding}
+                                h={4}
+                                w={4}
+                                color="foreground.subtle"
+                              />
+                              <Text
+                                flex={1}
+                                truncate
+                                fontWeight="medium"
+                                fontSize="sm"
+                              >
+                                {org.name}
+                              </Text>
+                              <Badge fontSize="xs">
+                                {isSameTier
+                                  ? "Current plan"
+                                  : capitalizeFirstLetter(orgTier)}
+                              </Badge>
+                            </HStack>
+                          </MenuItem>
+                        );
+                      })}
                     </MenuItemGroup>
 
                     <MenuSeparator />
@@ -351,10 +386,6 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 )}
 
                 <MenuItemGroup>
-                  <MenuItemGroupLabel color="foreground.subtle">
-                    Create new workspace
-                  </MenuItemGroupLabel>
-
                   <MenuItem value="create-new" cursor="pointer">
                     <HStack w="full" gap={2}>
                       <Icon
