@@ -49,7 +49,7 @@ import type {
 // TODO: figure out how to properly handle refresh for view state management.
 
 const projectRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 );
 
 const SORT_BY_OPTIONS = [

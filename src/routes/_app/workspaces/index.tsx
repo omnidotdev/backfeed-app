@@ -16,8 +16,15 @@ import {
 
 import type { OrganizationClaim } from "@/lib/auth/getAuth";
 
-export const Route = createFileRoute("/_auth/workspaces/")({
-  beforeLoad: async ({ context: { session } }) => {
+export const Route = createFileRoute("/_app/workspaces/")({
+  beforeLoad: async ({ context: { session }, location }) => {
+    if (!session?.user?.rowId) {
+      throw redirect({
+        to: "/",
+        search: { returnTo: location.href },
+      });
+    }
+
     const organizations = session?.organizations ?? [];
     if (!organizations.length) return;
 

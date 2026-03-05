@@ -25,7 +25,7 @@ import generateSlug from "@/lib/util/generateSlug";
 import type { ProjectLink } from "@/lib/form/updateProjectOptions";
 
 const projectSettingsRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
 );
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;

@@ -6,7 +6,7 @@ import WorkspaceCard from "@/components/dashboard/WorkspaceCard";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
-const dashboardRoute = getRouteApi("/_auth/dashboard");
+const dashboardRoute = getRouteApi("/_app/dashboard");
 
 /**
  * Pinned workspaces section.

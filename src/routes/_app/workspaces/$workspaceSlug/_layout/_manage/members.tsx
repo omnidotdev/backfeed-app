@@ -12,7 +12,7 @@ import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
+  "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
 )({
   loader: async ({
     context: { queryClient, organizationId, workspaceName, session },

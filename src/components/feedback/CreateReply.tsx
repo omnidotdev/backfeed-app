@@ -24,7 +24,7 @@ import type { Comment } from "@/generated/graphql";
 const MAX_COMMENT_LENGTH = 240;
 
 const feedbackRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas

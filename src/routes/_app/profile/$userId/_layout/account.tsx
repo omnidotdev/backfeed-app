@@ -11,7 +11,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 
 import type { InputProps } from "@omnidev/sigil";
 
-export const Route = createFileRoute("/_auth/profile/$userId/_layout/account")({
+export const Route = createFileRoute("/_app/profile/$userId/_layout/account")({
   head: () => ({ meta: createMetaTags({ title: "Account" }) }),
   component: UserAccountPage,
 });

@@ -19,7 +19,7 @@ import { projectOptions } from "@/lib/options/projects";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
 const projectRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 );
 
 /**

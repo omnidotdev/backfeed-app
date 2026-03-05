@@ -13,7 +13,7 @@ import { projectOptions, projectStatusesOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },

@@ -3,7 +3,7 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import ManagementSidebar from "@/components/workspace/ManagementSidebar";
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/_manage",
+  "/_app/workspaces/$workspaceSlug/_layout/_manage",
 )({
   beforeLoad: async ({ context: { session }, location }) => {
     // Management routes require authentication

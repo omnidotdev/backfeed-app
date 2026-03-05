@@ -16,7 +16,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import type { Project } from "@/generated/graphql";
 
 const workspaceLayoutRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/",
+  "/_app/workspaces/$workspaceSlug/_layout/",
 );
 
 interface Props {

@@ -29,7 +29,7 @@ import type { StackProps } from "@omnidev/sigil";
 import type { CommentFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
 interface Props extends StackProps {

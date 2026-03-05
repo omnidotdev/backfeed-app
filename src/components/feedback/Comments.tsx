@@ -39,7 +39,7 @@ const getPendingDate = (submittedAt: number): Date => {
 };
 
 const feedbackRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
 /**

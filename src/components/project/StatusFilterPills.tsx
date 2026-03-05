@@ -12,7 +12,7 @@ import type { FlexProps } from "@omnidev/sigil";
 import type { StatusTemplate } from "@/generated/graphql";
 
 const projectRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 );
 
 interface Status {

@@ -14,7 +14,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import type { Project } from "@/generated/graphql";
 
 const projectsRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/",
 );
 
 interface Props {

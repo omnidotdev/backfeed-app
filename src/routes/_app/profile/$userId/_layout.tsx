@@ -3,11 +3,19 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import ProfileSidebar from "@/components/profile/ProfileSidebar";
 import { userOptions } from "@/lib/options/users";
 
-export const Route = createFileRoute("/_auth/profile/$userId/_layout")({
+export const Route = createFileRoute("/_app/profile/$userId/_layout")({
   beforeLoad: async ({
     context: { session, queryClient },
     params: { userId },
+    location,
   }) => {
+    if (!session?.user?.rowId) {
+      throw redirect({
+        to: "/",
+        search: { returnTo: location.href },
+      });
+    }
+
     const { userByIdentityProviderId } = await queryClient.ensureQueryData(
       userOptions({ identityProviderId: userId }),
     );

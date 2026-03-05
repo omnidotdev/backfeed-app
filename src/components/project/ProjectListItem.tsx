@@ -12,7 +12,7 @@ import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import type { Project } from "@/generated/graphql";
 
 const projectsRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/",
 );
 
 interface Props {

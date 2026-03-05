@@ -21,7 +21,7 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/",
+  "/_app/workspaces/$workspaceSlug/_layout/",
 )({
   loader: async ({
     context: { queryClient, organizationId, workspaceName },

@@ -17,7 +17,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
 )({
   beforeLoad: async ({ context: { session }, location }) => {
     // Settings requires authentication

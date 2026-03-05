@@ -23,7 +23,7 @@ import toaster from "@/lib/util/toaster";
 const MAX_DESCRIPTION_LENGTH = 500;
 
 const projectRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 );
 
 const postSchemaErrors = app.projectPage.projectFeedback.createPost.errors;

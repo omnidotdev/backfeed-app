@@ -30,7 +30,7 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/",
 )({
   validateSearch: projectSearchSchema,
   search: {

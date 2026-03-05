@@ -1,5 +1,5 @@
 import { Grid, Stack } from "@omnidev/sigil";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import RecentFeedback from "@/components/dashboard/RecentFeedback";
@@ -9,9 +9,14 @@ import app from "@/lib/config/app.config";
 import { recentFeedbackOptions } from "@/lib/options/dashboard";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-export const Route = createFileRoute("/_auth/dashboard")({
-  beforeLoad: async ({ context: { session } }) => {
-    if (!session?.user.rowId) return;
+export const Route = createFileRoute("/_app/dashboard")({
+  beforeLoad: async ({ context: { session }, location }) => {
+    if (!session?.user.rowId) {
+      throw redirect({
+        to: "/",
+        search: { returnTo: location.href },
+      });
+    }
 
     // Get user's org IDs from JWT claims
     const organizationIds = session.organizations?.map((o) => o.id) ?? [];

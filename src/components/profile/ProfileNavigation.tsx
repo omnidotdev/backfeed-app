@@ -12,7 +12,7 @@ import app from "@/lib/config/app.config";
 import type { ButtonProps, StackProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
-const profileLayoutRoute = getRouteApi("/_auth/profile/$userId/_layout");
+const profileLayoutRoute = getRouteApi("/_app/profile/$userId/_layout");
 
 interface NavigationItem extends ButtonProps {
   /** Navigation item label. */

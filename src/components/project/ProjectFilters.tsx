@@ -5,7 +5,7 @@ import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 
 const projectsRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/projects/",
+  "/_app/workspaces/$workspaceSlug/_layout/projects/",
 );
 
 /**

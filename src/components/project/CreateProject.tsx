@@ -60,7 +60,7 @@ const createProjectSchema = z
   });
 
 const workspaceLayoutRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout",
+  "/_app/workspaces/$workspaceSlug/_layout",
 );
 
 interface Props {

@@ -6,7 +6,7 @@ import app from "@/lib/config/app.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_auth/profile/$userId/_layout/workspaces",
+  "/_app/profile/$userId/_layout/workspaces",
 )({
   head: () => ({ meta: createMetaTags({ title: "User Workspaces" }) }),
   component: UserWorkspacesPage,

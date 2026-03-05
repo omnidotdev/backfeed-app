@@ -13,7 +13,7 @@ import { recentFeedbackOptions } from "@/lib/options/dashboard";
 import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "@/generated/graphql";
 
-const dashboardRoute = getRouteApi("/_auth/dashboard");
+const dashboardRoute = getRouteApi("/_app/dashboard");
 
 interface Props extends Pick<FlexProps, "minH"> {}
 

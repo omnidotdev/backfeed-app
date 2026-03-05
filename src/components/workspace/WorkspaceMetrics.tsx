@@ -11,7 +11,7 @@ import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 const workspaceLayoutRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/",
+  "/_app/workspaces/$workspaceSlug/_layout/",
 );
 
 interface WorkspaceMetric extends FlexProps {

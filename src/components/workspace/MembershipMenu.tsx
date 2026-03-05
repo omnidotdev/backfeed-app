@@ -15,7 +15,7 @@ import type { JsxStyleProps } from "@/generated/panda/types";
 import type { IdpMember } from "@/lib/idp";
 
 const membersRoute = getRouteApi(
-  "/_public/workspaces/$workspaceSlug/_layout/_manage/members",
+  "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
 );
 
 enum MenuAction {
