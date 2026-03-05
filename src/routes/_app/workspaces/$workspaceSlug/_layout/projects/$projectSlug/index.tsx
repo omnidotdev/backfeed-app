@@ -16,6 +16,7 @@ import ProjectFeedback from "@/components/project/ProjectFeedback";
 import ProjectLinks from "@/components/project/ProjectLinks";
 import { PostOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import {
   freeTierFeedbackOptions,
   infiniteFeedbackOptions,
@@ -108,8 +109,14 @@ export const Route = createFileRoute(
 
     return { projectId, projectName };
   },
-  head: ({ loaderData }) => ({
-    meta: createMetaTags({ title: loaderData?.projectName }),
+  head: ({ loaderData, params }) => ({
+    meta: loaderData
+      ? createMetaTags({
+          title: loaderData.projectName,
+          url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
+          image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
+        })
+      : undefined,
   }),
   component: ProjectPage,
 });
