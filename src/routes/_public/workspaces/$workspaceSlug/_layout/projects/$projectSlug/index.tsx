@@ -68,6 +68,12 @@ export const Route = createFileRoute(
     if (!projects?.nodes.length) throw notFound();
 
     const project = projects.nodes[0]!;
+
+    // Gate private boards for unauthenticated users
+    if (!project.isPublic && !session?.user) {
+      throw notFound();
+    }
+
     const projectId = project.rowId;
     const projectName = project.name;
 

@@ -6,6 +6,7 @@ fragment Project on Project {
   prefix
   organizationId
   nextPostNumber
+  isPublic
   projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId

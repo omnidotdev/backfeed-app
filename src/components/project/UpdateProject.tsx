@@ -1,10 +1,11 @@
-import { Grid, Stack, sigil } from "@omnidev/sigil";
+import { Grid, HStack, Icon, Stack, Switch, Text, sigil } from "@omnidev/sigil";
 import {
   keepPreviousData,
   useIsMutating,
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import { LuGlobe } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateLinks from "@/components/project/UpdateLinks";
@@ -141,58 +142,92 @@ const UpdateProject = () => {
   });
 
   return (
-    <SectionContainer
-      title={updateProjectDetails.title}
-      description={updateProjectDetails.description}
-    >
-      <sigil.form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await form.handleSubmit();
-        }}
+    <>
+      <SectionContainer
+        title={updateProjectDetails.title}
+        description={updateProjectDetails.description}
       >
-        <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
-          <Stack gap={4}>
-            <form.AppField name="name">
-              {({ InputField }) => (
-                <InputField
-                  label={updateProjectDetails.fields.projectName.label}
-                />
-              )}
-            </form.AppField>
+        <sigil.form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            await form.handleSubmit();
+          }}
+        >
+          <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
+            <Stack gap={4}>
+              <form.AppField name="name">
+                {({ InputField }) => (
+                  <InputField
+                    label={updateProjectDetails.fields.projectName.label}
+                  />
+                )}
+              </form.AppField>
 
-            <form.AppField name="description">
-              {({ InputField }) => (
-                <InputField
-                  label={updateProjectDetails.fields.projectDescription.label}
-                />
-              )}
-            </form.AppField>
+              <form.AppField name="description">
+                {({ InputField }) => (
+                  <InputField
+                    label={updateProjectDetails.fields.projectDescription.label}
+                  />
+                )}
+              </form.AppField>
 
-            <form.AppField name="prefix">
-              {({ InputField }) => (
-                <InputField
-                  label={updateProjectDetails.fields.projectPrefix.label}
-                  placeholder={project?.slug?.toUpperCase()}
-                />
-              )}
-            </form.AppField>
-          </Stack>
+              <form.AppField name="prefix">
+                {({ InputField }) => (
+                  <InputField
+                    label={updateProjectDetails.fields.projectPrefix.label}
+                    placeholder={project?.slug?.toUpperCase()}
+                  />
+                )}
+              </form.AppField>
+            </Stack>
 
-          <UpdateLinks form={form} projectId={project?.rowId!} />
-        </Grid>
+            <UpdateLinks form={form} projectId={project?.rowId!} />
+          </Grid>
 
-        <form.AppForm>
-          <form.SubmitForm
-            action={updateProjectDetails.action}
-            isPending={!!isUpdatingProject}
-            mt={4}
-            ml="auto"
+          <form.AppForm>
+            <form.SubmitForm
+              action={updateProjectDetails.action}
+              isPending={!!isUpdatingProject}
+              mt={4}
+              ml="auto"
+            />
+          </form.AppForm>
+        </sigil.form>
+      </SectionContainer>
+
+      <SectionContainer
+        title="Visibility"
+        description="Control who can see this project. Boards are public by default"
+      >
+        <HStack justify="space-between" alignItems="center">
+          <HStack gap={3} alignItems="center">
+            <Icon src={LuGlobe} />
+            <Stack gap={0}>
+              <Text fontWeight="medium" fontSize="sm">
+                Public
+              </Text>
+              <Text fontSize="xs" color="fg.muted">
+                {project?.isPublic
+                  ? "Anyone with the link can view"
+                  : "Only workspace members can access"}
+              </Text>
+            </Stack>
+          </HStack>
+
+          <Switch
+            checked={project?.isPublic ?? true}
+            onCheckedChange={async (details) => {
+              await updateProject({
+                rowId: project?.rowId!,
+                patch: { isPublic: details.checked },
+              });
+              await queryClient.invalidateQueries({ queryKey: ["Project"] });
+            }}
           />
-        </form.AppForm>
-      </sigil.form>
-    </SectionContainer>
+        </HStack>
+      </SectionContainer>
+    </>
   );
 };
 
