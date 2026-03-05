@@ -36,8 +36,9 @@ const auth = betterAuth({
     // enable cookie caching for stateless session validation
     cookieCache: {
       enabled: true,
-      // cache session in cookie for 7 days
-      maxAge: 60 * 60 * 24 * 7,
+      // Match session expiration so OAuth tokens (stored in account_data cookie
+      // with the same maxAge) don't expire before the session itself
+      maxAge: 60 * 60 * 24 * 30,
       // use encrypted JWE for security
       strategy: "jwe",
       // auto-refresh cookie before expiry (critical for stateless mode)
