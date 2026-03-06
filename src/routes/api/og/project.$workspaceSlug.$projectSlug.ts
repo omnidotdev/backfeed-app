@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { createFileRoute } from "@tanstack/react-router";
@@ -34,11 +34,21 @@ const fetchFont = async (): Promise<ArrayBuffer> => {
   return fontCache;
 };
 
+const resolveLogoPath = (): string => {
+  const candidates = [
+    join(process.cwd(), "public", "img", "logo.png"),
+    join(process.cwd(), ".output", "public", "img", "logo.png"),
+  ];
+  for (const p of candidates) {
+    if (existsSync(p)) return p;
+  }
+  return candidates[0]!;
+};
+
 const getLogoDataUri = (): string => {
   if (logoCache) return logoCache;
 
-  const logoPath = join(process.cwd(), "public", "img", "logo.png");
-  const logoBuffer = readFileSync(logoPath);
+  const logoBuffer = readFileSync(resolveLogoPath());
   logoCache = `data:image/png;base64,${logoBuffer.toString("base64")}`;
 
   return logoCache;
