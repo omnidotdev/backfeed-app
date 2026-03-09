@@ -5,7 +5,7 @@
  */
 export enum Tier {
   Free = "free",
-  Basic = "basic",
+  Pro = "pro",
   Team = "team",
   Enterprise = "enterprise",
 }

@@ -60,7 +60,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
 
   // Derive tier from subscription - if no subscription, it's free tier
   const tier = subscription
-    ? (subscriptionPrice?.metadata?.tier ?? "basic")
+    ? (subscriptionPrice?.metadata?.tier ?? "pro")
     : "free";
 
   const {
@@ -172,9 +172,9 @@ const WorkspaceSettings = ({ prices }: Props) => {
               onSelect={({ value }) => createSubscription({ priceId: value })}
             >
               <MenuItemGroup minW={40}>
-                <MenuItemGroupLabel>Basic</MenuItemGroupLabel>
+                <MenuItemGroupLabel>Pro</MenuItemGroupLabel>
                 {prices
-                  .filter((price) => price.metadata.tier === "basic")
+                  .filter((price) => price.metadata.tier === "pro")
                   .map((price) => (
                     <MenuItem key={price.id} value={price.id}>
                       <HStack w="full" justify="space-between">

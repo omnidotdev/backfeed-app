@@ -73,21 +73,21 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
 
   const actionIcon = match(tier)
     .with(Tier.Team, () => HiSparkles)
-    .with(Tier.Basic, () => HiLockOpen)
+    .with(Tier.Pro, () => HiLockOpen)
     .otherwise(() => undefined);
 
   // Helper to get tier from subscription
   const getOrgTier = (orgId: string): string => {
     const subscription = orgSubscriptions[orgId];
     if (!subscription) return "free";
-    // Product name is like "Backfeed Basic" or "Backfeed Team"
+    // Product name is like "Backfeed Pro" or "Backfeed Team"
     const productName = subscription.product?.name?.toLowerCase() ?? "";
     if (productName.includes("team")) return "team";
-    if (productName.includes("basic")) return "basic";
+    if (productName.includes("pro")) return "pro";
     return "free";
   };
 
-  const TIER_ORDER = [Tier.Free, Tier.Basic, Tier.Team, Tier.Enterprise];
+  const TIER_ORDER = [Tier.Free, Tier.Pro, Tier.Team, Tier.Enterprise];
   const getTierIndex = (t: string): number => TIER_ORDER.indexOf(t as Tier);
 
   // Categorize organizations by their upgrade eligibility for this tier

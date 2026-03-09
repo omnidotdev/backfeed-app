@@ -34,7 +34,7 @@ const COMMON_FEATURES: Record<string, Feature> = {
   },
 };
 
-const BASIC_FEATURES: Record<string, Feature> = {
+const PRO_FEATURES: Record<string, Feature> = {
   unlimitedFeedback: {
     label: app.pricingPage.pricingMatrix.features.unlimitedFeedback,
     value: true,
@@ -43,7 +43,7 @@ const BASIC_FEATURES: Record<string, Feature> = {
 
 const TEAM_FEATURES: Record<string, Feature> = {
   ...COMMON_FEATURES,
-  ...BASIC_FEATURES,
+  ...PRO_FEATURES,
   unlimitedProjects: {
     label: app.pricingPage.pricingMatrix.features.unlimitedProjects,
     value: true,
@@ -97,11 +97,11 @@ const tiers: {
     features: COMMON_FEATURES,
   },
   {
-    id: "basic",
-    name: "Basic",
+    id: "pro",
+    name: "Pro",
     features: {
       ...COMMON_FEATURES,
-      ...BASIC_FEATURES,
+      ...PRO_FEATURES,
     },
   },
   {
@@ -109,7 +109,7 @@ const tiers: {
     name: "Team",
     features: {
       ...COMMON_FEATURES,
-      ...BASIC_FEATURES,
+      ...PRO_FEATURES,
       ...TEAM_FEATURES,
     },
   },
@@ -118,7 +118,7 @@ const tiers: {
     name: "Enterprise",
     features: {
       ...COMMON_FEATURES,
-      ...BASIC_FEATURES,
+      ...PRO_FEATURES,
       ...TEAM_FEATURES,
       customAnalytics: {
         label: app.pricingPage.pricingMatrix.features.customAnalytics,

@@ -6,8 +6,9 @@ import type Stripe from "stripe";
 export const FREE_PRODUCT_DETAILS = {
   description: "Start collecting and iterating on user feedback for free",
   marketing_features: [
-    { name: "1 project per workspace" },
-    { name: "Feedback from up to 15 unique users per project" },
+    { name: "2 projects per workspace" },
+    { name: "Unlimited feedback users" },
+    { name: "50 comments per post" },
     { name: "Community support" },
     { name: "Community voting & discussions" },
   ],
