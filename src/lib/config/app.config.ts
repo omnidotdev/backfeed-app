@@ -5,7 +5,7 @@
  */
 const app = {
   name: "Backfeed",
-  description: "Streamlined user feedback 📣",
+  description: "Streamlined user feedback",
   productionUrl: "https://backfeed.omni.dev",
   docsUrl: "https://docs.omni.dev/core/backfeed",
   feedbackUrl: "https://backfeed.omni.dev/workspaces/omni/projects/backfeed",
