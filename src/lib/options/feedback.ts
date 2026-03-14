@@ -17,6 +17,7 @@ import type {
 } from "@/generated/graphql";
 
 /** Maximum unique users allowed to submit feedback on free tier */
+// FALLBACK ONLY — source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
 const MAX_FREE_TIER_UNIQUE_USERS = 15;
 
 export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>

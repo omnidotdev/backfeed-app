@@ -19,6 +19,7 @@ import type {
 } from "@/generated/graphql";
 
 /** Maximum number of comments allowed on free tier */
+// FALLBACK ONLY — source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
 const MAX_FREE_TIER_COMMENTS = 100;
 
 export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
