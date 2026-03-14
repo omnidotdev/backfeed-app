@@ -18,7 +18,18 @@ export const getPrices = createServerFn().handler(async () => {
     expand: ["data.product"],
   });
 
-  return prices.data.sort(
+  // Deduplicate by tier + billing interval (stale Stripe products may coexist)
+  const seen = new Set<string>();
+  const deduped = prices.data.filter((p) => {
+    const tier = p.metadata?.tier ?? "unknown";
+    const interval = p.recurring?.interval ?? "one_time";
+    const key = `${tier}:${interval}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return deduped.sort(
     (a, b) => a.unit_amount! - b.unit_amount!,
   ) as ExpandedProductPrice[];
 });
