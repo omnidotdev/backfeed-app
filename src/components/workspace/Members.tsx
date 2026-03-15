@@ -48,7 +48,7 @@ const Members = () => {
 
   // Filter out owners - they're shown in the Owners component
   const members = useMemo(
-    () => membersData?.members?.filter((m) => m.role !== "owner") ?? [],
+    () => membersData?.data?.filter((m) => m.role !== "owner") ?? [],
     [membersData],
   );
 

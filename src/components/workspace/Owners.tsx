@@ -77,7 +77,7 @@ const Owners = () => {
 
   // Filter to only owners
   const owners = useMemo(
-    () => membersData?.members?.filter((m) => m.role === "owner") ?? [],
+    () => membersData?.data?.filter((m) => m.role === "owner") ?? [],
     [membersData],
   );
 

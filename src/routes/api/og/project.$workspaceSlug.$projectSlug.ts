@@ -7,10 +7,8 @@ import { GraphQLClient, gql } from "graphql-request";
 import satori from "satori";
 import sharp from "sharp";
 
-import {
-  API_INTERNAL_GRAPHQL_URL,
-  AUTH_BASE_URL,
-} from "@/lib/config/env.config";
+import { API_INTERNAL_GRAPHQL_URL } from "@/lib/config/env.config";
+import gatekeeperOrg from "@/lib/config/gatekeeper";
 
 import type { ReactNode } from "react";
 
@@ -56,11 +54,7 @@ const getLogoDataUri = (): string => {
 
 const resolveOrganizationId = async (slug: string): Promise<string | null> => {
   try {
-    const response = await fetch(
-      `${AUTH_BASE_URL}/api/organization/by-slug/${encodeURIComponent(slug)}`,
-    );
-    if (!response.ok) return null;
-    const org = await response.json();
+    const org = await gatekeeperOrg.fetchOrganizationBySlug(slug);
     return org?.id ?? null;
   } catch {
     return null;

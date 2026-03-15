@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { isAdminOrOwner, isOwner } from "@/lib/permissions";
-import { fetchOrganizationBySlug } from "@/server/functions/organization";
+import { fetchOrganizationBySlug } from "@/server/functions/organizations";
 
 import type { IdpRole } from "@/lib/permissions";
 
