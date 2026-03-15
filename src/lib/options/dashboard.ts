@@ -1,19 +1,29 @@
 import { infiniteQueryOptions } from "@tanstack/react-query";
 
 import {
+  RecentFeedbackDocument,
   useInfiniteRecentFeedbackQuery,
-  useRecentFeedbackQuery,
 } from "@/generated/graphql";
+import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
 
-import type { RecentFeedbackQueryVariables } from "@/generated/graphql";
+import type {
+  RecentFeedbackQuery,
+  RecentFeedbackQueryVariables,
+} from "@/generated/graphql";
 
 export const recentFeedbackOptions = (
   variables: RecentFeedbackQueryVariables,
 ) =>
   infiniteQueryOptions({
     queryKey: useInfiniteRecentFeedbackQuery.getKey(variables),
-    queryFn: useRecentFeedbackQuery.fetcher(variables),
-    initialPageParam: undefined,
+    queryFn: (context): Promise<RecentFeedbackQuery> =>
+      graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(
+        RecentFeedbackDocument,
+        { ...variables, ...(context.pageParam ?? {}) },
+      )(),
+    initialPageParam: undefined as
+      | { after: string | null | undefined }
+      | undefined,
     getNextPageParam: (lastPage) =>
       lastPage?.posts?.pageInfo?.hasNextPage
         ? { after: lastPage?.posts?.pageInfo?.endCursor }

@@ -5,14 +5,16 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  PostsDocument,
   useFeedbackByIdQuery,
   useInfinitePostsQuery,
-  usePostsQuery,
   useProjectQuery,
 } from "@/generated/graphql";
+import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
 
 import type {
   FeedbackByIdQueryVariables,
+  PostsQuery,
   PostsQueryVariables,
 } from "@/generated/graphql";
 
@@ -29,8 +31,14 @@ export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>
 export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
   infiniteQueryOptions({
     queryKey: useInfinitePostsQuery.getKey(variables),
-    queryFn: usePostsQuery.fetcher(variables),
-    initialPageParam: undefined,
+    queryFn: (context): Promise<PostsQuery> =>
+      graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, {
+        ...variables,
+        ...(context.pageParam ?? {}),
+      })(),
+    initialPageParam: undefined as
+      | { after: string | null | undefined }
+      | undefined,
     getNextPageParam: (lastPage) =>
       lastPage?.posts?.pageInfo?.hasNextPage
         ? { after: lastPage?.posts?.pageInfo?.endCursor }

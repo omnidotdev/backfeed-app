@@ -5,16 +5,19 @@ import {
 } from "@tanstack/react-query";
 
 import {
-  useCommentsQuery,
+  CommentsDocument,
+  RepliesDocument,
   useFeedbackByIdQuery,
   useInfiniteCommentsQuery,
   useInfiniteRepliesQuery,
   useProjectQuery,
-  useRepliesQuery,
 } from "@/generated/graphql";
+import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
 
 import type {
+  CommentsQuery,
   CommentsQueryVariables,
+  RepliesQuery,
   RepliesQueryVariables,
 } from "@/generated/graphql";
 
@@ -25,8 +28,14 @@ const MAX_FREE_TIER_COMMENTS = 100;
 export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
   infiniteQueryOptions({
     queryKey: useInfiniteCommentsQuery.getKey(variables),
-    queryFn: useCommentsQuery.fetcher(variables),
-    initialPageParam: undefined,
+    queryFn: (context): Promise<CommentsQuery> =>
+      graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, {
+        ...variables,
+        ...(context.pageParam ?? {}),
+      })(),
+    initialPageParam: undefined as
+      | { after: string | null | undefined }
+      | undefined,
     getNextPageParam: (lastPage) =>
       lastPage?.comments?.pageInfo?.hasNextPage
         ? { after: lastPage?.comments?.pageInfo?.endCursor }
@@ -36,8 +45,14 @@ export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
 export const infiniteRepliesOptions = (variables: RepliesQueryVariables) =>
   infiniteQueryOptions({
     queryKey: useInfiniteRepliesQuery.getKey(variables),
-    queryFn: useRepliesQuery.fetcher(variables),
-    initialPageParam: undefined,
+    queryFn: (context): Promise<RepliesQuery> =>
+      graphqlFetch<RepliesQuery, RepliesQueryVariables>(RepliesDocument, {
+        ...variables,
+        ...(context.pageParam ?? {}),
+      })(),
+    initialPageParam: undefined as
+      | { after: string | null | undefined }
+      | undefined,
     getNextPageParam: (lastPage) =>
       lastPage?.comments?.pageInfo?.hasNextPage
         ? { after: lastPage?.comments?.pageInfo?.endCursor }
