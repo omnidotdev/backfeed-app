@@ -106,6 +106,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
     mutationFn: async (params: {
       workspaceId?: string;
       createWorkspace?: { name: string; slug: string };
+      quantity?: number;
     }) => {
       if (!price?.id) throw new Error("Price ID required");
       setIsCheckoutLoading(true);
@@ -114,6 +115,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
           priceId: price.id,
           successUrl: `${BASE_URL}/workspaces/__SLUG__/settings`,
           cancelUrl: `${BASE_URL}/pricing`,
+          quantity: params.quantity ?? 1,
           ...params,
         },
       });
@@ -288,8 +290,8 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 >
                   {!isFreeTier &&
                     (isPerMonthPricing
-                      ? `/org/${app.pricingPage.pricingCard.month}`
-                      : `/org/${app.pricingPage.pricingCard.year}`)}
+                      ? `/seat/${app.pricingPage.pricingCard.month}`
+                      : `/seat/${app.pricingPage.pricingCard.year}`)}
                   {isFreeTier && "/forever"}
                 </sigil.span>
               )}

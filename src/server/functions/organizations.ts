@@ -41,6 +41,7 @@ const inviteOrganizationMemberSchema = z.object({
 /**
  * Invite a member to an organization via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
+ * @knipignore
  */
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
@@ -62,6 +63,7 @@ const listOrganizationInvitationsSchema = z.object({
 /**
  * List invitations for an organization via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
+ * @knipignore
  */
 export const listOrganizationInvitations = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationInvitationsSchema.parse(data))
@@ -83,6 +85,7 @@ const cancelOrganizationInvitationSchema = z.object({
 /**
  * Cancel an organization invitation via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
+ * @knipignore
  */
 export const cancelOrganizationInvitation = createServerFn({ method: "POST" })
   .inputValidator((data) => cancelOrganizationInvitationSchema.parse(data))
@@ -100,6 +103,7 @@ export const cancelOrganizationInvitation = createServerFn({ method: "POST" })
 /**
  * Get an organization by slug.
  * Used when JWT claims are stale and don't include a newly created org
+ * @knipignore
  */
 export const getOrganizationBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
@@ -136,6 +140,7 @@ const listOrganizationMembersSchema = z.object({
 
 /**
  * List members for an organization via Gatekeeper
+ * @knipignore
  */
 export const listOrganizationMembers = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
@@ -151,6 +156,7 @@ const updateOrganizationMemberRoleSchema = z.object({
 
 /**
  * Update a member's role via Gatekeeper
+ * @knipignore
  */
 export const updateOrganizationMemberRole = createServerFn({ method: "POST" })
   .inputValidator((data) => updateOrganizationMemberRoleSchema.parse(data))
@@ -172,6 +178,7 @@ const removeOrganizationMemberSchema = z.object({
 
 /**
  * Remove a member from an organization via Gatekeeper
+ * @knipignore
  */
 export const removeOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => removeOrganizationMemberSchema.parse(data))

@@ -102,6 +102,8 @@ export interface CheckoutWithWorkspaceParams {
     name: string;
     slug?: string;
   };
+  /** Seat quantity for per-seat pricing */
+  quantity?: number;
 }
 
 /**

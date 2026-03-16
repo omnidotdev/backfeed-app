@@ -163,6 +163,7 @@ class AetherBillingProvider implements BillingProvider {
         ...(params.createWorkspace && {
           createWorkspace: params.createWorkspace,
         }),
+        ...(params.quantity && { quantity: params.quantity }),
       }),
     });
 

@@ -37,6 +37,7 @@ const checkoutWithWorkspaceSchema = z
         slug: z.string().min(1).max(100).optional(),
       })
       .optional(),
+    quantity: z.number().int().positive().optional(),
   })
   .refine((data) => data.workspaceId || data.createWorkspace, {
     message: "Either workspaceId or createWorkspace is required",
@@ -148,5 +149,6 @@ export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
       accessToken: context.session.accessToken,
       workspaceId: data.workspaceId,
       createWorkspace: data.createWorkspace,
+      quantity: data.quantity,
     });
   });
