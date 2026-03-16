@@ -4,7 +4,7 @@ import type Stripe from "stripe";
  * Default product details for the free tier.
  */
 export const FREE_PRODUCT_DETAILS = {
-  description: "Start collecting and iterating on user feedback for free",
+  description: "Start collecting feedback",
   marketing_features: [
     { name: "2 projects per workspace" },
     { name: "Unlimited feedback users" },
