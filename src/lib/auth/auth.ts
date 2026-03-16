@@ -11,7 +11,7 @@ import {
   BASE_URL,
 } from "@/lib/config/env.config";
 
-import type { OrganizationClaim } from "@omnidotdev/providers";
+import type { OrganizationClaim } from "@omnidotdev/providers/auth";
 
 const { AUTH_SECRET } = process.env;
 

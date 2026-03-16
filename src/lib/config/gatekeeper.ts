@@ -1,4 +1,4 @@
-import { GatekeeperOrgClient } from "@omnidotdev/providers";
+import { GatekeeperOrgClient } from "@omnidotdev/providers/auth";
 
 import { AUTH_BASE_URL } from "./env.config";
 

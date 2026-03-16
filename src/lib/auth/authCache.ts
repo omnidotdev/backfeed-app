@@ -1,4 +1,4 @@
-import { createAuthCache, createOidcClient } from "@omnidotdev/providers";
+import { createAuthCache, createOidcClient } from "@omnidotdev/providers/auth";
 
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 

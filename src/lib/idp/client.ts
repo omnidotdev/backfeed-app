@@ -1,6 +1,6 @@
 import gatekeeperOrg from "@/lib/config/gatekeeper";
 
-import type { GatekeeperMember } from "@omnidotdev/providers";
+import type { GatekeeperMember } from "@omnidotdev/providers/auth";
 
 // Backwards-compatible type aliases
 export type IdpMember = GatekeeperMember;

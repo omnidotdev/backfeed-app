@@ -4,7 +4,7 @@ import { z } from "zod";
 import gatekeeperOrg from "@/lib/config/gatekeeper";
 import { authMiddleware } from "@/server/middleware";
 
-export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers";
+export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers/auth";
 
 const createOrganizationSchema = z.object({
   name: z.string().min(3, "Organization name must be at least 3 characters"),
