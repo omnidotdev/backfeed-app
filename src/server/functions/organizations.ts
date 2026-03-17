@@ -56,6 +56,43 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
     return gatekeeperOrg.inviteMember(data, accessToken);
   });
 
+const resendOrganizationInvitationSchema = z.object({
+  organizationId: z.string(),
+  email: z.string().email(),
+  role: z.enum(["admin", "member"]),
+});
+
+/**
+ * Resend an invitation (active or expired).
+ * Gatekeeper's `cancelPendingInvitationsOnReInvite` auto-cancels the old one
+ * @knipignore
+ */
+export const resendOrganizationInvitation = createServerFn({ method: "POST" })
+  .inputValidator((data) => resendOrganizationInvitationSchema.parse(data))
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
+
+    const membersResponse = await gatekeeperOrg.listMembers(
+      data.organizationId,
+      accessToken,
+    );
+
+    const isExistingMember = membersResponse.data.some(
+      (m) => m.user.email.toLowerCase() === data.email.toLowerCase(),
+    );
+
+    if (isExistingMember) {
+      throw new Error("This email is already a member of the organization");
+    }
+
+    return gatekeeperOrg.inviteMember(data, accessToken);
+  });
+
 const listOrganizationInvitationsSchema = z.object({
   organizationId: z.string(),
 });
@@ -151,7 +188,7 @@ export const listOrganizationMembers = createServerFn({ method: "GET" })
 const updateOrganizationMemberRoleSchema = z.object({
   organizationId: z.string(),
   memberId: z.string(),
-  role: z.enum(["admin", "member"]),
+  role: z.enum(["owner", "admin", "member"]),
 });
 
 /**
