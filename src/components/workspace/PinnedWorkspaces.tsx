@@ -1,10 +1,12 @@
 import { Flex, Grid, Icon, Text } from "@omnidev/sigil";
+import { useQueries } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { LuBuilding2, LuPlus } from "react-icons/lu";
 
 import WorkspaceCard from "@/components/dashboard/WorkspaceCard";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 
 const dashboardRoute = getRouteApi("/_app/dashboard");
 
@@ -19,6 +21,23 @@ const PinnedWorkspaces = () => {
 
   // Organizations come from JWT claims, not a local workspace table
   const organizations = session?.organizations ?? [];
+
+  // Fetch project counts for each organization in parallel
+  const metricsQueries = useQueries({
+    queries: organizations.map((org) =>
+      workspaceMetricsOptions({ organizationId: org.id }),
+    ),
+  });
+
+  // Create a map of organization ID to project count
+  const projectCountsByOrgId = organizations.reduce<Record<string, number>>(
+    (acc, org, index) => {
+      const data = metricsQueries[index]?.data;
+      acc[org.id] = data?.projects?.totalCount ?? 0;
+      return acc;
+    },
+    {},
+  );
 
   // Take first 4 organizations to display in 2x2 grid
   const pinnedOrgs = organizations.slice(0, 4);
@@ -80,6 +99,9 @@ const PinnedWorkspaces = () => {
                 slug: org.slug,
                 organizationId: org.id,
                 type: org.type,
+                projects: {
+                  totalCount: projectCountsByOrgId[org.id],
+                },
               }}
               minH={32}
             />
