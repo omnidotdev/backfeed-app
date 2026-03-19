@@ -9,12 +9,12 @@ import CharacterLimit from "@/components/core/CharacterLimit";
 import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
-import { useEnsureStatusTemplates } from "@/lib/hooks/useEnsureStatusTemplates";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import {
   projectMetricsOptions,
   projectOptions,
+  projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -47,7 +47,7 @@ const createFeedbackSchema = z.object({
  * Create feedback form.
  */
 const CreateFeedback = () => {
-  const { session, queryClient, hasAdminPrivileges, organizationId } =
+  const { session, queryClient, organizationId } =
     projectRoute.useRouteContext();
   const { projectSlug } = projectRoute.useParams();
 
@@ -72,12 +72,16 @@ const CreateFeedback = () => {
 
   const projectId = project?.rowId;
 
-  const { defaultStatusTemplateId, isLoading: isLoadingTemplates } =
-    useEnsureStatusTemplates({
-      organizationId,
-      hasAdminPrivileges,
-      enabled: !!organizationId,
-    });
+  const { data: defaultStatusTemplateId } = useQuery({
+    ...projectStatusesOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
+    select: (data) => {
+      const nodes = data?.statusTemplates?.nodes ?? [];
+      const openTemplate = nodes.find((t) => t?.name === "open");
+
+      return openTemplate?.rowId ?? nodes[0]?.rowId;
+    },
+  });
 
   const { mutateAsync: createFeedback, isPending } =
     useCreateFeedbackMutation();
@@ -98,14 +102,6 @@ const CreateFeedback = () => {
           toaster.error({
             title: app.projectPage.projectFeedback.action.error.title,
             description: "Missing required data. Please try again.",
-          });
-          return;
-        }
-
-        if (isLoadingTemplates) {
-          toaster.info({
-            title: "Please wait",
-            description: "Setting up feedback categories...",
           });
           return;
         }
