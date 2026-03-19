@@ -24,6 +24,8 @@ tsconfig.tsbuildinfo
 
 # tooling
 .claude
+AGENTS.md
+CLAUDE.md
 
 # environment
 *.env*

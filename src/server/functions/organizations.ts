@@ -34,14 +34,13 @@ export const createOrganization = createServerFn({ method: "POST" })
 
 const inviteOrganizationMemberSchema = z.object({
   organizationId: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   role: z.enum(["admin", "member"]),
 });
 
 /**
  * Invite a member to an organization via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
- * @knipignore
  */
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
@@ -58,14 +57,13 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
 
 const resendOrganizationInvitationSchema = z.object({
   organizationId: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   role: z.enum(["admin", "member"]),
 });
 
 /**
  * Resend an invitation (active or expired).
  * Gatekeeper's `cancelPendingInvitationsOnReInvite` auto-cancels the old one
- * @knipignore
  */
 export const resendOrganizationInvitation = createServerFn({ method: "POST" })
   .inputValidator((data) => resendOrganizationInvitationSchema.parse(data))
@@ -100,7 +98,6 @@ const listOrganizationInvitationsSchema = z.object({
 /**
  * List invitations for an organization via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
- * @knipignore
  */
 export const listOrganizationInvitations = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationInvitationsSchema.parse(data))
@@ -122,7 +119,6 @@ const cancelOrganizationInvitationSchema = z.object({
 /**
  * Cancel an organization invitation via Gatekeeper.
  * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
- * @knipignore
  */
 export const cancelOrganizationInvitation = createServerFn({ method: "POST" })
   .inputValidator((data) => cancelOrganizationInvitationSchema.parse(data))
