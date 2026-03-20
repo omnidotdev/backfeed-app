@@ -1,48 +1,23 @@
-import { Button, Center, Icon, Text, VStack, css } from "@omnidev/sigil";
+import { Button, Center, Icon, Text, VStack } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import { HiOutlineHome } from "react-icons/hi2";
+import { LuArrowLeft } from "react-icons/lu";
 
-import { Box } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 
+import type { PropsWithChildren } from "react";
+
 /**
- * Global 404 (not found error) component.
+ * 404 not found.
  */
-const GlobalNotFound = () => (
+const NotFound = ({ children }: PropsWithChildren) => (
   <Center h="100dvh" w="full" p={8}>
     <VStack gap={8} textAlign="center">
-      {/* Decorative 404 with glow effect */}
-      <Box position="relative">
-        <Text
-          fontSize={{ base: "8xl", md: "9xl" }}
-          fontWeight="bold"
-          lineHeight={1}
-          className={css({
-            background: "gradients.ruby",
-            backgroundClip: "text",
-            color: "transparent",
-          })}
-        >
-          {app.notFound.statusCode}
-        </Text>
+      <Text fontSize={{ base: "6xl", md: "7xl" }}>🔄</Text>
 
-        {/* Glow effect behind the number */}
-        <Box
-          position="absolute"
-          inset={0}
-          zIndex={-1}
-          filter="blur(40px)"
-          opacity={0.4}
-          className={css({
-            background: "gradients.ruby",
-          })}
-        />
-      </Box>
-
-      {/* Message */}
       <VStack gap={2}>
         <Text fontSize="xl" fontWeight="semibold" color="foreground.default">
-          {app.notFound.title}
+          {children ?? app.notFound.title}
         </Text>
 
         <Text color="foreground.muted" maxW="sm">
@@ -50,20 +25,27 @@ const GlobalNotFound = () => (
         </Text>
       </VStack>
 
-      {/* Return home button */}
-      <Link to="/">
+      <VStack gap={2}>
+        <Link to="/">
+          <Button size="lg" gap={2}>
+            <Icon src={HiOutlineHome} w={5} h={5} />
+            {app.notFound.returnHome}
+          </Button>
+        </Link>
+
         <Button
-          size="lg"
-          className={css({
-            gap: 2,
-          })}
+          variant="ghost"
+          onClick={(e) => {
+            e.preventDefault();
+            window.history.back();
+          }}
         >
-          <Icon src={HiOutlineHome} w={5} h={5} />
-          {app.notFound.returnHome}
+          <Icon src={LuArrowLeft} h={4} w={4} />
+          Go back
         </Button>
-      </Link>
+      </VStack>
     </VStack>
   </Center>
 );
 
-export default GlobalNotFound;
+export default NotFound;

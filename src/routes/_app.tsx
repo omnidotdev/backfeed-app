@@ -24,7 +24,7 @@ const eventsProvider = {
  */
 export const Route = createFileRoute("/_app")({
   // No beforeLoad auth check - accessible to all users
-  notFoundComponent: NotFound,
+  notFoundComponent: () => <NotFound />,
   component: AppLayout,
 });
 

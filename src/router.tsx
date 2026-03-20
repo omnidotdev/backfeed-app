@@ -59,7 +59,7 @@ export function getRouter() {
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
     defaultErrorComponent: DefaultCatchBoundary,
-    defaultNotFoundComponent: NotFound,
+    defaultNotFoundComponent: () => <NotFound />,
   });
 
   setupRouterSsrQueryIntegration({
