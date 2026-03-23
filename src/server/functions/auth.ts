@@ -23,7 +23,7 @@ export const fetchSession = createServerFn().handler(async () => {
 export function getIdpLogoutUrl(): string | null {
   if (!AUTH_BASE_URL || !AUTH_CLIENT_ID || !BASE_URL) return null;
 
-  const endSessionUrl = new URL(`${AUTH_BASE_URL}/oauth2/endsession`);
+  const endSessionUrl = new URL(`${AUTH_BASE_URL}/oauth2/end-session`);
   endSessionUrl.searchParams.set("client_id", AUTH_CLIENT_ID);
   endSessionUrl.searchParams.set("post_logout_redirect_uri", BASE_URL);
 
