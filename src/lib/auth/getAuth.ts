@@ -1,6 +1,7 @@
 import {
   ensureFreshAccessToken,
   extractOrgClaims,
+  isInvalidGrant,
 } from "@omnidotdev/providers/auth";
 import { setCookie } from "@tanstack/react-start/server";
 import { GraphQLClient } from "graphql-request";
@@ -119,6 +120,30 @@ export async function getAuth(request: Request) {
         }
       }
     } catch (err) {
+      // BA wraps inner errors (e.g. invalid_grant) in a generic
+      // FAILED_TO_GET_ACCESS_TOKEN APIError. Detect the wrapper
+      // to force re-auth when tokens are permanently stale.
+      const isBATokenError =
+        err &&
+        typeof err === "object" &&
+        "body" in err &&
+        typeof (err as { body: { code?: string } }).body?.code === "string" &&
+        (err as { body: { code: string } }).body.code ===
+          "FAILED_TO_GET_ACCESS_TOKEN";
+
+      if (isInvalidGrant(err) || isBATokenError) {
+        console.warn(
+          "[getAuth] Stale OAuth tokens, clearing session for re-auth",
+        );
+        try {
+          await auth.api.signOut({ headers: request.headers });
+        } catch {
+          // Sign-out may fail if session is already corrupt
+        }
+        // Clear auth cache cookie if applicable
+        return null;
+      }
+
       console.error("[getAuth] Token fetch error:", err);
     }
 
