@@ -1,6 +1,6 @@
 import { createMiddleware } from "@tanstack/react-start";
 
-import { isSelfHosted } from "@/lib/config/env.config";
+import { hasBilling } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { fetchSession } from "@/server/functions/auth";
 
@@ -15,7 +15,7 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
 export const customerMiddleware = createMiddleware()
   .middleware([authMiddleware])
   .server(async ({ next, context }) => {
-    if (isSelfHosted) {
+    if (!hasBilling) {
       return next({
         context: { customer: null },
       });

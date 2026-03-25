@@ -31,7 +31,7 @@ import { match } from "ts-pattern";
 import CreateWorkspaceModal from "@/components/pricing/CreateWorkspaceModal";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL, hasBilling } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import { Tier } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -168,8 +168,8 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       return;
     }
 
-    // Self-hosted mode - no billing, just go to workspaces
-    if (isSelfHosted) {
+    // No billing configured - just go to workspaces
+    if (!hasBilling) {
       navigate({ to: "/workspaces" });
       return;
     }
@@ -183,12 +183,12 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
     // Has orgs - dropdown handles the rest (menu opens automatically)
   };
 
-  // Show dropdown if authenticated, has upgradeable orgs or can create new, paid tier, SaaS
+  // Show dropdown if authenticated, has upgradeable orgs or can create new, paid tier, billing enabled
   const showDropdown =
     !!session &&
     !isFreeTier &&
     !isEnterpriseTier &&
-    !isSelfHosted &&
+    hasBilling &&
     !!session.organizations?.length;
 
   const buttonContent = isFreeTier
@@ -404,7 +404,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 </MenuItemGroup>
               </Menu>
             ) : session?.user ? (
-              // Logged in but not showing dropdown (free tier or self-hosted)
+              // Logged in but not showing dropdown (free tier or no billing)
               isFreeTier ? (
                 session.organizations?.length ? (
                   <Button

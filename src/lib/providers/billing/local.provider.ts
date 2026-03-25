@@ -10,29 +10,29 @@ import type {
 } from "./interface";
 
 /**
- * Create a self-hosted entitlement.
+ * Create a local entitlement.
  */
 const createEntitlement = (
   featureKey: string,
   value: string,
   productId: string,
 ): Entitlement => ({
-  id: `self-hosted-${featureKey}`,
+  id: `local-${featureKey}`,
   featureKey,
   value,
   productId,
-  source: "self-hosted",
+  source: "local",
   validFrom: "1970-01-01T00:00:00Z",
   validUntil: null,
 });
 
 /**
- * Self-hosted entitlements - all features unlocked.
+ * Local entitlements - all features unlocked.
  */
 const UNLIMITED_ENTITLEMENTS: EntitlementsResponse = {
-  billingAccountId: "self-hosted",
+  billingAccountId: "local",
   entityType: "organization",
-  entityId: "self-hosted",
+  entityId: "local",
   entitlementVersion: 1,
   entitlements: [
     createEntitlement("tier", "enterprise", "backfeed"),
@@ -45,17 +45,17 @@ const UNLIMITED_ENTITLEMENTS: EntitlementsResponse = {
 };
 
 /**
- * Self-hosted subscription (unlimited).
+ * Local subscription (unlimited).
  */
-const SELF_HOSTED_SUBSCRIPTION: Subscription = {
-  id: "self-hosted",
+const LOCAL_SUBSCRIPTION: Subscription = {
+  id: "local",
   status: "active",
   cancelAt: null,
   currentPeriodEnd: Date.now() / 1000 + 365 * 24 * 60 * 60, // 1 year from now
-  priceId: "self-hosted",
+  priceId: "local",
   product: {
-    id: "self-hosted",
-    name: "Self-Hosted Enterprise",
+    id: "local",
+    name: "Local Enterprise",
     description: "All features included",
     marketing_features: [{ name: "Unlimited everything" }],
   },
@@ -63,7 +63,7 @@ const SELF_HOSTED_SUBSCRIPTION: Subscription = {
 
 /**
  * Local billing provider.
- * Returns unlimited entitlements for self-hosted mode.
+ * Returns unlimited entitlements when billing is not configured.
  */
 class LocalBillingProvider implements BillingProvider {
   async getEntitlements(
@@ -93,18 +93,18 @@ class LocalBillingProvider implements BillingProvider {
   }
 
   async getPrices(_appName: string): Promise<Price[]> {
-    // No prices in self-hosted mode - all features included
+    // No prices in local mode - all features included
     return [];
   }
 
   async createCheckoutSession(_params: CheckoutParams): Promise<string> {
-    throw new Error("Billing is not available in self-hosted mode");
+    throw new Error("Billing is not configured");
   }
 
   async createCheckoutWithWorkspace(
     _params: CheckoutWithWorkspaceParams,
   ): Promise<CheckoutWithWorkspaceResponse> {
-    throw new Error("Billing is not available in self-hosted mode");
+    throw new Error("Billing is not configured");
   }
 
   async getSubscription(
@@ -112,7 +112,7 @@ class LocalBillingProvider implements BillingProvider {
     _entityId: string,
     _accessToken: string,
   ): Promise<Subscription> {
-    return SELF_HOSTED_SUBSCRIPTION;
+    return LOCAL_SUBSCRIPTION;
   }
 
   async getBillingPortalUrl(
@@ -122,8 +122,7 @@ class LocalBillingProvider implements BillingProvider {
     returnUrl: string,
     _accessToken: string,
   ): Promise<string> {
-    // In self-hosted mode, redirect back to the return URL
-    // since there's no billing portal
+    // No billing portal configured, redirect back to the return URL
     return returnUrl;
   }
 
@@ -132,8 +131,8 @@ class LocalBillingProvider implements BillingProvider {
     _entityId: string,
     _accessToken: string,
   ): Promise<string> {
-    // No-op in self-hosted mode
-    return "self-hosted";
+    // No-op in local mode
+    return "local";
   }
 
   async renewSubscription(
@@ -141,7 +140,7 @@ class LocalBillingProvider implements BillingProvider {
     _entityId: string,
     _accessToken: string,
   ): Promise<void> {
-    // No-op in self-hosted mode
+    // No-op in local mode
   }
 
   async healthCheck(): Promise<{ healthy: boolean; message?: string }> {
