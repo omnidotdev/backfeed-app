@@ -3,7 +3,10 @@ node_modules
 .env*
 !.env.production
 !.env.local.template
+dist
+build
 .output
+target
 *.log
 .turbo
 coverage
