@@ -24,11 +24,11 @@ enum MenuAction {
   RemoveMember = "removeMember",
 }
 
-const menuItemStyles: JsxStyleProps = {
+const menuItemStyles = {
   bgColor: { _disabled: "inherit" },
   opacity: { _disabled: 0.5 },
   cursor: { _disabled: "not-allowed" },
-};
+} satisfies JsxStyleProps;
 
 interface Props extends MenuProps {
   /** The selected rows in the membership table */

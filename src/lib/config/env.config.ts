@@ -13,15 +13,21 @@ export const {
   VITE_API_BASE_URL: API_BASE_URL,
   VITE_AUTH_BASE_URL: AUTH_BASE_URL,
   VITE_BILLING_BASE_URL: BILLING_BASE_URL,
-  VITE_SELF_HOSTED,
-  SELF_HOSTED,
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
+
   // feature flags
   VITE_FLAGS_API_HOST: FLAGS_API_HOST,
   VITE_FLAGS_CLIENT_KEY: FLAGS_CLIENT_KEY,
 } = env;
+
+// Internal auth URL for server-to-server communication (Docker service name)
+// Falls back to AUTH_BASE_URL for non-Docker environments
+export const AUTH_INTERNAL_URL =
+  typeof window === "undefined"
+    ? process.env.AUTH_INTERNAL_URL || AUTH_BASE_URL
+    : AUTH_BASE_URL;
 
 export const CONSOLE_URL = import.meta.env.VITE_CONSOLE_URL;
 
@@ -48,14 +54,19 @@ const isTestEnv = import.meta.env.NODE_ENV === "test";
 // enable mock service worker (https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking), this is wrapped in case mocking requests and responses during development is desired
 /** @knipignore */
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
-export const isSelfHosted =
-  SELF_HOSTED === "true" || VITE_SELF_HOSTED === "true";
+export const hasBilling = !!BILLING_BASE_URL;
 
 /**
  * Billing provider to use.
- * - "local" for self-hosted (all features unlocked)
- * - "aether" for SaaS (billing service)
+ * - "aether" when billing service is configured
+ * - "local" otherwise (all features unlocked)
  */
-export const billingProvider: "local" | "aether" = isSelfHosted
-  ? "local"
-  : "aether";
+export const billingProvider: "local" | "aether" = hasBilling
+  ? "aether"
+  : "local";
+
+// Startup warnings for optional integrations
+if (!BILLING_BASE_URL)
+  console.warn("BILLING_BASE_URL not set, billing disabled");
+if (!FLAGS_API_HOST)
+  console.warn("FLAGS_API_HOST not set, feature flags disabled");
