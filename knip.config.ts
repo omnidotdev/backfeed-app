@@ -24,11 +24,13 @@ const knipConfig: KnipConfig = {
     "panda.config.ts",
     "src/__mocks__/**",
     "src/generated/**",
-    // Tier enforcement hooks - ready for use when needed
+    // Tier enforcement hooks and entitlement functions - ready for use when needed
     "src/lib/permissions.ts",
     "src/lib/hooks/useCanManageWorkspace.ts",
     "src/lib/hooks/useMaxProjectsReached.ts",
     "src/lib/hooks/useMaxFeedbackReached.ts",
+    // Server functions export public API for billing entitlements
+    "src/server/functions/entitlements.ts",
   ],
   // CSS-only dependencies imported in app.css
   ignoreDependencies: ["tw-animate-css"],

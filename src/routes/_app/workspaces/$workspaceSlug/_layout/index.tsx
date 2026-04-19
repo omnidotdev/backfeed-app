@@ -1,5 +1,5 @@
 import { Badge, HStack, Icon, Text } from "@omnidev/sigil";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuCirclePlus } from "react-icons/lu";
@@ -11,7 +11,7 @@ import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";
 import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
-import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
+import { checkLimitOptions } from "@/lib/options/entitlements";
 import {
   workspaceMetricsOptions,
   workspaceOptions,
@@ -19,6 +19,15 @@ import {
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { FeatureKey } from "@/server/functions/entitlements";
+import { getSubscription } from "@/server/functions/subscriptions";
+
+const subscriptionOptions = (organizationId: string) =>
+  queryOptions({
+    queryKey: ["subscription", organizationId],
+    queryFn: () => getSubscription({ data: { organizationId } }),
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const Route = createFileRoute(
   "/_app/workspaces/$workspaceSlug/_layout/",
@@ -55,17 +64,25 @@ function WorkspacePage() {
 
   const projectCount = metrics?.projects?.totalCount ?? 0;
 
-  // TODO: Get subscription status from Aether billing API instead of local DB
-  // For now, assume free tier until billing integration is updated
-  const hasPaidSubscription = false;
+  const { data: subscription } = useQuery({
+    ...subscriptionOptions(organizationId),
+    enabled: isAuthenticated,
+  });
 
-  // To create projects, user must have administrative privileges
-  // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
+  const hasPaidSubscription = !!subscription?.id;
+
+  const { data: projectLimit } = useQuery({
+    ...checkLimitOptions({
+      organizationId,
+      featureKey: FeatureKey.MaxProjects,
+      currentCount: projectCount,
+    }),
+    enabled: isAuthenticated,
+  });
+
+  // Entitlement-based project creation check (falls back to hardcoded limits)
   const canCreateProjects =
-    hasAdminPrivileges &&
-    (hasPaidSubscription
-      ? projectCount < MAX_NUMBER_OF_PROJECTS
-      : projectCount === 0);
+    hasAdminPrivileges && (projectLimit?.allowed ?? false);
 
   return (
     <Page

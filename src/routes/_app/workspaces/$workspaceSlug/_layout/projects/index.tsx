@@ -1,5 +1,5 @@
 import { Icon } from "@omnidev/sigil";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
 import { z } from "zod";
@@ -9,19 +9,12 @@ import CreateProject from "@/components/project/CreateProject";
 import ProjectFilters from "@/components/project/ProjectFilters";
 import ProjectList from "@/components/project/ProjectList";
 import app from "@/lib/config/app.config";
-import MAX_NUMBER_OF_PROJECTS from "@/lib/constants/numberOfProjects.constant";
+import { checkLimitOptions } from "@/lib/options/entitlements";
 import { projectsOptions } from "@/lib/options/projects";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { getSubscription } from "@/server/functions/subscriptions";
-
-const subscriptionOptions = (organizationId: string) =>
-  queryOptions({
-    queryKey: ["subscription", organizationId],
-    queryFn: () => getSubscription({ data: { organizationId } }),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+import { FeatureKey } from "@/server/functions/entitlements";
 
 const projectSearchSchema = z.object({
   page: z.number().nonnegative().default(1),
@@ -68,23 +61,20 @@ function ProjectsPage() {
     ...workspaceMetricsOptions({ organizationId }),
   });
 
-  // Query subscription status from billing service
-  const { data: subscription } = useQuery({
-    ...subscriptionOptions(organizationId),
+  const projectCount = workspaceMetrics?.projects?.totalCount ?? 0;
+
+  const { data: projectLimit } = useQuery({
+    ...checkLimitOptions({
+      organizationId,
+      featureKey: FeatureKey.MaxProjects,
+      currentCount: projectCount,
+    }),
     enabled: isAuthenticated,
   });
 
-  // Tier is determined by subscription status
-  const hasPaidSubscription = !!subscription?.id;
-  const projectCount = workspaceMetrics?.projects?.totalCount ?? 0;
-
-  // To create projects, user must have administrative privileges
-  // Free tier: only 1 project, Paid tier: limited by MAX_NUMBER_OF_PROJECTS
+  // Entitlement-based project creation check (falls back to hardcoded limits)
   const canCreateProjects =
-    hasAdminPrivileges &&
-    (hasPaidSubscription
-      ? projectCount < MAX_NUMBER_OF_PROJECTS
-      : projectCount === 0);
+    hasAdminPrivileges && (projectLimit?.allowed ?? false);
 
   return (
     <Page

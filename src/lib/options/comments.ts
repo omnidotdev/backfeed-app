@@ -13,6 +13,7 @@ import {
   useProjectQuery,
 } from "@/generated/graphql";
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
+import { FeatureKey, checkLimit } from "@/server/functions/entitlements";
 
 import type {
   CommentsQuery,
@@ -22,7 +23,7 @@ import type {
 } from "@/generated/graphql";
 
 /** Maximum number of comments allowed on free tier */
-// FALLBACK ONLY — source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
+// FALLBACK ONLY -- source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
 const MAX_FREE_TIER_COMMENTS = 100;
 
 export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
@@ -60,8 +61,8 @@ export const infiniteRepliesOptions = (variables: RepliesQueryVariables) =>
   });
 
 /**
- * Check if user can create comments based on free tier limits.
- * Free tier organizations (no subscriptionId) have limited comments per feedback.
+ * Check if user can create comments based on entitlement limits.
+ * Falls back to hardcoded MAX_FREE_TIER_COMMENTS if Aether is unreachable.
  */
 export const freeTierCommentsOptions = ({
   organizationId,
@@ -90,20 +91,38 @@ export const freeTierCommentsOptions = ({
           rowId: feedbackId,
         })();
 
+        const totalComments = feedback?.commentsWithReplies.totalCount ?? 0;
+
+        // Check entitlement limit via Aether (falls back to hardcoded constant)
+        let commentLimit = MAX_FREE_TIER_COMMENTS;
+
+        try {
+          const limitResult = await checkLimit({
+            data: {
+              organizationId: project.organizationId,
+              featureKey: FeatureKey.MaxComments,
+              currentCount: totalComments,
+            },
+          });
+
+          commentLimit = limitResult.limit;
+        } catch {
+          // FALLBACK ONLY -- use hardcoded limit when Aether is unreachable
+        }
+
         return {
           organizationId: project.organizationId,
-          totalComments: feedback?.commentsWithReplies.totalCount ?? 0,
+          totalComments,
+          commentLimit,
         };
       } catch {
         return null;
       }
     },
     placeholderData: keepPreviousData,
-    // For now, allow all comments - subscription checks should be done at API level
-    // This removes the client-side tier check since subscriptionId isn't available in ProjectQuery
     select: (data) => {
       if (!data) return false;
-      // Allow if under free tier limit
-      return data.totalComments < MAX_FREE_TIER_COMMENTS;
+
+      return data.totalComments < data.commentLimit;
     },
   });

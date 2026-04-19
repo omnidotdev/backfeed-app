@@ -11,6 +11,7 @@ import {
   useProjectQuery,
 } from "@/generated/graphql";
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
+import { FeatureKey, checkLimit } from "@/server/functions/entitlements";
 
 import type {
   FeedbackByIdQueryVariables,
@@ -19,7 +20,7 @@ import type {
 } from "@/generated/graphql";
 
 /** Maximum unique users allowed to submit feedback on free tier */
-// FALLBACK ONLY — source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
+// FALLBACK ONLY -- source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
 const MAX_FREE_TIER_UNIQUE_USERS = 15;
 
 export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>
@@ -46,8 +47,8 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
   });
 
 /**
- * Check if user can create feedback based on free tier limits.
- * Free tier organizations (no subscriptionId) have limited unique users.
+ * Check if user can create feedback based on entitlement limits.
+ * Falls back to hardcoded MAX_FREE_TIER_UNIQUE_USERS if Aether is unreachable.
  */
 export const freeTierFeedbackOptions = ({
   organizationId,
@@ -75,24 +76,39 @@ export const freeTierFeedbackOptions = ({
 
         const hasUserSubmittedFeedback = !!project?.userPosts.nodes.length;
 
+        // Check entitlement limit via Aether (falls back to hardcoded constant)
+        let userLimit = MAX_FREE_TIER_UNIQUE_USERS;
+
+        try {
+          const limitResult = await checkLimit({
+            data: {
+              organizationId,
+              featureKey: FeatureKey.MaxUniqueUsers,
+              currentCount: activeUserCount,
+            },
+          });
+
+          userLimit = limitResult.limit;
+        } catch {
+          // FALLBACK ONLY -- use hardcoded limit when Aether is unreachable
+        }
+
         return {
           activeUserCount,
           hasUserSubmittedFeedback,
+          userLimit,
         };
       } catch {
         return null;
       }
     },
     placeholderData: keepPreviousData,
-    // For now, allow based on user count - subscription checks should be done at API level
-    // This removes the client-side tier check since subscriptionId isn't available in ProjectQuery
     select: (data) => {
       if (!data) return false;
 
       // Allow if user already submitted feedback, or under user limit
       return (
-        data.hasUserSubmittedFeedback ||
-        data.activeUserCount < MAX_FREE_TIER_UNIQUE_USERS
+        data.hasUserSubmittedFeedback || data.activeUserCount < data.userLimit
       );
     },
   });

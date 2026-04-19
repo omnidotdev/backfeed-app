@@ -1,7 +1,7 @@
 /**
  * The maximum number of projects a user can create if the workspace has lower than a team tier subscription.
  */
-// FALLBACK ONLY — source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
+// FALLBACK ONLY -- source of truth is Omni API plan_feature
 const MAX_NUMBER_OF_PROJECTS = 10;
 
 export default MAX_NUMBER_OF_PROJECTS;
