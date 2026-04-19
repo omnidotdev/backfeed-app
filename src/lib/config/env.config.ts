@@ -56,15 +56,6 @@ const isTestEnv = import.meta.env.NODE_ENV === "test";
 export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
 export const hasBilling = !!BILLING_BASE_URL;
 
-/**
- * Billing provider to use.
- * - "aether" when billing service is configured
- * - "local" otherwise (all features unlocked)
- */
-export const billingProvider: "local" | "aether" = hasBilling
-  ? "aether"
-  : "local";
-
 // Startup warnings for optional integrations
 if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");

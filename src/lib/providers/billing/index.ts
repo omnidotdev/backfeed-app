@@ -1,38 +1,28 @@
-import { billingProvider } from "@/lib/config/env.config";
-import AetherBillingProvider from "./aether.provider";
-import LocalBillingProvider from "./local.provider";
+/**
+ * Billing provider for Backfeed.
+ *
+ * Thin wrapper around @omnidotdev/providers.
+ */
 
-import type { BillingProvider } from "./interface";
+import { createBillingProvider } from "@omnidotdev/providers/billing";
+
+import { BILLING_BASE_URL } from "@/lib/config/env.config";
 
 export type {
   BillingProvider,
   CheckoutParams,
+  CheckoutWithWorkspaceParams,
+  CheckoutWithWorkspaceResponse,
   Entitlement,
   EntitlementsResponse,
   Price,
   Subscription,
-} from "./interface";
+} from "@omnidotdev/providers/billing";
 
-/**
- * Create the billing provider based on environment configuration.
- */
-const createBillingProvider = (): BillingProvider => {
-  switch (billingProvider) {
-    case "local":
-      return new LocalBillingProvider();
-    case "aether":
-      return new AetherBillingProvider();
-    default:
-      console.warn(
-        `[billing] Unknown provider "${billingProvider}", using local`,
-      );
-      return new LocalBillingProvider();
-  }
-};
-
-/**
- * Singleton billing provider instance.
- */
-const billing = createBillingProvider();
+const billing = createBillingProvider(
+  BILLING_BASE_URL
+    ? { provider: "aether", baseUrl: BILLING_BASE_URL, appId: "backfeed" }
+    : {},
+);
 
 export default billing;
