@@ -290,8 +290,8 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 >
                   {!isFreeTier &&
                     (isPerMonthPricing
-                      ? `/seat/${app.pricingPage.pricingCard.month}`
-                      : `/seat/${app.pricingPage.pricingCard.year}`)}
+                      ? `/${app.pricingPage.pricingCard.month}`
+                      : `/${app.pricingPage.pricingCard.year}`)}
                   {isFreeTier && "/forever"}
                 </sigil.span>
               )}

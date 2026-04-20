@@ -46,7 +46,7 @@ describe("checkout with workspace schema", () => {
       expect(result.success).toBe(true);
     });
 
-    it("accepts quantity greater than 1 for per-seat pricing", () => {
+    it("accepts quantity greater than 1", () => {
       const result = checkoutWithWorkspaceSchema.safeParse({
         ...validBase,
         quantity: 10,
