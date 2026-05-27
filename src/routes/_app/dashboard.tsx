@@ -50,7 +50,9 @@ function DashboardPage() {
   return (
     <Page
       header={{
-        title: `${app.dashboardPage.welcomeMessage}, ${session?.user?.username}!`,
+        title: session?.user?.name
+          ? `${app.dashboardPage.welcomeMessage}, ${session.user.name}!`
+          : `${app.dashboardPage.welcomeMessage}!`,
         description: app.dashboardPage.description,
       }}
     >
