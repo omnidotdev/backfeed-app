@@ -15,22 +15,23 @@ export type {
 } from "@omnidotdev/providers/auth";
 
 /**
- * Resolve the app's user-row UUID from the GraphQL API by identity provider ID.
+ * Resolve the app's user-row UUID from the GraphQL API for the authenticated
+ * caller. Uses the `observer` query, which the API resolves from the bearer
+ * access token, so it does not depend on the OIDC `sub` being a valid UUID or
+ * matching a stored `identityProviderId` column.
+ *
  * Populates `session.user.rowId`, which gates the dashboard redirect and is used
  * as the current user identity throughout the app (votes, comments, profile).
  */
-export const resolveRowId: ResolveRowIdFn = async ({
-  accessToken,
-  identityProviderId,
-}) => {
+export const resolveRowId: ResolveRowIdFn = async ({ accessToken }) => {
   try {
     const graphqlClient = new GraphQLClient(API_INTERNAL_GRAPHQL_URL!, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const sdk = getSdk(graphqlClient);
-    const { userByIdentityProviderId } = await sdk.User({ identityProviderId });
+    const { observer } = await sdk.Observer();
 
-    return userByIdentityProviderId?.rowId ?? null;
+    return observer?.rowId ?? null;
   } catch (error) {
     console.error("[getAuth] Failed to resolve rowId:", error);
     return null;
