@@ -19,6 +19,7 @@ import { projectOptions } from "@/lib/options/projects";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
+import extractGraphqlErrorMessage from "@/lib/util/graphqlError";
 import toaster from "@/lib/util/toaster";
 import { fetchSession } from "@/server/functions/auth";
 
@@ -166,10 +167,17 @@ const CreateProject = ({ workspaceSlug }: Props) => {
             description:
               app.dashboardPage.cta.newProject.action.success.description,
           },
-          error: {
-            title: app.dashboardPage.cta.newProject.action.error.title,
-            description:
-              app.dashboardPage.cta.newProject.action.error.description,
+          error: (error) => {
+            // Surface the actual failure so backend errors (e.g. permission or
+            // limit errors) are diagnosable instead of a generic message
+            console.error("Failed to create project:", error);
+
+            return {
+              title: app.dashboardPage.cta.newProject.action.error.title,
+              description:
+                extractGraphqlErrorMessage(error) ??
+                app.dashboardPage.cta.newProject.action.error.description,
+            };
           },
         },
       ),
