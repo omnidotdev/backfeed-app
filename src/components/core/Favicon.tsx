@@ -1,12 +1,12 @@
-import { Flex, Icon, sigil } from "@omnidev/sigil";
 import { useState } from "react";
 import { LuGlobe } from "react-icons/lu";
 
 import getFaviconUrl from "@/lib/util/getFaviconUrl";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
-interface Props extends Omit<FlexProps, "children"> {
+interface Props extends Omit<ComponentProps<"div">, "children"> {
   /** The URL to fetch favicon for */
   url: string;
   /** Size of the favicon (default: 4 = 16px) */
@@ -17,32 +17,28 @@ interface Props extends Omit<FlexProps, "children"> {
  * Favicon component that fetches and displays a website's favicon.
  * Falls back to a globe icon if favicon fails to load.
  */
-const Favicon = ({ url, size = 4, ...rest }: Props) => {
+const Favicon = ({ url, size = 4, className, ...rest }: Props) => {
   const [hasError, setHasError] = useState(false);
   const faviconUrl = getFaviconUrl(url);
+  const dimension = `${size * 0.25}rem`;
 
   return (
-    <Flex
-      align="center"
-      justify="center"
-      w={size}
-      h={size}
-      flexShrink={0}
+    <div
+      className={cn("flex shrink-0 items-center justify-center", className)}
+      style={{ width: dimension, height: dimension }}
       {...rest}
     >
       {faviconUrl && !hasError ? (
-        <sigil.img
+        <img
           src={faviconUrl}
           alt=""
-          w={size}
-          h={size}
-          objectFit="contain"
+          style={{ width: dimension, height: dimension, objectFit: "contain" }}
           onError={() => setHasError(true)}
         />
       ) : (
-        <Icon src={LuGlobe} w={size} h={size} color="currentColor" />
+        <LuGlobe style={{ width: dimension, height: dimension }} />
       )}
-    </Flex>
+    </div>
   );
 };
 

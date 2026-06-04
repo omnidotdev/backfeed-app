@@ -49,7 +49,11 @@ const URLField = ({
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <HStack>
-        <Favicon url={state.value} size={5} color="foreground.subtle" />
+        <Favicon
+          url={state.value}
+          size={5}
+          className="text-foreground-subtle"
+        />
 
         <HStack
           gap={0}
