@@ -1,4 +1,3 @@
-import { HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -44,30 +43,12 @@ const WorkspaceListItem = ({ workspace }: Props) => {
       to="/workspaces/$workspaceSlug"
       params={{ workspaceSlug: workspace.slug! }}
       role="group"
+      className="group"
     >
-      <Stack
-        p={4}
-        bgColor="card-item"
-        borderRadius="xl"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        w="full"
-        maxW="100%"
-        mx="auto"
-        h={36}
-        justify="space-between"
-        position="relative"
-        cursor="pointer"
-        className={css({
-          transition: "all 0.2s ease",
-          _groupHover: {
-            bgColor: { base: "neutral.100", _dark: "neutral.800" },
-          },
-        })}
-      >
-        <HStack alignItems="flex-start" justify="space-between">
-          <Stack maxW="65svw">
-            <Stack gap={1}>
+      <div className="relative mx-auto flex h-36 w-full max-w-full cursor-pointer flex-col justify-between rounded-xl border border-neutral-200 bg-card p-4 transition-all group-hover:bg-neutral-100 dark:border-neutral-800 dark:group-hover:bg-neutral-800">
+        <div className="flex items-start justify-between">
+          <div className="flex max-w-[65svw] flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <OverflowText
                 fontWeight="semibold"
                 whiteSpace="nowrap"
@@ -83,31 +64,26 @@ const WorkspaceListItem = ({ workspace }: Props) => {
               </OverflowText>
 
               {workspace.updatedAt && (
-                <Text
-                  fontSize="sm"
-                  color="foreground.muted"
-                >{`Updated ${dayjs(workspace.updatedAt).fromNow()}`}</Text>
+                <p className="text-muted-foreground text-sm">{`Updated ${dayjs(
+                  workspace.updatedAt,
+                ).fromNow()}`}</p>
               )}
-            </Stack>
-          </Stack>
-        </HStack>
+            </div>
+          </div>
+        </div>
 
-        <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
-          {AGGREGATES.map(({ icon, value = 0, type }) => (
-            <HStack key={type} gap={1} flexWrap="wrap">
-              <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+        <div className="mt-4 flex flex-wrap gap-4 justify-self-end">
+          {AGGREGATES.map(({ icon: AggIcon, value = 0, type }) => (
+            <div key={type} className="flex flex-wrap items-center gap-1">
+              <AggIcon className="size-5 text-foreground-subtle" />
 
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-                fontVariant="tabular-nums"
-              >
+              <p className="text-foreground-subtle text-sm tabular-nums">
                 {value} {setSingularOrPlural({ value, label: type })}
-              </Text>
-            </HStack>
+              </p>
+            </div>
           ))}
-        </HStack>
-      </Stack>
+        </div>
+      </div>
     </Link>
   );
 };
