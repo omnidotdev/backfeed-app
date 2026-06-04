@@ -20,6 +20,7 @@
   --color-card: var(--colors-background-card);
   --color-accent: var(--colors-accent-default);
   --color-accent-foreground: var(--colors-accent-foreground);
+  --color-destructive: var(--colors-status-error, oklch(0.577 0.245 27.325));
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.625rem;

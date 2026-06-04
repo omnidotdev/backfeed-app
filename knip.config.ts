@@ -31,9 +31,18 @@ const knipConfig: KnipConfig = {
     "src/lib/hooks/useMaxFeedbackReached.ts",
     // Server functions export public API for billing entitlements
     "src/server/functions/entitlements.ts",
+    // shadcn foundation - adoptable scaffolding, consumed as components migrate to Tailwind
+    "src/lib/utils.ts",
+    "src/components/ui/**",
   ],
-  // CSS-only dependencies imported in app.css
-  ignoreDependencies: ["tw-animate-css"],
+  ignoreDependencies: [
+    // CSS-only dependencies imported in app.css
+    "tw-animate-css",
+    // Consumed by the shadcn foundation (adoptable scaffolding, see ignore list)
+    "class-variance-authority",
+    "clsx",
+    "tailwind-merge",
+  ],
 };
 
 export default knipConfig;
