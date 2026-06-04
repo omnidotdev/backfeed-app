@@ -1,14 +1,18 @@
-import { Button, Collapsible, Grid, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery, useMutationState } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
 import ReplyCard from "@/components/feedback/ReplyCard";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
+import { Button } from "@/components/ui/button";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@/components/ui/collapsible";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import { infiniteRepliesOptions } from "@/lib/options/comments";
 
-import type { CollapsibleProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type {
   Comment,
   CreateCommentMutationVariables,
@@ -19,7 +23,7 @@ const feedbackRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
-interface Props extends CollapsibleProps {
+interface Props extends ComponentProps<typeof CollapsibleRoot> {
   /** Comment ID. */
   commentId: Comment["rowId"];
 }
@@ -80,30 +84,37 @@ const Replies = ({ commentId, ...rest }: Props) => {
   }
 
   return (
-    <Collapsible {...rest}>
-      <Grid gap={2} mt={4} ml={{ sm: 10 }}>
-        {isLoading ? (
-          <SkeletonArray count={5} className="h-[5.25rem]" />
-        ) : (
-          <VStack gap={1}>
-            {allReplies?.map((reply) => (
-              <ReplyCard key={reply?.rowId} reply={reply!} w="full" minH={21} />
-            ))}
+    <CollapsibleRoot {...rest}>
+      <CollapsibleContent>
+        <div className="mt-4 grid gap-2 sm:ml-10">
+          {isLoading ? (
+            <SkeletonArray count={5} className="h-[5.25rem]" />
+          ) : (
+            <div className="flex flex-col items-center gap-1">
+              {allReplies?.map((reply) => (
+                <ReplyCard
+                  key={reply?.rowId}
+                  reply={reply!}
+                  w="full"
+                  minH={21}
+                />
+              ))}
 
-            {hasNextPage && (
-              <Button
-                variant="ghost"
-                size="xs"
-                my={2}
-                onClick={() => fetchNextPage()}
-              >
-                Load More
-              </Button>
-            )}
-          </VStack>
-        )}
-      </Grid>
-    </Collapsible>
+              {hasNextPage && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="my-2"
+                  onClick={() => fetchNextPage()}
+                >
+                  Load More
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </CollapsibleContent>
+    </CollapsibleRoot>
   );
 };
 
