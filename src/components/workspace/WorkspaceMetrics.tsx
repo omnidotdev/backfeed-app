@@ -1,20 +1,19 @@
-import { Flex, Grid, Icon, Skeleton, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { HiOutlineChatBubbleLeftRight, HiOutlineFolder } from "react-icons/hi2";
 
 import SectionContainer from "@/components/layout/SectionContainer";
+import { Skeleton } from "@/components/ui/skeleton";
 import app from "@/lib/config/app.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 
-import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 const workspaceLayoutRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/",
 );
 
-interface WorkspaceMetric extends FlexProps {
+interface WorkspaceMetric {
   /** Human-readable title. */
   title: string;
   /** Actual metric value. */
@@ -61,33 +60,27 @@ const WorkspaceMetrics = () => {
       title={app.workspacePage.metrics.title}
       description={app.workspacePage.metrics.description}
     >
-      <Grid h="full">
-        {WORKSPACE_METRICS.map(({ title, value, icon, ...rest }) => (
-          <Flex
-            key={title}
-            alignItems="center"
-            justifyContent="space-between"
-            {...rest}
-          >
-            <Flex gap={2} alignItems="center">
-              <Icon src={icon} w={4} h={4} />
+      <div className="grid h-full">
+        {WORKSPACE_METRICS.map(({ title, value, icon: MetricIcon }) => (
+          <div key={title} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MetricIcon className="size-4" />
 
-              <Text
-                fontSize={{ base: "sm", lg: "md" }}
-                color="foreground.muted"
-              >
+              <span className="text-foreground-muted text-sm lg:text-base">
                 {title}
-              </Text>
-            </Flex>
+              </span>
+            </div>
 
-            <Skeleton isLoaded={!isLoading} minW={8}>
-              <Text fontSize={{ base: "sm", lg: "md" }} textAlign="right">
+            {isLoading ? (
+              <Skeleton className="h-5 w-8" />
+            ) : (
+              <span className="text-right text-sm lg:text-base">
                 {isError ? 0 : value}
-              </Text>
-            </Skeleton>
-          </Flex>
+              </span>
+            )}
+          </div>
         ))}
-      </Grid>
+      </div>
     </SectionContainer>
   );
 };
