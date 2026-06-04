@@ -1,4 +1,3 @@
-import { Button, Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link, getRouteApi, useNavigate } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -7,6 +6,7 @@ import {
 import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
+import { Button } from "@/components/ui/button";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { Project } from "@/generated/graphql";
@@ -55,39 +55,20 @@ const ProjectListItem = ({
       role="group"
       className="group"
     >
-      <Stack
-        p={4}
-        bgColor="card-item"
-        borderRadius="xl"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        w="full"
-        maxW="100%"
-        mx="auto"
-        h={40}
-        justify="space-between"
-        position="relative"
-        cursor="pointer"
-        className={css({
-          transition: "all 0.2s ease",
-          _groupHover: {
-            bgColor: { base: "neutral.100", _dark: "neutral.800" },
-          },
-        })}
-      >
-        <Stack gap={0}>
-          <HStack alignItems="center" justify="space-between">
-            <Stack maxW="65svw">
+      <div className="relative mx-auto flex h-40 w-full max-w-full cursor-pointer flex-col justify-between rounded-xl border border-neutral-200 bg-card p-4 transition-all group-hover:bg-neutral-100 dark:border-neutral-800 dark:group-hover:bg-neutral-800">
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between">
+            <div className="flex max-w-[65svw] flex-col gap-2">
               <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-primary-text)] group-hover:text-[var(--colors-primary-emphasized)]">
                 {name}
               </OverflowText>
-            </Stack>
+            </div>
 
             {hasAdminPrivileges && (
-              <Flex position="absolute" right={0} top={0} m={2}>
+              <div className="absolute top-0 right-0 m-2">
                 <Button
                   variant="ghost"
-                  px="2"
+                  className="px-2"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -97,33 +78,29 @@ const ProjectListItem = ({
                     });
                   }}
                 >
-                  <Icon src={LuSettings} w={5} h={5} color="foreground.muted" />
+                  <LuSettings className="size-5 text-foreground-muted" />
                 </Button>
-              </Flex>
+              </div>
             )}
-          </HStack>
+          </div>
 
           <OverflowText className="max-w-xl whitespace-nowrap text-foreground-subtle">
             {description}
           </OverflowText>
-        </Stack>
+        </div>
 
-        <HStack gap={4} mt={4} justifySelf="flex-end" flexWrap="wrap">
-          {AGGREGATES.map(({ icon, value, type }) => (
-            <HStack key={type} gap={1} flexWrap="wrap">
-              <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+        <div className="mt-4 flex flex-wrap gap-4 justify-self-end">
+          {AGGREGATES.map(({ icon: AggIcon, value, type }) => (
+            <div key={type} className="flex flex-wrap items-center gap-1">
+              <AggIcon className="size-5 text-foreground-subtle" />
 
-              <Text
-                fontSize="sm"
-                color="foreground.subtle"
-                fontVariant="tabular-nums"
-              >
+              <span className="text-foreground-subtle text-sm tabular-nums">
                 {value} {setSingularOrPlural({ value: +value, label: type })}
-              </Text>
-            </HStack>
+              </span>
+            </div>
           ))}
-        </HStack>
-      </Stack>
+        </div>
+      </div>
     </Link>
   );
 };
