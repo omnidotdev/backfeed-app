@@ -138,7 +138,7 @@ const HeaderActions = () => {
             <Stack mt={4} align="center">
               <LogoLink
                 width={60}
-                flexDirection="column"
+                className="flex-col"
                 onClick={() => setIsMobileSidebarOpen(false)}
               />
 
