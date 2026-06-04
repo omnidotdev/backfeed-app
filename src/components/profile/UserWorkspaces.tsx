@@ -1,4 +1,3 @@
-import { Stack, Text } from "@omnidev/sigil";
 import { useQueries } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { LuExternalLink, LuInfo } from "react-icons/lu";
@@ -46,7 +45,7 @@ const UserWorkspaces = () => {
   }
 
   return (
-    <Stack gap={4} w="100%">
+    <div className="flex w-full flex-col gap-4">
       {organizations.map((org) => (
         <WorkspaceListItem
           key={org.id}
@@ -62,45 +61,25 @@ const UserWorkspaces = () => {
       ))}
 
       {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
-      <Stack
-        gap={4}
-        align="center"
-        p={8}
-        borderRadius="lg"
-        borderWidth={1}
-        borderStyle="dashed"
-        borderColor="gray.300"
-        bg="gray.50"
-        textAlign="center"
-        _dark={{
-          borderColor: "gray.600",
-          bg: "gray.800",
-        }}
-      >
-        <LuInfo size={24} color="var(--chakra-colors-gray-500)" />
-        <Stack gap={2}>
-          <Text fontSize="sm" color="gray.700" _dark={{ color: "gray.300" }}>
+      <div className="flex flex-col items-center gap-4 rounded-lg border border-gray-300 border-dashed bg-gray-50 p-8 text-center dark:border-gray-600 dark:bg-gray-800">
+        <LuInfo className="size-6 text-gray-500" />
+        <div className="flex flex-col gap-2">
+          <p className="text-gray-700 text-sm dark:text-gray-300">
             Workspaces are currently managed via Omni Organizations.
-          </Text>
-          <Text fontSize="xs" color="gray.500">
+          </p>
+          <p className="text-gray-500 text-xs">
             This experience will be improved soon.
-          </Text>
-        </Stack>
+          </p>
+        </div>
         <a
           href={AUTH_BASE_URL}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            fontSize: "0.875rem",
-            color: "var(--chakra-colors-blue-500)",
-          }}
+          className="inline-flex items-center gap-2 text-blue-500 text-sm"
         >
           Manage Organizations
-          <LuExternalLink size={12} />
+          <LuExternalLink className="size-3" />
         </a>
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   );
 };
 
