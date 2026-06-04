@@ -128,7 +128,10 @@ const Comments = () => {
         <div className="mt-4 h-px w-full bg-border" />
 
         {isError ? (
-          <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
+          <ErrorBoundary
+            message="Error fetching comments"
+            className="my-4 h-80"
+          />
         ) : (
           <div className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {isLoading ? (

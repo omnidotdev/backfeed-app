@@ -326,7 +326,7 @@ const ProjectFeedback = () => {
 
       {/* Feedback List */}
       {isError ? (
-        <ErrorBoundary message="Error fetching feedback" h="sm" />
+        <ErrorBoundary message="Error fetching feedback" className="h-96" />
       ) : (
         <Grid
           gap={3}

@@ -54,7 +54,9 @@ const ProjectList = ({ canCreateProjects }: Props) => {
   const projects = data?.projects;
 
   if (isError)
-    return <ErrorBoundary message="Error fetching projects" minH={48} />;
+    return (
+      <ErrorBoundary message="Error fetching projects" className="min-h-48" />
+    );
 
   if (isLoading)
     return (

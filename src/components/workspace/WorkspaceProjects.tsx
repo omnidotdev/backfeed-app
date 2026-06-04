@@ -54,7 +54,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
       icon={HiOutlineFolder}
     >
       {isError ? (
-        <ErrorBoundary message="Error fetching projects" h={48} p={8} />
+        <ErrorBoundary message="Error fetching projects" className="h-48 p-8" />
       ) : (
         <div
           // NB: The padding (p-px) prevents clipping of card borders/box shadows

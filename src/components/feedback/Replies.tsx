@@ -74,7 +74,9 @@ const Replies = ({ commentId, ...rest }: Props) => {
   const allReplies = [...pendingReplies, ...(replies ?? [])];
 
   if (isError) {
-    return <ErrorBoundary message="Error fetching replies" h="xs" my={4} />;
+    return (
+      <ErrorBoundary message="Error fetching replies" className="my-4 h-80" />
+    );
   }
 
   return (
