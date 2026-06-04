@@ -1,20 +1,21 @@
-import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
+import { forwardRef } from "react";
 
-import type { FlexProps, TextProps } from "@omnidev/sigil";
-import type { ReactNode } from "react";
+import cn from "@/lib/utils";
+
+import type { ComponentProps, ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-interface Props extends FlexProps {
+interface Props extends ComponentProps<"div"> {
   /** Container title */
   title?: string;
   /** Container description */
   description?: string;
   /** Visual icon */
   icon?: IconType;
-  /** Additional props for the title container. */
-  titleProps?: FlexProps;
-  /** Additional props for the description container. */
-  descriptionProps?: TextProps;
+  /** Additional class names for the title container. */
+  titleClassName?: string;
+  /** Additional class names for the description. */
+  descriptionClassName?: string;
   /** Header actions. */
   headerActions?: ReactNode;
 }
@@ -22,59 +23,61 @@ interface Props extends FlexProps {
 /**
  * Section container.
  */
-const SectionContainer = ({
-  title,
-  description,
-  children,
-  icon,
-  titleProps,
-  descriptionProps,
-  headerActions,
-  ...rest
-}: Props) => (
-  <Stack
-    position="relative"
-    borderRadius="2xl"
-    borderWidth="1px"
-    borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-    bgColor={{ base: "white", _dark: "neutral.900" }}
-    overflow="visible"
-    p={{ base: 4, sm: 6 }}
-    gap={6}
-    {...rest}
-  >
-    {(title || headerActions || description) && (
-      <Stack gap={1}>
-        <Flex align="center" gap={2} {...titleProps}>
-          {icon && <Icon src={icon} w={5} h={5} color="foreground.subtle" />}
+const SectionContainer = forwardRef<HTMLDivElement, Props>(
+  (
+    {
+      title,
+      description,
+      children,
+      icon: Icon,
+      titleClassName,
+      descriptionClassName,
+      headerActions,
+      className,
+      ...rest
+    },
+    ref,
+  ) => (
+    <div
+      ref={ref}
+      className={cn(
+        "relative flex flex-col gap-6 overflow-visible rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900",
+        className,
+      )}
+      {...rest}
+    >
+      {(title || headerActions || description) && (
+        <div className="flex flex-col gap-1">
+          <div className={cn("flex items-center gap-2", titleClassName)}>
+            {Icon && <Icon className="size-5 text-foreground-subtle" />}
 
-          {title && (
-            <Text
-              fontWeight="semibold"
-              lineHeight={1.2}
-              fontSize={{ base: "xl", lg: "2xl" }}
+            {title && (
+              <p className="font-semibold text-xl leading-[1.2] lg:text-2xl">
+                {title}
+              </p>
+            )}
+
+            {headerActions && headerActions}
+          </div>
+
+          {description && (
+            <p
+              className={cn(
+                "text-foreground-subtle text-xs lg:text-sm",
+                descriptionClassName,
+              )}
             >
-              {title}
-            </Text>
+              {description}
+            </p>
           )}
+        </div>
+      )}
 
-          {headerActions && headerActions}
-        </Flex>
-
-        {description && (
-          <Text
-            color="foreground.subtle"
-            fontSize={{ base: "xs", lg: "sm" }}
-            {...descriptionProps}
-          >
-            {description}
-          </Text>
-        )}
-      </Stack>
-    )}
-
-    {children}
-  </Stack>
+      {children}
+    </div>
+  ),
 );
+
+SectionContainer.displayName = "SectionContainer";
 
 export default SectionContainer;

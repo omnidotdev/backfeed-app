@@ -93,8 +93,7 @@ function ProjectSettingsPage() {
         <SectionContainer
           title={app.projectSettingsPage.dangerZone.title}
           description={app.projectSettingsPage.dangerZone.description}
-          outline="1px solid"
-          outlineColor="omni.ruby"
+          className="outline outline-[var(--colors-omni-ruby)]"
         >
           <Divider />
 

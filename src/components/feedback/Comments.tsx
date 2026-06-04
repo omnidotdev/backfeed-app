@@ -116,10 +116,7 @@ const Comments = () => {
       title={app.postPage.comments.title}
       description={app.postPage.comments.description}
       icon={LuMessageSquare}
-      p={0}
-      pr={{ base: 4, sm: 6 }}
-      pl={{ base: 4, sm: 6 }}
-      pt={{ base: 4, sm: 6 }}
+      className="p-0 px-4 pt-4 sm:px-6 sm:pt-6"
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <div className="relative mb-px flex flex-col gap-2">
