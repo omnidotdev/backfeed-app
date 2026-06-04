@@ -1,4 +1,3 @@
-import { Grid } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -12,6 +11,7 @@ import ProjectCard from "@/components/workspace/ProjectCard";
 import app from "@/lib/config/app.config";
 import { workspaceOptions } from "@/lib/options/workspaces";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+import cn from "@/lib/utils";
 
 import type { Project } from "@/generated/graphql";
 
@@ -56,18 +56,14 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
       {isError ? (
         <ErrorBoundary message="Error fetching projects" h={48} p={8} />
       ) : (
-        <Grid
-          // NB: The padding is necessary to prevent clipping of the card borders/box shadows
-          p="1px"
-          gap={6}
-          columns={{
-            base: 1,
-            md: isLoading
-              ? 2
-              : projects?.length
-                ? Math.min(2, projects.length)
-                : 1,
-          }}
+        <div
+          // NB: The padding (p-px) prevents clipping of card borders/box shadows
+          className={cn(
+            "grid grid-cols-1 gap-6 p-px",
+            (isLoading ? 2 : Math.min(2, projects?.length ?? 1)) >= 2
+              ? "md:grid-cols-2"
+              : "md:grid-cols-1",
+          )}
         >
           {isLoading ? (
             <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
@@ -107,7 +103,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
               h={48}
             />
           )}
-        </Grid>
+        </div>
       )}
     </SectionContainer>
   );
