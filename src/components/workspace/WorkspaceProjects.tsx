@@ -74,11 +74,11 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
                 to="/workspaces/$workspaceSlug/projects/$projectSlug"
                 params={{ workspaceSlug, projectSlug: project?.slug! }}
                 role="group"
+                className="group"
               >
                 <ProjectCard
                   project={project as Partial<Project>}
-                  // NB: min height ensures consistent card sizing while allowing growth for longer content
-                  minH={48}
+                  className="min-h-48"
                 />
               </Link>
             ))

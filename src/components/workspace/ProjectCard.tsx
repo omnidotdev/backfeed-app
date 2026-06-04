@@ -1,4 +1,3 @@
-import { Flex, Grid, Icon, Stack, Text, css } from "@omnidev/sigil";
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineUserGroup,
@@ -6,8 +5,9 @@ import {
 
 import OverflowText from "@/components/core/OverflowText";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { IconType } from "react-icons";
 import type { Project } from "@/generated/graphql";
 
@@ -20,7 +20,7 @@ interface ProjectMetric {
   type: "response" | "user";
 }
 
-interface Props extends FlexProps {
+interface Props extends ComponentProps<"div"> {
   /** Project details. */
   project: Partial<Project>;
 }
@@ -28,7 +28,7 @@ interface Props extends FlexProps {
 /**
  * Project, nested within a workspace. A project outlines an application or other kind of product or service that aggregates and contains scoped feedback.
  */
-const ProjectCard = ({ project, ...rest }: Props) => {
+const ProjectCard = ({ project, className, ...rest }: Props) => {
   const PROJECT_METRICS: ProjectMetric[] = [
     {
       icon: HiOutlineChatBubbleLeftRight,
@@ -43,25 +43,15 @@ const ProjectCard = ({ project, ...rest }: Props) => {
   ];
 
   return (
-    <Flex
-      position="relative"
-      direction="column"
-      bgColor="card-item"
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-      p={8}
-      cursor="pointer"
-      className={css({
-        transition: "all 0.2s ease",
-        _groupHover: {
-          bgColor: { base: "neutral.100", _dark: "neutral.800" },
-        },
-      })}
+    <div
+      className={cn(
+        "relative flex cursor-pointer flex-col rounded-xl border border-neutral-200 bg-card p-8 transition-all group-hover:bg-neutral-100 dark:border-neutral-800 dark:group-hover:bg-neutral-800",
+        className,
+      )}
       {...rest}
     >
-      <Stack gap={6} h="100%" justify="space-between">
-        <Stack minH={{ base: 16, md: 24 }}>
+      <div className="flex h-full flex-col justify-between gap-6">
+        <div className="flex min-h-16 flex-col gap-2 md:min-h-24">
           <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.2] lg:text-lg">
             {project?.name}
           </OverflowText>
@@ -69,25 +59,25 @@ const ProjectCard = ({ project, ...rest }: Props) => {
           <OverflowText className="line-clamp-2 text-foreground-subtle text-xs lg:text-sm">
             {project?.description}
           </OverflowText>
-        </Stack>
+        </div>
 
-        <Grid columns={2} w="full" alignItems="start">
-          {PROJECT_METRICS.map(({ icon, value, type }) => (
-            <Flex key={type} gap={2} alignItems="center" wrap="wrap">
-              <Icon src={icon} w={5} h={5} color="foreground.subtle" />
+        <div className="grid w-full grid-cols-2 items-start">
+          {PROJECT_METRICS.map(({ icon: MetricIcon, value, type }) => (
+            <div key={type} className="flex flex-wrap items-center gap-2">
+              <MetricIcon className="size-5 text-foreground-subtle" />
 
-              <Flex color="foreground.subtle" fontSize="sm" gap={1} wrap="wrap">
-                <Text>{value ?? 0}</Text>
+              <div className="flex flex-wrap gap-1 text-foreground-subtle text-sm">
+                <span>{value ?? 0}</span>
 
-                <Text display={{ base: "none", sm: "inline" }}>
+                <span className="hidden sm:inline">
                   {setSingularOrPlural({ value: value ?? 0, label: type })}
-                </Text>
-              </Flex>
-            </Flex>
+                </span>
+              </div>
+            </div>
           ))}
-        </Grid>
-      </Stack>
-    </Flex>
+        </div>
+      </div>
+    </div>
   );
 };
 
