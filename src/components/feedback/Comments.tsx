@@ -1,4 +1,3 @@
-import { Divider, Grid, Stack, VStack } from "@omnidev/sigil";
 import {
   useInfiniteQuery,
   useMutationState,
@@ -123,19 +122,19 @@ const Comments = () => {
       pt={{ base: 4, sm: 6 }}
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
-      <Stack position="relative" mb="1px">
+      <div className="relative mb-px flex flex-col gap-2">
         <CreateComment canCreateComment={canCreateComment ?? false} />
 
-        <Divider mt={4} />
+        <div className="mt-4 h-px w-full bg-border" />
 
         {isError ? (
           <ErrorBoundary message="Error fetching comments" h="xs" my={4} />
         ) : (
-          <Grid gap={2} mt={4} maxH="xl" overflow="auto" scrollbar="hidden">
+          <div className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {isLoading ? (
               <SkeletonArray count={5} h={28} />
             ) : allComments?.length ? (
-              <VStack gap={2}>
+              <div className="flex flex-col items-center gap-2">
                 {allComments?.map((comment) => (
                   <CommentCard
                     key={comment?.rowId}
@@ -147,7 +146,7 @@ const Comments = () => {
                 ))}
 
                 {hasNextPage && <Spinner ref={loaderRef} my={4} />}
-              </VStack>
+              </div>
             ) : (
               <EmptyState
                 message={app.postPage.comments.emptyState.message}
@@ -156,11 +155,11 @@ const Comments = () => {
                 mb={4}
               />
             )}
-          </Grid>
+          </div>
         )}
 
         {!!allComments.length && <GradientMask bottom={0} />}
-      </Stack>
+      </div>
     </SectionContainer>
   );
 };
