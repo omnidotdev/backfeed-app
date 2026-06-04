@@ -1,11 +1,16 @@
-import { Button, Center, Tooltip } from "@omnidev/sigil";
 import { useNavigate } from "@tanstack/react-router";
 
+import { Button } from "@/components/ui/button";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { LinkOptions } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import type { ButtonVariant } from "@/generated/panda/recipes";
+import type { ComponentProps, ReactNode } from "react";
 
 export interface ActionButton {
   /** Button label. */
@@ -20,7 +25,7 @@ export interface ActionButton {
   dialogType?: DialogType;
   /** Tooltip text. */
   tooltip?: string;
-  variant?: ButtonVariant["variant"];
+  variant?: ComponentProps<typeof Button>["variant"];
 }
 
 interface Props {
@@ -64,37 +69,25 @@ const CallToAction = ({ action }: Props) => {
   };
 
   return (
-    <Tooltip
-      hasArrow={false}
-      closeOnClick={false}
-      closeOnPointerDown={false}
-      trigger={
+    <TooltipRoot>
+      <TooltipTrigger asChild>
         <Button
-          asChild
           size="sm"
           variant={variant}
           disabled={disabled}
           onClick={!disabled ? handleAction : undefined}
         >
-          {/* NB: Wrap content in a single element (Center) to satisfy React.Children.only requirement for asChild rendering. */}
-          <Center>
-            {icon && icon}
-
-            {label}
-          </Center>
+          {icon && icon}
+          {label}
         </Button>
-      }
-      triggerProps={{
-        style: { all: "unset" },
-      }}
-      contentProps={{
-        display: !disabled || !tooltip ? "none" : undefined,
-        zIndex: "foreground",
-        fontSize: "sm",
-      }}
-    >
-      {action.tooltip}
-    </Tooltip>
+      </TooltipTrigger>
+
+      {disabled && tooltip && (
+        <TooltipPositioner>
+          <TooltipContent className="text-sm">{action.tooltip}</TooltipContent>
+        </TooltipPositioner>
+      )}
+    </TooltipRoot>
   );
 };
 
