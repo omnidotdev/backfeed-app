@@ -1,7 +1,7 @@
-import { Button, Icon } from "@omnidev/sigil";
 import { useHotkeys } from "react-hotkeys-hook";
 import { PiMoonFill as Moon, PiSunFill as Sun } from "react-icons/pi";
 
+import { Button } from "@/components/ui/button";
 import { useTheme } from "@/providers/ThemeProvider";
 
 /**
@@ -17,15 +17,14 @@ const ThemeToggle = () => {
 
   return (
     <Button
-      variant="icon"
+      variant="ghost"
+      size="icon"
       aria-label="Toggle theme"
-      bgColor="transparent"
-      color="foreground.default"
       onClick={toggleTheme}
     >
-      <Icon src={Sun} _light={{ display: "none" }} />
+      <Sun className="hidden dark:block" />
 
-      <Icon src={Moon} _dark={{ display: "none" }} />
+      <Moon className="block dark:hidden" />
     </Button>
   );
 };
