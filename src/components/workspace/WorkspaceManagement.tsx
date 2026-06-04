@@ -1,24 +1,27 @@
-import { Button, Grid, Icon } from "@omnidev/sigil";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
+import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 
-import type { ButtonProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 const workspaceLayoutRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/",
 );
 
-interface Action extends ButtonProps {
+interface Action {
   /** Action label. */
   label: string;
   /** Visual icon. */
   icon: IconType;
+  /** Click handler. */
+  onClick?: () => void;
+  /** Whether the action is disabled. */
+  disabled?: boolean;
 }
 
 const managementDetails = app.workspacePage.management;
@@ -85,22 +88,22 @@ const WorkspaceManagement = () => {
           : managementDetails.description.anon
       }
     >
-      <Grid gap={4}>
+      <div className="grid gap-4">
         {WORKSPACE_ACTIONS.filter(({ disabled }) => !disabled).map(
-          ({ label, icon, ...rest }) => (
+          ({ label, icon: ActionIcon, ...rest }) => (
             <Button
               key={label}
               variant="outline"
               className="border-primary text-primary hover:bg-primary/10"
               {...rest}
             >
-              <Icon src={icon} w={4} h={4} />
+              <ActionIcon className="size-4" />
 
               {label}
             </Button>
           ),
         )}
-      </Grid>
+      </div>
     </SectionContainer>
   );
 };
