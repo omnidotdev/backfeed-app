@@ -1,5 +1,3 @@
-import { HStack, Stack, Text } from "@omnidev/sigil";
-
 import DestructiveAction from "@/components/core/DestructiveAction";
 
 import type { DestructiveActionProps } from "@/components/core/DestructiveAction";
@@ -17,17 +15,15 @@ interface Props {
  * Workspace action. This action is destructive and cannot be undone.
  */
 const DangerZoneAction = ({ title, description, actionProps }: Props) => (
-  <HStack alignItems="center" justifyContent="space-between">
-    <Stack gap={1}>
-      <Text fontWeight="semibold">{title}</Text>
+  <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-1">
+      <p className="font-semibold">{title}</p>
 
-      <Text fontSize="sm" color="foreground.muted">
-        {description}
-      </Text>
-    </Stack>
+      <p className="text-muted-foreground text-sm">{description}</p>
+    </div>
 
     <DestructiveAction {...actionProps} />
-  </HStack>
+  </div>
 );
 
 export default DangerZoneAction;
