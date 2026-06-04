@@ -93,12 +93,7 @@ const ProfileNavigation = ({
         />
 
         {isOpen && (
-          <OverflowText
-            as="h1"
-            textAlign="center"
-            whiteSpace="nowrap"
-            fontSize="sm"
-          >
+          <OverflowText className="whitespace-nowrap text-center text-sm">
             {session?.user?.username ?? ""}
           </OverflowText>
         )}

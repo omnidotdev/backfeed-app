@@ -161,12 +161,7 @@ function WorkspaceCard({ organization }: { organization: OrganizationClaim }) {
         })}
       >
         <Stack gap={1}>
-          <OverflowText
-            fontWeight="semibold"
-            whiteSpace="nowrap"
-            color="brand.primary.700"
-            _dark={{ color: "brand.primary.400" }}
-          >
+          <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
             {organization.name}
           </OverflowText>
         </Stack>

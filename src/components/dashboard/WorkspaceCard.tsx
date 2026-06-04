@@ -57,12 +57,7 @@ const WorkspaceCard = ({ workspace, ...rest }: Props) => {
     >
       <Stack gap={3}>
         <Flex align="center" gap={2}>
-          <OverflowText
-            fontSize="md"
-            fontWeight="semibold"
-            lineHeight={1.3}
-            lineClamp={2}
-          >
+          <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.3]">
             {workspace.name}
           </OverflowText>
 

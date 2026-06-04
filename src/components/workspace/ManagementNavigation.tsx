@@ -107,13 +107,7 @@ const ManagementNavigation = ({
         <Avatar size="xs" name={workspaceName} />
 
         {isOpen && (
-          <OverflowText
-            as="h1"
-            textAlign="center"
-            whiteSpace="nowrap"
-            fontSize="sm"
-            fontWeight="semibold"
-          >
+          <OverflowText className="whitespace-nowrap text-center font-semibold text-sm">
             {workspaceName}
           </OverflowText>
         )}

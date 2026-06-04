@@ -53,6 +53,7 @@ const ProjectListItem = ({
         projectSlug: slug!,
       }}
       role="group"
+      className="group"
     >
       <Stack
         p={4}
@@ -77,16 +78,7 @@ const ProjectListItem = ({
         <Stack gap={0}>
           <HStack alignItems="center" justify="space-between">
             <Stack maxW="65svw">
-              <OverflowText
-                fontWeight="semibold"
-                whiteSpace="nowrap"
-                color={{
-                  base: "primary.text",
-                  _groupHover: {
-                    base: "primary.emphasized",
-                  },
-                }}
-              >
+              <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-primary-text)] group-hover:text-[var(--colors-primary-emphasized)]">
                 {name}
               </OverflowText>
             </Stack>
@@ -111,7 +103,7 @@ const ProjectListItem = ({
             )}
           </HStack>
 
-          <OverflowText whiteSpace="nowrap" color="foreground.subtle" maxW="xl">
+          <OverflowText className="max-w-xl whitespace-nowrap text-foreground-subtle">
             {description}
           </OverflowText>
         </Stack>

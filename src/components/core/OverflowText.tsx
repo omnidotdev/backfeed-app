@@ -1,14 +1,12 @@
-import { Text } from "@omnidev/sigil";
+import cn from "@/lib/utils";
 
-import type { TextProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
 /**
  * Overflow text component. Used to truncate text that is too long.
  */
-const OverflowText = ({ children, ...rest }: TextProps) => (
-  <Text overflow="hidden" textOverflow="ellipsis" {...rest}>
-    {children}
-  </Text>
+const OverflowText = ({ className, ...rest }: ComponentProps<"span">) => (
+  <span className={cn("overflow-hidden text-ellipsis", className)} {...rest} />
 );
 
 export default OverflowText;

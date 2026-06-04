@@ -49,17 +49,7 @@ const WorkspaceListItem = ({ workspace }: Props) => {
         <div className="flex items-start justify-between">
           <div className="flex max-w-[65svw] flex-col gap-2">
             <div className="flex flex-col gap-1">
-              <OverflowText
-                fontWeight="semibold"
-                whiteSpace="nowrap"
-                color={{
-                  base: "brand.primary.700",
-                  _groupHover: {
-                    base: "brand.primary.800",
-                    _dark: "brand.primary.600",
-                  },
-                }}
-              >
+              <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-brand-primary-700)] group-hover:text-[var(--colors-brand-primary-800)] dark:group-hover:text-[var(--colors-brand-primary-600)]">
                 {workspace.name}
               </OverflowText>
 

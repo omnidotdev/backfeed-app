@@ -62,20 +62,11 @@ const ProjectCard = ({ project, ...rest }: Props) => {
     >
       <Stack gap={6} h="100%" justify="space-between">
         <Stack minH={{ base: 16, md: 24 }}>
-          <OverflowText
-            fontSize={{ base: "md", lg: "lg" }}
-            fontWeight="semibold"
-            lineHeight={1.2}
-            lineClamp={2}
-          >
+          <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.2] lg:text-lg">
             {project?.name}
           </OverflowText>
 
-          <OverflowText
-            fontSize={{ base: "xs", lg: "sm" }}
-            color="foreground.subtle"
-            lineClamp={2}
-          >
+          <OverflowText className="line-clamp-2 text-foreground-subtle text-xs lg:text-sm">
             {project?.description}
           </OverflowText>
         </Stack>
