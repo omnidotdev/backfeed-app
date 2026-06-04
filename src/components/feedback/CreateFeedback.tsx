@@ -106,20 +106,15 @@ const CreateFeedback = () => {
           return;
         }
 
-        if (!defaultStatusTemplateId) {
-          toaster.error({
-            title: app.projectPage.projectFeedback.action.error.title,
-            description:
-              "Status templates are not configured. Please contact a workspace admin.",
-          });
-          return;
-        }
-
         return toaster.promise(
           createFeedback({
             input: {
               post: {
-                statusTemplateId: defaultStatusTemplateId,
+                // status is optional; a project without configured status
+                // templates still accepts posts (they start without a status)
+                ...(defaultStatusTemplateId && {
+                  statusTemplateId: defaultStatusTemplateId,
+                }),
                 projectId,
                 userId: session.user.rowId,
                 title: value.title.trim(),
