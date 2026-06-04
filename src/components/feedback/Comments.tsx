@@ -148,7 +148,7 @@ const Comments = () => {
                   />
                 ))}
 
-                {hasNextPage && <Spinner ref={loaderRef} my={4} />}
+                {hasNextPage && <Spinner ref={loaderRef} className="my-4" />}
               </div>
             ) : (
               <EmptyState

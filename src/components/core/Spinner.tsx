@@ -1,8 +1,10 @@
-import { Box, Text } from "@omnidev/sigil";
+import { forwardRef } from "react";
 
-import type { BoxProps } from "@omnidev/sigil";
+import cn from "@/lib/utils";
 
-interface Props extends BoxProps {
+import type { ComponentProps } from "react";
+
+interface Props extends ComponentProps<"div"> {
   /**
    * For accessibility, it is important to add a fallback loading text.
    * This text will be visible to screen readers.
@@ -14,23 +16,21 @@ interface Props extends BoxProps {
 /**
  * Spinner component. Used to indicate loading state.
  */
-const Spinner = ({ label = "Loading...", ...rest }: Props) => (
-  <Box
-    borderWidth={2}
-    borderStyle="solid"
-    borderRadius="full"
-    borderColor="foreground.subtle"
-    borderBottomColor="transparent"
-    w={6}
-    h={6}
-    animation="spin"
-    animationDuration="slowest"
-    {...rest}
-  >
-    <Text as="span" srOnly>
-      {label}
-    </Text>
-  </Box>
+const Spinner = forwardRef<HTMLDivElement, Props>(
+  ({ label = "Loading...", className, ...rest }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "size-6 animate-spin rounded-full border-2 border-foreground-subtle border-b-transparent [animation-duration:1.4s]",
+        className,
+      )}
+      {...rest}
+    >
+      <span className="sr-only">{label}</span>
+    </div>
+  ),
 );
+
+Spinner.displayName = "Spinner";
 
 export default Spinner;
