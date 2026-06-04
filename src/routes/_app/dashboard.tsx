@@ -62,8 +62,8 @@ function DashboardPage() {
           {/* Workspaces Section */}
           <FeedbackSection
             title="Your Workspaces"
-            minH={72}
-            contentProps={{ p: 4 }}
+            style={{ minHeight: "18rem" }}
+            contentClassName="p-4"
           >
             <PinnedWorkspaces />
           </FeedbackSection>

@@ -1,44 +1,45 @@
-import { Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import dayjs from "dayjs";
 import { HiOutlineFolder } from "react-icons/hi2";
 
 import StatusBadge from "@/components/core/StatusBadge";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "@/generated/graphql";
 
-interface Props extends FlexProps {
+interface Props {
   /** Feedback details. */
   feedback: Partial<Post>;
+  /** Additional class names. */
+  className?: string;
 }
 
 /**
  * Recent feedback response.
  */
-const Response = ({ feedback, ...rest }: Props) => {
+const Response = ({ feedback, className }: Props) => {
   const date = dayjs(feedback?.createdAt).utc().fromNow();
 
   return (
-    <Stack gap={2} w="100%" {...rest}>
-      <Flex align="center" justify="space-between" gap={2}>
-        <Text fontWeight="medium" fontSize="sm" lineClamp={1} flex={1}>
+    <div className={cn("flex w-full flex-col gap-2", className)}>
+      <div className="flex items-center justify-between gap-2">
+        <p className="line-clamp-1 flex-1 font-medium text-sm">
           {feedback?.title}
-        </Text>
+        </p>
 
         <StatusBadge status={feedback?.statusTemplate!} />
-      </Flex>
+      </div>
 
-      <Flex align="center" gap={3} fontSize="xs" color="foreground.subtle">
-        <Flex align="center" gap={1}>
-          <Icon src={HiOutlineFolder} w={3.5} h={3.5} />
-          <Text lineClamp={1}>{feedback.project?.name}</Text>
-        </Flex>
+      <div className="flex items-center gap-3 text-foreground-subtle text-xs">
+        <div className="flex items-center gap-1">
+          <HiOutlineFolder className="size-3.5" />
+          <p className="line-clamp-1">{feedback.project?.name}</p>
+        </div>
 
-        <Text color="foreground.muted">·</Text>
+        <p className="text-muted-foreground">·</p>
 
-        <Text>{date}</Text>
-      </Flex>
-    </Stack>
+        <p>{date}</p>
+      </div>
+    </div>
   );
 };
 

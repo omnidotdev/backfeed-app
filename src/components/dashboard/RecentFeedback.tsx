@@ -1,4 +1,3 @@
-import { Flex, Stack, Text, VStack } from "@omnidev/sigil";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -9,13 +8,16 @@ import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import Response from "@/components/dashboard/Response";
 import EmptyState from "@/components/layout/EmptyState";
 import { recentFeedbackOptions } from "@/lib/options/dashboard";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
 import type { Post } from "@/generated/graphql";
 
 const dashboardRoute = getRouteApi("/_app/dashboard");
 
-interface Props extends Pick<FlexProps, "minH"> {}
+interface Props {
+  /** Minimum height (Panda spacing unit). */
+  minH?: number;
+}
 
 /**
  * Recent Feedback section.
@@ -56,26 +58,23 @@ const RecentFeedback = ({ minH }: Props) => {
     <FeedbackSection
       ref={rootRef}
       title="Recent Feedback"
-      minH={minH}
-      contentProps={{
-        overflow: "auto",
-        scrollbar: "hidden",
-      }}
+      style={minH ? { minHeight: `${minH * 0.25}rem` } : undefined}
+      contentClassName="[scrollbar-width:none]"
     >
       {isError ? (
-        <Flex align="center" justify="center" h="full" p={8}>
-          <Text color="foreground.subtle" fontSize="sm">
+        <div className="flex h-full items-center justify-center p-8">
+          <p className="text-foreground-subtle text-sm">
             Unable to load feedback
-          </Text>
-        </Flex>
+          </p>
+        </div>
       ) : (
-        <Stack w="full" h="full" gap={0}>
+        <div className="flex h-full w-full flex-col">
           {isLoading ? (
-            <Stack p={4} gap={3}>
+            <div className="flex flex-col gap-3 p-4">
               <SkeletonArray count={5} className="h-16 w-full rounded-lg" />
-            </Stack>
+            </div>
           ) : feedbackData?.length ? (
-            <VStack gap={0}>
+            <div className="flex flex-col items-center">
               {feedbackData?.map((feedback, index) => {
                 const isLast =
                   index === feedbackData.length - 1 && !hasNextPage;
@@ -95,25 +94,21 @@ const RecentFeedback = ({ minH }: Props) => {
                   >
                     <Response
                       feedback={feedback as Partial<Post>}
-                      px={5}
-                      py={3}
-                      borderBottomWidth={isLast ? 0 : "1px"}
-                      borderColor="border.subtle"
-                      transition="background 0.1s ease"
-                      _hover={{
-                        bgColor: "background.subtle",
-                      }}
+                      className={cn(
+                        "border-border-subtle px-5 py-3 transition-colors hover:bg-background-subtle",
+                        isLast ? "" : "border-b",
+                      )}
                     />
                   </Link>
                 );
               })}
 
               {hasNextPage && (
-                <Flex ref={loaderRef} justify="center" my={4}>
+                <div ref={loaderRef} className="my-4 flex justify-center">
                   {isFetchingNextPage && <Spinner />}
-                </Flex>
+                </div>
               )}
-            </VStack>
+            </div>
           ) : (
             <EmptyState
               message="No feedback items yet"
@@ -123,7 +118,7 @@ const RecentFeedback = ({ minH }: Props) => {
               borderColor="transparent"
             />
           )}
-        </Stack>
+        </div>
       )}
     </FeedbackSection>
   );

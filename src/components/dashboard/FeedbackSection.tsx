@@ -1,45 +1,40 @@
-import { Stack, Text } from "@omnidev/sigil";
+import { forwardRef } from "react";
 
-import type { FlexProps, StackProps } from "@omnidev/sigil";
+import cn from "@/lib/utils";
 
-interface Props extends FlexProps {
+import type { ComponentProps } from "react";
+
+interface Props extends ComponentProps<"div"> {
   /** Section title. */
   title: string;
-  /** Props to pass to the main content container. */
-  contentProps?: StackProps;
+  /** Class names for the scrollable content container. */
+  contentClassName?: string;
 }
 
 /**
  * Feedback section.
  */
-const FeedbackSection = ({ title, children, contentProps, ...rest }: Props) => (
-  <Stack
-    position="relative"
-    bgColor="background.default"
-    borderRadius="xl"
-    borderWidth="1px"
-    borderColor="border.subtle"
-    overflow="hidden"
-    gap={0}
-    {...rest}
-  >
-    <Text
-      w="full"
-      fontSize="sm"
-      fontWeight="semibold"
-      color="foreground.default"
-      borderBottomWidth="1px"
-      borderColor="border.subtle"
-      px={5}
-      py={4}
+const FeedbackSection = forwardRef<HTMLDivElement, Props>(
+  ({ title, children, contentClassName, className, ...rest }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "relative flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-background",
+        className,
+      )}
+      {...rest}
     >
-      {title}
-    </Text>
+      <p className="w-full border-border-subtle border-b px-5 py-4 font-semibold text-foreground text-sm">
+        {title}
+      </p>
 
-    <Stack overflow="auto" gap={0} {...contentProps}>
-      {children}
-    </Stack>
-  </Stack>
+      <div className={cn("flex flex-col overflow-auto", contentClassName)}>
+        {children}
+      </div>
+    </div>
+  ),
 );
+
+FeedbackSection.displayName = "FeedbackSection";
 
 export default FeedbackSection;
