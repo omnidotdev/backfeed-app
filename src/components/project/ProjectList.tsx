@@ -61,7 +61,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
   if (isLoading)
     return (
       <Stack>
-        <SkeletonArray count={6} h={40} borderRadius="sm" />
+        <SkeletonArray count={6} className="h-40 rounded-sm" />
       </Stack>
     );
 

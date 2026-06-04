@@ -135,7 +135,7 @@ const Comments = () => {
         ) : (
           <div className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {isLoading ? (
-              <SkeletonArray count={5} h={28} />
+              <SkeletonArray count={5} className="h-28" />
             ) : allComments?.length ? (
               <div className="flex flex-col items-center gap-2">
                 {allComments?.map((comment) => (

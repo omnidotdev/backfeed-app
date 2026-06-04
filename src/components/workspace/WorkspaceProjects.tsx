@@ -66,7 +66,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
           )}
         >
           {isLoading ? (
-            <SkeletonArray count={6} h={48} borderRadius="lg" w="100%" />
+            <SkeletonArray count={6} className="h-48 w-full rounded-lg" />
           ) : projects?.length ? (
             projects?.map((project) => (
               <Link

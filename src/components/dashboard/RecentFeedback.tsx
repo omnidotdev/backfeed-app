@@ -72,7 +72,7 @@ const RecentFeedback = ({ minH }: Props) => {
         <Stack w="full" h="full" gap={0}>
           {isLoading ? (
             <Stack p={4} gap={3}>
-              <SkeletonArray count={5} h={16} w="100%" borderRadius="lg" />
+              <SkeletonArray count={5} className="h-16 w-full rounded-lg" />
             </Stack>
           ) : feedbackData?.length ? (
             <VStack gap={0}>

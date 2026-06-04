@@ -83,7 +83,7 @@ const Replies = ({ commentId, ...rest }: Props) => {
     <Collapsible {...rest}>
       <Grid gap={2} mt={4} ml={{ sm: 10 }}>
         {isLoading ? (
-          <SkeletonArray count={5} h={21} />
+          <SkeletonArray count={5} className="h-[5.25rem]" />
         ) : (
           <VStack gap={1}>
             {allReplies?.map((reply) => (

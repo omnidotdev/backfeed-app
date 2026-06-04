@@ -333,7 +333,7 @@ const ProjectFeedback = () => {
           columns={{ base: 1, md: viewState === ViewState.List ? 1 : 2 }}
         >
           {isLoading ? (
-            <SkeletonArray count={5} h={21} />
+            <SkeletonArray count={5} className="h-[5.25rem]" />
           ) : allPosts.length ? (
             <>
               {allPosts.map((feedback, index) => {
