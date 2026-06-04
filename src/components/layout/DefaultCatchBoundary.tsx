@@ -1,8 +1,8 @@
-import { Button, Icon, Text, VStack, sigil } from "@omnidev/sigil";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { LuArrowLeft } from "react-icons/lu";
 
+import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 
 import type { ErrorComponentProps } from "@tanstack/react-router";
@@ -18,26 +18,26 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
   }, [error]);
 
   return (
-    <VStack justify="center" gap={4} h="full" py={16}>
-      <Text fontSize={{ base: "6xl", md: "7xl" }}>🔄</Text>
+    <div className="flex h-full flex-col items-center justify-center gap-4 py-16">
+      <p className="text-6xl md:text-7xl">🔄</p>
 
-      <VStack textAlign="center" gap={2}>
-        <Text fontSize="2xl" fontWeight="bold" color="foreground.error">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <p className="font-bold text-2xl text-destructive">
           Something went wrong
-        </Text>
+        </p>
 
-        <Text maxW="lg" color="foreground.muted">
+        <p className="max-w-lg text-muted-foreground">
           An unexpected error occurred. Please try again or contact{" "}
-          <sigil.a href={`mailto:${app.organization.supportEmailAddress}`}>
-            <sigil.span color="brand.primary">
+          <a href={`mailto:${app.organization.supportEmailAddress}`}>
+            <span className="text-primary">
               {app.organization.supportEmailAddress}
-            </sigil.span>
-          </sigil.a>
+            </span>
+          </a>
           .
-        </Text>
-      </VStack>
+        </p>
+      </div>
 
-      <VStack gap={2}>
+      <div className="flex flex-col items-center gap-2">
         <Button onClick={() => router.invalidate()}>Try again</Button>
 
         <Button
@@ -47,11 +47,11 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
             window.history.back();
           }}
         >
-          <Icon src={LuArrowLeft} h={4} w={4} />
+          <LuArrowLeft className="size-4" />
           {app.globalError.goBack}
         </Button>
-      </VStack>
-    </VStack>
+      </div>
+    </div>
   );
 };
 
