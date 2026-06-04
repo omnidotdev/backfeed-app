@@ -1,8 +1,8 @@
-import { Badge, Button, Flex, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { LuRefreshCw, LuX } from "react-icons/lu";
 
+import { Button } from "@/components/ui/button";
 import {
   useCancelInvitation,
   useResendInvitation,
@@ -67,53 +67,39 @@ const InvitationRow = ({ invitation, organizationId }: InvitationRowProps) => {
       },
     );
 
-  const accentColor =
-    invitation.role === "admin" ? "brand.secondary" : "brand.tertiary";
+  const accentVar =
+    invitation.role === "admin"
+      ? "var(--colors-brand-secondary)"
+      : "var(--colors-brand-tertiary)";
+
+  const timeColor = timeInfo.isExpired
+    ? "text-red-500"
+    : "text-foreground-subtle";
 
   return (
-    <Flex
-      justify="space-between"
-      align="center"
-      py={3}
-      px={4}
-      borderBottomWidth="1px"
-      borderColor="border.subtle"
-      _last={{ borderBottomWidth: 0 }}
-    >
-      <Stack gap={1}>
-        <Text fontSize="sm" fontWeight="medium">
-          {invitation.email}
-        </Text>
+    <div className="flex items-center justify-between border-border-subtle border-b px-4 py-3 last:border-b-0">
+      <div className="flex flex-col gap-1">
+        <p className="font-medium text-sm">{invitation.email}</p>
 
-        <HStack gap={2}>
-          <Badge
-            variant="outline"
-            w={18}
-            justifyContent="center"
-            color={accentColor}
-            borderColor={accentColor}
-            fontWeight="semibold"
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-flex w-[4.5rem] items-center justify-center rounded-md border px-2 py-0.5 font-semibold text-xs"
+            style={{ color: accentVar, borderColor: accentVar }}
           >
             {capitalizeFirstLetter(invitation.role)}
-          </Badge>
+          </span>
 
-          <Text
-            fontSize="xs"
-            color={timeInfo.isExpired ? "red.500" : "foreground.subtle"}
-          >
+          <span className={`text-xs ${timeColor}`}>
             Sent {timeInfo.sentAgo} ago
-          </Text>
+          </span>
 
-          <Text
-            fontSize="xs"
-            color={timeInfo.isExpired ? "red.500" : "foreground.subtle"}
-          >
+          <span className={`text-xs ${timeColor}`}>
             {timeInfo.expiresLabel}
-          </Text>
-        </HStack>
-      </Stack>
+          </span>
+        </div>
+      </div>
 
-      <HStack gap={1}>
+      <div className="flex items-center gap-1">
         <Button
           variant="ghost"
           size="sm"
@@ -121,7 +107,7 @@ const InvitationRow = ({ invitation, organizationId }: InvitationRowProps) => {
           disabled={isResending}
           aria-label={`Resend invitation to ${invitation.email}`}
         >
-          <Icon src={LuRefreshCw} w={4} h={4} />
+          <LuRefreshCw className="size-4" />
           Resend
         </Button>
 
@@ -132,11 +118,11 @@ const InvitationRow = ({ invitation, organizationId }: InvitationRowProps) => {
           disabled={isCancelling}
           aria-label={`Revoke invitation for ${invitation.email}`}
         >
-          <Icon src={LuX} w={4} h={4} />
+          <LuX className="size-4" />
           Revoke
         </Button>
-      </HStack>
-    </Flex>
+      </div>
+    </div>
   );
 };
 
@@ -158,17 +144,10 @@ const PendingInvitations = () => {
   if (!isOwner || allInvitations.length === 0) return null;
 
   return (
-    <Stack gap={2}>
-      <Text fontSize="lg" fontWeight="bold" px={4}>
-        Pending Invitations
-      </Text>
+    <div className="flex flex-col gap-2">
+      <p className="px-4 font-bold text-lg">Pending Invitations</p>
 
-      <Stack
-        borderWidth="1px"
-        borderColor="border.subtle"
-        borderRadius="md"
-        overflow="hidden"
-      >
+      <div className="flex flex-col overflow-hidden rounded-md border border-border-subtle">
         {allInvitations.map((invitation) => (
           <InvitationRow
             key={invitation.id}
@@ -176,8 +155,8 @@ const PendingInvitations = () => {
             organizationId={organizationId!}
           />
         ))}
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   );
 };
 
