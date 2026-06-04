@@ -71,6 +71,7 @@ const PinnedWorkspaces = () => {
             to="/workspaces/$workspaceSlug"
             params={{ workspaceSlug: org.slug }}
             role="group"
+            className="group"
           >
             <WorkspaceCard
               workspace={{
@@ -83,7 +84,7 @@ const PinnedWorkspaces = () => {
                   totalCount: projectCountsByOrgId[org.id],
                 },
               }}
-              minH={32}
+              className="min-h-32"
             />
           </Link>
         ))}

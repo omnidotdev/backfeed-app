@@ -1,10 +1,10 @@
-import { Badge, Flex, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuBuilding2, LuChevronRight, LuUser } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
 /**
  * Workspace/org data shape for display purposes.
@@ -21,7 +21,7 @@ interface WorkspaceData {
   };
 }
 
-interface Props extends FlexProps {
+interface Props extends ComponentProps<"div"> {
   /** Workspace details. */
   workspace: Partial<WorkspaceData>;
 }
@@ -29,73 +29,53 @@ interface Props extends FlexProps {
 /**
  * Workspace card.
  */
-const WorkspaceCard = ({ workspace, ...rest }: Props) => {
+const WorkspaceCard = ({ workspace, className, ...rest }: Props) => {
   const projectCount = workspace?.projects?.totalCount ?? 0;
   const isPersonal = workspace?.type === "personal";
 
   return (
-    <Flex
-      position="relative"
-      direction="column"
-      justify="space-between"
-      bgColor="background.default"
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor="border.subtle"
-      p={5}
-      cursor="pointer"
-      h="100%"
-      className={css({
-        transition: "all 0.15s ease",
-        _groupHover: {
-          borderColor: { base: "neutral.400", _dark: "neutral.500" },
-          bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
-          boxShadow: "0 4px 12px -2px oklch(0 0 0 / 0.08)",
-        },
-      })}
+    <div
+      className={cn(
+        "relative flex h-full cursor-pointer flex-col justify-between rounded-xl border border-border-subtle bg-background p-5 transition-all group-hover:border-neutral-400 group-hover:bg-neutral-50 group-hover:shadow-[0_4px_12px_-2px_oklch(0_0_0/0.08)] dark:group-hover:border-neutral-500 dark:group-hover:bg-neutral-800/50",
+        className,
+      )}
       {...rest}
     >
-      <Stack gap={3}>
-        <Flex align="center" gap={2}>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
           <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.3]">
             {workspace.name}
           </OverflowText>
 
-          <Badge
-            size="sm"
-            variant="outline"
-            colorPalette={isPersonal ? "neutral" : "blue"}
-            flexShrink={0}
+          <span
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1 rounded-md border px-2 py-0.5 text-xs",
+              isPersonal
+                ? "border-neutral-300 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"
+                : "border-blue-300 text-blue-600 dark:border-blue-800 dark:text-blue-400",
+            )}
           >
-            <Icon src={isPersonal ? LuUser : LuBuilding2} w={3} h={3} />
+            {isPersonal ? (
+              <LuUser className="size-3" />
+            ) : (
+              <LuBuilding2 className="size-3" />
+            )}
             {isPersonal ? "Personal" : "Team"}
-          </Badge>
-        </Flex>
+          </span>
+        </div>
 
-        <Flex align="center" gap={1.5} color="foreground.subtle" fontSize="sm">
-          <Icon src={HiOutlineFolder} w={4} h={4} />
-          <Text>
+        <div className="flex items-center gap-1.5 text-foreground-subtle text-sm">
+          <HiOutlineFolder className="size-4" />
+          <span>
             {projectCount} {projectCount === 1 ? "project" : "projects"}
-          </Text>
-        </Flex>
-      </Stack>
+          </span>
+        </div>
+      </div>
 
-      <Flex
-        align="center"
-        justify="flex-end"
-        mt={4}
-        color="foreground.subtle"
-        className={css({
-          transition: "all 0.15s ease",
-          _groupHover: {
-            color: "foreground.default",
-            transform: "translateX(2px)",
-          },
-        })}
-      >
-        <Icon src={LuChevronRight} w={4} h={4} />
-      </Flex>
-    </Flex>
+      <div className="mt-4 flex items-center justify-end text-foreground-subtle transition-all group-hover:translate-x-0.5 group-hover:text-foreground">
+        <LuChevronRight className="size-4" />
+      </div>
+    </div>
   );
 };
 
