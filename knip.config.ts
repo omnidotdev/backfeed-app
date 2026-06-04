@@ -42,6 +42,7 @@ const knipConfig: KnipConfig = {
     "class-variance-authority",
     "clsx",
     "tailwind-merge",
+    "lucide-react",
   ],
 };
 
