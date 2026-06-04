@@ -1,8 +1,8 @@
-import { Button, Center, Icon, Text, VStack } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import { HiOutlineHome } from "react-icons/hi2";
 import { LuArrowLeft } from "react-icons/lu";
 
+import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 
 import type { PropsWithChildren } from "react";
@@ -11,24 +11,24 @@ import type { PropsWithChildren } from "react";
  * 404 not found.
  */
 const NotFound = ({ children }: PropsWithChildren) => (
-  <Center h="100dvh" w="full" p={8}>
-    <VStack gap={8} textAlign="center">
-      <Text fontSize={{ base: "6xl", md: "7xl" }}>🔄</Text>
+  <div className="flex h-[100dvh] w-full items-center justify-center p-8">
+    <div className="flex flex-col items-center gap-8 text-center">
+      <p className="text-6xl md:text-7xl">🔄</p>
 
-      <VStack gap={2}>
-        <Text fontSize="xl" fontWeight="semibold" color="foreground.default">
+      <div className="flex flex-col items-center gap-2">
+        <p className="font-semibold text-foreground text-xl">
           {children ?? app.notFound.title}
-        </Text>
+        </p>
 
-        <Text color="foreground.muted" maxW="sm">
+        <p className="max-w-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
-        </Text>
-      </VStack>
+        </p>
+      </div>
 
-      <VStack gap={2}>
+      <div className="flex flex-col items-center gap-2">
         <Link to="/">
-          <Button size="lg" gap={2}>
-            <Icon src={HiOutlineHome} w={5} h={5} />
+          <Button size="lg">
+            <HiOutlineHome className="size-5" />
             {app.notFound.returnHome}
           </Button>
         </Link>
@@ -40,12 +40,12 @@ const NotFound = ({ children }: PropsWithChildren) => (
             window.history.back();
           }}
         >
-          <Icon src={LuArrowLeft} h={4} w={4} />
+          <LuArrowLeft className="size-4" />
           Go back
         </Button>
-      </VStack>
-    </VStack>
-  </Center>
+      </div>
+    </div>
+  </div>
 );
 
 export default NotFound;
