@@ -147,7 +147,7 @@ function PricingPage() {
 
       <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
 
-      <PricingFAQ w="100%" maxW="5xl" alignSelf="center" mb={6} px={4} />
+      <PricingFAQ className="mb-6 w-full max-w-5xl self-center px-4" />
     </Stack>
   );
 }

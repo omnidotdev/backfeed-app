@@ -1,20 +1,32 @@
-import { Accordion, Stack, Text } from "@omnidev/sigil";
-
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "@/components/ui/accordion";
 import app from "@/lib/config/app.config";
+import cn from "@/lib/utils";
 
-import type { StackProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
 /**
  * Frequently asked questions about pricing.
  */
-const PricingFAQ = (props: StackProps) => (
-  <Stack {...props}>
-    <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center" mb={4}>
+const PricingFAQ = ({ className, ...rest }: ComponentProps<"div">) => (
+  <div className={cn("flex flex-col gap-2", className)} {...rest}>
+    <h2 className="mb-4 text-center font-bold text-2xl">
       {app.pricingPage.pricingFaq.FAQ}
-    </Text>
+    </h2>
 
-    <Accordion items={app.pricingPage.pricingFaq.items} />
-  </Stack>
+    <AccordionRoot collapsible>
+      {app.pricingPage.pricingFaq.items.map(({ title, body }) => (
+        <AccordionItem key={title} value={title}>
+          <AccordionItemTrigger>{title}</AccordionItemTrigger>
+          <AccordionItemContent>{body}</AccordionItemContent>
+        </AccordionItem>
+      ))}
+    </AccordionRoot>
+  </div>
 );
 
 export default PricingFAQ;
