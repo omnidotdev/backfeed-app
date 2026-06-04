@@ -1,101 +1,55 @@
-import { Flex, HStack, Icon, Link as SigilLink, sigil } from "@omnidev/sigil";
 import { Link, useLocation } from "@tanstack/react-router";
 import { LuExternalLink } from "react-icons/lu";
 
 import LogoLink from "@/components/core/LogoLink";
 import HeaderActions from "@/components/layout/HeaderActions";
 import app from "@/lib/config/app.config";
+import cn from "@/lib/utils";
 
 /**
  * Layout header.
  */
 const Header = () => {
   const { pathname } = useLocation();
+  const isPricing = pathname === "/pricing";
 
   return (
-    <sigil.header
-      display="flex"
-      w="full"
-      h="full"
-      py={2}
-      borderBottomWidth="1px"
-      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-      bgColor={{ base: "white/90", _dark: "neutral.900/80" }}
-      backdropFilter="blur(12px)"
-      style={{ WebkitBackdropFilter: "blur(12px)" }}
-      _dark={{
-        backdropFilter: "blur(16px)",
-        boxShadow: "0 1px 0 0 rgba(255, 255, 255, 0.05)",
-      }}
-    >
-      <Flex align="center" justify="space-between" w="full" px={4}>
-        <Flex gap={4} alignItems="center">
+    <header className="flex h-full w-full border-neutral-200 border-b bg-white/90 py-2 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/80 dark:shadow-[0_1px_0_0_rgba(255,255,255,0.05)] dark:backdrop-blur-lg">
+      <div className="flex w-full items-center justify-between px-4">
+        <div className="flex items-center gap-4">
           <LogoLink width={12} />
 
-          <HStack gap={1}>
-            <Flex display={{ base: "none", sm: "flex" }}>
+          <div className="flex items-center gap-1">
+            <div className="hidden sm:flex">
               <Link to="/pricing" role="group">
-                <Flex
-                  h={10}
-                  px={4}
-                  align="center"
-                  borderRadius="md"
-                  color={{
-                    base:
-                      pathname === "/pricing"
-                        ? "brand.primary.600"
-                        : "foreground.muted",
-                    _dark:
-                      pathname === "/pricing"
-                        ? "brand.primary.400"
-                        : "neutral.400",
-                  }}
-                  bgColor={
-                    pathname === "/pricing"
-                      ? {
-                          base: "brand.primary.50",
-                          _dark: "brand.primary.950/30",
-                        }
-                      : "transparent"
-                  }
-                  transition="all 0.2s ease"
-                  _hover={{
-                    color: {
-                      base: "brand.primary.600",
-                      _dark: "brand.primary.400",
-                    },
-                  }}
+                <div
+                  className={cn(
+                    "flex h-10 items-center rounded-md px-4 transition-colors hover:text-[var(--colors-brand-primary-600)] dark:hover:text-[var(--colors-brand-primary-400)]",
+                    isPricing
+                      ? "bg-[var(--colors-brand-primary-50)] text-[var(--colors-brand-primary-600)] dark:bg-[var(--colors-brand-primary-950)]/30 dark:text-[var(--colors-brand-primary-400)]"
+                      : "text-foreground-muted dark:text-neutral-400",
+                  )}
                 >
                   Pricing
-                </Flex>
+                </div>
               </Link>
-            </Flex>
+            </div>
 
-            <SigilLink
+            <a
               href={app.docsUrl}
-              display={{ base: "none", sm: "flex" }}
-              color={{ base: "foreground.muted", _dark: "neutral.400" }}
-              _hover={{
-                color: {
-                  base: "brand.primary.600",
-                  _dark: "brand.primary.400",
-                },
-              }}
-              isExternal
-              textDecoration="none"
-              h={10}
-              px={4}
-              transition="all 0.2s ease"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden h-10 items-center gap-1 px-4 text-foreground-muted transition-colors hover:text-[var(--colors-brand-primary-600)] sm:flex dark:text-neutral-400 dark:hover:text-[var(--colors-brand-primary-400)]"
             >
               Docs
-              <Icon src={LuExternalLink} h={3.5} w={3.5} />
-            </SigilLink>
-          </HStack>
-        </Flex>
+              <LuExternalLink className="size-3.5" />
+            </a>
+          </div>
+        </div>
 
         <HeaderActions />
-      </Flex>
-    </sigil.header>
+      </div>
+    </header>
   );
 };
 
