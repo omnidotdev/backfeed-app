@@ -1,6 +1,6 @@
-import { Grid, GridItem, Input } from "@omnidev/sigil";
 import { getRouteApi } from "@tanstack/react-router";
 
+import { Input } from "@/components/ui/input";
 import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 
@@ -17,16 +17,13 @@ const ProjectFilters = () => {
   const onSearchChange = useHandleSearch();
 
   return (
-    <Grid w="full">
-      <GridItem>
-        <Input
-          borderColor="border.subtle"
-          placeholder={app.projectsPage.filters.search.placeholder}
-          defaultValue={search}
-          onChange={onSearchChange}
-        />
-      </GridItem>
-    </Grid>
+    <div className="w-full">
+      <Input
+        placeholder={app.projectsPage.filters.search.placeholder}
+        defaultValue={search}
+        onChange={onSearchChange}
+      />
+    </div>
   );
 };
 
