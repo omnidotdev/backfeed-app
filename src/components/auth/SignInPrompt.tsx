@@ -1,11 +1,15 @@
-import { Box, Button, Tooltip } from "@omnidev/sigil";
-
+import { Button } from "@/components/ui/button";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import signIn from "@/lib/auth/signIn";
 
-import type { ButtonProps } from "@omnidev/sigil";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
-interface Props extends Omit<ButtonProps, "onClick" | "children"> {
+interface Props extends Omit<ComponentProps<typeof Button>, "children"> {
   /** Action description (e.g., "vote", "comment"). */
   action: string;
   /** Custom content to render as the trigger. If provided, renders as a clickable element instead of a button. */
@@ -22,34 +26,28 @@ const SignInPrompt = ({ action, children, ...rest }: Props) => {
     signIn({ redirectUrl: returnUrl });
   };
 
-  // If children is provided, render it directly as the trigger (no button wrapper)
-  if (children) {
-    return (
-      <Tooltip
-        hasArrow={false}
-        triggerProps={{ style: { all: "unset" } }}
-        trigger={
-          <Box onClick={handleClick} cursor="pointer">
-            {children}
-          </Box>
-        }
-      >
-        Sign in to {action}
-      </Tooltip>
-    );
-  }
-
   return (
-    <Tooltip
-      hasArrow={false}
-      trigger={
-        <Button onClick={handleClick} variant="outline" size="sm" {...rest}>
-          Sign in to {action}
-        </Button>
-      }
-    >
-      Sign in to {action}
-    </Tooltip>
+    <TooltipRoot>
+      <TooltipTrigger asChild>
+        {children ? (
+          <button
+            type="button"
+            onClick={handleClick}
+            className="cursor-pointer"
+          >
+            {children}
+          </button>
+        ) : (
+          <Button onClick={handleClick} variant="outline" size="sm" {...rest}>
+            Sign in to {action}
+          </Button>
+        )}
+      </TooltipTrigger>
+
+      <TooltipPositioner>
+        <TooltipContent>Sign in to {action}</TooltipContent>
+      </TooltipPositioner>
+    </TooltipRoot>
   );
 };
 
