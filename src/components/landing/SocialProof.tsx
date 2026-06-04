@@ -1,94 +1,35 @@
-import { Flex, Text } from "@omnidev/sigil";
-
 /**
  * Social proof section - simplified for early stage.
  */
 const SocialProof = () => (
-  <Flex
-    direction="column"
-    w="full"
-    py={{ base: 12, md: 16 }}
-    px={{ base: 6, md: 12 }}
-    align="center"
-    bgColor="background.default"
-  >
-    <Flex
-      gap={{ base: 4, md: 8 }}
-      align="center"
-      justify="center"
-      flexWrap="wrap"
-    >
-      <Flex
-        align="center"
-        gap={2}
-        px={4}
-        py={2}
-        borderRadius="full"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        bgColor={{ base: "neutral.50", _dark: "neutral.900/50" }}
-      >
-        <Text fontSize="sm" fontWeight="medium" color="foreground.muted">
+  <div className="flex w-full flex-col items-center bg-background px-6 py-12 md:px-12 md:py-16">
+    <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+      <div className="flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <span className="font-medium text-muted-foreground text-sm">
           Open Source
-        </Text>
-      </Flex>
+        </span>
+      </div>
 
-      <Flex
-        align="center"
-        gap={2}
-        px={4}
-        py={2}
-        borderRadius="full"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        bgColor={{ base: "neutral.50", _dark: "neutral.900/50" }}
-      >
-        <Text fontSize="sm" fontWeight="medium" color="foreground.muted">
+      <div className="flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <span className="font-medium text-muted-foreground text-sm">
           Self-hostable
-        </Text>
-      </Flex>
+        </span>
+      </div>
 
-      <Flex
-        align="center"
-        gap={2}
-        px={4}
-        py={2}
-        borderRadius="full"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        bgColor={{ base: "neutral.50", _dark: "neutral.900/50" }}
-      >
-        <Text fontSize="sm" fontWeight="medium" color="foreground.muted">
+      <div className="flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <span className="font-medium text-muted-foreground text-sm">
           Privacy-first
-        </Text>
-      </Flex>
+        </span>
+      </div>
 
-      <Flex
-        align="center"
-        gap={2}
-        px={4}
-        py={2}
-        borderRadius="full"
-        borderWidth="1px"
-        borderColor={{ base: "green.200", _dark: "green.900" }}
-        bgColor={{ base: "green.50", _dark: "green.950/50" }}
-      >
-        <Flex
-          w={2}
-          h={2}
-          borderRadius="full"
-          bgColor={{ base: "green.500", _dark: "green.400" }}
-        />
-        <Text
-          fontSize="sm"
-          fontWeight="medium"
-          color={{ base: "green.700", _dark: "green.400" }}
-        >
+      <div className="flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 dark:border-green-900 dark:bg-green-950/50">
+        <div className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400" />
+        <span className="font-medium text-green-700 text-sm dark:text-green-400">
           99.9% Uptime
-        </Text>
-      </Flex>
-    </Flex>
-  </Flex>
+        </span>
+      </div>
+    </div>
+  </div>
 );
 
 export default SocialProof;
