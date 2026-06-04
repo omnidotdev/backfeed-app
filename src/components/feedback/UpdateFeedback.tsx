@@ -213,8 +213,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
             <SubmitForm
               action={updatePostDetails.action}
               isPending={isPending}
-              w="fit-content"
-              placeSelf="flex-end"
+              className="w-fit place-self-end"
               onClick={(evt) => evt.stopPropagation()}
             />
           </AppForm>

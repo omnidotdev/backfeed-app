@@ -237,7 +237,7 @@ const CreateProject = ({ workspaceSlug }: Props) => {
           <SubmitForm
             action={app.dashboardPage.cta.newProject.action}
             isPending={isPending}
-            flex={{ sm: 1 }}
+            className="sm:flex-1"
           />
         </AppForm>
       </sigil.form>

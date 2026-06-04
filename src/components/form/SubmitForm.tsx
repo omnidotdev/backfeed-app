@@ -1,13 +1,14 @@
-import { Alert, Button, Icon, Stack } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { IoWarningOutline } from "react-icons/io5";
 
+import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import { useFormContext } from "@/lib/hooks/useForm";
+import cn from "@/lib/utils";
 
-import type { ButtonProps, StackProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
-interface Props extends ButtonProps {
+interface Props extends ComponentProps<typeof Button> {
   /** Action labels for submit button states. */
   action: {
     submit: string;
@@ -17,8 +18,8 @@ interface Props extends ButtonProps {
   isPending?: boolean;
   /** Whether to inform the user of unsaved changes. */
   showAlert?: boolean;
-  /** Container props. */
-  containerProps?: StackProps;
+  /** Container class names. */
+  containerClassName?: string;
 }
 
 /**
@@ -29,7 +30,7 @@ const SubmitForm = ({
   action,
   isPending = false,
   showAlert = false,
-  containerProps,
+  containerClassName,
   ...rest
 }: Props) => {
   const {
@@ -47,11 +48,13 @@ const SubmitForm = ({
   return (
     <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
       {([canSubmit, isSubmitting]) => (
-        <Stack direction={{ base: "column", sm: "row" }} {...containerProps}>
+        <div
+          className={cn("flex flex-col gap-2 sm:flex-row", containerClassName)}
+        >
           <Button
             type="submit"
-            minW="fit-content"
             tabIndex={0}
+            className="min-w-fit"
             disabled={
               !canSubmit || !isDirty || isSubmitting || isPending || disabled
             }
@@ -61,19 +64,12 @@ const SubmitForm = ({
           </Button>
 
           {isDirty && showAlert && (
-            <Alert
-              variant="warning"
-              description={app.unsavedChanges.description}
-              icon={<Icon src={IoWarningOutline} h={4} w={4} />}
-              borderRadius="sm"
-              p={2}
-              alignItems="center"
-              justifyContent={{ baseToSm: "center" }}
-              w={{ sm: "fit-content" }}
-              gap={1}
-            />
+            <div className="flex items-center justify-center gap-1 rounded-sm bg-amber-50 p-2 text-amber-700 sm:w-fit dark:bg-amber-950/30 dark:text-amber-400">
+              <IoWarningOutline className="size-4" />
+              {app.unsavedChanges.description}
+            </div>
           )}
-        </Stack>
+        </div>
       )}
     </Subscribe>
   );

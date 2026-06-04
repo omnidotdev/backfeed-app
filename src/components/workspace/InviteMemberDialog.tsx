@@ -157,7 +157,7 @@ const InviteMemberDialog = () => {
               submit: "Send Invitation",
             }}
             isPending={isPending}
-            w="full"
+            className="w-full"
           />
         </form.AppForm>
       </sigil.form>

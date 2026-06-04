@@ -244,8 +244,7 @@ const CreateFeedback = () => {
             <SubmitForm
               action={app.projectPage.projectFeedback.action}
               isPending={isPending}
-              w="fit-content"
-              placeSelf="flex-end"
+              className="w-fit place-self-end"
             />
           </AppForm>
         </Stack>

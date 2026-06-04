@@ -189,8 +189,7 @@ const UpdateProject = () => {
             <form.SubmitForm
               action={updateProjectDetails.action}
               isPending={!!isUpdatingProject}
-              mt={4}
-              ml="auto"
+              className="mt-4 ml-auto"
             />
           </form.AppForm>
         </sigil.form>
