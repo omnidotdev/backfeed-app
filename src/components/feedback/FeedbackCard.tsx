@@ -359,7 +359,9 @@ const FeedbackCard = ({
             >
               <StatusBadge
                 status={feedback.statusTemplate!}
-                cursor={canManageFeedback ? "pointer" : "default"}
+                className={
+                  canManageFeedback ? "cursor-pointer" : "cursor-default"
+                }
                 onClick={(evt) => evt.stopPropagation()}
               >
                 {canManageFeedback && <Icon src={LuChevronDown} />}

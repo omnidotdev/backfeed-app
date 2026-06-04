@@ -1,10 +1,11 @@
-import { Flex, Text } from "@omnidev/sigil";
 import Color from "colorjs.io";
 
-import type { FlexProps } from "@omnidev/sigil";
+import cn from "@/lib/utils";
+
+import type { ComponentProps } from "react";
 import type { StatusTemplate } from "@/generated/graphql";
 
-interface Props extends FlexProps {
+interface Props extends ComponentProps<"div"> {
   /** The status template for the post. */
   status: Partial<StatusTemplate> | null;
 }
@@ -28,28 +29,27 @@ const getBackgroundColor = (
 /*
  * Badge representing the status for feedback.
  */
-const StatusBadge = ({ status, children, ...rest }: Props) => {
+const StatusBadge = ({ status, children, className, ...rest }: Props) => {
   const bgColor = getBackgroundColor(status?.color);
 
   return (
-    <Flex
-      align="center"
-      gap={1}
-      px={2.5}
-      py={1}
-      borderRadius="full"
+    <div
+      className={cn(
+        "flex items-center gap-1 rounded-full px-2.5 py-1",
+        className,
+      )}
       style={{
         backgroundColor: bgColor,
         color: status?.color ?? undefined,
       }}
       {...rest}
     >
-      <Text fontSize="xs" fontWeight="medium" whiteSpace="nowrap">
+      <span className="whitespace-nowrap font-medium text-xs">
         {status?.displayName ?? "Unknown"}
-      </Text>
+      </span>
 
       {children}
-    </Flex>
+    </div>
   );
 };
 
