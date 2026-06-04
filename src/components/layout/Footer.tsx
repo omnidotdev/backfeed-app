@@ -1,144 +1,87 @@
-import { Divider, Flex, Icon, Link, Text, css, sigil } from "@omnidev/sigil";
 import { FaDiscord, FaGithub, FaXTwitter as FaX } from "react-icons/fa6";
 
 import app from "@/lib/config/app.config";
+
+const linkClass =
+  "text-neutral-500 transition-colors hover:text-foreground dark:text-neutral-400 dark:hover:text-neutral-200";
 
 /**
  * Layout footer.
  */
 const Footer = () => (
-  <sigil.footer
-    display="flex"
-    flexDirection={{ base: "column", sm: "row" }}
-    justifyContent="center"
-    alignItems="center"
-    gap={4}
-    py={6}
-    px={4}
-    bottom={0}
-    w="full"
-    borderTopWidth="1px"
-    borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-    bgColor={{ base: "neutral.50", _dark: "neutral.950" }}
-  >
+  <footer className="bottom-0 flex w-full flex-col items-center justify-center gap-4 border-neutral-200 border-t bg-neutral-50 px-4 py-6 sm:flex-row dark:border-neutral-800 dark:bg-neutral-950">
     {/* Made with megaphone */}
-    <Text fontSize="sm" color={{ base: "neutral.500", _dark: "neutral.400" }}>
+    <p className="text-neutral-500 text-sm dark:text-neutral-400">
       Made with 📣 by{" "}
-      <Link
-        isExternal
+      <a
         href="https://omni.dev"
-        color={{ base: "foreground.default", _dark: "neutral.200" }}
-        textDecoration="none"
-        transition="color 0.2s ease"
-        className={css({
-          _hover: {
-            color: { base: "brand.primary.600", _dark: "brand.primary.400" },
-          },
-        })}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-foreground transition-colors hover:text-[var(--colors-brand-primary-600)] dark:text-neutral-200 dark:hover:text-[var(--colors-brand-primary-400)]"
       >
         {app.organization.name}
-      </Link>
-    </Text>
+      </a>
+    </p>
 
-    <Divider
-      orientation="vertical"
-      h={4}
-      display={{ base: "none", sm: "block" }}
-    />
+    <div className="hidden h-4 w-px bg-border sm:block" />
 
     {/* Links */}
-    <Flex gap={4} align="center">
-      <Link
-        isExternal
+    <div className="flex items-center gap-4">
+      <a
         href={app.docsUrl}
-        color={{ base: "neutral.500", _dark: "neutral.400" }}
-        fontSize="sm"
-        textDecoration="none"
-        transition="color 0.2s ease"
-        className={css({
-          _hover: {
-            color: { base: "foreground.default", _dark: "neutral.200" },
-          },
-        })}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`text-sm ${linkClass}`}
       >
         Docs
-      </Link>
+      </a>
 
-      <Link
-        isExternal
+      <a
         href={app.feedbackUrl}
-        color={{ base: "neutral.500", _dark: "neutral.400" }}
-        fontSize="sm"
-        textDecoration="none"
-        transition="color 0.2s ease"
-        className={css({
-          _hover: {
-            color: { base: "foreground.default", _dark: "neutral.200" },
-          },
-        })}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`text-sm ${linkClass}`}
       >
         Feedback
-      </Link>
+      </a>
 
-      <Flex gap={3}>
-        <Link
-          isExternal
+      <div className="flex gap-3">
+        <a
           href={app.socials.github}
-          color={{ base: "neutral.500", _dark: "neutral.400" }}
-          textDecoration="none"
-          transition="color 0.2s ease"
-          className={css({
-            _hover: {
-              color: { base: "foreground.default", _dark: "neutral.200" },
-            },
-          })}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
         >
-          <Icon src={FaGithub} h={5} w={5} />
-        </Link>
+          <FaGithub className="size-5" />
+        </a>
 
-        <Link
-          isExternal
+        <a
           href={app.socials.discord}
-          color={{ base: "neutral.500", _dark: "neutral.400" }}
-          textDecoration="none"
-          transition="color 0.2s ease"
-          className={css({
-            _hover: {
-              color: { base: "foreground.default", _dark: "neutral.200" },
-            },
-          })}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
         >
-          <Icon src={FaDiscord} h={5} w={5} />
-        </Link>
+          <FaDiscord className="size-5" />
+        </a>
 
-        <Link
-          isExternal
+        <a
           href={app.socials.x}
-          color={{ base: "neutral.500", _dark: "neutral.400" }}
-          textDecoration="none"
-          transition="color 0.2s ease"
-          className={css({
-            _hover: {
-              color: { base: "foreground.default", _dark: "neutral.200" },
-            },
-          })}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
         >
-          <Icon src={FaX} h={4} w={4} />
-        </Link>
-      </Flex>
-    </Flex>
+          <FaX className="size-4" />
+        </a>
+      </div>
+    </div>
 
-    <Divider
-      orientation="vertical"
-      h={4}
-      display={{ base: "none", sm: "block" }}
-    />
+    <div className="hidden h-4 w-px bg-border sm:block" />
 
     {/* Copyright */}
-    <Text fontSize="sm" color={{ base: "neutral.500", _dark: "neutral.400" }}>
+    <p className="text-neutral-500 text-sm dark:text-neutral-400">
       &copy; {new Date().getFullYear()} {app.organization.name}
-    </Text>
-  </sigil.footer>
+    </p>
+  </footer>
 );
 
 export default Footer;
