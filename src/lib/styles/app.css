@@ -21,6 +21,9 @@
   --color-accent: var(--colors-accent-default);
   --color-accent-foreground: var(--colors-accent-foreground);
   --color-destructive: var(--colors-status-error, oklch(0.577 0.245 27.325));
+  --color-card-foreground: var(--colors-foreground-default);
+  --color-input: var(--colors-border-default);
+  --color-ring: var(--colors-brand-primary);
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.625rem;
