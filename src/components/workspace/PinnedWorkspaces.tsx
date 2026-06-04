@@ -1,4 +1,3 @@
-import { Flex, Grid, Icon, Text } from "@omnidev/sigil";
 import { useQueries } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { LuBuilding2, LuPlus } from "react-icons/lu";
@@ -44,47 +43,28 @@ const PinnedWorkspaces = () => {
 
   if (!pinnedOrgs.length) {
     return (
-      <Flex
-        direction="column"
-        align="center"
-        justify="center"
-        textAlign="center"
-        borderRadius="xl"
-        borderWidth="1px"
-        borderStyle="dashed"
-        borderColor="border.subtle"
-        gap={3}
-        p={8}
-      >
-        <Icon src={LuBuilding2} w={8} h={8} color="foreground.subtle" />
+      <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-border-subtle border-dashed p-8 text-center">
+        <LuBuilding2 className="size-8 text-foreground-subtle" />
 
-        <Text color="foreground.subtle" fontSize="sm">
+        <p className="text-foreground-subtle text-sm">
           {app.dashboardPage.workspaces.emptyState.message}
-        </Text>
+        </p>
 
         <a href={AUTH_BASE_URL}>
-          <Flex
-            align="center"
-            gap={1.5}
-            color="foreground.default"
-            fontSize="sm"
-            fontWeight="medium"
-            mt={1}
-            _hover={{ textDecoration: "underline" }}
-          >
-            <Icon src={LuPlus} w={4} h={4} />
+          <span className="mt-1 flex items-center gap-1.5 font-medium text-foreground text-sm hover:underline">
+            <LuPlus className="size-4" />
             Create Organization
-          </Flex>
+          </span>
         </a>
-      </Flex>
+      </div>
     );
   }
 
   const hasMore = organizations.length > 4;
 
   return (
-    <Flex direction="column" gap={3}>
-      <Grid gap={4} columns={{ base: 1, sm: 2 }}>
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {pinnedOrgs.map((org) => (
           <Link
             key={org.id}
@@ -110,56 +90,28 @@ const PinnedWorkspaces = () => {
 
         {pinnedOrgs.length < 4 && (
           <a href={AUTH_BASE_URL}>
-            <Flex
-              direction="column"
-              align="center"
-              justify="center"
-              textAlign="center"
-              borderRadius="xl"
-              borderWidth="1px"
-              borderStyle="dashed"
-              borderColor="border.subtle"
-              gap={2}
-              p={5}
-              minH={32}
-              color="foreground.subtle"
-              transition="all 0.15s ease"
-              _hover={{
-                borderColor: "border.default",
-                color: "foreground.default",
-              }}
-            >
-              <Icon src={LuPlus} w={5} h={5} />
-              <Text fontSize="sm" fontWeight="medium">
-                Add Workspace
-              </Text>
-              <Text fontSize="xs" color="foreground.muted">
+            <div className="flex min-h-32 flex-col items-center justify-center gap-2 rounded-xl border border-border-subtle border-dashed p-5 text-center text-foreground-subtle transition-all hover:border-border hover:text-foreground">
+              <LuPlus className="size-5" />
+              <span className="font-medium text-sm">Add Workspace</span>
+              <span className="text-muted-foreground text-xs">
                 via Omni Organizations
-              </Text>
-            </Flex>
+              </span>
+            </div>
           </a>
         )}
-      </Grid>
+      </div>
 
       {hasMore && session?.user?.identityProviderId && (
         <Link
           to="/profile/$userId/workspaces"
           params={{ userId: session.user.identityProviderId }}
         >
-          <Flex
-            align="center"
-            justify="center"
-            gap={1.5}
-            color="foreground.subtle"
-            fontSize="sm"
-            fontWeight="medium"
-            _hover={{ color: "foreground.default" }}
-          >
+          <span className="flex items-center justify-center gap-1.5 font-medium text-foreground-subtle text-sm hover:text-foreground">
             View all {organizations.length} workspaces
-          </Flex>
+          </span>
         </Link>
       )}
-    </Flex>
+    </div>
   );
 };
 
