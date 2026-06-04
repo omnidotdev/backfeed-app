@@ -27,6 +27,8 @@
   /* Additional Sigil semantic tokens used across the app */
   --color-foreground-subtle: var(--colors-foreground-subtle);
   --color-border-subtle: var(--colors-border-subtle);
+  --color-popover: var(--colors-background-card);
+  --color-popover-foreground: var(--colors-foreground-default);
   --color-background-subtle: var(--colors-background-subtle);
   --color-background-emphasized: var(--colors-background-emphasized);
   --radius-sm: 0.375rem;
