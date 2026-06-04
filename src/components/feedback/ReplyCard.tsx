@@ -1,23 +1,28 @@
-import { Avatar, Circle, HStack, Stack, Text, sigil } from "@omnidev/sigil";
 import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import {
   infiniteCommentsOptions,
   infiniteRepliesOptions,
 } from "@/lib/options/comments";
+import cn from "@/lib/utils";
 
-import type { HstackProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { ReplyFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
-interface Props extends HstackProps {
+interface Props extends ComponentProps<"div"> {
   /** Reply. */
   reply: ReplyFragment;
 }
@@ -25,7 +30,7 @@ interface Props extends HstackProps {
 /**
  * Reply card.
  */
-const ReplyCard = ({ reply, ...rest }: Props) => {
+const ReplyCard = ({ reply, className, ...rest }: Props) => {
   const { session, queryClient, hasAdminPrivileges } =
     feedbackRoute.useRouteContext();
   const { feedbackId } = feedbackRoute.useParams();
@@ -54,52 +59,46 @@ const ReplyCard = ({ reply, ...rest }: Props) => {
   const isSender = reply.user?.rowId === session?.user?.rowId;
 
   return (
-    <HStack
-      position="relative"
-      borderRadius="sm"
-      bgColor="card-item"
-      gap={0}
-      p={2}
-      opacity={actionIsPending ? 0.5 : 1}
+    <div
+      className={cn(
+        "relative flex items-center rounded-sm bg-card p-2",
+        actionIsPending && "opacity-50",
+        className,
+      )}
       {...rest}
     >
-      <HStack pl={{ baseToSm: 2 }}>
-        <Avatar
-          imageSrc={reply.user?.avatarUrl ?? undefined}
-          name={reply.user?.username}
-          size="xs"
-          placeSelf="flex-start"
-          display={{ baseToSm: "none" }}
-        />
+      <div className="flex items-center gap-2 pl-2 sm:pl-0">
+        <AvatarRoot size="xs" className="hidden self-start sm:flex">
+          <AvatarImage src={reply.user?.avatarUrl ?? undefined} alt="" />
+          <AvatarFallback>
+            {reply.user?.username?.[0]?.toUpperCase()}
+          </AvatarFallback>
+        </AvatarRoot>
 
-        <Stack mt={1}>
-          <HStack>
-            <Text fontWeight="semibold" fontSize={{ baseToSm: "sm" }}>
+        <div className="mt-1 flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-sm">
               {reply.user?.username}
-            </Text>
+            </span>
 
-            <Circle size={1} bgColor="foreground.subtle" />
+            <div className="size-1 rounded-full bg-foreground-subtle" />
 
-            <Text fontSize={{ base: "xs", sm: "sm" }} color="foreground.muted">
+            <span className="text-muted-foreground text-xs sm:text-sm">
               {dayjs(reply.createdAt).fromNow()}
-            </Text>
-          </HStack>
+            </span>
+          </div>
 
-          <Text
-            color="foreground.muted"
-            wordBreak="break-word"
-            fontSize={{ baseToSm: "sm" }}
-          >
+          <p className="break-words text-muted-foreground text-sm">
             {reply.message?.split("\n").map((line, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-              <sigil.span key={index}>
+              <span key={index}>
                 {line}
                 <br />
-              </sigil.span>
+              </span>
             ))}
-          </Text>
-        </Stack>
-      </HStack>
+          </p>
+        </div>
+      </div>
 
       {(isSender || hasAdminPrivileges) && (
         <DestructiveAction
@@ -121,7 +120,7 @@ const ReplyCard = ({ reply, ...rest }: Props) => {
           }}
         />
       )}
-    </HStack>
+    </div>
   );
 };
 

@@ -95,8 +95,7 @@ const Replies = ({ commentId, ...rest }: Props) => {
                 <ReplyCard
                   key={reply?.rowId}
                   reply={reply!}
-                  w="full"
-                  minH={21}
+                  className="min-h-[5.25rem] w-full"
                 />
               ))}
 
