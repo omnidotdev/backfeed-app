@@ -1,19 +1,18 @@
-import {
-  Button,
-  Collapsible,
-  Divider,
-  Flex,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { FiChevronRight } from "react-icons/fi";
 
+import { Button } from "@/components/ui/button";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import useSidebarNavigationItems from "@/lib/hooks/useSidebarNavigationItems";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+import cn from "@/lib/utils";
+
+const navButton = "w-full justify-between rounded-none bg-background-subtle";
 
 /**
  * Sidebar navigation.
@@ -24,201 +23,196 @@ const SidebarNavigation = () => {
     type: DialogType.MobileSidebar,
   });
 
-  const {
-    isOpen: isWorkspaceContentOpen,
-    onToggle: toggleIsWorkspaceContentOpen,
-  } = useDisclosure({
-    defaultIsOpen: true,
-  });
-
-  const { isOpen: isProjectContentOpen, onToggle: toggleisProjectContentOpen } =
-    useDisclosure({
-      defaultIsOpen: true,
-    });
+  const [isWorkspaceContentOpen, setIsWorkspaceContentOpen] = useState(true);
+  const [isProjectContentOpen, setIsProjectContentOpen] = useState(true);
 
   return (
-    <Stack mt={4} gap={2} w="full" flex={1}>
+    <div className="mt-4 flex w-full flex-1 flex-col gap-2">
       {routes.map(
-        ({ to, params, label, isActive, isCollapsible, children, icon }) =>
+        ({
+          to,
+          params,
+          label,
+          isActive,
+          isCollapsible,
+          children,
+          icon: Icon,
+        }) =>
           isCollapsible ? (
-            <Collapsible
+            <CollapsibleRoot
               key={label}
               unmountOnExit
               open={isWorkspaceContentOpen}
               onOpenChange={() => {
-                toggleIsWorkspaceContentOpen();
-                isProjectContentOpen && toggleisProjectContentOpen();
+                setIsWorkspaceContentOpen((open) => !open);
+                if (isProjectContentOpen) setIsProjectContentOpen(false);
               }}
-              trigger={
+            >
+              <CollapsibleTrigger asChild>
                 <Button
-                  justifyContent="space-between"
                   variant="ghost"
-                  backgroundColor="background.subtle"
-                  w="full"
-                  color={isActive ? "brand.primary" : "inherit"}
+                  className={cn(navButton, isActive && "text-primary")}
                 >
-                  <HStack>
-                    {icon && <Icon src={icon} />}
+                  <span className="flex items-center gap-2">
+                    {Icon && <Icon className="size-4" />}
+                    <span className="text-left">{label}</span>
+                  </span>
 
-                    <Text textAlign="left">{label}</Text>
-                  </HStack>
-
-                  <Flex
-                    transitionDuration="normal"
-                    transform={
-                      isWorkspaceContentOpen ? "rotate(90deg)" : "none"
-                    }
-                  >
-                    <Icon src={FiChevronRight} />
-                  </Flex>
-                </Button>
-              }
-            >
-              <Flex w="full" gap={2}>
-                <Divider
-                  orientation="vertical"
-                  paddingInline={2}
-                  ml={2.5}
-                  h="auto"
-                />
-
-                <Stack w="full" flex={1} py={2} pb={0}>
-                  {children
-                    ?.filter(({ isVisible }) => isVisible)
-                    .map(
-                      ({
-                        to,
-                        params,
-                        label,
-                        isActive,
-                        isCollapsible,
-                        children,
-                        icon,
-                      }) =>
-                        isCollapsible ? (
-                          <Collapsible
-                            key={label}
-                            unmountOnExit
-                            open={isProjectContentOpen}
-                            onOpenChange={toggleisProjectContentOpen}
-                            trigger={
-                              <Button
-                                justifyContent="space-between"
-                                variant="ghost"
-                                backgroundColor="background.subtle"
-                                w="full"
-                                color={isActive ? "brand.primary" : "inherit"}
-                              >
-                                <HStack>
-                                  {icon && <Icon src={icon} />}
-
-                                  <Text textAlign="left">{label}</Text>
-                                </HStack>
-
-                                <Flex
-                                  transitionDuration="normal"
-                                  transform={
-                                    isProjectContentOpen
-                                      ? "rotate(90deg)"
-                                      : "none"
-                                  }
-                                >
-                                  <Icon src={FiChevronRight} />
-                                </Flex>
-                              </Button>
-                            }
-                          >
-                            <Flex w="full" gap={2}>
-                              <Divider orientation="vertical" w={7} h="auto" />
-
-                              <Stack w="full" flex={1} p={2}>
-                                {children
-                                  ?.filter(
-                                    ({ isVisible, to }) => isVisible && !!to,
-                                  )
-                                  .map(({ to, params, label, isActive }) => (
-                                    <Flex key={label} display="block">
-                                      <Link
-                                        key={label}
-                                        to={to}
-                                        params={params}
-                                        onClick={() =>
-                                          setIsMobileSidebarOpen(false)
-                                        }
-                                      >
-                                        <Button
-                                          disabled={isActive}
-                                          variant="ghost"
-                                          tabIndex={-1}
-                                          w="full"
-                                          justifyContent="left"
-                                          color={
-                                            isActive
-                                              ? "brand.primary"
-                                              : "inherit"
-                                          }
-                                        >
-                                          {label}
-                                        </Button>
-                                      </Link>
-                                    </Flex>
-                                  ))}
-                              </Stack>
-                            </Flex>
-                          </Collapsible>
-                        ) : (
-                          <Flex key={label} display="block">
-                            {to && (
-                              <Link
-                                to={to}
-                                params={params}
-                                onClick={() => setIsMobileSidebarOpen(false)}
-                              >
-                                <Button
-                                  disabled={isActive}
-                                  variant="ghost"
-                                  tabIndex={-1}
-                                  justifyContent="left"
-                                  w="full"
-                                  color={isActive ? "brand.primary" : "inherit"}
-                                >
-                                  {label}
-                                </Button>
-                              </Link>
-                            )}
-                          </Flex>
-                        ),
+                  <span
+                    className={cn(
+                      "transition-transform",
+                      isWorkspaceContentOpen && "rotate-90",
                     )}
-                </Stack>
-              </Flex>
-            </Collapsible>
+                  >
+                    <FiChevronRight />
+                  </span>
+                </Button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent>
+                <div className="flex w-full gap-2">
+                  <div className="ml-2.5 w-px self-stretch bg-border" />
+
+                  <div className="flex w-full flex-1 flex-col gap-2 py-2 pb-0">
+                    {children
+                      ?.filter(({ isVisible }) => isVisible)
+                      .map(
+                        ({
+                          to,
+                          params,
+                          label,
+                          isActive,
+                          isCollapsible,
+                          children,
+                          icon: ChildIcon,
+                        }) =>
+                          isCollapsible ? (
+                            <CollapsibleRoot
+                              key={label}
+                              unmountOnExit
+                              open={isProjectContentOpen}
+                              onOpenChange={() =>
+                                setIsProjectContentOpen((open) => !open)
+                              }
+                            >
+                              <CollapsibleTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  className={cn(
+                                    navButton,
+                                    isActive && "text-primary",
+                                  )}
+                                >
+                                  <span className="flex items-center gap-2">
+                                    {ChildIcon && (
+                                      <ChildIcon className="size-4" />
+                                    )}
+                                    <span className="text-left">{label}</span>
+                                  </span>
+
+                                  <span
+                                    className={cn(
+                                      "transition-transform",
+                                      isProjectContentOpen && "rotate-90",
+                                    )}
+                                  >
+                                    <FiChevronRight />
+                                  </span>
+                                </Button>
+                              </CollapsibleTrigger>
+
+                              <CollapsibleContent>
+                                <div className="flex w-full gap-2">
+                                  <div className="w-7 self-stretch" />
+
+                                  <div className="flex w-full flex-1 flex-col gap-2 p-2">
+                                    {children
+                                      ?.filter(
+                                        ({ isVisible, to }) =>
+                                          isVisible && !!to,
+                                      )
+                                      .map(
+                                        ({ to, params, label, isActive }) => (
+                                          <div key={label} className="block">
+                                            <Link
+                                              to={to}
+                                              params={params}
+                                              onClick={() =>
+                                                setIsMobileSidebarOpen(false)
+                                              }
+                                            >
+                                              <Button
+                                                disabled={isActive}
+                                                variant="ghost"
+                                                tabIndex={-1}
+                                                className={cn(
+                                                  "w-full justify-start",
+                                                  isActive && "text-primary",
+                                                )}
+                                              >
+                                                {label}
+                                              </Button>
+                                            </Link>
+                                          </div>
+                                        ),
+                                      )}
+                                  </div>
+                                </div>
+                              </CollapsibleContent>
+                            </CollapsibleRoot>
+                          ) : (
+                            <div key={label} className="block">
+                              {to && (
+                                <Link
+                                  to={to}
+                                  params={params}
+                                  onClick={() => setIsMobileSidebarOpen(false)}
+                                >
+                                  <Button
+                                    disabled={isActive}
+                                    variant="ghost"
+                                    tabIndex={-1}
+                                    className={cn(
+                                      "w-full justify-start",
+                                      isActive && "text-primary",
+                                    )}
+                                  >
+                                    {label}
+                                  </Button>
+                                </Link>
+                              )}
+                            </div>
+                          ),
+                      )}
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </CollapsibleRoot>
           ) : (
-            <Flex
-              key={label}
-              display="block"
-              onClick={() => setIsMobileSidebarOpen(false)}
-            >
+            <div key={label} className="block">
               {to && (
-                <Link to={to} params={params}>
+                <Link
+                  to={to}
+                  params={params}
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                >
                   <Button
                     disabled={isActive}
                     variant="ghost"
                     tabIndex={-1}
-                    w="full"
-                    bgColor={{
-                      base: "background.subtle",
-                      _hover: "background.muted/80",
-                    }}
-                    color={isActive ? "brand.primary" : "inherit"}
+                    className={cn(
+                      "w-full justify-start bg-background-subtle hover:bg-muted/80",
+                      isActive && "text-primary",
+                    )}
                   >
                     {label}
                   </Button>
                 </Link>
               )}
-            </Flex>
+            </div>
           ),
       )}
-    </Stack>
+    </div>
   );
 };
 
