@@ -52,8 +52,7 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
         <ProfileNavigation
           isOpen={isDrawerOpen}
           onClose={onCloseDrawer}
-          gap={4}
-          w="full"
+          className="w-full gap-4"
         />
 
         <Stack w="full" px={6}>
