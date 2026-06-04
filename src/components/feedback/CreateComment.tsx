@@ -1,4 +1,3 @@
-import { Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
 import { z } from "zod";
@@ -122,10 +121,8 @@ const CreateComment = ({ canCreateComment }: Props) => {
   const messageLength = useStore(store, (store) => store.values.message.length);
 
   return (
-    <sigil.form
-      display="flex"
-      flexDirection="column"
-      gap={2}
+    <form
+      className="flex flex-col gap-2"
       onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -148,7 +145,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
         )}
       </AppField>
 
-      <Stack justify="space-between" direction="row">
+      <div className="flex flex-row justify-between gap-2">
         <CharacterLimit
           value={messageLength}
           max={MAX_COMMENT_LENGTH}
@@ -162,8 +159,8 @@ const CreateComment = ({ canCreateComment }: Props) => {
             disabled={!session || !canCreateComment}
           />
         </AppForm>
-      </Stack>
-    </sigil.form>
+      </div>
+    </form>
   );
 };
 
