@@ -161,7 +161,7 @@ const Comments = () => {
           </div>
         )}
 
-        {!!allComments.length && <GradientMask bottom={0} />}
+        {!!allComments.length && <GradientMask className="bottom-0" />}
       </div>
     </SectionContainer>
   );
