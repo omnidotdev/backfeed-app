@@ -1,9 +1,10 @@
-import { Flex, Icon, Skeleton, Text } from "@omnidev/sigil";
+import { Skeleton } from "@/components/ui/skeleton";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { IconType } from "react-icons";
 
-interface Props extends FlexProps {
+interface Props extends ComponentProps<"div"> {
   /** Statistic title (human-readable label). */
   title: string;
   /** Statistic value. */
@@ -20,22 +21,16 @@ interface Props extends FlexProps {
 
 const accentStyles = {
   amber: {
-    bgLight: "amber.100",
-    bgDark: "neutral.800",
-    iconLight: "amber.600",
-    iconDark: "amber.700",
+    bg: "bg-amber-100 dark:bg-neutral-800",
+    icon: "text-amber-600 dark:text-amber-700",
   },
   emerald: {
-    bgLight: "emerald.100",
-    bgDark: "neutral.800",
-    iconLight: "emerald.600",
-    iconDark: "emerald.700",
+    bg: "bg-emerald-100 dark:bg-neutral-800",
+    icon: "text-emerald-600 dark:text-emerald-700",
   },
   sky: {
-    bgLight: "sky.100",
-    bgDark: "neutral.800",
-    iconLight: "sky.600",
-    iconDark: "sky.700",
+    bg: "bg-sky-100 dark:bg-neutral-800",
+    icon: "text-sky-600 dark:text-sky-700",
   },
 };
 
@@ -45,66 +40,51 @@ const accentStyles = {
 const Aggregate = ({
   title,
   value,
-  icon,
+  icon: Icon,
   accentColor,
   isLoaded = true,
   isError = false,
+  className,
   ...rest
 }: Props) => {
   const accent = accentColor ? accentStyles[accentColor] : null;
 
   return (
-    <Flex
-      direction="column"
-      gap={2}
-      p={5}
-      bgColor="background.default"
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor="border.subtle"
+    <div
+      className={cn(
+        "flex flex-col gap-2 rounded-xl border border-border-subtle bg-background p-5",
+        className,
+      )}
       {...rest}
     >
-      <Flex align="center" gap={2}>
-        <Flex
-          align="center"
-          justify="center"
-          w={8}
-          h={8}
-          borderRadius="lg"
-          bgColor={
-            accent
-              ? { base: accent.bgLight, _dark: accent.bgDark }
-              : "background.subtle"
-          }
+      <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "flex size-8 items-center justify-center rounded-lg",
+            accent ? accent.bg : "bg-background-subtle",
+          )}
         >
           <Icon
-            src={icon}
-            w={4}
-            h={4}
-            color={
-              accent
-                ? { base: accent.iconLight, _dark: accent.iconDark }
-                : "foreground.subtle"
-            }
+            className={cn(
+              "size-4",
+              accent ? accent.icon : "text-foreground-subtle",
+            )}
           />
-        </Flex>
+        </div>
 
-        <Text color="foreground.subtle" fontSize="sm" fontWeight="medium">
+        <span className="font-medium text-foreground-subtle text-sm">
           {title}
-        </Text>
-      </Flex>
+        </span>
+      </div>
 
-      <Skeleton isLoaded={isLoaded} maxW={!isLoaded ? 24 : undefined}>
-        <Text
-          fontSize="3xl"
-          fontWeight="bold"
-          lineHeight={1}
-          letterSpacing="tight"
-        >
+      {isLoaded ? (
+        <p className="font-bold text-3xl leading-none tracking-tight">
           {isError ? "—" : value}
-        </Text>
-      </Skeleton>
-    </Flex>
+        </p>
+      ) : (
+        <Skeleton className="h-9 w-24" />
+      )}
+    </div>
   );
 };
 
