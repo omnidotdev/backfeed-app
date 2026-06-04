@@ -112,10 +112,7 @@ const RecentFeedback = ({ minH }: Props) => {
           ) : (
             <EmptyState
               message="No feedback items yet"
-              minH={40}
-              h="full"
-              w="full"
-              borderColor="transparent"
+              className="h-full min-h-40 w-full border-transparent"
             />
           )}
         </div>

@@ -153,9 +153,7 @@ const Comments = () => {
             ) : (
               <EmptyState
                 message={app.postPage.comments.emptyState.message}
-                h={24}
-                w="full"
-                mb={4}
+                className="mb-4 h-24 w-full"
               />
             )}
           </div>

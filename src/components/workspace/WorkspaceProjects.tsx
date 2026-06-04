@@ -100,7 +100,7 @@ const WorkspaceProjects = ({ canCreateProjects }: Props) => {
                     }
                   : undefined
               }
-              h={48}
+              className="h-48"
             />
           )}
         </div>

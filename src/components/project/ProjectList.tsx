@@ -82,7 +82,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
               }
             : undefined
         }
-        minH={64}
+        className="min-h-64"
       />
     );
 

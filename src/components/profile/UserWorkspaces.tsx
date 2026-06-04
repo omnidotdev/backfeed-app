@@ -39,7 +39,7 @@ const UserWorkspaces = () => {
     return (
       <EmptyState
         message={app.profileWorkspacesPage.table.emptyState.label}
-        minH={48}
+        className="min-h-48"
       />
     );
   }

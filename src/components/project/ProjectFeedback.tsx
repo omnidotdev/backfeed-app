@@ -409,8 +409,7 @@ const ProjectFeedback = () => {
             <GridItem colSpan={viewState === ViewState.Grid ? 2 : 1}>
               <EmptyState
                 message={app.projectPage.projectFeedback.emptyState.message}
-                h="xs"
-                w="full"
+                className="h-80 w-full"
               />
             </GridItem>
           )}

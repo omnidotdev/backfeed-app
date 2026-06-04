@@ -1,6 +1,12 @@
-import { Button, Center, Flex, Icon, Tooltip, css } from "@omnidev/sigil";
+import { Button } from "@/components/ui/button";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
 import type { IconType } from "react-icons";
 
 interface ActionProps {
@@ -16,67 +22,52 @@ interface ActionProps {
   tooltip?: string;
 }
 
-interface Props extends FlexProps {
+interface Props {
   /** Readable message. */
   message: string;
   /** Optional CTA event. */
   action?: ActionProps;
+  /** Additional class names (sizing/spacing). */
+  className?: string;
 }
 
 /**
  * Empty state component. Displays a message and an optional CTA when a successful query has no results.
  */
-const EmptyState = ({ message, action, ...rest }: Props) => (
-  <Flex
-    direction="column"
-    align="center"
-    justify="center"
-    textAlign="center"
-    borderRadius="md"
-    borderWidth="1px"
-    borderStyle="dashed"
-    gap={6}
-    p={4}
-    {...rest}
+const EmptyState = ({ message, action, className }: Props) => (
+  <div
+    className={cn(
+      "flex flex-col items-center justify-center gap-6 rounded-md border border-dashed p-4 text-center",
+      className,
+    )}
   >
     {message}
 
     {action && (
-      <Tooltip
-        hasArrow={false}
-        trigger={
+      <TooltipRoot>
+        <TooltipTrigger asChild>
           <Button
-            asChild
             variant="outline"
-            className={css({
-              borderColor: { base: "ruby.500", _dark: "ruby.400" },
-              color: { base: "ruby.500", _dark: "ruby.400" },
-              _hover: {
-                bgColor: { base: "ruby.50", _dark: "ruby.950/30" },
-              },
-            })}
             size="sm"
             disabled={action.disabled}
             onClick={action.onClick}
+            className="border-primary text-primary hover:bg-primary/10"
           >
-            {/* NB: Wrap content in a single element (Center) to satisfy React.Children.only requirement for asChild rendering. */}
-            <Center>
-              {action.icon && <Icon src={action.icon} w={4} h={4} />}
-
-              {action.label}
-            </Center>
+            {action.icon && <action.icon className="size-4" />}
+            {action.label}
           </Button>
-        }
-        triggerProps={{ style: { all: "unset" } }}
-        contentProps={{
-          display: !action?.disabled || !action.tooltip ? "none" : undefined,
-          fontSize: "sm",
-        }}
-      >
-        {action.tooltip}
-      </Tooltip>
+        </TooltipTrigger>
+
+        {action.disabled && action.tooltip && (
+          <TooltipPositioner>
+            <TooltipContent className="text-sm">
+              {action.tooltip}
+            </TooltipContent>
+          </TooltipPositioner>
+        )}
+      </TooltipRoot>
     )}
-  </Flex>
+  </div>
 );
 
 export default EmptyState;
