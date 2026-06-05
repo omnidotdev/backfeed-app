@@ -1,20 +1,5 @@
 import { Format, Portal } from "@ark-ui/react";
 import {
-  Circle,
-  HStack,
-  Icon,
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-  Stack,
-  Text,
-  css,
-  sigil,
-} from "@omnidev/sigil";
-import {
   useNavigate,
   useParams,
   useRouteContext,
@@ -27,6 +12,14 @@ import DestructiveAction from "@/components/core/DestructiveAction";
 import StatusBadge from "@/components/core/StatusBadge";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import {
   VoteType,
   useDeletePostMutation,
@@ -42,9 +35,10 @@ import {
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useStatusMenuStore from "@/lib/store/useStatusMenuStore";
+import cn from "@/lib/utils";
 
-import type { HstackProps, TextProps } from "@omnidev/sigil";
 import type { InfiniteData } from "@tanstack/react-query";
+import type { ComponentProps } from "react";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
@@ -64,7 +58,7 @@ interface ProjectStatus {
   color: StatusTemplate["color"];
 }
 
-interface Props extends HstackProps {
+interface Props extends ComponentProps<"div"> {
   /** Whether the user has permission to manage statuses or delete feedback. */
   canManageFeedback: boolean;
   /** Feedback details. */
@@ -72,9 +66,9 @@ interface Props extends HstackProps {
   /** Project status options. */
   projectStatuses?: ProjectStatus[];
   /** Title props. */
-  titleProps?: TextProps;
+  titleProps?: ComponentProps<"span">;
   /** Description props. */
-  descriptionProps?: TextProps;
+  descriptionProps?: ComponentProps<"p">;
   /** Whether the user is authenticated. */
   isAuthenticated?: boolean;
   /** Whether to disable hover styles (e.g., on detail page). */
@@ -95,6 +89,7 @@ const FeedbackCard = ({
   isAuthenticated: isAuthenticatedProp,
   disableHover,
   index,
+  className,
   ...rest
 }: Props) => {
   const { session, queryClient } = useRouteContext({
@@ -275,27 +270,18 @@ const FeedbackCard = ({
     index !== undefined && index % 2 === 1 && !disableHover;
 
   return (
-    <HStack
-      position="relative"
-      borderRadius="xl"
-      p={4}
-      alignItems="flex-start"
-      opacity={actionIsPending ? 0.5 : 1}
-      bgColor={
-        hasAlternatingBg
-          ? { base: "neutral.50", _dark: "neutral.900/50" }
-          : undefined
-      }
-      className={
-        disableHover
-          ? undefined
-          : css({
-              transition: "all 0.15s ease",
-              _hover: {
-                bgColor: { base: "neutral.100", _dark: "neutral.800" },
-              },
-            })
-      }
+    // biome-ignore lint/a11y/noStaticElementInteractions: card-level navigation with interactive children
+    // biome-ignore lint/a11y/useKeyWithClickEvents: card-level navigation with interactive children
+    <div
+      className={cn(
+        "relative flex items-start gap-2 rounded-xl p-4",
+        actionIsPending && "opacity-50",
+        hasAlternatingBg &&
+          "bg-[var(--colors-neutral-50)] dark:bg-[var(--colors-neutral-900)]/50",
+        !disableHover &&
+          "transition-all hover:bg-[var(--colors-neutral-100)] dark:hover:bg-[var(--colors-neutral-800)]",
+        className,
+      )}
       {...rest}
       onClick={!isStatusMenuOpen ? rest.onClick : undefined}
     >
@@ -312,37 +298,37 @@ const FeedbackCard = ({
       />
 
       {/* Content on the right */}
-      <Stack h="full" w="full" gap={1} flex={1}>
-        <HStack justify="space-between" alignItems="flex-start">
-          <Stack gap={0.5} flex={1}>
-            <Text
-              wordBreak="break-word"
-              fontWeight="semibold"
-              fontSize={{ base: "md", md: "lg" }}
-              lineHeight={1.3}
+      <div className="flex h-full w-full flex-1 flex-col gap-1">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-1 flex-col gap-0.5">
+            <span
               {...titleProps}
+              className={cn(
+                "break-words font-semibold text-base leading-[1.3] md:text-lg",
+                titleProps?.className,
+              )}
             >
               {feedback.title}
-            </Text>
+            </span>
 
-            <HStack fontSize="xs" gap={1.5} color="foreground.subtle">
-              <Text>{feedback.user?.username}</Text>
-              <Circle size={1} bgColor="foreground.subtle" />
-              <Text>
+            <div className="flex items-center gap-1.5 text-foreground-subtle text-xs">
+              <span>{feedback.user?.username}</span>
+              <div className="size-1 rounded-full bg-foreground-subtle" />
+              <span>
                 {dayjs(
                   isFeedbackPending ? new Date() : feedback.createdAt,
                 ).fromNow()}
-              </Text>
-              <Circle size={1} bgColor="foreground.subtle" />
-              <HStack gap={0.5}>
-                <Icon src={LuMessageCircle} h={3.5} w={3.5} />
+              </span>
+              <div className="size-1 rounded-full bg-foreground-subtle" />
+              <div className="flex items-center gap-0.5">
+                <LuMessageCircle className="size-3.5" />
                 <Format.Number
                   value={feedback.comments?.totalCount ?? 0}
                   notation="compact"
                 />
-              </HStack>
-            </HStack>
-          </Stack>
+              </div>
+            </div>
+          </div>
 
           <MenuRoot
             onOpenChange={({ open }) =>
@@ -364,7 +350,7 @@ const FeedbackCard = ({
                 }
                 onClick={(evt) => evt.stopPropagation()}
               >
-                {canManageFeedback && <Icon src={LuChevronDown} />}
+                {canManageFeedback && <LuChevronDown />}
               </StatusBadge>
             </MenuTrigger>
 
@@ -376,9 +362,7 @@ const FeedbackCard = ({
                       <MenuItem
                         key={status.rowId}
                         value={status.rowId!}
-                        display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
+                        className="flex items-center justify-between"
                         style={
                           status.color ? { color: status.color } : undefined
                         }
@@ -395,7 +379,7 @@ const FeedbackCard = ({
                         {status.displayName}
 
                         {status.rowId === feedback.statusTemplate?.rowId && (
-                          <Icon src={LuCheck} h={4} w={4} color="green.500" />
+                          <LuCheck className="size-4 text-[var(--colors-green-500)]" />
                         )}
                       </MenuItem>
                     ))}
@@ -404,38 +388,34 @@ const FeedbackCard = ({
               </MenuPositioner>
             </Portal>
           </MenuRoot>
-        </HStack>
+        </div>
 
-        <Text
-          wordBreak="break-word"
-          color="foreground.muted"
-          fontSize="sm"
-          lineHeight={1.5}
+        <p
           {...descriptionProps}
+          className={cn(
+            "break-words text-muted-foreground text-sm leading-normal",
+            descriptionProps?.className,
+          )}
         >
           {feedback.description?.split("\n").map((line, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-            <sigil.span key={index}>
+            <span key={index}>
               {line}
               <br />
-            </sigil.span>
+            </span>
           ))}
-        </Text>
+        </p>
 
-        <HStack justify="space-between" mt={2}>
+        <div className="mt-2 flex items-center justify-between">
           {isFeedbackRoute && (
-            <Text
-              display={{ base: "none", sm: "inline-flex" }}
-              fontSize="sm"
-              color="foreground.subtle"
-            >
+            <span className="hidden text-foreground-subtle text-sm sm:inline-flex">
               {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
-            </Text>
+            </span>
           )}
 
-          <HStack ml="auto">
+          <div className="ml-auto flex items-center gap-2">
             {canAdjustFeedback && (
-              <HStack>
+              <div className="flex items-center gap-2">
                 <UpdateFeedback
                   feedback={feedback}
                   triggerProps={{
@@ -464,12 +444,12 @@ const FeedbackCard = ({
                   }}
                   iconClassName="size-[1.125rem] cursor-pointer text-primary"
                 />
-              </HStack>
+              </div>
             )}
-          </HStack>
-        </HStack>
-      </Stack>
-    </HStack>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

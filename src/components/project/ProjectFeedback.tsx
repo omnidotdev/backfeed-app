@@ -349,28 +349,19 @@ const ProjectFeedback = () => {
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
                       index={viewState === ViewState.List ? index : undefined}
-                      h="full"
-                      w="full"
-                      minH={21}
+                      className={`h-full min-h-[5.25rem] w-full rounded-xl bg-[var(--colors-card-item)] ${
+                        isPending ? "cursor-not-allowed" : "cursor-pointer"
+                      }`}
                       titleProps={
                         viewState === ViewState.Grid
-                          ? {
-                              lineClamp: 2,
-                              overflow: "hidden",
-                            }
+                          ? { className: "line-clamp-2 overflow-hidden" }
                           : undefined
                       }
                       descriptionProps={
                         viewState === ViewState.Grid
-                          ? {
-                              lineClamp: 2,
-                              overflow: "hidden",
-                            }
+                          ? { className: "line-clamp-2 overflow-hidden" }
                           : undefined
                       }
-                      borderRadius="xl"
-                      bgColor="card-item"
-                      cursor={isPending ? "not-allowed" : "pointer"}
                       onClick={() =>
                         !isPending
                           ? navigate({
