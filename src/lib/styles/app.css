@@ -1,5 +1,5 @@
-@layer reset, base, tokens, recipes, utilities;
-@import url("@omnidev/sigil/index.css");
+/* Design tokens (formerly emitted by Panda; now committed statically) */
+@import "./tokens.css";
 
 /* Tailwind CSS v4 */
 @import "tailwindcss";
@@ -39,24 +39,10 @@
 /* ============================================
    Backfeed Space Ruby Theme
 
-   This file extends the Sigil design system
-   with Backfeed-specific ruby gemstone branding.
-
-   The brand.primary token is overridden in
-   panda.config.ts to use omni.ruby colors.
+   Ruby gemstone branding. The brand.primary token resolves to omni.ruby via
+   the committed design tokens in tokens.css. Glow colors are exposed as
+   --colors-glow-ruby / --colors-glow-magenta (see tokens.css).
    ============================================ */
-
-:root {
-  /* Ruby glow colors for effects */
-  --glow-ruby: oklch(0.65 0.22 6 / 0.4);
-  --glow-magenta: oklch(0.667 0.251 323 / 0.3);
-}
-
-.dark {
-  /* Enhanced glow in dark mode */
-  --glow-ruby: oklch(0.75 0.185 8 / 0.5);
-  --glow-magenta: oklch(0.74 0.203 323 / 0.4);
-}
 
 /* ============================================
    Base Styles
@@ -150,27 +136,6 @@
     caret-color: var(--colors-foreground-default);
     transition: background-color 5000s ease-in-out 0s;
   }
-}
-
-/* ============================================
-   Button Glow Effects (Panda recipe overrides)
-   ============================================ */
-
-/* Solid buttons - ruby glow shadow */
-.button--variant_solid:not(:disabled):not([disabled]):not([data-disabled]) {
-  box-shadow: 0 4px 12px -2px oklch(0.65 0.22 6 / 0.2);
-  transition: all 0.2s ease;
-}
-
-.button--variant_solid:not(:disabled):not([disabled]):not(
-    [data-disabled]
-  ):hover {
-  box-shadow: 0 8px 20px -4px oklch(0.65 0.22 6 / 0.3);
-}
-
-/* Outline buttons */
-.button--variant_outline:not(:disabled):not([disabled]):not([data-disabled]) {
-  transition: all 0.2s ease;
 }
 
 /* ============================================

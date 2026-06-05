@@ -21,7 +21,6 @@ const knipConfig: KnipConfig = {
   },
   ignoreExportsUsedInFile: true,
   ignore: [
-    "panda.config.ts",
     "src/__mocks__/**",
     "src/generated/**",
     // Tier enforcement hooks and entitlement functions - ready for use when needed
@@ -37,9 +36,6 @@ const knipConfig: KnipConfig = {
   ignoreDependencies: [
     // CSS-only dependencies imported in app.css
     "tw-animate-css",
-    // Base styles still imported via app.css (@omnidev/sigil/index.css) while
-    // Panda tokens remain; JS components have been migrated to Tailwind/shadcn
-    "@omnidev/sigil",
     // Used only by the not-yet-adopted shadcn primitives (see ignore list)
     "lucide-react",
   ],
