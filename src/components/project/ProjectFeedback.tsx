@@ -1,15 +1,5 @@
 import { createListCollection } from "@ark-ui/react";
 import {
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Icon,
-  Input,
-  Select,
-  Stack,
-} from "@omnidev/sigil";
-import {
   keepPreviousData,
   useInfiniteQuery,
   useMutationState,
@@ -28,6 +18,20 @@ import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemText,
+  SelectPortal,
+  SelectPositioner,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@/components/ui/select";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
@@ -40,6 +44,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import useProjectViewStore, {
   ViewState,
 } from "@/lib/store/useProjectViewStore";
+import cn from "@/lib/utils";
 
 import type {
   CreateFeedbackMutationVariables,
@@ -237,54 +242,24 @@ const ProjectFeedback = () => {
   });
 
   return (
-    <Stack
+    <div
       ref={rootRef}
-      position="relative"
-      borderRadius="2xl"
-      borderWidth="1px"
-      borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-      bgColor={{ base: "white", _dark: "neutral.900" }}
-      overflow="visible"
-      p={{ base: 4, sm: 6 }}
-      gap={5}
+      className="relative flex flex-col gap-5 overflow-visible rounded-2xl border border-[var(--colors-neutral-200)] bg-white p-4 sm:p-6 dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]"
     >
       {/* Toolbar Row */}
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        align={{ base: "stretch", md: "center" }}
-        justify="space-between"
-        gap={3}
-      >
+      <div className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
         {/* Left: Search */}
         <Input
           placeholder={app.projectPage.projectFeedback.search.placeholder}
-          borderColor="border.subtle"
+          className="h-8 w-full border-border-subtle text-sm md:max-w-sm"
           defaultValue={search}
           onChange={onSearchChange}
-          maxW={{ base: "full", md: "sm" }}
-          size="sm"
         />
 
         {/* Right: Controls */}
-        <Flex
-          align="center"
-          gap={2}
-          justify={{ base: "space-between", md: "flex-end" }}
-          flexShrink={0}
-        >
-          <Select
-            w={{ base: "auto", sm: "auto" }}
-            minW={36}
-            size="sm"
-            label={app.projectPage.projectFeedback.sortBy.label}
-            collection={createListCollection({
-              items: SORT_BY_OPTIONS,
-            })}
-            displayFieldLabel={false}
-            clearTrigger={null}
-            triggerProps={{
-              borderColor: "border.subtle",
-            }}
+        <div className="flex shrink-0 items-center justify-between gap-2 md:justify-end">
+          <SelectRoot
+            collection={createListCollection({ items: SORT_BY_OPTIONS })}
             defaultValue={orderBy ? [orderBy] : [PostOrderBy.CreatedAtDesc]}
             onValueChange={({ value }) => {
               const orderBy = value[0] as
@@ -298,7 +273,26 @@ const ProjectFeedback = () => {
                 }),
               });
             }}
-          />
+          >
+            <SelectControl>
+              <SelectTrigger className="h-8 min-w-36 border-border-subtle">
+                <SelectValueText placeholder="Sort by" />
+                <SelectIndicator />
+              </SelectTrigger>
+            </SelectControl>
+
+            <SelectPortal>
+              <SelectPositioner>
+                <SelectContent>
+                  {SORT_BY_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} item={option}>
+                      <SelectItemText>{option.label}</SelectItemText>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectPositioner>
+            </SelectPortal>
+          </SelectRoot>
 
           <SwitchFeedbackView />
 
@@ -309,14 +303,14 @@ const ProjectFeedback = () => {
               onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
               disabled={!canCreateFeedback}
             >
-              <Icon src={LuPlus} />
-              <Flex display={{ base: "none", sm: "flex" }}>
+              <LuPlus />
+              <span className="hidden sm:flex">
                 {app.projectPage.projectFeedback.createPost.title}
-              </Flex>
+              </span>
             </Button>
           )}
-        </Flex>
-      </Flex>
+        </div>
+      </div>
 
       {/* Status Filter Pills */}
       <StatusFilterPills />
@@ -328,9 +322,11 @@ const ProjectFeedback = () => {
       {isError ? (
         <ErrorBoundary message="Error fetching feedback" className="h-96" />
       ) : (
-        <Grid
-          gap={3}
-          columns={{ base: 1, md: viewState === ViewState.List ? 1 : 2 }}
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-3",
+            viewState === ViewState.List ? "md:grid-cols-1" : "md:grid-cols-2",
+          )}
         >
           {isLoading ? (
             <SkeletonArray count={5} className="h-[5.25rem]" />
@@ -340,9 +336,12 @@ const ProjectFeedback = () => {
                 const isPending = feedback?.rowId === "pending";
 
                 return (
-                  <GridItem
+                  <div
                     key={feedback?.rowId}
-                    colSpan={{ base: 1, md: allPosts.length === 1 ? 2 : 1 }}
+                    className={cn(
+                      "col-span-1",
+                      allPosts.length === 1 && "md:col-span-2",
+                    )}
                   >
                     <FeedbackCard
                       canManageFeedback={hasAdminPrivileges}
@@ -375,38 +374,39 @@ const ProjectFeedback = () => {
                           : undefined
                       }
                     />
-                  </GridItem>
+                  </div>
                 );
               })}
 
               {hasNextPage && (
-                <GridItem
-                  colSpan={{
-                    base: 1,
-                    md:
-                      allPosts.length === 1 || viewState === ViewState.Grid
-                        ? 2
-                        : 1,
-                  }}
-                  my={5}
+                <div
+                  className={cn(
+                    "col-span-1 my-5",
+                    (allPosts.length === 1 || viewState === ViewState.Grid) &&
+                      "md:col-span-2",
+                  )}
                 >
-                  <Flex justify="center">
+                  <div className="flex justify-center">
                     <Spinner ref={loaderRef} />
-                  </Flex>
-                </GridItem>
+                  </div>
+                </div>
               )}
             </>
           ) : (
-            <GridItem colSpan={viewState === ViewState.Grid ? 2 : 1}>
+            <div
+              className={
+                viewState === ViewState.Grid ? "col-span-2" : "col-span-1"
+              }
+            >
               <EmptyState
                 message={app.projectPage.projectFeedback.emptyState.message}
                 className="h-80 w-full"
               />
-            </GridItem>
+            </div>
           )}
-        </Grid>
+        </div>
       )}
-    </Stack>
+    </div>
   );
 };
 
