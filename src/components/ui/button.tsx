@@ -13,7 +13,7 @@ const buttonVariants = cva(
       variant: {
         solid:
           "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        outline: "border bg-transparent shadow-xs hover:bg-accent",
+        outline: "border bg-transparent shadow-xs hover:bg-foreground/5",
         muted: "bg-muted text-muted-foreground shadow-xs hover:bg-muted/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
