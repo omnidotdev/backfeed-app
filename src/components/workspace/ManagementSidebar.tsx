@@ -1,14 +1,9 @@
-import {
-  Button,
-  Drawer,
-  HStack,
-  Icon,
-  Stack,
-  useDisclosure,
-} from "@omnidev/sigil";
+import { useState } from "react";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
+import { Button } from "@/components/ui/button";
+import { SheetContent, SheetRoot } from "@/components/ui/sheet";
 import ManagementNavigation from "@/components/workspace/ManagementNavigation";
 
 import type { PropsWithChildren } from "react";
@@ -19,73 +14,51 @@ import type { PropsWithChildren } from "react";
 const ManagementSidebar = ({ children }: PropsWithChildren) => {
   const isClient = useIsClient();
 
-  const {
-    isOpen: isDrawerOpen,
-    onClose: onCloseDrawer,
-    onToggle: onToggleDrawer,
-  } = useDisclosure({
-    defaultIsOpen: false,
-  });
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const onCloseDrawer = () => setIsDrawerOpen(false);
 
   if (!isClient) return null;
 
   return (
     <>
       {/* Drawer overlay sidebar - no layout shift */}
-      <Drawer
-        placement="left"
+      <SheetRoot
         open={isDrawerOpen}
-        onOpenChange={onToggleDrawer}
-        bodyProps={{
-          p: 0,
-          pb: 6,
-          borderLeftRadius: "full",
-          alignItems: "center",
-          justifyContent: "space-between",
-          overflow: "hidden",
-          gap: 6,
-        }}
-        positionerProps={{
-          width: { base: "80%", sm: "sm" },
-        }}
+        onOpenChange={({ open }) => setIsDrawerOpen(open)}
       >
-        <ManagementNavigation
-          isOpen={isDrawerOpen}
-          onClose={onCloseDrawer}
-          className="w-full gap-4"
-        />
+        <SheetContent
+          side="left"
+          className="items-center justify-between overflow-hidden pb-6"
+        >
+          <ManagementNavigation
+            isOpen={isDrawerOpen}
+            onClose={onCloseDrawer}
+            className="w-full gap-4"
+          />
 
-        <Stack w="full" px={6}>
-          <Button variant="ghost" onClick={onCloseDrawer}>
-            Close
-          </Button>
-        </Stack>
-      </Drawer>
+          <div className="flex w-full flex-col px-6">
+            <Button variant="ghost" onClick={onCloseDrawer}>
+              Close
+            </Button>
+          </div>
+        </SheetContent>
+      </SheetRoot>
 
       {/* Main content - full width, no sidebar space reserved */}
-      <Stack position="relative" w="full" px={{ base: 0, lg: 4 }}>
-        <HStack
-          position="sticky"
-          top="header"
-          zIndex="foreground"
-          py={2}
-          minH={14}
-          gap={2}
-          style={{ backdropFilter: "blur(12px)" }}
-        >
+      <div className="relative flex w-full flex-col px-0 lg:px-4">
+        <div className="sticky top-[5rem] z-50 flex min-h-14 items-center gap-2 backdrop-blur-md">
           <Button
-            variant="icon"
-            bgColor={{ base: "transparent", _hover: "background.subtle" }}
-            color="foreground.default"
+            variant="ghost"
+            size="icon"
             aria-label="Open Sidebar"
-            onClick={onToggleDrawer}
-            ml={2}
+            onClick={() => setIsDrawerOpen(true)}
+            className="ml-2"
           >
-            <Icon src={LuPanelLeftOpen} h={5} w={5} />
+            <LuPanelLeftOpen className="size-5" />
           </Button>
-        </HStack>
+        </div>
         {children}
-      </Stack>
+      </div>
     </>
   );
 };
