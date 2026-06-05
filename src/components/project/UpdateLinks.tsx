@@ -1,9 +1,10 @@
-import { Button, Icon, Label, Stack } from "@omnidev/sigil";
 import { Reorder } from "motion/react";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { updateProjectOptions } from "@/lib/form/updateProjectOptions";
 import { withForm } from "@/lib/hooks/useForm";
 
@@ -64,8 +65,8 @@ const ReorderableLinks = ({
   };
 
   return (
-    <Stack gap={5}>
-      <Label mb={-4}>Links</Label>
+    <div className="flex flex-col gap-5">
+      <Label className="-mb-4">Links</Label>
 
       <Reorder.Group
         axis="y"
@@ -101,11 +102,8 @@ const ReorderableLinks = ({
                 zIndex: 1,
               }}
             >
-              <Icon
-                src={PiDotsSixVerticalBold}
-                cursor="grab"
-                color="foreground.subtle"
-                flexShrink={0}
+              <PiDotsSixVerticalBold
+                className="shrink-0 cursor-grab text-foreground-subtle"
                 style={{ touchAction: "none" }}
               />
               <AppField name={`projectLinks[${formIndex}].url`}>
@@ -117,7 +115,7 @@ const ReorderableLinks = ({
                   <URLField
                     placeholder="https://example.com"
                     containerProps={{
-                      flex: 1,
+                      className: "flex-1",
                     }}
                     displayRemoveTrigger={hasMultipleLinks}
                     removeFieldProps={{
@@ -127,8 +125,7 @@ const ReorderableLinks = ({
                       },
                     }}
                     errorProps={{
-                      top: -5,
-                      right: 12,
+                      className: "top-[-1.25rem] right-12",
                     }}
                   />
                 )}
@@ -142,18 +139,17 @@ const ReorderableLinks = ({
         <Button
           size="sm"
           variant="outline"
-          className="border-primary text-primary hover:bg-primary/10"
-          w="fit"
+          className="w-fit border-primary text-primary hover:bg-primary/10"
           onClick={(evt) => {
             evt.preventDefault();
             onAdd();
           }}
         >
-          <Icon src={LuPlus} />
+          <LuPlus />
           Add Link
         </Button>
       )}
-    </Stack>
+    </div>
   );
 };
 

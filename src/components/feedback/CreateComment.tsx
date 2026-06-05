@@ -133,13 +133,12 @@ const CreateComment = ({ canCreateComment }: Props) => {
         {({ TextareaField }) => (
           <TextareaField
             placeholder={app.postPage.comments.textAreaPlaceholder}
-            fontSize="sm"
-            minH={16}
+            className="min-h-16 text-sm"
             disabled={!session || !canCreateComment}
             tooltip={app.postPage.comments.disabled}
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
-              top: -6,
+              className: "top-[-1.5rem]",
             }}
           />
         )}

@@ -1,28 +1,28 @@
-import {
-  Button,
-  Dialog,
-  Icon,
-  Stack,
-  sigil,
-  useDisclosure,
-} from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
+import { useState } from "react";
 import { LuPencil } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useUpdatePostMutation } from "@/generated/graphql";
-import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
-import useViewportSize from "@/lib/hooks/useViewportSize";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
-import type { DialogProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
@@ -51,24 +51,23 @@ const updateFeedbackSchema = z.object({
     ),
 });
 
-interface Props extends DialogProps {
+interface Props extends ComponentProps<typeof DialogRoot> {
   /** Feedback details. */
   feedback: Partial<FeedbackFragment>;
+  /** Props for the dialog trigger button. */
+  triggerProps?: ComponentProps<typeof Button>;
 }
 
 /**
  * Update feedback form.
  */
-const UpdateFeedback = ({ feedback, ...rest }: Props) => {
+const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
   const { session, queryClient } = workspaceLayoutRoute.useRouteContext();
 
   const isClient = useIsClient();
 
-  const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.sm"),
-  });
-
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => setIsOpen(false);
 
   const { mutateAsync: updateFeedback, isPending } = useUpdatePostMutation({
     onSettled: async () => {
@@ -125,101 +124,99 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
   if (!isClient) return null;
 
   return (
-    <Dialog
-      title="Update Feedback"
+    <DialogRoot
       open={isOpen}
-      onOpenChange={() => {
+      onOpenChange={({ open }) => {
         reset();
-        onToggle();
-      }}
-      trigger={
-        <Button variant="ghost" bgColor="transparent" p={0}>
-          <Icon
-            cursor="pointer"
-            color="brand.senary"
-            src={LuPencil}
-            h={4.5}
-            w={4.5}
-          />
-        </Button>
-      }
-      triggerProps={{
-        disabled: feedback.rowId === "pending",
-        onClick: (evt) => evt.stopPropagation(),
-      }}
-      contentProps={{
-        // NB: `onClick` and `cursor` are to change behavior due to render of dialog being scope to an individual feedback card.
-        onClick: (evt) => evt.stopPropagation(),
-        style: {
-          width: isSmallViewport ? token("sizes.md") : "calc(100vw - 2rem)",
-          maxWidth: token("sizes.lg"),
-          cursor: "default",
-        },
+        setIsOpen(open);
       }}
       {...rest}
     >
-      <sigil.form
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        onSubmit={async (evt) => {
-          evt.preventDefault();
-          evt.stopPropagation();
-          await handleSubmit();
-        }}
-      >
-        <AppField name="title">
-          {({ InputField }) => (
-            <InputField
-              label={app.projectPage.projectFeedback.feedbackTitle.label}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackTitle.placeholders[0]
-              }
-              onClick={(evt) => {
-                evt.preventDefault();
-                evt.stopPropagation();
-              }}
-            />
-          )}
-        </AppField>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          className="bg-transparent p-0"
+          onClick={(evt) => evt.stopPropagation()}
+          {...triggerProps}
+        >
+          <LuPencil className="size-[1.125rem] cursor-pointer text-[var(--colors-brand-senary)]" />
+        </Button>
+      </DialogTrigger>
 
-        <AppField name="description">
-          {({ TextareaField }) => (
-            <TextareaField
-              label={app.projectPage.projectFeedback.feedbackDescription.label}
-              placeholder={
-                app.projectPage.projectFeedback.feedbackDescription
-                  .placeholders[0]
-              }
-              rows={5}
-              minH={32}
-              maxLength={MAX_DESCRIPTION_LENGTH}
-              onClick={(evt) => {
-                evt.preventDefault();
-                evt.stopPropagation();
-              }}
-            />
-          )}
-        </AppField>
+      <Portal>
+        <DialogBackdrop />
+        {/* NB: `onClick` stops propagation as the dialog is scoped to an individual feedback card */}
+        <DialogContent
+          onClick={(evt) => evt.stopPropagation()}
+          className="w-[calc(100vw-2rem)] max-w-[32rem] cursor-default sm:w-[28rem]"
+        >
+          <DialogTitle>Update Feedback</DialogTitle>
 
-        <Stack justify="space-between" direction="row">
-          <CharacterLimit
-            value={descriptionLength}
-            max={MAX_DESCRIPTION_LENGTH}
-            className="place-self-start"
-          />
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={async (evt) => {
+              evt.preventDefault();
+              evt.stopPropagation();
+              await handleSubmit();
+            }}
+          >
+            <AppField name="title">
+              {({ InputField }) => (
+                <InputField
+                  label={app.projectPage.projectFeedback.feedbackTitle.label}
+                  placeholder={
+                    app.projectPage.projectFeedback.feedbackTitle
+                      .placeholders[0]
+                  }
+                  onClick={(evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                  }}
+                />
+              )}
+            </AppField>
 
-          <AppForm>
-            <SubmitForm
-              action={updatePostDetails.action}
-              isPending={isPending}
-              className="w-fit place-self-end"
-              onClick={(evt) => evt.stopPropagation()}
-            />
-          </AppForm>
-        </Stack>
-      </sigil.form>
-    </Dialog>
+            <AppField name="description">
+              {({ TextareaField }) => (
+                <TextareaField
+                  label={
+                    app.projectPage.projectFeedback.feedbackDescription.label
+                  }
+                  placeholder={
+                    app.projectPage.projectFeedback.feedbackDescription
+                      .placeholders[0]
+                  }
+                  rows={5}
+                  className="min-h-32"
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                  onClick={(evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                  }}
+                />
+              )}
+            </AppField>
+
+            <div className="flex flex-row justify-between">
+              <CharacterLimit
+                value={descriptionLength}
+                max={MAX_DESCRIPTION_LENGTH}
+                className="place-self-start"
+              />
+
+              <AppForm>
+                <SubmitForm
+                  action={updatePostDetails.action}
+                  isPending={isPending}
+                  className="w-fit place-self-end"
+                  onClick={(evt) => evt.stopPropagation()}
+                />
+              </AppForm>
+            </div>
+          </form>
+        </DialogContent>
+      </Portal>
+    </DialogRoot>
   );
 };
 

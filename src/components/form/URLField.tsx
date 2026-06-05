@@ -1,32 +1,28 @@
-import { Button, HStack, Icon, Input, Label } from "@omnidev/sigil";
 import { LuX } from "react-icons/lu";
 
 import Favicon from "@/components/core/Favicon";
 import Field from "@/components/form/Field";
-import { token } from "@/generated/panda/tokens";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFieldContext } from "@/lib/hooks/useForm";
 
-import type {
-  ButtonProps,
-  InputProps,
-  StackProps,
-  TextProps,
-} from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
+import type { ComponentProps } from "react";
 
-interface Props extends InputProps {
+interface Props extends ComponentProps<typeof Input> {
   /** Label for the input field. */
   label?: string;
   /** Field container props. */
-  containerProps?: StackProps;
+  containerProps?: ComponentProps<"div">;
   /** Error map to determine issue message(s) to render. */
   errorMap?: StandardSchemaV1Issue[];
   /** Additional props for the error component. */
-  errorProps?: TextProps;
+  errorProps?: ComponentProps<"span">;
   /** Whether to display the remove field trigger. */
   displayRemoveTrigger?: boolean;
   /** Additional props to be passed to the remove field trigger. */
-  removeFieldProps?: ButtonProps;
+  removeFieldProps?: ComponentProps<typeof Button>;
 }
 
 /**
@@ -48,59 +44,36 @@ const URLField = ({
     <Field errorMap={errorMap} errorProps={errorProps} {...containerProps}>
       {label && <Label htmlFor={name}>{label}</Label>}
 
-      <HStack>
+      <div className="flex items-center gap-2">
         <Favicon
           url={state.value}
           size={5}
           className="text-foreground-subtle"
         />
 
-        <HStack
-          gap={0}
-          flex={1}
-          overflow="hidden"
-          borderWidth="1px"
-          borderRadius="sm"
-          borderColor="border.subtle"
-          transitionDuration="normal"
-          transitionProperty="box-shadow, border-color"
-          transitionTimingFunction="default"
-          _focusWithin={{
-            borderColor: "accent.default",
-            boxShadow: `0 0 0 1px ${token("colors.accent.default")}`,
-          }}
-        >
+        <div className="flex flex-1 items-center overflow-hidden rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-accent focus-within:ring-1 focus-within:ring-accent">
           <Input
             id={name}
             placeholder="https://example.com"
             value={state.value}
             onChange={(evt) => handleChange(evt.target.value)}
-            borderWidth={0}
-            _focus={{
-              boxShadow: "none",
-            }}
+            className="border-0 shadow-none focus-visible:ring-0"
             {...props}
           />
-        </HStack>
+        </div>
 
         {displayRemoveTrigger && (
           <Button
-            variant="icon"
-            bgColor="transparent"
-            color={{
-              base: "foreground.subtle",
-              _hover: {
-                base: "omni.ruby",
-                _disabled: "foreground.subtle",
-              },
-            }}
-            opacity={{ _disabled: 0.8 }}
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="shrink-0 bg-transparent text-foreground-subtle hover:text-[var(--colors-omni-ruby)] disabled:opacity-80"
             {...removeFieldProps}
           >
-            <Icon src={LuX} />
+            <LuX />
           </Button>
         )}
-      </HStack>
+      </div>
     </Field>
   );
 };

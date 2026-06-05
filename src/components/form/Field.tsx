@@ -1,21 +1,26 @@
-import { Stack, Text } from "@omnidev/sigil";
-
 import { useFieldContext } from "@/lib/hooks/useForm";
+import cn from "@/lib/utils";
 
-import type { StackProps, TextProps } from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
+import type { ComponentProps } from "react";
 
-interface Props extends StackProps {
+interface Props extends ComponentProps<"div"> {
   /** Error map to determine issue message(s) to render. */
   errorMap?: StandardSchemaV1Issue[];
   /** Overrides to apply to the default error text element. */
-  errorProps?: TextProps;
+  errorProps?: ComponentProps<"span">;
 }
 
 /**
  * Generalized form `Field` component.
  */
-const Field = ({ errorMap, errorProps, children, ...rest }: Props) => {
+const Field = ({
+  errorMap,
+  errorProps,
+  children,
+  className,
+  ...rest
+}: Props) => {
   const { state } = useFieldContext<string>();
 
   const errors = (errorMap ??
@@ -23,23 +28,18 @@ const Field = ({ errorMap, errorProps, children, ...rest }: Props) => {
     []) as StandardSchemaV1Issue[];
 
   return (
-    <Stack position="relative" gap={1.5} {...rest}>
+    <div className={cn("relative flex flex-col gap-1.5", className)} {...rest}>
       {children}
 
       {!!errors.length && (
-        <Text
-          position="absolute"
-          top={0}
-          right={0}
-          h={5}
-          fontSize="sm"
-          color="primary"
+        <span
+          className="absolute top-0 right-0 h-5 text-primary text-sm"
           {...errorProps}
         >
           {errors[0].message}
-        </Text>
+        </span>
       )}
-    </Stack>
+    </div>
   );
 };
 

@@ -1,20 +1,33 @@
-import { createListCollection } from "@ark-ui/react";
-import { Combobox } from "@omnidev/sigil";
-
 import Field from "@/components/form/Field";
+import Combobox from "@/components/ui/combobox";
+import { Label } from "@/components/ui/label";
 import { useFieldContext } from "@/lib/hooks/useForm";
 
-import type { CollectionItem } from "@ark-ui/react";
-import type { ComboboxProps, TextProps } from "@omnidev/sigil";
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
+import type { ComponentProps } from "react";
 
-interface Props extends Omit<ComboboxProps, "collection"> {
+interface Item {
+  /** Display label. */
+  label: string;
+  /** Item value. */
+  value: string;
+  /** Whether the item is disabled. */
+  disabled?: boolean;
+}
+
+interface Props {
+  /** Field label. */
+  label?: string;
   /** The items available for selection. */
-  items: CollectionItem[];
+  items: Item[];
+  /** Placeholder text. */
+  placeholder?: string;
+  /** Whether the field is disabled. */
+  disabled?: boolean;
   /** Error map to determine issue message(s) to render. */
   errorMap?: StandardSchemaV1Issue[];
   /** Additional props for the error component. */
-  errorProps?: TextProps;
+  errorProps?: ComponentProps<"span">;
 }
 
 /**
@@ -23,28 +36,23 @@ interface Props extends Omit<ComboboxProps, "collection"> {
 const SingularComboboxField = ({
   label,
   items,
+  placeholder,
+  disabled,
   errorMap,
   errorProps,
-  ...rest
 }: Props) => {
   const { handleChange, state } = useFieldContext<string>();
 
   return (
-    <Field w="full" gap={0} errorMap={errorMap} errorProps={errorProps}>
-      {/* TODO: figure out how to appropriately style clearTrigger and trigger */}
+    <Field className="w-full gap-0" errorMap={errorMap} errorProps={errorProps}>
+      {label && <Label className="mb-1.5">{label}</Label>}
+
       <Combobox
-        label={label}
-        collection={createListCollection({
-          items,
-        })}
-        clearTriggerProps={{
-          display: state.value.length ? "block" : "none",
-        }}
+        items={items}
+        placeholder={placeholder}
+        disabled={disabled}
         value={state.value?.length ? [state.value] : []}
-        onValueChange={({ value }) =>
-          handleChange(value.length ? value[0] : "")
-        }
-        {...rest}
+        onValueChange={(value) => handleChange(value.length ? value[0] : "")}
       />
     </Field>
   );

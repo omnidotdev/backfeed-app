@@ -1,11 +1,13 @@
-import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@/components/ui/collapsible";
 import { useCreateCommentMutation } from "@/generated/graphql";
-import { token } from "@/generated/panda/tokens";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import { uuidSchema } from "@/lib/constants/schema.constant";
@@ -18,7 +20,7 @@ import {
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
-import type { CollapsibleProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { Comment } from "@/generated/graphql";
 
 const MAX_COMMENT_LENGTH = 240;
@@ -43,7 +45,7 @@ const createReplySchema = z.object({
     ),
 });
 
-interface Props extends CollapsibleProps {
+interface Props extends ComponentProps<typeof CollapsibleRoot> {
   /** Comment ID. */
   commentId: Comment["rowId"];
   /** Whether the user can reply to the comment. */
@@ -126,80 +128,51 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
   const messageLength = useStore(store, (store) => store.values.message.length);
 
   return (
-    <Collapsible {...rest}>
-      <Stack
-        mt={2}
-        ml={{ sm: 10 }}
-        borderWidth="1px"
-        borderRadius="sm"
-        borderColor="border.subtle"
-        transitionDuration="normal"
-        transitionProperty="box-shadow, border-color"
-        transitionTimingFunction="default"
-        _focusWithin={{
-          borderColor: "accent.default",
-          boxShadow: `0 0 0 1px ${token("colors.accent.default")}`,
-        }}
-      >
-        <sigil.form
-          display="flex"
-          flexDirection="column"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            await handleSubmit();
-          }}
-        >
-          <AppField name="message">
-            {({ TextareaField }) => (
-              <TextareaField
-                placeholder={app.postPage.comments.textAreaPlaceholder}
-                fontSize="sm"
-                minH={16}
-                borderWidth={0}
-                borderBottomWidth="1px"
-                borderRadius="none"
-                _focus={{
-                  borderColor: "transparent",
-                  borderBottomColor: "border.subtle",
-                  boxShadow: "none",
-                }}
-                disabled={!canReply}
-                maxLength={MAX_COMMENT_LENGTH}
-                errorProps={{
-                  top: -6,
-                }}
-              />
-            )}
-          </AppField>
-
-          <Stack
-            justify="space-between"
-            direction="row"
-            p={2}
-            bgColor={{
-              base: "background.subtle",
-              _dark: "background.subtle/20",
+    <CollapsibleRoot {...rest}>
+      <CollapsibleContent>
+        <div className="mt-2 flex flex-col rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-accent focus-within:ring-1 focus-within:ring-accent sm:ml-10">
+          <form
+            className="flex flex-col"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              await handleSubmit();
             }}
           >
-            <CharacterLimit
-              value={messageLength}
-              max={MAX_COMMENT_LENGTH}
-              className="place-self-start"
-            />
+            <AppField name="message">
+              {({ TextareaField }) => (
+                <TextareaField
+                  placeholder={app.postPage.comments.textAreaPlaceholder}
+                  className="min-h-16 rounded-none border-0 border-b border-border-subtle text-sm shadow-none focus-visible:ring-0"
+                  disabled={!canReply}
+                  maxLength={MAX_COMMENT_LENGTH}
+                  errorProps={{
+                    className: "top-[-1.5rem]",
+                  }}
+                />
+              )}
+            </AppField>
 
-            <AppForm>
-              <SubmitForm
-                action={app.postPage.comments.createReply.action}
-                size="sm"
-                isPending={isPending}
-                disabled={!canReply}
+            <div className="flex flex-row justify-between bg-background-subtle p-2 dark:bg-background-subtle/20">
+              <CharacterLimit
+                value={messageLength}
+                max={MAX_COMMENT_LENGTH}
+                className="place-self-start"
               />
-            </AppForm>
-          </Stack>
-        </sigil.form>
-      </Stack>
-    </Collapsible>
+
+              <AppForm>
+                <SubmitForm
+                  action={app.postPage.comments.createReply.action}
+                  size="sm"
+                  isPending={isPending}
+                  disabled={!canReply}
+                />
+              </AppForm>
+            </div>
+          </form>
+        </div>
+      </CollapsibleContent>
+    </CollapsibleRoot>
   );
 };
 
