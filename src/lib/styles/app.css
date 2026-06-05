@@ -14,7 +14,9 @@
   --color-secondary: var(--colors-brand-secondary);
   --color-muted: var(--colors-background-muted);
   --color-muted-foreground: var(--colors-foreground-muted);
-  --color-border: var(--colors-border-default);
+  /* default border is intentionally subtle (neutral-200/700); border-default
+     (neutral-500) is too dark for resting borders and reads as a hard outline */
+  --color-border: var(--colors-border-subtle);
   --color-background: var(--colors-background-default);
   --color-foreground: var(--colors-foreground-default);
   --color-card: var(--colors-background-card);
@@ -22,7 +24,7 @@
   --color-accent-foreground: var(--colors-accent-foreground);
   --color-destructive: var(--colors-status-error, oklch(0.577 0.245 27.325));
   --color-card-foreground: var(--colors-foreground-default);
-  --color-input: var(--colors-border-default);
+  --color-input: var(--colors-border-subtle);
   --color-ring: var(--colors-brand-primary);
   /* Additional Sigil semantic tokens used across the app */
   --color-foreground-subtle: var(--colors-foreground-subtle);
@@ -50,7 +52,7 @@
 
 @layer base {
   * {
-    border-color: var(--colors-border-default);
+    border-color: var(--colors-border-subtle);
   }
 
   html {
