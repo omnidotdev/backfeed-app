@@ -1,17 +1,3 @@
-import {
-  Avatar,
-  Button,
-  Collapsible,
-  HStack,
-  Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuSeparator,
-  Stack,
-  Text,
-} from "@omnidev/sigil";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
@@ -19,7 +5,26 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { LuExternalLink } from "react-icons/lu";
 import { useOnClickOutside } from "usehooks-ts";
 
-import { token } from "@/generated/panda/tokens";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@/components/ui/collapsible";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { CONSOLE_URL, isDevEnv } from "@/lib/config/env.config";
@@ -35,7 +40,7 @@ const AccountInformation = () => {
   const { session } = useRouteContext({ from: "__root__" });
   const navigate = useNavigate();
   const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.sm"),
+    minWidth: "40rem",
   });
 
   const userActions = useRef<HTMLDivElement>(null);
@@ -60,141 +65,127 @@ const AccountInformation = () => {
 
   const handleLogout = async () => {
     try {
-      // await fetch("/api/auth/federated-logout", {
-      //   method: "POST",
-      // });
-
       await signOut();
     } catch (err) {
       if (isDevEnv) console.error(err);
     }
   };
 
+  const initial = session?.user?.username?.[0]?.toUpperCase();
+
   if (isSmallViewport) {
     return (
-      <Menu
-        trigger={
-          <Button variant="ghost">
-            <Avatar
-              imageSrc={session?.user?.image ?? undefined}
-              name={session?.user?.username}
-            />
+      <MenuRoot positioning={{ shift: 32 }}>
+        <MenuTrigger asChild>
+          <Button variant="ghost" className="rounded-full px-0">
+            <AvatarRoot size="md">
+              <AvatarImage src={session?.user?.image ?? undefined} alt="" />
+              <AvatarFallback>{initial}</AvatarFallback>
+            </AvatarRoot>
           </Button>
-        }
-        triggerProps={{
-          px: 0,
-          rounded: "full",
-        }}
-        positioning={{
-          shift: 32,
-        }}
-      >
-        <MenuItemGroup minW={32}>
-          <MenuItemGroupLabel>{session?.user?.username}</MenuItemGroupLabel>
+        </MenuTrigger>
 
-          <MenuSeparator />
+        <MenuPositioner>
+          <MenuContent className="min-w-32">
+            <MenuItemGroup>
+              <MenuItemGroupLabel>{session?.user?.username}</MenuItemGroupLabel>
 
-          <MenuItem value="profile" onClick={handleProfileClick}>
-            <HStack gap={2}>
-              <Icon src={FiUser} size="sm" />
-
-              {app.auth.profile.label}
-            </HStack>
-          </MenuItem>
-
-          {CONSOLE_URL && (
-            <>
               <MenuSeparator />
 
-              <MenuItem value="manage-account" asChild>
-                <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
-                  <HStack gap={2}>
-                    <Icon src={LuExternalLink} size="sm" />
-                    Manage account
-                  </HStack>
-                </a>
+              <MenuItem value="profile" onClick={handleProfileClick}>
+                <FiUser />
+                {app.auth.profile.label}
               </MenuItem>
-            </>
-          )}
 
-          <MenuSeparator />
+              {CONSOLE_URL && (
+                <>
+                  <MenuSeparator />
 
-          <MenuItem value="logout" onClick={handleLogout}>
-            <HStack gap={2} color="primary">
-              <Icon src={FiLogOut} size="sm" color="primary" />
+                  <MenuItem value="manage-account" asChild>
+                    <a
+                      href={CONSOLE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LuExternalLink />
+                      Manage account
+                    </a>
+                  </MenuItem>
+                </>
+              )}
 
-              {app.auth.signOut.label}
-            </HStack>
-          </MenuItem>
-        </MenuItemGroup>
-      </Menu>
+              <MenuSeparator />
+
+              <MenuItem
+                value="logout"
+                onClick={handleLogout}
+                className="text-primary [&_svg]:text-primary"
+              >
+                <FiLogOut />
+                {app.auth.signOut.label}
+              </MenuItem>
+            </MenuItemGroup>
+          </MenuContent>
+        </MenuPositioner>
+      </MenuRoot>
     );
   }
 
   return (
-    <Stack ref={userActions} justifyContent="end">
-      <Collapsible open={isMobileProfileOpen}>
-        <Stack>
-          <Button onClick={handleProfileClick}>
-            <HStack gap={2}>
-              <Icon src={FiUser} />
-
+    <div ref={userActions} className="flex flex-col justify-end">
+      <CollapsibleRoot open={isMobileProfileOpen}>
+        <CollapsibleContent>
+          <div className="flex flex-col gap-2">
+            <Button onClick={handleProfileClick}>
+              <FiUser />
               {app.auth.profile.label}
-            </HStack>
-          </Button>
+            </Button>
 
-          {CONSOLE_URL && (
-            <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline">
-                <HStack gap={2}>
-                  <Icon src={LuExternalLink} size="sm" />
+            {CONSOLE_URL && (
+              <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full">
+                  <LuExternalLink />
                   Manage account
-                </HStack>
-              </Button>
-            </a>
-          )}
+                </Button>
+              </a>
+            )}
 
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            borderColor="primary"
-          >
-            <HStack gap={2} color="primary">
-              <Icon src={FiLogOut} size="sm" color="primary" />
-
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="border-primary text-primary [&_svg]:text-primary"
+            >
+              <FiLogOut />
               {app.auth.signOut.label}
-            </HStack>
-          </Button>
-        </Stack>
-      </Collapsible>
+            </Button>
+          </div>
+        </CollapsibleContent>
+      </CollapsibleRoot>
 
       <Button
-        justifyContent="space-between"
         variant="ghost"
-        outline="1px solid"
-        outlineColor="background.subtle"
-        size="xl"
+        className="h-auto justify-between py-3 outline outline-background-subtle"
         onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
       >
-        <HStack justifyContent="space-between" w="full">
-          <HStack alignItems="center">
-            <Avatar
-              imageSrc={session?.user?.image ?? undefined}
-              name={session?.user?.name}
-            />
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AvatarRoot size="md">
+              <AvatarImage src={session?.user?.image ?? undefined} alt="" />
+              <AvatarFallback>{initial}</AvatarFallback>
+            </AvatarRoot>
 
-            <Stack gap={1} textAlign="left">
-              <Text lineHeight={1}>{session?.user?.name}</Text>
-              <Text fontSize="xs" lineHeight={1} color="foreground.muted">
+            <div className="flex flex-col gap-1 text-left">
+              <span className="leading-none">{session?.user?.name}</span>
+              <span className="text-muted-foreground text-xs leading-none">
                 {session?.user?.email}
-              </Text>
-            </Stack>
-          </HStack>
+              </span>
+            </div>
+          </div>
 
-          <Icon src={HiChevronUpDown} size="xl" />
-        </HStack>
+          <HiChevronUpDown className="size-6" />
+        </div>
       </Button>
-    </Stack>
+    </div>
   );
 };
 
