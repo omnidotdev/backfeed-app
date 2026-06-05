@@ -1,4 +1,3 @@
-import { Collapsible, Stack, sigil } from "@omnidev/sigil";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
@@ -6,6 +5,10 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@/components/ui/collapsible";
 import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -193,63 +196,64 @@ const CreateFeedback = () => {
     ];
 
   return (
-    <Collapsible
+    <CollapsibleRoot
       onOpenChange={({ open }) => {
         reset();
         setIsOpen(open);
       }}
       open={isOpen}
     >
-      <sigil.form
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        p={1}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await handleSubmit();
-        }}
-      >
-        <AppField name="title">
-          {({ InputField }) => (
-            <InputField
-              label={app.projectPage.projectFeedback.feedbackTitle.label}
-              placeholder={titlePlaceholder}
-              disabled={!session?.user || !canCreateFeedback}
-            />
-          )}
-        </AppField>
+      <CollapsibleContent>
+        <form
+          className="flex flex-col gap-2 p-1"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            await handleSubmit();
+          }}
+        >
+          <AppField name="title">
+            {({ InputField }) => (
+              <InputField
+                label={app.projectPage.projectFeedback.feedbackTitle.label}
+                placeholder={titlePlaceholder}
+                disabled={!session?.user || !canCreateFeedback}
+              />
+            )}
+          </AppField>
 
-        <AppField name="description">
-          {({ TextareaField }) => (
-            <TextareaField
-              label={app.projectPage.projectFeedback.feedbackDescription.label}
-              placeholder={descriptionPlaceholder}
-              rows={3}
-              maxLength={MAX_DESCRIPTION_LENGTH}
-              disabled={!session?.user || !canCreateFeedback}
-            />
-          )}
-        </AppField>
+          <AppField name="description">
+            {({ TextareaField }) => (
+              <TextareaField
+                label={
+                  app.projectPage.projectFeedback.feedbackDescription.label
+                }
+                placeholder={descriptionPlaceholder}
+                rows={3}
+                maxLength={MAX_DESCRIPTION_LENGTH}
+                disabled={!session?.user || !canCreateFeedback}
+              />
+            )}
+          </AppField>
 
-        <Stack justify="space-between" direction="row">
-          <CharacterLimit
-            value={descriptionLength}
-            max={MAX_DESCRIPTION_LENGTH}
-            className="place-self-start"
-          />
-
-          <AppForm>
-            <SubmitForm
-              action={app.projectPage.projectFeedback.action}
-              isPending={isPending}
-              className="w-fit place-self-end"
+          <div className="flex flex-row justify-between">
+            <CharacterLimit
+              value={descriptionLength}
+              max={MAX_DESCRIPTION_LENGTH}
+              className="place-self-start"
             />
-          </AppForm>
-        </Stack>
-      </sigil.form>
-    </Collapsible>
+
+            <AppForm>
+              <SubmitForm
+                action={app.projectPage.projectFeedback.action}
+                isPending={isPending}
+                className="w-fit place-self-end"
+              />
+            </AppForm>
+          </div>
+        </form>
+      </CollapsibleContent>
+    </CollapsibleRoot>
   );
 };
 

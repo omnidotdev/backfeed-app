@@ -140,8 +140,7 @@ const Comments = () => {
                     key={comment?.rowId}
                     comment={comment!}
                     canReply={canCreateComment ?? false}
-                    w="full"
-                    minH={21}
+                    className="min-h-[5.25rem] w-full"
                   />
                 ))}
 

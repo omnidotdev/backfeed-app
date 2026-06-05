@@ -1,16 +1,4 @@
 import { Format } from "@ark-ui/react";
-import {
-  Avatar,
-  Button,
-  Circle,
-  Divider,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  sigil,
-  useDisclosure,
-} from "@omnidev/sigil";
 import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -19,20 +7,27 @@ import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
 import DestructiveAction from "@/components/core/DestructiveAction";
 import CreateReply from "@/components/feedback/CreateReply";
 import Replies from "@/components/feedback/Replies";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { infiniteCommentsOptions } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
+import cn from "@/lib/utils";
 
-import type { StackProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { CommentFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
 );
 
-interface Props extends StackProps {
+interface Props extends ComponentProps<"div"> {
   /** Comment. */
   comment: CommentFragment;
   /** Whether the user can reply to the comment. */
@@ -49,14 +44,12 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
 
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
 
-  const { isOpen: isReplyFormOpen, onToggle: onToggleReplyForm } =
-    useDisclosure();
+  const [isReplyFormOpen, setIsReplyFormOpen] = useState(false);
+  const onToggleReplyForm = () => setIsReplyFormOpen((open) => !open);
 
-  const {
-    isOpen: isRepliesOpen,
-    onOpen: onOpenReplies,
-    onToggle: onToggleReplies,
-  } = useDisclosure();
+  const [isRepliesOpen, setIsRepliesOpen] = useState(false);
+  const onOpenReplies = () => setIsRepliesOpen(true);
+  const onToggleReplies = () => setIsRepliesOpen((open) => !open);
 
   const { mutate: deleteComment, isPending: isDeletePending } =
     useDeleteCommentMutation({
@@ -83,125 +76,100 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
 
   const isSender = comment.user?.rowId === session?.user?.rowId;
 
+  const usernameInitial = comment?.user?.username?.[0]?.toUpperCase();
+
   return (
-    <Stack
-      position="relative"
-      gap={0}
-      p={2}
-      opacity={actionIsPending ? 0.5 : 1}
+    <div
+      className={cn(
+        "relative flex flex-col p-2",
+        actionIsPending && "opacity-50",
+      )}
       {...rest}
     >
-      <HStack>
-        <Stack gap={0} placeSelf="flex-start" h="full" align="center">
-          <Avatar
-            imageSrc={comment?.user?.avatarUrl ?? undefined}
-            name={comment?.user?.username}
-            size="xs"
+      <div className="flex items-stretch gap-2">
+        <div className="flex h-full flex-col items-center self-stretch">
+          <AvatarRoot size="xs">
+            <AvatarImage src={comment?.user?.avatarUrl ?? undefined} alt="" />
+            <AvatarFallback>{usernameInitial}</AvatarFallback>
+          </AvatarRoot>
+
+          <div
+            className={cn(
+              "w-px flex-1 bg-border transition-colors",
+              hoveredRepliesToggle && "bg-foreground-muted",
+            )}
           />
+        </div>
 
-          <Divider
-            orientation="vertical"
-            h="full"
-            transitionDuration="normal"
-            transitionProperty="color"
-            transitionTimingFunction="default"
-            color={hoveredRepliesToggle ? "foreground.muted" : undefined}
-          />
-        </Stack>
+        <div className="mt-1 flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">{comment?.user?.username}</span>
 
-        <Stack mt={1} gap={1}>
-          <HStack>
-            <Text fontWeight="semibold">{comment?.user?.username}</Text>
+            <div className="size-1 rounded-full bg-foreground-subtle" />
 
-            <Circle size={1} bgColor="foreground.subtle" />
-
-            <Text fontSize="sm" color="foreground.muted">
+            <span className="text-muted-foreground text-sm">
               {dayjs(comment.createdAt).fromNow()}
-            </Text>
-          </HStack>
+            </span>
+          </div>
 
-          <Text color="foreground.muted" py={2} pr={4} wordBreak="break-word">
+          <div className="break-words py-2 pr-4 text-muted-foreground">
             {comment.message?.split("\n").map((line, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-              <sigil.span key={index}>
+              <span key={index}>
                 {line}
                 <br />
-              </sigil.span>
+              </span>
             ))}
-          </Text>
+          </div>
 
-          <HStack color="foreground.subtle/80" gap={4} mb="-1px">
+          <div className="mb-[-1px] flex items-center gap-4 text-foreground-subtle/80">
             <Button
-              position="absolute"
-              left={1}
-              px={0}
-              bgColor="background.default"
-              variant="icon"
+              variant="ghost"
+              size="icon"
+              className="absolute left-1 bg-background px-0 text-foreground-subtle hover:text-foreground-muted disabled:text-[var(--colors-foreground-disabled)]"
               onClick={onToggleReplies}
               onMouseEnter={() => setHoveredRepliesToggle(true)}
               onMouseLeave={() => setHoveredRepliesToggle(false)}
               disabled={!comment.childComments.totalCount || actionIsPending}
-              color={{
-                base: "foreground.subtle",
-                _disabled: "foreground.disabled",
-                _hover: {
-                  base: "foreground.muted",
-                  _disabled: "foreground.disabled",
-                },
-              }}
             >
-              <Icon src={isRepliesOpen ? LuCircleMinus : LuCirclePlus} />
+              {isRepliesOpen ? <LuCircleMinus /> : <LuCirclePlus />}
             </Button>
 
             <Button
               variant="ghost"
               size="sm"
-              px={0}
-              bgColor="transparent"
-              opacity={{ _disabled: 0.8, _hover: 0.8 }}
-              gap={1}
-              fontSize="sm"
-              color={{ base: "ruby.500", _dark: "ruby.400" }}
+              className="gap-1 bg-transparent px-0 text-[var(--colors-ruby-500)] text-sm hover:opacity-80 disabled:opacity-80 dark:text-[var(--colors-ruby-400)]"
               onClick={onToggleReplyForm}
               disabled={actionIsPending || !canReply}
             >
-              <Icon src={LuMessageCircle} h={4.5} w={4.5} />
+              <LuMessageCircle className="size-[1.125rem]" />
               Reply
             </Button>
 
             {!!comment.childComments.totalCount && (
               <Button
-                gap={0.5}
                 variant="ghost"
-                bgColor="transparent"
-                px={0}
+                size="sm"
+                className="gap-0.5 bg-transparent px-0 text-foreground-subtle hover:text-foreground-muted"
                 onClick={onToggleReplies}
-                color={{
-                  base: "foreground.subtle",
-                  _disabled: "foreground.disabled",
-                  _hover: {
-                    base: "foreground.muted",
-                    _disabled: "foreground.disabled",
-                  },
-                }}
               >
                 <Format.Number
                   value={comment.childComments.totalCount}
                   notation="compact"
                 />
 
-                <Text fontSize="sm" mt="1px">
+                <span className="mt-px text-sm">
                   {setSingularOrPlural({
                     value: comment.childComments.totalCount,
                     label: "Reply",
                     plural: "Replies",
                   })}
-                </Text>
+                </span>
               </Button>
             )}
-          </HStack>
-        </Stack>
-      </HStack>
+          </div>
+        </div>
+      </div>
 
       {(isSender || hasAdminPrivileges) && (
         <DestructiveAction
@@ -231,7 +199,7 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
       />
 
       <Replies commentId={comment.rowId} open={isRepliesOpen} />
-    </Stack>
+    </div>
   );
 };
 
