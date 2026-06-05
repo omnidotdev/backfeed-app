@@ -13,16 +13,15 @@ import { createServerFn } from "@tanstack/react-start";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
+import { Toaster } from "sonner";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-import { Toaster } from "@/components/ui/toaster";
 import app from "@/lib/config/app.config";
 import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
-import toaster from "@/lib/util/toaster";
 import cn from "@/lib/utils";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
@@ -184,7 +183,12 @@ function RootDocument({
 
             {!isMaintenanceMode && <Footer />}
 
-            <Toaster toaster={toaster} />
+            <Toaster
+              theme={theme as "light" | "dark" | "system"}
+              position="bottom-right"
+              richColors
+              closeButton
+            />
           </div>
         </ThemeProvider>
 
