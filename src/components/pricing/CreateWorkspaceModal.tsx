@@ -1,6 +1,14 @@
-import { Button, Dialog, Stack, Text, sigil } from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useRef } from "react";
 
+import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import useForm from "@/lib/hooks/useForm";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import generateSlug from "@/lib/util/generateSlug";
@@ -60,9 +68,7 @@ const CreateWorkspaceModal = ({ tierName, onSubmit, isLoading }: Props) => {
   const previewSlug = currentName ? generateSlug(currentName.trim()) : "";
 
   return (
-    <Dialog
-      title="Create Workspace"
-      description={`Create a new workspace with the ${tierName} plan.`}
+    <DialogRoot
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
@@ -72,64 +78,69 @@ const CreateWorkspaceModal = ({ tierName, onSubmit, isLoading }: Props) => {
       }}
       initialFocusEl={() => nameRef.current}
     >
-      <sigil.form
-        display="flex"
-        flexDirection="column"
-        gap={4}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await handleSubmit();
-        }}
-      >
-        <AppField name="name">
-          {({ InputField }) => (
-            <Stack gap={2}>
-              <InputField
-                ref={nameRef}
-                placeholder="Workspace Name"
-                autoComplete="off"
-              />
+      <Portal>
+        <DialogBackdrop />
+        <DialogContent>
+          <DialogTitle>Create Workspace</DialogTitle>
+          <DialogDescription>
+            {`Create a new workspace with the ${tierName} plan.`}
+          </DialogDescription>
 
-              {previewSlug && (
-                <Text color="foreground.subtle" fontSize="xs">
-                  URL:{" "}
-                  <Text as="span" fontFamily="mono">
-                    {previewSlug}
-                  </Text>
-                </Text>
-              )}
-            </Stack>
-          )}
-        </AppField>
-
-        <Stack direction="row" justify="flex-end" gap={2} mt={2}>
-          <Button
-            type="button"
-            onClick={() => {
-              setIsOpen(false);
-              reset();
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              await handleSubmit();
             }}
-            variant="outline"
-            disabled={isLoading}
           >
-            Cancel
-          </Button>
+            <AppField name="name">
+              {({ InputField }) => (
+                <div className="flex flex-col gap-2">
+                  <InputField
+                    ref={nameRef}
+                    placeholder="Workspace Name"
+                    autoComplete="off"
+                  />
 
-          <Button
-            type="submit"
-            disabled={
-              !state.canSubmit ||
-              state.isSubmitting ||
-              state.isDefaultValue ||
-              isLoading
-            }
-          >
-            {isLoading ? "Creating..." : "Continue to Checkout"}
-          </Button>
-        </Stack>
-      </sigil.form>
-    </Dialog>
+                  {previewSlug && (
+                    <span className="text-foreground-subtle text-xs">
+                      URL: <span className="font-mono">{previewSlug}</span>
+                    </span>
+                  )}
+                </div>
+              )}
+            </AppField>
+
+            <div className="mt-2 flex flex-row justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  reset();
+                }}
+                variant="outline"
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={
+                  !state.canSubmit ||
+                  state.isSubmitting ||
+                  state.isDefaultValue ||
+                  isLoading
+                }
+              >
+                {isLoading ? "Creating..." : "Continue to Checkout"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Portal>
+    </DialogRoot>
   );
 };
 

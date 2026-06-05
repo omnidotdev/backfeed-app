@@ -145,7 +145,7 @@ function PricingPage() {
         ))}
       </Flex>
 
-      <PricingMatrix maxW="5xl" alignSelf="center" my={6} />
+      <PricingMatrix className="my-6 max-w-5xl self-center" />
 
       <PricingFAQ className="mb-6 w-full max-w-5xl self-center px-4" />
     </Stack>

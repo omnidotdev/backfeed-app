@@ -1,18 +1,18 @@
-import {
-  Flex,
-  Icon,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@omnidev/sigil";
 import { FaCheck, FaX } from "react-icons/fa6";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 
 import Tooltip from "@/components/core/Tooltip";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import app from "@/lib/config/app.config";
 
-import type { TableProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
 interface Feature {
   /** Human-readable label. */
@@ -176,89 +176,74 @@ const allFeatures = Array.from(
   new Set(tiers.flatMap(({ features }) => Object.keys(features))),
 );
 
-const headerProps = {
-  fontWeight: "bold",
-  fontSize: "xl",
-  textAlign: "center",
-};
+const headerCellClassName = "text-center font-bold text-xl";
 
 /**
  * Pricing feature matrix.
  */
-const PricingMatrix = (props: TableProps) => (
-  <Flex w="100%" overflowX="auto" justify={{ lg: "center" }}>
-    <Table
-      headerContent={
-        <TableRow>
-          <TableHeader {...headerProps}>
+const PricingMatrix = (props: ComponentProps<typeof Table>) => (
+  <div className="flex w-full overflow-x-auto lg:justify-center">
+    <Table {...props}>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead className={headerCellClassName}>
             {app.pricingPage.pricingMatrix.feature}
-          </TableHeader>
+          </TableHead>
 
           {tiers
             .filter(({ name }) => name)
             .map(({ name }) => (
-              <TableHeader key={name} {...headerProps}>
+              <TableHead key={name} className={headerCellClassName}>
                 {name}
-              </TableHeader>
+              </TableHead>
             ))}
         </TableRow>
-      }
-      {...props}
-    >
-      {allFeatures.map((feature) => {
-        const featureInfo = tiers.find((tier) => tier.features[feature])
-          ?.features[feature];
+      </TableHeader>
 
-        return (
-          <TableRow
-            key={feature}
-            bgColor={{
-              base: {
-                base: "background.default",
-                _hover: "background.default",
-              },
-              _odd: { base: "background.subtle", _hover: "background.subtle" },
-            }}
-          >
-            <TableCell
-              textAlign="center"
-              fontWeight="semibold"
-              fontSize={{ base: "sm", md: "lg" }}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              textWrap="nowrap"
+      <TableBody>
+        {allFeatures.map((feature) => {
+          const featureInfo = tiers.find((tier) => tier.features[feature])
+            ?.features[feature];
+
+          return (
+            <TableRow
+              key={feature}
+              className="bg-background hover:bg-background odd:bg-background-subtle odd:hover:bg-background-subtle"
             >
-              {featureInfo?.label || feature}
+              <TableCell className="flex items-center justify-center whitespace-nowrap text-center font-semibold text-sm md:text-lg">
+                {featureInfo?.label || feature}
 
-              {featureInfo?.comingSoon && (
-                <Tooltip
-                  positioning={{ placement: "top" }}
-                  trigger={<Icon src={HiOutlineWrenchScrewdriver} />}
-                  triggerProps={{
-                    "aria-label": app.info.comingSoon.label,
-                    className: "cursor-pointer bg-transparent",
-                  }}
-                >
-                  {app.info.comingSoon.label}
-                </Tooltip>
-              )}
-            </TableCell>
-
-            {tiers.map(({ id, features }) => (
-              <TableCell key={id} textAlign="center">
-                {features[feature]?.value ? (
-                  <Icon src={FaCheck} color="green.500" />
-                ) : (
-                  <Icon src={FaX} color="primary" />
+                {featureInfo?.comingSoon && (
+                  <Tooltip
+                    positioning={{ placement: "top" }}
+                    trigger={
+                      <HiOutlineWrenchScrewdriver className="ml-1 cursor-pointer" />
+                    }
+                    triggerProps={{
+                      "aria-label": app.info.comingSoon.label,
+                      className: "cursor-pointer bg-transparent",
+                    }}
+                  >
+                    {app.info.comingSoon.label}
+                  </Tooltip>
                 )}
               </TableCell>
-            ))}
-          </TableRow>
-        );
-      })}
+
+              {tiers.map(({ id, features }) => (
+                <TableCell key={id} className="text-center">
+                  {features[feature]?.value ? (
+                    <FaCheck className="mx-auto text-[var(--colors-green-500)]" />
+                  ) : (
+                    <FaX className="mx-auto text-primary" />
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          );
+        })}
+      </TableBody>
     </Table>
-  </Flex>
+  </div>
 );
 
 export default PricingMatrix;

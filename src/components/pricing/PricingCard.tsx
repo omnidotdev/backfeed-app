@@ -1,21 +1,4 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Grid,
-  GridItem,
-  HStack,
-  Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuSeparator,
-  Stack,
-  Text,
-  css,
-  sigil,
-} from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useMutation } from "@tanstack/react-query";
 import {
   Link,
@@ -29,6 +12,19 @@ import { LuBuilding, LuCheck, LuClockAlert, LuPlus } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import CreateWorkspaceModal from "@/components/pricing/CreateWorkspaceModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL, hasBilling } from "@/lib/config/env.config";
@@ -36,13 +32,14 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import { Tier } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
+import cn from "@/lib/utils";
 import { createCheckoutWithWorkspace } from "@/server/functions/subscriptions";
 
-import type { CardProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { Subscription } from "@/lib/providers/billing";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
-interface Props extends CardProps {
+interface Props extends ComponentProps<typeof Card> {
   /** Price information. */
   price: ExpandedProductPrice | undefined;
   /** Subscription status for each organization. */
@@ -71,7 +68,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   const isRecommendedTier = isTeamTier;
   const isEnterpriseTier = tier === Tier.Enterprise;
 
-  const actionIcon = match(tier)
+  const ActionIcon = match(tier)
     .with(Tier.Team, () => HiSparkles)
     .with(Tier.Pro, () => HiLockOpen)
     .otherwise(() => undefined);
@@ -204,214 +201,163 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   return (
     <>
       <Card
-        gap={4}
-        w="full"
-        maxW={{ base: "2xl", xl: "xs" }}
-        h={{ xl: "2xl" }}
-        outline={isRecommendedTier ? "solid 2px" : undefined}
-        outlineColor="brand.primary"
-        outlineOffset={1.5}
-        bodyProps={{
-          p: 0,
-        }}
-        boxShadow="card"
+        contentProps={{ className: "p-0" }}
+        className={cn(
+          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:h-[42rem] xl:max-w-xs",
+          isRecommendedTier &&
+            "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
+        )}
         {...rest}
       >
         {isRecommendedTier && (
-          <Stack
-            position="absolute"
-            top={1}
-            left="50%"
-            transform="translateX(-50%)"
-            backgroundColor="background.secondary"
-            p={2}
-            borderRadius={1}
-          >
-            <Badge color="brand.primary" height={8} borderRadius={4}>
+          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded bg-[var(--colors-background-secondary)] p-2">
+            <Badge className="h-8 rounded text-[var(--colors-brand-primary)]">
               {app.pricingPage.pricingTiers.recommended}
             </Badge>
-          </Stack>
+          </div>
         )}
 
         {isFreeTier && (
-          <Stack
-            position="absolute"
-            top={1}
-            left="50%"
-            transform="translateX(-50%)"
-            backgroundColor="background.secondary"
-            p={2}
-            borderRadius={1}
-          >
-            <Badge color="brand.secondary" height={8} borderRadius={4}>
+          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded bg-[var(--colors-background-secondary)] p-2">
+            <Badge className="h-8 rounded text-[var(--colors-brand-secondary)]">
               No Credit Card Required
             </Badge>
-          </Stack>
+          </div>
         )}
 
         {isEnterpriseTier && (
-          <Stack
-            position="absolute"
-            top={1}
-            left="50%"
-            transform="translateX(-50%)"
-            p={2}
-            borderRadius={1}
-          >
-            <Badge height={8} borderRadius={4}>
+          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded p-2">
+            <Badge className="h-8 rounded">
               {app.pricingPage.pricingTiers.comingSoon}
             </Badge>
-          </Stack>
+          </div>
         )}
 
-        <Stack align="center" h="full" w="full">
-          <Stack align="center" w="full" px={6}>
-            <Text as="h2" fontSize="2xl" fontWeight="bold" textAlign="center">
+        <div className="flex h-full w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center px-6">
+            <h2 className="text-center font-bold text-2xl">
               {capitalizeFirstLetter(tier)}
-            </Text>
+            </h2>
 
-            <Text textAlign="center" color="foreground.subtle">
+            <p className="text-center text-foreground-subtle">
               {price?.product.description ?? FREE_PRODUCT_DETAILS.description}
-            </Text>
+            </p>
 
-            <HStack display="inline-flex" alignItems="center">
-              <Text as="h3" fontSize="4xl" fontWeight="bold">
-                {!isEnterpriseTier && <sigil.sup fontSize="lg">$</sigil.sup>}
+            <div className="inline-flex items-center gap-2">
+              <h3 className="font-bold text-4xl">
+                {!isEnterpriseTier && <sup className="text-lg">$</sup>}
 
                 {price ? price.unit_amount! / 100 : 0}
-              </Text>
+              </h3>
 
               {!isEnterpriseTier && (
-                <sigil.span
-                  fontSize="lg"
-                  mt={2}
-                  css={css.raw({ ml: -1.5 })}
-                  color="foreground.subtle"
-                >
+                <span className="mt-2 ml-[-0.375rem] text-foreground-subtle text-lg">
                   {!isFreeTier &&
                     (isPerMonthPricing
                       ? `/${app.pricingPage.pricingCard.month}`
                       : `/${app.pricingPage.pricingCard.year}`)}
                   {isFreeTier && "/forever"}
-                </sigil.span>
+                </span>
               )}
-            </HStack>
+            </div>
 
             {showDropdown ? (
-              <Menu
+              <MenuRoot
                 defaultOpen={shouldAutoOpen}
                 onSelect={({ value }) => handleWorkspaceSelect(value)}
-                trigger={
-                  <Button
-                    w="100%"
-                    fontSize="lg"
-                    variant={isRecommendedTier ? "solid" : "outline"}
-                    className={buttonClassName}
-                    disabled={isCheckoutLoading}
-                  >
-                    {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
-                    {isCheckoutLoading ? "Loading..." : buttonContent}
-                  </Button>
-                }
                 positioning={{ sameWidth: true }}
               >
-                {allOrgs.length > 0 && (
-                  <>
-                    <MenuItemGroup>
-                      <MenuItemGroupLabel color="foreground.subtle">
-                        Your workspaces
-                      </MenuItemGroupLabel>
+                <MenuTrigger asChild>
+                  <Button
+                    className={cn("w-full text-lg", buttonClassName)}
+                    variant={isRecommendedTier ? "solid" : "outline"}
+                    disabled={isCheckoutLoading}
+                  >
+                    {ActionIcon && <ActionIcon className="size-4" />}
+                    {isCheckoutLoading ? "Loading..." : buttonContent}
+                  </Button>
+                </MenuTrigger>
 
-                      {upgradeableOrgs.map((org) => (
-                        <MenuItem key={org.id} value={org.id} cursor="pointer">
-                          <HStack w="full" gap={2}>
-                            <Icon
-                              src={LuBuilding}
-                              h={4}
-                              w={4}
-                              color="foreground.subtle"
-                            />
-                            <Text
-                              flex={1}
-                              truncate
-                              fontWeight="medium"
-                              fontSize="sm"
-                            >
-                              {org.name}
-                            </Text>
-                            <Badge color="brand.primary" fontSize="xs">
-                              Upgrade
-                            </Badge>
-                          </HStack>
-                        </MenuItem>
-                      ))}
+                <Portal>
+                  <MenuPositioner>
+                    <MenuContent>
+                      {allOrgs.length > 0 && (
+                        <>
+                          <MenuItemGroup>
+                            <MenuItemGroupLabel className="text-foreground-subtle">
+                              Your workspaces
+                            </MenuItemGroupLabel>
 
-                      {nonUpgradeableOrgs.map((org) => {
-                        const orgTier = getOrgTier(org.id);
-                        const isSameTier = orgTier === tier;
-
-                        return (
-                          <MenuItem
-                            key={org.id}
-                            value={org.id}
-                            disabled
-                            opacity={0.6}
-                          >
-                            <HStack w="full" gap={2}>
-                              <Icon
-                                src={LuBuilding}
-                                h={4}
-                                w={4}
-                                color="foreground.subtle"
-                              />
-                              <Text
-                                flex={1}
-                                truncate
-                                fontWeight="medium"
-                                fontSize="sm"
+                            {upgradeableOrgs.map((org) => (
+                              <MenuItem
+                                key={org.id}
+                                value={org.id}
+                                className="cursor-pointer"
                               >
-                                {org.name}
-                              </Text>
-                              <Badge fontSize="xs">
-                                {isSameTier
-                                  ? "Current plan"
-                                  : capitalizeFirstLetter(orgTier)}
-                              </Badge>
-                            </HStack>
-                          </MenuItem>
-                        );
-                      })}
-                    </MenuItemGroup>
+                                <div className="flex w-full items-center gap-2">
+                                  <LuBuilding className="size-4 text-foreground-subtle" />
+                                  <span className="flex-1 truncate font-medium text-sm">
+                                    {org.name}
+                                  </span>
+                                  <Badge className="text-[var(--colors-brand-primary)] text-xs">
+                                    Upgrade
+                                  </Badge>
+                                </div>
+                              </MenuItem>
+                            ))}
 
-                    <MenuSeparator />
-                  </>
-                )}
+                            {nonUpgradeableOrgs.map((org) => {
+                              const orgTier = getOrgTier(org.id);
+                              const isSameTier = orgTier === tier;
 
-                <MenuItemGroup>
-                  <MenuItem value="create-new" cursor="pointer">
-                    <HStack w="full" gap={2}>
-                      <Icon
-                        src={LuPlus}
-                        h={4}
-                        w={4}
-                        color="foreground.subtle"
-                      />
-                      <Text fontWeight="medium" fontSize="sm">
-                        New workspace
-                      </Text>
-                    </HStack>
-                  </MenuItem>
-                </MenuItemGroup>
-              </Menu>
+                              return (
+                                <MenuItem
+                                  key={org.id}
+                                  value={org.id}
+                                  disabled
+                                  className="opacity-60"
+                                >
+                                  <div className="flex w-full items-center gap-2">
+                                    <LuBuilding className="size-4 text-foreground-subtle" />
+                                    <span className="flex-1 truncate font-medium text-sm">
+                                      {org.name}
+                                    </span>
+                                    <Badge className="text-xs">
+                                      {isSameTier
+                                        ? "Current plan"
+                                        : capitalizeFirstLetter(orgTier)}
+                                    </Badge>
+                                  </div>
+                                </MenuItem>
+                              );
+                            })}
+                          </MenuItemGroup>
+
+                          <MenuSeparator />
+                        </>
+                      )}
+
+                      <MenuItemGroup>
+                        <MenuItem value="create-new" className="cursor-pointer">
+                          <div className="flex w-full items-center gap-2">
+                            <LuPlus className="size-4 text-foreground-subtle" />
+                            <span className="font-medium text-sm">
+                              New workspace
+                            </span>
+                          </div>
+                        </MenuItem>
+                      </MenuItemGroup>
+                    </MenuContent>
+                  </MenuPositioner>
+                </Portal>
+              </MenuRoot>
             ) : session?.user ? (
               // Logged in but not showing dropdown (free tier or no billing)
               isFreeTier ? (
                 session.organizations?.length ? (
                   <Button
-                    w="100%"
-                    fontSize="lg"
+                    className={cn("w-full text-lg", buttonClassName)}
                     variant={isRecommendedTier ? "solid" : "outline"}
-                    className={buttonClassName}
                     asChild
                   >
                     <Link
@@ -423,10 +369,8 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                   </Button>
                 ) : (
                   <Button
-                    w="100%"
-                    fontSize="lg"
+                    className={cn("w-full text-lg", buttonClassName)}
                     variant={isRecommendedTier ? "solid" : "outline"}
-                    className={buttonClassName}
                     asChild
                   >
                     <Link to="/workspaces">Go to Workspaces</Link>
@@ -434,35 +378,29 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                 )
               ) : isEnterpriseTier ? (
                 <Button
-                  w="100%"
-                  fontSize="lg"
+                  className={cn("w-full text-lg", buttonClassName)}
                   variant={isRecommendedTier ? "solid" : "outline"}
-                  className={buttonClassName}
                   disabled
                 >
                   {app.pricingPage.pricingCard.enterprise}
                 </Button>
               ) : (
                 <Button
-                  w="100%"
-                  fontSize="lg"
+                  className={cn("w-full text-lg", buttonClassName)}
                   variant={isRecommendedTier ? "solid" : "outline"}
-                  className={buttonClassName}
                   onClick={handleClick}
                   disabled={isCheckoutLoading}
                 >
-                  {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+                  {ActionIcon && <ActionIcon className="size-4" />}
                   {isCheckoutLoading ? "Loading..." : buttonContent}
                 </Button>
               )
             ) : (
               // Not logged in
               <Button
-                w="100%"
-                fontSize="lg"
+                className={cn("w-full text-lg", buttonClassName)}
                 disabled={isEnterpriseTier}
                 variant={isRecommendedTier ? "solid" : "outline"}
-                className={buttonClassName}
                 onClick={() =>
                   signIn({
                     redirectUrl: `${BASE_URL}/pricing?tier=${tier}`,
@@ -470,61 +408,53 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                   })
                 }
               >
-                {actionIcon && <Icon src={actionIcon} h={4} w={4} />}
+                {ActionIcon && <ActionIcon className="size-4" />}
 
                 {isEnterpriseTier
                   ? app.pricingPage.pricingCard.enterprise
                   : app.pricingPage.pricingCard.getStarted}
               </Button>
             )}
-          </Stack>
+          </div>
 
-          <Stack
-            w="full"
-            h="full"
-            bgColor={{
-              base: "background.subtle",
-              _dark: "background.subtle/25",
-            }}
-            p={6}
-          >
-            <Grid w="full" columns={{ base: 1, sm: 2, lg: 1 }} lineHeight={1.5}>
+          <div className="flex h-full w-full flex-col bg-background-subtle p-6 dark:bg-background-subtle/25">
+            <div className="grid w-full grid-cols-1 leading-normal sm:grid-cols-2 lg:grid-cols-1">
               {sortBenefits(
                 price?.product.marketing_features ??
                   FREE_PRODUCT_DETAILS.marketing_features,
               ).map((feature) => {
                 const isComingSoon = feature.name?.includes("coming soon");
 
-                const color = match({
+                const iconColor = match({
                   isEnterpriseTier,
                   isRecommendedTier,
                   isComingSoon,
                 })
                   .with(
                     { isComingSoon: true, isEnterpriseTier: false },
-                    () => "yellow",
+                    () => "text-yellow-500",
                   )
-                  .with({ isRecommendedTier: true }, () => "brand.primary")
-                  .otherwise(() => "foreground.subtle");
+                  .with(
+                    { isRecommendedTier: true },
+                    () => "text-[var(--colors-brand-primary)]",
+                  )
+                  .otherwise(() => "text-foreground-subtle");
+
+                const FeatureIcon = isComingSoon ? LuClockAlert : LuCheck;
 
                 return (
-                  <GridItem key={feature.name} display="flex" gap={2}>
-                    <sigil.span h={6} display="flex" alignItems="center">
-                      <Icon
-                        src={isComingSoon ? LuClockAlert : LuCheck}
-                        h={4}
-                        w={4}
-                        color={color}
-                      />
-                    </sigil.span>
+                  <div key={feature.name} className="flex gap-2">
+                    <span className="flex h-6 items-center">
+                      <FeatureIcon className={cn("size-4", iconColor)} />
+                    </span>
 
                     {feature.name?.split(" (coming soon)")[0]}
-                  </GridItem>
+                  </div>
                 );
               })}
-            </Grid>
-          </Stack>
-        </Stack>
+            </div>
+          </div>
+        </div>
       </Card>
 
       {/* Modal for creating new workspace */}
