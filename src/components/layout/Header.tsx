@@ -17,7 +17,7 @@ const Header = () => {
     <header className="flex h-full w-full border-neutral-200 border-b bg-white/90 py-2 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/80 dark:shadow-[0_1px_0_0_rgba(255,255,255,0.05)] dark:backdrop-blur-lg">
       <div className="flex w-full items-center justify-between px-4">
         <div className="flex items-center gap-4">
-          <LogoLink width={12} />
+          <LogoLink width={48} />
 
           <div className="flex items-center gap-1">
             <div className="hidden sm:flex">

@@ -146,6 +146,17 @@ const Hero = () => {
           ))}
         </div>
 
+        {/* Live demo link - points to Omni's own public feedback board */}
+        <a
+          href={app.feedbackUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-5 inline-flex items-center gap-1.5 font-medium text-foreground-subtle text-sm transition-colors hover:text-primary"
+        >
+          See it live on our own feedback board
+          <FiArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+        </a>
+
         {/* Hero Graphic - Feedback Board Mockup */}
         <div className="mt-16 mb-12 flex w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--colors-neutral-200)] bg-white/90 shadow-[0_25px_50px_-12px_oklch(0_0_0_/_0.15)] backdrop-blur-[12px] dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]/80 dark:shadow-[0_25px_50px_-12px_oklch(0_0_0_/_0.5)]">
           {/* Header bar */}
