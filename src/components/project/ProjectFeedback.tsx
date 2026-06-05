@@ -157,7 +157,9 @@ const ProjectFeedback = () => {
 
       return {
         rowId: "pending",
-        number: variables.input.post.number,
+        // number is assigned server-side by the post-number trigger; show a
+        // placeholder until the optimistic post is replaced by the real one
+        number: 0,
         title: variables.input.post.title,
         description: variables.input.post.description,
         statusUpdatedAt: now,

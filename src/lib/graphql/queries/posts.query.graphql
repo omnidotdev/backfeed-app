@@ -13,8 +13,13 @@ query Posts(
     orderBy: $orderBy
     filter: {
       projectId: { equalTo: $projectId }
-      statusTemplate: { displayName: { notIn: $excludedStatuses } }
       title: { includesInsensitive: $search }
+      # include posts whose status is not excluded, plus posts with no status
+      # (status-less posts can't be filtered by a status pill, so always show)
+      or: [
+        { statusTemplate: { displayName: { notIn: $excludedStatuses } } }
+        { statusTemplateId: { isNull: true } }
+      ]
     }
   ) {
     pageInfo {
