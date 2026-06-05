@@ -1,12 +1,3 @@
-import {
-  Button,
-  Drawer,
-  DrawerCloseTrigger,
-  Flex,
-  HStack,
-  Icon,
-  Stack,
-} from "@omnidev/sigil";
 import { useRouteContext } from "@tanstack/react-router";
 import { useCallback, useEffect } from "react";
 import { FiX } from "react-icons/fi";
@@ -18,7 +9,13 @@ import AccountInformation from "@/components/layout/AccountInformation";
 import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
-import { token } from "@/generated/panda/tokens";
+import { Button } from "@/components/ui/button";
+import {
+  SheetCloseTrigger,
+  SheetContent,
+  SheetRoot,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
@@ -43,7 +40,7 @@ const HeaderActions = () => {
   }, []);
 
   const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.sm"),
+    minWidth: "40rem",
   });
 
   const { isOpen: isMobileSidebarOpen, setIsOpen: setIsMobileSidebarOpen } =
@@ -60,24 +57,24 @@ const HeaderActions = () => {
   // Render placeholder with fixed dimensions to prevent layout shift during hydration
   if (!isClient) {
     return (
-      <Flex alignItems="center" gap={2} minW={48} h={10} justify="flex-end">
+      <div className="flex h-10 min-w-48 items-center justify-end gap-2">
         <ThemeToggle />
-      </Flex>
+      </div>
     );
   }
 
   if (isSmallViewport) {
     return (
-      <Flex alignItems="center" gap={2} minW={48} justify="flex-end">
+      <div className="flex min-w-48 items-center justify-end gap-2">
         <ThemeToggle />
 
         {session ? (
-          <HStack gap={2}>
+          <div className="flex items-center gap-2">
             <OrganizationSwitcher />
             <AccountInformation />
-          </HStack>
+          </div>
         ) : (
-          <HStack>
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               className="border-primary text-primary hover:bg-primary/10"
@@ -87,83 +84,81 @@ const HeaderActions = () => {
             </Button>
 
             <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-          </HStack>
+          </div>
         )}
-      </Flex>
+      </div>
     );
   }
 
   return (
-    <Flex alignItems="center" gap={2} minW={48} justify="flex-end">
+    <div className="flex min-w-48 items-center justify-end gap-2">
       <ThemeToggle />
 
-      <HStack gap={2}>
+      <div className="flex items-center gap-2">
         {session && <OrganizationSwitcher />}
 
-        <Drawer
+        <SheetRoot
           open={isMobileSidebarOpen}
-          onOpenChange={({ open }) => {
-            setIsMobileSidebarOpen(open);
-          }}
-          trigger={
+          onOpenChange={({ open }) => setIsMobileSidebarOpen(open)}
+        >
+          <SheetTrigger asChild>
             <Button
               variant="ghost"
-              bgColor={{
-                base: "background.subtle",
-                _hover: "background.muted/80",
-              }}
-              p={0}
+              className="bg-background-subtle p-0 hover:bg-muted/80"
             >
-              <Icon src={RiMenu3Fill} h={5} w={5} />
+              <RiMenu3Fill className="size-5" />
             </Button>
-          }
-          contentProps={{ boxShadow: "card" }}
-        >
-          <Flex justifyContent="space-between">
-            <ThemeToggle />
+          </SheetTrigger>
 
-            <DrawerCloseTrigger asChild>
-              <Button
-                variant="ghost"
-                bgColor="background.muted"
-                p={1}
-                aria-label="Close Mobile Sidebar"
-              >
-                <Icon src={FiX} />
-              </Button>
-            </DrawerCloseTrigger>
-          </Flex>
+          <SheetContent side="right" className="p-4 shadow-md">
+            <div className="flex justify-between">
+              <ThemeToggle />
 
-          <Stack h="full" flex={1} justify="space-between">
-            <Stack mt={4} align="center">
-              <LogoLink
-                width={60}
-                className="flex-col"
-                onClick={() => setIsMobileSidebarOpen(false)}
-              />
-
-              <SidebarNavigation />
-            </Stack>
-
-            {session ? (
-              <AccountInformation />
-            ) : (
-              <Stack>
+              <SheetCloseTrigger asChild>
                 <Button
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10"
-                  onClick={handleSignIn}
+                  variant="ghost"
+                  size="icon"
+                  className="bg-muted"
+                  aria-label="Close Mobile Sidebar"
                 >
-                  {app.auth.signIn.label}
+                  <FiX />
                 </Button>
+              </SheetCloseTrigger>
+            </div>
 
-                <Button onClick={handleSignUp}>{app.auth.signUp.label}</Button>
-              </Stack>
-            )}
-          </Stack>
-        </Drawer>
-      </HStack>
-    </Flex>
+            <div className="flex h-full flex-1 flex-col justify-between">
+              <div className="mt-4 flex flex-col items-center">
+                <LogoLink
+                  width={60}
+                  className="flex-col"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                />
+
+                <SidebarNavigation />
+              </div>
+
+              {session ? (
+                <AccountInformation />
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary/10"
+                    onClick={handleSignIn}
+                  >
+                    {app.auth.signIn.label}
+                  </Button>
+
+                  <Button onClick={handleSignUp}>
+                    {app.auth.signUp.label}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </SheetContent>
+        </SheetRoot>
+      </div>
+    </div>
   );
 };
 
