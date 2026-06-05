@@ -1,4 +1,3 @@
-import { Flex, Grid, Icon, Text, css } from "@omnidev/sigil";
 import {
   IoArrowUpCircleOutline,
   IoBarChartOutline,
@@ -37,187 +36,55 @@ const FEATURES = [
  * Landing page features section with bento grid layout.
  */
 const Features = () => (
-  <Flex
-    direction="column"
-    w="full"
-    py={{ base: 16, md: 24 }}
-    px={{ base: 6, md: 12 }}
-    align="center"
-    bgColor={{ base: "neutral.50", _dark: "neutral.950" }}
-  >
+  <div className="flex w-full flex-col items-center bg-[var(--colors-neutral-50)] px-6 py-16 md:px-12 md:py-24 dark:bg-[var(--colors-neutral-950)]">
     {/* Section header */}
-    <Flex direction="column" align="center" textAlign="center" mb={12}>
-      <Text
-        fontSize={{ base: "sm", md: "md" }}
-        fontWeight="semibold"
-        color={{ base: "brand.primary.600", _dark: "brand.primary.400" }}
-        textTransform="uppercase"
-        letterSpacing="wide"
-        mb={3}
-      >
+    <div className="mb-12 flex flex-col items-center text-center">
+      <p className="mb-3 font-semibold text-[var(--colors-brand-primary-600)] text-sm uppercase tracking-wide md:text-base dark:text-[var(--colors-brand-primary-400)]">
         Features
-      </Text>
+      </p>
 
-      <Text
-        as="h2"
-        fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-        fontWeight="bold"
-        lineHeight={1.2}
-        textWrap="balance"
-        mb={4}
-      >
+      <h2 className="mb-4 text-balance font-bold text-3xl leading-tight md:text-4xl lg:text-5xl">
         Everything you need to manage feedback
-      </Text>
+      </h2>
 
-      <Text
-        fontSize={{ base: "lg", md: "xl" }}
-        color="foreground.subtle"
-        fontWeight="medium"
-        maxW="2xl"
-        textWrap="pretty"
-      >
+      <p className="max-w-2xl text-pretty font-medium text-foreground-subtle text-lg md:text-xl">
         A comprehensive platform to collect, analyze, and act on user feedback
         effectively.
-      </Text>
-    </Flex>
+      </p>
+    </div>
 
     {/* Bento grid */}
-    <Grid
-      w="full"
-      maxW="6xl"
-      gap={4}
-      columns={{ base: 1, lg: 2 }}
-      gridAutoRows="minmax(220px, auto)"
-    >
-      {FEATURES.map(({ title, description, icon }) => (
-        <Flex
+    <div className="grid w-full max-w-6xl auto-rows-[minmax(220px,auto)] grid-cols-1 gap-4 lg:grid-cols-2">
+      {FEATURES.map(({ title, description, icon: Icon }) => (
+        <div
           key={title}
-          position="relative"
-          direction="column"
-          justify="space-between"
-          p={{ base: 6, md: 8 }}
-          borderRadius="2xl"
-          borderWidth="1px"
-          borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-          bgColor={{ base: "white", _dark: "neutral.900/50" }}
-          overflow="hidden"
-          className={css({
-            backdropFilter: "blur(8px)",
-            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-            _hover: {
-              borderColor: {
-                base: "brand.primary.300",
-                _dark: "brand.primary.700",
-              },
-              boxShadow: {
-                base: "0 20px 40px -10px oklch(0.650 0.220 6 / 0.15)",
-                _dark: "0 20px 40px -10px oklch(0.650 0.220 6 / 0.25)",
-              },
-              transform: "translateY(-6px)",
-            },
-          })}
+          className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--colors-neutral-200)] bg-white p-6 backdrop-blur-[8px] transition-all duration-[0.4s] hover:-translate-y-1.5 hover:border-[var(--colors-brand-primary-300)] hover:shadow-[0_20px_40px_-10px_oklch(0.650_0.220_6_/_0.15)] md:p-8 dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]/50 dark:hover:border-[var(--colors-brand-primary-700)] dark:hover:shadow-[0_20px_40px_-10px_oklch(0.650_0.220_6_/_0.25)]"
         >
           {/* Background gradient glow */}
-          <div
-            className={css({
-              position: "absolute",
-              top: "-50%",
-              right: "-30%",
-              width: "300px",
-              height: "300px",
-              borderRadius: "full",
-              background: "glow.ruby",
-              filter: "blur(80px)",
-              opacity: { base: 0, _dark: 0 },
-              pointerEvents: "none",
-              transition: "opacity 0.4s ease",
-              "[data-hover] &, :hover > &": {
-                opacity: { base: 0.15, _dark: 0.25 },
-              },
-            })}
-          />
+          <div className="pointer-events-none absolute top-[-50%] right-[-30%] h-[300px] w-[300px] rounded-full bg-[var(--colors-glow-ruby)] opacity-0 blur-[80px] transition-opacity duration-[0.4s] group-hover:opacity-[0.15] dark:group-hover:opacity-[0.25]" />
 
           {/* Background icon */}
-          <Icon
-            src={icon}
-            position="absolute"
-            top="50%"
-            right={-2}
-            transform="translateY(-50%)"
-            w={{ base: 28, md: 36 }}
-            h={{ base: 28, md: 36 }}
-            color={{
-              base: "brand.primary.100",
-              _dark: "brand.primary.900/30",
-            }}
-            opacity={{ base: 0.4, _dark: 0.2 }}
-            className={css({
-              transition: "all 0.4s ease",
-            })}
-          />
+          <Icon className="absolute top-1/2 right-[-0.5rem] size-28 -translate-y-1/2 text-[var(--colors-brand-primary-100)] opacity-40 transition-all duration-[0.4s] md:size-36 dark:text-[var(--colors-brand-primary-900)]/30 dark:opacity-20" />
 
           {/* Content */}
-          <Flex direction="column" zIndex={1} gap={3}>
+          <div className="relative z-[1] flex flex-col gap-3">
             {/* Icon with gradient background */}
-            <Flex
-              align="center"
-              justify="center"
-              w={14}
-              h={14}
-              borderRadius="xl"
-              bgGradient="to-br"
-              gradientFrom={{
-                base: "brand.primary.100",
-                _dark: "brand.primary.900/60",
-              }}
-              gradientTo={{
-                base: "brand.primary.50",
-                _dark: "brand.primary.950/40",
-              }}
-              borderWidth="1px"
-              borderColor={{
-                base: "brand.primary.200",
-                _dark: "brand.primary.800/50",
-              }}
-              className={css({
-                boxShadow: {
-                  base: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.15)",
-                  _dark: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.2)",
-                },
-              })}
-            >
-              <Icon
-                src={icon}
-                w={7}
-                h={7}
-                color={{
-                  base: "brand.primary.600",
-                  _dark: "brand.primary.400",
-                }}
-              />
-            </Flex>
+            <div className="flex size-14 items-center justify-center rounded-xl border border-[var(--colors-brand-primary-200)] bg-gradient-to-br from-[var(--colors-brand-primary-100)] to-[var(--colors-brand-primary-50)] shadow-[0_4px_12px_-2px_oklch(0.650_0.220_6_/_0.15)] dark:border-[var(--colors-brand-primary-800)]/50 dark:from-[var(--colors-brand-primary-900)]/60 dark:to-[var(--colors-brand-primary-950)]/40 dark:shadow-[0_4px_12px_-2px_oklch(0.650_0.220_6_/_0.2)]">
+              <Icon className="size-7 text-[var(--colors-brand-primary-600)] dark:text-[var(--colors-brand-primary-400)]" />
+            </div>
 
-            <Text
-              fontSize={{ base: "xl", md: "2xl" }}
-              fontWeight="bold"
-              mt={2}
-              letterSpacing="tight"
-            >
+            <h3 className="mt-2 font-bold text-xl tracking-tight md:text-2xl">
               {title}
-            </Text>
+            </h3>
 
-            <Text
-              fontSize={{ base: "md", md: "lg" }}
-              color="foreground.muted"
-              lineHeight={1.7}
-            >
+            <p className="text-muted-foreground text-base leading-[1.7] md:text-lg">
               {description}
-            </Text>
-          </Flex>
-        </Flex>
+            </p>
+          </div>
+        </div>
       ))}
-    </Grid>
-  </Flex>
+    </div>
+  </div>
 );
 
 export default Features;

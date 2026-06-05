@@ -1,6 +1,6 @@
-import { Button, Flex, Icon, Text, css } from "@omnidev/sigil";
 import { FiArrowRight } from "react-icons/fi";
 
+import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -14,101 +14,30 @@ const CTA = () => {
   };
 
   return (
-    <Flex
-      position="relative"
-      direction="column"
-      w="full"
-      py={{ base: 20, md: 28 }}
-      px={{ base: 6, md: 12 }}
-      align="center"
-      overflow="hidden"
-      bgColor={{ base: "neutral.900", _dark: "neutral.950" }}
-    >
+    <div className="relative flex w-full flex-col items-center overflow-hidden bg-[var(--colors-neutral-900)] px-6 py-20 md:px-12 md:py-28 dark:bg-[var(--colors-neutral-950)]">
       {/* Gradient orbs */}
-      <div
-        className={css({
-          position: "absolute",
-          top: "-30%",
-          left: "10%",
-          width: "500px",
-          height: "500px",
-          borderRadius: "full",
-          background: "glow.ruby",
-          filter: "blur(120px)",
-          pointerEvents: "none",
-        })}
-      />
-      <div
-        className={css({
-          position: "absolute",
-          bottom: "-20%",
-          right: "5%",
-          width: "400px",
-          height: "400px",
-          borderRadius: "full",
-          background: "glow.magenta",
-          filter: "blur(100px)",
-          pointerEvents: "none",
-        })}
-      />
+      <div className="pointer-events-none absolute top-[-30%] left-[10%] h-[500px] w-[500px] rounded-full bg-[var(--colors-glow-ruby)] blur-[120px]" />
+      <div className="pointer-events-none absolute right-[5%] bottom-[-20%] h-[400px] w-[400px] rounded-full bg-[var(--colors-glow-magenta)] blur-[100px]" />
 
       {/* Content */}
-      <Flex
-        direction="column"
-        align="center"
-        textAlign="center"
-        maxW="3xl"
-        zIndex={1}
-      >
-        <Text
-          as="h2"
-          fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-          fontWeight="bold"
-          lineHeight={1.2}
-          textWrap="balance"
-          color="white"
-          mb={6}
-        >
+      <div className="relative z-[1] flex max-w-3xl flex-col items-center text-center">
+        <h2 className="mb-6 text-balance font-bold text-3xl text-white leading-tight md:text-4xl lg:text-5xl">
           Ready to transform your feedback process?
-        </Text>
+        </h2>
 
-        <Text
-          fontSize={{ base: "lg", md: "xl" }}
-          color="neutral.400"
-          fontWeight="medium"
-          maxW="xl"
-          textWrap="pretty"
-          mb={10}
-        >
+        <p className="mb-10 max-w-xl text-pretty font-medium text-[var(--colors-neutral-400)] text-lg md:text-xl">
           Join thousands of teams already using {app.name} to build better
           products. Start free, no credit card required.
-        </Text>
+        </p>
 
-        <Flex gap={3} flexWrap="wrap" justify="center">
+        <div className="flex flex-wrap justify-center gap-3">
           <Button
             size="md"
-            data-group
             onClick={handleGetStarted}
-            className={css({
-              fontWeight: "medium",
-              boxShadow: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.2)",
-              transition: "all 0.2s ease",
-              _hover: {
-                boxShadow: "0 8px 20px -4px oklch(0.650 0.220 6 / 0.3)",
-                transform: "translateY(-1px)",
-              },
-            })}
+            className="group font-medium shadow-[0_4px_12px_-2px_oklch(0.650_0.220_6_/_0.2)] transition-all hover:-translate-y-px hover:shadow-[0_8px_20px_-4px_oklch(0.650_0.220_6_/_0.3)]"
           >
             Get Started Free
-            <Icon
-              src={FiArrowRight}
-              h={4}
-              w={4}
-              className={css({
-                transition: "transform 0.2s ease",
-                _groupHover: { transform: "translateX(3px)" },
-              })}
-            />
+            <FiArrowRight className="size-4 transition-transform group-hover:translate-x-[3px]" />
           </Button>
 
           <Button
@@ -117,13 +46,13 @@ const CTA = () => {
             onClick={() =>
               window.open(app.docsUrl, "_blank", "noopener,noreferrer")
             }
-            className="border-neutral-700 text-white font-medium transition-all duration-200 hover:border-primary hover:text-primary hover:-translate-y-px"
+            className="border-neutral-700 font-medium text-white transition-all duration-200 hover:-translate-y-px hover:border-primary hover:text-primary"
           >
             Read the Docs
           </Button>
-        </Flex>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   );
 };
 

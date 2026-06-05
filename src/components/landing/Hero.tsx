@@ -1,4 +1,3 @@
-import { Button, Flex, Icon, Text, VStack, css } from "@omnidev/sigil";
 import { useSearch } from "@tanstack/react-router";
 import {
   FiArrowDown,
@@ -7,11 +6,13 @@ import {
   FiMessageCircle,
 } from "react-icons/fi";
 
+import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
+import cn from "@/lib/utils";
 
-import type { ButtonProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { IconType } from "react-icons";
 
 // Mockup feedback items for the hero graphic
@@ -45,7 +46,20 @@ const MOCK_FEEDBACK = [
   },
 ];
 
-interface ActionProps extends ButtonProps {
+const STATUS_BG: Record<string, string> = {
+  blue: "bg-[var(--colors-blue-100)] dark:bg-[var(--colors-blue-900)]/40",
+  purple: "bg-[var(--colors-purple-100)] dark:bg-[var(--colors-purple-900)]/40",
+  amber: "bg-[var(--colors-amber-100)] dark:bg-[var(--colors-amber-900)]/40",
+};
+
+const STATUS_TEXT: Record<string, string> = {
+  blue: "text-[var(--colors-blue-700)] dark:text-[var(--colors-blue-400)]",
+  purple:
+    "text-[var(--colors-purple-700)] dark:text-[var(--colors-purple-400)]",
+  amber: "text-[var(--colors-amber-700)] dark:text-[var(--colors-amber-400)]",
+};
+
+interface ActionProps extends ComponentProps<typeof Button> {
   label: {
     short: string;
     long: string;
@@ -81,333 +95,126 @@ const Hero = () => {
   ];
 
   return (
-    <Flex
-      position="relative"
-      direction="column"
-      align="center"
-      justify="center"
-      w="full"
-      minH={{ base: "calc(100vh - 5rem)", md: "85vh" }}
-      overflow="hidden"
-      px={6}
-    >
+    <div className="relative flex min-h-[calc(100vh-5rem)] w-full flex-col items-center justify-center overflow-hidden px-6 md:min-h-[85vh]">
       {/* Gradient orbs for cosmic effect */}
-      <div
-        className={css({
-          position: "absolute",
-          top: "-20%",
-          right: "-10%",
-          width: "500px",
-          height: "500px",
-          borderRadius: "full",
-          background: "glow.ruby",
-          filter: "blur(120px)",
-          opacity: { base: 0.4, _dark: 0.6 },
-          pointerEvents: "none",
-          animation: "pulse-glow 8s ease-in-out infinite",
-        })}
-      />
-      <div
-        className={css({
-          position: "absolute",
-          bottom: "-10%",
-          left: "-15%",
-          width: "600px",
-          height: "600px",
-          borderRadius: "full",
-          background: "glow.magenta",
-          filter: "blur(140px)",
-          opacity: { base: 0.3, _dark: 0.5 },
-          pointerEvents: "none",
-          animation: "pulse-glow 10s ease-in-out infinite",
-          animationDelay: "-3s",
-        })}
-      />
-      <div
-        className={css({
-          position: "absolute",
-          top: "30%",
-          left: "20%",
-          width: "300px",
-          height: "300px",
-          borderRadius: "full",
-          background: "glow.ruby",
-          filter: "blur(100px)",
-          opacity: { base: 0.2, _dark: 0.3 },
-          pointerEvents: "none",
-          animation: "float 12s ease-in-out infinite",
-        })}
-      />
+      <div className="pointer-events-none absolute top-[-20%] right-[-10%] h-[500px] w-[500px] rounded-full bg-[var(--colors-glow-ruby)] opacity-40 blur-[120px] [animation:pulse-glow_8s_ease-in-out_infinite] dark:opacity-60" />
+      <div className="pointer-events-none absolute bottom-[-10%] left-[-15%] h-[600px] w-[600px] rounded-full bg-[var(--colors-glow-magenta)] opacity-30 blur-[140px] [animation:pulse-glow_10s_ease-in-out_infinite] [animation-delay:-3s] dark:opacity-50" />
+      <div className="pointer-events-none absolute top-[30%] left-[20%] h-[300px] w-[300px] rounded-full bg-[var(--colors-glow-ruby)] opacity-20 blur-[100px] [animation:float_12s_ease-in-out_infinite] dark:opacity-30" />
 
       {/* Content */}
-      <VStack gap={0} maxW="4xl" zIndex={1} textAlign="center" pt={8}>
+      <div className="relative z-[1] flex max-w-4xl flex-col items-center pt-8 text-center">
         {/* Badge */}
-        <Flex
-          align="center"
-          gap={2}
-          px={4}
-          py={1.5}
-          mb={6}
-          borderRadius="full"
-          borderWidth="1px"
-          borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-          bgColor={{ base: "white/80", _dark: "neutral.900/60" }}
-          backdropFilter="blur(8px)"
-        >
-          <Text
-            fontSize="sm"
-            fontWeight="medium"
-            color={{ base: "brand.primary.600", _dark: "brand.primary.400" }}
-          >
+        <div className="mb-6 flex items-center gap-2 rounded-full border border-[var(--colors-neutral-200)] bg-white/80 px-4 py-1.5 backdrop-blur-[8px] dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]/60">
+          <span className="font-medium text-[var(--colors-brand-primary-600)] text-sm dark:text-[var(--colors-brand-primary-400)]">
             Open Source Feedback Platform
-          </Text>
-        </Flex>
+          </span>
+        </div>
 
         {/* Headline */}
-        <Text
-          as="h1"
-          fontSize={{ base: "4xl", sm: "5xl", md: "6xl", lg: "7xl" }}
-          fontWeight="bold"
-          lineHeight={1.1}
-          textWrap="balance"
-          mb={6}
-        >
+        <h1 className="mb-6 text-balance font-bold text-4xl leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl">
           Feedback that drives products forward
-        </Text>
+        </h1>
 
         {/* Subheadline */}
-        <Text
-          as="h2"
-          color="foreground.subtle"
-          fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
-          fontWeight="medium"
-          lineHeight={1.5}
-          textWrap="pretty"
-          maxW="2xl"
-          mb={10}
-        >
+        <h2 className="mb-10 max-w-2xl text-pretty font-medium text-foreground-subtle text-lg leading-normal md:text-xl lg:text-2xl">
           Collect, prioritize, and act on user feedback. Build what your users
           actually want.
-        </Text>
+        </h2>
 
         {/* CTAs */}
-        <Flex gap={4} flexWrap="wrap" justify="center">
+        <div className="flex flex-wrap justify-center gap-4">
           {actions.map(({ label, icon: ActionIcon, variant, ...rest }, idx) => (
             <Button
               key={label.long}
               size="md"
               variant={variant}
-              data-group
-              className={css({
-                fontWeight: "medium",
-                transition: "all 0.2s ease",
-                ...(idx === 0 && {
-                  boxShadow: "0 4px 12px -2px oklch(0.650 0.220 6 / 0.2)",
-                  _hover: {
-                    boxShadow: "0 8px 20px -4px oklch(0.650 0.220 6 / 0.3)",
-                    transform: "translateY(-1px)",
-                  },
-                }),
-                ...(idx === 1 && {
-                  borderColor: { base: "neutral.300", _dark: "neutral.700" },
-                  _hover: {
-                    borderColor: "primary",
-                    color: "primary",
-                    transform: "translateY(-1px)",
-                  },
-                }),
-              })}
+              className={cn(
+                "group font-medium transition-all",
+                idx === 0 &&
+                  "shadow-[0_4px_12px_-2px_oklch(0.650_0.220_6_/_0.2)] hover:-translate-y-px hover:shadow-[0_8px_20px_-4px_oklch(0.650_0.220_6_/_0.3)]",
+                idx === 1 &&
+                  "border-[var(--colors-neutral-300)] hover:-translate-y-px hover:border-primary hover:text-primary dark:border-[var(--colors-neutral-700)]",
+              )}
               {...rest}
             >
-              <Text display={{ base: "inline", md: "none" }}>
-                {label.short}
-              </Text>
-              <Text display={{ base: "none", md: "inline" }}>{label.long}</Text>
+              <span className="inline md:hidden">{label.short}</span>
+              <span className="hidden md:inline">{label.long}</span>
               {ActionIcon && (
-                <Icon
-                  src={ActionIcon}
-                  h={4}
-                  w={4}
-                  className={css({
-                    transition: "transform 0.2s ease",
-                    _groupHover: { transform: "translateX(4px)" },
-                  })}
-                />
+                <ActionIcon className="size-4 transition-transform group-hover:translate-x-1" />
               )}
             </Button>
           ))}
-        </Flex>
+        </div>
 
         {/* Hero Graphic - Feedback Board Mockup */}
-        <Flex
-          direction="column"
-          w="full"
-          maxW="3xl"
-          mt={16}
-          mb={12}
-          borderRadius="2xl"
-          borderWidth="1px"
-          borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-          bgColor={{ base: "white/90", _dark: "neutral.900/80" }}
-          backdropFilter="blur(12px)"
-          overflow="hidden"
-          className={css({
-            boxShadow: {
-              base: "0 25px 50px -12px oklch(0 0 0 / 0.15)",
-              _dark: "0 25px 50px -12px oklch(0 0 0 / 0.5)",
-            },
-          })}
-        >
+        <div className="mt-16 mb-12 flex w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--colors-neutral-200)] bg-white/90 shadow-[0_25px_50px_-12px_oklch(0_0_0_/_0.15)] backdrop-blur-[12px] dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]/80 dark:shadow-[0_25px_50px_-12px_oklch(0_0_0_/_0.5)]">
           {/* Header bar */}
-          <Flex
-            align="center"
-            justify="space-between"
-            px={5}
-            py={3}
-            borderBottomWidth="1px"
-            borderColor={{ base: "neutral.100", _dark: "neutral.800" }}
-            bgColor={{ base: "neutral.50", _dark: "neutral.900" }}
-          >
-            <Text fontSize="sm" fontWeight="medium" color="foreground.muted">
+          <div className="flex items-center justify-between border-[var(--colors-neutral-100)] border-b bg-[var(--colors-neutral-50)] px-5 py-3 dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]">
+            <span className="font-medium text-muted-foreground text-sm">
               Feature Requests
-            </Text>
-            <Flex
-              px={2.5}
-              py={1}
-              borderRadius="md"
-              bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
-            >
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
-                color={{
-                  base: "brand.primary.600",
-                  _dark: "brand.primary.400",
-                }}
-              >
+            </span>
+            <div className="rounded-md bg-[var(--colors-brand-primary-50)] px-2.5 py-1 dark:bg-[var(--colors-brand-primary-950)]">
+              <span className="font-semibold text-[var(--colors-brand-primary-600)] text-xs dark:text-[var(--colors-brand-primary-400)]">
                 3 items
-              </Text>
-            </Flex>
-          </Flex>
+              </span>
+            </div>
+          </div>
 
           {/* Feedback items */}
-          <Flex direction="column" p={2}>
+          <div className="flex flex-col p-2">
             {MOCK_FEEDBACK.map((item, idx) => (
-              <Flex
+              <div
                 key={item.title}
-                align="flex-start"
-                gap={4}
-                p={4}
-                borderRadius="xl"
-                className={css({
-                  transition: "background 0.2s ease",
-                  _hover: {
-                    bgColor: { base: "neutral.50", _dark: "neutral.800/50" },
-                  },
-                  animation: "fade-in-up 0.5s ease forwards",
-                  animationDelay: `${idx * 0.1}s`,
-                  opacity: 0,
-                })}
+                className="flex items-start gap-4 rounded-xl p-4 opacity-0 [animation:fade-in-up_0.5s_ease_forwards] transition-colors hover:bg-[var(--colors-neutral-50)] dark:hover:bg-[var(--colors-neutral-800)]/50"
+                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {/* Vote button */}
-                <Flex
-                  direction="column"
-                  align="center"
-                  justify="center"
-                  minW={12}
-                  py={2}
-                  borderRadius="lg"
-                  borderWidth="1px"
-                  borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
-                  bgColor={{ base: "white", _dark: "neutral.800" }}
-                  className={css({
-                    transition: "all 0.2s ease",
-                  })}
-                >
-                  <Icon
-                    src={FiArrowUp}
-                    w={4}
-                    h={4}
-                    color={{
-                      base: "brand.primary.500",
-                      _dark: "brand.primary.400",
-                    }}
-                  />
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="foreground.default"
-                    mt={0.5}
-                  >
+                <div className="flex min-w-12 flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]">
+                  <FiArrowUp className="size-4 text-[var(--colors-brand-primary-500)] dark:text-[var(--colors-brand-primary-400)]" />
+                  <span className="mt-0.5 font-bold text-foreground text-sm">
                     {item.upvotes - item.downvotes}
-                  </Text>
-                  <Icon
-                    src={FiArrowDown}
-                    w={4}
-                    h={4}
-                    color="foreground.muted"
-                  />
-                </Flex>
+                  </span>
+                  <FiArrowDown className="size-4 text-muted-foreground" />
+                </div>
 
                 {/* Content */}
-                <Flex direction="column" flex={1} gap={1}>
-                  <Flex align="center" justify="space-between" gap={3}>
-                    <Text
-                      fontSize="md"
-                      fontWeight="semibold"
-                      color="foreground.default"
-                      textAlign="left"
-                    >
+                <div className="flex flex-1 flex-col gap-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-left font-semibold text-base text-foreground">
                       {item.title}
-                    </Text>
-                    <Flex
-                      px={2.5}
-                      py={1}
-                      borderRadius="full"
-                      bgColor={{
-                        base: `${item.statusColor}.100`,
-                        _dark: `${item.statusColor}.900/40`,
-                      }}
+                    </span>
+                    <div
+                      className={cn(
+                        "rounded-full px-2.5 py-1",
+                        STATUS_BG[item.statusColor],
+                      )}
                     >
-                      <Text
-                        fontSize="xs"
-                        fontWeight="medium"
-                        color={{
-                          base: `${item.statusColor}.700`,
-                          _dark: `${item.statusColor}.400`,
-                        }}
-                        whiteSpace="nowrap"
+                      <span
+                        className={cn(
+                          "whitespace-nowrap font-medium text-xs",
+                          STATUS_TEXT[item.statusColor],
+                        )}
                       >
                         {item.status}
-                      </Text>
-                    </Flex>
-                  </Flex>
-                  <Text
-                    fontSize="sm"
-                    color="foreground.muted"
-                    textAlign="left"
-                    lineHeight={1.5}
-                  >
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-left text-muted-foreground text-sm leading-normal">
                     {item.description}
-                  </Text>
-                  <Flex align="center" gap={1} mt={1}>
-                    <Icon
-                      src={FiMessageCircle}
-                      w={3.5}
-                      h={3.5}
-                      color="foreground.subtle"
-                    />
-                    <Text fontSize="xs" color="foreground.subtle">
+                  </p>
+                  <div className="mt-1 flex items-center gap-1">
+                    <FiMessageCircle className="size-3.5 text-foreground-subtle" />
+                    <span className="text-foreground-subtle text-xs">
                       {item.comments} comments
-                    </Text>
-                  </Flex>
-                </Flex>
-              </Flex>
+                    </span>
+                  </div>
+                </div>
+              </div>
             ))}
-          </Flex>
-        </Flex>
-      </VStack>
-    </Flex>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
