@@ -1,4 +1,3 @@
-import { Avatar, Button, Flex, Icon, Stack, Text } from "@omnidev/sigil";
 import {
   getRouteApi,
   useNavigate,
@@ -9,23 +8,30 @@ import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
+import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
+import cn from "@/lib/utils";
 
-import type { ButtonProps, StackProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { IconType } from "react-icons";
 
 const manageRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/_manage",
 );
 
-interface NavigationItem extends ButtonProps {
+interface NavigationItem {
   /** Navigation item label. */
   label: string;
   /** Navigation item icon. */
   icon: IconType;
+  /** Click handler. */
+  onClick?: () => void;
+  /** Whether the item is disabled. */
+  disabled?: boolean;
 }
 
-interface Props extends StackProps {
+interface Props extends ComponentProps<"div"> {
   /** Boolean indicating whether the sidebar is open. */
   isOpen: boolean;
   /** Callback function to close the sidebar. */
@@ -34,6 +40,9 @@ interface Props extends StackProps {
   truncateText?: boolean;
 }
 
+const navButton =
+  "h-auto w-full justify-start whitespace-nowrap rounded-none py-6 text-left hover:bg-neutral-200/40 data-[active]:bg-neutral-300/40 dark:hover:bg-neutral-800/40 dark:data-[active]:bg-neutral-100/10";
+
 /**
  * Management navigation component.
  */
@@ -41,6 +50,7 @@ const ManagementNavigation = ({
   isOpen,
   onClose,
   truncateText = false,
+  className,
   ...rest
 }: Props) => {
   const { role, workspaceName } = manageRoute.useRouteContext();
@@ -71,13 +81,6 @@ const ManagementNavigation = ({
     {
       label: app.workspaceInvitationsPage.breadcrumb,
       icon: FiUserPlus,
-      // onClick: () => {
-      //   onClose?.();
-      //   navigate({
-      //     to: "/workspaces/$workspaceSlug/invitations",
-      //     params: { workspaceSlug },
-      //   });
-      // },
       disabled: true,
     },
     {
@@ -95,55 +98,38 @@ const ManagementNavigation = ({
   ];
 
   return (
-    <Stack gap={0} {...rest}>
-      <Flex
-        w="full"
-        p={4}
-        gap={2}
-        bgColor={{ base: "brand.primary.50", _dark: "brand.primary.950" }}
-        alignItems="center"
-      >
+    <div className={cn("flex flex-col", className)} {...rest}>
+      <div className="flex w-full items-center gap-2 bg-[var(--colors-brand-primary-50)] p-4 dark:bg-[var(--colors-brand-primary-950)]">
         {/* TODO: update with workspace image */}
-        <Avatar size="xs" name={workspaceName} />
+        <AvatarRoot size="xs">
+          <AvatarFallback>{workspaceName?.[0]?.toUpperCase()}</AvatarFallback>
+        </AvatarRoot>
 
         {isOpen && (
           <OverflowText className="whitespace-nowrap text-center font-semibold text-sm">
             {workspaceName}
           </OverflowText>
         )}
-      </Flex>
+      </div>
 
       {SIDEBAR_NAVIGATION.filter(({ disabled }) => !disabled).map(
-        ({ label, icon, onClick }) => (
+        ({ label, icon: NavIcon, onClick }) => (
           <Button
             key={label}
             variant="ghost"
-            w="full"
-            rounded="none"
-            alignItems="center"
-            justifyContent={isOpen ? "flex-start" : "center"}
-            textAlign="left"
-            textWrap="nowrap"
-            py={6}
-            bgColor={{
-              _active: { base: "neutral.300a", _dark: "neutral.100a" },
-              _hover: {
-                base: "neutral.200a",
-                _active: { base: "neutral.300a", _dark: "neutral.100a" },
-              },
-            }}
+            className={cn(navButton, !isOpen && "justify-center")}
             onClick={onClick}
-            // Need to flip to undefined if not on the current segment because `_active` still picks up "false" as a truthy value
+            // Need to flip to undefined if not on the current segment because `data-active` still picks up "false" as a truthy value
             data-active={label.toLowerCase() === segment || undefined}
             aria-label={label}
           >
-            <Icon src={icon} h={5} w={5} />
+            <NavIcon className="size-5" />
 
-            {(isOpen || !truncateText) && <Text>{label}</Text>}
+            {(isOpen || !truncateText) && <span>{label}</span>}
           </Button>
         ),
       )}
-    </Stack>
+    </div>
   );
 };
 
