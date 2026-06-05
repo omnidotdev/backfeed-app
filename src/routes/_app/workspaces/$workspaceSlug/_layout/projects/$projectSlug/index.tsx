@@ -1,4 +1,3 @@
-import { Grid, HStack, Icon, Stack, Text } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -152,25 +151,19 @@ function ProjectPage() {
     <Page
       header={{
         title: (
-          <HStack gap={3} alignItems="center">
-            <Text
-              as="h1"
-              fontSize={{ base: "2xl", md: "3xl" }}
-              fontWeight="bold"
-              lineHeight={1.2}
-              letterSpacing="-0.02em"
-            >
+          <div className="flex items-center gap-3">
+            <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
               {project?.name}
-            </Text>
+            </h1>
             <ProjectLinks />
-          </HStack>
+          </div>
         ),
         description: project?.description!,
         cta: isAuthenticated
           ? [
               {
                 label: app.projectPage.header.cta.viewAllProjects.label,
-                icon: <Icon src={HiOutlineFolder} />,
+                icon: <HiOutlineFolder />,
                 variant: "outline",
                 linkOptions: {
                   to: "/workspaces/$workspaceSlug/projects",
@@ -181,7 +174,7 @@ function ProjectPage() {
                 ? [
                     {
                       label: app.projectPage.header.cta.settings.label,
-                      icon: <Icon src={LuSettings} />,
+                      icon: <LuSettings />,
                       variant: "outline",
                       linkOptions: {
                         to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -194,9 +187,9 @@ function ProjectPage() {
           : [],
       }}
     >
-      <Stack gap={6}>
+      <div className="flex flex-col gap-6">
         {/* KPI Metrics Row */}
-        <Grid gap={4} columns={{ base: 1, sm: 3 }}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Aggregate
             title={app.projectPage.feedbackMetrics.totalPosts}
             value={projectMetrics?.totalPosts ?? 0}
@@ -223,11 +216,11 @@ function ProjectPage() {
             isLoaded={!isMetricsLoading}
             isError={isMetricsError}
           />
-        </Grid>
+        </div>
 
         {/* Feedback List (full width) */}
         <ProjectFeedback />
-      </Stack>
+      </div>
     </Page>
   );
 }

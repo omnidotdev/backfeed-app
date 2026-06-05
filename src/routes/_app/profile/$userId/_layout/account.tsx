@@ -1,15 +1,24 @@
-import { Button, Flex, Icon, Input, Label, Stack } from "@omnidev/sigil";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-import type { InputProps } from "@omnidev/sigil";
+interface ProfileField {
+  /** Field label and input id. */
+  id: string;
+  /** Field value. */
+  value?: string;
+  /** Input type. */
+  type?: string;
+}
 
 export const Route = createFileRoute("/_app/profile/$userId/_layout/account")({
   head: () => ({ meta: createMetaTags({ title: "Account" }) }),
@@ -21,7 +30,7 @@ function UserAccountPage() {
 
   const [showEmail, setShowEmail] = useState(false);
 
-  const profileData = useMemo<InputProps[]>(
+  const profileData = useMemo<ProfileField[]>(
     () => [
       {
         id: app.profileAccountPage.fields.username.label,
@@ -48,7 +57,7 @@ function UserAccountPage() {
         cta: [
           {
             label: app.profileAccountPage.cta.updateProfile.label,
-            icon: <Icon src={LuPencil} />,
+            icon: <LuPencil />,
             linkOptions: {
               href: AUTH_BASE_URL!,
             },
@@ -57,24 +66,22 @@ function UserAccountPage() {
       }}
       className="pt-0"
     >
-      <Stack gap={8} h="full" justifyContent="space-between">
-        <Stack gap={4}>
+      <div className="flex h-full flex-col justify-between gap-8">
+        <div className="flex flex-col gap-4">
           {profileData.map(({ id, value, type }) => {
             const isEmail = id === app.profileAccountPage.fields.email.label;
 
             return (
-              <Stack key={id} gap={1}>
+              <div key={id} className="flex flex-col gap-1">
                 <Label htmlFor={id}>{id}</Label>
 
-                <Flex position="relative" gap={4}>
+                <div className="relative flex gap-4">
                   <Input
                     disabled
                     id={id}
                     type={showEmail && isEmail ? "text" : type}
                     value={value}
-                    opacity={1}
-                    borderColor="border.subtle"
-                    color="foreground.subtle"
+                    className="border-border-subtle text-foreground-subtle opacity-100"
                   />
 
                   {isEmail && (
@@ -82,11 +89,7 @@ function UserAccountPage() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      pos="absolute"
-                      right={0.5}
-                      bottom={0.5}
-                      w="fit"
-                      _hover={{ opacity: "40%", bgColor: "transparent" }}
+                      className="absolute right-0.5 bottom-0.5 w-fit hover:bg-transparent hover:opacity-40"
                       onClick={() => setShowEmail((prev) => !prev)}
                       aria-label={
                         showEmail
@@ -101,12 +104,12 @@ function UserAccountPage() {
                       )}
                     </Button>
                   )}
-                </Flex>
-              </Stack>
+                </div>
+              </div>
             );
           })}
-        </Stack>
-      </Stack>
+        </div>
+      </div>
     </Page>
   );
 }

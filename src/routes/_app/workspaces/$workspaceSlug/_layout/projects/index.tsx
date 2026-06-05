@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
@@ -90,7 +89,7 @@ function ProjectsPage() {
             ? [
                 {
                   label: app.projectsPage.header.cta.newProject.label,
-                  icon: <Icon src={LuCirclePlus} />,
+                  icon: <LuCirclePlus />,
                   disabled: !canCreateProjects,
                   dialogType: DialogType.CreateProject,
                   tooltip: app.projectsPage.header.cta.newProject.tooltip,

@@ -1,4 +1,3 @@
-import { Divider, Stack } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
@@ -87,7 +86,7 @@ function ProjectSettingsPage() {
         title: `${project?.name!} Settings`,
       }}
     >
-      <Stack gap={6}>
+      <div className="flex flex-col gap-6">
         <UpdateProject />
 
         <SectionContainer
@@ -95,7 +94,7 @@ function ProjectSettingsPage() {
           description={app.projectSettingsPage.dangerZone.description}
           className="outline outline-[var(--colors-omni-ruby)]"
         >
-          <Divider />
+          <hr className="border-border" />
 
           <DangerZoneAction
             title={deleteProjectDetails.title}
@@ -118,7 +117,7 @@ function ProjectSettingsPage() {
             }}
           />
         </SectionContainer>
-      </Stack>
+      </div>
     </Page>
   );
 }

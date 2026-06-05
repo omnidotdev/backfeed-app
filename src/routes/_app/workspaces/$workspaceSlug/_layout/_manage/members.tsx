@@ -1,4 +1,3 @@
-import { Icon } from "@omnidev/sigil";
 import { createFileRoute } from "@tanstack/react-router";
 import { LuCirclePlus, LuUserPlus } from "react-icons/lu";
 
@@ -54,7 +53,7 @@ function WorkspaceMembersPage() {
   if (isAdminOrOwner(role)) {
     ctaButtons.push({
       label: "Invite Member",
-      icon: <Icon src={LuUserPlus} />,
+      icon: <LuUserPlus />,
       dialogType: DialogType.InviteMember,
     });
   }
@@ -63,7 +62,7 @@ function WorkspaceMembersPage() {
   if (role === "owner" && isDevEnv) {
     ctaButtons.push({
       label: app.workspaceMembersPage.cta.addOwner.label,
-      icon: <Icon src={LuCirclePlus} />,
+      icon: <LuCirclePlus />,
       dialogType: DialogType.AddOwner,
     });
   }

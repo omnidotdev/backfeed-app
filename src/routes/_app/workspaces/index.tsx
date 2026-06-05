@@ -1,4 +1,3 @@
-import { HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuExternalLink, LuInfo, LuLayers } from "react-icons/lu";
@@ -54,75 +53,43 @@ function WorkspacesPage() {
   const organizations = orgContext?.organizations ?? [];
 
   return (
-    <Stack h="full" w="full" maxW="4xl" mx="auto" px={4} py={12} gap={8}>
-      <Stack align="center" gap={4}>
-        <Icon src={LuLayers} w={12} h={12} color="foreground.muted" />
-        <Text
-          as="h1"
-          fontSize="2xl"
-          fontWeight="semibold"
-          textAlign="center"
-          color="foreground.default"
-        >
+    <div className="mx-auto flex h-full w-full max-w-4xl flex-col gap-8 px-4 py-12">
+      <div className="flex flex-col items-center gap-4">
+        <LuLayers className="size-12 text-muted-foreground" />
+        <h1 className="text-center font-semibold text-2xl text-foreground">
           {organizations.length
             ? "Select a workspace"
             : "Create a workspace to get started"}
-        </Text>
-      </Stack>
+        </h1>
+      </div>
 
       {!!organizations.length && (
-        <Stack
-          gap={4}
-          css={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))",
-          }}
-        >
+        <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))]">
           {organizations.map((org) => (
             <WorkspaceCard key={org.id} organization={org} />
           ))}
-        </Stack>
+        </div>
       )}
 
-      <Stack
-        gap={4}
-        align="center"
-        p={8}
-        borderRadius="lg"
-        borderWidth={1}
-        borderStyle="dashed"
-        borderColor="gray.300"
-        bg="gray.50"
-        textAlign="center"
-        _dark={{
-          borderColor: "gray.600",
-          bg: "gray.800",
-        }}
-      >
-        <LuInfo size={24} color="var(--chakra-colors-gray-500)" />
-        <Stack gap={2}>
-          <Text fontSize="sm" color="gray.700" _dark={{ color: "gray.300" }}>
+      <div className="flex flex-col items-center gap-4 rounded-lg border border-gray-300 border-dashed bg-gray-50 p-8 text-center dark:border-gray-600 dark:bg-gray-800">
+        <LuInfo className="size-6 text-gray-500" />
+        <div className="flex flex-col gap-2">
+          <p className="text-gray-700 text-sm dark:text-gray-300">
             Workspaces are currently managed via Omni Organizations.
-          </Text>
-          <Text fontSize="xs" color="gray.500">
+          </p>
+          <p className="text-gray-500 text-xs">
             This experience will be improved soon.
-          </Text>
-        </Stack>
+          </p>
+        </div>
         <a
           href={AUTH_BASE_URL}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            fontSize: "0.875rem",
-            color: "var(--chakra-colors-blue-500)",
-          }}
+          className="inline-flex items-center gap-2 text-blue-500 text-sm"
         >
           Manage Organizations
           <LuExternalLink size={12} />
         </a>
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   );
 }
 
@@ -143,41 +110,21 @@ function WorkspaceCard({ organization }: { organization: OrganizationClaim }) {
       onClick={() => setLastWorkspaceCookie({ data: organization.slug! })}
       preload="intent"
     >
-      <Stack
-        p={4}
-        bgColor="card-item"
-        borderRadius="xl"
-        borderWidth="1px"
-        borderColor={{ base: "neutral.200", _dark: "neutral.800" }}
-        w="full"
-        h={32}
-        justify="space-between"
-        cursor="pointer"
-        className={css({
-          transition: "all 0.2s ease",
-          _hover: {
-            bgColor: { base: "neutral.100", _dark: "neutral.800" },
-          },
-        })}
-      >
-        <Stack gap={1}>
+      <div className="flex h-32 w-full cursor-pointer flex-col justify-between rounded-xl border border-[var(--colors-neutral-200)] bg-[var(--colors-card-item)] p-4 transition-all hover:bg-[var(--colors-neutral-100)] dark:border-[var(--colors-neutral-800)] dark:hover:bg-[var(--colors-neutral-800)]">
+        <div className="flex flex-col gap-1">
           <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
             {organization.name}
           </OverflowText>
-        </Stack>
+        </div>
 
-        <HStack gap={1}>
-          <Icon src={HiOutlineFolder} w={5} h={5} color="foreground.subtle" />
-          <Text
-            fontSize="sm"
-            color="foreground.subtle"
-            fontVariant="tabular-nums"
-          >
+        <div className="flex items-center gap-1">
+          <HiOutlineFolder className="size-5 text-foreground-subtle" />
+          <span className="text-foreground-subtle text-sm tabular-nums">
             {projectCount}{" "}
             {setSingularOrPlural({ value: projectCount, label: "project" })}
-          </Text>
-        </HStack>
-      </Stack>
+          </span>
+        </div>
+      </div>
     </Link>
   );
 }

@@ -1,4 +1,3 @@
-import { Badge, HStack, Icon, Text } from "@omnidev/sigil";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -6,10 +5,10 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
 import CreateProject from "@/components/project/CreateProject";
+import { Badge } from "@/components/ui/badge";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";
-import { Grid } from "@/generated/panda/jsx";
 import app from "@/lib/config/app.config";
 import { checkLimitOptions } from "@/lib/options/entitlements";
 import {
@@ -88,14 +87,14 @@ function WorkspacePage() {
     <Page
       header={{
         title: (
-          <HStack gap={4}>
-            <Text as="h1" fontSize="3xl" fontWeight="semibold" lineHeight={1.3}>
+          <div className="flex items-center gap-4">
+            <h1 className="font-semibold text-3xl leading-[1.3]">
               {workspaceName}
-            </Text>
-            <Badge rounded="lg">
+            </h1>
+            <Badge className="rounded-lg">
               {capitalizeFirstLetter(hasPaidSubscription ? "paid" : "free")}
             </Badge>
-          </HStack>
+          </div>
         ),
         backLink: {
           label: "Dashboard",
@@ -106,7 +105,7 @@ function WorkspacePage() {
               {
                 label: app.workspacePage.header.cta.viewProjects.label,
                 variant: "outline",
-                icon: <Icon src={HiOutlineFolder} />,
+                icon: <HiOutlineFolder />,
                 linkOptions: {
                   to: "/workspaces/$workspaceSlug/projects",
                   params: { workspaceSlug },
@@ -118,7 +117,7 @@ function WorkspacePage() {
                 ? [
                     {
                       label: app.workspacePage.header.cta.newProject.label,
-                      icon: <Icon src={LuCirclePlus} />,
+                      icon: <LuCirclePlus />,
                       disabled: !canCreateProjects,
                       dialogType: DialogType.CreateProject,
                       tooltip: app.workspacePage.header.cta.newProject.tooltip,
@@ -132,11 +131,11 @@ function WorkspacePage() {
       <WorkspaceProjects canCreateProjects={canCreateProjects} />
 
       {isAuthenticated && (
-        <Grid columns={{ base: 1, md: 2 }} gap={6}>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <WorkspaceMetrics />
 
           <WorkspaceManagement />
-        </Grid>
+        </div>
       )}
 
       {/* dialogs */}

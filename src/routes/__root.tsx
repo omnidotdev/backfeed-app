@@ -1,4 +1,3 @@
-import { Flex, Text, Toaster, css, sigil } from "@omnidev/sigil";
 import { useSessionRefresh } from "@omnidotdev/providers/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
@@ -18,11 +17,13 @@ import utc from "dayjs/plugin/utc";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import { Toaster } from "@/components/ui/toaster";
 import app from "@/lib/config/app.config";
 import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import toaster from "@/lib/util/toaster";
+import cn from "@/lib/utils";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
@@ -115,29 +116,15 @@ export const Route = createRootRouteWithContext<{
 
 function MaintenancePage() {
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      minH="100dvh"
-      p={8}
-      bgGradient="to-br"
-      gradientFrom="cyan.900"
-      gradientTo="cyan.800"
-      color="white"
-    >
-      <Flex direction="column" align="center" textAlign="center">
-        <Text fontSize="9xl" mb={6}>
-          🔄
-        </Text>
-        <Text as="h1" fontSize="4xl" fontWeight="bold" mb={4}>
-          Looping Back
-        </Text>
-        <Text maxW="md" fontSize="lg" color="cyan.200">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-gradient-to-br from-[var(--colors-cyan-900)] to-[var(--colors-cyan-800)] p-8 text-white">
+      <div className="flex flex-col items-center text-center">
+        <p className="mb-6 text-9xl">🔄</p>
+        <h1 className="mb-4 font-bold text-4xl">Looping Back</h1>
+        <p className="max-w-md text-[var(--colors-cyan-200)] text-lg">
           We're cycling through updates. Backfeed will return shortly.
-        </Text>
-      </Flex>
-    </Flex>
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -177,37 +164,28 @@ function RootDocument({
       <body>
         <ThemeProvider theme={theme}>
           {!isMaintenanceMode && (
-            <Flex
-              position="fixed"
-              top={0}
-              zIndex="sticky"
-              h="header"
-              w="full"
+            <div
+              className="fixed top-0 z-50 h-[var(--sizes-header)] w-full"
               style={{ backdropFilter: "blur(12px)" }}
             >
               <Header />
-            </Flex>
+            </div>
           )}
 
-          <Flex
-            direction="column"
-            position="relative"
-            w="100%"
-            h="100dvh"
-            gap={0}
-          >
-            <sigil.main
-              w="full"
-              flex={1}
-              css={css.raw({ mt: isMaintenanceMode ? 0 : "header" })}
+          <div className="relative flex h-dvh w-full flex-col">
+            <main
+              className={cn(
+                "w-full flex-1",
+                !isMaintenanceMode && "mt-[var(--sizes-header)]",
+              )}
             >
               {children}
-            </sigil.main>
+            </main>
 
             {!isMaintenanceMode && <Footer />}
 
             <Toaster toaster={toaster} />
-          </Flex>
+          </div>
         </ThemeProvider>
 
         <TanStackDevtools

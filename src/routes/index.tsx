@@ -1,4 +1,3 @@
-import { Flex } from "@omnidev/sigil";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -21,11 +20,11 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   return (
-    <Flex direction="column" w="full" bgColor="background.default">
+    <div className="flex w-full flex-col bg-background">
       <Hero />
       <Features />
       <SocialProof />
       <CTA />
-    </Flex>
+    </div>
   );
 }
