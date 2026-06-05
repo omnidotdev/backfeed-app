@@ -1,24 +1,21 @@
 import { Format } from "@ark-ui/react";
-import {
-  Button,
-  Grid,
-  GridItem,
-  HStack,
-  Icon,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuSeparator,
-  Stack,
-  Text,
-  sigil,
-} from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useMutation } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
+import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
@@ -96,19 +93,19 @@ const WorkspaceSettings = ({ prices }: Props) => {
   });
 
   return (
-    <Stack gap={6}>
+    <div className="flex flex-col gap-6">
       {/* Organization name/slug are managed in Gatekeeper */}
       <SectionContainer
         title="Organization Settings"
         description="Organization details are managed in your identity provider."
       >
-        <Text>
-          <sigil.span fontWeight="semibold">Name:</sigil.span> {workspaceName}
-        </Text>
-        <Text color="fg.muted" fontSize="sm">
+        <p>
+          <span className="font-semibold">Name:</span> {workspaceName}
+        </p>
+        <p className="text-muted-foreground text-sm">
           To update organization name or slug, visit your organization settings
           in Gatekeeper.
-        </Text>
+        </p>
       </SectionContainer>
 
       {isOwner && (
@@ -116,40 +113,37 @@ const WorkspaceSettings = ({ prices }: Props) => {
           title="Manage Subscription"
           description="Update your workspace's subscription to unlock new benefits."
         >
-          <Text>
+          <p>
             This workspace is currently on the Backfeed{" "}
-            <sigil.span color="brand.primary">
+            <span className="text-[var(--colors-brand-primary)]">
               {capitalizeFirstLetter(tier)}
-            </sigil.span>{" "}
+            </span>{" "}
             tier. Benefits included in this plan are:
-          </Text>
-          <Grid w="full" lineHeight={1.5}>
+          </p>
+          <div className="grid w-full leading-normal">
             {sortBenefits(
               subscriptionPrice?.product.marketing_features ??
                 FREE_PRODUCT_DETAILS.marketing_features,
             ).map((feature) => {
               const isComingSoon = feature.name?.includes("coming soon");
+              const FeatureIcon = isComingSoon ? LuClockAlert : LuCheck;
 
               return (
-                <GridItem key={feature.name} display="flex" gap={2}>
-                  {/* ! NB: height should match the line height of the item (set at the `Grid` level). CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
-                  <sigil.span h={6} display="flex" alignItems="center">
-                    <Icon
-                      src={isComingSoon ? LuClockAlert : LuCheck}
-                      h={4}
-                      w={4}
-                    />
-                  </sigil.span>
+                <div key={feature.name} className="flex gap-2">
+                  {/* ! NB: height should match the line height of the item. CSS has a modern `lh` unit, but that seemingly does not work, so this is a workaround. */}
+                  <span className="flex h-6 items-center">
+                    <FeatureIcon className="size-4" />
+                  </span>
 
                   {feature.name?.split(" (coming soon)")[0]}
-                </GridItem>
+                </div>
               );
             })}
-          </Grid>
+          </div>
 
           {subscription ? (
             <Button
-              w="fit"
+              className="w-fit"
               onClick={async () => {
                 if (subscription.cancelAt) {
                   await renewSubscription({
@@ -163,64 +157,82 @@ const WorkspaceSettings = ({ prices }: Props) => {
               {subscription.cancelAt ? "Renew" : "Manage"} Subscription
             </Button>
           ) : (
-            <Menu
-              trigger={
-                <Button w="fit" disabled={isCreateSubscriptionPending}>
-                  Upgrade Plan
-                </Button>
-              }
+            <MenuRoot
               onSelect={({ value }) => createSubscription({ priceId: value })}
             >
-              <MenuItemGroup minW={40}>
-                <MenuItemGroupLabel>Pro</MenuItemGroupLabel>
-                {prices
-                  .filter((price) => price.metadata.tier === "pro")
-                  .map((price) => (
-                    <MenuItem key={price.id} value={price.id}>
-                      <HStack w="full" justify="space-between">
-                        {capitalizeFirstLetter(price.recurring?.interval)}ly
-                        <Text>
-                          <Format.Number
-                            value={price.unit_amount! / 100}
-                            currency="USD"
-                            style="currency"
-                            notation="compact"
-                          />
-                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
-                        </Text>
-                      </HStack>
-                    </MenuItem>
-                  ))}
-              </MenuItemGroup>
+              <MenuTrigger asChild>
+                <Button
+                  className="w-fit"
+                  disabled={isCreateSubscriptionPending}
+                >
+                  Upgrade Plan
+                </Button>
+              </MenuTrigger>
 
-              <MenuSeparator />
+              <Portal>
+                <MenuPositioner>
+                  <MenuContent>
+                    <MenuItemGroup className="min-w-40">
+                      <MenuItemGroupLabel>Pro</MenuItemGroupLabel>
+                      {prices
+                        .filter((price) => price.metadata.tier === "pro")
+                        .map((price) => (
+                          <MenuItem key={price.id} value={price.id}>
+                            <div className="flex w-full items-center justify-between">
+                              {capitalizeFirstLetter(price.recurring?.interval)}
+                              ly
+                              <span>
+                                <Format.Number
+                                  value={price.unit_amount! / 100}
+                                  currency="USD"
+                                  style="currency"
+                                  notation="compact"
+                                />
+                                /
+                                {price.recurring?.interval === "month"
+                                  ? "mo"
+                                  : "yr"}
+                              </span>
+                            </div>
+                          </MenuItem>
+                        ))}
+                    </MenuItemGroup>
 
-              <MenuItemGroup minW={40}>
-                <MenuItemGroupLabel>Team</MenuItemGroupLabel>
-                {prices
-                  .filter((price) => price.metadata.tier === "team")
-                  .map((price) => (
-                    <MenuItem key={price.id} value={price.id}>
-                      <HStack w="full" justify="space-between">
-                        {capitalizeFirstLetter(price.recurring?.interval)}ly
-                        <Text>
-                          <Format.Number
-                            value={price.unit_amount! / 100}
-                            currency="USD"
-                            style="currency"
-                            notation="compact"
-                          />
-                          /{price.recurring?.interval === "month" ? "mo" : "yr"}
-                        </Text>
-                      </HStack>
-                    </MenuItem>
-                  ))}
-              </MenuItemGroup>
-            </Menu>
+                    <MenuSeparator />
+
+                    <MenuItemGroup className="min-w-40">
+                      <MenuItemGroupLabel>Team</MenuItemGroupLabel>
+                      {prices
+                        .filter((price) => price.metadata.tier === "team")
+                        .map((price) => (
+                          <MenuItem key={price.id} value={price.id}>
+                            <div className="flex w-full items-center justify-between">
+                              {capitalizeFirstLetter(price.recurring?.interval)}
+                              ly
+                              <span>
+                                <Format.Number
+                                  value={price.unit_amount! / 100}
+                                  currency="USD"
+                                  style="currency"
+                                  notation="compact"
+                                />
+                                /
+                                {price.recurring?.interval === "month"
+                                  ? "mo"
+                                  : "yr"}
+                              </span>
+                            </div>
+                          </MenuItem>
+                        ))}
+                    </MenuItemGroup>
+                  </MenuContent>
+                </MenuPositioner>
+              </Portal>
+            </MenuRoot>
           )}
         </SectionContainer>
       )}
-    </Stack>
+    </div>
   );
 };
 

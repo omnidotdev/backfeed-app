@@ -1,12 +1,3 @@
-import {
-  Badge,
-  Stack,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -17,6 +8,15 @@ import {
 } from "@tanstack/react-table";
 import { useMemo } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import app from "@/lib/config/app.config";
 import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -33,15 +33,13 @@ const columns = [
   columnHelper.accessor("id", {
     header: app.workspaceMembersPage.ownersTable.headers.owners,
     cell: ({ row }) => (
-      <Stack py={4}>
-        <Text fontSize="lg" fontWeight="medium">
-          {row.original.user.name}
-        </Text>
+      <div className="flex flex-col py-4">
+        <span className="font-medium text-lg">{row.original.user.name}</span>
 
-        <Text color="foreground.subtle" fontWeight="medium">
+        <span className="font-medium text-foreground-subtle">
           {row.original.user.email}
-        </Text>
-      </Stack>
+        </span>
+      </div>
     ),
   }),
   columnHelper.accessor("role", {
@@ -49,11 +47,7 @@ const columns = [
     cell: (info) => (
       <Badge
         variant="outline"
-        w={18}
-        justifyContent="center"
-        color="brand.primary"
-        borderColor="brand.primary"
-        fontWeight="semibold"
+        className="w-18 justify-center border-[var(--colors-brand-primary)] font-semibold text-[var(--colors-brand-primary)]"
       >
         {capitalizeFirstLetter(info.getValue())}
       </Badge>
@@ -88,32 +82,35 @@ const Owners = () => {
   });
 
   return (
-    <Table
-      headerContent={table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id} bgColor="background.subtle">
-          {headerGroup.headers.map((header) => (
-            <TableHeader key={header.id} fontWeight="bold">
-              {header.isPlaceholder
-                ? null
-                : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-            </TableHeader>
-          ))}
-        </TableRow>
-      ))}
-      mb={2}
-    >
-      {table.getRowModel().rows.map((row) => (
-        <TableRow key={row.id}>
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} fontWeight="light">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
-        </TableRow>
-      ))}
+    <Table className="mb-2">
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id} className="bg-background-subtle">
+            {headerGroup.headers.map((header) => (
+              <TableHead key={header.id}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+              </TableHead>
+            ))}
+          </TableRow>
+        ))}
+      </TableHeader>
+
+      <TableBody>
+        {table.getRowModel().rows.map((row) => (
+          <TableRow key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
     </Table>
   );
 };

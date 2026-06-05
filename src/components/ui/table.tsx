@@ -46,6 +46,17 @@ const TableRow = ({ className, ...rest }: ComponentProps<"tr">) => (
   />
 );
 
+const TableHead = ({ className, ...rest }: ComponentProps<"th">) => (
+  <th
+    data-slot="table-head"
+    className={cn(
+      "h-10 whitespace-nowrap px-2 text-left align-middle font-bold text-foreground [&:has([role=checkbox])]:pr-0",
+      className,
+    )}
+    {...rest}
+  />
+);
+
 const TableCell = ({ className, ...rest }: ComponentProps<"td">) => (
   <td
     data-slot="table-cell"
@@ -57,4 +68,12 @@ const TableCell = ({ className, ...rest }: ComponentProps<"td">) => (
   />
 );
 
-export { Table, TableHeader, TableBody, TableRow, TableCell, type TableProps };
+export {
+  Table,
+  TableHeader,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  type TableProps,
+};

@@ -1,13 +1,3 @@
-import {
-  Badge,
-  Checkbox,
-  Stack,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -19,6 +9,16 @@ import {
 import { useMemo } from "react";
 import { match } from "ts-pattern";
 
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import MembershipMenu from "@/components/workspace/MembershipMenu";
 import app from "@/lib/config/app.config";
 import { organizationMembersOptions } from "@/lib/options/organizationMembers";
@@ -57,17 +57,12 @@ const Members = () => {
       columnHelper.accessor("id", {
         header: ({ table }) => (
           <Checkbox
-            size="sm"
             // explicit width to prevent CLS with row selection
-            w={28}
-            // Prevent spacing between checkbox and label. See note for label `onClick` handler below
-            gap={0}
+            className="w-28 gap-0"
             labelProps={{
-              flex: 1,
-              px: isOwner ? 4 : 2,
-              fontWeight: "bold",
               // NB: naturally, clicking the label will toggle the checkbox. In this case, we only want the toggle to happen when the control is clicked.
               onClick: (e) => e.preventDefault(),
+              className: `flex-1 font-bold ${isOwner ? "px-4" : "px-2"}`,
             }}
             label={
               table.getIsAllRowsSelected() || table.getIsSomeRowsSelected() ? (
@@ -80,7 +75,7 @@ const Members = () => {
               )
             }
             controlProps={{
-              display: isOwner ? "flex" : "none",
+              className: isOwner ? "flex" : "hidden",
             }}
             disabled={!isOwner}
             checked={
@@ -97,18 +92,19 @@ const Members = () => {
         ),
         cell: ({ row }) => (
           <Checkbox
-            size="sm"
             labelProps={{
-              px: 2,
+              className: "px-2",
             }}
             label={
-              <Stack py={4}>
-                <Text fontSize="lg">{row.original.user.name}</Text>
-                <Text color="foreground.subtle">{row.original.user.email}</Text>
-              </Stack>
+              <div className="flex flex-col py-4">
+                <span className="text-lg">{row.original.user.name}</span>
+                <span className="text-foreground-subtle">
+                  {row.original.user.email}
+                </span>
+              </div>
             }
             controlProps={{
-              display: isOwner ? "flex" : "none",
+              className: isOwner ? "flex" : "hidden",
             }}
             disabled={!isOwner}
             checked={row.getIsSelected()}
@@ -122,18 +118,22 @@ const Members = () => {
         header: app.workspaceMembersPage.membersTable.headers.role,
         cell: (info) => {
           const accentColor = match(info.getValue())
-            .with("admin", () => "brand.secondary")
-            .with("member", () => "brand.tertiary")
+            .with(
+              "admin",
+              () => "var(--colors-brand-secondary)" as string | undefined,
+            )
+            .with("member", () => "var(--colors-brand-tertiary)")
             .otherwise(() => undefined);
 
           return (
             <Badge
               variant="outline"
-              w={18}
-              justifyContent="center"
-              color={accentColor}
-              borderColor={accentColor}
-              fontWeight="semibold"
+              className="w-18 justify-center font-semibold"
+              style={
+                accentColor
+                  ? { color: accentColor, borderColor: accentColor }
+                  : undefined
+              }
             >
               {capitalizeFirstLetter(info.getValue())}
             </Badge>
@@ -151,31 +151,35 @@ const Members = () => {
   });
 
   return (
-    <Table
-      headerContent={table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id} bgColor="background.subtle">
-          {headerGroup.headers.map((header) => (
-            <TableHeader key={header.id} fontWeight="bold">
-              {header.isPlaceholder
-                ? null
-                : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-            </TableHeader>
-          ))}
-        </TableRow>
-      ))}
-    >
-      {table.getRowModel().rows.map((row) => (
-        <TableRow key={row.id}>
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} fontWeight="light">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
-        </TableRow>
-      ))}
+    <Table>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id} className="bg-background-subtle">
+            {headerGroup.headers.map((header) => (
+              <TableHead key={header.id}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+              </TableHead>
+            ))}
+          </TableRow>
+        ))}
+      </TableHeader>
+
+      <TableBody>
+        {table.getRowModel().rows.map((row) => (
+          <TableRow key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
     </Table>
   );
 };
