@@ -1,9 +1,29 @@
 import { createListCollection } from "@ark-ui/react";
-import { Dialog, Select, Stack, Text, sigil } from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { z } from "zod";
 
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemText,
+  SelectPortal,
+  SelectPositioner,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@/components/ui/select";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
 import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
@@ -101,9 +121,7 @@ const InviteMemberDialog = () => {
   });
 
   return (
-    <Dialog
-      title="Invite Member"
-      description="Send an invitation to join this workspace"
+    <DialogRoot
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
@@ -112,56 +130,87 @@ const InviteMemberDialog = () => {
         }
       }}
     >
-      <sigil.form
-        onSubmit={async (evt) => {
-          evt.preventDefault();
-          evt.stopPropagation();
-          await form.handleSubmit();
-        }}
-      >
-        <Stack gap={4}>
-          <form.AppField name="email">
-            {({ InputField }) => (
-              <InputField
-                label="Email Address"
-                placeholder="user@example.com"
-                type="email"
-              />
-            )}
-          </form.AppField>
+      <Portal>
+        <DialogBackdrop />
+        <DialogContent>
+          <DialogTitle>Invite Member</DialogTitle>
+          <DialogDescription>
+            Send an invitation to join this workspace
+          </DialogDescription>
 
-          <form.AppField name="role">
-            {({ state, handleChange }) => (
-              <Select
-                label={{ id: "Role", singular: "Role", plural: "Roles" }}
-                collection={roleCollection}
-                value={[state.value]}
-                onValueChange={({ value }) =>
-                  handleChange(value[0] as "admin" | "member")
-                }
-                clearTrigger={null}
-              />
-            )}
-          </form.AppField>
-
-          <Text fontSize="sm" color="foreground.subtle">
-            The invited user will receive an email with instructions to join the
-            workspace
-          </Text>
-        </Stack>
-
-        <form.AppForm>
-          <form.SubmitForm
-            action={{
-              pending: "Sending Invitation...",
-              submit: "Send Invitation",
+          <form
+            onSubmit={async (evt) => {
+              evt.preventDefault();
+              evt.stopPropagation();
+              await form.handleSubmit();
             }}
-            isPending={isPending}
-            className="w-full"
-          />
-        </form.AppForm>
-      </sigil.form>
-    </Dialog>
+          >
+            <div className="flex flex-col gap-4">
+              <form.AppField name="email">
+                {({ InputField }) => (
+                  <InputField
+                    label="Email Address"
+                    placeholder="user@example.com"
+                    type="email"
+                  />
+                )}
+              </form.AppField>
+
+              <form.AppField name="role">
+                {({ state, handleChange }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>Role</Label>
+
+                    <SelectRoot
+                      collection={roleCollection}
+                      value={[state.value]}
+                      onValueChange={({ value }) =>
+                        handleChange(value[0] as "admin" | "member")
+                      }
+                    >
+                      <SelectControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValueText placeholder="Select a role" />
+                          <SelectIndicator />
+                        </SelectTrigger>
+                      </SelectControl>
+
+                      <SelectPortal>
+                        <SelectPositioner>
+                          <SelectContent>
+                            {roleCollection.items.map((item) => (
+                              <SelectItem key={item.value} item={item}>
+                                <SelectItemText>{item.label}</SelectItemText>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </SelectPositioner>
+                      </SelectPortal>
+                    </SelectRoot>
+                  </div>
+                )}
+              </form.AppField>
+
+              <span className="text-foreground-subtle text-sm">
+                The invited user will receive an email with instructions to join
+                the workspace
+              </span>
+            </div>
+
+            <form.AppForm>
+              <form.SubmitForm
+                action={{
+                  pending: "Sending Invitation...",
+                  submit: "Send Invitation",
+                }}
+                isPending={isPending}
+                className="mt-4 w-full"
+              />
+            </form.AppForm>
+          </form>
+        </DialogContent>
+      </Portal>
+    </DialogRoot>
   );
 };
 

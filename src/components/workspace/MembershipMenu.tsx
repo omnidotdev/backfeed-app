@@ -1,18 +1,28 @@
-import { Button, Icon, Menu, MenuItem, MenuItemGroup } from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { getRouteApi } from "@tanstack/react-router";
 import { LuChevronDown } from "react-icons/lu";
 import { match } from "ts-pattern";
 
+import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import app from "@/lib/config/app.config";
 import {
   useRemoveMember,
   useUpdateMemberRole,
 } from "@/lib/hooks/useOrganizationMembers";
 
-import type { MenuProps } from "@omnidev/sigil";
 import type { Row } from "@tanstack/react-table";
-import type { JsxStyleProps } from "@/generated/panda/types";
+import type { ComponentProps } from "react";
 import type { IdpMember } from "@/lib/idp";
+
+const menuItemClassName = "disabled:cursor-not-allowed disabled:opacity-50";
 
 const membersRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
@@ -24,13 +34,7 @@ enum MenuAction {
   RemoveMember = "removeMember",
 }
 
-const menuItemStyles = {
-  bgColor: { _disabled: "inherit" },
-  opacity: { _disabled: 0.5 },
-  cursor: { _disabled: "not-allowed" },
-} satisfies JsxStyleProps;
-
-interface Props extends MenuProps {
+interface Props extends ComponentProps<typeof MenuRoot> {
   /** The selected rows in the membership table */
   selectedRows: Row<IdpMember>[];
   /** Toggle the selection state of the rows. */
@@ -90,8 +94,8 @@ const MembershipMenu = ({
   };
 
   return (
-    <Menu
-      trigger={
+    <MenuRoot {...rest}>
+      <MenuTrigger asChild>
         <Button
           size="sm"
           variant="outline"
@@ -99,44 +103,53 @@ const MembershipMenu = ({
         >
           {`${selectedRows.length} Selected`}
 
-          <Icon src={LuChevronDown} />
+          <LuChevronDown />
         </Button>
-      }
-      {...rest}
-    >
-      <MenuItemGroup>
-        {selectedRowsAreAdmins ? (
-          <MenuItem
-            value={MenuAction.RemoveAdmin}
-            color="primary"
-            disabled={!isOwner}
-            {...menuItemStyles}
-            onClick={() => handleMenuAction({ type: MenuAction.RemoveAdmin })}
-          >
-            {app.workspaceMembersPage.membersMenu.removeAdmin}
-          </MenuItem>
-        ) : (
-          <MenuItem
-            value={MenuAction.MakeAdmin}
-            disabled={!isOwner}
-            {...menuItemStyles}
-            onClick={() => handleMenuAction({ type: MenuAction.MakeAdmin })}
-          >
-            {app.workspaceMembersPage.membersMenu.makeAdmin}
-          </MenuItem>
-        )}
+      </MenuTrigger>
 
-        <MenuItem
-          value={MenuAction.RemoveMember}
-          color="primary"
-          disabled={!isOwner}
-          {...menuItemStyles}
-          onClick={() => handleMenuAction({ type: MenuAction.RemoveMember })}
-        >
-          {app.workspaceMembersPage.membersMenu.removeMember}
-        </MenuItem>
-      </MenuItemGroup>
-    </Menu>
+      <Portal>
+        <MenuPositioner>
+          <MenuContent>
+            <MenuItemGroup>
+              {selectedRowsAreAdmins ? (
+                <MenuItem
+                  value={MenuAction.RemoveAdmin}
+                  disabled={!isOwner}
+                  className={`text-primary ${menuItemClassName}`}
+                  onClick={() =>
+                    handleMenuAction({ type: MenuAction.RemoveAdmin })
+                  }
+                >
+                  {app.workspaceMembersPage.membersMenu.removeAdmin}
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  value={MenuAction.MakeAdmin}
+                  disabled={!isOwner}
+                  className={menuItemClassName}
+                  onClick={() =>
+                    handleMenuAction({ type: MenuAction.MakeAdmin })
+                  }
+                >
+                  {app.workspaceMembersPage.membersMenu.makeAdmin}
+                </MenuItem>
+              )}
+
+              <MenuItem
+                value={MenuAction.RemoveMember}
+                disabled={!isOwner}
+                className={`text-primary ${menuItemClassName}`}
+                onClick={() =>
+                  handleMenuAction({ type: MenuAction.RemoveMember })
+                }
+              >
+                {app.workspaceMembersPage.membersMenu.removeMember}
+              </MenuItem>
+            </MenuItemGroup>
+          </MenuContent>
+        </MenuPositioner>
+      </Portal>
+    </MenuRoot>
   );
 };
 
