@@ -236,9 +236,8 @@ const PricingMatrix = (props: TableProps) => (
                   positioning={{ placement: "top" }}
                   trigger={<Icon src={HiOutlineWrenchScrewdriver} />}
                   triggerProps={{
-                    variant: "ghost",
-                    bgColor: "transparent",
                     "aria-label": app.info.comingSoon.label,
+                    className: "cursor-pointer bg-transparent",
                   }}
                 >
                   {app.info.comingSoon.label}

@@ -55,7 +55,7 @@ function UserAccountPage() {
           },
         ],
       }}
-      pt={0}
+      className="pt-0"
     >
       <Stack gap={8} h="full" justifyContent="space-between">
         <Stack gap={4}>

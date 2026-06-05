@@ -458,20 +458,11 @@ const FeedbackCard = ({
                     "aria-label":
                       app.projectPage.projectFeedback.deletePost.title,
                     variant: "ghost",
-                    size: "xs",
-                    p: 0,
-                    minW: "auto",
-                    h: "auto",
-                    backgroundColor: "transparent",
+                    className: "h-auto min-w-0 p-0 hover:bg-transparent",
                     disabled: actionIsPending,
                     onClick: (evt) => evt.stopPropagation(),
                   }}
-                  iconProps={{
-                    h: 4.5,
-                    w: 4.5,
-                    color: "primary",
-                    cursor: "pointer",
-                  }}
+                  iconClassName="size-[1.125rem] cursor-pointer text-primary"
                 />
               </HStack>
             )}

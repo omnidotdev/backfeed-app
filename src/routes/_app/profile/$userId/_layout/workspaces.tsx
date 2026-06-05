@@ -19,7 +19,7 @@ function UserWorkspacesPage() {
         title: app.profileWorkspacesPage.breadcrumb,
         description: app.profileWorkspacesPage.description,
       }}
-      pt={0}
+      className="pt-0"
     >
       <UserWorkspaces />
     </Page>

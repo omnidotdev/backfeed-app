@@ -206,7 +206,7 @@ const UpdateFeedback = ({ feedback, ...rest }: Props) => {
           <CharacterLimit
             value={descriptionLength}
             max={MAX_DESCRIPTION_LENGTH}
-            placeSelf="flex-start"
+            className="place-self-start"
           />
 
           <AppForm>

@@ -75,7 +75,7 @@ function WorkspaceMembersPage() {
         description: app.workspaceMembersPage.description,
         cta: ctaButtons.length > 0 ? ctaButtons : undefined,
       }}
-      pt={0}
+      className="pt-0"
     >
       <Owners />
 

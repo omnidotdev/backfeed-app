@@ -1,4 +1,3 @@
-import { Flex, Text, css } from "@omnidev/sigil";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import Color from "colorjs.io";
@@ -7,8 +6,9 @@ import {
   projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
+import cn from "@/lib/utils";
 
-import type { FlexProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 import type { StatusTemplate } from "@/generated/graphql";
 
 const projectRoute = getRouteApi(
@@ -22,7 +22,7 @@ interface Status {
   color: StatusTemplate["color"];
 }
 
-interface StatusFilterPillsProps extends FlexProps {}
+interface StatusFilterPillsProps extends ComponentProps<"div"> {}
 
 /**
  * Get background color with opacity from status color.
@@ -143,45 +143,30 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
   const allActive = excludedStatuses.length === 0;
 
   return (
-    <Flex
-      gap={2}
-      wrap="wrap"
-      py={3}
-      borderBottomWidth="1px"
-      borderColor={{ base: "neutral.100", _dark: "neutral.800" }}
+    <div
+      className="flex flex-wrap gap-2 border-[var(--colors-neutral-100)] border-b py-3 dark:border-[var(--colors-neutral-800)]"
       {...rest}
     >
       {/* Toggle All pill */}
-      <Flex
-        align="center"
-        gap={1.5}
-        px={3}
-        py={1}
-        borderRadius="full"
-        cursor="pointer"
-        userSelect="none"
-        bgColor={
-          allActive
-            ? { base: "primary/10", _dark: "primary/15" }
-            : { base: "neutral.100", _dark: "neutral.800" }
-        }
+      <button
+        type="button"
         onClick={handleToggleAll}
-        className={css({
-          transition: "all 0.15s ease",
-          _hover: {
-            bgColor: allActive ? "primary/15" : "neutral.200",
-          },
-        })}
+        className={cn(
+          "flex cursor-pointer select-none items-center gap-1.5 rounded-full px-3 py-1 transition-all",
+          allActive
+            ? "bg-primary/10 hover:bg-primary/15 dark:bg-primary/15"
+            : "bg-[var(--colors-neutral-100)] hover:bg-[var(--colors-neutral-200)] dark:bg-[var(--colors-neutral-800)]",
+        )}
       >
-        <Text
-          fontSize="sm"
-          fontWeight="medium"
-          whiteSpace="nowrap"
-          color={allActive ? "primary" : "foreground.muted"}
+        <span
+          className={cn(
+            "whitespace-nowrap font-medium text-sm",
+            allActive ? "text-primary" : "text-muted-foreground",
+          )}
         >
           All
-        </Text>
-      </Flex>
+        </span>
+      </button>
 
       {breakdown.map(({ status, count }) => {
         const isActive = !excludedStatuses.includes(status?.displayName!);
@@ -195,59 +180,41 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
         );
 
         return (
-          <Flex
+          <button
+            type="button"
             key={status?.rowId}
-            align="center"
-            gap={2}
-            pl={3}
-            pr={1}
-            py={1}
-            borderRadius="full"
-            cursor="pointer"
-            userSelect="none"
             onClick={() => handleToggleStatus(status)}
-            className={css({
-              transition: "all 0.15s ease",
-              _hover: {
-                opacity: 0.85,
-              },
-            })}
+            className="flex cursor-pointer select-none items-center gap-2 rounded-full py-1 pr-1 pl-3 transition-all hover:opacity-85"
             style={{
               backgroundColor: isActive ? bgColor : "var(--colors-neutral-100)",
               opacity: isActive ? 1 : 0.7,
             }}
           >
-            <Text
-              fontSize="sm"
-              fontWeight="medium"
-              whiteSpace="nowrap"
-              color={isActive ? undefined : "foreground.muted"}
+            <span
+              className={cn(
+                "whitespace-nowrap font-medium text-sm",
+                !isActive && "text-muted-foreground",
+              )}
               style={{
                 color: isActive ? (status?.color ?? undefined) : undefined,
               }}
             >
               {status?.displayName ?? "Unknown"}
-            </Text>
+            </span>
 
-            <Flex
-              align="center"
-              justify="center"
-              minW={5}
-              h={5}
-              borderRadius="full"
-              fontSize="xs"
-              fontWeight="semibold"
+            <span
+              className="flex h-5 min-w-5 items-center justify-center rounded-full font-semibold text-xs"
               style={{
                 backgroundColor: countBgColor,
                 color: isActive ? (status?.color ?? undefined) : undefined,
               }}
             >
               {count}
-            </Flex>
-          </Flex>
+            </span>
+          </button>
         );
       })}
-    </Flex>
+    </div>
   );
 };
 

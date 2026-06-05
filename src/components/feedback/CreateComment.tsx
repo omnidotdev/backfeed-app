@@ -149,7 +149,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
         <CharacterLimit
           value={messageLength}
           max={MAX_COMMENT_LENGTH}
-          placeSelf="flex-start"
+          className="place-self-start"
         />
 
         <AppForm>

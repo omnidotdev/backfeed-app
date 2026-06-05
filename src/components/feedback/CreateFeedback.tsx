@@ -237,7 +237,7 @@ const CreateFeedback = () => {
           <CharacterLimit
             value={descriptionLength}
             max={MAX_DESCRIPTION_LENGTH}
-            placeSelf="flex-start"
+            className="place-self-start"
           />
 
           <AppForm>

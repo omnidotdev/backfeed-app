@@ -1,73 +1,71 @@
+import { match } from "ts-pattern";
+
 import {
   ProgressCircle,
   ProgressCircleRange,
   ProgressCircleTrack,
   ProgressRoot,
-  Text,
-} from "@omnidev/sigil";
-import { match } from "ts-pattern";
+} from "@/components/ui/progress";
 
-import { token } from "@/generated/panda/tokens";
+import type { CSSProperties, ComponentProps } from "react";
 
-import type { ProgressProps } from "@omnidev/sigil";
-
-interface CharacterLimitProps extends ProgressProps {
-  /** Current character count. This is an override for the default Sigil `Progress` `value` prop. */
+interface CharacterLimitProps
+  extends Omit<ComponentProps<typeof ProgressRoot>, "value" | "max"> {
+  /** Current character count. */
   value: number;
-  /** Maximum character count. This is an override for the default Sigil `Progress` `max` prop. */
+  /** Maximum character count. */
   max: number;
 }
 
 /**
  * Character limit component that displays a circular progress bar with a text label indicating the current character count and maximum character count.
  */
-const CharacterLimit = ({ value, max, ...rest }: CharacterLimitProps) => {
+const CharacterLimit = ({
+  value,
+  max,
+  className,
+  ...rest
+}: CharacterLimitProps) => {
   const characterLimitColor = match(value / max)
     .when(
       (value) => value >= 0.9,
-      () => token("colors.primary"),
+      () => "var(--colors-primary)",
     )
     .when(
       (value) => value >= 0.7,
       () => "yellow",
     )
-    .otherwise(() => token("colors.brand.primary"));
+    .otherwise(() => "var(--colors-brand-primary)");
 
   return (
     <ProgressRoot
-      type="circular"
       value={value}
       min={0}
       max={max}
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      w="fit"
-      gap={2}
+      className="w-fit flex-row items-center gap-2"
       {...rest}
     >
       <ProgressCircle
-        css={{
-          "--size": "sizes.4",
-          "--thickness": "sizes.0.5",
-        }}
+        style={
+          {
+            "--size": "1rem",
+            "--thickness": "0.125rem",
+          } as CSSProperties
+        }
       >
-        <ProgressCircleTrack stroke="background.emphasized" />
+        <ProgressCircleTrack className="stroke-background-emphasized" />
         <ProgressCircleRange
-          transitionProperty="none"
-          style={{
-            stroke: characterLimitColor,
-          }}
+          className="transition-none"
+          style={{ stroke: characterLimitColor }}
         />
       </ProgressCircle>
 
-      <Text
-        fontSize="sm"
-        color={characterLimitColor ?? "foreground.muted"}
-        whiteSpace="nowrap"
+      <span
+        className="whitespace-nowrap text-sm"
+        style={{ color: characterLimitColor }}
       >
         {`${value} / ${max}`}
-      </Text>
+      </span>
     </ProgressRoot>
   );
 };

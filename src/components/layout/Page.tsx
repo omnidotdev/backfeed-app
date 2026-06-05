@@ -1,15 +1,14 @@
-import { Flex, HStack, Icon, Stack, Text, css } from "@omnidev/sigil";
 import { Link } from "@tanstack/react-router";
 import { LuArrowLeft } from "react-icons/lu";
 
 import CallToAction from "@/components/core/CallToAction";
+import cn from "@/lib/utils";
 
-import type { FlexProps, StackProps } from "@omnidev/sigil";
 import type { LinkProps } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import type { ActionButton } from "@/components/core/CallToAction";
 
-interface Props extends StackProps {
+interface Props extends ComponentProps<"div"> {
   /** Page header props. */
   header?: {
     /** Header section title. */
@@ -25,103 +24,69 @@ interface Props extends StackProps {
       params?: LinkProps["params"];
     };
     /** Props to pass to the header section. */
-    headerProps?: FlexProps;
+    headerProps?: ComponentProps<"div"> & { children?: ReactNode };
   };
 }
 
 /**
  * Page layout.
  */
-const Page = ({ header, children, ...rest }: Props) => (
-  <Stack
-    h="100%"
-    w="full"
-    maxW={{ base: "90svw", lg: "8xl" }}
-    mx="auto"
-    px={{ lg: 6 }}
-    pt={6}
-    pb={6}
-    gap={6}
+const Page = ({ header, children, className, ...rest }: Props) => (
+  <div
+    className={cn(
+      "mx-auto flex h-full w-full max-w-[90svw] flex-col gap-6 py-6 lg:max-w-[90rem] lg:px-6",
+      className,
+    )}
     {...rest}
   >
     {header && (
-      <Flex direction="column" w="100%" {...header.headerProps}>
+      <div
+        className={cn("flex w-full flex-col", header.headerProps?.className)}
+      >
         {header.backLink && (
           <Link
             to={header.backLink.to}
             params={header.backLink.params}
-            className={css({
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 1,
-              color: "foreground.muted",
-              fontSize: "sm",
-              mb: 2,
-              w: "fit-content",
-              _hover: { color: "foreground.default" },
-            })}
+            className="mb-2 inline-flex w-fit items-center gap-1 text-muted-foreground text-sm hover:text-foreground"
           >
-            <Icon src={LuArrowLeft} w={4} h={4} />
+            <LuArrowLeft className="size-4" />
             {header.backLink.label}
           </Link>
         )}
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          align={{ base: "flex-start", md: "center" }}
-          justify="space-between"
-          gap={4}
-        >
-          <Stack gap={1}>
-            <HStack gap={2} alignItems="center">
+        <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
               {typeof header.title === "string" ? (
-                <Text
-                  as="h1"
-                  fontSize={{ base: "2xl", md: "3xl" }}
-                  fontWeight="bold"
-                  lineHeight={1.2}
-                  letterSpacing="-0.02em"
-                >
+                <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
                   {header.title}
-                </Text>
+                </h1>
               ) : (
                 header.title
               )}
 
               {header.headerProps?.children}
-            </HStack>
+            </div>
 
             {header.description && (
-              <Text
-                as="h2"
-                fontSize={{ base: "sm", sm: "md" }}
-                fontWeight="normal"
-                color="foreground.muted"
-                maxW="2xl"
-                lineHeight={1.5}
-              >
+              <h2 className="max-w-2xl font-normal text-muted-foreground text-sm leading-normal sm:text-base">
                 {header.description}
-              </Text>
+              </h2>
             )}
-          </Stack>
+          </div>
 
           {!!header.cta?.length && (
-            <Flex
-              gap={2}
-              width={{ base: "full", md: "auto" }}
-              direction={{ base: "column", sm: "row" }}
-              flexShrink={0}
-            >
+            <div className="flex w-full shrink-0 flex-col gap-2 sm:flex-row md:w-auto">
               {header.cta?.map((action) => (
                 <CallToAction key={action.label} action={action} />
               ))}
-            </Flex>
+            </div>
           )}
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     )}
 
     {children}
-  </Stack>
+  </div>
 );
 
 export default Page;

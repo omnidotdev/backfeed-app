@@ -1,9 +1,10 @@
-import { Button, Flex, Icon, Text, css } from "@omnidev/sigil";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
 import SignInPrompt from "@/components/auth/SignInPrompt";
+import { Button } from "@/components/ui/button";
 import { VoteType } from "@/generated/graphql";
 import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
+import cn from "@/lib/utils";
 
 import type { Post, Project, Vote } from "@/generated/graphql";
 
@@ -58,6 +59,7 @@ const VotingButtons = ({
 
   const hasUpvote = userVote?.voteType === VoteType.Up;
   const hasDownvote = userVote?.voteType === VoteType.Down;
+  const hasVote = hasUpvote || hasDownvote;
 
   // NB: we set `rowId` to `pending` optimistically for these values on occasion. If an attempt at triggering a mutation happens while they are still in this state, the mutation will fail
   const isOptimistic = [feedbackId, userVote?.rowId].some(
@@ -69,139 +71,75 @@ const VotingButtons = ({
 
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
-  const voteColor = hasUpvote
-    ? { base: "ruby.500", _dark: "ruby.400" }
-    : hasDownvote
-      ? { base: "ruby.500", _dark: "ruby.400" }
-      : { base: "foreground.default", _dark: "foreground.default" };
+  const containerCls = cn(
+    "flex min-w-12 flex-col items-center justify-center rounded-lg border py-2 transition-all [margin-right:0.75rem]",
+    hasVote
+      ? "border-[var(--colors-ruby-200)] bg-[var(--colors-ruby-50)] dark:border-[var(--colors-ruby-800)] dark:bg-[var(--colors-ruby-950)]/30"
+      : "border-[var(--colors-neutral-200)] bg-white dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]",
+  );
 
-  const borderColor = hasUpvote
-    ? { base: "ruby.200", _dark: "ruby.800" }
-    : hasDownvote
-      ? { base: "ruby.200", _dark: "ruby.800" }
-      : { base: "neutral.200", _dark: "neutral.700" };
-
-  const bgColor = hasUpvote
-    ? { base: "ruby.50", _dark: "ruby.950/30" }
-    : hasDownvote
-      ? { base: "ruby.50", _dark: "ruby.950/30" }
-      : { base: "white", _dark: "neutral.800" };
+  const voteButtonCls = (isActive: boolean) =>
+    cn(
+      "my-0 h-auto min-w-0 p-0 hover:bg-transparent hover:text-[var(--colors-ruby-500)] dark:hover:text-[var(--colors-ruby-400)]",
+      isActive
+        ? "text-[var(--colors-ruby-500)] dark:text-[var(--colors-ruby-400)]"
+        : "text-muted-foreground",
+    );
 
   // Show login prompt for unauthenticated users
   if (!isAuthenticated) {
     return (
       <SignInPrompt action="vote">
-        <Flex
-          direction="column"
-          align="center"
-          justify="center"
-          minW={12}
-          py={2}
-          mr={3}
-          borderRadius="lg"
-          borderWidth="1px"
-          borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
-          bgColor={{ base: "white", _dark: "neutral.800" }}
-          className={css({ transition: "all 0.2s ease" })}
-        >
-          <Icon
-            src={LuArrowUp}
-            w={4}
-            h={4}
-            color={{ base: "foreground.muted", _dark: "foreground.muted" }}
-          />
-          <Text
-            fontSize="lg"
-            fontWeight="bold"
-            color="foreground.default"
-            lineHeight={1}
-            my={1}
-          >
+        <div className="mr-3 flex min-w-12 flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]">
+          <LuArrowUp className="size-4 text-muted-foreground" />
+          <span className="my-1 font-bold text-foreground text-lg leading-none">
             {netTotalVotes}
-          </Text>
-          <Icon
-            src={LuArrowDown}
-            w={4}
-            h={4}
-            color={{ base: "foreground.muted", _dark: "foreground.muted" }}
-          />
-        </Flex>
+          </span>
+          <LuArrowDown className="size-4 text-muted-foreground" />
+        </div>
       </SignInPrompt>
     );
   }
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      minW={12}
-      py={2}
-      mr={3}
-      borderRadius="lg"
-      borderWidth="1px"
-      borderColor={borderColor}
-      bgColor={bgColor}
-      className={css({ transition: "all 0.2s ease" })}
-    >
+    <div className={containerCls}>
       <Button
         variant="ghost"
-        size="xs"
-        p={0}
-        minW="auto"
-        h="auto"
-        className={css({
-          color: hasUpvote
-            ? { base: "ruby.500", _dark: "ruby.400" }
-            : { base: "foreground.muted", _dark: "foreground.muted" },
-          _hover: {
-            color: { base: "ruby.500", _dark: "ruby.400" },
-            bgColor: "transparent",
-          },
-        })}
+        size="sm"
+        className={voteButtonCls(hasUpvote)}
         onClick={(e) => {
           e.stopPropagation();
           handleUpvote();
         }}
         disabled={isVotePending || isOptimistic || isMissingUserId}
       >
-        <Icon src={LuArrowUp} w={4} h={4} strokeWidth={hasUpvote ? 3 : 2} />
+        <LuArrowUp className="size-4" strokeWidth={hasUpvote ? 3 : 2} />
       </Button>
 
-      <Text
-        fontSize="lg"
-        fontWeight="bold"
-        color={voteColor}
-        lineHeight={1}
-        my={1}
+      <span
+        className={cn(
+          "my-1 font-bold text-lg leading-none",
+          hasVote
+            ? "text-[var(--colors-ruby-500)] dark:text-[var(--colors-ruby-400)]"
+            : "text-foreground",
+        )}
       >
         {netTotalVotes}
-      </Text>
+      </span>
 
       <Button
         variant="ghost"
-        size="xs"
-        p={0}
-        minW="auto"
-        h="auto"
-        className={css({
-          color: hasDownvote
-            ? { base: "ruby.500", _dark: "ruby.400" }
-            : { base: "foreground.muted", _dark: "foreground.muted" },
-          _hover: {
-            color: { base: "ruby.500", _dark: "ruby.400" },
-            bgColor: "transparent",
-          },
-        })}
+        size="sm"
+        className={voteButtonCls(hasDownvote)}
         onClick={(e) => {
           e.stopPropagation();
           handleDownvote();
         }}
         disabled={isVotePending || isOptimistic || isMissingUserId}
       >
-        <Icon src={LuArrowDown} w={4} h={4} strokeWidth={hasDownvote ? 3 : 2} />
+        <LuArrowDown className="size-4" strokeWidth={hasDownvote ? 3 : 2} />
       </Button>
-    </Flex>
+    </div>
   );
 };
 

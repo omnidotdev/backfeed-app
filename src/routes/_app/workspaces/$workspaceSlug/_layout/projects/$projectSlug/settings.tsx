@@ -104,9 +104,8 @@ function ProjectSettingsPage() {
               triggerProps: {
                 variant: "outline",
                 size: "sm",
-                color: "omni.ruby",
-                borderColor: "omni.ruby",
-                backgroundColor: "transparent",
+                className:
+                  "border-[var(--colors-omni-ruby)] bg-transparent text-[var(--colors-omni-ruby)] hover:bg-[var(--colors-omni-ruby)]/10",
               },
               title: deleteProjectDetails.destructiveAction.title,
               description: deleteProjectDetails.destructiveAction.description,

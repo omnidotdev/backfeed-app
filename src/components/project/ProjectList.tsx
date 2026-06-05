@@ -1,4 +1,3 @@
-import { Pagination, Stack } from "@omnidev/sigil";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
@@ -7,6 +6,7 @@ import SkeletonArray from "@/components/core/SkeletonArray";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import ProjectListItem from "@/components/project/ProjectListItem";
+import { Pagination } from "@/components/ui/pagination";
 import app from "@/lib/config/app.config";
 import { projectsOptions } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -60,9 +60,9 @@ const ProjectList = ({ canCreateProjects }: Props) => {
 
   if (isLoading)
     return (
-      <Stack>
+      <div className="flex flex-col gap-2">
         <SkeletonArray count={6} className="h-40 rounded-sm" />
-      </Stack>
+      </div>
     );
 
   if (!projects?.length)
@@ -87,8 +87,8 @@ const ProjectList = ({ canCreateProjects }: Props) => {
     );
 
   return (
-    <Stack align="center" justify="space-between" h="100%">
-      <Stack w="100%">
+    <div className="flex h-full flex-col items-center justify-between gap-2">
+      <div className="flex w-full flex-col gap-2">
         {projects.map((project) => (
           <ProjectListItem
             key={project?.rowId}
@@ -96,24 +96,20 @@ const ProjectList = ({ canCreateProjects }: Props) => {
             workspaceSlug={workspaceSlug}
           />
         ))}
-      </Stack>
+      </div>
 
       <Pagination
-        ellipsisProps={{
-          display: { base: "none", sm: "flex" },
-        }}
-        itemProps={{
-          display: { base: "none", sm: "flex" },
-        }}
+        className="mt-4"
+        ellipsisClassName="hidden sm:flex"
+        itemClassName="hidden sm:flex"
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) =>
           navigate({ search: (prev) => ({ ...prev, page }) })
         }
-        mt={4}
       />
-    </Stack>
+    </div>
   );
 };
 

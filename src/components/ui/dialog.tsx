@@ -6,6 +6,7 @@ import cn from "@/lib/utils";
 import type { ComponentProps } from "react";
 
 const DialogRoot = ArkDialog.Root;
+const DialogTrigger = ArkDialog.Trigger;
 
 const DialogBackdrop = ({
   className,
@@ -92,6 +93,7 @@ const DialogDescription = ({
 
 export {
   DialogRoot,
+  DialogTrigger,
   DialogBackdrop,
   DialogPositioner,
   DialogContent,

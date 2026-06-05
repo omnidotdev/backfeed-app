@@ -1,17 +1,17 @@
-import { Icon, ToggleGroup, ToggleGroupItem } from "@omnidev/sigil";
 import { LuLayoutGrid, LuList } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
+import { ToggleGroupItem, ToggleGroupRoot } from "@/components/ui/toggle-group";
 import useProjectViewStore, {
   ViewState,
 } from "@/lib/store/useProjectViewStore";
 
-import type { ToggleGroupProps } from "@omnidev/sigil";
+import type { ComponentProps } from "react";
 
 /**
  * Switch for project feedback layout.
  */
-const SwitchFeedbackView = (props: ToggleGroupProps) => {
+const SwitchFeedbackView = (props: ComponentProps<typeof ToggleGroupRoot>) => {
   const isClient = useIsClient();
 
   const viewState = useProjectViewStore((state) => state.viewState);
@@ -20,9 +20,7 @@ const SwitchFeedbackView = (props: ToggleGroupProps) => {
   if (!isClient) return null;
 
   return (
-    <ToggleGroup
-      size="sm"
-      variant="ghost"
+    <ToggleGroupRoot
       value={[viewState]}
       onValueChange={({ value }) =>
         // NB: length check prevents deselecting a selected value
@@ -30,42 +28,14 @@ const SwitchFeedbackView = (props: ToggleGroupProps) => {
       }
       {...props}
     >
-      <ToggleGroupItem
-        value={ViewState.List}
-        h={8}
-        w={8}
-        p={2}
-        borderRadius="md"
-        color="foreground.muted"
-        _hover={{
-          bgColor: { base: "neutral.100", _dark: "neutral.800" },
-        }}
-        _selected={{
-          color: "foreground.default",
-          bgColor: { base: "neutral.200", _dark: "neutral.700" },
-        }}
-      >
-        <Icon src={LuList} size="sm" />
+      <ToggleGroupItem value={ViewState.List} className="size-8 p-2">
+        <LuList className="size-4" />
       </ToggleGroupItem>
 
-      <ToggleGroupItem
-        value={ViewState.Grid}
-        h={8}
-        w={8}
-        p={2}
-        borderRadius="md"
-        color="foreground.muted"
-        _hover={{
-          bgColor: { base: "neutral.100", _dark: "neutral.800" },
-        }}
-        _selected={{
-          color: "foreground.default",
-          bgColor: { base: "neutral.200", _dark: "neutral.700" },
-        }}
-      >
-        <Icon src={LuLayoutGrid} size="sm" />
+      <ToggleGroupItem value={ViewState.Grid} className="size-8 p-2">
+        <LuLayoutGrid className="size-4" />
       </ToggleGroupItem>
-    </ToggleGroup>
+    </ToggleGroupRoot>
   );
 };
 

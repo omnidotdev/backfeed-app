@@ -1,56 +1,36 @@
-import {
-  Button,
-  Dialog,
-  HStack,
-  Icon,
-  Input,
-  Label,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useState } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
-import { token } from "@/generated/panda/tokens";
+import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import app from "@/lib/config/app.config";
-import useViewportSize from "@/lib/hooks/useViewportSize";
+import cn from "@/lib/utils";
 
-import type {
-  ButtonProps,
-  DialogProps,
-  IconProps,
-  JsxStyleProps,
-} from "@omnidev/sigil";
-import type { ReactNode } from "react";
+import type { ComponentProps, MouseEvent, ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-const destructiveButtonStyles: JsxStyleProps = {
-  color: "white",
-  backgroundColor: {
-    base: "destructive",
-    _hover: { base: "destructive.hover", _disabled: "destructive" },
-    _active: "destructive.active",
-    _focus: "destructive.focus",
-  },
-  _focusVisible: {
-    outline: "2px solid",
-    outlineColor: "destructive.focus",
-    outlineOffset: "2px",
-  },
-  opacity: {
-    _disabled: 0.5,
-  },
-};
-
-interface Action extends ButtonProps {
+interface Action {
   /** Action label. */
   label: string;
+  /** Action handler. */
+  onClick?: (e: MouseEvent) => void;
+  /** Whether the action is disabled. */
+  disabled?: boolean;
+  /** Class applied to the action button. */
+  className?: string;
 }
 
-export interface DestructiveActionProps
-  extends Omit<DialogProps, "triggerProps"> {
+export interface DestructiveActionProps {
   /** Dialog title. */
   title: string;
   /** Dialog description. */
@@ -65,10 +45,10 @@ export interface DestructiveActionProps
   children?: ReactNode;
   /** Dialog trigger button label. */
   triggerLabel?: string;
-  /** Icon props. */
-  iconProps?: Omit<IconProps, "src">;
+  /** Class applied to the trigger icon. */
+  iconClassName?: string;
   /** Trigger button props. */
-  triggerProps?: ButtonProps;
+  triggerProps?: ComponentProps<typeof Button>;
 }
 
 /**
@@ -78,125 +58,94 @@ const DestructiveAction = ({
   title,
   description,
   action,
-  icon = LuTrash2,
+  icon: Icon = LuTrash2,
   triggerProps,
-  iconProps,
+  iconClassName,
   children,
   destructiveInput,
   triggerLabel,
-  ...rest
 }: DestructiveActionProps) => {
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
   const isClient = useIsClient();
 
-  const isSmallViewport = useViewportSize({
-    minWidth: token("breakpoints.sm"),
-  });
-
-  const actions: Action[] = [
-    {
-      variant: "solid",
-      ...destructiveButtonStyles,
-      ...action,
-      tabIndex: 0,
-      disabled: destructiveInput
-        ? inputValue !== destructiveInput || action.disabled
-        : action.disabled,
-      onClick: (e) => {
-        e.stopPropagation();
-        action.onClick?.(e);
-        onClose();
-      },
-    },
-    {
-      label: app.actions.cancel.label,
-      tabIndex: 0,
-      onClick: (e) => {
-        e.stopPropagation();
-        onClose();
-      },
-      variant: "outline",
-    },
-  ];
-
   if (!isClient) return null;
 
+  const isActionDisabled = destructiveInput
+    ? inputValue !== destructiveInput || action.disabled
+    : action.disabled;
+
   return (
-    <Dialog
-      title={title}
-      description={description}
-      open={isOpen}
-      onOpenChange={onToggle}
-      trigger={
-        <Button
-          type="button"
-          variant="solid"
-          fontSize="md"
-          {...destructiveButtonStyles}
-          {...triggerProps}
-        >
-          <Icon src={icon} h={5} w={5} {...iconProps} />
+    <DialogRoot open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
+      <DialogTrigger asChild>
+        <Button type="button" variant="destructive" {...triggerProps}>
+          <Icon className={cn("size-5", iconClassName)} />
 
           {triggerLabel && (
-            <Text display={{ base: "none", sm: "inline-flex" }}>
-              {triggerLabel}
-            </Text>
+            <span className="hidden sm:inline-flex">{triggerLabel}</span>
           )}
         </Button>
-      }
-      contentProps={{
-        // NB: `onClick` and `cursor` are to change behavior due to render of dialog being unknown. We do not want to propagate events.
-        onClick: (e) => e.stopPropagation(),
-        style: {
-          width: isSmallViewport ? token("sizes.md") : "calc(100vw - 2rem)",
-          maxWidth: token("sizes.lg"),
-          cursor: "default",
-          zIndex: 50,
-        },
-      }}
-      {...rest}
-    >
-      {children}
+      </DialogTrigger>
 
-      {destructiveInput && (
-        <Stack gap={2}>
-          <Label
-            _selection={{
-              backgroundColor: "primary",
-            }}
-          >
-            {`Type "${destructiveInput}" below to confirm`}
-          </Label>
+      <Portal>
+        <DialogBackdrop />
+        {/* NB: `onClick` stops propagation as the dialog is rendered in unknown context and we do not want to propagate events */}
+        <DialogContent onClick={(e) => e.stopPropagation()}>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
 
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            borderColor={{ base: "border.default", _focus: "primary" }}
-            boxShadow={{ _focus: "0 0 0 1px token(colors.primary)" }}
-            mb={4}
-          />
-        </Stack>
-      )}
+          {children}
 
-      <HStack>
-        {actions.map(({ label, onClick, ...rest }) => (
-          <Button
-            key={label}
-            flex={1}
-            onClick={(e) => {
-              // ! NB: this will prevent actions from triggering other events (i.e. form submissions)
-              e.preventDefault();
-              onClick?.(e);
-            }}
-            {...rest}
-          >
-            {label}
-          </Button>
-        ))}
-      </HStack>
-    </Dialog>
+          {destructiveInput && (
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="destructive-confirm"
+                className="text-sm selection:bg-primary"
+              >
+                {`Type "${destructiveInput}" below to confirm`}
+              </label>
+
+              <Input
+                id="destructive-confirm"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="mb-4 focus:border-primary"
+              />
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Button
+              variant="destructive"
+              className={cn("flex-1", action.className)}
+              disabled={isActionDisabled}
+              onClick={(e) => {
+                // ! NB: this will prevent the action from triggering other events (i.e. form submissions)
+                e.preventDefault();
+                e.stopPropagation();
+                action.onClick?.(e);
+                setIsOpen(false);
+              }}
+            >
+              {action.label}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsOpen(false);
+              }}
+            >
+              {app.actions.cancel.label}
+            </Button>
+          </div>
+        </DialogContent>
+      </Portal>
+    </DialogRoot>
   );
 };
 

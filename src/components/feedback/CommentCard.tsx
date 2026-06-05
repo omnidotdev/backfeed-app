@@ -214,13 +214,12 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
           triggerProps={{
             "aria-label": app.postPage.comments.delete.title,
             tabIndex: -1,
-            color: "omni.ruby",
-            backgroundColor: "transparent",
-            position: "absolute",
-            top: 0,
-            right: -1,
+            variant: "ghost",
+            className:
+              "absolute top-0 right-[-0.25rem] bg-transparent hover:bg-transparent",
             disabled: actionIsPending,
           }}
+          iconClassName="text-[var(--colors-omni-ruby)]"
         />
       )}
 
