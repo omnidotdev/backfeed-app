@@ -1,20 +1,20 @@
-import {
-  Button,
-  HStack,
-  Icon,
-  Link,
-  Menu,
-  MenuItem,
-  MenuItemGroup,
-  Text,
-  Tooltip,
-} from "@omnidev/sigil";
+import { Portal } from "@ark-ui/react/portal";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
 
 import Favicon from "@/components/core/Favicon";
+import Tooltip from "@/components/core/Tooltip";
+import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { projectOptions } from "@/lib/options/projects";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
@@ -50,82 +50,67 @@ const ProjectLinks = () => {
   if (!allLinks.length) return null;
 
   return (
-    <HStack
-      gap={0.5}
-      pl={3}
-      ml={1}
-      borderLeftWidth="1px"
-      borderColor={{ base: "neutral.200", _dark: "neutral.700" }}
-    >
+    <div className="ml-1 flex items-center gap-0.5 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
       {visibleLinks.map((link) => (
         <Tooltip
           key={link.rowId}
-          hasArrow={false}
           trigger={
-            <Link
+            <a
               href={link.url}
-              isExternal
-              color="foreground.muted"
-              p={1.5}
-              borderRadius="md"
-              _hover={{
-                color: "foreground.default",
-                bgColor: { base: "neutral.100", _dark: "neutral.800" },
-              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
             >
               <Favicon url={link.url} size={4} />
-            </Link>
+            </a>
           }
-          triggerProps={{
-            style: { all: "unset" },
-          }}
-          contentProps={{
-            zIndex: "foreground",
-            fontSize: "sm",
-            display: isMenuOpen ? "none" : undefined,
-          }}
         >
           {getDomainLabel(link.url)}
         </Tooltip>
       ))}
 
       {!!overflowLinks.length && (
-        <Menu
+        <MenuRoot
           open={isMenuOpen}
           onOpenChange={({ open }) => setIsMenuOpen(open)}
-          trigger={
-            <Button
-              variant="ghost"
-              size="xs"
-              p={1.5}
-              minW="auto"
-              h="auto"
-              color="foreground.muted"
-              _hover={{
-                color: "foreground.default",
-                bgColor: { base: "neutral.100", _dark: "neutral.800" },
-              }}
-            >
-              <Icon src={LuEllipsis} h={4} w={4} />
-            </Button>
-          }
           positioning={{ gutter: -4, shift: 8 }}
         >
-          <MenuItemGroup>
-            {overflowLinks.map((link) => (
-              <MenuItem key={link.rowId} value={link.url} asChild>
-                <Link href={link.url} isExternal p={2} textDecoration="none">
-                  <Favicon url={link.url} size={4} />
-                  <Text color="foreground.subtle">
-                    {getDomainLabel(link.url)}
-                  </Text>
-                </Link>
-              </MenuItem>
-            ))}
-          </MenuItemGroup>
-        </Menu>
+          <MenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-auto min-w-0 p-1.5 text-muted-foreground hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
+            >
+              <LuEllipsis className="size-4" />
+            </Button>
+          </MenuTrigger>
+
+          <Portal>
+            <MenuPositioner>
+              <MenuContent>
+                <MenuItemGroup>
+                  {overflowLinks.map((link) => (
+                    <MenuItem key={link.rowId} value={link.url} asChild>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 p-2 no-underline"
+                      >
+                        <Favicon url={link.url} size={4} />
+                        <span className="text-foreground-subtle">
+                          {getDomainLabel(link.url)}
+                        </span>
+                      </a>
+                    </MenuItem>
+                  ))}
+                </MenuItemGroup>
+              </MenuContent>
+            </MenuPositioner>
+          </Portal>
+        </MenuRoot>
       )}
-    </HStack>
+    </div>
   );
 };
 

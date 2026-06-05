@@ -1,4 +1,3 @@
-import { Grid, HStack, Icon, Stack, Switch, Text, sigil } from "@omnidev/sigil";
 import {
   keepPreviousData,
   useIsMutating,
@@ -9,6 +8,12 @@ import { LuGlobe } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateLinks from "@/components/project/UpdateLinks";
+import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@/components/ui/switch";
 import {
   useCreateProjectLinkMutation,
   useDeleteProjectLinkMutation,
@@ -147,15 +152,15 @@ const UpdateProject = () => {
         title={updateProjectDetails.title}
         description={updateProjectDetails.description}
       >
-        <sigil.form
+        <form
           onSubmit={async (e) => {
             e.preventDefault();
             e.stopPropagation();
             await form.handleSubmit();
           }}
         >
-          <Grid columns={{ base: 1, lg: 2 }} gap={{ base: 4, lg: 8 }}>
-            <Stack gap={4}>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+            <div className="flex flex-col gap-4">
               <form.AppField name="name">
                 {({ InputField }) => (
                   <InputField
@@ -180,10 +185,10 @@ const UpdateProject = () => {
                   />
                 )}
               </form.AppField>
-            </Stack>
+            </div>
 
             <UpdateLinks form={form} projectId={project?.rowId!} />
-          </Grid>
+          </div>
 
           <form.AppForm>
             <form.SubmitForm
@@ -192,29 +197,27 @@ const UpdateProject = () => {
               className="mt-4 ml-auto"
             />
           </form.AppForm>
-        </sigil.form>
+        </form>
       </SectionContainer>
 
       <SectionContainer
         title="Visibility"
         description="Control who can see this project. Boards are public by default"
       >
-        <HStack justify="space-between" alignItems="center">
-          <HStack gap={3} alignItems="center">
-            <Icon src={LuGlobe} />
-            <Stack gap={0}>
-              <Text fontWeight="medium" fontSize="sm">
-                Public
-              </Text>
-              <Text fontSize="xs" color="fg.muted">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <LuGlobe className="size-4" />
+            <div className="flex flex-col">
+              <span className="font-medium text-sm">Public</span>
+              <span className="text-muted-foreground text-xs">
                 {project?.isPublic
                   ? "Anyone with the link can view"
                   : "Only workspace members can access"}
-              </Text>
-            </Stack>
-          </HStack>
+              </span>
+            </div>
+          </div>
 
-          <Switch
+          <SwitchRoot
             checked={project?.isPublic ?? true}
             onCheckedChange={async (details) => {
               await updateProject({
@@ -223,8 +226,13 @@ const UpdateProject = () => {
               });
               await queryClient.invalidateQueries({ queryKey: ["Project"] });
             }}
-          />
-        </HStack>
+          >
+            <SwitchControl>
+              <SwitchThumb />
+            </SwitchControl>
+            <SwitchHiddenInput />
+          </SwitchRoot>
+        </div>
       </SectionContainer>
     </>
   );
