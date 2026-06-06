@@ -1,0 +1,9 @@
+fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+}

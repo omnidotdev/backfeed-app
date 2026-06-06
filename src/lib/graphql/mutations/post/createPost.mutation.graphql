@@ -1,5 +1,7 @@
 mutation CreateFeedback($input: CreatePostInput!) {
   createPost(input: $input) {
-    clientMutationId
+    post {
+      rowId
+    }
   }
 }

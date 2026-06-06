@@ -10,6 +10,7 @@ import { LuCheck, LuChevronDown, LuMessageCircle } from "react-icons/lu";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
 import StatusBadge from "@/components/core/StatusBadge";
+import AttachmentGallery from "@/components/feedback/AttachmentGallery";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
@@ -405,6 +406,15 @@ const FeedbackCard = ({
             </span>
           ))}
         </p>
+
+        {!!feedback.attachments?.nodes.length && (
+          <AttachmentGallery
+            attachments={feedback.attachments.nodes.filter(
+              (node): node is NonNullable<typeof node> => node != null,
+            )}
+            compact={!disableHover}
+          />
+        )}
 
         <div className="mt-2 flex items-center justify-between">
           {isFeedbackRoute && (

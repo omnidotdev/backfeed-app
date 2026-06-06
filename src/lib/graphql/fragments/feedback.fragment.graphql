@@ -24,6 +24,11 @@ fragment Feedback on Post {
     rowId
     username
   }
+  attachments {
+    nodes {
+      ...Attachment
+    }
+  }
   comments(condition: { parentId: null }) {
     totalCount
   }

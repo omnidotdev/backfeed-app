@@ -5,11 +5,15 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import AttachmentUploader from "@/components/feedback/AttachmentUploader";
 import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
-import { useCreateFeedbackMutation } from "@/generated/graphql";
+import {
+  useCreateAttachmentMutation,
+  useCreateFeedbackMutation,
+} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
@@ -22,6 +26,8 @@ import {
 } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import toaster from "@/lib/util/toaster";
+
+import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -89,6 +95,14 @@ const CreateFeedback = () => {
   const { mutateAsync: createFeedback, isPending } =
     useCreateFeedbackMutation();
 
+  const { mutateAsync: createAttachment } = useCreateAttachmentMutation();
+
+  // Successfully uploaded attachments, linked to the post on submit. `uploaderKey`
+  // remounts the uploader to clear its previews/state after a submit or close.
+  const [attachments, setAttachments] = useState<UploadedAttachment[]>([]);
+  const [isUploadingAttachments, setIsUploadingAttachments] = useState(false);
+  const [uploaderKey, setUploaderKey] = useState(0);
+
   const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
     {
       defaultValues: {
@@ -109,6 +123,8 @@ const CreateFeedback = () => {
           return;
         }
 
+        const userId = session.user.rowId;
+
         return toaster.promise(
           createFeedback({
             input: {
@@ -119,13 +135,43 @@ const CreateFeedback = () => {
                   statusTemplateId: defaultStatusTemplateId,
                 }),
                 projectId,
-                userId: session.user.rowId,
+                userId,
                 title: value.title.trim(),
                 description: value.description.trim(),
               },
             },
-          }).then(async () => {
+          }).then(async (data) => {
+            // Link any uploaded attachments to the newly created post
+            const postId = data?.createPost?.post?.rowId;
+            if (postId && attachments.length) {
+              await Promise.all(
+                attachments.map((attachment) =>
+                  createAttachment({
+                    input: {
+                      attachment: {
+                        postId,
+                        userId,
+                        url: attachment.url,
+                        storageKey: attachment.storageKey,
+                        mimeType: attachment.mimeType,
+                        fileSize: attachment.fileSize,
+                        kind: attachment.kind,
+                        ...(attachment.width != null && {
+                          width: attachment.width,
+                        }),
+                        ...(attachment.height != null && {
+                          height: attachment.height,
+                        }),
+                      },
+                    },
+                  }),
+                ),
+              );
+            }
+
             reset();
+            setAttachments([]);
+            setUploaderKey((key) => key + 1);
 
             const invalidations: Promise<void>[] = [
               queryClient.invalidateQueries(
@@ -199,6 +245,8 @@ const CreateFeedback = () => {
     <CollapsibleRoot
       onOpenChange={({ open }) => {
         reset();
+        setAttachments([]);
+        setUploaderKey((key) => key + 1);
         setIsOpen(open);
       }}
       open={isOpen}
@@ -236,6 +284,13 @@ const CreateFeedback = () => {
             )}
           </AppField>
 
+          <AttachmentUploader
+            key={uploaderKey}
+            onAttachmentsChange={setAttachments}
+            onUploadingChange={setIsUploadingAttachments}
+            disabled={!session?.user || !canCreateFeedback}
+          />
+
           <div className="flex flex-row justify-between">
             <CharacterLimit
               value={descriptionLength}
@@ -246,7 +301,7 @@ const CreateFeedback = () => {
             <AppForm>
               <SubmitForm
                 action={app.projectPage.projectFeedback.action}
-                isPending={isPending}
+                isPending={isPending || isUploadingAttachments}
                 className="w-fit place-self-end"
               />
             </AppForm>

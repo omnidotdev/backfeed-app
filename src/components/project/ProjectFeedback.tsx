@@ -177,6 +177,9 @@ const ProjectFeedback = () => {
           rowId: session?.user?.rowId ?? "",
           username: session?.user?.username,
         },
+        attachments: {
+          nodes: [],
+        },
         comments: {
           totalCount: 0,
         },
