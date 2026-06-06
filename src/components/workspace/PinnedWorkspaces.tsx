@@ -38,8 +38,8 @@ const PinnedWorkspaces = () => {
     {},
   );
 
-  // Take first 4 organizations to display in 2x2 grid
-  const pinnedOrgs = organizations.slice(0, 4);
+  // Show all of the user's organizations inline
+  const pinnedOrgs = organizations;
 
   if (!pinnedOrgs.length) {
     return (
@@ -60,11 +60,9 @@ const PinnedWorkspaces = () => {
     );
   }
 
-  const hasMore = organizations.length > 4;
-
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {pinnedOrgs.map((org) => (
           <Link
             key={org.id}
@@ -101,17 +99,6 @@ const PinnedWorkspaces = () => {
           </a>
         )}
       </div>
-
-      {hasMore && session?.user?.identityProviderId && (
-        <Link
-          to="/profile/$userId/workspaces"
-          params={{ userId: session.user.identityProviderId }}
-        >
-          <span className="flex items-center justify-center gap-1.5 font-medium text-foreground-subtle text-sm hover:text-foreground">
-            View all {organizations.length} workspaces
-          </span>
-        </Link>
-      )}
     </div>
   );
 };
