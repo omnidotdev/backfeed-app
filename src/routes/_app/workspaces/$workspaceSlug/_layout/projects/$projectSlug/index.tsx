@@ -42,7 +42,11 @@ export const Route = createFileRoute(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
 )({
   validateSearch: projectSearchSchema,
-  loaderDeps: ({ search }) => search,
+  // NB: filters are intentionally NOT in loaderDeps. Re-running the loader on every
+  // filter change would block the URL navigation (and thus the pill/sort highlight)
+  // on a network round-trip. Instead the loader prefetches the initial/SSR list from
+  // location.search once, and the component's useInfiniteQuery (with keepPreviousData)
+  // owns refetching on filter changes, so filter clicks reflect immediately.
   search: {
     middlewares: [
       stripSearchParams({
@@ -55,8 +59,12 @@ export const Route = createFileRoute(
   loader: async ({
     context: { session, queryClient, organizationId },
     params: { projectSlug },
-    deps: { search, excludedStatuses, orderBy },
+    location,
   }) => {
+    const { search, excludedStatuses, orderBy } = projectSearchSchema.parse(
+      location.search,
+    );
+
     const { projects } = await queryClient.ensureQueryData({
       ...projectOptions({
         organizationId,

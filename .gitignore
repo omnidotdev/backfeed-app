@@ -9,6 +9,9 @@ dist
 # tests
 coverage
 
+# playwright mcp snapshots
+.playwright-mcp
+
 # editor
 .vscode
 
