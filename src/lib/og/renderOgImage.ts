@@ -15,7 +15,7 @@ export const HEIGHT = 630;
 const OMNI_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><path fill="#1a1a1a" d="m305.55,251.06c-2.25,39.89-22.63,78.45-54.97,102.2-.02,0-.03.02-.05.03-35.35,24.87-81.6,30.43-121.78,16.38-.35-.12-.7-.25-1.04-.37-26.04-9.8-49.08-27.59-64.36-51.03-.35-.54-.7-1.07-1.03-1.61-.36-.56-.7-1.12-1.04-1.68-.84-1.36-1.63-2.74-2.4-4.14-.38-.69-.78-1.4-1.15-2.11,99.71,81.94,249.46-2.53,229.47-130.45,14.13,22.6,19.75,47.95,18.34,72.79Z"/><path fill="#1a1a1a" d="m350.16,291.36c-13.92,38.42-46.39,68.99-85.59,80.61-13.5,4.1-27.59,5.99-41.62,5.63,120.83-45.38,122.54-217.31,1.77-263.96,90.07-3.14,158.73,93.67,125.44,177.72Z"/><path fill="#1a1a1a" d="m262.5,264.7c-9.91,16.9-21.83,30.36-35.02,40.65-.02,0-.03.02-.04.02-26.31,19.55-59.7,28.4-92.15,25.76-33.37-3.58-65.28-19.48-87.77-44.61-.03-.02-.05-.05-.08-.09-.53-.65-1.06-1.3-1.59-1.96-18.67-22.2-29.25-50.51-30.41-79.28-.29-11.18.77-22.92,3.39-35.14,3.2-13.74,8.61-26.88,15.94-38.84-21.52,126.87,127.51,214.92,227.72,133.49Z"/><path fill="#1a1a1a" d="m175.28,286.51c-24.18-.77-45.05-6.12-62.62-14.81-29.99-16.17-53.17-44.03-64.23-76.15,0,0,0-.02,0-.02-9.94-32.31-7.74-68.25,6.53-98.97,13.75-28.49,38.28-51.08,67.17-63.51,0,0,.02,0,.03-.02,15.92-6.35,34.22-10.1,54.90-10.48-120.82,45.36-122.54,217.31-1.77,263.95Z"/><path fill="#1a1a1a" d="m342.25,91.43c-99.69-81.94-249.46,2.54-229.47,130.46-31.13-49.86-20.92-113.06,14.77-154.66.63-.73,1.26-1.45,1.89-2.16,18.88-21.08,44.46-36.24,74.56-40.69,54.31-10.05,112.48,18.21,138.25,67.05Z"/><path fill="#1a1a1a" d="m381.15,230.1h0c-3.19,13.74-8.6,26.89-15.94,38.84,21.54-126.89-127.52-214.91-227.71-133.49C214.51,4.1,413.07,81.17,381.15,230.1Z"/></svg>`;
 
 let fontCache: ArrayBuffer | null = null;
-let logoCache: string | null = null;
+let logoCache: { dataUri: string; width: number; height: number } | null = null;
 
 const fetchFont = async (): Promise<ArrayBuffer> => {
   if (fontCache) return fontCache;
@@ -39,11 +39,16 @@ const resolveLogoPath = (): string => {
   return candidates[0]!;
 };
 
-const getLogoDataUri = (): string => {
+const getLogo = (): { dataUri: string; width: number; height: number } => {
   if (logoCache) return logoCache;
 
   const logoBuffer = readFileSync(resolveLogoPath());
-  logoCache = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+  // PNG intrinsic dimensions live in the IHDR chunk (width at byte 16, height at 20)
+  logoCache = {
+    dataUri: `data:image/png;base64,${logoBuffer.toString("base64")}`,
+    width: logoBuffer.readUInt32BE(16),
+    height: logoBuffer.readUInt32BE(20),
+  };
 
   return logoCache;
 };
@@ -82,7 +87,11 @@ export const renderOgImage = async ({
   eyebrow?: string | null;
 }): Promise<Uint8Array> => {
   const fontData = await fetchFont();
-  const logoDataUri = getLogoDataUri();
+  const logo = getLogo();
+  // preserve the logo's aspect ratio at a fixed cap height so a non-square
+  // wordmark is never squished into a square box
+  const logoHeight = 36;
+  const logoWidth = Math.round(logoHeight * (logo.width / logo.height));
 
   const svg = await satori(
     {
@@ -209,10 +218,11 @@ export const renderOgImage = async ({
                       {
                         type: "img",
                         props: {
-                          src: logoDataUri,
+                          src: logo.dataUri,
                           alt: "",
-                          width: 36,
-                          height: 36,
+                          width: logoWidth,
+                          height: logoHeight,
+                          style: { objectFit: "contain" },
                         },
                       },
                       {
