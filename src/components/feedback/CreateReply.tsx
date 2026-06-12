@@ -58,7 +58,8 @@ interface Props extends ComponentProps<typeof CollapsibleRoot> {
  * Create reply form.
  */
 const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
-  const { projectSlug, feedbackId } = feedbackRoute.useParams();
+  const { projectSlug } = feedbackRoute.useParams();
+  const { feedbackId } = feedbackRoute.useLoaderData();
   const { session, queryClient, organizationId } =
     feedbackRoute.useRouteContext();
 

@@ -40,7 +40,7 @@ interface Props extends ComponentProps<"div"> {
 const CommentCard = ({ comment, canReply, ...rest }: Props) => {
   const { session, queryClient, hasAdminPrivileges } =
     feedbackRoute.useRouteContext();
-  const { feedbackId } = feedbackRoute.useParams();
+  const { feedbackId } = feedbackRoute.useLoaderData();
 
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
 

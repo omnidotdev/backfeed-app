@@ -47,7 +47,8 @@ interface Props {
 const CreateComment = ({ canCreateComment }: Props) => {
   const { session, queryClient, organizationId } =
     feedbackRoute.useRouteContext();
-  const { projectSlug, feedbackId } = feedbackRoute.useParams();
+  const { projectSlug } = feedbackRoute.useParams();
+  const { feedbackId } = feedbackRoute.useLoaderData();
 
   const { mutateAsync: createComment, isPending } = useCreateCommentMutation({
     onSettled: async () => {

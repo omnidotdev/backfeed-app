@@ -7,6 +7,7 @@ import {
 import {
   PostsDocument,
   useFeedbackByIdQuery,
+  useFeedbackByNumberQuery,
   useInfinitePostsQuery,
   useProjectQuery,
 } from "@/generated/graphql";
@@ -15,6 +16,7 @@ import { FeatureKey, checkLimit } from "@/server/functions/entitlements";
 
 import type {
   FeedbackByIdQueryVariables,
+  FeedbackByNumberQueryVariables,
   PostsQuery,
   PostsQueryVariables,
 } from "@/generated/graphql";
@@ -27,6 +29,14 @@ export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>
   queryOptions({
     queryKey: useFeedbackByIdQuery.getKey(variables),
     queryFn: useFeedbackByIdQuery.fetcher(variables),
+  });
+
+export const feedbackByNumberOptions = (
+  variables: FeedbackByNumberQueryVariables,
+) =>
+  queryOptions({
+    queryKey: useFeedbackByNumberQuery.getKey(variables),
+    queryFn: useFeedbackByNumberQuery.fetcher(variables),
   });
 
 export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>

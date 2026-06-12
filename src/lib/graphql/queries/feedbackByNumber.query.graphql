@@ -1,0 +1,5 @@
+query FeedbackByNumber($projectId: UUID!, $number: Int!, $userId: UUID) {
+  postByProjectIdAndNumber(projectId: $projectId, number: $number) {
+    ...Feedback
+  }
+}

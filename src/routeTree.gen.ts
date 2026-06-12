@@ -23,6 +23,7 @@ import { Route as AppWorkspacesWorkspaceSlugLayoutManageRouteImport } from './ro
 import { Route as AppProfileUserIdLayoutWorkspacesRouteImport } from './routes/_app/profile/$userId/_layout/workspaces'
 import { Route as AppProfileUserIdLayoutAccountRouteImport } from './routes/_app/profile/$userId/_layout/account'
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/index'
+import { Route as ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport } from './routes/api/og/feedback.$workspaceSlug.$projectSlug.$number'
 import { Route as AppWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
 import { Route as AppWorkspacesWorkspaceSlugLayoutManageMembersRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/_manage/members'
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/index'
@@ -104,6 +105,12 @@ const AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute =
     path: '/projects/',
     getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
   } as any)
+const ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute =
+  ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport.update({
+    id: '/api/og/feedback/$workspaceSlug/$projectSlug/$number',
+    path: '/api/og/feedback/$workspaceSlug/$projectSlug/$number',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute =
   AppWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport.update({
     id: '/settings',
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceSlug/': typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
   '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
@@ -171,6 +179,7 @@ export interface FileRoutesByTo {
   '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
   '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
@@ -193,6 +202,7 @@ export interface FileRoutesById {
   '/_app/workspaces/$workspaceSlug/_layout/': typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
   '/_app/workspaces/$workspaceSlug/_layout/_manage/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
   '/_app/workspaces/$workspaceSlug/_layout/_manage/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/'
     | '/workspaces/$workspaceSlug/members'
     | '/workspaces/$workspaceSlug/settings'
+    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/api/og/project/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/members'
     | '/workspaces/$workspaceSlug/settings'
+    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
@@ -253,6 +265,7 @@ export interface FileRouteTypes {
     | '/_app/workspaces/$workspaceSlug/_layout/'
     | '/_app/workspaces/$workspaceSlug/_layout/_manage/members'
     | '/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
+    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
@@ -265,6 +278,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiOgProjectWorkspaceSlugProjectSlugRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
+  ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute: typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -366,6 +380,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspaces/$workspaceSlug/projects'
       preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport
       parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+    }
+    '/api/og/feedback/$workspaceSlug/$projectSlug/$number': {
+      id: '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
+      path: '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
+      fullPath: '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
+      preLoaderRoute: typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/workspaces/$workspaceSlug/_layout/_manage/settings': {
       id: '/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
@@ -494,6 +515,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiOgProjectWorkspaceSlugProjectSlugRoute:
     ApiOgProjectWorkspaceSlugProjectSlugRoute,
+  ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute:
+    ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

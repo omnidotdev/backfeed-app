@@ -44,6 +44,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import useProjectViewStore, {
   ViewState,
 } from "@/lib/store/useProjectViewStore";
+import { buildFeedbackKey } from "@/lib/util/feedbackUrl";
 import cn from "@/lib/utils";
 
 import type {
@@ -373,7 +374,10 @@ const ProjectFeedback = () => {
                               params: {
                                 workspaceSlug,
                                 projectSlug,
-                                feedbackId: feedback?.rowId!,
+                                feedbackId: buildFeedbackKey({
+                                  number: feedback?.number!,
+                                  title: feedback?.title,
+                                }),
                               },
                             })
                           : undefined

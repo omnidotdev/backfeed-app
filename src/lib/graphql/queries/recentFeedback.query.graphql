@@ -13,6 +13,7 @@ query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
     edges {
       node {
         rowId
+        number
         createdAt
         title
         description

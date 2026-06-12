@@ -46,7 +46,8 @@ const feedbackRoute = getRouteApi(
  */
 const Comments = () => {
   const { session, organizationId } = feedbackRoute.useRouteContext();
-  const { projectSlug, feedbackId } = feedbackRoute.useParams();
+  const { projectSlug } = feedbackRoute.useParams();
+  const { feedbackId } = feedbackRoute.useLoaderData();
 
   const { data: canCreateComment } = useQuery(
     freeTierCommentsOptions({

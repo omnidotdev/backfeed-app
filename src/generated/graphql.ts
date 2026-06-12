@@ -15,11 +15,27 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
+  /**
+   * A signed eight-byte integer. The upper big integer values are greater than the
+   * max value for a JavaScript number. Therefore all big integers will be output as
+   * strings and not numbers.
+   */
   BigInt: { input: string; output: string; }
+  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
+  /**
+   * A point in time as described by the [ISO
+   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
+   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
+   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
+   * to unexpected results.
+   */
   Datetime: { input: Date; output: Date; }
+  /** Represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -7030,6 +7046,15 @@ export type FeedbackByIdQueryVariables = Exact<{
 
 export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number: number, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
 
+export type FeedbackByNumberQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  number: Scalars['Int']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+}>;
+
+
+export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number: number, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+
 export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -7096,7 +7121,7 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, number: number, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
 
 export type RepliesQueryVariables = Exact<{
   commentId: Scalars['UUID']['input'];
@@ -8027,6 +8052,56 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
 
+export const FeedbackByNumberDocument = `
+    query FeedbackByNumber($projectId: UUID!, $number: Int!, $userId: UUID) {
+  postByProjectIdAndNumber(projectId: $projectId, number: $number) {
+    ...Feedback
+  }
+}
+    ${FeedbackFragmentDoc}`;
+
+export const useFeedbackByNumberQuery = <
+      TData = FeedbackByNumberQuery,
+      TError = unknown
+    >(
+      variables: FeedbackByNumberQueryVariables,
+      options?: Omit<UseQueryOptions<FeedbackByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FeedbackByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FeedbackByNumberQuery, TError, TData>(
+      {
+    queryKey: ['FeedbackByNumber', variables],
+    queryFn: graphqlFetch<FeedbackByNumberQuery, FeedbackByNumberQueryVariables>(FeedbackByNumberDocument, variables),
+    ...options
+  }
+    )};
+
+useFeedbackByNumberQuery.getKey = (variables: FeedbackByNumberQueryVariables) => ['FeedbackByNumber', variables];
+
+export const useInfiniteFeedbackByNumberQuery = <
+      TData = InfiniteData<FeedbackByNumberQuery>,
+      TError = unknown
+    >(
+      variables: FeedbackByNumberQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<FeedbackByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<FeedbackByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<FeedbackByNumberQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['FeedbackByNumber.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<FeedbackByNumberQuery, FeedbackByNumberQueryVariables>(FeedbackByNumberDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteFeedbackByNumberQuery.getKey = (variables: FeedbackByNumberQueryVariables) => ['FeedbackByNumber.infinite', variables];
+
+
+useFeedbackByNumberQuery.fetcher = (variables: FeedbackByNumberQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByNumberQuery, FeedbackByNumberQueryVariables>(FeedbackByNumberDocument, variables, options);
+
 export const ObserverDocument = `
     query Observer {
   observer {
@@ -8477,6 +8552,7 @@ export const RecentFeedbackDocument = `
     edges {
       node {
         rowId
+        number
         createdAt
         title
         description

@@ -33,7 +33,7 @@ interface Props extends ComponentProps<"div"> {
 const ReplyCard = ({ reply, className, ...rest }: Props) => {
   const { session, queryClient, hasAdminPrivileges } =
     feedbackRoute.useRouteContext();
-  const { feedbackId } = feedbackRoute.useParams();
+  const { feedbackId } = feedbackRoute.useLoaderData();
 
   const { mutate: deleteReply, isPending: isDeletePending } =
     useDeleteCommentMutation({

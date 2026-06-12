@@ -8,6 +8,7 @@ import FeedbackSection from "@/components/dashboard/FeedbackSection";
 import Response from "@/components/dashboard/Response";
 import EmptyState from "@/components/layout/EmptyState";
 import { recentFeedbackOptions } from "@/lib/options/dashboard";
+import { buildFeedbackKey } from "@/lib/util/feedbackUrl";
 import cn from "@/lib/utils";
 
 import type { Post } from "@/generated/graphql";
@@ -88,7 +89,10 @@ const RecentFeedback = ({ minH }: Props) => {
                           (org) => org.id === feedback?.project?.organizationId,
                         )?.slug ?? "",
                       projectSlug: feedback?.project?.slug!,
-                      feedbackId: feedback?.rowId!,
+                      feedbackId: buildFeedbackKey({
+                        number: feedback?.number!,
+                        title: feedback?.title,
+                      }),
                     }}
                     style={{ width: "100%" }}
                   >
