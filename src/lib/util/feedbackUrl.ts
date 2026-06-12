@@ -38,6 +38,19 @@ export const parseFeedbackParam = (param: string): ParsedFeedbackParam => {
 };
 
 /**
+ * Build the human-facing display key for a post: `{PREFIX}-{number}` (e.g.
+ * `API-42`), falling back to `#{number}` when the project has no prefix. This
+ * is the canonical token shown in the UI and meant for cross-project sharing.
+ */
+export const buildFeedbackDisplayKey = ({
+  prefix,
+  number,
+}: {
+  prefix?: string | null;
+  number: number;
+}): string => (prefix ? `${prefix}-${number}` : `#${number}`);
+
+/**
  * Build the canonical vanity key for a post: `{number}-{slug}`, falling back to
  * the bare number when the title has no slugifiable content.
  */

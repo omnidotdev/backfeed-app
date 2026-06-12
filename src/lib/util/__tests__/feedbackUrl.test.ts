@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
 
-import { buildFeedbackKey, parseFeedbackParam } from "../feedbackUrl";
+import {
+  buildFeedbackDisplayKey,
+  buildFeedbackKey,
+  parseFeedbackParam,
+} from "../feedbackUrl";
 
 describe("parseFeedbackParam", () => {
   it("parses a legacy UUID into a rowId lookup", () => {
@@ -52,5 +56,18 @@ describe("buildFeedbackKey", () => {
 
   it("returns the bare number when title slugifies to empty", () => {
     expect(buildFeedbackKey({ number: 42, title: "!!!" })).toBe("42");
+  });
+});
+
+describe("buildFeedbackDisplayKey", () => {
+  it("joins the project prefix and number", () => {
+    expect(buildFeedbackDisplayKey({ prefix: "API", number: 42 })).toBe(
+      "API-42",
+    );
+  });
+
+  it("falls back to a hashed number when there is no prefix", () => {
+    expect(buildFeedbackDisplayKey({ prefix: null, number: 42 })).toBe("#42");
+    expect(buildFeedbackDisplayKey({ prefix: "", number: 42 })).toBe("#42");
   });
 });

@@ -11,6 +11,7 @@ import { LuCheck, LuChevronDown, LuMessageCircle } from "react-icons/lu";
 import DestructiveAction from "@/components/core/DestructiveAction";
 import StatusBadge from "@/components/core/StatusBadge";
 import AttachmentGallery from "@/components/feedback/AttachmentGallery";
+import FeedbackKey from "@/components/feedback/FeedbackKey";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
@@ -313,6 +314,11 @@ const FeedbackCard = ({
             </span>
 
             <div className="flex items-center gap-1.5 text-foreground-subtle text-xs">
+              <FeedbackKey
+                prefix={feedback.project?.prefix}
+                number={feedback.number}
+              />
+              <div className="size-1 rounded-full bg-foreground-subtle" />
               <span>{feedback.user?.username}</span>
               <div className="size-1 rounded-full bg-foreground-subtle" />
               <span>
