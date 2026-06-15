@@ -233,7 +233,9 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
           </div>
         )}
 
-        <div className="flex h-full w-full flex-col items-center">
+        {/* pt clears the absolutely-positioned top badge so it never overlaps the
+            title (tiers show a recommended / no-card / coming-soon badge) */}
+        <div className="flex h-full w-full flex-col items-center pt-12">
           <div className="flex w-full flex-col items-center px-6">
             <h2 className="text-center font-bold text-2xl">
               {capitalizeFirstLetter(tier)}

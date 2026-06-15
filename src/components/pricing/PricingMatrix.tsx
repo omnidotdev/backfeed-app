@@ -186,7 +186,7 @@ const PricingMatrix = (props: ComponentProps<typeof Table>) => (
     <Table {...props}>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className={headerCellClassName}>
+          <TableHead className="text-left font-bold text-xl">
             {app.pricingPage.pricingMatrix.feature}
           </TableHead>
 
@@ -210,23 +210,28 @@ const PricingMatrix = (props: ComponentProps<typeof Table>) => (
               key={feature}
               className="bg-background hover:bg-background odd:bg-background-subtle odd:hover:bg-background-subtle"
             >
-              <TableCell className="flex items-center justify-center whitespace-nowrap text-center font-semibold text-sm md:text-lg">
-                {featureInfo?.label || feature}
+              {/* keep the cell as a real table cell (no `flex` on the <td>, which
+                  would break column alignment with the header); put the flex on an
+                  inner wrapper instead */}
+              <TableCell className="whitespace-nowrap font-semibold text-sm md:text-lg">
+                <div className="flex items-center gap-1">
+                  {featureInfo?.label || feature}
 
-                {featureInfo?.comingSoon && (
-                  <Tooltip
-                    positioning={{ placement: "top" }}
-                    trigger={
-                      <HiOutlineWrenchScrewdriver className="ml-1 cursor-pointer" />
-                    }
-                    triggerProps={{
-                      "aria-label": app.info.comingSoon.label,
-                      className: "cursor-pointer bg-transparent",
-                    }}
-                  >
-                    {app.info.comingSoon.label}
-                  </Tooltip>
-                )}
+                  {featureInfo?.comingSoon && (
+                    <Tooltip
+                      positioning={{ placement: "top" }}
+                      trigger={
+                        <HiOutlineWrenchScrewdriver className="cursor-pointer" />
+                      }
+                      triggerProps={{
+                        "aria-label": app.info.comingSoon.label,
+                        className: "cursor-pointer bg-transparent",
+                      }}
+                    >
+                      {app.info.comingSoon.label}
+                    </Tooltip>
+                  )}
+                </div>
               </TableCell>
 
               {tiers.map(({ id, features }) => (
