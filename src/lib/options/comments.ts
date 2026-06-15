@@ -13,6 +13,7 @@ import {
   useProjectQuery,
 } from "@/generated/graphql";
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
+import { canCreateCommentFromData } from "@/lib/options/canCreateComment";
 import { FeatureKey, checkLimit } from "@/server/functions/entitlements";
 
 import type {
@@ -24,7 +25,7 @@ import type {
 
 /** Maximum number of comments allowed on free tier */
 // FALLBACK ONLY -- source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
-const MAX_FREE_TIER_COMMENTS = 100;
+const MAX_FREE_TIER_COMMENTS = 50;
 
 export const infiniteCommentsOptions = (variables: CommentsQueryVariables) =>
   infiniteQueryOptions({
@@ -120,9 +121,5 @@ export const freeTierCommentsOptions = ({
       }
     },
     placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data) return false;
-
-      return data.totalComments < data.commentLimit;
-    },
+    select: canCreateCommentFromData,
   });

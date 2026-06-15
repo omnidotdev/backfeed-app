@@ -121,7 +121,9 @@ const Comments = () => {
     >
       {/* NB: the margin is necessary to prevent clipping of the card borders/box shadows */}
       <div className="relative mb-px flex flex-col gap-2">
-        <CreateComment canCreateComment={canCreateComment ?? false} />
+        {/* fail open while the limit query is loading/undetermined; the server
+            enforces the real limit on create */}
+        <CreateComment canCreateComment={canCreateComment ?? true} />
 
         <div className="mt-4 h-px w-full bg-border" />
 
@@ -140,7 +142,7 @@ const Comments = () => {
                   <CommentCard
                     key={comment?.rowId}
                     comment={comment!}
-                    canReply={canCreateComment ?? false}
+                    canReply={canCreateComment ?? true}
                     className="min-h-[5.25rem] w-full"
                   />
                 ))}

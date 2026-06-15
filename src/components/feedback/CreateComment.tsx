@@ -136,7 +136,13 @@ const CreateComment = ({ canCreateComment }: Props) => {
             placeholder={app.postPage.comments.textAreaPlaceholder}
             className="min-h-16 text-sm"
             disabled={!session || !canCreateComment}
-            tooltip={app.postPage.comments.disabled}
+            // only show "maximum reached" when genuinely at the limit, not when
+            // simply logged out
+            tooltip={
+              session && !canCreateComment
+                ? app.postPage.comments.disabled
+                : undefined
+            }
             maxLength={MAX_COMMENT_LENGTH}
             errorProps={{
               className: "top-[-1.5rem]",

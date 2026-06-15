@@ -11,14 +11,17 @@ import type { EntitlementsResponse } from "@/lib/providers/billing";
 export const FeatureKey = {
   MaxProjects: "max_projects",
   MaxUniqueUsers: "max_unique_users",
-  MaxComments: "max_comments",
+  // must match the catalog SSOT key (omni-api planConfigs) and the backfeed-api
+  // entitlement check; previously "max_comments", which never resolved
+  MaxComments: "max_comments_per_post",
 } as const;
 
 /** FALLBACK ONLY -- source of truth is Omni API plan_feature */
 const FALLBACK_LIMITS: Record<string, number> = {
   [FeatureKey.MaxProjects]: MAX_NUMBER_OF_PROJECTS,
   [FeatureKey.MaxUniqueUsers]: 15,
-  [FeatureKey.MaxComments]: 100,
+  // catalog free tier = 50; paid tiers are unlimited (-1) via entitlements
+  [FeatureKey.MaxComments]: 50,
 };
 
 const entitySchema = z.object({
@@ -102,7 +105,8 @@ export const checkLimit = createServerFn()
       }
 
       return {
-        allowed: currentCount < limit,
+        // a negative limit means unlimited (paid tiers use -1)
+        allowed: limit < 0 || currentCount < limit,
         limit,
         current: currentCount,
       };
