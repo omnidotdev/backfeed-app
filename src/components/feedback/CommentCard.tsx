@@ -5,6 +5,7 @@ import { useState } from "react";
 import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
+import CommentMessage from "@/components/feedback/CommentMessage";
 import CreateReply from "@/components/feedback/CreateReply";
 import Replies from "@/components/feedback/Replies";
 import {
@@ -113,13 +114,7 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
           </div>
 
           <div className="break-words py-2 pr-4 text-muted-foreground">
-            {comment.message?.split("\n").map((line, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-              <span key={index}>
-                {line}
-                <br />
-              </span>
-            ))}
+            <CommentMessage message={comment.message} />
           </div>
 
           <div className="mb-[-1px] flex items-center gap-4 text-foreground-subtle/80">

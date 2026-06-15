@@ -2,6 +2,7 @@ import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
+import CommentMessage from "@/components/feedback/CommentMessage";
 import {
   AvatarFallback,
   AvatarImage,
@@ -89,13 +90,7 @@ const ReplyCard = ({ reply, className, ...rest }: Props) => {
           </div>
 
           <p className="break-words text-muted-foreground text-sm">
-            {reply.message?.split("\n").map((line, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-              <span key={index}>
-                {line}
-                <br />
-              </span>
-            ))}
+            <CommentMessage message={reply.message} />
           </p>
         </div>
       </div>

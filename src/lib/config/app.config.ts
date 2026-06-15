@@ -1056,7 +1056,8 @@ const app = {
       },
       title: "Comments",
       description: "View all comments on this post.",
-      textAreaPlaceholder: "I agree! This sounds like a great idea.",
+      textAreaPlaceholder:
+        "I agree! This sounds like a great idea. (reference another post with #number)",
       action: {
         pending: "Adding Comment...",
         submit: "Add Comment",
