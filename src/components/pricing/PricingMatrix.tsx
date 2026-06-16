@@ -177,7 +177,7 @@ const allFeatures = Array.from(
 );
 
 const headerCellClassName =
-  "text-center font-bold text-base md:text-xl whitespace-nowrap";
+  "w-[15%] px-3 py-4 text-center font-bold text-base md:text-lg whitespace-nowrap";
 
 /**
  * Pricing feature matrix.
@@ -185,11 +185,16 @@ const headerCellClassName =
 const PricingMatrix = (props: ComponentProps<typeof Table>) => (
   <div className="w-full lg:flex lg:justify-center">
     {/* min-width keeps the columns readable and lets the table scroll
-        horizontally on mobile instead of cramming/cutting off the last column */}
-    <Table className="min-w-[34rem]" {...props}>
+        horizontally on mobile instead of cramming/cutting off the last column;
+        the rounded border anchors the table and table-fixed keeps the tier
+        columns evenly sized */}
+    <Table
+      className="min-w-[40rem] table-fixed overflow-hidden rounded-xl border border-border"
+      {...props}
+    >
       <TableHeader>
-        <TableRow className="hover:bg-transparent">
-          <TableHead className="text-left font-bold text-base md:text-xl">
+        <TableRow className="border-border border-b-2 bg-background-subtle hover:bg-background-subtle dark:bg-background-subtle/40">
+          <TableHead className="w-[40%] px-4 py-4 text-left font-bold text-base md:text-lg">
             {app.pricingPage.pricingMatrix.feature}
           </TableHead>
 
@@ -211,20 +216,20 @@ const PricingMatrix = (props: ComponentProps<typeof Table>) => (
           return (
             <TableRow
               key={feature}
-              className="bg-background hover:bg-background odd:bg-background-subtle odd:hover:bg-background-subtle"
+              className="border-border/60 bg-background hover:bg-background odd:bg-background-subtle/50 odd:hover:bg-background-subtle/50"
             >
               {/* keep the cell as a real table cell (no `flex` on the <td>, which
                   would break column alignment with the header); put the flex on an
                   inner wrapper instead */}
-              <TableCell className="whitespace-nowrap font-semibold text-sm md:text-lg">
-                <div className="flex items-center gap-1">
-                  {featureInfo?.label || feature}
+              <TableCell className="px-4 py-3.5 font-medium text-sm md:text-base">
+                <div className="flex items-center gap-1.5">
+                  <span>{featureInfo?.label || feature}</span>
 
                   {featureInfo?.comingSoon && (
                     <Tooltip
                       positioning={{ placement: "top" }}
                       trigger={
-                        <HiOutlineWrenchScrewdriver className="cursor-pointer" />
+                        <HiOutlineWrenchScrewdriver className="cursor-pointer text-foreground-subtle" />
                       }
                       triggerProps={{
                         "aria-label": app.info.comingSoon.label,
@@ -238,11 +243,11 @@ const PricingMatrix = (props: ComponentProps<typeof Table>) => (
               </TableCell>
 
               {tiers.map(({ id, features }) => (
-                <TableCell key={id} className="text-center">
+                <TableCell key={id} className="px-3 py-3.5 text-center">
                   {features[feature]?.value ? (
-                    <FaCheck className="mx-auto text-[var(--colors-green-500)]" />
+                    <FaCheck className="mx-auto size-4 text-[var(--colors-green-500)] md:size-[1.1rem]" />
                   ) : (
-                    <FaX className="mx-auto text-primary" />
+                    <FaX className="mx-auto size-3.5 text-foreground-subtle/40 md:size-4" />
                   )}
                 </TableCell>
               ))}

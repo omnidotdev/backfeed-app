@@ -201,9 +201,9 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   return (
     <>
       <Card
-        contentProps={{ className: "p-0" }}
+        contentProps={{ className: "flex h-full flex-col p-0" }}
         className={cn(
-          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
+          "relative flex h-full w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
           isRecommendedTier &&
             "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
         )}
@@ -411,7 +411,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
             )}
           </div>
 
-          <div className="flex h-full w-full flex-col bg-background-subtle p-6 dark:bg-background-subtle/25">
+          <div className="mt-6 flex w-full flex-1 flex-col bg-background-subtle p-6 dark:bg-background-subtle/25">
             <div className="grid w-full grid-cols-1 leading-normal sm:grid-cols-2 lg:grid-cols-1">
               {sortBenefits(
                 price?.product.marketing_features ??

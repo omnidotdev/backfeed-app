@@ -91,7 +91,7 @@ function PricingPage() {
         </span>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-center gap-4 px-4 xl:flex-row">
+      <div className="flex w-full flex-col items-center justify-center gap-4 px-4 xl:flex-row xl:items-stretch">
         <PricingCard price={undefined} orgSubscriptions={orgSubscriptions} />
 
         {filteredPrices.map((price) => (
