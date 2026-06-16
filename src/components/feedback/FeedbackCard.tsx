@@ -132,6 +132,31 @@ const FeedbackCard = ({
           }),
         ]),
       onSuccess: () => {
+        // Remove the deleted post from every cached feedback list immediately,
+        // regardless of that list's variables (sort/filter/search), so it
+        // disappears without waiting for a refetch. The exact-key invalidation
+        // above could miss the active list when its variables differ.
+        queryClient.setQueriesData<InfiniteData<PostsQuery>>(
+          { queryKey: ["Posts.infinite"] },
+          (old) =>
+            old
+              ? {
+                  ...old,
+                  pages: old.pages.map((page) => ({
+                    ...page,
+                    posts: page.posts
+                      ? {
+                          ...page.posts,
+                          nodes: page.posts.nodes?.filter(
+                            (node) => node?.rowId !== feedback.rowId,
+                          ),
+                        }
+                      : page.posts,
+                  })),
+                }
+              : old,
+        );
+
         if (isFeedbackRoute) {
           navigate({
             to: "/workspaces/$workspaceSlug/projects/$projectSlug",
