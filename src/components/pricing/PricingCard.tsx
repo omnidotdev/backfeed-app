@@ -203,7 +203,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       <Card
         contentProps={{ className: "p-0" }}
         className={cn(
-          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:h-[42rem] xl:max-w-xs",
+          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
           isRecommendedTier &&
             "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
         )}
