@@ -50,7 +50,7 @@ const app = {
           maxLength: "Must be at most 240 characters.",
         },
         prefix: {
-          minLength: "Must be at least 3 characters.",
+          minLength: "Must be at least 1 character.",
           maxLength: "Must be at most 10 characters.",
         },
       },

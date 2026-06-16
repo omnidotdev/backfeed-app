@@ -39,6 +39,6 @@ export const projectPrefixSchema = emptyStringAsUndefined.or(
     .string()
     .trim()
     .toUpperCase()
-    .min(3, projectErrors.prefix.minLength)
+    .min(1, projectErrors.prefix.minLength)
     .max(10, projectErrors.prefix.maxLength),
 );
