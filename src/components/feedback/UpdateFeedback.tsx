@@ -2,11 +2,12 @@ import { Portal } from "@ark-ui/react/portal";
 import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
-import { LuPencil } from "react-icons/lu";
+import { LuPencil, LuX } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import AttachmentUploader from "@/components/feedback/AttachmentUploader";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -15,7 +16,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUpdatePostMutation } from "@/generated/graphql";
+import {
+  useCreateAttachmentMutation,
+  useDeleteAttachmentMutation,
+  useUpdatePostMutation,
+} from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
@@ -23,7 +28,8 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
-import type { FeedbackFragment } from "@/generated/graphql";
+import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
+import type { AttachmentFragment, FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -69,6 +75,39 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
+  // existing attachments are removed immediately via the delete mutation; new
+  // uploads are linked to the post on submit. `uploaderKey` remounts the uploader
+  // to clear its previews/state when the dialog is reopened
+  const [existingAttachments, setExistingAttachments] = useState<
+    AttachmentFragment[]
+  >(
+    (feedback.attachments?.nodes ?? []).filter(
+      (node): node is AttachmentFragment => node != null,
+    ),
+  );
+  const [newAttachments, setNewAttachments] = useState<UploadedAttachment[]>(
+    [],
+  );
+  const [isUploadingAttachments, setIsUploadingAttachments] = useState(false);
+  const [uploaderKey, setUploaderKey] = useState(0);
+
+  const { mutateAsync: createAttachment } = useCreateAttachmentMutation();
+
+  const { mutate: deleteAttachment } = useDeleteAttachmentMutation({
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: feedbackByIdOptions({
+          rowId: feedback.rowId!,
+          userId: session?.user?.rowId,
+        }).queryKey,
+      }),
+  });
+
+  const removeExistingAttachment = (rowId: string) => {
+    setExistingAttachments((prev) => prev.filter((a) => a.rowId !== rowId));
+    deleteAttachment({ input: { rowId } });
+  };
+
   const { mutateAsync: updateFeedback, isPending } = useUpdatePostMutation({
     onSettled: async () => {
       reset();
@@ -110,6 +149,36 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
               description: value.description,
               updatedAt: new Date(),
             },
+          }).then(async () => {
+            // link any newly uploaded attachments to the post
+            const userId = session?.user?.rowId;
+            if (userId && newAttachments.length) {
+              await Promise.all(
+                newAttachments.map((attachment) =>
+                  createAttachment({
+                    input: {
+                      attachment: {
+                        postId: feedback.rowId!,
+                        userId,
+                        url: attachment.url,
+                        storageKey: attachment.storageKey,
+                        mimeType: attachment.mimeType,
+                        fileSize: attachment.fileSize,
+                        kind: attachment.kind,
+                        ...(attachment.width != null && {
+                          width: attachment.width,
+                        }),
+                        ...(attachment.height != null && {
+                          height: attachment.height,
+                        }),
+                      },
+                    },
+                  }),
+                ),
+              );
+              setNewAttachments([]);
+              setUploaderKey((key) => key + 1);
+            }
           }),
           updatePostDetails.action,
         ),
@@ -128,6 +197,14 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
       open={isOpen}
       onOpenChange={({ open }) => {
         reset();
+        // re-sync attachment editing state to the post's current attachments
+        setExistingAttachments(
+          (feedback.attachments?.nodes ?? []).filter(
+            (node): node is AttachmentFragment => node != null,
+          ),
+        );
+        setNewAttachments([]);
+        setUploaderKey((key) => key + 1);
         setIsOpen(open);
       }}
       {...rest}
@@ -197,6 +274,49 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
               )}
             </AppField>
 
+            {!!existingAttachments.length && (
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                {existingAttachments.map((attachment) => (
+                  <div
+                    key={attachment.rowId}
+                    className="group relative aspect-square overflow-hidden rounded-md border border-border-subtle"
+                  >
+                    {attachment.kind === "image" ? (
+                      <img
+                        src={attachment.url}
+                        alt=""
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      // biome-ignore lint/a11y/useMediaCaption: user-uploaded preview
+                      <video
+                        src={attachment.url}
+                        className="size-full object-cover"
+                      />
+                    )}
+
+                    <button
+                      type="button"
+                      aria-label="Remove attachment"
+                      className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
+                      onClick={(evt) => {
+                        evt.stopPropagation();
+                        removeExistingAttachment(attachment.rowId);
+                      }}
+                    >
+                      <LuX className="size-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <AttachmentUploader
+              key={uploaderKey}
+              onAttachmentsChange={setNewAttachments}
+              onUploadingChange={setIsUploadingAttachments}
+            />
+
             <div className="flex flex-row justify-between">
               <CharacterLimit
                 value={descriptionLength}
@@ -207,7 +327,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
               <AppForm>
                 <SubmitForm
                   action={updatePostDetails.action}
-                  isPending={isPending}
+                  isPending={isPending || isUploadingAttachments}
                   className="w-fit place-self-end"
                   onClick={(evt) => evt.stopPropagation()}
                 />
