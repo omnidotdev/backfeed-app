@@ -26,6 +26,7 @@ import { updateProjectOptions } from "@/lib/form/updateProjectOptions";
 import useForm from "@/lib/hooks/useForm";
 import { projectOptions } from "@/lib/options/projects";
 import generateSlug from "@/lib/util/generateSlug";
+import toaster from "@/lib/util/toaster";
 
 import type { ProjectLink } from "@/lib/form/updateProjectOptions";
 
@@ -121,7 +122,9 @@ const UpdateProject = () => {
             createProjectLink({
               input: {
                 projectLink: {
-                  projectId: link.projectId,
+                  // all links belong to this project; pending links carry no
+                  // projectId yet, so always use the project's own rowId
+                  projectId: project?.rowId!,
                   url: link.url,
                   title: link.title || null,
                   order: index,
@@ -135,6 +138,8 @@ const UpdateProject = () => {
 
         formApi.reset();
 
+        toaster.success({ title: "Project updated" });
+
         navigate({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
           params: { workspaceSlug, projectSlug: generateSlug(value.name)! },
@@ -142,6 +147,11 @@ const UpdateProject = () => {
         });
       } catch (err) {
         if (isDevEnv) console.error(err);
+
+        toaster.error({
+          title: "Could not update project",
+          description: "Please try again.",
+        });
       }
     },
   });
