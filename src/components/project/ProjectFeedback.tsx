@@ -131,7 +131,11 @@ const ProjectFeedback = () => {
     ...infiniteFeedbackOptions({
       projectId: projectId!,
       excludedStatuses,
-      orderBy: [orderBy, PostOrderBy.CreatedAtDesc],
+      // default to top-voted when no explicit sort is chosen
+      orderBy: [
+        orderBy ?? PostOrderBy.VotesCountDesc,
+        PostOrderBy.CreatedAtDesc,
+      ],
       search,
       userId: session?.user?.rowId,
     }),
@@ -266,7 +270,7 @@ const ProjectFeedback = () => {
         <div className="flex shrink-0 items-center justify-between gap-2 md:justify-end">
           <SelectRoot
             collection={createListCollection({ items: SORT_BY_OPTIONS })}
-            defaultValue={orderBy ? [orderBy] : [PostOrderBy.CreatedAtDesc]}
+            defaultValue={orderBy ? [orderBy] : [PostOrderBy.VotesCountDesc]}
             onValueChange={({ value }) => {
               const orderBy = value[0] as
                 | PostOrderBy.CreatedAtDesc
