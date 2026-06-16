@@ -151,7 +151,7 @@ function FeedbackPage() {
       header={{
         title: projectName,
         backLink: {
-          label: `Back to ${projectName}`,
+          label: projectName,
           to: "/workspaces/$workspaceSlug/projects/$projectSlug",
           params: { workspaceSlug, projectSlug },
         },
