@@ -254,7 +254,7 @@ const ProjectFeedback = () => {
   return (
     <div
       ref={rootRef}
-      className="relative flex flex-col gap-5 overflow-visible rounded-2xl border border-[var(--colors-neutral-200)] bg-white p-4 sm:p-6 dark:border-[var(--colors-neutral-800)] dark:bg-[var(--colors-neutral-900)]"
+      className="relative flex flex-col gap-5 overflow-visible border-0 bg-transparent p-0 sm:rounded-2xl sm:border sm:border-[var(--colors-neutral-200)] sm:bg-white sm:p-6 dark:sm:border-[var(--colors-neutral-800)] dark:sm:bg-[var(--colors-neutral-900)]"
     >
       {/* Toolbar Row */}
       <div className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
@@ -334,8 +334,12 @@ const ProjectFeedback = () => {
       ) : (
         <div
           className={cn(
-            "grid grid-cols-1 gap-3",
-            viewState === ViewState.List ? "md:grid-cols-1" : "md:grid-cols-2",
+            "grid grid-cols-1",
+            // list view goes edge-to-edge with dividers (no gap) on mobile; grid
+            // view keeps gaps. both restore gaps on larger screens
+            viewState === ViewState.List
+              ? "gap-0 divide-y divide-border-subtle sm:gap-3 sm:divide-y-0 md:grid-cols-1"
+              : "gap-3 md:grid-cols-2",
           )}
         >
           {isLoading ? (
@@ -358,9 +362,15 @@ const ProjectFeedback = () => {
                       feedback={feedback!}
                       projectStatuses={projectStatuses}
                       index={viewState === ViewState.List ? index : undefined}
-                      className={`h-full min-h-[5.25rem] w-full rounded-xl bg-[var(--colors-card-item)] ${
-                        isPending ? "cursor-not-allowed" : "cursor-pointer"
-                      }`}
+                      className={cn(
+                        "h-full min-h-[5.25rem] w-full bg-[var(--colors-card-item)]",
+                        // in list view, cards are flush (no rounding/bg) on mobile so
+                        // the dividers read as one continuous feed; restored at sm+
+                        viewState === ViewState.List
+                          ? "rounded-none bg-transparent sm:rounded-xl sm:bg-[var(--colors-card-item)]"
+                          : "rounded-xl",
+                        isPending ? "cursor-not-allowed" : "cursor-pointer",
+                      )}
                       titleProps={
                         viewState === ViewState.Grid
                           ? { className: "line-clamp-2 overflow-hidden" }

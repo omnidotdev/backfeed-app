@@ -196,8 +196,8 @@ function ProjectPage() {
       }}
     >
       <div className="flex flex-col gap-6">
-        {/* KPI Metrics Row */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {/* KPI Metrics Row (compact 3-across on mobile so the feed stays above the fold) */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <Aggregate
             title={app.projectPage.feedbackMetrics.totalPosts}
             value={projectMetrics?.totalPosts ?? 0}

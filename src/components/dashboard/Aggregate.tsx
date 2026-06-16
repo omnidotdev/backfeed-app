@@ -52,33 +52,33 @@ const Aggregate = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-xl border border-border-subtle bg-background p-5",
+        "flex flex-col gap-1.5 rounded-xl border border-border-subtle bg-background p-3 sm:gap-2 sm:p-5",
         className,
       )}
       {...rest}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <div
           className={cn(
-            "flex size-8 items-center justify-center rounded-lg",
+            "flex size-7 shrink-0 items-center justify-center rounded-lg sm:size-8",
             accent ? accent.bg : "bg-background-subtle",
           )}
         >
           <Icon
             className={cn(
-              "size-4",
+              "size-3.5 sm:size-4",
               accent ? accent.icon : "text-foreground-subtle",
             )}
           />
         </div>
 
-        <span className="font-medium text-foreground-subtle text-sm">
+        <span className="font-medium text-foreground-subtle text-xs leading-tight sm:text-sm">
           {title}
         </span>
       </div>
 
       {isLoaded ? (
-        <p className="font-bold text-3xl leading-none tracking-tight">
+        <p className="font-bold text-xl leading-none tracking-tight sm:text-3xl">
           {isError ? "—" : value}
         </p>
       ) : (
