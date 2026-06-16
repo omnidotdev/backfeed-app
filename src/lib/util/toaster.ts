@@ -2,6 +2,12 @@ import { toast } from "sonner";
 
 import type { ReactNode } from "react";
 
+/** Optional call-to-action button rendered on a toast. */
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 /**
  * Toast content. Mirrors the `{ title, description }` shape the app passes
  * throughout (previously consumed by the Ark UI toaster).
@@ -9,6 +15,10 @@ import type { ReactNode } from "react";
 interface ToastContent {
   title?: ReactNode;
   description?: ReactNode;
+  /** Optional CTA button (e.g. "View") rendered on the toast. */
+  action?: ToastAction;
+  /** Override the auto-dismiss duration (ms); useful when a CTA is present. */
+  duration?: number;
 }
 
 type ToastResolvable<T> = ToastContent | ((arg: T) => ToastContent);
@@ -26,6 +36,15 @@ const resolveContent = <T>(
   typeof content === "function"
     ? (content as (arg: T) => ToastContent)(arg)
     : content;
+
+/** Map shared toast content onto sonner's options object. */
+const toSonnerOptions = (content?: ToastContent) => ({
+  description: content?.description,
+  duration: content?.duration,
+  action: content?.action
+    ? { label: content.action.label, onClick: content.action.onClick }
+    : undefined,
+});
 
 /**
  * Toaster backed by [sonner](https://sonner.emilkowal.ski). Exposes the same
@@ -53,31 +72,31 @@ const toaster = {
         const content = resolveContent(messages.success, data);
         toast.success(content?.title ?? "Success", {
           id,
-          description: content?.description,
+          ...toSonnerOptions(content),
         });
       })
       .catch((error) => {
         const content = resolveContent(messages.error, error);
         toast.error(content?.title ?? "Error", {
           id,
-          description: content?.description,
+          ...toSonnerOptions(content),
         });
       });
 
     return promise;
   },
   create: (content: ToastContent) =>
-    toast(content.title ?? "", { description: content.description }),
+    toast(content.title ?? "", toSonnerOptions(content)),
   success: (content: ToastContent) =>
-    toast.success(content.title ?? "", { description: content.description }),
+    toast.success(content.title ?? "", toSonnerOptions(content)),
   error: (content: ToastContent) =>
-    toast.error(content.title ?? "", { description: content.description }),
+    toast.error(content.title ?? "", toSonnerOptions(content)),
   warning: (content: ToastContent) =>
-    toast.warning(content.title ?? "", { description: content.description }),
+    toast.warning(content.title ?? "", toSonnerOptions(content)),
   info: (content: ToastContent) =>
-    toast.info(content.title ?? "", { description: content.description }),
+    toast.info(content.title ?? "", toSonnerOptions(content)),
   loading: (content: ToastContent) =>
-    toast.loading(content.title ?? "", { description: content.description }),
+    toast.loading(content.title ?? "", toSonnerOptions(content)),
   dismiss: (id?: string | number) => toast.dismiss(id),
 };
 

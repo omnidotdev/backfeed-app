@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
@@ -59,7 +59,8 @@ const createFeedbackSchema = z.object({
 const CreateFeedback = () => {
   const { session, queryClient, organizationId } =
     projectRoute.useRouteContext();
-  const { projectSlug } = projectRoute.useParams();
+  const { workspaceSlug, projectSlug } = projectRoute.useParams();
+  const navigate = useNavigate();
 
   // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
   const { isOpen, setIsOpen } = useDialogStore({
@@ -198,16 +199,36 @@ const CreateFeedback = () => {
             }
 
             await Promise.all(invalidations);
+
+            return { rowId: postId };
           }),
           {
             loading: {
               title: app.projectPage.projectFeedback.action.pending,
             },
-            success: {
+            // a newly created post has no votes, so under the default
+            // top-voted sort it lands at the bottom of the feed. surface a
+            // "View" CTA so the author can jump straight to their post
+            success: ({ rowId }) => ({
               title: app.projectPage.projectFeedback.action.success.title,
               description:
                 app.projectPage.projectFeedback.action.success.description,
-            },
+              ...(rowId && {
+                duration: 8000,
+                action: {
+                  label: "View",
+                  onClick: () =>
+                    navigate({
+                      to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                      params: {
+                        workspaceSlug,
+                        projectSlug,
+                        feedbackId: rowId,
+                      },
+                    }),
+                },
+              }),
+            }),
             error: {
               title: app.projectPage.projectFeedback.action.error.title,
               description:
