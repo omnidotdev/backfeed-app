@@ -293,7 +293,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                                   <span className="flex-1 truncate font-medium text-sm">
                                     {org.name}
                                   </span>
-                                  <Badge className="text-[var(--colors-brand-primary)] text-xs">
+                                  <Badge variant="outline" className="text-xs">
                                     Upgrade
                                   </Badge>
                                 </div>
@@ -316,7 +316,10 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                                     <span className="flex-1 truncate font-medium text-sm">
                                       {org.name}
                                     </span>
-                                    <Badge className="text-xs">
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs"
+                                    >
                                       {isSameTier
                                         ? "Current plan"
                                         : capitalizeFirstLetter(orgTier)}

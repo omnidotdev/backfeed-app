@@ -183,11 +183,9 @@ const headerCellClassName =
  * Pricing feature matrix.
  */
 const PricingMatrix = (props: ComponentProps<typeof Table>) => (
-  <div className="w-full lg:flex lg:justify-center">
-    {/* min-width keeps the columns readable and lets the table scroll
-        horizontally on mobile instead of cramming/cutting off the last column;
-        the rounded border anchors the table and table-fixed keeps the tier
-        columns evenly sized */}
+  // mx-auto centers the table; the inner Table container is w-full so it fills
+  // this max-width box. min-width keeps columns readable and scrolls on mobile.
+  <div className="mx-auto w-full max-w-5xl">
     <Table
       className="min-w-[40rem] table-fixed overflow-hidden rounded-xl border border-border"
       {...props}
