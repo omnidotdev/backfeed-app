@@ -4,9 +4,13 @@ import {
   notFound,
   stripSearchParams,
 } from "@tanstack/react-router";
-import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
+import {
+  HiBolt,
+  HiFolder,
+  HiOutlineFolder,
+  HiUserGroup,
+} from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
-import { TbHeartbeat } from "react-icons/tb";
 import { z } from "zod";
 
 import Aggregate from "@/components/dashboard/Aggregate";
@@ -196,12 +200,12 @@ function ProjectPage() {
       }}
     >
       <div className="flex flex-col gap-6">
-        {/* KPI Metrics Row (compact 3-across on mobile so the feed stays above the fold) */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        {/* KPI stat strip: one compact, inline, divided bar so the feed stays above the fold */}
+        <div className="grid grid-cols-3 divide-x divide-border-subtle overflow-hidden rounded-xl border border-border-subtle bg-background">
           <Aggregate
             title={app.projectPage.feedbackMetrics.totalPosts}
             value={projectMetrics?.totalPosts ?? 0}
-            icon={HiOutlineFolder}
+            icon={HiFolder}
             accentColor="amber"
             isLoaded={!isMetricsLoading}
             isError={isMetricsError}
@@ -210,7 +214,7 @@ function ProjectPage() {
           <Aggregate
             title="Active Users"
             value={projectMetrics?.activeUsers ?? 0}
-            icon={HiOutlineUserGroup}
+            icon={HiUserGroup}
             accentColor="sky"
             isLoaded={!isMetricsLoading}
             isError={isMetricsError}
@@ -219,7 +223,7 @@ function ProjectPage() {
           <Aggregate
             title="Total Engagement"
             value={projectMetrics?.totalEngagement ?? 0}
-            icon={TbHeartbeat}
+            icon={HiBolt}
             accentColor="emerald"
             isLoaded={!isMetricsLoading}
             isError={isMetricsError}

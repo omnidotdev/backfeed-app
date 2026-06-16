@@ -11,7 +11,7 @@ interface Props extends ComponentProps<"div"> {
   value: string | number;
   /** Visual icon. */
   icon: IconType;
-  /** Accent color for the icon background. */
+  /** Accent color for the icon chip. */
   accentColor?: "amber" | "emerald" | "sky";
   /** Whether the statistic data is loaded. */
   isLoaded?: boolean;
@@ -21,21 +21,23 @@ interface Props extends ComponentProps<"div"> {
 
 const accentStyles = {
   amber: {
-    bg: "bg-amber-100 dark:bg-neutral-800",
-    icon: "text-amber-600 dark:text-amber-700",
+    bg: "bg-amber-100 dark:bg-amber-500/15",
+    icon: "text-amber-600 dark:text-amber-400",
   },
   emerald: {
-    bg: "bg-emerald-100 dark:bg-neutral-800",
-    icon: "text-emerald-600 dark:text-emerald-700",
+    bg: "bg-emerald-100 dark:bg-emerald-500/15",
+    icon: "text-emerald-600 dark:text-emerald-400",
   },
   sky: {
-    bg: "bg-sky-100 dark:bg-neutral-800",
-    icon: "text-sky-600 dark:text-sky-700",
+    bg: "bg-sky-100 dark:bg-sky-500/15",
+    icon: "text-sky-600 dark:text-sky-400",
   },
 };
 
 /**
- * Aggregate statistic card. Displays KPI information such as total feedback, active users, or average response time.
+ * Aggregate statistic. A single compact, inline KPI segment (filled icon chip +
+ * value + label), designed to sit alongside others in a divided stat strip
+ * (e.g. total feedback, active users, total engagement).
  */
 const Aggregate = ({
   title,
@@ -52,38 +54,38 @@ const Aggregate = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-1.5 rounded-xl border border-border-subtle bg-background p-3 sm:gap-2 sm:p-5",
+        "flex items-center gap-2.5 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3",
         className,
       )}
       {...rest}
     >
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        <div
+      <div
+        className={cn(
+          "flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-9",
+          accent ? accent.bg : "bg-background-subtle",
+        )}
+      >
+        <Icon
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-lg sm:size-8",
-            accent ? accent.bg : "bg-background-subtle",
+            "size-4 sm:size-[1.125rem]",
+            accent ? accent.icon : "text-foreground-subtle",
           )}
-        >
-          <Icon
-            className={cn(
-              "size-3.5 sm:size-4",
-              accent ? accent.icon : "text-foreground-subtle",
-            )}
-          />
-        </div>
+        />
+      </div>
 
-        <span className="font-medium text-foreground-subtle text-xs leading-tight sm:text-sm">
+      <div className="flex min-w-0 flex-col">
+        {isLoaded ? (
+          <span className="font-bold text-base leading-tight tracking-tight tabular-nums sm:text-xl">
+            {isError ? "—" : value}
+          </span>
+        ) : (
+          <Skeleton className="h-6 w-12" />
+        )}
+
+        <span className="truncate font-medium text-[0.6875rem] text-foreground-subtle leading-tight sm:text-xs">
           {title}
         </span>
       </div>
-
-      {isLoaded ? (
-        <p className="font-bold text-xl leading-none tracking-tight sm:text-3xl">
-          {isError ? "—" : value}
-        </p>
-      ) : (
-        <Skeleton className="h-9 w-24" />
-      )}
     </div>
   );
 };
