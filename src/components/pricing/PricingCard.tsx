@@ -209,33 +209,25 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
         )}
         {...rest}
       >
-        {isRecommendedTier && (
-          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded bg-[var(--colors-background-secondary)] p-2">
-            <Badge className="h-8 rounded text-[var(--colors-brand-primary)]">
-              {app.pricingPage.pricingTiers.recommended}
-            </Badge>
-          </div>
+        {(isRecommendedTier || isFreeTier || isEnterpriseTier) && (
+          <Badge
+            className={cn(
+              "-top-3 -translate-x-1/2 absolute left-1/2 z-10 whitespace-nowrap rounded-full border-none px-3 py-1 font-semibold text-xs shadow-sm",
+              isRecommendedTier
+                ? "bg-[var(--colors-brand-primary)] text-white"
+                : "bg-background-muted text-foreground-subtle",
+            )}
+          >
+            {isRecommendedTier
+              ? app.pricingPage.pricingTiers.recommended
+              : isFreeTier
+                ? "No credit card required"
+                : app.pricingPage.pricingTiers.comingSoon}
+          </Badge>
         )}
 
-        {isFreeTier && (
-          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded bg-[var(--colors-background-secondary)] p-2">
-            <Badge className="h-8 rounded text-[var(--colors-brand-secondary)]">
-              No Credit Card Required
-            </Badge>
-          </div>
-        )}
-
-        {isEnterpriseTier && (
-          <div className="-translate-x-1/2 absolute top-1 left-1/2 rounded p-2">
-            <Badge className="h-8 rounded">
-              {app.pricingPage.pricingTiers.comingSoon}
-            </Badge>
-          </div>
-        )}
-
-        {/* pt clears the absolutely-positioned top badge so it never overlaps the
-            title (tiers show a recommended / no-card / coming-soon badge) */}
-        <div className="flex h-full w-full flex-col items-center pt-12">
+        {/* modest top padding clears the ribbon badge above the card */}
+        <div className="flex h-full w-full flex-col items-center pt-8">
           <div className="flex w-full flex-col items-center px-6">
             <h2 className="text-center font-bold text-2xl">
               {capitalizeFirstLetter(tier)}
