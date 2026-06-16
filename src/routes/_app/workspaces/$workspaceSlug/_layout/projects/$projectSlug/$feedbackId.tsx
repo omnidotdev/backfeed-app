@@ -123,7 +123,7 @@ export const Route = createFileRoute(
 });
 
 function FeedbackPage() {
-  const { session, hasAdminPrivileges, organizationId } =
+  const { session, hasAdminPrivileges, organizationId, workspaceName } =
     Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
   const { projectName, feedbackId } = Route.useLoaderData();
@@ -151,11 +151,21 @@ function FeedbackPage() {
     <Page
       header={{
         title: projectName,
-        backLink: {
-          label: projectName,
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-          params: { workspaceSlug, projectSlug },
-        },
+        breadcrumbs: [
+          {
+            label: workspaceName,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+          },
+          {
+            label: projectName,
+            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+            params: { workspaceSlug, projectSlug },
+          },
+          {
+            label: feedback?.number ? `#${feedback.number}` : "Feedback",
+          },
+        ],
       }}
     >
       <FeedbackCard

@@ -51,8 +51,9 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
-  const { queryClient, organizationId } = Route.useRouteContext();
-  const { projectSlug } = Route.useParams();
+  const { queryClient, organizationId, workspaceName } =
+    Route.useRouteContext();
+  const { workspaceSlug, projectSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
   const { data: project } = useQuery({
@@ -84,6 +85,19 @@ function ProjectSettingsPage() {
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: workspaceName,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+          },
+          {
+            label: project?.name,
+            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+            params: { workspaceSlug, projectSlug },
+          },
+          { label: "Settings" },
+        ],
         title: `${project?.name!} Settings`,
       }}
     >

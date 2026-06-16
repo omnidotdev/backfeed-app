@@ -2,11 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { LuArrowLeft } from "react-icons/lu";
 
 import CallToAction from "@/components/core/CallToAction";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import cn from "@/lib/utils";
 
 import type { LinkProps } from "@tanstack/react-router";
 import type { ComponentProps, ReactNode } from "react";
 import type { ActionButton } from "@/components/core/CallToAction";
+import type { Crumb } from "@/components/layout/Breadcrumbs";
 
 interface Props extends ComponentProps<"div"> {
   /** Page header props. */
@@ -17,7 +19,9 @@ interface Props extends ComponentProps<"div"> {
     description?: string;
     /** Header section call to action buttons. */
     cta?: ActionButton[];
-    /** Back link displayed above the title. */
+    /** Breadcrumb trail displayed above the title (preferred over backLink). */
+    breadcrumbs?: Crumb[];
+    /** Back link displayed above the title (legacy; use breadcrumbs instead). */
     backLink?: {
       label: string;
       to: LinkProps["to"];
@@ -43,15 +47,19 @@ const Page = ({ header, children, className, ...rest }: Props) => (
       <div
         className={cn("flex w-full flex-col", header.headerProps?.className)}
       >
-        {header.backLink && (
-          <Link
-            to={header.backLink.to}
-            params={header.backLink.params}
-            className="mb-2 inline-flex w-fit items-center gap-1 text-muted-foreground text-sm hover:text-foreground"
-          >
-            <LuArrowLeft className="size-4" />
-            {header.backLink.label}
-          </Link>
+        {header.breadcrumbs?.length ? (
+          <Breadcrumbs items={header.breadcrumbs} />
+        ) : (
+          header.backLink && (
+            <Link
+              to={header.backLink.to}
+              params={header.backLink.params}
+              className="mb-2 inline-flex w-fit items-center gap-1 text-muted-foreground text-sm hover:text-foreground"
+            >
+              <LuArrowLeft className="size-4" />
+              {header.backLink.label}
+            </Link>
+          )
         )}
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex flex-col gap-1">

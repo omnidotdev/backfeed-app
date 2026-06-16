@@ -135,7 +135,7 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
   const { projectId } = Route.useLoaderData();
-  const { hasAdminPrivileges, isAuthenticated, organizationId } =
+  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
     Route.useRouteContext();
 
   const { data: project } = useQuery({
@@ -162,6 +162,14 @@ function ProjectPage() {
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: workspaceName,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+          },
+          { label: project?.name },
+        ],
         title: (
           <div className="flex items-center gap-3">
             <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
