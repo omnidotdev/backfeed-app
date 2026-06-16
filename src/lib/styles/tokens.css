@@ -1358,6 +1358,7 @@
   --colors-neutral-text: var(--colors-silver-900a);
   --colors-background-canvas: var(--colors-neutral-25);
   --colors-background-default: var(--colors-white);
+  --colors-background-card: var(--colors-white);
   --colors-background-subtle: var(--colors-neutral-50);
   --colors-background-muted: var(--colors-neutral-100);
   --colors-background-emphasized: var(--colors-neutral-200);
@@ -1567,6 +1568,7 @@
   --colors-slate-text: var(--colors-slate-100);
   --colors-background-canvas: var(--colors-neutral-950);
   --colors-background-default: var(--colors-neutral-950);
+  --colors-background-card: var(--colors-neutral-900);
   --colors-background-subtle: var(--colors-neutral-800);
   --colors-background-muted: var(--colors-neutral-800);
   --colors-background-emphasized: var(--colors-neutral-700);
