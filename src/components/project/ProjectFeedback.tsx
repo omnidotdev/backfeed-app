@@ -60,12 +60,12 @@ const projectRoute = getRouteApi(
 
 const SORT_BY_OPTIONS = [
   {
-    label: "Created At",
-    value: PostOrderBy.CreatedAtDesc,
+    label: "Top Voted",
+    value: PostOrderBy.VotesCountDesc,
   },
   {
-    label: "Total Votes",
-    value: PostOrderBy.VotesCountDesc,
+    label: "Most Recent",
+    value: PostOrderBy.CreatedAtDesc,
   },
 ];
 
@@ -293,7 +293,7 @@ const ProjectFeedback = () => {
 
             <SelectPortal>
               <SelectPositioner>
-                <SelectContent>
+                <SelectContent className="w-[var(--reference-width)] min-w-0">
                   {SORT_BY_OPTIONS.map((option) => (
                     <SelectItem key={option.value} item={option}>
                       <SelectItemText>{option.label}</SelectItemText>
