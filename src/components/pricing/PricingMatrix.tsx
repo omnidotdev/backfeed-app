@@ -176,17 +176,20 @@ const allFeatures = Array.from(
   new Set(tiers.flatMap(({ features }) => Object.keys(features))),
 );
 
-const headerCellClassName = "text-center font-bold text-xl";
+const headerCellClassName =
+  "text-center font-bold text-base md:text-xl whitespace-nowrap";
 
 /**
  * Pricing feature matrix.
  */
 const PricingMatrix = (props: ComponentProps<typeof Table>) => (
-  <div className="flex w-full overflow-x-auto lg:justify-center">
-    <Table {...props}>
+  <div className="w-full lg:flex lg:justify-center">
+    {/* min-width keeps the columns readable and lets the table scroll
+        horizontally on mobile instead of cramming/cutting off the last column */}
+    <Table className="min-w-[34rem]" {...props}>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="text-left font-bold text-xl">
+          <TableHead className="text-left font-bold text-base md:text-xl">
             {app.pricingPage.pricingMatrix.feature}
           </TableHead>
 
