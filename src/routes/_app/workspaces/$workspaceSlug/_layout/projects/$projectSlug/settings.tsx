@@ -4,6 +4,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
+import ProjectTags from "@/components/project/ProjectTags";
 import UpdateProject from "@/components/project/UpdateProject";
 import {
   useDeleteProjectMutation,
@@ -88,6 +89,8 @@ function ProjectSettingsPage() {
     >
       <div className="flex flex-col gap-6">
         <UpdateProject />
+
+        {project?.rowId && <ProjectTags projectId={project.rowId} />}
 
         <SectionContainer
           title={app.projectSettingsPage.dangerZone.title}
