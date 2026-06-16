@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
+import PossibleDuplicates from "@/components/feedback/PossibleDuplicates";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -218,6 +219,7 @@ const CreateFeedback = () => {
     },
   );
 
+  const titleValue = useStore(store, (store) => store.values.title);
   const descriptionLength = useStore(
     store,
     (store) => store.values.description.length,
@@ -269,6 +271,10 @@ const CreateFeedback = () => {
               />
             )}
           </AppField>
+
+          {projectId && (
+            <PossibleDuplicates projectId={projectId} content={titleValue} />
+          )}
 
           <AppField name="description">
             {({ TextareaField }) => (
