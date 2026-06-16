@@ -26,7 +26,7 @@ interface Props {
  * Project list item.
  */
 const ProjectListItem = ({
-  project: { slug, name, description, posts },
+  project: { slug, name, description, image, posts },
   workspaceSlug,
 }: Props) => {
   const navigate = useNavigate();
@@ -58,7 +58,15 @@ const ProjectListItem = ({
       <div className="relative mx-auto flex h-40 w-full max-w-full cursor-pointer flex-col justify-between rounded-xl border border-neutral-200 bg-card p-4 transition-all group-hover:bg-neutral-100 dark:border-neutral-800 dark:group-hover:bg-neutral-800">
         <div className="flex flex-col">
           <div className="flex items-center justify-between">
-            <div className="flex max-w-[65svw] flex-col gap-2">
+            <div className="flex max-w-[65svw] items-center gap-2.5">
+              {image && (
+                <img
+                  src={image}
+                  alt=""
+                  className="size-8 shrink-0 rounded-lg border border-border-subtle object-cover"
+                />
+              )}
+
               <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-primary-text)] group-hover:text-[var(--colors-primary-emphasized)]">
                 {name}
               </OverflowText>

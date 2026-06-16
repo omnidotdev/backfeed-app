@@ -2,6 +2,7 @@ fragment Project on Project {
   rowId
   name
   description
+  image
   slug
   prefix
   organizationId

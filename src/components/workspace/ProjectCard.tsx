@@ -52,9 +52,19 @@ const ProjectCard = ({ project, className, ...rest }: Props) => {
     >
       <div className="flex h-full flex-col justify-between gap-6">
         <div className="flex min-h-16 flex-col gap-2 md:min-h-24">
-          <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.2] lg:text-lg">
-            {project?.name}
-          </OverflowText>
+          <div className="flex items-center gap-2.5">
+            {project?.image && (
+              <img
+                src={project.image}
+                alt=""
+                className="size-8 shrink-0 rounded-lg border border-border-subtle object-cover"
+              />
+            )}
+
+            <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.2] lg:text-lg">
+              {project?.name}
+            </OverflowText>
+          </div>
 
           <OverflowText className="line-clamp-2 text-foreground-subtle text-xs lg:text-sm">
             {project?.description}

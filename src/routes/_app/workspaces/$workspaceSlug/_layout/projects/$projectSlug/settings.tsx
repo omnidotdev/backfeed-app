@@ -4,6 +4,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
+import ProjectAvatar from "@/components/project/ProjectAvatar";
 import ProjectTags from "@/components/project/ProjectTags";
 import UpdateProject from "@/components/project/UpdateProject";
 import {
@@ -102,6 +103,19 @@ function ProjectSettingsPage() {
       }}
     >
       <div className="flex flex-col gap-6">
+        {project?.rowId && (
+          <SectionContainer
+            title="Avatar"
+            description="A logo or image to represent this project."
+          >
+            <ProjectAvatar
+              projectId={project.rowId}
+              name={project.name ?? ""}
+              image={project.image}
+            />
+          </SectionContainer>
+        )}
+
         <UpdateProject />
 
         {project?.rowId && <ProjectTags projectId={project.rowId} />}

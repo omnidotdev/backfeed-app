@@ -15,27 +15,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: { input: string; output: string; }
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
-   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
-   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
-   * to unexpected results.
-   */
   Datetime: { input: Date; output: Date; }
-  /** Represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -1007,6 +991,39 @@ export type CreatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the create `PostTag` mutation. */
+export type CreatePostTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `PostTag` to be created by this mutation. */
+  postTag: PostTagInput;
+};
+
+/** The output of our create `PostTag` mutation. */
+export type CreatePostTagPayload = {
+  __typename?: 'CreatePostTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostTag` that was created by this mutation. */
+  postTag?: Maybe<PostTag>;
+  /** An edge for our `PostTag`. May be used by Relay 1. */
+  postTagEdge?: Maybe<PostTagEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `PostTag` mutation. */
+export type CreatePostTagPayloadPostTagEdgeArgs = {
+  orderBy?: Array<PostTagOrderBy>;
+};
+
 /** All input for the create `Project` mutation. */
 export type CreateProjectInput = {
   /**
@@ -1106,20 +1123,20 @@ export type CreateProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
 };
 
-/** All input for the create `Signal` mutation. */
-export type CreateSignalInput = {
+/** All input for the create `SignalCluster` mutation. */
+export type CreateSignalClusterInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `Signal` to be created by this mutation. */
-  signal: SignalInput;
+  /** The `SignalCluster` to be created by this mutation. */
+  signalCluster: SignalClusterInput;
 };
 
-/** The output of our create `Signal` mutation. */
-export type CreateSignalPayload = {
-  __typename?: 'CreateSignalPayload';
+/** The output of our create `SignalCluster` mutation. */
+export type CreateSignalClusterPayload = {
+  __typename?: 'CreateSignalClusterPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
@@ -1127,16 +1144,16 @@ export type CreateSignalPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `Signal` that was created by this mutation. */
-  signal?: Maybe<Signal>;
-  /** An edge for our `Signal`. May be used by Relay 1. */
-  signalEdge?: Maybe<SignalEdge>;
+  /** The `SignalCluster` that was created by this mutation. */
+  signalCluster?: Maybe<SignalCluster>;
+  /** An edge for our `SignalCluster`. May be used by Relay 1. */
+  signalClusterEdge?: Maybe<SignalClusterEdge>;
 };
 
 
-/** The output of our create `Signal` mutation. */
-export type CreateSignalPayloadSignalEdgeArgs = {
-  orderBy?: Array<SignalOrderBy>;
+/** The output of our create `SignalCluster` mutation. */
+export type CreateSignalClusterPayloadSignalClusterEdgeArgs = {
+  orderBy?: Array<SignalClusterOrderBy>;
 };
 
 /** All input for the create `StatusTemplate` mutation. */
@@ -1170,6 +1187,39 @@ export type CreateStatusTemplatePayload = {
 /** The output of our create `StatusTemplate` mutation. */
 export type CreateStatusTemplatePayloadStatusTemplateEdgeArgs = {
   orderBy?: Array<StatusTemplateOrderBy>;
+};
+
+/** All input for the create `Tag` mutation. */
+export type CreateTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Tag` to be created by this mutation. */
+  tag: TagInput;
+};
+
+/** The output of our create `Tag` mutation. */
+export type CreateTagPayload = {
+  __typename?: 'CreateTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Tag` that was created by this mutation. */
+  tag?: Maybe<Tag>;
+  /** An edge for our `Tag`. May be used by Relay 1. */
+  tagEdge?: Maybe<TagEdge>;
+};
+
+
+/** The output of our create `Tag` mutation. */
+export type CreateTagPayloadTagEdgeArgs = {
+  orderBy?: Array<TagOrderBy>;
 };
 
 /** All input for the create `User` mutation. */
@@ -1393,6 +1443,38 @@ export type DeletePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the `deletePostTag` mutation. */
+export type DeletePostTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `PostTag` mutation. */
+export type DeletePostTagPayload = {
+  __typename?: 'DeletePostTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostTag` that was deleted by this mutation. */
+  postTag?: Maybe<PostTag>;
+  /** An edge for our `PostTag`. May be used by Relay 1. */
+  postTagEdge?: Maybe<PostTagEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `PostTag` mutation. */
+export type DeletePostTagPayloadPostTagEdgeArgs = {
+  orderBy?: Array<PostTagOrderBy>;
+};
+
 /** All input for the `deleteProject` mutation. */
 export type DeleteProjectInput = {
   /**
@@ -1489,8 +1571,8 @@ export type DeleteProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
 };
 
-/** All input for the `deleteSignal` mutation. */
-export type DeleteSignalInput = {
+/** All input for the `deleteSignalCluster` mutation. */
+export type DeleteSignalClusterInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
@@ -1499,9 +1581,9 @@ export type DeleteSignalInput = {
   rowId: Scalars['UUID']['input'];
 };
 
-/** The output of our delete `Signal` mutation. */
-export type DeleteSignalPayload = {
-  __typename?: 'DeleteSignalPayload';
+/** The output of our delete `SignalCluster` mutation. */
+export type DeleteSignalClusterPayload = {
+  __typename?: 'DeleteSignalClusterPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
@@ -1509,16 +1591,16 @@ export type DeleteSignalPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `Signal` that was deleted by this mutation. */
-  signal?: Maybe<Signal>;
-  /** An edge for our `Signal`. May be used by Relay 1. */
-  signalEdge?: Maybe<SignalEdge>;
+  /** The `SignalCluster` that was deleted by this mutation. */
+  signalCluster?: Maybe<SignalCluster>;
+  /** An edge for our `SignalCluster`. May be used by Relay 1. */
+  signalClusterEdge?: Maybe<SignalClusterEdge>;
 };
 
 
-/** The output of our delete `Signal` mutation. */
-export type DeleteSignalPayloadSignalEdgeArgs = {
-  orderBy?: Array<SignalOrderBy>;
+/** The output of our delete `SignalCluster` mutation. */
+export type DeleteSignalClusterPayloadSignalClusterEdgeArgs = {
+  orderBy?: Array<SignalClusterOrderBy>;
 };
 
 /** All input for the `deleteStatusTemplate` mutation. */
@@ -1551,6 +1633,38 @@ export type DeleteStatusTemplatePayload = {
 /** The output of our delete `StatusTemplate` mutation. */
 export type DeleteStatusTemplatePayloadStatusTemplateEdgeArgs = {
   orderBy?: Array<StatusTemplateOrderBy>;
+};
+
+/** All input for the `deleteTag` mutation. */
+export type DeleteTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Tag` mutation. */
+export type DeleteTagPayload = {
+  __typename?: 'DeleteTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Tag` that was deleted by this mutation. */
+  tag?: Maybe<Tag>;
+  /** An edge for our `Tag`. May be used by Relay 1. */
+  tagEdge?: Maybe<TagEdge>;
+};
+
+
+/** The output of our delete `Tag` mutation. */
+export type DeleteTagPayloadTagEdgeArgs = {
+  orderBy?: Array<TagOrderBy>;
 };
 
 /** All input for the `deleteUser` mutation. */
@@ -1667,6 +1781,24 @@ export type HavingIntFilter = {
   notEqualTo?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type IngestSignalInput = {
+  organizationId: Scalars['UUID']['input'];
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rawContent: Scalars['String']['input'];
+  source: Scalars['String']['input'];
+  sourceMetadata?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type IngestSignalPayload = {
+  __typename?: 'IngestSignalPayload';
+  id: Scalars['UUID']['output'];
+  projectId?: Maybe<Scalars['UUID']['output']>;
+  sentiment?: Maybe<Scalars['String']['output']>;
+  source: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  type?: Maybe<Scalars['String']['output']>;
+};
+
 /** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
 export type IntFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1702,16 +1834,20 @@ export type Mutation = {
   createComment?: Maybe<CreateCommentPayload>;
   /** Creates a single `Post`. */
   createPost?: Maybe<CreatePostPayload>;
+  /** Creates a single `PostTag`. */
+  createPostTag?: Maybe<CreatePostTagPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
   /** Creates a single `ProjectLink`. */
   createProjectLink?: Maybe<CreateProjectLinkPayload>;
   /** Creates a single `ProjectStatusConfig`. */
   createProjectStatusConfig?: Maybe<CreateProjectStatusConfigPayload>;
-  /** Creates a single `Signal`. */
-  createSignal?: Maybe<CreateSignalPayload>;
+  /** Creates a single `SignalCluster`. */
+  createSignalCluster?: Maybe<CreateSignalClusterPayload>;
   /** Creates a single `StatusTemplate`. */
   createStatusTemplate?: Maybe<CreateStatusTemplatePayload>;
+  /** Creates a single `Tag`. */
+  createTag?: Maybe<CreateTagPayload>;
   /** Creates a single `User`. */
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `Vote`. */
@@ -1724,38 +1860,48 @@ export type Mutation = {
   deleteComment?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
+  /** Deletes a single `PostTag` using a unique key. */
+  deletePostTag?: Maybe<DeletePostTagPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProject?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `ProjectLink` using a unique key. */
   deleteProjectLink?: Maybe<DeleteProjectLinkPayload>;
   /** Deletes a single `ProjectStatusConfig` using a unique key. */
   deleteProjectStatusConfig?: Maybe<DeleteProjectStatusConfigPayload>;
-  /** Deletes a single `Signal` using a unique key. */
-  deleteSignal?: Maybe<DeleteSignalPayload>;
+  /** Deletes a single `SignalCluster` using a unique key. */
+  deleteSignalCluster?: Maybe<DeleteSignalClusterPayload>;
   /** Deletes a single `StatusTemplate` using a unique key. */
   deleteStatusTemplate?: Maybe<DeleteStatusTemplatePayload>;
+  /** Deletes a single `Tag` using a unique key. */
+  deleteTag?: Maybe<DeleteTagPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Deletes a single `Vote` using a unique key. */
   deleteVote?: Maybe<DeleteVotePayload>;
   /** Deletes a single `WardenSyncQueue` using a unique key. */
   deleteWardenSyncQueue?: Maybe<DeleteWardenSyncQueuePayload>;
+  ingestSignal?: Maybe<IngestSignalPayload>;
+  promoteSignalToPost?: Maybe<PromoteSignalToPostPayload>;
   /** Updates a single `Attachment` using a unique key and a patch. */
   updateAttachment?: Maybe<UpdateAttachmentPayload>;
   /** Updates a single `Comment` using a unique key and a patch. */
   updateComment?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
+  /** Updates a single `PostTag` using a unique key and a patch. */
+  updatePostTag?: Maybe<UpdatePostTagPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProject?: Maybe<UpdateProjectPayload>;
   /** Updates a single `ProjectLink` using a unique key and a patch. */
   updateProjectLink?: Maybe<UpdateProjectLinkPayload>;
   /** Updates a single `ProjectStatusConfig` using a unique key and a patch. */
   updateProjectStatusConfig?: Maybe<UpdateProjectStatusConfigPayload>;
-  /** Updates a single `Signal` using a unique key and a patch. */
-  updateSignal?: Maybe<UpdateSignalPayload>;
+  /** Updates a single `SignalCluster` using a unique key and a patch. */
+  updateSignalCluster?: Maybe<UpdateSignalClusterPayload>;
   /** Updates a single `StatusTemplate` using a unique key and a patch. */
   updateStatusTemplate?: Maybe<UpdateStatusTemplatePayload>;
+  /** Updates a single `Tag` using a unique key and a patch. */
+  updateTag?: Maybe<UpdateTagPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
   /** Updates a single `Vote` using a unique key and a patch. */
@@ -1784,6 +1930,12 @@ export type MutationCreatePostArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreatePostTagArgs = {
+  input: CreatePostTagInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateProjectArgs = {
   input: CreateProjectInput;
 };
@@ -1802,14 +1954,20 @@ export type MutationCreateProjectStatusConfigArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateSignalArgs = {
-  input: CreateSignalInput;
+export type MutationCreateSignalClusterArgs = {
+  input: CreateSignalClusterInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateStatusTemplateArgs = {
   input: CreateStatusTemplateInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTagArgs = {
+  input: CreateTagInput;
 };
 
 
@@ -1850,6 +2008,12 @@ export type MutationDeletePostArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeletePostTagArgs = {
+  input: DeletePostTagInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteProjectArgs = {
   input: DeleteProjectInput;
 };
@@ -1868,14 +2032,20 @@ export type MutationDeleteProjectStatusConfigArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteSignalArgs = {
-  input: DeleteSignalInput;
+export type MutationDeleteSignalClusterArgs = {
+  input: DeleteSignalClusterInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteStatusTemplateArgs = {
   input: DeleteStatusTemplateInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTagArgs = {
+  input: DeleteTagInput;
 };
 
 
@@ -1898,6 +2068,18 @@ export type MutationDeleteWardenSyncQueueArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationIngestSignalArgs = {
+  input: IngestSignalInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationPromoteSignalToPostArgs = {
+  input: PromoteSignalToPostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAttachmentArgs = {
   input: UpdateAttachmentInput;
 };
@@ -1912,6 +2094,12 @@ export type MutationUpdateCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePostArgs = {
   input: UpdatePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdatePostTagArgs = {
+  input: UpdatePostTagInput;
 };
 
 
@@ -1934,14 +2122,20 @@ export type MutationUpdateProjectStatusConfigArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateSignalArgs = {
-  input: UpdateSignalInput;
+export type MutationUpdateSignalClusterArgs = {
+  input: UpdateSignalClusterInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateStatusTemplateArgs = {
   input: UpdateStatusTemplateInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTagArgs = {
+  input: UpdateTagInput;
 };
 
 
@@ -1993,17 +2187,30 @@ export type PageInfo = {
 
 export type Post = {
   __typename?: 'Post';
+  aiTags?: Maybe<Scalars['JSON']['output']>;
   /** Reads and enables pagination through a set of `Attachment`. */
   attachments: AttachmentConnection;
+  /** Reads a single `SignalCluster` that is related to this `Post`. */
+  cluster?: Maybe<SignalCluster>;
+  clusterId?: Maybe<Scalars['UUID']['output']>;
   /** Reads and enables pagination through a set of `Comment`. */
   comments: CommentConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `Post` that is related to this `Post`. */
+  duplicateOf?: Maybe<Post>;
+  duplicateOfId?: Maybe<Scalars['UUID']['output']>;
   number: Scalars['Int']['output'];
+  /** Reads and enables pagination through a set of `PostTag`. */
+  postTags: PostTagConnection;
+  /** Reads and enables pagination through a set of `Post`. */
+  postsByDuplicateOfId: PostConnection;
   /** Reads a single `Project` that is related to this `Post`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  sentiment?: Maybe<Scalars['String']['output']>;
+  shippedAt?: Maybe<Scalars['Datetime']['output']>;
   /** Reads and enables pagination through a set of `Signal`. */
   signals: SignalConnection;
   source?: Maybe<Scalars['String']['output']>;
@@ -2042,6 +2249,30 @@ export type PostCommentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+export type PostPostTagsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostTagCondition>;
+  filter?: InputMaybe<PostTagFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostTagOrderBy>>;
+};
+
+
+export type PostPostsByDuplicateOfIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy>>;
 };
 
 
@@ -2127,16 +2358,24 @@ export type PostAverageAggregates = {
 
 /** A condition to be used against `Post` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type PostCondition = {
+  /** Checks for equality with the object’s `clusterId` field. */
+  clusterId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `duplicateOfId` field. */
+  duplicateOfId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `number` field. */
   number?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sentiment` field. */
+  sentiment?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `shippedAt` field. */
+  shippedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `source` field. */
   source?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `statusTemplateId` field. */
@@ -2176,11 +2415,16 @@ export type PostConnectionGroupedAggregatesArgs = {
 };
 
 export type PostDistinctCountAggregateFilter = {
+  aiTags?: InputMaybe<BigIntFilter>;
+  clusterId?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  duplicateOfId?: InputMaybe<BigIntFilter>;
   number?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
+  sentiment?: InputMaybe<BigIntFilter>;
+  shippedAt?: InputMaybe<BigIntFilter>;
   source?: InputMaybe<BigIntFilter>;
   statusTemplateId?: InputMaybe<BigIntFilter>;
   statusUpdatedAt?: InputMaybe<BigIntFilter>;
@@ -2191,16 +2435,26 @@ export type PostDistinctCountAggregateFilter = {
 
 export type PostDistinctCountAggregates = {
   __typename?: 'PostDistinctCountAggregates';
+  /** Distinct count of aiTags across the matching connection */
+  aiTags?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of clusterId across the matching connection */
+  clusterId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of duplicateOfId across the matching connection */
+  duplicateOfId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of number across the matching connection */
   number?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sentiment across the matching connection */
+  sentiment?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of shippedAt across the matching connection */
+  shippedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of source across the matching connection */
   source?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of statusTemplateId across the matching connection */
@@ -2232,6 +2486,12 @@ export type PostFilter = {
   attachments?: InputMaybe<PostToManyAttachmentFilter>;
   /** Some related `attachments` exist. */
   attachmentsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `cluster` relation. */
+  cluster?: InputMaybe<SignalClusterFilter>;
+  /** A related `cluster` exists. */
+  clusterExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `clusterId` field. */
+  clusterId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `comments` relation. */
   comments?: InputMaybe<PostToManyCommentFilter>;
   /** Some related `comments` exist. */
@@ -2240,18 +2500,36 @@ export type PostFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `duplicateOf` relation. */
+  duplicateOf?: InputMaybe<PostFilter>;
+  /** A related `duplicateOf` exists. */
+  duplicateOfExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `duplicateOfId` field. */
+  duplicateOfId?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<PostFilter>;
   /** Filter by the object’s `number` field. */
   number?: InputMaybe<IntFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `postTags` relation. */
+  postTags?: InputMaybe<PostToManyPostTagFilter>;
+  /** Some related `postTags` exist. */
+  postTagsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `postsByDuplicateOfId` relation. */
+  postsByDuplicateOfId?: InputMaybe<PostToManyPostFilter>;
+  /** Some related `postsByDuplicateOfId` exist. */
+  postsByDuplicateOfIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `sentiment` field. */
+  sentiment?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `shippedAt` field. */
+  shippedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `signals` relation. */
   signals?: InputMaybe<PostToManySignalFilter>;
   /** Some related `signals` exist. */
@@ -2282,12 +2560,19 @@ export type PostFilter = {
 
 /** Grouping methods for `Post` for usage during aggregation. */
 export enum PostGroupBy {
+  AiTags = 'AI_TAGS',
+  ClusterId = 'CLUSTER_ID',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  DuplicateOfId = 'DUPLICATE_OF_ID',
   Number = 'NUMBER',
   ProjectId = 'PROJECT_ID',
+  Sentiment = 'SENTIMENT',
+  ShippedAt = 'SHIPPED_AT',
+  ShippedAtTruncatedToDay = 'SHIPPED_AT_TRUNCATED_TO_DAY',
+  ShippedAtTruncatedToHour = 'SHIPPED_AT_TRUNCATED_TO_HOUR',
   Source = 'SOURCE',
   StatusTemplateId = 'STATUS_TEMPLATE_ID',
   StatusUpdatedAt = 'STATUS_UPDATED_AT',
@@ -2303,6 +2588,7 @@ export enum PostGroupBy {
 export type PostHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2310,6 +2596,7 @@ export type PostHavingAverageInput = {
 export type PostHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2332,6 +2619,7 @@ export type PostHavingInput = {
 export type PostHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2339,6 +2627,7 @@ export type PostHavingMaxInput = {
 export type PostHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2346,6 +2635,7 @@ export type PostHavingMinInput = {
 export type PostHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2353,6 +2643,7 @@ export type PostHavingStddevPopulationInput = {
 export type PostHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2360,6 +2651,7 @@ export type PostHavingStddevSampleInput = {
 export type PostHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2367,6 +2659,7 @@ export type PostHavingSumInput = {
 export type PostHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -2374,16 +2667,22 @@ export type PostHavingVariancePopulationInput = {
 export type PostHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
+  shippedAt?: InputMaybe<HavingDatetimeFilter>;
   statusUpdatedAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** An input for mutations affecting `Post` */
 export type PostInput = {
+  aiTags?: InputMaybe<Scalars['JSON']['input']>;
+  clusterId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  duplicateOfId?: InputMaybe<Scalars['UUID']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sentiment?: InputMaybe<Scalars['String']['input']>;
+  shippedAt?: InputMaybe<Scalars['Datetime']['input']>;
   source?: InputMaybe<Scalars['String']['input']>;
   statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
   statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -2486,6 +2785,8 @@ export enum PostOrderBy {
   AttachmentsVarianceSampleHeightDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_DESC',
   AttachmentsVarianceSampleWidthAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_ASC',
   AttachmentsVarianceSampleWidthDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_DESC',
+  ClusterIdAsc = 'CLUSTER_ID_ASC',
+  ClusterIdDesc = 'CLUSTER_ID_DESC',
   CommentsCountAsc = 'COMMENTS_COUNT_ASC',
   CommentsCountDesc = 'COMMENTS_COUNT_DESC',
   CommentsDistinctCountCreatedAtAsc = 'COMMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -2506,19 +2807,87 @@ export enum PostOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  DuplicateOfIdAsc = 'DUPLICATE_OF_ID_ASC',
+  DuplicateOfIdDesc = 'DUPLICATE_OF_ID_DESC',
   Natural = 'NATURAL',
   NumberAsc = 'NUMBER_ASC',
   NumberDesc = 'NUMBER_DESC',
+  PostsByDuplicateOfIdAverageNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_AVERAGE_NUMBER_ASC',
+  PostsByDuplicateOfIdAverageNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_AVERAGE_NUMBER_DESC',
+  PostsByDuplicateOfIdCountAsc = 'POSTS_BY_DUPLICATE_OF_ID_COUNT_ASC',
+  PostsByDuplicateOfIdCountDesc = 'POSTS_BY_DUPLICATE_OF_ID_COUNT_DESC',
+  PostsByDuplicateOfIdDistinctCountAiTagsAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_AI_TAGS_ASC',
+  PostsByDuplicateOfIdDistinctCountAiTagsDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_AI_TAGS_DESC',
+  PostsByDuplicateOfIdDistinctCountClusterIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountClusterIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_CLUSTER_ID_DESC',
+  PostsByDuplicateOfIdDistinctCountCreatedAtAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostsByDuplicateOfIdDistinctCountCreatedAtDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostsByDuplicateOfIdDistinctCountDescriptionAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostsByDuplicateOfIdDistinctCountDescriptionDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsByDuplicateOfIdDistinctCountDuplicateOfIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_DUPLICATE_OF_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountDuplicateOfIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_DUPLICATE_OF_ID_DESC',
+  PostsByDuplicateOfIdDistinctCountNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_NUMBER_ASC',
+  PostsByDuplicateOfIdDistinctCountNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_NUMBER_DESC',
+  PostsByDuplicateOfIdDistinctCountProjectIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountProjectIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostsByDuplicateOfIdDistinctCountRowIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountRowIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsByDuplicateOfIdDistinctCountSentimentAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SENTIMENT_ASC',
+  PostsByDuplicateOfIdDistinctCountSentimentDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SENTIMENT_DESC',
+  PostsByDuplicateOfIdDistinctCountShippedAtAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SHIPPED_AT_ASC',
+  PostsByDuplicateOfIdDistinctCountShippedAtDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SHIPPED_AT_DESC',
+  PostsByDuplicateOfIdDistinctCountSourceAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SOURCE_ASC',
+  PostsByDuplicateOfIdDistinctCountSourceDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_SOURCE_DESC',
+  PostsByDuplicateOfIdDistinctCountStatusTemplateIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_STATUS_TEMPLATE_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountStatusTemplateIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_STATUS_TEMPLATE_ID_DESC',
+  PostsByDuplicateOfIdDistinctCountStatusUpdatedAtAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsByDuplicateOfIdDistinctCountStatusUpdatedAtDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
+  PostsByDuplicateOfIdDistinctCountTitleAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_TITLE_ASC',
+  PostsByDuplicateOfIdDistinctCountTitleDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_TITLE_DESC',
+  PostsByDuplicateOfIdDistinctCountUpdatedAtAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostsByDuplicateOfIdDistinctCountUpdatedAtDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  PostsByDuplicateOfIdDistinctCountUserIdAsc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_USER_ID_ASC',
+  PostsByDuplicateOfIdDistinctCountUserIdDesc = 'POSTS_BY_DUPLICATE_OF_ID_DISTINCT_COUNT_USER_ID_DESC',
+  PostsByDuplicateOfIdMaxNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_MAX_NUMBER_ASC',
+  PostsByDuplicateOfIdMaxNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_MAX_NUMBER_DESC',
+  PostsByDuplicateOfIdMinNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_MIN_NUMBER_ASC',
+  PostsByDuplicateOfIdMinNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_MIN_NUMBER_DESC',
+  PostsByDuplicateOfIdStddevPopulationNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_STDDEV_POPULATION_NUMBER_ASC',
+  PostsByDuplicateOfIdStddevPopulationNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_STDDEV_POPULATION_NUMBER_DESC',
+  PostsByDuplicateOfIdStddevSampleNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_STDDEV_SAMPLE_NUMBER_ASC',
+  PostsByDuplicateOfIdStddevSampleNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_STDDEV_SAMPLE_NUMBER_DESC',
+  PostsByDuplicateOfIdSumNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_SUM_NUMBER_ASC',
+  PostsByDuplicateOfIdSumNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_SUM_NUMBER_DESC',
+  PostsByDuplicateOfIdVariancePopulationNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_POPULATION_NUMBER_ASC',
+  PostsByDuplicateOfIdVariancePopulationNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_POPULATION_NUMBER_DESC',
+  PostsByDuplicateOfIdVarianceSampleNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_ASC',
+  PostsByDuplicateOfIdVarianceSampleNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_DESC',
+  PostTagsCountAsc = 'POST_TAGS_COUNT_ASC',
+  PostTagsCountDesc = 'POST_TAGS_COUNT_DESC',
+  PostTagsDistinctCountCreatedAtAsc = 'POST_TAGS_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostTagsDistinctCountCreatedAtDesc = 'POST_TAGS_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostTagsDistinctCountPostIdAsc = 'POST_TAGS_DISTINCT_COUNT_POST_ID_ASC',
+  PostTagsDistinctCountPostIdDesc = 'POST_TAGS_DISTINCT_COUNT_POST_ID_DESC',
+  PostTagsDistinctCountRowIdAsc = 'POST_TAGS_DISTINCT_COUNT_ROW_ID_ASC',
+  PostTagsDistinctCountRowIdDesc = 'POST_TAGS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostTagsDistinctCountTagIdAsc = 'POST_TAGS_DISTINCT_COUNT_TAG_ID_ASC',
+  PostTagsDistinctCountTagIdDesc = 'POST_TAGS_DISTINCT_COUNT_TAG_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  SentimentAsc = 'SENTIMENT_ASC',
+  SentimentDesc = 'SENTIMENT_DESC',
+  ShippedAtAsc = 'SHIPPED_AT_ASC',
+  ShippedAtDesc = 'SHIPPED_AT_DESC',
   SignalsCountAsc = 'SIGNALS_COUNT_ASC',
   SignalsCountDesc = 'SIGNALS_COUNT_DESC',
   SignalsDistinctCountAiTagsAsc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_ASC',
   SignalsDistinctCountAiTagsDesc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_DESC',
+  SignalsDistinctCountClusterIdAsc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  SignalsDistinctCountClusterIdDesc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   SignalsDistinctCountCreatedAtAsc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_ASC',
   SignalsDistinctCountCreatedAtDesc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_DESC',
   SignalsDistinctCountOrganizationIdAsc = 'SIGNALS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
@@ -2575,10 +2944,15 @@ export enum PostOrderBy {
 
 /** Represents an update to a `Post`. Fields that are set will be updated. */
 export type PostPatch = {
+  aiTags?: InputMaybe<Scalars['JSON']['input']>;
+  clusterId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  duplicateOfId?: InputMaybe<Scalars['UUID']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sentiment?: InputMaybe<Scalars['String']['input']>;
+  shippedAt?: InputMaybe<Scalars['Datetime']['input']>;
   source?: InputMaybe<Scalars['String']['input']>;
   statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
   statusUpdatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -2617,6 +2991,210 @@ export type PostSumAggregates = {
   number: Scalars['BigInt']['output'];
 };
 
+export type PostTag = {
+  __typename?: 'PostTag';
+  createdAt: Scalars['Datetime']['output'];
+  /** Reads a single `Post` that is related to this `PostTag`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `Tag` that is related to this `PostTag`. */
+  tag?: Maybe<Tag>;
+  tagId: Scalars['UUID']['output'];
+};
+
+export type PostTagAggregates = {
+  __typename?: 'PostTagAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<PostTagDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `PostTag` object types. */
+export type PostTagAggregatesFilter = {
+  /** Distinct count aggregate over matching `PostTag` objects. */
+  distinctCount?: InputMaybe<PostTagDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `PostTag` object to be included within the aggregate. */
+  filter?: InputMaybe<PostTagFilter>;
+};
+
+/** A condition to be used against `PostTag` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type PostTagCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `tagId` field. */
+  tagId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `PostTag` values. */
+export type PostTagConnection = {
+  __typename?: 'PostTagConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<PostTagAggregates>;
+  /** A list of edges which contains the `PostTag` and cursor to aid in pagination. */
+  edges: Array<Maybe<PostTagEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<PostTagAggregates>>;
+  /** A list of `PostTag` objects. */
+  nodes: Array<Maybe<PostTag>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostTag` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `PostTag` values. */
+export type PostTagConnectionGroupedAggregatesArgs = {
+  groupBy: Array<PostTagGroupBy>;
+  having?: InputMaybe<PostTagHavingInput>;
+};
+
+export type PostTagDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  tagId?: InputMaybe<BigIntFilter>;
+};
+
+export type PostTagDistinctCountAggregates = {
+  __typename?: 'PostTagDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of tagId across the matching connection */
+  tagId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `PostTag` edge in the connection. */
+export type PostTagEdge = {
+  __typename?: 'PostTagEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `PostTag` at the end of the edge. */
+  node?: Maybe<PostTag>;
+};
+
+/** A filter to be used against `PostTag` object types. All fields are combined with a logical ‘and.’ */
+export type PostTagFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PostTagFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PostTagFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PostTagFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `tag` relation. */
+  tag?: InputMaybe<TagFilter>;
+  /** Filter by the object’s `tagId` field. */
+  tagId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `PostTag` for usage during aggregation. */
+export enum PostTagGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  PostId = 'POST_ID',
+  TagId = 'TAG_ID'
+}
+
+export type PostTagHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `PostTag` aggregates. */
+export type PostTagHavingInput = {
+  AND?: InputMaybe<Array<PostTagHavingInput>>;
+  OR?: InputMaybe<Array<PostTagHavingInput>>;
+  average?: InputMaybe<PostTagHavingAverageInput>;
+  distinctCount?: InputMaybe<PostTagHavingDistinctCountInput>;
+  max?: InputMaybe<PostTagHavingMaxInput>;
+  min?: InputMaybe<PostTagHavingMinInput>;
+  stddevPopulation?: InputMaybe<PostTagHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<PostTagHavingStddevSampleInput>;
+  sum?: InputMaybe<PostTagHavingSumInput>;
+  variancePopulation?: InputMaybe<PostTagHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<PostTagHavingVarianceSampleInput>;
+};
+
+export type PostTagHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostTagHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `PostTag` */
+export type PostTagInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  tagId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `PostTag`. */
+export enum PostTagOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TagIdAsc = 'TAG_ID_ASC',
+  TagIdDesc = 'TAG_ID_DESC'
+}
+
+/** Represents an update to a `PostTag`. Fields that are set will be updated. */
+export type PostTagPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  tagId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 /** A filter to be used against many `Attachment` object types. All fields are combined with a logical ‘and.’ */
 export type PostToManyAttachmentFilter = {
   /** Aggregates across related `Attachment` match the filter criteria. */
@@ -2639,6 +3217,30 @@ export type PostToManyCommentFilter = {
   none?: InputMaybe<CommentFilter>;
   /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<CommentFilter>;
+};
+
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `PostTag` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostTagFilter = {
+  /** Aggregates across related `PostTag` match the filter criteria. */
+  aggregates?: InputMaybe<PostTagAggregatesFilter>;
+  /** Every related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostTagFilter>;
+  /** No related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostTagFilter>;
+  /** Some related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostTagFilter>;
 };
 
 /** A filter to be used against many `Signal` object types. All fields are combined with a logical ‘and.’ */
@@ -2690,6 +3292,7 @@ export type Project = {
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   image?: Maybe<Scalars['String']['output']>;
+  inboundEmailKey: Scalars['String']['output'];
   isPublic: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   nextPostNumber: Scalars['Int']['output'];
@@ -2702,9 +3305,13 @@ export type Project = {
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
   projectStatusConfigs: ProjectStatusConfigConnection;
   rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `SignalCluster`. */
+  signalClusters: SignalClusterConnection;
   /** Reads and enables pagination through a set of `Signal`. */
   signals: SignalConnection;
   slug: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `Tag`. */
+  tags: TagConnection;
   updatedAt: Scalars['Datetime']['output'];
 };
 
@@ -2745,6 +3352,18 @@ export type ProjectProjectStatusConfigsArgs = {
 };
 
 
+export type ProjectSignalClustersArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<SignalClusterCondition>;
+  filter?: InputMaybe<SignalClusterFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SignalClusterOrderBy>>;
+};
+
+
 export type ProjectSignalsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2754,6 +3373,18 @@ export type ProjectSignalsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<SignalOrderBy>>;
+};
+
+
+export type ProjectTagsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TagCondition>;
+  filter?: InputMaybe<TagFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TagOrderBy>>;
 };
 
 export type ProjectAggregates = {
@@ -2793,6 +3424,8 @@ export type ProjectCondition = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `image` field. */
   image?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `inboundEmailKey` field. */
+  inboundEmailKey?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `isPublic` field. */
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -2843,6 +3476,8 @@ export type ProjectDistinctCountAggregates = {
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of image across the matching connection */
   image?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of inboundEmailKey across the matching connection */
+  inboundEmailKey?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of isPublic across the matching connection */
   isPublic?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -2880,6 +3515,8 @@ export type ProjectFilter = {
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `image` field. */
   image?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `inboundEmailKey` field. */
+  inboundEmailKey?: InputMaybe<StringFilter>;
   /** Filter by the object’s `isPublic` field. */
   isPublic?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `name` field. */
@@ -2908,12 +3545,20 @@ export type ProjectFilter = {
   projectStatusConfigsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `signalClusters` relation. */
+  signalClusters?: InputMaybe<ProjectToManySignalClusterFilter>;
+  /** Some related `signalClusters` exist. */
+  signalClustersExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `signals` relation. */
   signals?: InputMaybe<ProjectToManySignalFilter>;
   /** Some related `signals` exist. */
   signalsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `tags` relation. */
+  tags?: InputMaybe<ProjectToManyTagFilter>;
+  /** Some related `tags` exist. */
+  tagsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
 };
@@ -3414,6 +4059,8 @@ export enum ProjectOrderBy {
   DescriptionDesc = 'DESCRIPTION_DESC',
   ImageAsc = 'IMAGE_ASC',
   ImageDesc = 'IMAGE_DESC',
+  InboundEmailKeyAsc = 'INBOUND_EMAIL_KEY_ASC',
+  InboundEmailKeyDesc = 'INBOUND_EMAIL_KEY_DESC',
   IsPublicAsc = 'IS_PUBLIC_ASC',
   IsPublicDesc = 'IS_PUBLIC_DESC',
   NameAsc = 'NAME_ASC',
@@ -3427,16 +4074,26 @@ export enum ProjectOrderBy {
   PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
+  PostsDistinctCountAiTagsAsc = 'POSTS_DISTINCT_COUNT_AI_TAGS_ASC',
+  PostsDistinctCountAiTagsDesc = 'POSTS_DISTINCT_COUNT_AI_TAGS_DESC',
+  PostsDistinctCountClusterIdAsc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  PostsDistinctCountClusterIdDesc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountDuplicateOfIdAsc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_ASC',
+  PostsDistinctCountDuplicateOfIdDesc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_DESC',
   PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
   PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsDistinctCountSentimentAsc = 'POSTS_DISTINCT_COUNT_SENTIMENT_ASC',
+  PostsDistinctCountSentimentDesc = 'POSTS_DISTINCT_COUNT_SENTIMENT_DESC',
+  PostsDistinctCountShippedAtAsc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_ASC',
+  PostsDistinctCountShippedAtDesc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_DESC',
   PostsDistinctCountSourceAsc = 'POSTS_DISTINCT_COUNT_SOURCE_ASC',
   PostsDistinctCountSourceDesc = 'POSTS_DISTINCT_COUNT_SOURCE_DESC',
   PostsDistinctCountStatusTemplateIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_TEMPLATE_ID_ASC',
@@ -3541,6 +4198,8 @@ export enum ProjectOrderBy {
   SignalsCountDesc = 'SIGNALS_COUNT_DESC',
   SignalsDistinctCountAiTagsAsc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_ASC',
   SignalsDistinctCountAiTagsDesc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_DESC',
+  SignalsDistinctCountClusterIdAsc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  SignalsDistinctCountClusterIdDesc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   SignalsDistinctCountCreatedAtAsc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_ASC',
   SignalsDistinctCountCreatedAtDesc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_DESC',
   SignalsDistinctCountOrganizationIdAsc = 'SIGNALS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
@@ -3567,8 +4226,54 @@ export enum ProjectOrderBy {
   SignalsDistinctCountUpdatedAtDesc = 'SIGNALS_DISTINCT_COUNT_UPDATED_AT_DESC',
   SignalsDistinctCountUserIdAsc = 'SIGNALS_DISTINCT_COUNT_USER_ID_ASC',
   SignalsDistinctCountUserIdDesc = 'SIGNALS_DISTINCT_COUNT_USER_ID_DESC',
+  SignalClustersAverageMemberCountAsc = 'SIGNAL_CLUSTERS_AVERAGE_MEMBER_COUNT_ASC',
+  SignalClustersAverageMemberCountDesc = 'SIGNAL_CLUSTERS_AVERAGE_MEMBER_COUNT_DESC',
+  SignalClustersCountAsc = 'SIGNAL_CLUSTERS_COUNT_ASC',
+  SignalClustersCountDesc = 'SIGNAL_CLUSTERS_COUNT_DESC',
+  SignalClustersDistinctCountCreatedAtAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_CREATED_AT_ASC',
+  SignalClustersDistinctCountCreatedAtDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_CREATED_AT_DESC',
+  SignalClustersDistinctCountLabelAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_LABEL_ASC',
+  SignalClustersDistinctCountLabelDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_LABEL_DESC',
+  SignalClustersDistinctCountMemberCountAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_MEMBER_COUNT_ASC',
+  SignalClustersDistinctCountMemberCountDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_MEMBER_COUNT_DESC',
+  SignalClustersDistinctCountProjectIdAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  SignalClustersDistinctCountProjectIdDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  SignalClustersDistinctCountRowIdAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_ROW_ID_ASC',
+  SignalClustersDistinctCountRowIdDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_ROW_ID_DESC',
+  SignalClustersDistinctCountSummaryAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_SUMMARY_ASC',
+  SignalClustersDistinctCountSummaryDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_SUMMARY_DESC',
+  SignalClustersDistinctCountUpdatedAtAsc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  SignalClustersDistinctCountUpdatedAtDesc = 'SIGNAL_CLUSTERS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  SignalClustersMaxMemberCountAsc = 'SIGNAL_CLUSTERS_MAX_MEMBER_COUNT_ASC',
+  SignalClustersMaxMemberCountDesc = 'SIGNAL_CLUSTERS_MAX_MEMBER_COUNT_DESC',
+  SignalClustersMinMemberCountAsc = 'SIGNAL_CLUSTERS_MIN_MEMBER_COUNT_ASC',
+  SignalClustersMinMemberCountDesc = 'SIGNAL_CLUSTERS_MIN_MEMBER_COUNT_DESC',
+  SignalClustersStddevPopulationMemberCountAsc = 'SIGNAL_CLUSTERS_STDDEV_POPULATION_MEMBER_COUNT_ASC',
+  SignalClustersStddevPopulationMemberCountDesc = 'SIGNAL_CLUSTERS_STDDEV_POPULATION_MEMBER_COUNT_DESC',
+  SignalClustersStddevSampleMemberCountAsc = 'SIGNAL_CLUSTERS_STDDEV_SAMPLE_MEMBER_COUNT_ASC',
+  SignalClustersStddevSampleMemberCountDesc = 'SIGNAL_CLUSTERS_STDDEV_SAMPLE_MEMBER_COUNT_DESC',
+  SignalClustersSumMemberCountAsc = 'SIGNAL_CLUSTERS_SUM_MEMBER_COUNT_ASC',
+  SignalClustersSumMemberCountDesc = 'SIGNAL_CLUSTERS_SUM_MEMBER_COUNT_DESC',
+  SignalClustersVariancePopulationMemberCountAsc = 'SIGNAL_CLUSTERS_VARIANCE_POPULATION_MEMBER_COUNT_ASC',
+  SignalClustersVariancePopulationMemberCountDesc = 'SIGNAL_CLUSTERS_VARIANCE_POPULATION_MEMBER_COUNT_DESC',
+  SignalClustersVarianceSampleMemberCountAsc = 'SIGNAL_CLUSTERS_VARIANCE_SAMPLE_MEMBER_COUNT_ASC',
+  SignalClustersVarianceSampleMemberCountDesc = 'SIGNAL_CLUSTERS_VARIANCE_SAMPLE_MEMBER_COUNT_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
+  TagsCountAsc = 'TAGS_COUNT_ASC',
+  TagsCountDesc = 'TAGS_COUNT_DESC',
+  TagsDistinctCountColorAsc = 'TAGS_DISTINCT_COUNT_COLOR_ASC',
+  TagsDistinctCountColorDesc = 'TAGS_DISTINCT_COUNT_COLOR_DESC',
+  TagsDistinctCountCreatedAtAsc = 'TAGS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TagsDistinctCountCreatedAtDesc = 'TAGS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TagsDistinctCountNameAsc = 'TAGS_DISTINCT_COUNT_NAME_ASC',
+  TagsDistinctCountNameDesc = 'TAGS_DISTINCT_COUNT_NAME_DESC',
+  TagsDistinctCountProjectIdAsc = 'TAGS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TagsDistinctCountProjectIdDesc = 'TAGS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TagsDistinctCountRowIdAsc = 'TAGS_DISTINCT_COUNT_ROW_ID_ASC',
+  TagsDistinctCountRowIdDesc = 'TAGS_DISTINCT_COUNT_ROW_ID_DESC',
+  TagsDistinctCountUpdatedAtAsc = 'TAGS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TagsDistinctCountUpdatedAtDesc = 'TAGS_DISTINCT_COUNT_UPDATED_AT_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
@@ -4035,6 +4740,18 @@ export type ProjectToManyProjectStatusConfigFilter = {
   some?: InputMaybe<ProjectStatusConfigFilter>;
 };
 
+/** A filter to be used against many `SignalCluster` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManySignalClusterFilter = {
+  /** Aggregates across related `SignalCluster` match the filter criteria. */
+  aggregates?: InputMaybe<SignalClusterAggregatesFilter>;
+  /** Every related `SignalCluster` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<SignalClusterFilter>;
+  /** No related `SignalCluster` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<SignalClusterFilter>;
+  /** Some related `SignalCluster` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<SignalClusterFilter>;
+};
+
 /** A filter to be used against many `Signal` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManySignalFilter = {
   /** Aggregates across related `Signal` match the filter criteria. */
@@ -4047,6 +4764,18 @@ export type ProjectToManySignalFilter = {
   some?: InputMaybe<SignalFilter>;
 };
 
+/** A filter to be used against many `Tag` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyTagFilter = {
+  /** Aggregates across related `Tag` match the filter criteria. */
+  aggregates?: InputMaybe<TagAggregatesFilter>;
+  /** Every related `Tag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TagFilter>;
+  /** No related `Tag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TagFilter>;
+  /** Some related `Tag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TagFilter>;
+};
+
 export type ProjectVariancePopulationAggregates = {
   __typename?: 'ProjectVariancePopulationAggregates';
   /** Population variance of nextPostNumber across the matching connection */
@@ -4057,6 +4786,20 @@ export type ProjectVarianceSampleAggregates = {
   __typename?: 'ProjectVarianceSampleAggregates';
   /** Sample variance of nextPostNumber across the matching connection */
   nextPostNumber?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type PromoteSignalToPostInput = {
+  signalId: Scalars['UUID']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PromoteSignalToPostPayload = {
+  __typename?: 'PromoteSignalToPostPayload';
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  projectId: Scalars['UUID']['output'];
+  source?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -4083,10 +4826,18 @@ export type Query = Node & {
   post?: Maybe<Post>;
   /** Get a single `Post`. */
   postByProjectIdAndNumber?: Maybe<Post>;
+  /** Get a single `PostTag`. */
+  postTag?: Maybe<PostTag>;
+  /** Get a single `PostTag`. */
+  postTagByPostIdAndTagId?: Maybe<PostTag>;
+  /** Reads and enables pagination through a set of `PostTag`. */
+  postTags?: Maybe<PostTagConnection>;
   /** Reads and enables pagination through a set of `Post`. */
   posts?: Maybe<PostConnection>;
   /** Get a single `Project`. */
   project?: Maybe<Project>;
+  /** Get a single `Project`. */
+  projectByInboundEmailKey?: Maybe<Project>;
   /** Get a single `Project`. */
   projectBySlugAndOrganizationId?: Maybe<Project>;
   /** Get a single `ProjectLink`. */
@@ -4108,14 +4859,26 @@ export type Query = Node & {
   query: Query;
   /** Get a single `Signal`. */
   signal?: Maybe<Signal>;
+  /** Get a single `SignalCluster`. */
+  signalCluster?: Maybe<SignalCluster>;
+  /** Reads and enables pagination through a set of `SignalCluster`. */
+  signalClusters?: Maybe<SignalClusterConnection>;
   /** Reads and enables pagination through a set of `Signal`. */
   signals?: Maybe<SignalConnection>;
+  /** Posts similar to a draft, to surface possible duplicates at submit time. */
+  similarPosts: Array<SimilarPost>;
   /** Get a single `StatusTemplate`. */
   statusTemplate?: Maybe<StatusTemplate>;
   /** Get a single `StatusTemplate`. */
   statusTemplateByOrganizationIdAndName?: Maybe<StatusTemplate>;
   /** Reads and enables pagination through a set of `StatusTemplate`. */
   statusTemplates?: Maybe<StatusTemplateConnection>;
+  /** Get a single `Tag`. */
+  tag?: Maybe<Tag>;
+  /** Get a single `Tag`. */
+  tagByProjectIdAndName?: Maybe<Tag>;
+  /** Reads and enables pagination through a set of `Tag`. */
+  tags?: Maybe<TagConnection>;
   /** Get a single `User`. */
   user?: Maybe<User>;
   /** Get a single `User`. */
@@ -4197,6 +4960,32 @@ export type QueryPostByProjectIdAndNumberArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryPostTagArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostTagByPostIdAndTagIdArgs = {
+  postId: Scalars['UUID']['input'];
+  tagId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostTagsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostTagCondition>;
+  filter?: InputMaybe<PostTagFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostTagOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -4212,6 +5001,12 @@ export type QueryPostsArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectByInboundEmailKeyArgs = {
+  inboundEmailKey: Scalars['String']['input'];
 };
 
 
@@ -4287,6 +5082,25 @@ export type QuerySignalArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QuerySignalClusterArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QuerySignalClustersArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<SignalClusterCondition>;
+  filter?: InputMaybe<SignalClusterFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SignalClusterOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QuerySignalsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -4296,6 +5110,13 @@ export type QuerySignalsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<SignalOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QuerySimilarPostsArgs = {
+  content: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
 };
 
 
@@ -4322,6 +5143,32 @@ export type QueryStatusTemplatesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<StatusTemplateOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTagArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTagByProjectIdAndNameArgs = {
+  name: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTagsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TagCondition>;
+  filter?: InputMaybe<TagFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TagOrderBy>>;
 };
 
 
@@ -4409,6 +5256,9 @@ export type QueryWardenSyncQueuesArgs = {
 export type Signal = {
   __typename?: 'Signal';
   aiTags?: Maybe<Scalars['JSON']['output']>;
+  /** Reads a single `SignalCluster` that is related to this `Signal`. */
+  cluster?: Maybe<SignalCluster>;
+  clusterId?: Maybe<Scalars['UUID']['output']>;
   createdAt: Scalars['Datetime']['output'];
   organizationId: Scalars['String']['output'];
   /** Reads a single `Post` that is related to this `Signal`. */
@@ -4445,8 +5295,526 @@ export type SignalAggregatesFilter = {
   filter?: InputMaybe<SignalFilter>;
 };
 
+export type SignalCluster = {
+  __typename?: 'SignalCluster';
+  createdAt: Scalars['Datetime']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  memberCount: Scalars['Int']['output'];
+  /** Reads and enables pagination through a set of `Post`. */
+  postsByClusterId: PostConnection;
+  /** Reads a single `Project` that is related to this `SignalCluster`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `Signal`. */
+  signalsByClusterId: SignalConnection;
+  summary?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type SignalClusterPostsByClusterIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type SignalClusterSignalsByClusterIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<SignalCondition>;
+  filter?: InputMaybe<SignalFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SignalOrderBy>>;
+};
+
+export type SignalClusterAggregates = {
+  __typename?: 'SignalClusterAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<SignalClusterAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<SignalClusterDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<SignalClusterMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<SignalClusterMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<SignalClusterStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<SignalClusterStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<SignalClusterSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<SignalClusterVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<SignalClusterVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `SignalCluster` object types. */
+export type SignalClusterAggregatesFilter = {
+  /** Mean average aggregate over matching `SignalCluster` objects. */
+  average?: InputMaybe<SignalClusterAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `SignalCluster` objects. */
+  distinctCount?: InputMaybe<SignalClusterDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `SignalCluster` object to be included within the aggregate. */
+  filter?: InputMaybe<SignalClusterFilter>;
+  /** Maximum aggregate over matching `SignalCluster` objects. */
+  max?: InputMaybe<SignalClusterMaxAggregateFilter>;
+  /** Minimum aggregate over matching `SignalCluster` objects. */
+  min?: InputMaybe<SignalClusterMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `SignalCluster` objects. */
+  stddevPopulation?: InputMaybe<SignalClusterStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `SignalCluster` objects. */
+  stddevSample?: InputMaybe<SignalClusterStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `SignalCluster` objects. */
+  sum?: InputMaybe<SignalClusterSumAggregateFilter>;
+  /** Population variance aggregate over matching `SignalCluster` objects. */
+  variancePopulation?: InputMaybe<SignalClusterVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `SignalCluster` objects. */
+  varianceSample?: InputMaybe<SignalClusterVarianceSampleAggregateFilter>;
+};
+
+export type SignalClusterAverageAggregateFilter = {
+  memberCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type SignalClusterAverageAggregates = {
+  __typename?: 'SignalClusterAverageAggregates';
+  /** Mean average of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `SignalCluster` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type SignalClusterCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `label` field. */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `memberCount` field. */
+  memberCount?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `summary` field. */
+  summary?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `SignalCluster` values. */
+export type SignalClusterConnection = {
+  __typename?: 'SignalClusterConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<SignalClusterAggregates>;
+  /** A list of edges which contains the `SignalCluster` and cursor to aid in pagination. */
+  edges: Array<Maybe<SignalClusterEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<SignalClusterAggregates>>;
+  /** A list of `SignalCluster` objects. */
+  nodes: Array<Maybe<SignalCluster>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `SignalCluster` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `SignalCluster` values. */
+export type SignalClusterConnectionGroupedAggregatesArgs = {
+  groupBy: Array<SignalClusterGroupBy>;
+  having?: InputMaybe<SignalClusterHavingInput>;
+};
+
+export type SignalClusterDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  label?: InputMaybe<BigIntFilter>;
+  memberCount?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  summary?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type SignalClusterDistinctCountAggregates = {
+  __typename?: 'SignalClusterDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of label across the matching connection */
+  label?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of summary across the matching connection */
+  summary?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `SignalCluster` edge in the connection. */
+export type SignalClusterEdge = {
+  __typename?: 'SignalClusterEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `SignalCluster` at the end of the edge. */
+  node?: Maybe<SignalCluster>;
+};
+
+/** A filter to be used against `SignalCluster` object types. All fields are combined with a logical ‘and.’ */
+export type SignalClusterFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<SignalClusterFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `label` field. */
+  label?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `memberCount` field. */
+  memberCount?: InputMaybe<IntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<SignalClusterFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<SignalClusterFilter>>;
+  /** Filter by the object’s `postsByClusterId` relation. */
+  postsByClusterId?: InputMaybe<SignalClusterToManyPostFilter>;
+  /** Some related `postsByClusterId` exist. */
+  postsByClusterIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `signalsByClusterId` relation. */
+  signalsByClusterId?: InputMaybe<SignalClusterToManySignalFilter>;
+  /** Some related `signalsByClusterId` exist. */
+  signalsByClusterIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `summary` field. */
+  summary?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `SignalCluster` for usage during aggregation. */
+export enum SignalClusterGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Label = 'LABEL',
+  MemberCount = 'MEMBER_COUNT',
+  ProjectId = 'PROJECT_ID',
+  Summary = 'SUMMARY',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type SignalClusterHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `SignalCluster` aggregates. */
+export type SignalClusterHavingInput = {
+  AND?: InputMaybe<Array<SignalClusterHavingInput>>;
+  OR?: InputMaybe<Array<SignalClusterHavingInput>>;
+  average?: InputMaybe<SignalClusterHavingAverageInput>;
+  distinctCount?: InputMaybe<SignalClusterHavingDistinctCountInput>;
+  max?: InputMaybe<SignalClusterHavingMaxInput>;
+  min?: InputMaybe<SignalClusterHavingMinInput>;
+  stddevPopulation?: InputMaybe<SignalClusterHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<SignalClusterHavingStddevSampleInput>;
+  sum?: InputMaybe<SignalClusterHavingSumInput>;
+  variancePopulation?: InputMaybe<SignalClusterHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<SignalClusterHavingVarianceSampleInput>;
+};
+
+export type SignalClusterHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type SignalClusterHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  memberCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `SignalCluster` */
+export type SignalClusterInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+  memberCount?: InputMaybe<Scalars['Int']['input']>;
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  summary?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type SignalClusterMaxAggregateFilter = {
+  memberCount?: InputMaybe<IntFilter>;
+};
+
+export type SignalClusterMaxAggregates = {
+  __typename?: 'SignalClusterMaxAggregates';
+  /** Maximum of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SignalClusterMinAggregateFilter = {
+  memberCount?: InputMaybe<IntFilter>;
+};
+
+export type SignalClusterMinAggregates = {
+  __typename?: 'SignalClusterMinAggregates';
+  /** Minimum of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `SignalCluster`. */
+export enum SignalClusterOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  LabelAsc = 'LABEL_ASC',
+  LabelDesc = 'LABEL_DESC',
+  MemberCountAsc = 'MEMBER_COUNT_ASC',
+  MemberCountDesc = 'MEMBER_COUNT_DESC',
+  Natural = 'NATURAL',
+  PostsByClusterIdAverageNumberAsc = 'POSTS_BY_CLUSTER_ID_AVERAGE_NUMBER_ASC',
+  PostsByClusterIdAverageNumberDesc = 'POSTS_BY_CLUSTER_ID_AVERAGE_NUMBER_DESC',
+  PostsByClusterIdCountAsc = 'POSTS_BY_CLUSTER_ID_COUNT_ASC',
+  PostsByClusterIdCountDesc = 'POSTS_BY_CLUSTER_ID_COUNT_DESC',
+  PostsByClusterIdDistinctCountAiTagsAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_AI_TAGS_ASC',
+  PostsByClusterIdDistinctCountAiTagsDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_AI_TAGS_DESC',
+  PostsByClusterIdDistinctCountClusterIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  PostsByClusterIdDistinctCountClusterIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_CLUSTER_ID_DESC',
+  PostsByClusterIdDistinctCountCreatedAtAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostsByClusterIdDistinctCountCreatedAtDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostsByClusterIdDistinctCountDescriptionAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_DESCRIPTION_ASC',
+  PostsByClusterIdDistinctCountDescriptionDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsByClusterIdDistinctCountDuplicateOfIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_DUPLICATE_OF_ID_ASC',
+  PostsByClusterIdDistinctCountDuplicateOfIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_DUPLICATE_OF_ID_DESC',
+  PostsByClusterIdDistinctCountNumberAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_NUMBER_ASC',
+  PostsByClusterIdDistinctCountNumberDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_NUMBER_DESC',
+  PostsByClusterIdDistinctCountProjectIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  PostsByClusterIdDistinctCountProjectIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  PostsByClusterIdDistinctCountRowIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostsByClusterIdDistinctCountRowIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsByClusterIdDistinctCountSentimentAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SENTIMENT_ASC',
+  PostsByClusterIdDistinctCountSentimentDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SENTIMENT_DESC',
+  PostsByClusterIdDistinctCountShippedAtAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SHIPPED_AT_ASC',
+  PostsByClusterIdDistinctCountShippedAtDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SHIPPED_AT_DESC',
+  PostsByClusterIdDistinctCountSourceAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_ASC',
+  PostsByClusterIdDistinctCountSourceDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_DESC',
+  PostsByClusterIdDistinctCountStatusTemplateIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_TEMPLATE_ID_ASC',
+  PostsByClusterIdDistinctCountStatusTemplateIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_TEMPLATE_ID_DESC',
+  PostsByClusterIdDistinctCountStatusUpdatedAtAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_ASC',
+  PostsByClusterIdDistinctCountStatusUpdatedAtDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_UPDATED_AT_DESC',
+  PostsByClusterIdDistinctCountTitleAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_TITLE_ASC',
+  PostsByClusterIdDistinctCountTitleDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_TITLE_DESC',
+  PostsByClusterIdDistinctCountUpdatedAtAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostsByClusterIdDistinctCountUpdatedAtDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  PostsByClusterIdDistinctCountUserIdAsc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_USER_ID_ASC',
+  PostsByClusterIdDistinctCountUserIdDesc = 'POSTS_BY_CLUSTER_ID_DISTINCT_COUNT_USER_ID_DESC',
+  PostsByClusterIdMaxNumberAsc = 'POSTS_BY_CLUSTER_ID_MAX_NUMBER_ASC',
+  PostsByClusterIdMaxNumberDesc = 'POSTS_BY_CLUSTER_ID_MAX_NUMBER_DESC',
+  PostsByClusterIdMinNumberAsc = 'POSTS_BY_CLUSTER_ID_MIN_NUMBER_ASC',
+  PostsByClusterIdMinNumberDesc = 'POSTS_BY_CLUSTER_ID_MIN_NUMBER_DESC',
+  PostsByClusterIdStddevPopulationNumberAsc = 'POSTS_BY_CLUSTER_ID_STDDEV_POPULATION_NUMBER_ASC',
+  PostsByClusterIdStddevPopulationNumberDesc = 'POSTS_BY_CLUSTER_ID_STDDEV_POPULATION_NUMBER_DESC',
+  PostsByClusterIdStddevSampleNumberAsc = 'POSTS_BY_CLUSTER_ID_STDDEV_SAMPLE_NUMBER_ASC',
+  PostsByClusterIdStddevSampleNumberDesc = 'POSTS_BY_CLUSTER_ID_STDDEV_SAMPLE_NUMBER_DESC',
+  PostsByClusterIdSumNumberAsc = 'POSTS_BY_CLUSTER_ID_SUM_NUMBER_ASC',
+  PostsByClusterIdSumNumberDesc = 'POSTS_BY_CLUSTER_ID_SUM_NUMBER_DESC',
+  PostsByClusterIdVariancePopulationNumberAsc = 'POSTS_BY_CLUSTER_ID_VARIANCE_POPULATION_NUMBER_ASC',
+  PostsByClusterIdVariancePopulationNumberDesc = 'POSTS_BY_CLUSTER_ID_VARIANCE_POPULATION_NUMBER_DESC',
+  PostsByClusterIdVarianceSampleNumberAsc = 'POSTS_BY_CLUSTER_ID_VARIANCE_SAMPLE_NUMBER_ASC',
+  PostsByClusterIdVarianceSampleNumberDesc = 'POSTS_BY_CLUSTER_ID_VARIANCE_SAMPLE_NUMBER_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SignalsByClusterIdCountAsc = 'SIGNALS_BY_CLUSTER_ID_COUNT_ASC',
+  SignalsByClusterIdCountDesc = 'SIGNALS_BY_CLUSTER_ID_COUNT_DESC',
+  SignalsByClusterIdDistinctCountAiTagsAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_AI_TAGS_ASC',
+  SignalsByClusterIdDistinctCountAiTagsDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_AI_TAGS_DESC',
+  SignalsByClusterIdDistinctCountClusterIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  SignalsByClusterIdDistinctCountClusterIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_CLUSTER_ID_DESC',
+  SignalsByClusterIdDistinctCountCreatedAtAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  SignalsByClusterIdDistinctCountCreatedAtDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  SignalsByClusterIdDistinctCountOrganizationIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  SignalsByClusterIdDistinctCountOrganizationIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  SignalsByClusterIdDistinctCountPostIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_POST_ID_ASC',
+  SignalsByClusterIdDistinctCountPostIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_POST_ID_DESC',
+  SignalsByClusterIdDistinctCountProjectIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  SignalsByClusterIdDistinctCountProjectIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  SignalsByClusterIdDistinctCountRawContentAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_RAW_CONTENT_ASC',
+  SignalsByClusterIdDistinctCountRawContentDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_RAW_CONTENT_DESC',
+  SignalsByClusterIdDistinctCountRowIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  SignalsByClusterIdDistinctCountRowIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  SignalsByClusterIdDistinctCountSentimentAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SENTIMENT_ASC',
+  SignalsByClusterIdDistinctCountSentimentDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SENTIMENT_DESC',
+  SignalsByClusterIdDistinctCountSourceAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_ASC',
+  SignalsByClusterIdDistinctCountSourceDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_DESC',
+  SignalsByClusterIdDistinctCountSourceMetadataAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_METADATA_ASC',
+  SignalsByClusterIdDistinctCountSourceMetadataDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_SOURCE_METADATA_DESC',
+  SignalsByClusterIdDistinctCountStatusAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_ASC',
+  SignalsByClusterIdDistinctCountStatusDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_STATUS_DESC',
+  SignalsByClusterIdDistinctCountTypeAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_TYPE_ASC',
+  SignalsByClusterIdDistinctCountTypeDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_TYPE_DESC',
+  SignalsByClusterIdDistinctCountUpdatedAtAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  SignalsByClusterIdDistinctCountUpdatedAtDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  SignalsByClusterIdDistinctCountUserIdAsc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_USER_ID_ASC',
+  SignalsByClusterIdDistinctCountUserIdDesc = 'SIGNALS_BY_CLUSTER_ID_DISTINCT_COUNT_USER_ID_DESC',
+  SummaryAsc = 'SUMMARY_ASC',
+  SummaryDesc = 'SUMMARY_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `SignalCluster`. Fields that are set will be updated. */
+export type SignalClusterPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+  memberCount?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  summary?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type SignalClusterStddevPopulationAggregateFilter = {
+  memberCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type SignalClusterStddevPopulationAggregates = {
+  __typename?: 'SignalClusterStddevPopulationAggregates';
+  /** Population standard deviation of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type SignalClusterStddevSampleAggregateFilter = {
+  memberCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type SignalClusterStddevSampleAggregates = {
+  __typename?: 'SignalClusterStddevSampleAggregates';
+  /** Sample standard deviation of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type SignalClusterSumAggregateFilter = {
+  memberCount?: InputMaybe<BigIntFilter>;
+};
+
+export type SignalClusterSumAggregates = {
+  __typename?: 'SignalClusterSumAggregates';
+  /** Sum of memberCount across the matching connection */
+  memberCount: Scalars['BigInt']['output'];
+};
+
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type SignalClusterToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `Signal` object types. All fields are combined with a logical ‘and.’ */
+export type SignalClusterToManySignalFilter = {
+  /** Aggregates across related `Signal` match the filter criteria. */
+  aggregates?: InputMaybe<SignalAggregatesFilter>;
+  /** Every related `Signal` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<SignalFilter>;
+  /** No related `Signal` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<SignalFilter>;
+  /** Some related `Signal` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<SignalFilter>;
+};
+
+export type SignalClusterVariancePopulationAggregateFilter = {
+  memberCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type SignalClusterVariancePopulationAggregates = {
+  __typename?: 'SignalClusterVariancePopulationAggregates';
+  /** Population variance of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type SignalClusterVarianceSampleAggregateFilter = {
+  memberCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type SignalClusterVarianceSampleAggregates = {
+  __typename?: 'SignalClusterVarianceSampleAggregates';
+  /** Sample variance of memberCount across the matching connection */
+  memberCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
 /** A condition to be used against `Signal` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type SignalCondition = {
+  /** Checks for equality with the object’s `clusterId` field. */
+  clusterId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
@@ -4499,6 +5867,7 @@ export type SignalConnectionGroupedAggregatesArgs = {
 
 export type SignalDistinctCountAggregateFilter = {
   aiTags?: InputMaybe<BigIntFilter>;
+  clusterId?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   organizationId?: InputMaybe<BigIntFilter>;
   postId?: InputMaybe<BigIntFilter>;
@@ -4518,6 +5887,8 @@ export type SignalDistinctCountAggregates = {
   __typename?: 'SignalDistinctCountAggregates';
   /** Distinct count of aiTags across the matching connection */
   aiTags?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of clusterId across the matching connection */
+  clusterId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of organizationId across the matching connection */
@@ -4559,6 +5930,12 @@ export type SignalEdge = {
 export type SignalFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<SignalFilter>>;
+  /** Filter by the object’s `cluster` relation. */
+  cluster?: InputMaybe<SignalClusterFilter>;
+  /** A related `cluster` exists. */
+  clusterExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `clusterId` field. */
+  clusterId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Negates the expression. */
@@ -4604,6 +5981,7 @@ export type SignalFilter = {
 /** Grouping methods for `Signal` for usage during aggregation. */
 export enum SignalGroupBy {
   AiTags = 'AI_TAGS',
+  ClusterId = 'CLUSTER_ID',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
@@ -4682,26 +6060,10 @@ export type SignalHavingVarianceSampleInput = {
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
-/** An input for mutations affecting `Signal` */
-export type SignalInput = {
-  aiTags?: InputMaybe<Scalars['JSON']['input']>;
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  organizationId: Scalars['String']['input'];
-  postId?: InputMaybe<Scalars['UUID']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rawContent: Scalars['String']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  sentiment?: InputMaybe<Scalars['String']['input']>;
-  source: Scalars['String']['input'];
-  sourceMetadata?: InputMaybe<Scalars['JSON']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
 /** Methods to use when ordering `Signal`. */
 export enum SignalOrderBy {
+  ClusterIdAsc = 'CLUSTER_ID_ASC',
+  ClusterIdDesc = 'CLUSTER_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
@@ -4731,22 +6093,12 @@ export enum SignalOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
-/** Represents an update to a `Signal`. Fields that are set will be updated. */
-export type SignalPatch = {
-  aiTags?: InputMaybe<Scalars['JSON']['input']>;
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  postId?: InputMaybe<Scalars['UUID']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rawContent?: InputMaybe<Scalars['String']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  sentiment?: InputMaybe<Scalars['String']['input']>;
-  source?: InputMaybe<Scalars['String']['input']>;
-  sourceMetadata?: InputMaybe<Scalars['JSON']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId?: InputMaybe<Scalars['UUID']['input']>;
+export type SimilarPost = {
+  __typename?: 'SimilarPost';
+  id: Scalars['UUID']['output'];
+  number?: Maybe<Scalars['Int']['output']>;
+  score: Scalars['Float']['output'];
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type StatusTemplate = {
@@ -5064,16 +6416,26 @@ export enum StatusTemplateOrderBy {
   PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
+  PostsDistinctCountAiTagsAsc = 'POSTS_DISTINCT_COUNT_AI_TAGS_ASC',
+  PostsDistinctCountAiTagsDesc = 'POSTS_DISTINCT_COUNT_AI_TAGS_DESC',
+  PostsDistinctCountClusterIdAsc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  PostsDistinctCountClusterIdDesc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountDuplicateOfIdAsc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_ASC',
+  PostsDistinctCountDuplicateOfIdDesc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_DESC',
   PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
   PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsDistinctCountSentimentAsc = 'POSTS_DISTINCT_COUNT_SENTIMENT_ASC',
+  PostsDistinctCountSentimentDesc = 'POSTS_DISTINCT_COUNT_SENTIMENT_DESC',
+  PostsDistinctCountShippedAtAsc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_ASC',
+  PostsDistinctCountShippedAtDesc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_DESC',
   PostsDistinctCountSourceAsc = 'POSTS_DISTINCT_COUNT_SOURCE_ASC',
   PostsDistinctCountSourceDesc = 'POSTS_DISTINCT_COUNT_SOURCE_DESC',
   PostsDistinctCountStatusTemplateIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_TEMPLATE_ID_ASC',
@@ -5291,6 +6653,283 @@ export type StringFilter = {
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Tag = {
+  __typename?: 'Tag';
+  color?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  name: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `PostTag`. */
+  postTags: PostTagConnection;
+  /** Reads a single `Project` that is related to this `Tag`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type TagPostTagsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostTagCondition>;
+  filter?: InputMaybe<PostTagFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostTagOrderBy>>;
+};
+
+export type TagAggregates = {
+  __typename?: 'TagAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<TagDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Tag` object types. */
+export type TagAggregatesFilter = {
+  /** Distinct count aggregate over matching `Tag` objects. */
+  distinctCount?: InputMaybe<TagDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Tag` object to be included within the aggregate. */
+  filter?: InputMaybe<TagFilter>;
+};
+
+/** A condition to be used against `Tag` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type TagCondition = {
+  /** Checks for equality with the object’s `color` field. */
+  color?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `Tag` values. */
+export type TagConnection = {
+  __typename?: 'TagConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<TagAggregates>;
+  /** A list of edges which contains the `Tag` and cursor to aid in pagination. */
+  edges: Array<Maybe<TagEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<TagAggregates>>;
+  /** A list of `Tag` objects. */
+  nodes: Array<Maybe<Tag>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Tag` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Tag` values. */
+export type TagConnectionGroupedAggregatesArgs = {
+  groupBy: Array<TagGroupBy>;
+  having?: InputMaybe<TagHavingInput>;
+};
+
+export type TagDistinctCountAggregateFilter = {
+  color?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  name?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type TagDistinctCountAggregates = {
+  __typename?: 'TagDistinctCountAggregates';
+  /** Distinct count of color across the matching connection */
+  color?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Tag` edge in the connection. */
+export type TagEdge = {
+  __typename?: 'TagEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Tag` at the end of the edge. */
+  node?: Maybe<Tag>;
+};
+
+/** A filter to be used against `Tag` object types. All fields are combined with a logical ‘and.’ */
+export type TagFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TagFilter>>;
+  /** Filter by the object’s `color` field. */
+  color?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TagFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TagFilter>>;
+  /** Filter by the object’s `postTags` relation. */
+  postTags?: InputMaybe<TagToManyPostTagFilter>;
+  /** Some related `postTags` exist. */
+  postTagsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `Tag` for usage during aggregation. */
+export enum TagGroupBy {
+  Color = 'COLOR',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Name = 'NAME',
+  ProjectId = 'PROJECT_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type TagHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Tag` aggregates. */
+export type TagHavingInput = {
+  AND?: InputMaybe<Array<TagHavingInput>>;
+  OR?: InputMaybe<Array<TagHavingInput>>;
+  average?: InputMaybe<TagHavingAverageInput>;
+  distinctCount?: InputMaybe<TagHavingDistinctCountInput>;
+  max?: InputMaybe<TagHavingMaxInput>;
+  min?: InputMaybe<TagHavingMinInput>;
+  stddevPopulation?: InputMaybe<TagHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<TagHavingStddevSampleInput>;
+  sum?: InputMaybe<TagHavingSumInput>;
+  variancePopulation?: InputMaybe<TagHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<TagHavingVarianceSampleInput>;
+};
+
+export type TagHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TagHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Tag` */
+export type TagInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  name: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `Tag`. */
+export enum TagOrderBy {
+  ColorAsc = 'COLOR_ASC',
+  ColorDesc = 'COLOR_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  PostTagsCountAsc = 'POST_TAGS_COUNT_ASC',
+  PostTagsCountDesc = 'POST_TAGS_COUNT_DESC',
+  PostTagsDistinctCountCreatedAtAsc = 'POST_TAGS_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostTagsDistinctCountCreatedAtDesc = 'POST_TAGS_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostTagsDistinctCountPostIdAsc = 'POST_TAGS_DISTINCT_COUNT_POST_ID_ASC',
+  PostTagsDistinctCountPostIdDesc = 'POST_TAGS_DISTINCT_COUNT_POST_ID_DESC',
+  PostTagsDistinctCountRowIdAsc = 'POST_TAGS_DISTINCT_COUNT_ROW_ID_ASC',
+  PostTagsDistinctCountRowIdDesc = 'POST_TAGS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostTagsDistinctCountTagIdAsc = 'POST_TAGS_DISTINCT_COUNT_TAG_ID_ASC',
+  PostTagsDistinctCountTagIdDesc = 'POST_TAGS_DISTINCT_COUNT_TAG_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `Tag`. Fields that are set will be updated. */
+export type TagPatch = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `PostTag` object types. All fields are combined with a logical ‘and.’ */
+export type TagToManyPostTagFilter = {
+  /** Aggregates across related `PostTag` match the filter criteria. */
+  aggregates?: InputMaybe<PostTagAggregatesFilter>;
+  /** Every related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostTagFilter>;
+  /** No related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostTagFilter>;
+  /** Some related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostTagFilter>;
+};
+
 /** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
 export type UuidFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -5419,6 +7058,40 @@ export type UpdatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the `updatePostTag` mutation. */
+export type UpdatePostTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `PostTag` being updated. */
+  patch: PostTagPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `PostTag` mutation. */
+export type UpdatePostTagPayload = {
+  __typename?: 'UpdatePostTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostTag` that was updated by this mutation. */
+  postTag?: Maybe<PostTag>;
+  /** An edge for our `PostTag`. May be used by Relay 1. */
+  postTagEdge?: Maybe<PostTagEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `PostTag` mutation. */
+export type UpdatePostTagPayloadPostTagEdgeArgs = {
+  orderBy?: Array<PostTagOrderBy>;
+};
+
 /** All input for the `updateProject` mutation. */
 export type UpdateProjectInput = {
   /**
@@ -5521,21 +7194,21 @@ export type UpdateProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
 };
 
-/** All input for the `updateSignal` mutation. */
-export type UpdateSignalInput = {
+/** All input for the `updateSignalCluster` mutation. */
+export type UpdateSignalClusterInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Signal` being updated. */
-  patch: SignalPatch;
+  /** An object where the defined keys will be set on the `SignalCluster` being updated. */
+  patch: SignalClusterPatch;
   rowId: Scalars['UUID']['input'];
 };
 
-/** The output of our update `Signal` mutation. */
-export type UpdateSignalPayload = {
-  __typename?: 'UpdateSignalPayload';
+/** The output of our update `SignalCluster` mutation. */
+export type UpdateSignalClusterPayload = {
+  __typename?: 'UpdateSignalClusterPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
@@ -5543,16 +7216,16 @@ export type UpdateSignalPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `Signal` that was updated by this mutation. */
-  signal?: Maybe<Signal>;
-  /** An edge for our `Signal`. May be used by Relay 1. */
-  signalEdge?: Maybe<SignalEdge>;
+  /** The `SignalCluster` that was updated by this mutation. */
+  signalCluster?: Maybe<SignalCluster>;
+  /** An edge for our `SignalCluster`. May be used by Relay 1. */
+  signalClusterEdge?: Maybe<SignalClusterEdge>;
 };
 
 
-/** The output of our update `Signal` mutation. */
-export type UpdateSignalPayloadSignalEdgeArgs = {
-  orderBy?: Array<SignalOrderBy>;
+/** The output of our update `SignalCluster` mutation. */
+export type UpdateSignalClusterPayloadSignalClusterEdgeArgs = {
+  orderBy?: Array<SignalClusterOrderBy>;
 };
 
 /** All input for the `updateStatusTemplate` mutation. */
@@ -5587,6 +7260,40 @@ export type UpdateStatusTemplatePayload = {
 /** The output of our update `StatusTemplate` mutation. */
 export type UpdateStatusTemplatePayloadStatusTemplateEdgeArgs = {
   orderBy?: Array<StatusTemplateOrderBy>;
+};
+
+/** All input for the `updateTag` mutation. */
+export type UpdateTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Tag` being updated. */
+  patch: TagPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Tag` mutation. */
+export type UpdateTagPayload = {
+  __typename?: 'UpdateTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Tag` that was updated by this mutation. */
+  tag?: Maybe<Tag>;
+  /** An edge for our `Tag`. May be used by Relay 1. */
+  tagEdge?: Maybe<TagEdge>;
+};
+
+
+/** The output of our update `Tag` mutation. */
+export type UpdateTagPayloadTagEdgeArgs = {
+  orderBy?: Array<TagOrderBy>;
 };
 
 /** All input for the `updateUser` mutation. */
@@ -6088,16 +7795,26 @@ export enum UserOrderBy {
   PostsAverageNumberDesc = 'POSTS_AVERAGE_NUMBER_DESC',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
+  PostsDistinctCountAiTagsAsc = 'POSTS_DISTINCT_COUNT_AI_TAGS_ASC',
+  PostsDistinctCountAiTagsDesc = 'POSTS_DISTINCT_COUNT_AI_TAGS_DESC',
+  PostsDistinctCountClusterIdAsc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  PostsDistinctCountClusterIdDesc = 'POSTS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   PostsDistinctCountCreatedAtAsc = 'POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountDuplicateOfIdAsc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_ASC',
+  PostsDistinctCountDuplicateOfIdDesc = 'POSTS_DISTINCT_COUNT_DUPLICATE_OF_ID_DESC',
   PostsDistinctCountNumberAsc = 'POSTS_DISTINCT_COUNT_NUMBER_ASC',
   PostsDistinctCountNumberDesc = 'POSTS_DISTINCT_COUNT_NUMBER_DESC',
   PostsDistinctCountProjectIdAsc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_ASC',
   PostsDistinctCountProjectIdDesc = 'POSTS_DISTINCT_COUNT_PROJECT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  PostsDistinctCountSentimentAsc = 'POSTS_DISTINCT_COUNT_SENTIMENT_ASC',
+  PostsDistinctCountSentimentDesc = 'POSTS_DISTINCT_COUNT_SENTIMENT_DESC',
+  PostsDistinctCountShippedAtAsc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_ASC',
+  PostsDistinctCountShippedAtDesc = 'POSTS_DISTINCT_COUNT_SHIPPED_AT_DESC',
   PostsDistinctCountSourceAsc = 'POSTS_DISTINCT_COUNT_SOURCE_ASC',
   PostsDistinctCountSourceDesc = 'POSTS_DISTINCT_COUNT_SOURCE_DESC',
   PostsDistinctCountStatusTemplateIdAsc = 'POSTS_DISTINCT_COUNT_STATUS_TEMPLATE_ID_ASC',
@@ -6132,6 +7849,8 @@ export enum UserOrderBy {
   SignalsCountDesc = 'SIGNALS_COUNT_DESC',
   SignalsDistinctCountAiTagsAsc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_ASC',
   SignalsDistinctCountAiTagsDesc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_DESC',
+  SignalsDistinctCountClusterIdAsc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_ASC',
+  SignalsDistinctCountClusterIdDesc = 'SIGNALS_DISTINCT_COUNT_CLUSTER_ID_DESC',
   SignalsDistinctCountCreatedAtAsc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_ASC',
   SignalsDistinctCountCreatedAtDesc = 'SIGNALS_DISTINCT_COUNT_CREATED_AT_DESC',
   SignalsDistinctCountOrganizationIdAsc = 'SIGNALS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
@@ -6861,7 +8580,7 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, number: number, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null };
 
@@ -7080,7 +8799,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -7113,7 +8832,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, slug: string, organizationId: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, organizationId: string, posts: { __typename?: 'PostConnection', totalCount: number, aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null } } | null> } | null };
 
 export type RecentFeedbackQueryVariables = Exact<{
   organizationIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
@@ -7255,6 +8974,7 @@ export const ProjectFragmentDoc = `
   rowId
   name
   description
+  image
   slug
   prefix
   organizationId
@@ -8479,6 +10199,7 @@ export const ProjectsDocument = `
       rowId
       name
       description
+      image
       slug
       organizationId
       posts {

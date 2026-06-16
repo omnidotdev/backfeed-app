@@ -172,6 +172,13 @@ function ProjectPage() {
         ],
         title: (
           <div className="flex items-center gap-3">
+            {project?.image && (
+              <img
+                src={project.image}
+                alt=""
+                className="size-9 shrink-0 rounded-lg border border-border-subtle object-cover md:size-10"
+              />
+            )}
             <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
               {project?.name}
             </h1>

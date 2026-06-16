@@ -18,6 +18,7 @@ query Projects(
       rowId
       name
       description
+      image
       slug
       organizationId
       posts {
