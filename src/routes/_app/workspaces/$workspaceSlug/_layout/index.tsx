@@ -54,8 +54,13 @@ export const Route = createFileRoute(
 
 function WorkspacePage() {
   const { workspaceSlug } = Route.useParams();
-  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
-    Route.useRouteContext();
+  const {
+    hasAdminPrivileges,
+    isAuthenticated,
+    organizationId,
+    workspaceName,
+    workspaceLogo,
+  } = Route.useRouteContext();
 
   const { data: metrics } = useQuery({
     ...workspaceMetricsOptions({ organizationId }),
@@ -88,6 +93,13 @@ function WorkspacePage() {
       header={{
         title: (
           <div className="flex items-center gap-4">
+            {workspaceLogo && (
+              <img
+                src={workspaceLogo}
+                alt=""
+                className="size-10 shrink-0 rounded-lg border border-border-subtle object-cover"
+              />
+            )}
             <h1 className="font-semibold text-3xl leading-[1.3]">
               {workspaceName}
             </h1>

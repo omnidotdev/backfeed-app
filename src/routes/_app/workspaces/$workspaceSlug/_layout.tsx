@@ -29,6 +29,7 @@ export const Route = createFileRoute("/_app/workspaces/$workspaceSlug/_layout")(
 
         return {
           workspaceName: orgFromClaims.name ?? orgFromClaims.slug,
+          workspaceLogo: orgFromClaims.logo ?? null,
           organizationId: orgFromClaims.id,
           role,
           isOwner: isOwner(role),
@@ -47,6 +48,7 @@ export const Route = createFileRoute("/_app/workspaces/$workspaceSlug/_layout")(
 
       return {
         workspaceName: publicOrg.name ?? publicOrg.slug,
+        workspaceLogo: publicOrg.logo ?? null,
         organizationId: publicOrg.id,
         role: null,
         isOwner: false,
