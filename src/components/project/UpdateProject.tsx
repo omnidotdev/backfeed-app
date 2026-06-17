@@ -90,49 +90,56 @@ const UpdateProject = () => {
     },
     asyncDebounceMs: DEBOUNCE_TIME,
     onSubmit: async ({ value, formApi }) => {
-      // Filter out any links that were reset (empty URLs)
-      const currentLinks = value.projectLinks.filter(
-        (link) => !!link.url.length,
-      );
+      if (!project?.rowId) return;
+
+      // keep non-empty links, deduped by URL: the project_link table has a
+      // unique (url, projectId) index, so duplicates would fail the create and
+      // (previously) abort the whole save
+      const seenUrls = new Set<string>();
+      const currentLinks = value.projectLinks.filter((link) => {
+        const url = link.url?.trim();
+        if (!url || seenUrls.has(url)) return false;
+        seenUrls.add(url);
+        return true;
+      });
 
       try {
-        // Delete existing links, then create new ones with proper order
-        if (project?.projectLinks.nodes.length) {
+        // save the project details first so name/description/prefix persist
+        // independently of the links (a link error no longer drops them)
+        await updateProject({
+          rowId: project.rowId,
+          patch: {
+            name: value.name,
+            description: value.description ?? null,
+            prefix: value.prefix || null,
+            slug: generateSlug(value.name)!,
+            updatedAt: new Date(),
+          },
+        });
+
+        // replace the links: delete the existing set, then recreate the current
+        if (project.projectLinks.nodes.length) {
           await Promise.all(
-            project?.projectLinks.nodes?.map((link) =>
-              deleteProjectLink({
-                linkId: link?.rowId!,
-              }),
+            project.projectLinks.nodes.map((link) =>
+              deleteProjectLink({ linkId: link?.rowId! }),
             ),
           );
         }
 
-        await Promise.all([
-          updateProject({
-            rowId: project?.rowId!,
-            patch: {
-              name: value.name,
-              description: value.description,
-              prefix: value.prefix || null,
-              slug: generateSlug(value.name)!,
-              updatedAt: new Date(),
-            },
-          }),
-          ...currentLinks.map((link, index) =>
+        await Promise.all(
+          currentLinks.map((link, index) =>
             createProjectLink({
               input: {
                 projectLink: {
-                  // all links belong to this project; pending links carry no
-                  // projectId yet, so always use the project's own rowId
-                  projectId: project?.rowId!,
-                  url: link.url,
+                  projectId: project.rowId,
+                  url: link.url.trim(),
                   title: link.title || null,
                   order: index,
                 },
               },
             }),
           ),
-        ]);
+        );
 
         await queryClient.invalidateQueries({ queryKey: ["Project"] });
 
