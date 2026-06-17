@@ -4,6 +4,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import Comments from "@/components/feedback/Comments";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
 import PostTags from "@/components/feedback/PostTags";
+import ReactionBar from "@/components/feedback/ReactionBar";
 import Page from "@/components/layout/Page";
 import { BASE_URL } from "@/lib/config/env.config";
 import {
@@ -180,6 +181,12 @@ function FeedbackPage() {
         feedback={feedback!}
         projectStatuses={projectStatuses}
         disableHover
+      />
+
+      <ReactionBar
+        postId={feedbackId}
+        userId={session?.user?.rowId}
+        canReact={!!session?.user?.rowId}
       />
 
       {feedback?.project?.rowId && (
