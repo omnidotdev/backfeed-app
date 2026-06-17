@@ -4,6 +4,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { LuMessageSquare } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -22,6 +23,7 @@ import {
   infiniteCommentsOptions,
 } from "@/lib/options/comments";
 
+import type { MentionItem } from "@/components/ui/rich-text-editor";
 import type {
   CommentFragment,
   CreateCommentMutationVariables,
@@ -104,6 +106,22 @@ const Comments = () => {
 
   const allComments = [...pendingComments, ...(comments ?? [])];
 
+  // offer the thread's participants in the @-mention typeahead
+  const mentionableUsers = useMemo<MentionItem[]>(() => {
+    const byId = new Map<string, MentionItem>();
+    for (const comment of comments ?? []) {
+      const user = comment?.user;
+      if (user?.rowId && user?.username && !byId.has(user.rowId)) {
+        byId.set(user.rowId, {
+          id: user.rowId,
+          label: user.username,
+          url: `/profile/${user.rowId}/account`,
+        });
+      }
+    }
+    return [...byId.values()];
+  }, [comments]);
+
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: hasNextPage,
@@ -123,7 +141,10 @@ const Comments = () => {
       <div className="relative mb-px flex flex-col gap-2">
         {/* fail open while the limit query is loading/undetermined; the server
             enforces the real limit on create */}
-        <CreateComment canCreateComment={canCreateComment ?? true} />
+        <CreateComment
+          canCreateComment={canCreateComment ?? true}
+          mentionableUsers={mentionableUsers}
+        />
 
         <div className="mt-4 h-px w-full bg-border" />
 

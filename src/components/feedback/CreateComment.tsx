@@ -16,7 +16,7 @@ import {
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
-import type { EditorApi } from "@/components/ui/rich-text-editor";
+import type { EditorApi, MentionItem } from "@/components/ui/rich-text-editor";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -37,12 +37,14 @@ const createCommentSchema = z.object({
 interface Props {
   /** Whether the user can create a comment. */
   canCreateComment: boolean;
+  /** Users offered in the `@`-mention typeahead (thread participants). */
+  mentionableUsers?: MentionItem[];
 }
 
 /**
  * Create comment form.
  */
-const CreateComment = ({ canCreateComment }: Props) => {
+const CreateComment = ({ canCreateComment, mentionableUsers }: Props) => {
   const { session, queryClient, organizationId } =
     feedbackRoute.useRouteContext();
   const { projectSlug } = feedbackRoute.useParams();
@@ -136,6 +138,7 @@ const CreateComment = ({ canCreateComment }: Props) => {
             placeholder={app.postPage.comments.textAreaPlaceholder}
             editable={!!session && canCreateComment}
             editorClassName="min-h-16"
+            mentionItems={mentionableUsers}
             onUpdate={({ getHTML, getText, isEmpty }) => {
               field.handleChange(isEmpty ? "" : getHTML());
               setMessageLength(getText().trim().length);

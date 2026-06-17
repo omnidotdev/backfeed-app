@@ -1,5 +1,10 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { AutoLinkNode, LinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import {
+  $createLinkNode,
+  AutoLinkNode,
+  LinkNode,
+  TOGGLE_LINK_COMMAND,
+} from "@lexical/link";
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
@@ -15,10 +20,16 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import {
+  LexicalTypeaheadMenuPlugin,
+  MenuOption,
+  useBasicTypeaheadTriggerMatch,
+} from "@lexical/react/LexicalTypeaheadMenuPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import DOMPurify from "isomorphic-dompurify";
 import {
   $createParagraphNode,
+  $createTextNode,
   $getRoot,
   $insertNodes,
   $setSelection,
@@ -31,7 +42,8 @@ import {
   List,
   ListOrdered,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -42,6 +54,7 @@ import type {
   EditorThemeClasses,
   LexicalEditor,
   TextFormatType,
+  TextNode,
 } from "lexical";
 import type { ComponentProps, ReactNode, RefObject } from "react";
 
@@ -236,6 +249,100 @@ const EditorApiPlugin = ({
   return null;
 };
 
+/** A mentionable entity offered in the `@`-typeahead. */
+export interface MentionItem {
+  /** Stable id (e.g. user id). */
+  id: string;
+  /** Display label, shown after the `@` (no leading `@`). */
+  label: string;
+  /** Optional link target inserted for the mention. */
+  url?: string;
+}
+
+class MentionTypeaheadOption extends MenuOption {
+  item: MentionItem;
+
+  constructor(item: MentionItem) {
+    super(item.id);
+    this.item = item;
+  }
+}
+
+/**
+ * `@`-mention typeahead. Filters the provided `items` by the typed query and
+ * inserts the selected mention as a link (`@label` → `url`).
+ */
+const MentionTypeahead = ({ items }: { items: MentionItem[] }) => {
+  const [editor] = useLexicalComposerContext();
+  const [query, setQuery] = useState<string | null>(null);
+
+  const triggerFn = useBasicTypeaheadTriggerMatch("@", { minLength: 0 });
+
+  const options = useMemo(() => {
+    const normalized = (query ?? "").toLowerCase();
+    return items
+      .filter((item) => item.label.toLowerCase().includes(normalized))
+      .slice(0, 6)
+      .map((item) => new MentionTypeaheadOption(item));
+  }, [items, query]);
+
+  const onSelectOption = useCallback(
+    (
+      option: MentionTypeaheadOption,
+      nodeToReplace: TextNode | null,
+      closeMenu: () => void,
+    ) => {
+      editor.update(() => {
+        const mention = $createLinkNode(option.item.url ?? "#");
+        mention.append($createTextNode(`@${option.item.label}`));
+        if (nodeToReplace) nodeToReplace.replace(mention);
+        const trailing = $createTextNode(" ");
+        mention.insertAfter(trailing);
+        trailing.select();
+        closeMenu();
+      });
+    },
+    [editor],
+  );
+
+  return (
+    <LexicalTypeaheadMenuPlugin<MentionTypeaheadOption>
+      onQueryChange={setQuery}
+      onSelectOption={onSelectOption}
+      triggerFn={triggerFn}
+      options={options}
+      menuRenderFn={(
+        anchorRef,
+        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
+      ) =>
+        anchorRef.current && options.length
+          ? createPortal(
+              <ul className="z-50 max-h-56 min-w-44 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                {options.map((option, index) => (
+                  <li
+                    key={option.key}
+                    className={cn(
+                      "cursor-pointer rounded-sm px-2 py-1.5 text-sm",
+                      selectedIndex === index && "bg-muted",
+                    )}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      selectOptionAndCleanUp(option);
+                    }}
+                  >
+                    @{option.item.label}
+                  </li>
+                ))}
+              </ul>,
+              anchorRef.current,
+            )
+          : null
+      }
+    />
+  );
+};
+
 interface RichTextEditorProps
   extends Omit<ComponentProps<"div">, "placeholder" | "onChange"> {
   /** Imperative handle for clearing/focusing the editor. */
@@ -254,6 +361,8 @@ interface RichTextEditorProps
   placeholder?: string;
   /** Hide the formatting toolbar. */
   hideToolbar?: boolean;
+  /** When provided, enables an `@`-mention typeahead over these items. */
+  mentionItems?: MentionItem[];
   /** Class applied to the editor surface. */
   editorClassName?: string;
 }
@@ -270,6 +379,7 @@ const RichTextEditor = ({
   editable = true,
   placeholder,
   hideToolbar = false,
+  mentionItems,
   className,
   editorClassName,
   ...rest
@@ -345,6 +455,9 @@ const RichTextEditor = ({
           <HistoryPlugin />
           <ListPlugin />
           <LinkPlugin />
+          {mentionItems?.length ? (
+            <MentionTypeahead items={mentionItems} />
+          ) : null}
           <OnChangePlugin onChange={handleChange} />
           <EditablePlugin editable={editable} />
           <EditorApiPlugin
