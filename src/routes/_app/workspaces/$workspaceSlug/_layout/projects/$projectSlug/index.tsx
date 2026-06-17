@@ -224,7 +224,7 @@ function ProjectPage() {
         {/* KPI stat strip: one compact, inline, divided bar so the feed stays above the fold */}
         <div className="grid grid-cols-3 divide-x divide-border-subtle overflow-hidden rounded-xl border border-border-subtle bg-background">
           <Aggregate
-            title={app.projectPage.feedbackMetrics.totalPosts}
+            title="Posts"
             value={projectMetrics?.totalPosts ?? 0}
             icon={HiFolder}
             accentColor="amber"
@@ -233,7 +233,7 @@ function ProjectPage() {
           />
 
           <Aggregate
-            title="Active Users"
+            title="Users"
             value={projectMetrics?.activeUsers ?? 0}
             icon={HiUserGroup}
             accentColor="sky"
@@ -242,7 +242,7 @@ function ProjectPage() {
           />
 
           <Aggregate
-            title="Total Engagement"
+            title="Engagement"
             value={projectMetrics?.totalEngagement ?? 0}
             icon={HiBolt}
             accentColor="emerald"
