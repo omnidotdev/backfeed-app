@@ -271,7 +271,9 @@ const ProjectFeedback = () => {
   ];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
-    loading: isLoading,
+    // include the next-page fetch so the hook knows a load is in progress and
+    // doesn't sit on a stuck spinner / spam onLoadMore
+    loading: isLoading || isFetchingNextPage,
     hasNextPage: hasNextPage,
     onLoadMore: fetchNextPage,
     disabled: isError,
