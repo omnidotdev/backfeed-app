@@ -19,8 +19,13 @@ const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
 // TODO adjust schemas in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas
 
 const projectLinkSchema = z.object({
-  rowId: uuidSchema.or(z.literal("pending")),
-  projectId: uuidSchema,
+  // newly added links use a generated `pending-<n>-<ts>` rowId, so accept any
+  // pending-prefixed id (not just the literal "pending")
+  rowId: uuidSchema.or(z.string().startsWith("pending")),
+  // pending links added in the form carry no projectId yet; the mutation always
+  // uses the project's own rowId, so allow an empty value here so a newly added
+  // link does not silently fail form validation (no save, no toast)
+  projectId: uuidSchema.or(z.literal("")),
   // NB: need to allow an empty url for initial `pending` placeholder, this allows users to update other aspects of the form without needing to add a project link.
   url: urlSchema.or(z.literal("")),
   title: z.string().optional(),
