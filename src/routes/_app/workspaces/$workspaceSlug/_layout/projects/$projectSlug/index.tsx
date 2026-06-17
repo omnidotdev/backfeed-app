@@ -4,12 +4,7 @@ import {
   notFound,
   stripSearchParams,
 } from "@tanstack/react-router";
-import {
-  HiBolt,
-  HiFolder,
-  HiOutlineFolder,
-  HiUserGroup,
-} from "react-icons/hi2";
+import { HiBolt, HiFolder, HiOutlineFolder } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 import { z } from "zod";
 
@@ -222,7 +217,7 @@ function ProjectPage() {
     >
       <div className="flex flex-col gap-6">
         {/* KPI stat strip: one compact, inline, divided bar so the feed stays above the fold */}
-        <div className="grid grid-cols-3 divide-x divide-border-subtle overflow-hidden rounded-xl border border-border-subtle bg-background">
+        <div className="grid grid-cols-2 divide-x divide-border-subtle overflow-hidden rounded-xl border border-border-subtle bg-background">
           <Aggregate
             title="Posts"
             value={projectMetrics?.totalPosts ?? 0}
@@ -233,16 +228,7 @@ function ProjectPage() {
           />
 
           <Aggregate
-            title="Users"
-            value={projectMetrics?.activeUsers ?? 0}
-            icon={HiUserGroup}
-            accentColor="sky"
-            isLoaded={!isMetricsLoading}
-            isError={isMetricsError}
-          />
-
-          <Aggregate
-            title="Engagement"
+            title="Votes"
             value={projectMetrics?.totalEngagement ?? 0}
             icon={HiBolt}
             accentColor="emerald"
