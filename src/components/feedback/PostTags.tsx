@@ -90,7 +90,7 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
         ) : null,
       )}
 
-      {canAssign && (
+      {canAssign && availableTags.length > 0 && (
         <MenuRoot
           positioning={{ placement: "bottom-start" }}
           onSelect={({ value }) => assignTag(value)}
@@ -106,17 +106,11 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
             <MenuPositioner>
               <MenuContent>
                 <MenuItemGroup>
-                  {availableTags.length ? (
-                    availableTags.map((tag) => (
-                      <MenuItem key={tag.rowId} value={tag.rowId}>
-                        <TagBadge name={tag.name} color={tag.color} />
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="" disabled>
-                      No tags available
+                  {availableTags.map((tag) => (
+                    <MenuItem key={tag.rowId} value={tag.rowId}>
+                      <TagBadge name={tag.name} color={tag.color} />
                     </MenuItem>
-                  )}
+                  ))}
                 </MenuItemGroup>
               </MenuContent>
             </MenuPositioner>

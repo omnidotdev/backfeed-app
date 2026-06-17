@@ -42,7 +42,7 @@ const DialogContent = ({
   <DialogPositioner>
     <ArkDialog.Content
       className={cn(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom-1/2 data-[state=open]:slide-in-from-bottom-1/2 relative w-full max-w-lg rounded-xl border bg-background p-6 shadow-2xl data-[state=closed]:animate-out data-[state=open]:animate-in",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative w-full max-w-lg rounded-xl border bg-background p-6 shadow-2xl duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in",
         className,
       )}
       {...rest}

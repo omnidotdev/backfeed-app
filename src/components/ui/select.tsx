@@ -71,7 +71,7 @@ const SelectItem = ({
 }: ComponentProps<typeof ArkSelect.Item>) => (
   <ArkSelect.Item
     className={cn(
-      "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden hover:bg-accent focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:opacity-50",
+      "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden hover:bg-muted focus:bg-muted data-disabled:pointer-events-none data-highlighted:bg-muted data-disabled:opacity-50",
       className,
     )}
     {...rest}

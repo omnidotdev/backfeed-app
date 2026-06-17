@@ -117,7 +117,7 @@ const DestructiveAction = ({
 
           <div className="flex gap-2">
             <Button
-              variant="destructive"
+              variant="solid"
               className={cn("flex-1", action.className)}
               disabled={isActionDisabled}
               onClick={(e) => {
