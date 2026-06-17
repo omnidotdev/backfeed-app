@@ -5,6 +5,7 @@ import satori from "satori";
 import sharp from "sharp";
 
 import gatekeeperOrg from "@/lib/config/gatekeeper";
+import stripHtml from "@/lib/util/stripHtml";
 
 import type { ReactNode } from "react";
 
@@ -188,7 +189,7 @@ export const renderOgImage = async ({
                             lineHeight: 1.4,
                             maxWidth: "90%",
                           },
-                          children: truncate(description, 120),
+                          children: truncate(stripHtml(description), 120),
                         },
                       },
                     ]

@@ -38,6 +38,7 @@ import {
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import useStatusMenuStore from "@/lib/store/useStatusMenuStore";
+import stripHtml from "@/lib/util/stripHtml";
 import cn from "@/lib/utils";
 
 import type { InfiniteData } from "@tanstack/react-query";
@@ -424,31 +425,36 @@ const FeedbackCard = ({
         </div>
 
         {feedback.description &&
-          // rich-text posts store HTML; legacy posts are plain text with
-          // newlines, so keep rendering those line-by-line
-          (/<[a-z][\s\S]*>/i.test(feedback.description) ? (
-            <RichTextContent
-              html={feedback.description}
-              className={cn(
-                "break-words text-muted-foreground text-sm leading-normal",
-                descriptionProps?.className,
-              )}
-            />
+          (isFeedbackRoute ? (
+            // detail page: full rich content (HTML), or legacy plain text
+            /<[a-z][\s\S]*>/i.test(feedback.description) ? (
+              <RichTextContent
+                html={feedback.description}
+                className="break-words text-muted-foreground text-sm leading-normal"
+              />
+            ) : (
+              <p className="break-words text-muted-foreground text-sm leading-normal">
+                {feedback.description.split("\n").map((line, index) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
+                  <span key={index}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </p>
+            )
           ) : (
+            // feed preview: stripped, clamped plain text with an ellipsis
             <p
               {...descriptionProps}
               className={cn(
-                "break-words text-muted-foreground text-sm leading-normal",
+                "line-clamp-2 break-words text-muted-foreground text-sm leading-normal",
                 descriptionProps?.className,
               )}
             >
-              {feedback.description.split("\n").map((line, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-                <span key={index}>
-                  {line}
-                  <br />
-                </span>
-              ))}
+              {/<[a-z][\s\S]*>/i.test(feedback.description)
+                ? stripHtml(feedback.description)
+                : feedback.description}
             </p>
           ))}
 

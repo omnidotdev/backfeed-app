@@ -17,6 +17,7 @@ import {
 import { projectOptions, projectStatusesOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { buildFeedbackKey, parseFeedbackParam } from "@/lib/util/feedbackUrl";
+import stripHtml from "@/lib/util/stripHtml";
 
 import type { FeedbackFragment } from "@/generated/graphql";
 
@@ -108,7 +109,7 @@ export const Route = createFileRoute(
       projectName: project.name,
       feedbackId,
       feedbackTitle: feedback.title,
-      feedbackDescription: feedback.description,
+      feedbackDescription: stripHtml(feedback.description) || undefined,
       ogImageUrl: `${BASE_URL}/api/og/feedback/${workspaceSlug}/${projectSlug}/${feedback.number}`,
     };
   },
