@@ -6,6 +6,8 @@ query Posts(
   $excludedStatuses: [String!]
   $search: String
   $userId: UUID
+  # nullable relation filter: null = no tag filter, else { some: { tagId: { in } } }
+  $tagFilter: PostToManyPostTagFilter
 ) {
   posts(
     after: $after
@@ -20,6 +22,7 @@ query Posts(
         { statusTemplate: { displayName: { notIn: $excludedStatuses } } }
         { statusTemplateId: { isNull: true } }
       ]
+      postTags: $tagFilter
     }
   ) {
     pageInfo {

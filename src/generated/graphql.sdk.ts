@@ -8788,6 +8788,7 @@ export type PostsQueryVariables = Exact<{
   excludedStatuses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+  tagFilter?: InputMaybe<PostToManyPostTagFilter>;
 }>;
 
 
@@ -9287,12 +9288,12 @@ export const ObserverDocument = gql`
 }
     `;
 export const PostsDocument = gql`
-    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID) {
+    query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID, $tagFilter: PostToManyPostTagFilter) {
   posts(
     after: $after
     first: $pageSize
     orderBy: $orderBy
-    filter: {projectId: {equalTo: $projectId}, title: {includesInsensitive: $search}, or: [{statusTemplate: {displayName: {notIn: $excludedStatuses}}}, {statusTemplateId: {isNull: true}}]}
+    filter: {projectId: {equalTo: $projectId}, title: {includesInsensitive: $search}, or: [{statusTemplate: {displayName: {notIn: $excludedStatuses}}}, {statusTemplateId: {isNull: true}}], postTags: $tagFilter}
   ) {
     pageInfo {
       startCursor

@@ -31,6 +31,8 @@ import type { ActionButton } from "@/components/core/CallToAction";
 
 const projectSearchSchema = z.object({
   excludedStatuses: z.array(z.string()).default([]),
+  // selected tag rowIds to filter the feed by (any-of)
+  tags: z.array(z.string()).default([]),
   search: z.string().default(""),
   orderBy: z
     .enum([PostOrderBy.CreatedAtDesc, PostOrderBy.VotesCountDesc])
@@ -51,6 +53,7 @@ export const Route = createFileRoute(
       stripSearchParams({
         search: "",
         excludedStatuses: [],
+        tags: [],
         orderBy: PostOrderBy.VotesCountDesc,
       }),
     ],
@@ -60,9 +63,8 @@ export const Route = createFileRoute(
     params: { projectSlug },
     location,
   }) => {
-    const { search, excludedStatuses, orderBy } = projectSearchSchema.parse(
-      location.search,
-    );
+    const { search, excludedStatuses, tags, orderBy } =
+      projectSearchSchema.parse(location.search);
 
     const { projects } = await queryClient.ensureQueryData({
       ...projectOptions({
@@ -108,6 +110,9 @@ export const Route = createFileRoute(
           excludedStatuses,
           orderBy: [orderBy, PostOrderBy.CreatedAtDesc],
           userId: session?.user?.rowId,
+          tagFilter: tags.length
+            ? { some: { tagId: { in: tags } } }
+            : undefined,
         }),
         revalidateIfStale: true,
       }),

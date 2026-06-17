@@ -19,6 +19,7 @@ import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import RoadmapBoard from "@/components/project/RoadmapBoard";
 import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
+import TagFilterPills from "@/components/project/TagFilterPills";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -77,7 +78,7 @@ const ProjectFeedback = () => {
   const { session, hasAdminPrivileges, organizationId } =
     projectRoute.useRouteContext();
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
-  const { excludedStatuses, search, orderBy } = projectRoute.useSearch();
+  const { excludedStatuses, tags, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
@@ -140,6 +141,7 @@ const ProjectFeedback = () => {
       ],
       search,
       userId: session?.user?.rowId,
+      tagFilter: tags.length ? { some: { tagId: { in: tags } } } : undefined,
     }),
     enabled: !!projectId,
     placeholderData: keepPreviousData,
@@ -347,6 +349,9 @@ const ProjectFeedback = () => {
 
       {/* Status Filter Pills (hidden in roadmap; the columns are the statuses) */}
       {viewState !== ViewState.Roadmap && <StatusFilterPills />}
+
+      {/* Tag Filter Pills (filter the underlying posts; shown in every view) */}
+      <TagFilterPills />
 
       {/* Create Feedback Form */}
       {!!session && <CreateFeedback />}
