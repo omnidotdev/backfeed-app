@@ -22,6 +22,7 @@ import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
+import type { MentionItem } from "@/components/ui/rich-text-editor";
 import type { CommentFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
@@ -33,12 +34,19 @@ interface Props extends ComponentProps<"div"> {
   comment: CommentFragment;
   /** Whether the user can reply to the comment. */
   canReply: boolean;
+  /** Users offered in the reply `@`-mention typeahead. */
+  mentionableUsers?: MentionItem[];
 }
 
 /**
  * Comment card.
  */
-const CommentCard = ({ comment, canReply, ...rest }: Props) => {
+const CommentCard = ({
+  comment,
+  canReply,
+  mentionableUsers,
+  ...rest
+}: Props) => {
   const { session, queryClient, hasAdminPrivileges } =
     feedbackRoute.useRouteContext();
   const { feedbackId } = feedbackRoute.useLoaderData();
@@ -191,6 +199,7 @@ const CommentCard = ({ comment, canReply, ...rest }: Props) => {
         open={isReplyFormOpen}
         canReply={canReply}
         onReply={onOpenReplies}
+        mentionableUsers={mentionableUsers}
       />
 
       <Replies commentId={comment.rowId} open={isRepliesOpen} />

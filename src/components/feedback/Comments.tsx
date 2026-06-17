@@ -164,6 +164,7 @@ const Comments = () => {
                     key={comment?.rowId}
                     comment={comment!}
                     canReply={canCreateComment ?? true}
+                    mentionableUsers={mentionableUsers}
                     className="min-h-[5.25rem] w-full"
                   />
                 ))}

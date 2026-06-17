@@ -22,7 +22,7 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
-import type { EditorApi } from "@/components/ui/rich-text-editor";
+import type { EditorApi, MentionItem } from "@/components/ui/rich-text-editor";
 import type { Comment } from "@/generated/graphql";
 
 const MAX_COMMENT_LENGTH = 240;
@@ -49,12 +49,20 @@ interface Props extends ComponentProps<typeof CollapsibleRoot> {
   canReply: boolean;
   /** Optional handler to apply when a reply is sent. */
   onReply?: () => void;
+  /** Users offered in the `@`-mention typeahead (thread participants). */
+  mentionableUsers?: MentionItem[];
 }
 
 /**
  * Create reply form.
  */
-const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
+const CreateReply = ({
+  commentId,
+  canReply,
+  onReply,
+  mentionableUsers,
+  ...rest
+}: Props) => {
   const { projectSlug } = feedbackRoute.useParams();
   const { feedbackId } = feedbackRoute.useLoaderData();
   const { session, queryClient, organizationId } =
@@ -145,6 +153,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
                   editorApi={replyEditorApi}
                   placeholder={app.postPage.comments.textAreaPlaceholder}
                   editable={canReply}
+                  mentionItems={mentionableUsers}
                   className="rounded-none border-0 border-border-subtle border-b"
                   editorClassName="min-h-16"
                   onUpdate={({ getHTML, getText, isEmpty }) => {
