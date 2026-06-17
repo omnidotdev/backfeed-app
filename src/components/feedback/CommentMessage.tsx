@@ -1,5 +1,6 @@
 import { Link, useParams } from "@tanstack/react-router";
 
+import { RichTextContent } from "@/components/ui/rich-text-editor";
 import { splitIssueRefs } from "@/lib/util/issueRefs";
 
 interface Props {
@@ -7,9 +8,28 @@ interface Props {
 }
 
 /**
- * Render a comment body, turning GitHub-style `#<number>` issue references into
- * links to the referenced post in the same project. Falls back to plain text
- * when the route params are unavailable (references render as plain text).
+ * Linkify GitHub-style `#<number>` references in rich-text (HTML) comment
+ * bodies. Splits on tags so refs are only matched in text (not inside
+ * attributes), and skips numeric entities like `&#39;`.
+ */
+const linkifyIssueRefs = (html: string, hrefFor: (n: string) => string) =>
+  html
+    .split(/(<[^>]+>)/)
+    .map((segment) =>
+      segment.startsWith("<")
+        ? segment
+        : segment.replace(
+            /(?<![&\w])#(\d+)\b/g,
+            (match, number) => `<a href="${hrefFor(number)}">${match}</a>`,
+          ),
+    )
+    .join("");
+
+/**
+ * Render a comment body. New comments are rich text (HTML); legacy comments are
+ * plain text. Both turn GitHub-style `#<number>` references into links to the
+ * referenced post in the same project (plain text uses client-side links; HTML
+ * uses anchors that navigate to the post).
  */
 const CommentMessage = ({ message }: Props) => {
   // self-contained: read the current workspace/project from the route
@@ -18,6 +38,19 @@ const CommentMessage = ({ message }: Props) => {
   if (!message) return null;
 
   const canLink = Boolean(workspaceSlug && projectSlug);
+
+  // rich-text comments store HTML; render sanitized, with refs linkified
+  if (/<[a-z][\s\S]*>/i.test(message)) {
+    const html = canLink
+      ? linkifyIssueRefs(
+          message,
+          (number) =>
+            `/workspaces/${workspaceSlug}/projects/${projectSlug}/${number}`,
+        )
+      : message;
+
+    return <RichTextContent html={html} />;
+  }
 
   return (
     <>

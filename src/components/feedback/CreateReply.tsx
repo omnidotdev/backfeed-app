@@ -1,5 +1,5 @@
-import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -21,6 +22,7 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
+import type { EditorApi } from "@/components/ui/rich-text-editor";
 import type { Comment } from "@/generated/graphql";
 
 const MAX_COMMENT_LENGTH = 240;
@@ -36,13 +38,8 @@ const createReplySchema = z.object({
   postId: uuidSchema,
   commentId: uuidSchema,
   userId: uuidSchema,
-  message: z
-    .string()
-    .trim()
-    .max(
-      MAX_COMMENT_LENGTH,
-      app.postPage.comments.createReply.errors.maxLengthMessage,
-    ),
+  // stored as rich-text HTML; plain-text length is enforced in the UI
+  message: z.string(),
 });
 
 interface Props extends ComponentProps<typeof CollapsibleRoot> {
@@ -63,10 +60,16 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
   const { session, queryClient, organizationId } =
     feedbackRoute.useRouteContext();
 
+  // editor is uncontrolled; track plain-text length for the limit + clearing
+  const replyEditorApi = useRef<EditorApi | null>(null);
+  const [messageLength, setMessageLength] = useState(0);
+
   const { mutateAsync: createReply, isPending } = useCreateCommentMutation({
     onMutate: () => onReply?.(),
     onSettled: async () => {
       reset();
+      replyEditorApi.current?.clearContent();
+      setMessageLength(0);
 
       await Promise.all([
         queryClient.invalidateQueries({
@@ -97,36 +100,32 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
     },
   });
 
-  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
-    {
-      defaultValues: {
-        postId: feedbackId,
-        commentId,
-        userId: session?.user?.rowId ?? "",
-        message: "",
-      },
-      asyncDebounceMs: DEBOUNCE_TIME,
-      validators: {
-        onSubmitAsync: createReplySchema,
-      },
-      onSubmit: async ({ value }) =>
-        toaster.promise(
-          createReply({
-            input: {
-              comment: {
-                postId: value.postId,
-                parentId: value.commentId,
-                userId: value.userId,
-                message: value.message.trim(),
-              },
-            },
-          }),
-          app.postPage.comments.createReply,
-        ),
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
+    defaultValues: {
+      postId: feedbackId,
+      commentId,
+      userId: session?.user?.rowId ?? "",
+      message: "",
     },
-  );
-
-  const messageLength = useStore(store, (store) => store.values.message.length);
+    asyncDebounceMs: DEBOUNCE_TIME,
+    validators: {
+      onSubmitAsync: createReplySchema,
+    },
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        createReply({
+          input: {
+            comment: {
+              postId: value.postId,
+              parentId: value.commentId,
+              userId: value.userId,
+              message: value.message.trim(),
+            },
+          },
+        }),
+        app.postPage.comments.createReply,
+      ),
+  });
 
   return (
     <CollapsibleRoot {...rest}>
@@ -141,14 +140,16 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
             }}
           >
             <AppField name="message">
-              {({ TextareaField }) => (
-                <TextareaField
+              {(field) => (
+                <RichTextEditor
+                  editorApi={replyEditorApi}
                   placeholder={app.postPage.comments.textAreaPlaceholder}
-                  className="min-h-16 rounded-none border-0 border-b border-border-subtle text-sm shadow-none focus-visible:ring-0"
-                  disabled={!canReply}
-                  maxLength={MAX_COMMENT_LENGTH}
-                  errorProps={{
-                    className: "top-[-1.5rem]",
+                  editable={canReply}
+                  className="rounded-none border-0 border-border-subtle border-b"
+                  editorClassName="min-h-16"
+                  onUpdate={({ getHTML, getText, isEmpty }) => {
+                    field.handleChange(isEmpty ? "" : getHTML());
+                    setMessageLength(getText().trim().length);
                   }}
                 />
               )}
@@ -166,7 +167,7 @@ const CreateReply = ({ commentId, canReply, onReply, ...rest }: Props) => {
                   action={app.postPage.comments.createReply.action}
                   size="sm"
                   isPending={isPending}
-                  disabled={!canReply}
+                  disabled={!canReply || messageLength > MAX_COMMENT_LENGTH}
                 />
               </AppForm>
             </div>
