@@ -6,7 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -127,6 +127,7 @@ const ProjectFeedback = () => {
     isLoading,
     isError,
     hasNextPage,
+    isFetchingNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
     ...infiniteFeedbackOptions({
@@ -145,6 +146,13 @@ const ProjectFeedback = () => {
     select: (data) =>
       data?.pages?.flatMap((page) => page?.posts?.nodes?.map((post) => post)),
   });
+
+  // in roadmap mode, eagerly load all pages so every status column is complete
+  useEffect(() => {
+    if (viewState === ViewState.Roadmap && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [viewState, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const pendingMutations = useMutationState({
     filters: {
