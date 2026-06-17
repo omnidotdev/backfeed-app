@@ -5,6 +5,7 @@ import { createWithEqualityFn } from "zustand/traditional";
 export enum ViewState {
   List = "List",
   Grid = "Grid",
+  Roadmap = "Roadmap",
 }
 
 interface ProjectViewStoreState {

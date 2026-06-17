@@ -1,4 +1,4 @@
-import { LuLayoutGrid, LuList } from "react-icons/lu";
+import { LuColumns3, LuLayoutGrid, LuList } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
 import { ToggleGroupItem, ToggleGroupRoot } from "@/components/ui/toggle-group";
@@ -34,6 +34,10 @@ const SwitchFeedbackView = (props: ComponentProps<typeof ToggleGroupRoot>) => {
 
       <ToggleGroupItem value={ViewState.Grid} className="size-8 p-2">
         <LuLayoutGrid className="size-4" />
+      </ToggleGroupItem>
+
+      <ToggleGroupItem value={ViewState.Roadmap} className="size-8 p-2">
+        <LuColumns3 className="size-4" />
       </ToggleGroupItem>
     </ToggleGroupRoot>
   );

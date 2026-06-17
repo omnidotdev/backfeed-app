@@ -16,6 +16,7 @@ import CreateFeedback from "@/components/feedback/CreateFeedback";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
+import RoadmapBoard from "@/components/project/RoadmapBoard";
 import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import { Button } from "@/components/ui/button";
@@ -226,6 +227,20 @@ const ProjectFeedback = () => {
       })),
   });
 
+  // ungated statuses for the roadmap columns (every viewer, not just admins)
+  const { data: roadmapStatuses } = useQuery({
+    ...projectStatusesOptions({
+      organizationId,
+    }),
+    enabled: viewState === ViewState.Roadmap && !!organizationId,
+    select: (data) =>
+      data?.statusTemplates?.nodes.map((status) => ({
+        rowId: status?.rowId,
+        displayName: status?.displayName,
+        color: status?.color,
+      })),
+  });
+
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.
   const showPendingFeedback =
     defaultStatus &&
@@ -322,15 +337,51 @@ const ProjectFeedback = () => {
         </div>
       </div>
 
-      {/* Status Filter Pills */}
-      <StatusFilterPills />
+      {/* Status Filter Pills (hidden in roadmap; the columns are the statuses) */}
+      {viewState !== ViewState.Roadmap && <StatusFilterPills />}
 
       {/* Create Feedback Form */}
       {!!session && <CreateFeedback />}
 
-      {/* Feedback List */}
+      {/* Feedback List / Roadmap */}
       {isError ? (
         <ErrorBoundary message="Error fetching feedback" className="h-96" />
+      ) : viewState === ViewState.Roadmap ? (
+        isLoading || !roadmapStatuses?.length ? (
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {Array.from({ length: 4 }).map((_, columnIndex) => (
+              <div
+                // biome-ignore lint/suspicious/noArrayIndexKey: fixed skeleton columns
+                key={columnIndex}
+                className="flex w-72 shrink-0 flex-col gap-3"
+              >
+                <SkeletonArray count={3} className="h-[5.25rem]" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <RoadmapBoard
+            posts={allPosts.filter(
+              (post): post is FeedbackFragment => post?.rowId !== "pending",
+            )}
+            statuses={roadmapStatuses}
+            canManageFeedback={hasAdminPrivileges}
+            projectStatuses={projectStatuses}
+            onSelectPost={(post) =>
+              navigate({
+                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                params: {
+                  workspaceSlug,
+                  projectSlug,
+                  feedbackId: buildFeedbackKey({
+                    number: post.number!,
+                    title: post.title,
+                  }),
+                },
+              })
+            }
+          />
+        )
       ) : (
         <div
           className={cn(
