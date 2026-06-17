@@ -498,12 +498,14 @@ const FeedbackCard = ({
                   triggerProps={{
                     "aria-label":
                       app.projectPage.projectFeedback.deletePost.title,
+                    size: "icon",
                     variant: "ghost",
-                    className: "h-auto min-w-0 p-0 hover:bg-transparent",
+                    className:
+                      "size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
                     disabled: actionIsPending,
                     onClick: (evt) => evt.stopPropagation(),
                   }}
-                  iconClassName="size-[1.125rem] cursor-pointer text-primary"
+                  iconClassName="size-4"
                 />
               </div>
             )}

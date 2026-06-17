@@ -205,12 +205,14 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
     >
       <DialogTrigger asChild>
         <Button
+          size="icon"
           variant="ghost"
-          className="bg-transparent p-0"
+          aria-label="Edit feedback"
+          className="size-8 text-muted-foreground hover:text-foreground"
           onClick={(evt) => evt.stopPropagation()}
           {...triggerProps}
         >
-          <LuPencil className="size-[1.125rem] cursor-pointer text-[var(--colors-brand-senary)]" />
+          <LuPencil className="size-4" />
         </Button>
       </DialogTrigger>
 

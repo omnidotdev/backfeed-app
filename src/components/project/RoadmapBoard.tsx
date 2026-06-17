@@ -41,11 +41,11 @@ const RoadmapBoard = ({
   }));
 
   return (
-    <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-4">
+    <div className="-mx-1 flex flex-col gap-6 px-1 pb-4 sm:flex-row sm:gap-4 sm:overflow-x-auto">
       {columns.map(({ status, posts: columnPosts }) => (
         <div
           key={status.rowId ?? status.displayName}
-          className="flex w-72 shrink-0 flex-col gap-3"
+          className="flex w-full flex-col gap-3 sm:w-72 sm:shrink-0"
         >
           <div className="flex items-center justify-between gap-2 border-border-subtle border-b pb-2">
             <div className="flex min-w-0 items-center gap-2">
