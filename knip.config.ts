@@ -38,6 +38,14 @@ const knipConfig: KnipConfig = {
     "tw-animate-css",
     // Used only by the not-yet-adopted shadcn primitives (see ignore list)
     "lucide-react",
+    // Used only by the rich-text-editor primitive until it is wired into forms
+    "lexical",
+    "@lexical/html",
+    "@lexical/link",
+    "@lexical/list",
+    "@lexical/react",
+    "@lexical/rich-text",
+    "isomorphic-dompurify",
   ],
 };
 
