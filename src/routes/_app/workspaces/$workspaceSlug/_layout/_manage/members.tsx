@@ -46,7 +46,8 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceMembersPage() {
-  const { role, workspaceName } = Route.useRouteContext();
+  const { role, workspaceName, workspaceLogo } = Route.useRouteContext();
+  const { workspaceSlug } = Route.useParams();
 
   const ctaButtons = [];
 
@@ -70,6 +71,15 @@ function WorkspaceMembersPage() {
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: workspaceName,
+            image: workspaceLogo,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+          },
+          { label: app.workspaceMembersPage.breadcrumb },
+        ],
         title: `${workspaceName} ${app.workspaceMembersPage.breadcrumb}`,
         description: app.workspaceMembersPage.description,
         cta: ctaButtons.length > 0 ? ctaButtons : undefined,

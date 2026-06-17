@@ -13,9 +13,20 @@ export const Route = createFileRoute(
 });
 
 function UserWorkspacesPage() {
+  const { user } = Route.useRouteContext();
+  const { userId } = Route.useParams();
+
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: user?.username ?? user?.name ?? "Profile",
+            to: "/profile/$userId/account",
+            params: { userId },
+          },
+          { label: app.profileWorkspacesPage.breadcrumb },
+        ],
         title: app.profileWorkspacesPage.breadcrumb,
         description: app.profileWorkspacesPage.description,
       }}

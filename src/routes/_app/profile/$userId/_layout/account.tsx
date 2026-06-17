@@ -27,6 +27,7 @@ export const Route = createFileRoute("/_app/profile/$userId/_layout/account")({
 
 function UserAccountPage() {
   const { user } = Route.useRouteContext();
+  const { userId } = Route.useParams();
 
   const [showEmail, setShowEmail] = useState(false);
 
@@ -52,6 +53,14 @@ function UserAccountPage() {
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: user?.username ?? user?.name ?? "Profile",
+            to: "/profile/$userId/account",
+            params: { userId },
+          },
+          { label: app.profileAccountPage.breadcrumb },
+        ],
         title: app.profileAccountPage.breadcrumb,
         description: app.profileAccountPage.description,
         cta: [

@@ -123,8 +123,13 @@ export const Route = createFileRoute(
 });
 
 function FeedbackPage() {
-  const { session, hasAdminPrivileges, organizationId, workspaceName } =
-    Route.useRouteContext();
+  const {
+    session,
+    hasAdminPrivileges,
+    organizationId,
+    workspaceName,
+    workspaceLogo,
+  } = Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
   const { projectName, feedbackId } = Route.useLoaderData();
 
@@ -154,6 +159,7 @@ function FeedbackPage() {
         breadcrumbs: [
           {
             label: workspaceName,
+            image: workspaceLogo,
             to: "/workspaces/$workspaceSlug",
             params: { workspaceSlug },
           },

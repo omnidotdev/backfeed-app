@@ -135,8 +135,13 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { workspaceSlug, projectSlug } = Route.useParams();
   const { projectId } = Route.useLoaderData();
-  const { hasAdminPrivileges, isAuthenticated, organizationId, workspaceName } =
-    Route.useRouteContext();
+  const {
+    hasAdminPrivileges,
+    isAuthenticated,
+    organizationId,
+    workspaceName,
+    workspaceLogo,
+  } = Route.useRouteContext();
 
   const { data: project } = useQuery({
     ...projectOptions({ organizationId, projectSlug }),
@@ -165,6 +170,7 @@ function ProjectPage() {
         breadcrumbs: [
           {
             label: workspaceName,
+            image: workspaceLogo,
             to: "/workspaces/$workspaceSlug",
             params: { workspaceSlug },
           },

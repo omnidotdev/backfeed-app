@@ -29,11 +29,21 @@ export const Route = createFileRoute(
 
 function WorkspaceSettingsPage() {
   const { prices } = Route.useLoaderData();
-  const { workspaceName } = Route.useRouteContext();
+  const { workspaceName, workspaceLogo } = Route.useRouteContext();
+  const { workspaceSlug } = Route.useParams();
 
   return (
     <Page
       header={{
+        breadcrumbs: [
+          {
+            label: workspaceName,
+            image: workspaceLogo,
+            to: "/workspaces/$workspaceSlug",
+            params: { workspaceSlug },
+          },
+          { label: app.workspaceSettingsPage.breadcrumb },
+        ],
         title: `${workspaceName} ${app.workspaceSettingsPage.breadcrumb}`,
       }}
       className="pt-0"

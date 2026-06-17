@@ -52,7 +52,7 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
-  const { queryClient, organizationId, workspaceName } =
+  const { queryClient, organizationId, workspaceName, workspaceLogo } =
     Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
   const navigate = Route.useNavigate();
@@ -89,6 +89,7 @@ function ProjectSettingsPage() {
         breadcrumbs: [
           {
             label: workspaceName,
+            image: workspaceLogo,
             to: "/workspaces/$workspaceSlug",
             params: { workspaceSlug },
           },

@@ -14,6 +14,8 @@ export interface Crumb {
   label: ReactNode;
   to?: LinkProps["to"];
   params?: LinkProps["params"];
+  /** Optional leading image (e.g. a workspace logo) shown before the label. */
+  image?: string | null;
 }
 
 /**
@@ -33,6 +35,19 @@ const Breadcrumbs = ({ items }: { items: Crumb[] }) => {
             ? `${String(item.to)}-${index}`
             : `current-${index}`;
 
+          const content = (
+            <>
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt=""
+                  className="size-4 shrink-0 rounded-sm object-cover"
+                />
+              )}
+              {item.label}
+            </>
+          );
+
           return (
             <li key={key} className="flex items-center gap-1.5">
               {index > 0 && (
@@ -45,17 +60,20 @@ const Breadcrumbs = ({ items }: { items: Crumb[] }) => {
               {isLast || !item.to ? (
                 <span
                   aria-current={isLast ? "page" : undefined}
-                  className={cn(isLast && "font-medium text-foreground")}
+                  className={cn(
+                    "inline-flex items-center gap-1.5",
+                    isLast && "font-medium text-foreground",
+                  )}
                 >
-                  {item.label}
+                  {content}
                 </span>
               ) : (
                 <Link
                   to={item.to}
                   params={item.params}
-                  className="transition-colors hover:text-foreground"
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
                 >
-                  {item.label}
+                  {content}
                 </Link>
               )}
             </li>
