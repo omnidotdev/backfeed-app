@@ -17,6 +17,7 @@ import FeedbackCard from "@/components/feedback/FeedbackCard";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import RoadmapBoard from "@/components/project/RoadmapBoard";
+import SavedViews from "@/components/project/SavedViews";
 import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import TagFilterPills from "@/components/project/TagFilterPills";
@@ -328,6 +329,8 @@ const ProjectFeedback = () => {
               </SelectPositioner>
             </SelectPortal>
           </SelectRoot>
+
+          <SavedViews />
 
           <SwitchFeedbackView />
 
