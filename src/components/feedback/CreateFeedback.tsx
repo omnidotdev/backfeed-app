@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
@@ -11,6 +11,8 @@ import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
+import { Label } from "@/components/ui/label";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useCreateAttachmentMutation,
   useCreateFeedbackMutation,
@@ -29,6 +31,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import toaster from "@/lib/util/toaster";
 
 import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
+import type { EditorApi } from "@/components/ui/rich-text-editor";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
@@ -47,10 +50,8 @@ const createFeedbackSchema = z.object({
     .trim()
     .min(1, postSchemaErrors.title.minLength)
     .max(90, postSchemaErrors.title.maxLength),
-  description: z
-    .string()
-    .trim()
-    .max(MAX_DESCRIPTION_LENGTH, postSchemaErrors.description.maxLength),
+  // stored as rich-text HTML; the plain-text length is enforced in the UI
+  description: z.string(),
 });
 
 /**
@@ -172,6 +173,8 @@ const CreateFeedback = () => {
             }
 
             reset();
+            descriptionEditorApi.current?.clearContent();
+            setDescriptionLength(0);
             setAttachments([]);
             setUploaderKey((key) => key + 1);
 
@@ -241,10 +244,10 @@ const CreateFeedback = () => {
   );
 
   const titleValue = useStore(store, (store) => store.values.title);
-  const descriptionLength = useStore(
-    store,
-    (store) => store.values.description.length,
-  );
+  // editor is uncontrolled, so track the plain-text length for the limit and
+  // hold a handle to clear it on reset/submit
+  const descriptionEditorApi = useRef<EditorApi | null>(null);
+  const [descriptionLength, setDescriptionLength] = useState(0);
 
   // Pick a random placeholder index on client only (same index for title and description)
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -268,6 +271,8 @@ const CreateFeedback = () => {
     <CollapsibleRoot
       onOpenChange={({ open }) => {
         reset();
+        descriptionEditorApi.current?.clearContent();
+        setDescriptionLength(0);
         setAttachments([]);
         setUploaderKey((key) => key + 1);
         setIsOpen(open);
@@ -298,16 +303,22 @@ const CreateFeedback = () => {
           )}
 
           <AppField name="description">
-            {({ TextareaField }) => (
-              <TextareaField
-                label={
-                  app.projectPage.projectFeedback.feedbackDescription.label
-                }
-                placeholder={descriptionPlaceholder}
-                rows={3}
-                maxLength={MAX_DESCRIPTION_LENGTH}
-                disabled={!session?.user || !canCreateFeedback}
-              />
+            {(field) => (
+              <div className="flex flex-col gap-1.5">
+                <Label>
+                  {app.projectPage.projectFeedback.feedbackDescription.label}
+                </Label>
+                <RichTextEditor
+                  editorApi={descriptionEditorApi}
+                  placeholder={descriptionPlaceholder}
+                  editable={!!session?.user && !!canCreateFeedback}
+                  editorClassName="min-h-16"
+                  onUpdate={({ getHTML, getText, isEmpty }) => {
+                    field.handleChange(isEmpty ? "" : getHTML());
+                    setDescriptionLength(getText().trim().length);
+                  }}
+                />
+              </div>
             )}
           </AppField>
 
@@ -329,6 +340,7 @@ const CreateFeedback = () => {
               <SubmitForm
                 action={app.projectPage.projectFeedback.action}
                 isPending={isPending || isUploadingAttachments}
+                disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
                 className="w-fit place-self-end"
               />
             </AppForm>

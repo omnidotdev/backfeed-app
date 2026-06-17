@@ -22,6 +22,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
+import { RichTextContent } from "@/components/ui/rich-text-editor";
 import {
   VoteType,
   useDeletePostMutation,
@@ -422,21 +423,34 @@ const FeedbackCard = ({
           </MenuRoot>
         </div>
 
-        <p
-          {...descriptionProps}
-          className={cn(
-            "break-words text-muted-foreground text-sm leading-normal",
-            descriptionProps?.className,
-          )}
-        >
-          {feedback.description?.split("\n").map((line, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
-            <span key={index}>
-              {line}
-              <br />
-            </span>
+        {feedback.description &&
+          // rich-text posts store HTML; legacy posts are plain text with
+          // newlines, so keep rendering those line-by-line
+          (/<[a-z][\s\S]*>/i.test(feedback.description) ? (
+            <RichTextContent
+              html={feedback.description}
+              className={cn(
+                "break-words text-muted-foreground text-sm leading-normal",
+                descriptionProps?.className,
+              )}
+            />
+          ) : (
+            <p
+              {...descriptionProps}
+              className={cn(
+                "break-words text-muted-foreground text-sm leading-normal",
+                descriptionProps?.className,
+              )}
+            >
+              {feedback.description.split("\n").map((line, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: simple index due to the nature of the rendering
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </p>
           ))}
-        </p>
 
         {!!feedback.attachments?.nodes.length && (
           <AttachmentGallery

@@ -1,7 +1,6 @@
 import { Portal } from "@ark-ui/react/portal";
-import { useStore } from "@tanstack/react-form";
 import { getRouteApi } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { LuPencil, LuX } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
@@ -16,6 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useCreateAttachmentMutation,
   useDeleteAttachmentMutation,
@@ -29,6 +30,7 @@ import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
 import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
+import type { EditorApi } from "@/components/ui/rich-text-editor";
 import type { AttachmentFragment, FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
@@ -48,13 +50,8 @@ const updateFeedbackSchema = z.object({
     .trim()
     .min(1, updatePostDetails.errors.title.minLength)
     .max(90, updatePostDetails.errors.title.maxLength),
-  description: z
-    .string()
-    .trim()
-    .max(
-      MAX_DESCRIPTION_LENGTH,
-      updatePostDetails.errors.description.maxLength,
-    ),
+  // stored as rich-text HTML; the plain-text length is enforced in the UI
+  description: z.string(),
 });
 
 interface Props extends ComponentProps<typeof DialogRoot> {
@@ -130,65 +127,62 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
     },
   });
 
-  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
-    {
-      defaultValues: {
-        title: feedback.title ?? "",
-        description: feedback.description ?? "",
-      },
-      asyncDebounceMs: DEBOUNCE_TIME,
-      validators: {
-        onSubmitAsync: updateFeedbackSchema,
-      },
-      onSubmit: async ({ value }) =>
-        toaster.promise(
-          updateFeedback({
-            rowId: feedback.rowId!,
-            patch: {
-              title: value.title,
-              description: value.description,
-              updatedAt: new Date(),
-            },
-          }).then(async () => {
-            // link any newly uploaded attachments to the post
-            const userId = session?.user?.rowId;
-            if (userId && newAttachments.length) {
-              await Promise.all(
-                newAttachments.map((attachment) =>
-                  createAttachment({
-                    input: {
-                      attachment: {
-                        postId: feedback.rowId!,
-                        userId,
-                        url: attachment.url,
-                        storageKey: attachment.storageKey,
-                        mimeType: attachment.mimeType,
-                        fileSize: attachment.fileSize,
-                        kind: attachment.kind,
-                        ...(attachment.width != null && {
-                          width: attachment.width,
-                        }),
-                        ...(attachment.height != null && {
-                          height: attachment.height,
-                        }),
-                      },
-                    },
-                  }),
-                ),
-              );
-              setNewAttachments([]);
-              setUploaderKey((key) => key + 1);
-            }
-          }),
-          updatePostDetails.action,
-        ),
+  const { handleSubmit, AppField, AppForm, SubmitForm, reset } = useForm({
+    defaultValues: {
+      title: feedback.title ?? "",
+      description: feedback.description ?? "",
     },
-  );
+    asyncDebounceMs: DEBOUNCE_TIME,
+    validators: {
+      onSubmitAsync: updateFeedbackSchema,
+    },
+    onSubmit: async ({ value }) =>
+      toaster.promise(
+        updateFeedback({
+          rowId: feedback.rowId!,
+          patch: {
+            title: value.title,
+            description: value.description,
+            updatedAt: new Date(),
+          },
+        }).then(async () => {
+          // link any newly uploaded attachments to the post
+          const userId = session?.user?.rowId;
+          if (userId && newAttachments.length) {
+            await Promise.all(
+              newAttachments.map((attachment) =>
+                createAttachment({
+                  input: {
+                    attachment: {
+                      postId: feedback.rowId!,
+                      userId,
+                      url: attachment.url,
+                      storageKey: attachment.storageKey,
+                      mimeType: attachment.mimeType,
+                      fileSize: attachment.fileSize,
+                      kind: attachment.kind,
+                      ...(attachment.width != null && {
+                        width: attachment.width,
+                      }),
+                      ...(attachment.height != null && {
+                        height: attachment.height,
+                      }),
+                    },
+                  },
+                }),
+              ),
+            );
+            setNewAttachments([]);
+            setUploaderKey((key) => key + 1);
+          }
+        }),
+        updatePostDetails.action,
+      ),
+  });
 
-  const descriptionLength = useStore(
-    store,
-    (store) => store.values.description.length,
-  );
+  // editor is uncontrolled; track plain-text length for the limit
+  const descriptionEditorApi = useRef<EditorApi | null>(null);
+  const [descriptionLength, setDescriptionLength] = useState(0);
 
   if (!isClient) return null;
 
@@ -254,23 +248,27 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
             </AppField>
 
             <AppField name="description">
-              {({ TextareaField }) => (
-                <TextareaField
-                  label={
-                    app.projectPage.projectFeedback.feedbackDescription.label
-                  }
-                  placeholder={
-                    app.projectPage.projectFeedback.feedbackDescription
-                      .placeholders[0]
-                  }
-                  rows={5}
-                  className="min-h-32"
-                  maxLength={MAX_DESCRIPTION_LENGTH}
-                  onClick={(evt) => {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                  }}
-                />
+              {(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Label>
+                    {app.projectPage.projectFeedback.feedbackDescription.label}
+                  </Label>
+                  <RichTextEditor
+                    editorApi={descriptionEditorApi}
+                    defaultContent={feedback.description ?? undefined}
+                    placeholder={
+                      app.projectPage.projectFeedback.feedbackDescription
+                        .placeholders[0]
+                    }
+                    editorClassName="min-h-32"
+                    // keep clicks inside the editor from reaching the card
+                    onClick={(evt) => evt.stopPropagation()}
+                    onUpdate={({ getHTML, getText, isEmpty }) => {
+                      field.handleChange(isEmpty ? "" : getHTML());
+                      setDescriptionLength(getText().trim().length);
+                    }}
+                  />
+                </div>
               )}
             </AppField>
 
@@ -328,6 +326,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                 <SubmitForm
                   action={updatePostDetails.action}
                   isPending={isPending || isUploadingAttachments}
+                  disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
                   className="w-fit place-self-end"
                   onClick={(evt) => evt.stopPropagation()}
                 />
