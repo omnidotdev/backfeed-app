@@ -46,8 +46,8 @@ const FeedbackKey = ({ prefix, number, className }: Props) => {
         className,
       )}
     >
-      {key}
       <LuCopy className="size-3" />
+      {key}
     </button>
   );
 };
