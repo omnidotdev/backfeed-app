@@ -586,6 +586,18 @@ export type BooleanFilter = {
   notIn?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
+export type ChangePostStatusInput = {
+  note?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['UUID']['input'];
+  statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type ChangePostStatusPayload = {
+  __typename?: 'ChangePostStatusPayload';
+  id: Scalars['UUID']['output'];
+  statusTemplateId?: Maybe<Scalars['UUID']['output']>;
+};
+
 export type Comment = {
   __typename?: 'Comment';
   /** Reads and enables pagination through a set of `Comment`. */
@@ -1937,6 +1949,11 @@ export type IntFilter = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Move a post to a status (or clear it) with an optional note, recorded on
+   * the status timeline. Admin-only.
+   */
+  changePostStatus?: Maybe<ChangePostStatusPayload>;
   /** Creates a single `Attachment`. */
   createAttachment?: Maybe<CreateAttachmentPayload>;
   /** Creates a single `Comment`. */
@@ -2023,6 +2040,12 @@ export type Mutation = {
   updateVote?: Maybe<UpdateVotePayload>;
   /** Updates a single `WardenSyncQueue` using a unique key and a patch. */
   updateWardenSyncQueue?: Maybe<UpdateWardenSyncQueuePayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationChangePostStatusArgs = {
+  input: ChangePostStatusInput;
 };
 
 
@@ -3037,6 +3060,8 @@ export enum PostOrderBy {
   PostStatusChangesDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
   PostStatusChangesDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CREATED_AT_ASC',
   PostStatusChangesDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesDistinctCountNoteAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_NOTE_ASC',
+  PostStatusChangesDistinctCountNoteDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_NOTE_DESC',
   PostStatusChangesDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_POST_ID_ASC',
   PostStatusChangesDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_POST_ID_DESC',
   PostStatusChangesDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -3162,6 +3187,7 @@ export type PostStatusChange = {
   changedBy?: Maybe<User>;
   changedById?: Maybe<Scalars['UUID']['output']>;
   createdAt: Scalars['Datetime']['output'];
+  note?: Maybe<Scalars['String']['output']>;
   /** Reads a single `Post` that is related to this `PostStatusChange`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
@@ -3195,6 +3221,8 @@ export type PostStatusChangeCondition = {
   changedById?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `note` field. */
+  note?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `postId` field. */
   postId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -3230,6 +3258,7 @@ export type PostStatusChangeConnectionGroupedAggregatesArgs = {
 export type PostStatusChangeDistinctCountAggregateFilter = {
   changedById?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
+  note?: InputMaybe<BigIntFilter>;
   postId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   toStatusTemplateId?: InputMaybe<BigIntFilter>;
@@ -3241,6 +3270,8 @@ export type PostStatusChangeDistinctCountAggregates = {
   changedById?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of note across the matching connection */
+  note?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of postId across the matching connection */
   postId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -3272,6 +3303,8 @@ export type PostStatusChangeFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Negates the expression. */
   not?: InputMaybe<PostStatusChangeFilter>;
+  /** Filter by the object’s `note` field. */
+  note?: InputMaybe<StringFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostStatusChangeFilter>>;
   /** Filter by the object’s `post` relation. */
@@ -3294,6 +3327,7 @@ export enum PostStatusChangeGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Note = 'NOTE',
   PostId = 'POST_ID',
   ToStatusTemplateId = 'TO_STATUS_TEMPLATE_ID'
 }
@@ -3356,6 +3390,8 @@ export enum PostStatusChangeOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
+  NoteAsc = 'NOTE_ASC',
+  NoteDesc = 'NOTE_DESC',
   PostIdAsc = 'POST_ID_ASC',
   PostIdDesc = 'POST_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
@@ -7231,6 +7267,8 @@ export enum StatusTemplateOrderBy {
   PostStatusChangesByToStatusTemplateIdDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
   PostStatusChangesByToStatusTemplateIdDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CREATED_AT_ASC',
   PostStatusChangesByToStatusTemplateIdDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountNoteAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_NOTE_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountNoteDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_NOTE_DESC',
   PostStatusChangesByToStatusTemplateIdDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_POST_ID_ASC',
   PostStatusChangesByToStatusTemplateIdDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_POST_ID_DESC',
   PostStatusChangesByToStatusTemplateIdDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_ROW_ID_ASC',
@@ -8707,6 +8745,8 @@ export enum UserOrderBy {
   PostStatusChangesByChangedByIdDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
   PostStatusChangesByChangedByIdDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CREATED_AT_ASC',
   PostStatusChangesByChangedByIdDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesByChangedByIdDistinctCountNoteAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_NOTE_ASC',
+  PostStatusChangesByChangedByIdDistinctCountNoteDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_NOTE_DESC',
   PostStatusChangesByChangedByIdDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_POST_ID_ASC',
   PostStatusChangesByChangedByIdDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_POST_ID_DESC',
   PostStatusChangesByChangedByIdDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_ROW_ID_ASC',
@@ -9524,6 +9564,15 @@ export type DeleteCommentMutationVariables = Exact<{
 
 export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment?: { __typename?: 'DeleteCommentPayload', clientMutationId?: string | null } | null };
 
+export type ChangePostStatusMutationVariables = Exact<{
+  postId: Scalars['UUID']['input'];
+  statusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
+  note?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ChangePostStatusMutation = { __typename?: 'Mutation', changePostStatus?: { __typename?: 'ChangePostStatusPayload', id: string, statusTemplateId?: string | null } | null };
+
 export type CreateFeedbackMutationVariables = Exact<{
   input: CreatePostInput;
 }>;
@@ -10042,6 +10091,35 @@ useDeleteCommentMutation.getKey = () => ['DeleteComment'];
 
 
 useDeleteCommentMutation.fetcher = (variables: DeleteCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, variables, options);
+
+export const ChangePostStatusDocument = `
+    mutation ChangePostStatus($postId: UUID!, $statusTemplateId: UUID, $note: String) {
+  changePostStatus(
+    input: {postId: $postId, statusTemplateId: $statusTemplateId, note: $note}
+  ) {
+    id
+    statusTemplateId
+  }
+}
+    `;
+
+export const useChangePostStatusMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ChangePostStatusMutation, TError, ChangePostStatusMutationVariables, TContext>) => {
+    
+    return useMutation<ChangePostStatusMutation, TError, ChangePostStatusMutationVariables, TContext>(
+      {
+    mutationKey: ['ChangePostStatus'],
+    mutationFn: (variables?: ChangePostStatusMutationVariables) => graphqlFetch<ChangePostStatusMutation, ChangePostStatusMutationVariables>(ChangePostStatusDocument, variables)(),
+    ...options
+  }
+    )};
+
+useChangePostStatusMutation.getKey = () => ['ChangePostStatus'];
+
+
+useChangePostStatusMutation.fetcher = (variables: ChangePostStatusMutationVariables, options?: RequestInit['headers']) => graphqlFetch<ChangePostStatusMutation, ChangePostStatusMutationVariables>(ChangePostStatusDocument, variables, options);
 
 export const CreateFeedbackDocument = `
     mutation CreateFeedback($input: CreatePostInput!) {

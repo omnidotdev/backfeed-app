@@ -27,30 +27,39 @@ const StatusTimeline = ({ postId }: Props) => {
 
       <ol className="flex flex-col gap-3">
         {changes.map((change) => (
-          <li key={change.rowId} className="flex items-center gap-2 text-sm">
-            <LuGitCommitHorizontal className="size-4 shrink-0 text-foreground-subtle" />
+          <li key={change.rowId} className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-sm">
+              <LuGitCommitHorizontal className="size-4 shrink-0 text-foreground-subtle" />
 
-            <span className="text-muted-foreground">
-              {change.changedBy?.username ?? "Someone"} moved this to
-            </span>
-
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className="size-2.5 shrink-0 rounded-full"
-                style={{
-                  backgroundColor:
-                    change.toStatusTemplate?.color ??
-                    "var(--colors-neutral-400)",
-                }}
-              />
-              <span className="font-medium">
-                {change.toStatusTemplate?.displayName ?? "No status"}
+              <span className="text-muted-foreground">
+                {change.changedBy?.username ?? "Someone"} moved this to
               </span>
-            </span>
 
-            <span className="text-foreground-subtle text-xs">
-              {dayjs(change.createdAt).fromNow()}
-            </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span
+                  className="size-2.5 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor:
+                      change.toStatusTemplate?.color ??
+                      "var(--colors-neutral-400)",
+                  }}
+                />
+                <span className="font-medium">
+                  {change.toStatusTemplate?.displayName ?? "No status"}
+                </span>
+              </span>
+
+              <span className="text-foreground-subtle text-xs">
+                {dayjs(change.createdAt).fromNow()}
+              </span>
+            </div>
+
+            {change.note ? (
+              // align the note under the text, past the commit icon
+              <p className="ml-6 border-border border-l-2 pl-3 text-muted-foreground text-sm">
+                {change.note}
+              </p>
+            ) : null}
           </li>
         ))}
       </ol>

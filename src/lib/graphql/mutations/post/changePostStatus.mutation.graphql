@@ -1,0 +1,12 @@
+mutation ChangePostStatus(
+  $postId: UUID!
+  $statusTemplateId: UUID
+  $note: String
+) {
+  changePostStatus(
+    input: { postId: $postId, statusTemplateId: $statusTemplateId, note: $note }
+  ) {
+    id
+    statusTemplateId
+  }
+}

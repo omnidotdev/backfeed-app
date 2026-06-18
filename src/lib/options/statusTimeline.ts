@@ -6,6 +6,7 @@ import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
 export interface StatusChange {
   rowId: string;
   createdAt: string;
+  note: string | null;
   toStatusTemplate: {
     displayName: string;
     color: string | null;
@@ -32,6 +33,7 @@ const STATUS_TIMELINE_QUERY = `
         nodes {
           rowId
           createdAt
+          note
           toStatusTemplate {
             displayName
             color

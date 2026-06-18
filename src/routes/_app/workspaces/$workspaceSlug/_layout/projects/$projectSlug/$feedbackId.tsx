@@ -6,6 +6,7 @@ import FeedbackCard from "@/components/feedback/FeedbackCard";
 import PostTags from "@/components/feedback/PostTags";
 import ReactionBar from "@/components/feedback/ReactionBar";
 import StatusTimeline from "@/components/feedback/StatusTimeline";
+import StatusUpdateComposer from "@/components/feedback/StatusUpdateComposer";
 import Page from "@/components/layout/Page";
 import { BASE_URL } from "@/lib/config/env.config";
 import {
@@ -198,6 +199,15 @@ function FeedbackPage() {
           postId={feedbackId}
           projectId={feedback.project.rowId}
           canAssign={!!session?.user?.rowId}
+        />
+      )}
+
+      {hasAdminPrivileges && feedback?.project?.rowId && (
+        <StatusUpdateComposer
+          postId={feedbackId}
+          projectId={feedback.project.rowId}
+          currentStatusId={feedback.statusTemplate?.rowId}
+          statuses={projectStatuses}
         />
       )}
 
