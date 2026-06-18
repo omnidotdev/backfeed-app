@@ -3785,6 +3785,8 @@ export type Project = {
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
   projectStatusConfigs: ProjectStatusConfigConnection;
   rowId: Scalars['UUID']['output'];
+  showChangelog: Scalars['Boolean']['output'];
+  showRoadmap: Scalars['Boolean']['output'];
   /** Reads and enables pagination through a set of `SignalCluster`. */
   signalClusters: SignalClusterConnection;
   /** Reads and enables pagination through a set of `Signal`. */
@@ -3918,6 +3920,10 @@ export type ProjectCondition = {
   prefix?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `showChangelog` field. */
+  showChangelog?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `showRoadmap` field. */
+  showRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -3970,6 +3976,10 @@ export type ProjectDistinctCountAggregates = {
   prefix?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of showChangelog across the matching connection */
+  showChangelog?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of showRoadmap across the matching connection */
+  showRoadmap?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
   slug?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -4025,6 +4035,10 @@ export type ProjectFilter = {
   projectStatusConfigsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `showChangelog` field. */
+  showChangelog?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `showRoadmap` field. */
+  showRoadmap?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `signalClusters` relation. */
   signalClusters?: InputMaybe<ProjectToManySignalClusterFilter>;
   /** Some related `signalClusters` exist. */
@@ -4055,6 +4069,8 @@ export enum ProjectGroupBy {
   NextPostNumber = 'NEXT_POST_NUMBER',
   OrganizationId = 'ORGANIZATION_ID',
   Prefix = 'PREFIX',
+  ShowChangelog = 'SHOW_CHANGELOG',
+  ShowRoadmap = 'SHOW_ROADMAP',
   Slug = 'SLUG',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -4141,6 +4157,8 @@ export type ProjectInput = {
   organizationId: Scalars['UUID']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showChangelog?: InputMaybe<Scalars['Boolean']['input']>;
+  showRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -4674,6 +4692,10 @@ export enum ProjectOrderBy {
   ProjectStatusConfigsVarianceSampleSortOrderDesc = 'PROJECT_STATUS_CONFIGS_VARIANCE_SAMPLE_SORT_ORDER_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  ShowChangelogAsc = 'SHOW_CHANGELOG_ASC',
+  ShowChangelogDesc = 'SHOW_CHANGELOG_DESC',
+  ShowRoadmapAsc = 'SHOW_ROADMAP_ASC',
+  ShowRoadmapDesc = 'SHOW_ROADMAP_DESC',
   SignalsCountAsc = 'SIGNALS_COUNT_ASC',
   SignalsCountDesc = 'SIGNALS_COUNT_DESC',
   SignalsDistinctCountAiTagsAsc = 'SIGNALS_DISTINCT_COUNT_AI_TAGS_ASC',
@@ -4769,6 +4791,8 @@ export type ProjectPatch = {
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showChangelog?: InputMaybe<Scalars['Boolean']['input']>;
+  showRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -9551,7 +9575,7 @@ export type CommentFragment = { __typename?: 'Comment', rowId: string, message?:
 
 export type FeedbackFragment = { __typename?: 'Post', rowId: string, number: number, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, showRoadmap: boolean, showChangelog: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
 export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null };
 
@@ -9792,7 +9816,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
+export type ProjectQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, showRoadmap: boolean, showChangelog: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } } | null> } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -9972,6 +9996,8 @@ export const ProjectFragmentDoc = gql`
   organizationId
   nextPostNumber
   isPublic
+  showRoadmap
+  showChangelog
   projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId

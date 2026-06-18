@@ -36,6 +36,9 @@ export const Route = createFileRoute(
     // gate private boards for unauthenticated visitors (public boards are shareable)
     if (!project.isPublic && !session?.user) throw notFound();
 
+    // the roadmap is a per-project toggle; a hidden roadmap 404s for everyone
+    if (project.showRoadmap === false) throw notFound();
+
     await Promise.all([
       queryClient.ensureQueryData({
         ...projectStatusesOptions({ organizationId }),

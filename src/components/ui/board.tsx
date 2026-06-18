@@ -173,7 +173,9 @@ const Board = ({ className, enableDragScroll = true, ...rest }: BoardProps) => {
 const BoardColumn = ({ className, ...rest }: ComponentProps<"div">) => (
   <div
     className={cn(
-      "flex w-full flex-col rounded-xl border bg-muted/40 sm:w-80 sm:shrink-0",
+      // columns grow to fill the board width; a min width keeps them readable
+      // and lets the board scroll once there are too many to fit
+      "flex w-full flex-col rounded-xl border bg-muted/40 sm:w-auto sm:min-w-[18rem] sm:flex-1",
       className,
     )}
     {...rest}

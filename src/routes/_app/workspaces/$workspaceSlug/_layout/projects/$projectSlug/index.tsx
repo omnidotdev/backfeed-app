@@ -193,26 +193,35 @@ function ProjectPage() {
         ),
         description: project?.description!,
         cta: [
-          {
-            // public, shareable roadmap (visible to everyone, incl. anonymous)
-            label: "Roadmap",
-            icon: <LuMap />,
-            variant: "outline",
-            linkOptions: {
-              to: "/workspaces/$workspaceSlug/projects/$projectSlug/roadmap",
-              params: { workspaceSlug, projectSlug },
-            },
-          } satisfies ActionButton,
-          {
-            // public, shareable changelog of shipped feedback
-            label: "Changelog",
-            icon: <LuRocket />,
-            variant: "outline",
-            linkOptions: {
-              to: "/workspaces/$workspaceSlug/projects/$projectSlug/changelog",
-              params: { workspaceSlug, projectSlug },
-            },
-          } satisfies ActionButton,
+          // public, shareable roadmap (visible to everyone, incl. anonymous),
+          // unless the project hid it
+          ...(project?.showRoadmap !== false
+            ? [
+                {
+                  label: "Roadmap",
+                  icon: <LuMap />,
+                  variant: "outline",
+                  linkOptions: {
+                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/roadmap",
+                    params: { workspaceSlug, projectSlug },
+                  },
+                } satisfies ActionButton,
+              ]
+            : []),
+          // public, shareable changelog of shipped feedback, unless hidden
+          ...(project?.showChangelog !== false
+            ? [
+                {
+                  label: "Changelog",
+                  icon: <LuRocket />,
+                  variant: "outline",
+                  linkOptions: {
+                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/changelog",
+                    params: { workspaceSlug, projectSlug },
+                  },
+                } satisfies ActionButton,
+              ]
+            : []),
           ...(isAuthenticated
             ? [
                 {

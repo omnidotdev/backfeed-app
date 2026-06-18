@@ -5,6 +5,7 @@ import DangerZoneAction from "@/components/core/DangerZoneAction";
 import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
 import ProjectAvatar from "@/components/project/ProjectAvatar";
+import ProjectFeatures from "@/components/project/ProjectFeatures";
 import ProjectTags from "@/components/project/ProjectTags";
 import StatusTemplateManager from "@/components/project/StatusTemplateManager";
 import UpdateProject from "@/components/project/UpdateProject";
@@ -121,6 +122,8 @@ function ProjectSettingsPage() {
         <UpdateProject />
 
         {project?.rowId && <ProjectTags projectId={project.rowId} />}
+
+        <ProjectFeatures />
 
         <StatusTemplateManager />
 

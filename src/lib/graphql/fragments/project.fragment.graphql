@@ -8,6 +8,8 @@ fragment Project on Project {
   organizationId
   nextPostNumber
   isPublic
+  showRoadmap
+  showChangelog
   projectLinks(orderBy: ORDER_ASC) {
     nodes {
       rowId

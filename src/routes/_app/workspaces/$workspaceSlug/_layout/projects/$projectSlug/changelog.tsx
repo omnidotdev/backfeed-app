@@ -26,6 +26,9 @@ export const Route = createFileRoute(
     // gate private boards for unauthenticated visitors (public boards are shareable)
     if (!project.isPublic && !session?.user) throw notFound();
 
+    // the changelog is a per-project toggle; a hidden changelog 404s for everyone
+    if (project.showChangelog === false) throw notFound();
+
     await queryClient.ensureInfiniteQueryData({
       ...changelogOptions(project.rowId),
       revalidateIfStale: true,
