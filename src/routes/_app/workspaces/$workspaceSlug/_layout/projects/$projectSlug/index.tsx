@@ -5,7 +5,7 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { HiBolt, HiFolder, HiOutlineFolder } from "react-icons/hi2";
-import { LuMap, LuSettings } from "react-icons/lu";
+import { LuMap, LuRocket, LuSettings } from "react-icons/lu";
 import { z } from "zod";
 
 import Aggregate from "@/components/dashboard/Aggregate";
@@ -200,6 +200,16 @@ function ProjectPage() {
             variant: "outline",
             linkOptions: {
               to: "/workspaces/$workspaceSlug/projects/$projectSlug/roadmap",
+              params: { workspaceSlug, projectSlug },
+            },
+          } satisfies ActionButton,
+          {
+            // public, shareable changelog of shipped feedback
+            label: "Changelog",
+            icon: <LuRocket />,
+            variant: "outline",
+            linkOptions: {
+              to: "/workspaces/$workspaceSlug/projects/$projectSlug/changelog",
               params: { workspaceSlug, projectSlug },
             },
           } satisfies ActionButton,

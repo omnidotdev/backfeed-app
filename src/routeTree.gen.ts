@@ -29,6 +29,7 @@ import { Route as AppWorkspacesWorkspaceSlugLayoutManageMembersRouteImport } fro
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/index'
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
+import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
 import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
 
 const PricingRoute = PricingRouteImport.update({
@@ -139,10 +140,16 @@ const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute =
     } as any,
   )
 const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport.update(
+  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport.update({
+    id: '/projects/$projectSlug/roadmap',
+    path: '/projects/$projectSlug/roadmap',
+    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute =
+  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport.update(
     {
-      id: '/projects/$projectSlug/roadmap',
-      path: '/projects/$projectSlug/roadmap',
+      id: '/projects/$projectSlug/changelog',
+      path: '/projects/$projectSlug/changelog',
       getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
     } as any,
   )
@@ -172,8 +179,9 @@ export interface FileRoutesByFullPath {
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
@@ -192,8 +200,9 @@ export interface FileRoutesByTo {
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
@@ -216,8 +225,9 @@ export interface FileRoutesById {
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
+  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
+  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
   '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
@@ -239,8 +249,9 @@ export interface FileRouteTypes {
     | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
-    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -259,8 +270,9 @@ export interface FileRouteTypes {
     | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
-    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
@@ -282,8 +294,9 @@ export interface FileRouteTypes {
     | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
+    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
+    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
@@ -438,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport
       parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
     }
+    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog': {
+      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
+      path: '/projects/$projectSlug/changelog'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport
+      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+    }
     '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId': {
       id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
       path: '/projects/$projectSlug/$feedbackId'
@@ -488,8 +508,9 @@ interface AppWorkspacesWorkspaceSlugLayoutRouteChildren {
   AppWorkspacesWorkspaceSlugLayoutIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
   AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
   AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
+  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
   AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
+  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
   AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
 }
 
@@ -503,10 +524,12 @@ const AppWorkspacesWorkspaceSlugLayoutRouteChildren: AppWorkspacesWorkspaceSlugL
       AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute,
     AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute:
       AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute,
+    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute:
+      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute,
     AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute:
       AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute,
+    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute:
+      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute,
     AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute:
       AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute,
   }
