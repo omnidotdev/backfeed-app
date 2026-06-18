@@ -173,7 +173,7 @@ const Board = ({ className, enableDragScroll = true, ...rest }: BoardProps) => {
 const BoardColumn = ({ className, ...rest }: ComponentProps<"div">) => (
   <div
     className={cn(
-      "flex w-full flex-col rounded-xl border border-border-subtle bg-[var(--colors-background-subtle)] sm:w-80 sm:shrink-0",
+      "flex w-full flex-col rounded-xl border bg-muted/40 sm:w-80 sm:shrink-0",
       className,
     )}
     {...rest}
@@ -213,7 +213,7 @@ const BoardColumnHeader = ({
       {icon ?? (
         <span
           className="size-2.5 shrink-0 rounded-full"
-          style={{ backgroundColor: color ?? "var(--colors-neutral-400)" }}
+          style={{ backgroundColor: color ?? "var(--color-muted-foreground)" }}
         />
       )}
       <span className="truncate font-semibold text-foreground text-sm">
@@ -222,7 +222,7 @@ const BoardColumnHeader = ({
     </div>
 
     {count != null && (
-      <span className="shrink-0 rounded-full bg-[var(--colors-card-item)] px-2 py-0.5 font-medium text-foreground-subtle text-xs tabular-nums">
+      <span className="shrink-0 rounded-full bg-card px-2 py-0.5 font-medium text-muted-foreground text-xs tabular-nums">
         {count}
       </span>
     )}
@@ -240,7 +240,7 @@ const BoardColumnBody = ({ className, ...rest }: ComponentProps<"div">) => (
 const BoardColumnEmpty = ({ className, ...rest }: ComponentProps<"p">) => (
   <p
     className={cn(
-      "rounded-lg border border-border-subtle border-dashed px-3 py-8 text-center text-foreground-subtle text-xs",
+      "rounded-lg border border-dashed px-3 py-8 text-center text-muted-foreground text-xs",
       className,
     )}
     {...rest}
