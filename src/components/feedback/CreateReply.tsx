@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -19,6 +20,7 @@ import {
   infiniteRepliesOptions,
 } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
+import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
@@ -67,6 +69,11 @@ const CreateReply = ({
   const { feedbackId } = feedbackRoute.useLoaderData();
   const { session, queryClient, organizationId } =
     feedbackRoute.useRouteContext();
+
+  // posts in this project, offered in the `#`-reference typeahead
+  const { data: issueReferenceItems } = useQuery(
+    projectIssueRefsOptions({ projectSlug, organizationId }),
+  );
 
   // editor is uncontrolled; track plain-text length for the limit + clearing
   const replyEditorApi = useRef<EditorApi | null>(null);
@@ -154,6 +161,7 @@ const CreateReply = ({
                   placeholder={app.postPage.comments.textAreaPlaceholder}
                   editable={canReply}
                   mentionItems={mentionableUsers}
+                  issueReferenceItems={issueReferenceItems}
                   className="rounded-none border-0 border-border-subtle border-b"
                   editorClassName="min-h-16"
                   onUpdate={({ getHTML, getText, isEmpty }) => {

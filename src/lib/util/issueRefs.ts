@@ -40,3 +40,26 @@ export const splitIssueRefs = (message: string): MessageSegment[] => {
   // an empty message yields no segments; callers treat that as plain empty
   return segments.length > 0 ? segments : [{ type: "text", value: message }];
 };
+
+/**
+ * Linkify GitHub-style `#<number>` references inside a rich-text HTML string.
+ * Splits on tags so refs are only matched in text (never inside attributes),
+ * and skips numeric entities like `&#39;`. `hrefForNumber` maps a referenced
+ * post number to its route.
+ */
+export const linkifyIssueRefsHtml = (
+  html: string,
+  hrefForNumber: (number: string) => string,
+): string =>
+  html
+    .split(/(<[^>]+>)/)
+    .map((segment) =>
+      segment.startsWith("<")
+        ? segment
+        : segment.replace(
+            /(?<![&\w])#(\d+)\b/g,
+            (match, number) =>
+              `<a href="${hrefForNumber(number)}">${match}</a>`,
+          ),
+    )
+    .join("");

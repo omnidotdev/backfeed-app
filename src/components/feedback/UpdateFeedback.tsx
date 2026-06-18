@@ -1,4 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
+import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { LuPencil, LuX } from "react-icons/lu";
@@ -26,6 +27,7 @@ import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
+import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
@@ -68,6 +70,14 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
   const { session, queryClient } = workspaceLayoutRoute.useRouteContext();
 
   const isClient = useIsClient();
+
+  // posts in this project, offered in the `#`-reference typeahead
+  const { data: issueReferenceItems } = useQuery(
+    projectIssueRefsOptions({
+      projectSlug: feedback.project?.slug ?? "",
+      organizationId: feedback.project?.organizationId ?? "",
+    }),
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
@@ -263,6 +273,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                         .placeholders[0]
                     }
                     editorClassName="min-h-32"
+                    issueReferenceItems={issueReferenceItems}
                     // keep clicks inside the editor from reaching the card
                     onClick={(evt) => evt.stopPropagation()}
                     onUpdate={({ getHTML, getText, isEmpty }) => {

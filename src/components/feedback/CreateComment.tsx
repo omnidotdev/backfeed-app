@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -14,6 +15,7 @@ import {
   infiniteCommentsOptions,
 } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
+import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import toaster from "@/lib/util/toaster";
 
 import type { EditorApi, MentionItem } from "@/components/ui/rich-text-editor";
@@ -49,6 +51,11 @@ const CreateComment = ({ canCreateComment, mentionableUsers }: Props) => {
     feedbackRoute.useRouteContext();
   const { projectSlug } = feedbackRoute.useParams();
   const { feedbackId } = feedbackRoute.useLoaderData();
+
+  // posts in this project, offered in the `#`-reference typeahead
+  const { data: issueReferenceItems } = useQuery(
+    projectIssueRefsOptions({ projectSlug, organizationId }),
+  );
 
   // editor is uncontrolled; track plain-text length for the limit + clearing
   const commentEditorApi = useRef<EditorApi | null>(null);
@@ -139,6 +146,7 @@ const CreateComment = ({ canCreateComment, mentionableUsers }: Props) => {
             editable={!!session && canCreateComment}
             editorClassName="min-h-16"
             mentionItems={mentionableUsers}
+            issueReferenceItems={issueReferenceItems}
             onUpdate={({ getHTML, getText, isEmpty }) => {
               field.handleChange(isEmpty ? "" : getHTML());
               setMessageLength(getText().trim().length);

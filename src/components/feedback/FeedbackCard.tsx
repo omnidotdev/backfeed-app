@@ -39,6 +39,7 @@ import {
 } from "@/lib/options/projects";
 import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";
 import useStatusMenuStore from "@/lib/store/useStatusMenuStore";
+import { linkifyIssueRefsHtml } from "@/lib/util/issueRefs";
 import stripHtml from "@/lib/util/stripHtml";
 import cn from "@/lib/utils";
 
@@ -434,7 +435,15 @@ const FeedbackCard = ({
             // detail page: full rich content (HTML), or legacy plain text
             /<[a-z][\s\S]*>/i.test(feedback.description) ? (
               <RichTextContent
-                html={feedback.description}
+                html={
+                  workspaceSlug && projectSlug
+                    ? linkifyIssueRefsHtml(
+                        feedback.description,
+                        (number) =>
+                          `/workspaces/${workspaceSlug}/projects/${projectSlug}/${number}`,
+                      )
+                    : feedback.description
+                }
                 className="break-words text-muted-foreground text-sm leading-normal"
               />
             ) : (

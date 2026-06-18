@@ -343,6 +343,111 @@ const MentionTypeahead = ({ items }: { items: MentionItem[] }) => {
   );
 };
 
+/** An issue (post) offered in the `#`-reference typeahead. */
+export interface IssueReferenceItem {
+  /** Post rowId. */
+  id: string;
+  /** Per-project issue number (the `#` token inserted). */
+  number: number;
+  /** Post title, shown in the menu. */
+  title: string;
+}
+
+class IssueReferenceOption extends MenuOption {
+  item: IssueReferenceItem;
+
+  constructor(item: IssueReferenceItem) {
+    super(String(item.id));
+    this.item = item;
+  }
+}
+
+/**
+ * `#`-reference typeahead. Filters the provided `items` by the typed number or
+ * title and inserts the selected reference as plain `#<number>` text, which the
+ * read renderer linkifies to the referenced post (GitHub `#123` style).
+ */
+const IssueReferenceTypeahead = ({
+  items,
+}: {
+  items: IssueReferenceItem[];
+}) => {
+  const [editor] = useLexicalComposerContext();
+  const [query, setQuery] = useState<string | null>(null);
+
+  const triggerFn = useBasicTypeaheadTriggerMatch("#", { minLength: 0 });
+
+  const options = useMemo(() => {
+    const normalized = (query ?? "").toLowerCase();
+    return items
+      .filter(
+        (item) =>
+          String(item.number).startsWith(normalized) ||
+          item.title.toLowerCase().includes(normalized),
+      )
+      .slice(0, 6)
+      .map((item) => new IssueReferenceOption(item));
+  }, [items, query]);
+
+  const onSelectOption = useCallback(
+    (
+      option: IssueReferenceOption,
+      nodeToReplace: TextNode | null,
+      closeMenu: () => void,
+    ) => {
+      editor.update(() => {
+        const reference = $createTextNode(`#${option.item.number}`);
+        if (nodeToReplace) nodeToReplace.replace(reference);
+        const trailing = $createTextNode(" ");
+        reference.insertAfter(trailing);
+        trailing.select();
+        closeMenu();
+      });
+    },
+    [editor],
+  );
+
+  return (
+    <LexicalTypeaheadMenuPlugin<IssueReferenceOption>
+      onQueryChange={setQuery}
+      onSelectOption={onSelectOption}
+      triggerFn={triggerFn}
+      options={options}
+      menuRenderFn={(
+        anchorRef,
+        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
+      ) =>
+        anchorRef.current && options.length
+          ? createPortal(
+              <ul className="z-50 max-h-56 min-w-56 max-w-72 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                {options.map((option, index) => (
+                  <li
+                    key={option.key}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm",
+                      selectedIndex === index && "bg-muted",
+                    )}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      selectOptionAndCleanUp(option);
+                    }}
+                  >
+                    <span className="shrink-0 font-medium text-muted-foreground">
+                      #{option.item.number}
+                    </span>
+                    <span className="truncate">{option.item.title}</span>
+                  </li>
+                ))}
+              </ul>,
+              anchorRef.current,
+            )
+          : null
+      }
+    />
+  );
+};
+
 interface RichTextEditorProps
   extends Omit<ComponentProps<"div">, "placeholder" | "onChange"> {
   /** Imperative handle for clearing/focusing the editor. */
@@ -363,6 +468,8 @@ interface RichTextEditorProps
   hideToolbar?: boolean;
   /** When provided, enables an `@`-mention typeahead over these items. */
   mentionItems?: MentionItem[];
+  /** When provided, enables a `#`-issue-reference typeahead over these items. */
+  issueReferenceItems?: IssueReferenceItem[];
   /** Class applied to the editor surface. */
   editorClassName?: string;
 }
@@ -380,6 +487,7 @@ const RichTextEditor = ({
   placeholder,
   hideToolbar = false,
   mentionItems,
+  issueReferenceItems,
   className,
   editorClassName,
   ...rest
@@ -457,6 +565,9 @@ const RichTextEditor = ({
           <LinkPlugin />
           {mentionItems?.length ? (
             <MentionTypeahead items={mentionItems} />
+          ) : null}
+          {issueReferenceItems?.length ? (
+            <IssueReferenceTypeahead items={issueReferenceItems} />
           ) : null}
           <OnChangePlugin onChange={handleChange} />
           <EditablePlugin editable={editable} />

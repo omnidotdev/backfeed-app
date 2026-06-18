@@ -21,6 +21,7 @@ import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
+import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import {
   projectMetricsOptions,
   projectOptions,
@@ -83,6 +84,11 @@ const CreateFeedback = () => {
   });
 
   const projectId = project?.rowId;
+
+  // posts in this project, offered in the `#`-reference typeahead
+  const { data: issueReferenceItems } = useQuery(
+    projectIssueRefsOptions({ projectSlug, organizationId }),
+  );
 
   const { data: defaultStatusTemplateId } = useQuery({
     ...projectStatusesOptions({ organizationId: organizationId! }),
@@ -313,6 +319,7 @@ const CreateFeedback = () => {
                   placeholder={descriptionPlaceholder}
                   editable={!!session?.user && !!canCreateFeedback}
                   editorClassName="min-h-16"
+                  issueReferenceItems={issueReferenceItems}
                   onUpdate={({ getHTML, getText, isEmpty }) => {
                     field.handleChange(isEmpty ? "" : getHTML());
                     setDescriptionLength(getText().trim().length);

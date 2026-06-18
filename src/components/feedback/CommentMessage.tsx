@@ -1,29 +1,11 @@
 import { Link, useParams } from "@tanstack/react-router";
 
 import { RichTextContent } from "@/components/ui/rich-text-editor";
-import { splitIssueRefs } from "@/lib/util/issueRefs";
+import { linkifyIssueRefsHtml, splitIssueRefs } from "@/lib/util/issueRefs";
 
 interface Props {
   message: string | null | undefined;
 }
-
-/**
- * Linkify GitHub-style `#<number>` references in rich-text (HTML) comment
- * bodies. Splits on tags so refs are only matched in text (not inside
- * attributes), and skips numeric entities like `&#39;`.
- */
-const linkifyIssueRefs = (html: string, hrefFor: (n: string) => string) =>
-  html
-    .split(/(<[^>]+>)/)
-    .map((segment) =>
-      segment.startsWith("<")
-        ? segment
-        : segment.replace(
-            /(?<![&\w])#(\d+)\b/g,
-            (match, number) => `<a href="${hrefFor(number)}">${match}</a>`,
-          ),
-    )
-    .join("");
 
 /**
  * Render a comment body. New comments are rich text (HTML); legacy comments are
@@ -42,7 +24,7 @@ const CommentMessage = ({ message }: Props) => {
   // rich-text comments store HTML; render sanitized, with refs linkified
   if (/<[a-z][\s\S]*>/i.test(message)) {
     const html = canLink
-      ? linkifyIssueRefs(
+      ? linkifyIssueRefsHtml(
           message,
           (number) =>
             `/workspaces/${workspaceSlug}/projects/${projectSlug}/${number}`,
