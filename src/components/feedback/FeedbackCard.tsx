@@ -378,8 +378,17 @@ const FeedbackCard = ({
                 </>
               )}
 
-              <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
-              <div className="flex shrink-0 items-center gap-0.5">
+              {/* on dense cards the key + comment count are the only meta, so
+                  drop the separator dot and push the count to the right edge */}
+              {!compact && (
+                <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
+              )}
+              <div
+                className={cn(
+                  "flex shrink-0 items-center gap-0.5",
+                  compact && "ml-auto",
+                )}
+              >
                 <LuMessageCircle className="size-3.5" />
                 <Format.Number
                   value={feedback.comments?.totalCount ?? 0}
