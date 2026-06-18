@@ -28,7 +28,10 @@ const projectLinkSchema = z.object({
   projectId: uuidSchema.or(z.literal("")),
   // NB: need to allow an empty url for initial `pending` placeholder, this allows users to update other aspects of the form without needing to add a project link.
   url: urlSchema.or(z.literal("")),
-  title: z.string().optional(),
+  // saved links load back with `title: null` (the column is nullable), so accept
+  // null/undefined here. `.optional()` alone rejects null and would silently
+  // block the whole submit once an existing link is in the form (no save, no toast)
+  title: z.string().nullish(),
   order: z.number(),
 });
 
