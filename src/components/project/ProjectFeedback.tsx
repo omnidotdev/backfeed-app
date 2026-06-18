@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -23,6 +24,7 @@ import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import TagFilterPills from "@/components/project/TagFilterPills";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
 import {
   SelectContent,
   SelectControl,
@@ -37,6 +39,7 @@ import {
 } from "@/components/ui/select";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 import {
   freeTierFeedbackOptions,
@@ -224,6 +227,14 @@ const ProjectFeedback = () => {
       type: DialogType.CreatePost,
     });
 
+  // "C" opens the create-feedback dialog (ignored while typing in a field)
+  useHotkeys(
+    Hotkeys.CreatePost,
+    () => session && canCreateFeedback && setIsCreateFeedbackOpen(true),
+    { preventDefault: true },
+    [session, canCreateFeedback, setIsCreateFeedbackOpen],
+  );
+
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
       organizationId,
@@ -347,6 +358,9 @@ const ProjectFeedback = () => {
               <span className="hidden sm:flex">
                 {app.projectPage.projectFeedback.createPost.title}
               </span>
+              <Kbd className="ml-1 hidden border-current/30 bg-transparent text-current/80 sm:inline-flex">
+                {hotkeyLabel(Hotkeys.CreatePost)}
+              </Kbd>
             </Button>
           )}
         </div>

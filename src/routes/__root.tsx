@@ -15,6 +15,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { Toaster } from "sonner";
 
+import CommandPalette from "@/components/layout/CommandPalette";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
@@ -199,6 +200,8 @@ function RootDocument({
             </main>
 
             {!isMaintenanceMode && <Footer />}
+
+            {!isMaintenanceMode && <CommandPalette />}
 
             <Toaster
               theme={theme as "light" | "dark" | "system"}
