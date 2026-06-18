@@ -7,6 +7,7 @@ import { LuCircleMinus, LuCirclePlus, LuMessageCircle } from "react-icons/lu";
 import DestructiveAction from "@/components/core/DestructiveAction";
 import CommentMessage from "@/components/feedback/CommentMessage";
 import CreateReply from "@/components/feedback/CreateReply";
+import ReactionBar from "@/components/feedback/ReactionBar";
 import Replies from "@/components/feedback/Replies";
 import {
   AvatarFallback,
@@ -124,6 +125,16 @@ const CommentCard = ({
           <div className="break-words py-2 pr-4 text-muted-foreground">
             <CommentMessage message={comment.message} />
           </div>
+
+          {!isPending && (
+            <div className="pb-1">
+              <ReactionBar
+                commentId={comment.rowId}
+                userId={session?.user?.rowId}
+                canReact={!!session?.user?.rowId}
+              />
+            </div>
+          )}
 
           <div className="mb-[-1px] flex items-center gap-4 text-foreground-subtle/80">
             <Button

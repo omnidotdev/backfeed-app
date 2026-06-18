@@ -14,18 +14,22 @@ import {
 import {
   createReaction,
   deleteReaction,
-  postReactionsOptions,
-  postReactionsQueryKey,
+  reactionsOptions,
+  reactionsQueryKey,
 } from "@/lib/options/reactions";
 import toaster from "@/lib/util/toaster";
 import cn from "@/lib/utils";
+
+import type { ReactionTarget } from "@/lib/options/reactions";
 
 /** Emoji set offered in the picker (mirrors GitHub's issue reactions). */
 const REACTION_EMOJIS = ["👍", "👎", "😄", "🎉", "😕", "❤️", "🚀", "👀"];
 
 interface Props {
-  /** Post rowId reactions belong to. */
-  postId: string;
+  /** Post rowId reactions belong to (omit when reacting to a comment). */
+  postId?: string;
+  /** Comment rowId reactions belong to (omit when reacting to a post). */
+  commentId?: string;
   /** Current user rowId (required to react). */
   userId?: string;
   /** Whether the viewer can add/remove reactions. */
@@ -33,21 +37,29 @@ interface Props {
 }
 
 /**
- * Emoji reaction bar for a post. Shows existing reactions grouped by emoji with
- * counts; clicking toggles the current user's reaction, and a picker adds new
- * ones.
+ * Emoji reaction bar for a post or comment (pass exactly one target). Shows
+ * existing reactions grouped by emoji with counts; clicking toggles the current
+ * user's reaction, and a picker adds new ones.
  */
-const ReactionBar = ({ postId, userId, canReact = false }: Props) => {
+const ReactionBar = ({
+  postId,
+  commentId,
+  userId,
+  canReact = false,
+}: Props) => {
   const queryClient = useQueryClient();
 
-  const { data: reactions } = useQuery(postReactionsOptions(postId));
+  // exactly one of postId/commentId is set (enforced by the API CHECK constraint)
+  const target = (commentId ? { commentId } : { postId }) as ReactionTarget;
+
+  const { data: reactions } = useQuery(reactionsOptions(target));
 
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: postReactionsQueryKey(postId) });
+    queryClient.invalidateQueries({ queryKey: reactionsQueryKey(target) });
 
   const { mutate: addReaction } = useMutation({
     mutationFn: (emoji: string) =>
-      createReaction({ postId, userId: userId!, emoji }),
+      createReaction({ ...target, userId: userId!, emoji }),
     onSuccess: invalidate,
     onError: () => toaster.error({ title: "Could not add reaction" }),
   });
