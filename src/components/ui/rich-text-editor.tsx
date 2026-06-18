@@ -6,11 +6,29 @@ import {
   TOGGLE_LINK_COMMAND,
 } from "@lexical/link";
 import {
+  INSERT_CHECK_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   ListItemNode,
   ListNode,
 } from "@lexical/list";
+import {
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  CHECK_LIST,
+  HEADING,
+  INLINE_CODE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  LINK as LINK_TRANSFORMER,
+  ORDERED_LIST,
+  QUOTE,
+  STRIKETHROUGH,
+  UNORDERED_LIST,
+} from "@lexical/markdown";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -18,8 +36,10 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import {
   LexicalTypeaheadMenuPlugin,
   MenuOption,
@@ -40,6 +60,7 @@ import {
   Italic,
   Link as LinkIcon,
   List,
+  ListChecks,
   ListOrdered,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -52,7 +73,9 @@ import cn from "@/lib/utils";
 import type {
   EditorState,
   EditorThemeClasses,
+  Klass,
   LexicalEditor,
+  LexicalNode,
   TextFormatType,
   TextNode,
 } from "lexical";
@@ -64,12 +87,13 @@ export interface EditorApi {
   focus: () => void;
 }
 
-/** Node-class theme, mapped onto Sigil/Tailwind tokens. */
-const theme: EditorThemeClasses = {
+/** Default node-class theme, mapped onto Sigil/Tailwind tokens. Override via the `theme` prop. */
+const defaultTheme: EditorThemeClasses = {
   paragraph: "mb-2 last:mb-0",
   heading: {
     h1: "mt-4 mb-2 font-bold text-xl first:mt-0",
     h2: "mt-3 mb-2 font-bold text-lg first:mt-0",
+    h3: "mt-3 mb-1 font-semibold text-base first:mt-0",
   },
   text: {
     bold: "font-semibold",
@@ -86,6 +110,29 @@ const theme: EditorThemeClasses = {
   link: "text-primary underline underline-offset-2 hover:opacity-80",
   quote: "my-2 border-border border-l-2 pl-3 text-muted-foreground italic",
 };
+
+/**
+ * Markdown shortcuts the editor understands as you type (e.g. `- ` for a
+ * bullet, `1. ` for a numbered list, `# ` for a heading, `> ` for a quote,
+ * `**bold**`, `` `code` ``). Code blocks are intentionally excluded (the
+ * editor does not register a code-block node by default).
+ */
+const MARKDOWN_TRANSFORMERS = [
+  HEADING,
+  QUOTE,
+  UNORDERED_LIST,
+  ORDERED_LIST,
+  CHECK_LIST,
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  STRIKETHROUGH,
+  INLINE_CODE,
+  LINK_TRANSFORMER,
+];
 
 /** Read the editor's content as an HTML string. */
 const exportToHtml = (editor: LexicalEditor): string => {
@@ -154,8 +201,8 @@ const ToolbarButton = ({
   </Button>
 );
 
-/** Minimal formatting toolbar: bold, italic, lists, link. */
-const Toolbar = () => {
+/** Minimal formatting toolbar: bold, italic, lists, link, optional checklist. */
+const Toolbar = ({ enableChecklist }: { enableChecklist?: boolean }) => {
   const [editor] = useLexicalComposerContext();
 
   const format = (type: TextFormatType) =>
@@ -190,6 +237,16 @@ const Toolbar = () => {
       >
         <ListOrdered />
       </ToolbarButton>
+      {enableChecklist && (
+        <ToolbarButton
+          label="Checklist"
+          onClick={() =>
+            editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)
+          }
+        >
+          <ListChecks />
+        </ToolbarButton>
+      )}
       <ToolbarButton label="Link" onClick={insertLink}>
         <LinkIcon />
       </ToolbarButton>
@@ -343,13 +400,13 @@ const MentionTypeahead = ({ items }: { items: MentionItem[] }) => {
   );
 };
 
-/** An issue (post) offered in the `#`-reference typeahead. */
+/** An item offered in the `#`-reference typeahead (e.g. an issue/post). */
 export interface IssueReferenceItem {
-  /** Post rowId. */
+  /** Stable id (e.g. post rowId). */
   id: string;
-  /** Per-project issue number (the `#` token inserted). */
+  /** Numeric reference inserted after `#` (e.g. an issue number). */
   number: number;
-  /** Post title, shown in the menu. */
+  /** Title, shown in the menu. */
   title: string;
 }
 
@@ -364,8 +421,8 @@ class IssueReferenceOption extends MenuOption {
 
 /**
  * `#`-reference typeahead. Filters the provided `items` by the typed number or
- * title and inserts the selected reference as plain `#<number>` text, which the
- * read renderer linkifies to the referenced post (GitHub `#123` style).
+ * title and inserts the selected reference as plain `#<number>` text (GitHub
+ * `#123` style). Consumers linkify the inserted reference when rendering.
  */
 const IssueReferenceTypeahead = ({
   items,
@@ -470,6 +527,16 @@ interface RichTextEditorProps
   mentionItems?: MentionItem[];
   /** When provided, enables a `#`-issue-reference typeahead over these items. */
   issueReferenceItems?: IssueReferenceItem[];
+  /** Show a checklist (task list) button in the toolbar and enable the plugin. */
+  enableChecklist?: boolean;
+  /** Extra Lexical node classes to register (e.g. an app's image node). */
+  extraNodes?: ReadonlyArray<Klass<LexicalNode>>;
+  /** Extra Lexical plugins rendered inside the composer (e.g. image paste, code highlighting). */
+  plugins?: ReactNode;
+  /** Override the node-class theme (e.g. to match an app's prose styling). */
+  theme?: EditorThemeClasses;
+  /** Class applied to the loading skeleton. */
+  skeletonClassName?: string;
   /** Class applied to the editor surface. */
   editorClassName?: string;
 }
@@ -488,6 +555,11 @@ const RichTextEditor = ({
   hideToolbar = false,
   mentionItems,
   issueReferenceItems,
+  enableChecklist,
+  extraNodes,
+  plugins,
+  theme,
+  skeletonClassName,
   className,
   editorClassName,
   ...rest
@@ -500,13 +572,16 @@ const RichTextEditor = ({
 
   if (!mounted) {
     return (
-      <Skeleton className={cn("h-24 w-full rounded-md", className)} {...rest} />
+      <Skeleton
+        className={cn("h-24 w-full rounded-md", skeletonClassName ?? className)}
+        {...rest}
+      />
     );
   }
 
   const initialConfig = {
     namespace: "RichTextEditor",
-    theme,
+    theme: theme ?? defaultTheme,
     editable,
     onError: (error: Error) => console.error("Lexical error:", error),
     nodes: [
@@ -516,6 +591,7 @@ const RichTextEditor = ({
       ListItemNode,
       LinkNode,
       AutoLinkNode,
+      ...(extraNodes ?? []),
     ],
   };
 
@@ -538,7 +614,9 @@ const RichTextEditor = ({
       {...rest}
     >
       <LexicalComposer initialConfig={initialConfig}>
-        {!hideToolbar && editable && <Toolbar />}
+        {!hideToolbar && editable && (
+          <Toolbar enableChecklist={enableChecklist} />
+        )}
 
         <div className="relative">
           <RichTextPlugin
@@ -562,6 +640,11 @@ const RichTextEditor = ({
           />
           <HistoryPlugin />
           <ListPlugin />
+          {enableChecklist && <CheckListPlugin />}
+          {/* Tab / Shift+Tab to indent + nest list items */}
+          <TabIndentationPlugin />
+          {/* markdown-style input: `- `, `1. `, `# `, `> `, `**bold**`, etc. */}
+          <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
           <LinkPlugin />
           {mentionItems?.length ? (
             <MentionTypeahead items={mentionItems} />
@@ -569,6 +652,7 @@ const RichTextEditor = ({
           {issueReferenceItems?.length ? (
             <IssueReferenceTypeahead items={issueReferenceItems} />
           ) : null}
+          {plugins}
           <OnChangePlugin onChange={handleChange} />
           <EditablePlugin editable={editable} />
           <EditorApiPlugin
@@ -618,6 +702,10 @@ const RichTextContent = ({
       "a",
       "h1",
       "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
       "blockquote",
       "span",
     ],
@@ -627,7 +715,7 @@ const RichTextContent = ({
   return (
     <div
       className={cn(
-        "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-2 [&_blockquote]:border-border [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_h1]:font-bold [&_h1]:text-xl [&_h2]:font-bold [&_h2]:text-lg [&_ol]:ml-5 [&_ol]:list-decimal [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:ml-5 [&_ul]:list-disc",
+        "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-2 [&_blockquote]:border-border [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_h1]:font-bold [&_h1]:text-xl [&_h2]:font-bold [&_h2]:text-lg [&_h3]:font-semibold [&_h3]:text-base [&_ol]:ml-5 [&_ol]:list-decimal [&_ol_ol]:list-[lower-alpha] [&_p:last-child]:mb-0 [&_p]:mb-2 [&_ul]:ml-5 [&_ul]:list-disc [&_ul_ul]:list-[circle]",
         className,
       )}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized above with DOMPurify
