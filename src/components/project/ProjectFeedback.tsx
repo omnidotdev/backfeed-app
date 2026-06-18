@@ -40,6 +40,7 @@ import {
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
+import { ROADMAP_HIDDEN_STATUS_NAMES } from "@/lib/constants/roadmap.constant";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 import {
   freeTierFeedbackOptions,
@@ -256,11 +257,16 @@ const ProjectFeedback = () => {
     }),
     enabled: viewState === ViewState.Roadmap && !!organizationId,
     select: (data) =>
-      data?.statusTemplates?.nodes.map((status) => ({
-        rowId: status?.rowId,
-        displayName: status?.displayName,
-        color: status?.color,
-      })),
+      data?.statusTemplates?.nodes
+        // curate the roadmap: drop the intake backlog + closed statuses
+        .filter(
+          (status) => !ROADMAP_HIDDEN_STATUS_NAMES.has(status?.name ?? ""),
+        )
+        .map((status) => ({
+          rowId: status?.rowId,
+          displayName: status?.displayName,
+          color: status?.color,
+        })),
   });
 
   // NB: we condition displaying the pending feedback to limit jumpy behavior with optimistic updates. Dependent on the filters provided for the posts query.

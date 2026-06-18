@@ -6,6 +6,7 @@ import Page from "@/components/layout/Page";
 import RoadmapBoard from "@/components/project/RoadmapBoard";
 import { PostOrderBy } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
+import { ROADMAP_HIDDEN_STATUS_NAMES } from "@/lib/constants/roadmap.constant";
 import { infiniteFeedbackOptions } from "@/lib/options/feedback";
 import { projectOptions, projectStatusesOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -97,11 +98,16 @@ function RoadmapPage() {
   const { data: roadmapStatuses } = useQuery({
     ...projectStatusesOptions({ organizationId }),
     select: (data) =>
-      data?.statusTemplates?.nodes.map((status) => ({
-        rowId: status?.rowId,
-        displayName: status?.displayName,
-        color: status?.color,
-      })),
+      data?.statusTemplates?.nodes
+        // curate the roadmap: drop the intake backlog + closed statuses
+        .filter(
+          (status) => !ROADMAP_HIDDEN_STATUS_NAMES.has(status?.name ?? ""),
+        )
+        .map((status) => ({
+          rowId: status?.rowId,
+          displayName: status?.displayName,
+          color: status?.color,
+        })),
   });
 
   return (
