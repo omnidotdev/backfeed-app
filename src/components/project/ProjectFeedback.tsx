@@ -300,7 +300,7 @@ const ProjectFeedback = () => {
         {/* Left: Search */}
         <Input
           placeholder={app.projectPage.projectFeedback.search.placeholder}
-          className="h-8 w-full border-border-subtle text-sm md:max-w-sm"
+          className="w-full md:max-w-sm"
           defaultValue={search}
           onChange={onSearchChange}
         />
