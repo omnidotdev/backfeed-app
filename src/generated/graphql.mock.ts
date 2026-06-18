@@ -448,6 +448,28 @@ export const mockCreateUserMutation = (resolver: GraphQLResponseResolver<Types.C
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockSetNotificationPreferenceMutation(
+ *   ({ query, variables }) => {
+ *     const { postUpdates } = variables;
+ *     return HttpResponse.json({
+ *       data: { setNotificationPreference }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockSetNotificationPreferenceMutation = (resolver: GraphQLResponseResolver<Types.SetNotificationPreferenceMutation, Types.SetNotificationPreferenceMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.SetNotificationPreferenceMutation, Types.SetNotificationPreferenceMutationVariables>(
+    'SetNotificationPreference',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateVoteMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
@@ -571,6 +593,27 @@ export const mockFeedbackByIdQuery = (resolver: GraphQLResponseResolver<Types.Fe
 export const mockFeedbackByNumberQuery = (resolver: GraphQLResponseResolver<Types.FeedbackByNumberQuery, Types.FeedbackByNumberQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.FeedbackByNumberQuery, Types.FeedbackByNumberQueryVariables>(
     'FeedbackByNumber',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMyNotificationPreferenceQuery(
+ *   ({ query, variables }) => {
+ *     return HttpResponse.json({
+ *       data: { myNotificationPreference }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockMyNotificationPreferenceQuery = (resolver: GraphQLResponseResolver<Types.MyNotificationPreferenceQuery, Types.MyNotificationPreferenceQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.MyNotificationPreferenceQuery, Types.MyNotificationPreferenceQueryVariables>(
+    'MyNotificationPreference',
     resolver,
     options
   )

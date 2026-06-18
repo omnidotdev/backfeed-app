@@ -1,0 +1,5 @@
+mutation SetNotificationPreference($postUpdates: Boolean!) {
+  setNotificationPreference(input: { postUpdates: $postUpdates }) {
+    postUpdates
+  }
+}

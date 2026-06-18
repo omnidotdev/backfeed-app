@@ -2013,6 +2013,8 @@ export type Mutation = {
   deleteWardenSyncQueue?: Maybe<DeleteWardenSyncQueuePayload>;
   ingestSignal?: Maybe<IngestSignalPayload>;
   promoteSignalToPost?: Maybe<PromoteSignalToPostPayload>;
+  /** Update the current user's email notification settings. */
+  setNotificationPreference?: Maybe<NotificationPreference>;
   /** Updates a single `Attachment` using a unique key and a patch. */
   updateAttachment?: Maybe<UpdateAttachmentPayload>;
   /** Updates a single `Comment` using a unique key and a patch. */
@@ -2231,6 +2233,12 @@ export type MutationPromoteSignalToPostArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationSetNotificationPreferenceArgs = {
+  input: SetNotificationPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAttachmentArgs = {
   input: UpdateAttachmentInput;
 };
@@ -2317,6 +2325,12 @@ export type MutationUpdateWardenSyncQueueArgs = {
 export type Node = {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+};
+
+export type NotificationPreference = {
+  __typename?: 'NotificationPreference';
+  /** Email me when a post I reported or upvoted changes status. */
+  postUpdates: Scalars['Boolean']['output'];
 };
 
 /** The currently authenticated user. */
@@ -5281,6 +5295,8 @@ export type Query = Node & {
   comments?: Maybe<CommentConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
+  /** The current user's email notification settings (defaults applied). */
+  myNotificationPreference?: Maybe<NotificationPreference>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /**
@@ -6024,6 +6040,10 @@ export type ReactionPatch = {
   postId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type SetNotificationPreferenceInput = {
+  postUpdates: Scalars['Boolean']['input'];
 };
 
 export type Signal = {
@@ -9686,6 +9706,13 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', rowId: string } | null } | null };
 
+export type SetNotificationPreferenceMutationVariables = Exact<{
+  postUpdates: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetNotificationPreferenceMutation = { __typename?: 'Mutation', setNotificationPreference?: { __typename?: 'NotificationPreference', postUpdates: boolean } | null };
+
 export type CreateVoteMutationVariables = Exact<{
   input: CreateVoteInput;
 }>;
@@ -9733,6 +9760,11 @@ export type FeedbackByNumberQueryVariables = Exact<{
 
 
 export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number: number, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> } } | null };
+
+export type MyNotificationPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyNotificationPreferenceQuery = { __typename?: 'Query', myNotificationPreference?: { __typename?: 'NotificationPreference', postUpdates: boolean } | null };
 
 export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10182,6 +10214,13 @@ export const CreateUserDocument = gql`
   }
 }
     `;
+export const SetNotificationPreferenceDocument = gql`
+    mutation SetNotificationPreference($postUpdates: Boolean!) {
+  setNotificationPreference(input: {postUpdates: $postUpdates}) {
+    postUpdates
+  }
+}
+    `;
 export const CreateVoteDocument = gql`
     mutation CreateVote($input: CreateVoteInput!) {
   createVote(input: $input) {
@@ -10246,6 +10285,13 @@ export const FeedbackByNumberDocument = gql`
   }
 }
     ${FeedbackFragmentDoc}`;
+export const MyNotificationPreferenceDocument = gql`
+    query MyNotificationPreference {
+  myNotificationPreference {
+    postUpdates
+  }
+}
+    `;
 export const ObserverDocument = gql`
     query Observer {
   observer {
@@ -10575,6 +10621,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateUser(variables: CreateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUserMutation>({ document: CreateUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateUser', 'mutation', variables);
     },
+    SetNotificationPreference(variables: SetNotificationPreferenceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<SetNotificationPreferenceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SetNotificationPreferenceMutation>({ document: SetNotificationPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'SetNotificationPreference', 'mutation', variables);
+    },
     CreateVote(variables: CreateVoteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateVoteMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateVoteMutation>({ document: CreateVoteDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateVote', 'mutation', variables);
     },
@@ -10592,6 +10641,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     FeedbackByNumber(variables: FeedbackByNumberQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<FeedbackByNumberQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FeedbackByNumberQuery>({ document: FeedbackByNumberDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'FeedbackByNumber', 'query', variables);
+    },
+    MyNotificationPreference(variables?: MyNotificationPreferenceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MyNotificationPreferenceQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MyNotificationPreferenceQuery>({ document: MyNotificationPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MyNotificationPreference', 'query', variables);
     },
     Observer(variables?: ObserverQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ObserverQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ObserverQuery>({ document: ObserverDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Observer', 'query', variables);

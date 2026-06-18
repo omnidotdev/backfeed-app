@@ -4,6 +4,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
+import NotificationSettings from "@/components/profile/NotificationSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -118,6 +119,8 @@ function UserAccountPage() {
             );
           })}
         </div>
+
+        <NotificationSettings />
       </div>
     </Page>
   );
