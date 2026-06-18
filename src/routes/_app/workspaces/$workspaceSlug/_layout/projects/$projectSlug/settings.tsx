@@ -6,6 +6,7 @@ import Page from "@/components/layout/Page";
 import SectionContainer from "@/components/layout/SectionContainer";
 import ProjectAvatar from "@/components/project/ProjectAvatar";
 import ProjectTags from "@/components/project/ProjectTags";
+import RoadmapStatusSettings from "@/components/project/RoadmapStatusSettings";
 import UpdateProject from "@/components/project/UpdateProject";
 import {
   useDeleteProjectMutation,
@@ -120,6 +121,8 @@ function ProjectSettingsPage() {
         <UpdateProject />
 
         {project?.rowId && <ProjectTags projectId={project.rowId} />}
+
+        <RoadmapStatusSettings />
 
         <SectionContainer
           title={app.projectSettingsPage.dangerZone.title}

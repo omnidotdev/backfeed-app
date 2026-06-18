@@ -8,6 +8,7 @@ mutation UpdateStatusTemplate($rowId: UUID!, $patch: StatusTemplatePatch!) {
       color
       description
       sortOrder
+      showOnRoadmap
     }
   }
 }

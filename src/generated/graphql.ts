@@ -598,6 +598,8 @@ export type Comment = {
   /** Reads a single `Post` that is related to this `Comment`. */
   post?: Maybe<Post>;
   postId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `Reaction`. */
+  reactions: ReactionConnection;
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `Comment`. */
@@ -615,6 +617,18 @@ export type CommentChildCommentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+export type CommentReactionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ReactionCondition>;
+  filter?: InputMaybe<ReactionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ReactionOrderBy>>;
 };
 
 export type CommentAggregates = {
@@ -737,6 +751,10 @@ export type CommentFilter = {
   post?: InputMaybe<PostFilter>;
   /** Filter by the object’s `postId` field. */
   postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `reactions` relation. */
+  reactions?: InputMaybe<CommentToManyReactionFilter>;
+  /** Some related `reactions` exist. */
+  reactionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -861,6 +879,20 @@ export enum CommentOrderBy {
   PostIdDesc = 'POST_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ReactionsCountAsc = 'REACTIONS_COUNT_ASC',
+  ReactionsCountDesc = 'REACTIONS_COUNT_DESC',
+  ReactionsDistinctCountCommentIdAsc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_ASC',
+  ReactionsDistinctCountCommentIdDesc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_DESC',
+  ReactionsDistinctCountCreatedAtAsc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ReactionsDistinctCountCreatedAtDesc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ReactionsDistinctCountEmojiAsc = 'REACTIONS_DISTINCT_COUNT_EMOJI_ASC',
+  ReactionsDistinctCountEmojiDesc = 'REACTIONS_DISTINCT_COUNT_EMOJI_DESC',
+  ReactionsDistinctCountPostIdAsc = 'REACTIONS_DISTINCT_COUNT_POST_ID_ASC',
+  ReactionsDistinctCountPostIdDesc = 'REACTIONS_DISTINCT_COUNT_POST_ID_DESC',
+  ReactionsDistinctCountRowIdAsc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  ReactionsDistinctCountRowIdDesc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  ReactionsDistinctCountUserIdAsc = 'REACTIONS_DISTINCT_COUNT_USER_ID_ASC',
+  ReactionsDistinctCountUserIdDesc = 'REACTIONS_DISTINCT_COUNT_USER_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -890,6 +922,18 @@ export type CommentToManyCommentFilter = {
   none?: InputMaybe<CommentFilter>;
   /** Some related `Comment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<CommentFilter>;
+};
+
+/** A filter to be used against many `Reaction` object types. All fields are combined with a logical ‘and.’ */
+export type CommentToManyReactionFilter = {
+  /** Aggregates across related `Reaction` match the filter criteria. */
+  aggregates?: InputMaybe<ReactionAggregatesFilter>;
+  /** Every related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ReactionFilter>;
+  /** No related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ReactionFilter>;
+  /** Some related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ReactionFilter>;
 };
 
 /** All input for the create `Attachment` mutation. */
@@ -1121,6 +1165,39 @@ export type CreateProjectStatusConfigPayload = {
 /** The output of our create `ProjectStatusConfig` mutation. */
 export type CreateProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
+};
+
+/** All input for the create `Reaction` mutation. */
+export type CreateReactionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Reaction` to be created by this mutation. */
+  reaction: ReactionInput;
+};
+
+/** The output of our create `Reaction` mutation. */
+export type CreateReactionPayload = {
+  __typename?: 'CreateReactionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Reaction` that was created by this mutation. */
+  reaction?: Maybe<Reaction>;
+  /** An edge for our `Reaction`. May be used by Relay 1. */
+  reactionEdge?: Maybe<ReactionEdge>;
+};
+
+
+/** The output of our create `Reaction` mutation. */
+export type CreateReactionPayloadReactionEdgeArgs = {
+  orderBy?: Array<ReactionOrderBy>;
 };
 
 /** All input for the create `SignalCluster` mutation. */
@@ -1571,6 +1648,38 @@ export type DeleteProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
 };
 
+/** All input for the `deleteReaction` mutation. */
+export type DeleteReactionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Reaction` mutation. */
+export type DeleteReactionPayload = {
+  __typename?: 'DeleteReactionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Reaction` that was deleted by this mutation. */
+  reaction?: Maybe<Reaction>;
+  /** An edge for our `Reaction`. May be used by Relay 1. */
+  reactionEdge?: Maybe<ReactionEdge>;
+};
+
+
+/** The output of our delete `Reaction` mutation. */
+export type DeleteReactionPayloadReactionEdgeArgs = {
+  orderBy?: Array<ReactionOrderBy>;
+};
+
 /** All input for the `deleteSignalCluster` mutation. */
 export type DeleteSignalClusterInput = {
   /**
@@ -1842,6 +1951,8 @@ export type Mutation = {
   createProjectLink?: Maybe<CreateProjectLinkPayload>;
   /** Creates a single `ProjectStatusConfig`. */
   createProjectStatusConfig?: Maybe<CreateProjectStatusConfigPayload>;
+  /** Creates a single `Reaction`. */
+  createReaction?: Maybe<CreateReactionPayload>;
   /** Creates a single `SignalCluster`. */
   createSignalCluster?: Maybe<CreateSignalClusterPayload>;
   /** Creates a single `StatusTemplate`. */
@@ -1868,6 +1979,8 @@ export type Mutation = {
   deleteProjectLink?: Maybe<DeleteProjectLinkPayload>;
   /** Deletes a single `ProjectStatusConfig` using a unique key. */
   deleteProjectStatusConfig?: Maybe<DeleteProjectStatusConfigPayload>;
+  /** Deletes a single `Reaction` using a unique key. */
+  deleteReaction?: Maybe<DeleteReactionPayload>;
   /** Deletes a single `SignalCluster` using a unique key. */
   deleteSignalCluster?: Maybe<DeleteSignalClusterPayload>;
   /** Deletes a single `StatusTemplate` using a unique key. */
@@ -1896,6 +2009,8 @@ export type Mutation = {
   updateProjectLink?: Maybe<UpdateProjectLinkPayload>;
   /** Updates a single `ProjectStatusConfig` using a unique key and a patch. */
   updateProjectStatusConfig?: Maybe<UpdateProjectStatusConfigPayload>;
+  /** Updates a single `Reaction` using a unique key and a patch. */
+  updateReaction?: Maybe<UpdateReactionPayload>;
   /** Updates a single `SignalCluster` using a unique key and a patch. */
   updateSignalCluster?: Maybe<UpdateSignalClusterPayload>;
   /** Updates a single `StatusTemplate` using a unique key and a patch. */
@@ -1950,6 +2065,12 @@ export type MutationCreateProjectLinkArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateProjectStatusConfigArgs = {
   input: CreateProjectStatusConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateReactionArgs = {
+  input: CreateReactionInput;
 };
 
 
@@ -2028,6 +2149,12 @@ export type MutationDeleteProjectLinkArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteProjectStatusConfigArgs = {
   input: DeleteProjectStatusConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteReactionArgs = {
+  input: DeleteReactionInput;
 };
 
 
@@ -2122,6 +2249,12 @@ export type MutationUpdateProjectStatusConfigArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateReactionArgs = {
+  input: UpdateReactionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateSignalClusterArgs = {
   input: UpdateSignalClusterInput;
 };
@@ -2201,6 +2334,8 @@ export type Post = {
   duplicateOf?: Maybe<Post>;
   duplicateOfId?: Maybe<Scalars['UUID']['output']>;
   number: Scalars['Int']['output'];
+  /** Reads and enables pagination through a set of `PostStatusChange`. */
+  postStatusChanges: PostStatusChangeConnection;
   /** Reads and enables pagination through a set of `PostTag`. */
   postTags: PostTagConnection;
   /** Reads and enables pagination through a set of `Post`. */
@@ -2208,6 +2343,8 @@ export type Post = {
   /** Reads a single `Project` that is related to this `Post`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `Reaction`. */
+  reactions: ReactionConnection;
   rowId: Scalars['UUID']['output'];
   sentiment?: Maybe<Scalars['String']['output']>;
   shippedAt?: Maybe<Scalars['Datetime']['output']>;
@@ -2252,6 +2389,18 @@ export type PostCommentsArgs = {
 };
 
 
+export type PostPostStatusChangesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusChangeCondition>;
+  filter?: InputMaybe<PostStatusChangeFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusChangeOrderBy>>;
+};
+
+
 export type PostPostTagsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2273,6 +2422,18 @@ export type PostPostsByDuplicateOfIdArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type PostReactionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ReactionCondition>;
+  filter?: InputMaybe<ReactionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ReactionOrderBy>>;
 };
 
 
@@ -2512,6 +2673,10 @@ export type PostFilter = {
   number?: InputMaybe<IntFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `postStatusChanges` relation. */
+  postStatusChanges?: InputMaybe<PostToManyPostStatusChangeFilter>;
+  /** Some related `postStatusChanges` exist. */
+  postStatusChangesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `postTags` relation. */
   postTags?: InputMaybe<PostToManyPostTagFilter>;
   /** Some related `postTags` exist. */
@@ -2524,6 +2689,10 @@ export type PostFilter = {
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
   projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `reactions` relation. */
+  reactions?: InputMaybe<PostToManyReactionFilter>;
+  /** Some related `reactions` exist. */
+  reactionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `sentiment` field. */
@@ -2862,6 +3031,18 @@ export enum PostOrderBy {
   PostsByDuplicateOfIdVariancePopulationNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_POPULATION_NUMBER_DESC',
   PostsByDuplicateOfIdVarianceSampleNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_ASC',
   PostsByDuplicateOfIdVarianceSampleNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_DESC',
+  PostStatusChangesCountAsc = 'POST_STATUS_CHANGES_COUNT_ASC',
+  PostStatusChangesCountDesc = 'POST_STATUS_CHANGES_COUNT_DESC',
+  PostStatusChangesDistinctCountChangedByIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CHANGED_BY_ID_ASC',
+  PostStatusChangesDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
+  PostStatusChangesDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostStatusChangesDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_POST_ID_ASC',
+  PostStatusChangesDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_POST_ID_DESC',
+  PostStatusChangesDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_ROW_ID_ASC',
+  PostStatusChangesDistinctCountRowIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_ROW_ID_DESC',
+  PostStatusChangesDistinctCountToStatusTemplateIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_ASC',
+  PostStatusChangesDistinctCountToStatusTemplateIdDesc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_DESC',
   PostTagsCountAsc = 'POST_TAGS_COUNT_ASC',
   PostTagsCountDesc = 'POST_TAGS_COUNT_DESC',
   PostTagsDistinctCountCreatedAtAsc = 'POST_TAGS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -2876,6 +3057,20 @@ export enum PostOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
   ProjectIdDesc = 'PROJECT_ID_DESC',
+  ReactionsCountAsc = 'REACTIONS_COUNT_ASC',
+  ReactionsCountDesc = 'REACTIONS_COUNT_DESC',
+  ReactionsDistinctCountCommentIdAsc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_ASC',
+  ReactionsDistinctCountCommentIdDesc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_DESC',
+  ReactionsDistinctCountCreatedAtAsc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ReactionsDistinctCountCreatedAtDesc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ReactionsDistinctCountEmojiAsc = 'REACTIONS_DISTINCT_COUNT_EMOJI_ASC',
+  ReactionsDistinctCountEmojiDesc = 'REACTIONS_DISTINCT_COUNT_EMOJI_DESC',
+  ReactionsDistinctCountPostIdAsc = 'REACTIONS_DISTINCT_COUNT_POST_ID_ASC',
+  ReactionsDistinctCountPostIdDesc = 'REACTIONS_DISTINCT_COUNT_POST_ID_DESC',
+  ReactionsDistinctCountRowIdAsc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  ReactionsDistinctCountRowIdDesc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  ReactionsDistinctCountUserIdAsc = 'REACTIONS_DISTINCT_COUNT_USER_ID_ASC',
+  ReactionsDistinctCountUserIdDesc = 'REACTIONS_DISTINCT_COUNT_USER_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SentimentAsc = 'SENTIMENT_ASC',
@@ -2960,6 +3155,216 @@ export type PostPatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
+
+export type PostStatusChange = {
+  __typename?: 'PostStatusChange';
+  /** Reads a single `User` that is related to this `PostStatusChange`. */
+  changedBy?: Maybe<User>;
+  changedById?: Maybe<Scalars['UUID']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  /** Reads a single `Post` that is related to this `PostStatusChange`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `StatusTemplate` that is related to this `PostStatusChange`. */
+  toStatusTemplate?: Maybe<StatusTemplate>;
+  toStatusTemplateId?: Maybe<Scalars['UUID']['output']>;
+};
+
+export type PostStatusChangeAggregates = {
+  __typename?: 'PostStatusChangeAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<PostStatusChangeDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `PostStatusChange` object types. */
+export type PostStatusChangeAggregatesFilter = {
+  /** Distinct count aggregate over matching `PostStatusChange` objects. */
+  distinctCount?: InputMaybe<PostStatusChangeDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `PostStatusChange` object to be included within the aggregate. */
+  filter?: InputMaybe<PostStatusChangeFilter>;
+};
+
+/**
+ * A condition to be used against `PostStatusChange` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type PostStatusChangeCondition = {
+  /** Checks for equality with the object’s `changedById` field. */
+  changedById?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `toStatusTemplateId` field. */
+  toStatusTemplateId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `PostStatusChange` values. */
+export type PostStatusChangeConnection = {
+  __typename?: 'PostStatusChangeConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<PostStatusChangeAggregates>;
+  /** A list of edges which contains the `PostStatusChange` and cursor to aid in pagination. */
+  edges: Array<Maybe<PostStatusChangeEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<PostStatusChangeAggregates>>;
+  /** A list of `PostStatusChange` objects. */
+  nodes: Array<Maybe<PostStatusChange>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostStatusChange` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `PostStatusChange` values. */
+export type PostStatusChangeConnectionGroupedAggregatesArgs = {
+  groupBy: Array<PostStatusChangeGroupBy>;
+  having?: InputMaybe<PostStatusChangeHavingInput>;
+};
+
+export type PostStatusChangeDistinctCountAggregateFilter = {
+  changedById?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  toStatusTemplateId?: InputMaybe<BigIntFilter>;
+};
+
+export type PostStatusChangeDistinctCountAggregates = {
+  __typename?: 'PostStatusChangeDistinctCountAggregates';
+  /** Distinct count of changedById across the matching connection */
+  changedById?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toStatusTemplateId across the matching connection */
+  toStatusTemplateId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `PostStatusChange` edge in the connection. */
+export type PostStatusChangeEdge = {
+  __typename?: 'PostStatusChangeEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `PostStatusChange` at the end of the edge. */
+  node?: Maybe<PostStatusChange>;
+};
+
+/** A filter to be used against `PostStatusChange` object types. All fields are combined with a logical ‘and.’ */
+export type PostStatusChangeFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PostStatusChangeFilter>>;
+  /** Filter by the object’s `changedBy` relation. */
+  changedBy?: InputMaybe<UserFilter>;
+  /** A related `changedBy` exists. */
+  changedByExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `changedById` field. */
+  changedById?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PostStatusChangeFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PostStatusChangeFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `toStatusTemplate` relation. */
+  toStatusTemplate?: InputMaybe<StatusTemplateFilter>;
+  /** A related `toStatusTemplate` exists. */
+  toStatusTemplateExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `toStatusTemplateId` field. */
+  toStatusTemplateId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `PostStatusChange` for usage during aggregation. */
+export enum PostStatusChangeGroupBy {
+  ChangedById = 'CHANGED_BY_ID',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  PostId = 'POST_ID',
+  ToStatusTemplateId = 'TO_STATUS_TEMPLATE_ID'
+}
+
+export type PostStatusChangeHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `PostStatusChange` aggregates. */
+export type PostStatusChangeHavingInput = {
+  AND?: InputMaybe<Array<PostStatusChangeHavingInput>>;
+  OR?: InputMaybe<Array<PostStatusChangeHavingInput>>;
+  average?: InputMaybe<PostStatusChangeHavingAverageInput>;
+  distinctCount?: InputMaybe<PostStatusChangeHavingDistinctCountInput>;
+  max?: InputMaybe<PostStatusChangeHavingMaxInput>;
+  min?: InputMaybe<PostStatusChangeHavingMinInput>;
+  stddevPopulation?: InputMaybe<PostStatusChangeHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<PostStatusChangeHavingStddevSampleInput>;
+  sum?: InputMaybe<PostStatusChangeHavingSumInput>;
+  variancePopulation?: InputMaybe<PostStatusChangeHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<PostStatusChangeHavingVarianceSampleInput>;
+};
+
+export type PostStatusChangeHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostStatusChangeHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Methods to use when ordering `PostStatusChange`. */
+export enum PostStatusChangeOrderBy {
+  ChangedByIdAsc = 'CHANGED_BY_ID_ASC',
+  ChangedByIdDesc = 'CHANGED_BY_ID_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  ToStatusTemplateIdAsc = 'TO_STATUS_TEMPLATE_ID_ASC',
+  ToStatusTemplateIdDesc = 'TO_STATUS_TEMPLATE_ID_DESC'
+}
 
 export type PostStddevPopulationAggregateFilter = {
   number?: InputMaybe<BigFloatFilter>;
@@ -3231,6 +3636,18 @@ export type PostToManyPostFilter = {
   some?: InputMaybe<PostFilter>;
 };
 
+/** A filter to be used against many `PostStatusChange` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostStatusChangeFilter = {
+  /** Aggregates across related `PostStatusChange` match the filter criteria. */
+  aggregates?: InputMaybe<PostStatusChangeAggregatesFilter>;
+  /** Every related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostStatusChangeFilter>;
+  /** No related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostStatusChangeFilter>;
+  /** Some related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostStatusChangeFilter>;
+};
+
 /** A filter to be used against many `PostTag` object types. All fields are combined with a logical ‘and.’ */
 export type PostToManyPostTagFilter = {
   /** Aggregates across related `PostTag` match the filter criteria. */
@@ -3241,6 +3658,18 @@ export type PostToManyPostTagFilter = {
   none?: InputMaybe<PostTagFilter>;
   /** Some related `PostTag` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostTagFilter>;
+};
+
+/** A filter to be used against many `Reaction` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyReactionFilter = {
+  /** Aggregates across related `Reaction` match the filter criteria. */
+  aggregates?: InputMaybe<ReactionAggregatesFilter>;
+  /** Every related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ReactionFilter>;
+  /** No related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ReactionFilter>;
+  /** Some related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ReactionFilter>;
 };
 
 /** A filter to be used against many `Signal` object types. All fields are combined with a logical ‘and.’ */
@@ -4826,6 +5255,10 @@ export type Query = Node & {
   post?: Maybe<Post>;
   /** Get a single `Post`. */
   postByProjectIdAndNumber?: Maybe<Post>;
+  /** Get a single `PostStatusChange`. */
+  postStatusChange?: Maybe<PostStatusChange>;
+  /** Reads and enables pagination through a set of `PostStatusChange`. */
+  postStatusChanges?: Maybe<PostStatusChangeConnection>;
   /** Get a single `PostTag`. */
   postTag?: Maybe<PostTag>;
   /** Get a single `PostTag`. */
@@ -4857,6 +5290,14 @@ export type Query = Node & {
    * which can only query top level fields if they are in a particular form.
    */
   query: Query;
+  /** Get a single `Reaction`. */
+  reaction?: Maybe<Reaction>;
+  /** Get a single `Reaction`. */
+  reactionByCommentIdAndUserIdAndEmoji?: Maybe<Reaction>;
+  /** Get a single `Reaction`. */
+  reactionByPostIdAndUserIdAndEmoji?: Maybe<Reaction>;
+  /** Reads and enables pagination through a set of `Reaction`. */
+  reactions?: Maybe<ReactionConnection>;
   /** Get a single `Signal`. */
   signal?: Maybe<Signal>;
   /** Get a single `SignalCluster`. */
@@ -4956,6 +5397,25 @@ export type QueryPostArgs = {
 export type QueryPostByProjectIdAndNumberArgs = {
   number: Scalars['Int']['input'];
   projectId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostStatusChangeArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostStatusChangesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusChangeCondition>;
+  filter?: InputMaybe<PostStatusChangeFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusChangeOrderBy>>;
 };
 
 
@@ -5072,6 +5532,41 @@ export type QueryProjectsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ProjectOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReactionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReactionByCommentIdAndUserIdAndEmojiArgs = {
+  commentId: Scalars['UUID']['input'];
+  emoji: Scalars['String']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReactionByPostIdAndUserIdAndEmojiArgs = {
+  emoji: Scalars['String']['input'];
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReactionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ReactionCondition>;
+  filter?: InputMaybe<ReactionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ReactionOrderBy>>;
 };
 
 
@@ -5251,6 +5746,247 @@ export type QueryWardenSyncQueuesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<WardenSyncQueueOrderBy>>;
+};
+
+export type Reaction = {
+  __typename?: 'Reaction';
+  /** Reads a single `Comment` that is related to this `Reaction`. */
+  comment?: Maybe<Comment>;
+  commentId?: Maybe<Scalars['UUID']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  emoji: Scalars['String']['output'];
+  /** Reads a single `Post` that is related to this `Reaction`. */
+  post?: Maybe<Post>;
+  postId?: Maybe<Scalars['UUID']['output']>;
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `User` that is related to this `Reaction`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type ReactionAggregates = {
+  __typename?: 'ReactionAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ReactionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Reaction` object types. */
+export type ReactionAggregatesFilter = {
+  /** Distinct count aggregate over matching `Reaction` objects. */
+  distinctCount?: InputMaybe<ReactionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Reaction` object to be included within the aggregate. */
+  filter?: InputMaybe<ReactionFilter>;
+};
+
+/**
+ * A condition to be used against `Reaction` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type ReactionCondition = {
+  /** Checks for equality with the object’s `commentId` field. */
+  commentId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Reaction` values. */
+export type ReactionConnection = {
+  __typename?: 'ReactionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ReactionAggregates>;
+  /** A list of edges which contains the `Reaction` and cursor to aid in pagination. */
+  edges: Array<Maybe<ReactionEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ReactionAggregates>>;
+  /** A list of `Reaction` objects. */
+  nodes: Array<Maybe<Reaction>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Reaction` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Reaction` values. */
+export type ReactionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ReactionGroupBy>;
+  having?: InputMaybe<ReactionHavingInput>;
+};
+
+export type ReactionDistinctCountAggregateFilter = {
+  commentId?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  emoji?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type ReactionDistinctCountAggregates = {
+  __typename?: 'ReactionDistinctCountAggregates';
+  /** Distinct count of commentId across the matching connection */
+  commentId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Reaction` edge in the connection. */
+export type ReactionEdge = {
+  __typename?: 'ReactionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Reaction` at the end of the edge. */
+  node?: Maybe<Reaction>;
+};
+
+/** A filter to be used against `Reaction` object types. All fields are combined with a logical ‘and.’ */
+export type ReactionFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ReactionFilter>>;
+  /** Filter by the object’s `comment` relation. */
+  comment?: InputMaybe<CommentFilter>;
+  /** A related `comment` exists. */
+  commentExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `commentId` field. */
+  commentId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ReactionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ReactionFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** A related `post` exists. */
+  postExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Reaction` for usage during aggregation. */
+export enum ReactionGroupBy {
+  CommentId = 'COMMENT_ID',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Emoji = 'EMOJI',
+  PostId = 'POST_ID',
+  UserId = 'USER_ID'
+}
+
+export type ReactionHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Reaction` aggregates. */
+export type ReactionHavingInput = {
+  AND?: InputMaybe<Array<ReactionHavingInput>>;
+  OR?: InputMaybe<Array<ReactionHavingInput>>;
+  average?: InputMaybe<ReactionHavingAverageInput>;
+  distinctCount?: InputMaybe<ReactionHavingDistinctCountInput>;
+  max?: InputMaybe<ReactionHavingMaxInput>;
+  min?: InputMaybe<ReactionHavingMinInput>;
+  stddevPopulation?: InputMaybe<ReactionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ReactionHavingStddevSampleInput>;
+  sum?: InputMaybe<ReactionHavingSumInput>;
+  variancePopulation?: InputMaybe<ReactionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ReactionHavingVarianceSampleInput>;
+};
+
+export type ReactionHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ReactionHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Reaction` */
+export type ReactionInput = {
+  commentId?: InputMaybe<Scalars['UUID']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji: Scalars['String']['input'];
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Reaction`. */
+export enum ReactionOrderBy {
+  CommentIdAsc = 'COMMENT_ID_ASC',
+  CommentIdDesc = 'COMMENT_ID_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `Reaction`. Fields that are set will be updated. */
+export type ReactionPatch = {
+  commentId?: InputMaybe<Scalars['UUID']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type Signal = {
@@ -6109,13 +6845,28 @@ export type StatusTemplate = {
   displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
   organizationId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `PostStatusChange`. */
+  postStatusChangesByToStatusTemplateId: PostStatusChangeConnection;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
   projectStatusConfigs: ProjectStatusConfigConnection;
   rowId: Scalars['UUID']['output'];
+  showOnRoadmap?: Maybe<Scalars['Boolean']['output']>;
   sortOrder?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type StatusTemplatePostStatusChangesByToStatusTemplateIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusChangeCondition>;
+  filter?: InputMaybe<PostStatusChangeFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusChangeOrderBy>>;
 };
 
 
@@ -6190,6 +6941,8 @@ export type StatusTemplateCondition = {
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `showOnRoadmap` field. */
+  showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `sortOrder` field. */
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -6236,6 +6989,8 @@ export type StatusTemplateDistinctCountAggregates = {
   organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of showOnRoadmap across the matching connection */
+  showOnRoadmap?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of sortOrder across the matching connection */
   sortOrder?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -6271,6 +7026,10 @@ export type StatusTemplateFilter = {
   or?: InputMaybe<Array<StatusTemplateFilter>>;
   /** Filter by the object’s `organizationId` field. */
   organizationId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `postStatusChangesByToStatusTemplateId` relation. */
+  postStatusChangesByToStatusTemplateId?: InputMaybe<StatusTemplateToManyPostStatusChangeFilter>;
+  /** Some related `postStatusChangesByToStatusTemplateId` exist. */
+  postStatusChangesByToStatusTemplateIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<StatusTemplateToManyPostFilter>;
   /** Some related `posts` exist. */
@@ -6281,6 +7040,8 @@ export type StatusTemplateFilter = {
   projectStatusConfigsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `showOnRoadmap` field. */
+  showOnRoadmap?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `sortOrder` field. */
   sortOrder?: InputMaybe<IntFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -6297,6 +7058,7 @@ export enum StatusTemplateGroupBy {
   DisplayName = 'DISPLAY_NAME',
   Name = 'NAME',
   OrganizationId = 'ORGANIZATION_ID',
+  ShowOnRoadmap = 'SHOW_ON_ROADMAP',
   SortOrder = 'SORT_ORDER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -6381,6 +7143,7 @@ export type StatusTemplateInput = {
   name: Scalars['String']['input'];
   organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -6462,6 +7225,18 @@ export enum StatusTemplateOrderBy {
   PostsVariancePopulationNumberDesc = 'POSTS_VARIANCE_POPULATION_NUMBER_DESC',
   PostsVarianceSampleNumberAsc = 'POSTS_VARIANCE_SAMPLE_NUMBER_ASC',
   PostsVarianceSampleNumberDesc = 'POSTS_VARIANCE_SAMPLE_NUMBER_DESC',
+  PostStatusChangesByToStatusTemplateIdCountAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_COUNT_ASC',
+  PostStatusChangesByToStatusTemplateIdCountDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_COUNT_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountChangedByIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CHANGED_BY_ID_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_POST_ID_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_POST_ID_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountRowIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountToStatusTemplateIdAsc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_ASC',
+  PostStatusChangesByToStatusTemplateIdDistinctCountToStatusTemplateIdDesc = 'POST_STATUS_CHANGES_BY_TO_STATUS_TEMPLATE_ID_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectStatusConfigsAverageSortOrderAsc = 'PROJECT_STATUS_CONFIGS_AVERAGE_SORT_ORDER_ASC',
@@ -6502,6 +7277,8 @@ export enum StatusTemplateOrderBy {
   ProjectStatusConfigsVarianceSampleSortOrderDesc = 'PROJECT_STATUS_CONFIGS_VARIANCE_SAMPLE_SORT_ORDER_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  ShowOnRoadmapAsc = 'SHOW_ON_ROADMAP_ASC',
+  ShowOnRoadmapDesc = 'SHOW_ON_ROADMAP_DESC',
   SortOrderAsc = 'SORT_ORDER_ASC',
   SortOrderDesc = 'SORT_ORDER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -6517,6 +7294,7 @@ export type StatusTemplatePatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -6549,6 +7327,18 @@ export type StatusTemplateToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `PostStatusChange` object types. All fields are combined with a logical ‘and.’ */
+export type StatusTemplateToManyPostStatusChangeFilter = {
+  /** Aggregates across related `PostStatusChange` match the filter criteria. */
+  aggregates?: InputMaybe<PostStatusChangeAggregatesFilter>;
+  /** Every related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostStatusChangeFilter>;
+  /** No related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostStatusChangeFilter>;
+  /** Some related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostStatusChangeFilter>;
 };
 
 /** A filter to be used against many `ProjectStatusConfig` object types. All fields are combined with a logical ‘and.’ */
@@ -7194,6 +7984,40 @@ export type UpdateProjectStatusConfigPayloadProjectStatusConfigEdgeArgs = {
   orderBy?: Array<ProjectStatusConfigOrderBy>;
 };
 
+/** All input for the `updateReaction` mutation. */
+export type UpdateReactionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Reaction` being updated. */
+  patch: ReactionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Reaction` mutation. */
+export type UpdateReactionPayload = {
+  __typename?: 'UpdateReactionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Reaction` that was updated by this mutation. */
+  reaction?: Maybe<Reaction>;
+  /** An edge for our `Reaction`. May be used by Relay 1. */
+  reactionEdge?: Maybe<ReactionEdge>;
+};
+
+
+/** The output of our update `Reaction` mutation. */
+export type UpdateReactionPayloadReactionEdgeArgs = {
+  orderBy?: Array<ReactionOrderBy>;
+};
+
 /** All input for the `updateSignalCluster` mutation. */
 export type UpdateSignalClusterInput = {
   /**
@@ -7409,8 +8233,12 @@ export type User = {
   email: Scalars['String']['output'];
   identityProviderId: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `PostStatusChange`. */
+  postStatusChangesByChangedById: PostStatusChangeConnection;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
+  /** Reads and enables pagination through a set of `Reaction`. */
+  reactions: ReactionConnection;
   rowId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `Signal`. */
   signals: SignalConnection;
@@ -7445,6 +8273,18 @@ export type UserCommentsArgs = {
 };
 
 
+export type UserPostStatusChangesByChangedByIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostStatusChangeCondition>;
+  filter?: InputMaybe<PostStatusChangeFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostStatusChangeOrderBy>>;
+};
+
+
 export type UserPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -7454,6 +8294,18 @@ export type UserPostsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type UserReactionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ReactionCondition>;
+  filter?: InputMaybe<ReactionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ReactionOrderBy>>;
 };
 
 
@@ -7586,10 +8438,18 @@ export type UserFilter = {
   not?: InputMaybe<UserFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `postStatusChangesByChangedById` relation. */
+  postStatusChangesByChangedById?: InputMaybe<UserToManyPostStatusChangeFilter>;
+  /** Some related `postStatusChangesByChangedById` exist. */
+  postStatusChangesByChangedByIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `posts` relation. */
   posts?: InputMaybe<UserToManyPostFilter>;
   /** Some related `posts` exist. */
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `reactions` relation. */
+  reactions?: InputMaybe<UserToManyReactionFilter>;
+  /** Some related `reactions` exist. */
+  reactionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `signals` relation. */
@@ -7841,8 +8701,34 @@ export enum UserOrderBy {
   PostsVariancePopulationNumberDesc = 'POSTS_VARIANCE_POPULATION_NUMBER_DESC',
   PostsVarianceSampleNumberAsc = 'POSTS_VARIANCE_SAMPLE_NUMBER_ASC',
   PostsVarianceSampleNumberDesc = 'POSTS_VARIANCE_SAMPLE_NUMBER_DESC',
+  PostStatusChangesByChangedByIdCountAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_COUNT_ASC',
+  PostStatusChangesByChangedByIdCountDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_COUNT_DESC',
+  PostStatusChangesByChangedByIdDistinctCountChangedByIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CHANGED_BY_ID_ASC',
+  PostStatusChangesByChangedByIdDistinctCountChangedByIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CHANGED_BY_ID_DESC',
+  PostStatusChangesByChangedByIdDistinctCountCreatedAtAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostStatusChangesByChangedByIdDistinctCountCreatedAtDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostStatusChangesByChangedByIdDistinctCountPostIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_POST_ID_ASC',
+  PostStatusChangesByChangedByIdDistinctCountPostIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_POST_ID_DESC',
+  PostStatusChangesByChangedByIdDistinctCountRowIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostStatusChangesByChangedByIdDistinctCountRowIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostStatusChangesByChangedByIdDistinctCountToStatusTemplateIdAsc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_ASC',
+  PostStatusChangesByChangedByIdDistinctCountToStatusTemplateIdDesc = 'POST_STATUS_CHANGES_BY_CHANGED_BY_ID_DISTINCT_COUNT_TO_STATUS_TEMPLATE_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ReactionsCountAsc = 'REACTIONS_COUNT_ASC',
+  ReactionsCountDesc = 'REACTIONS_COUNT_DESC',
+  ReactionsDistinctCountCommentIdAsc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_ASC',
+  ReactionsDistinctCountCommentIdDesc = 'REACTIONS_DISTINCT_COUNT_COMMENT_ID_DESC',
+  ReactionsDistinctCountCreatedAtAsc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ReactionsDistinctCountCreatedAtDesc = 'REACTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ReactionsDistinctCountEmojiAsc = 'REACTIONS_DISTINCT_COUNT_EMOJI_ASC',
+  ReactionsDistinctCountEmojiDesc = 'REACTIONS_DISTINCT_COUNT_EMOJI_DESC',
+  ReactionsDistinctCountPostIdAsc = 'REACTIONS_DISTINCT_COUNT_POST_ID_ASC',
+  ReactionsDistinctCountPostIdDesc = 'REACTIONS_DISTINCT_COUNT_POST_ID_DESC',
+  ReactionsDistinctCountRowIdAsc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  ReactionsDistinctCountRowIdDesc = 'REACTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  ReactionsDistinctCountUserIdAsc = 'REACTIONS_DISTINCT_COUNT_USER_ID_ASC',
+  ReactionsDistinctCountUserIdDesc = 'REACTIONS_DISTINCT_COUNT_USER_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SignalsCountAsc = 'SIGNALS_COUNT_ASC',
@@ -7943,6 +8829,30 @@ export type UserToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `PostStatusChange` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyPostStatusChangeFilter = {
+  /** Aggregates across related `PostStatusChange` match the filter criteria. */
+  aggregates?: InputMaybe<PostStatusChangeAggregatesFilter>;
+  /** Every related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostStatusChangeFilter>;
+  /** No related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostStatusChangeFilter>;
+  /** Some related `PostStatusChange` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostStatusChangeFilter>;
+};
+
+/** A filter to be used against many `Reaction` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyReactionFilter = {
+  /** Aggregates across related `Reaction` match the filter criteria. */
+  aggregates?: InputMaybe<ReactionAggregatesFilter>;
+  /** Every related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ReactionFilter>;
+  /** No related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ReactionFilter>;
+  /** Some related `Reaction` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ReactionFilter>;
 };
 
 /** A filter to be used against many `Signal` object types. All fields are combined with a logical ‘and.’ */
@@ -8714,7 +9624,7 @@ export type UpdateStatusTemplateMutationVariables = Exact<{
 }>;
 
 
-export type UpdateStatusTemplateMutation = { __typename?: 'Mutation', updateStatusTemplate?: { __typename?: 'UpdateStatusTemplatePayload', clientMutationId?: string | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, color?: string | null, description?: string | null, sortOrder?: number | null } | null } | null };
+export type UpdateStatusTemplateMutation = { __typename?: 'Mutation', updateStatusTemplate?: { __typename?: 'UpdateStatusTemplatePayload', clientMutationId?: string | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, color?: string | null, description?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null } | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   identityProviderId: Scalars['UUID']['input'];
@@ -8823,7 +9733,7 @@ export type ProjectStatusesQueryVariables = Exact<{
 }>;
 
 
-export type ProjectStatusesQuery = { __typename?: 'Query', statusTemplates?: { __typename?: 'StatusTemplateConnection', nodes: Array<{ __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null, sortOrder?: number | null } | null> } | null, projectStatusConfigs?: { __typename?: 'ProjectStatusConfigConnection', nodes: Array<{ __typename?: 'ProjectStatusConfig', rowId: string, projectId: string, statusTemplateId: string, customColor?: string | null, customDescription?: string | null, isEnabled?: boolean | null, isDefault?: boolean | null, sortOrder?: number | null } | null> } | null };
+export type ProjectStatusesQuery = { __typename?: 'Query', statusTemplates?: { __typename?: 'StatusTemplateConnection', nodes: Array<{ __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null } | null> } | null, projectStatusConfigs?: { __typename?: 'ProjectStatusConfigConnection', nodes: Array<{ __typename?: 'ProjectStatusConfig', rowId: string, projectId: string, statusTemplateId: string, customColor?: string | null, customDescription?: string | null, isEnabled?: boolean | null, isDefault?: boolean | null, sortOrder?: number | null } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -9520,6 +10430,7 @@ export const UpdateStatusTemplateDocument = `
       color
       description
       sortOrder
+      showOnRoadmap
     }
   }
 }
@@ -10128,6 +11039,7 @@ export const ProjectStatusesDocument = `
       description
       color
       sortOrder
+      showOnRoadmap
     }
   }
   projectStatusConfigs(condition: {isEnabled: $isEnabled}) {

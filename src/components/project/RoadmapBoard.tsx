@@ -6,6 +6,7 @@ import {
   BoardColumnEmpty,
   BoardColumnHeader,
 } from "@/components/ui/board";
+import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 import type { FeedbackFragment } from "@/generated/graphql";
@@ -27,6 +28,11 @@ interface Props {
   projectStatuses?: ComponentProps<typeof FeedbackCard>["projectStatuses"];
   /** Navigate to a post when its card is clicked. */
   onSelectPost: (post: FeedbackFragment) => void;
+  /**
+   * Override the board height. Defaults to the dedicated roadmap route height;
+   * the inline project-page view passes a shorter height (more chrome above).
+   */
+  className?: string;
 }
 
 /**
@@ -41,6 +47,7 @@ const RoadmapBoard = ({
   canManageFeedback,
   projectStatuses,
   onSelectPost,
+  className,
 }: Props) => {
   const columns = statuses.map((status) => ({
     status,
@@ -50,7 +57,7 @@ const RoadmapBoard = ({
   return (
     // bounded board height so columns are equal height and their lists scroll
     // in place instead of stretching the page (standard kanban behavior)
-    <Board className="h-[calc(100svh-13rem)] sm:items-stretch">
+    <Board className={cn("h-[calc(100svh-13rem)] sm:items-stretch", className)}>
       {columns.map(({ status, posts: columnPosts }) => (
         <BoardColumn
           key={status.rowId ?? status.displayName}

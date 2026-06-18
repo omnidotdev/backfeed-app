@@ -40,7 +40,7 @@ import {
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
-import { ROADMAP_HIDDEN_STATUS_NAMES } from "@/lib/constants/roadmap.constant";
+import { isStatusOnRoadmap } from "@/lib/constants/roadmap.constant";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 import {
   freeTierFeedbackOptions,
@@ -258,9 +258,12 @@ const ProjectFeedback = () => {
     enabled: viewState === ViewState.Roadmap && !!organizationId,
     select: (data) =>
       data?.statusTemplates?.nodes
-        // curate the roadmap: drop the intake backlog + closed statuses
-        .filter(
-          (status) => !ROADMAP_HIDDEN_STATUS_NAMES.has(status?.name ?? ""),
+        // curate the roadmap (explicit flag overrides the default heuristic)
+        .filter((status) =>
+          isStatusOnRoadmap({
+            name: status?.name,
+            showOnRoadmap: status?.showOnRoadmap,
+          }),
         )
         .map((status) => ({
           rowId: status?.rowId,
@@ -399,6 +402,9 @@ const ProjectFeedback = () => {
           </div>
         ) : (
           <RoadmapBoard
+            // inline view carries the page header + tabs + filters above, so the
+            // board gets a shorter height than the dedicated roadmap route
+            className="h-[calc(100svh-20rem)]"
             posts={allPosts.filter(
               (post): post is FeedbackFragment => post?.rowId !== "pending",
             )}

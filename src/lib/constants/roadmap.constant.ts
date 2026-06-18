@@ -6,10 +6,20 @@
  * statuses appear on a public roadmap.
  *
  * Matches the seeded default status names; custom statuses fall through and are
- * shown. A per-status "show on roadmap" toggle is the planned richer control.
+ * shown. The per-status `showOnRoadmap` flag overrides this heuristic.
  */
 export const ROADMAP_HIDDEN_STATUS_NAMES = new Set<string>([
   "open",
   "under_review",
   "closed",
 ]);
+
+/**
+ * Whether a status appears on the public roadmap: the explicit `showOnRoadmap`
+ * flag if an admin set one, otherwise the default curation heuristic.
+ */
+export const isStatusOnRoadmap = (status: {
+  name?: string | null;
+  showOnRoadmap?: boolean | null;
+}): boolean =>
+  status.showOnRoadmap ?? !ROADMAP_HIDDEN_STATUS_NAMES.has(status.name ?? "");
