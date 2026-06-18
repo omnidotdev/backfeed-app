@@ -79,6 +79,8 @@ interface Props extends ComponentProps<"div"> {
   isAuthenticated?: boolean;
   /** Whether to disable hover styles (e.g., on detail page). */
   disableHover?: boolean;
+  /** Hide the status badge (e.g., on the roadmap, where the column conveys status). */
+  hideStatus?: boolean;
   /** Index for alternating row backgrounds in list view. */
   index?: number;
 }
@@ -94,6 +96,7 @@ const FeedbackCard = ({
   descriptionProps,
   isAuthenticated: isAuthenticatedProp,
   disableHover,
+  hideStatus,
   index,
   className,
   ...rest
@@ -385,9 +388,11 @@ const FeedbackCard = ({
             >
               <StatusBadge
                 status={feedback.statusTemplate!}
-                className={
-                  canManageFeedback ? "cursor-pointer" : "cursor-default"
-                }
+                className={cn(
+                  canManageFeedback ? "cursor-pointer" : "cursor-default",
+                  // the roadmap column already conveys status; hide the badge there
+                  hideStatus && "hidden",
+                )}
                 onClick={(evt) => evt.stopPropagation()}
               >
                 {canManageFeedback && <LuChevronDown />}

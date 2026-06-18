@@ -184,11 +184,14 @@ function FeedbackPage() {
         disableHover
       />
 
-      <ReactionBar
-        postId={feedbackId}
-        userId={session?.user?.rowId}
-        canReact={!!session?.user?.rowId}
-      />
+      {/* align the reaction row under the card's voting rail (card has p-4) */}
+      <div className="-mt-2 px-4">
+        <ReactionBar
+          postId={feedbackId}
+          userId={session?.user?.rowId}
+          canReact={!!session?.user?.rowId}
+        />
+      </div>
 
       {feedback?.project?.rowId && (
         <PostTags
