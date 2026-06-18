@@ -48,18 +48,21 @@ const RoadmapBoard = ({
   }));
 
   return (
-    <Board>
+    // bounded board height so columns are equal height and their lists scroll
+    // in place instead of stretching the page (standard kanban behavior)
+    <Board className="h-[calc(100svh-13rem)] sm:items-stretch">
       {columns.map(({ status, posts: columnPosts }) => (
-        <BoardColumn key={status.rowId ?? status.displayName}>
+        <BoardColumn
+          key={status.rowId ?? status.displayName}
+          className="h-full min-h-0"
+        >
           <BoardColumnHeader
             title={status.displayName ?? "Unknown"}
             color={status.color}
             count={columnPosts.length}
           />
 
-          {/* bound the column height so long lists scroll in place instead of
-              stretching the page; empty columns match a single-card column */}
-          <BoardColumnBody className="max-h-[calc(100svh-17rem)] overflow-y-auto">
+          <BoardColumnBody className="min-h-0 flex-1 overflow-y-auto">
             {columnPosts.length ? (
               columnPosts.map((post) => (
                 <FeedbackCard
@@ -69,13 +72,15 @@ const RoadmapBoard = ({
                   projectStatuses={projectStatuses}
                   hideStatus
                   compact
-                  className="border border-border-subtle bg-[var(--colors-card-item)] p-3"
+                  // shrink-0 keeps cards from being squished by the flex column
+                  // (which made the voting widget overflow the card)
+                  className="shrink-0 border border-border-subtle bg-[var(--colors-card-item)] p-4"
                   titleProps={{ className: "line-clamp-2 overflow-hidden" }}
                   onClick={() => onSelectPost(post)}
                 />
               ))
             ) : (
-              <BoardColumnEmpty className="flex min-h-[4.75rem] items-center justify-center py-0">
+              <BoardColumnEmpty className="flex flex-1 items-center justify-center py-0">
                 No feedback
               </BoardColumnEmpty>
             )}
