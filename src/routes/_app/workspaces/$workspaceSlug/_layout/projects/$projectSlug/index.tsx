@@ -177,7 +177,7 @@ function ProjectPage() {
           { label: project?.name },
         ],
         title: (
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {project?.image && (
               <img
                 src={project.image}

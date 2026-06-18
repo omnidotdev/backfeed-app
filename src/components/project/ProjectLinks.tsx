@@ -50,7 +50,7 @@ const ProjectLinks = () => {
   if (!allLinks.length) return null;
 
   return (
-    <div className="ml-1 flex items-center gap-0.5 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
+    <div className="ml-1 flex shrink-0 items-center gap-0.5 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
       {visibleLinks.map((link) => (
         <Tooltip
           key={link.rowId}
