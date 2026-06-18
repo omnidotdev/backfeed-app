@@ -343,7 +343,7 @@ const FeedbackCard = ({
       {/* Content on the right */}
       <div className="flex h-full w-full flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-1 flex-col gap-0.5">
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <span
               {...titleProps}
               className={cn(
@@ -362,39 +362,27 @@ const FeedbackCard = ({
                 />
               </span>
 
-              {/* username + relative time are dropped on dense (roadmap) cards */}
-              {!compact && (
+              {/* author sits next to the key; time + comments move to the
+                  footer on full cards. dense (roadmap) cards keep the count
+                  inline since they have no footer */}
+              {!compact && feedback.user?.username && (
                 <>
                   <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
                   <span className="min-w-0 truncate">
-                    {feedback.user?.username}
-                  </span>
-                  <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
-                  <span className="shrink-0 whitespace-nowrap">
-                    {dayjs(
-                      isFeedbackPending ? new Date() : feedback.createdAt,
-                    ).fromNow()}
+                    {feedback.user.username}
                   </span>
                 </>
               )}
 
-              {/* on dense cards the key + comment count are the only meta, so
-                  drop the separator dot and push the count to the right edge */}
-              {!compact && (
-                <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
+              {compact && (
+                <div className="ml-auto flex shrink-0 items-center gap-0.5">
+                  <LuMessageCircle className="size-3.5" />
+                  <Format.Number
+                    value={feedback.comments?.totalCount ?? 0}
+                    notation="compact"
+                  />
+                </div>
               )}
-              <div
-                className={cn(
-                  "flex shrink-0 items-center gap-0.5",
-                  compact && "ml-auto",
-                )}
-              >
-                <LuMessageCircle className="size-3.5" />
-                <Format.Number
-                  value={feedback.comments?.totalCount ?? 0}
-                  notation="compact"
-                />
-              </div>
             </div>
           </div>
 
@@ -513,12 +501,24 @@ const FeedbackCard = ({
         )}
 
         {!compact && (
-          <div className="mt-2 flex items-center justify-between">
-            {isFeedbackRoute && (
-              <span className="hidden text-foreground-subtle text-sm sm:inline-flex">
-                {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
-              </span>
-            )}
+          // pinned to the bottom (mt-auto) so short posts fill the height the
+          // vote rail gives the card; wraps instead of overflowing on mobile
+          <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-foreground-subtle text-xs">
+            <span className="shrink-0 whitespace-nowrap">
+              {isFeedbackRoute
+                ? `Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`
+                : dayjs(
+                    isFeedbackPending ? new Date() : feedback.createdAt,
+                  ).fromNow()}
+            </span>
+
+            <div className="flex shrink-0 items-center gap-0.5">
+              <LuMessageCircle className="size-3.5" />
+              <Format.Number
+                value={feedback.comments?.totalCount ?? 0}
+                notation="compact"
+              />
+            </div>
 
             <div className="ml-auto flex items-center gap-2">
               {canAdjustFeedback && (
