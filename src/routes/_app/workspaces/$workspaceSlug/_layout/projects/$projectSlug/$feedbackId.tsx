@@ -3,6 +3,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 import Comments from "@/components/feedback/Comments";
 import FeedbackCard from "@/components/feedback/FeedbackCard";
+import PostBackReferences from "@/components/feedback/PostBackReferences";
 import PostTags from "@/components/feedback/PostTags";
 import ReactionBar from "@/components/feedback/ReactionBar";
 import StatusTimeline from "@/components/feedback/StatusTimeline";
@@ -208,6 +209,16 @@ function FeedbackPage() {
           projectId={feedback.project.rowId}
           currentStatusId={feedback.statusTemplate?.rowId}
           statuses={projectStatuses}
+        />
+      )}
+
+      {feedback?.project?.rowId && feedback.number != null && (
+        <PostBackReferences
+          rowId={feedbackId}
+          number={feedback.number}
+          projectId={feedback.project.rowId}
+          workspaceSlug={workspaceSlug}
+          projectSlug={projectSlug}
         />
       )}
 
