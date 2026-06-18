@@ -37,6 +37,7 @@ import {
   projectMetricsOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
+import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";
 import useStatusMenuStore from "@/lib/store/useStatusMenuStore";
 import stripHtml from "@/lib/util/stripHtml";
 import cn from "@/lib/utils";
@@ -270,6 +271,10 @@ const FeedbackCard = ({
               rowId: feedback.rowId!,
               userId: session?.user?.rowId,
             }).queryKey,
+          }),
+
+          queryClient.invalidateQueries({
+            queryKey: statusTimelineQueryKey(feedback.rowId!),
           }),
         ]),
     });
