@@ -240,6 +240,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -259,6 +260,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
@@ -281,6 +283,7 @@ export interface FileRouteTypes {
     | '/_app/workspaces/$workspaceSlug/_layout/projects/'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
+    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
     | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }

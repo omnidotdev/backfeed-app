@@ -5,7 +5,7 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { HiBolt, HiFolder, HiOutlineFolder } from "react-icons/hi2";
-import { LuSettings } from "react-icons/lu";
+import { LuMap, LuSettings } from "react-icons/lu";
 import { z } from "zod";
 
 import Aggregate from "@/components/dashboard/Aggregate";
@@ -192,32 +192,44 @@ function ProjectPage() {
           </div>
         ),
         description: project?.description!,
-        cta: isAuthenticated
-          ? [
-              {
-                label: app.projectPage.header.cta.viewAllProjects.label,
-                icon: <HiOutlineFolder />,
-                variant: "outline",
-                linkOptions: {
-                  to: "/workspaces/$workspaceSlug/projects",
-                  params: { workspaceSlug },
-                },
-              },
-              ...(hasAdminPrivileges
-                ? [
-                    {
-                      label: app.projectPage.header.cta.settings.label,
-                      icon: <LuSettings />,
-                      variant: "outline",
-                      linkOptions: {
-                        to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-                        params: { workspaceSlug, projectSlug },
-                      },
-                    } satisfies ActionButton,
-                  ]
-                : []),
-            ]
-          : [],
+        cta: [
+          {
+            // public, shareable roadmap (visible to everyone, incl. anonymous)
+            label: "Roadmap",
+            icon: <LuMap />,
+            variant: "outline",
+            linkOptions: {
+              to: "/workspaces/$workspaceSlug/projects/$projectSlug/roadmap",
+              params: { workspaceSlug, projectSlug },
+            },
+          } satisfies ActionButton,
+          ...(isAuthenticated
+            ? [
+                {
+                  label: app.projectPage.header.cta.viewAllProjects.label,
+                  icon: <HiOutlineFolder />,
+                  variant: "outline",
+                  linkOptions: {
+                    to: "/workspaces/$workspaceSlug/projects",
+                    params: { workspaceSlug },
+                  },
+                } satisfies ActionButton,
+                ...(hasAdminPrivileges
+                  ? [
+                      {
+                        label: app.projectPage.header.cta.settings.label,
+                        icon: <LuSettings />,
+                        variant: "outline",
+                        linkOptions: {
+                          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                          params: { workspaceSlug, projectSlug },
+                        },
+                      } satisfies ActionButton,
+                    ]
+                  : []),
+              ]
+            : []),
+        ],
       }}
     >
       <div className="flex flex-col gap-6">
