@@ -57,7 +57,9 @@ const RoadmapBoard = ({
             count={columnPosts.length}
           />
 
-          <BoardColumnBody>
+          {/* bound the column height so long lists scroll in place instead of
+              stretching the page; empty columns match a single-card column */}
+          <BoardColumnBody className="max-h-[calc(100svh-17rem)] overflow-y-auto">
             {columnPosts.length ? (
               columnPosts.map((post) => (
                 <FeedbackCard
@@ -66,16 +68,16 @@ const RoadmapBoard = ({
                   canManageFeedback={canManageFeedback}
                   projectStatuses={projectStatuses}
                   hideStatus
+                  compact
                   className="border border-border-subtle bg-[var(--colors-card-item)] p-3"
                   titleProps={{ className: "line-clamp-2 overflow-hidden" }}
-                  descriptionProps={{
-                    className: "line-clamp-2 overflow-hidden",
-                  }}
                   onClick={() => onSelectPost(post)}
                 />
               ))
             ) : (
-              <BoardColumnEmpty>No feedback</BoardColumnEmpty>
+              <BoardColumnEmpty className="flex min-h-[4.75rem] items-center justify-center py-0">
+                No feedback
+              </BoardColumnEmpty>
             )}
           </BoardColumnBody>
         </BoardColumn>

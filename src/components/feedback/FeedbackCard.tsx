@@ -81,6 +81,8 @@ interface Props extends ComponentProps<"div"> {
   disableHover?: boolean;
   /** Hide the status badge (e.g., on the roadmap, where the column conveys status). */
   hideStatus?: boolean;
+  /** Compact mode for dense boards (roadmap): trims meta, drops description/attachments/actions. */
+  compact?: boolean;
   /** Index for alternating row backgrounds in list view. */
   index?: number;
 }
@@ -97,6 +99,7 @@ const FeedbackCard = ({
   isAuthenticated: isAuthenticatedProp,
   disableHover,
   hideStatus,
+  compact,
   index,
   className,
   ...rest
@@ -313,6 +316,8 @@ const FeedbackCard = ({
     <div
       className={cn(
         "relative flex items-start gap-2 rounded-xl p-4",
+        // normalize roadmap cards to a consistent height so columns look flush
+        compact && "min-h-[4.75rem]",
         actionIsPending && "opacity-50",
         hasAlternatingBg &&
           "bg-[var(--colors-neutral-50)] dark:bg-[var(--colors-neutral-900)]/50",
@@ -349,21 +354,32 @@ const FeedbackCard = ({
               {feedback.title}
             </span>
 
-            <div className="flex items-center gap-1.5 text-foreground-subtle text-xs">
-              <FeedbackKey
-                prefix={feedback.project?.prefix}
-                number={feedback.number}
-              />
-              <div className="size-1 rounded-full bg-foreground-subtle" />
-              <span>{feedback.user?.username}</span>
-              <div className="size-1 rounded-full bg-foreground-subtle" />
-              <span>
-                {dayjs(
-                  isFeedbackPending ? new Date() : feedback.createdAt,
-                ).fromNow()}
+            <div className="flex min-w-0 items-center gap-1.5 text-foreground-subtle text-xs">
+              <span className="shrink-0">
+                <FeedbackKey
+                  prefix={feedback.project?.prefix}
+                  number={feedback.number}
+                />
               </span>
-              <div className="size-1 rounded-full bg-foreground-subtle" />
-              <div className="flex items-center gap-0.5">
+
+              {/* username + relative time are dropped on dense (roadmap) cards */}
+              {!compact && (
+                <>
+                  <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
+                  <span className="min-w-0 truncate">
+                    {feedback.user?.username}
+                  </span>
+                  <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
+                  <span className="shrink-0 whitespace-nowrap">
+                    {dayjs(
+                      isFeedbackPending ? new Date() : feedback.createdAt,
+                    ).fromNow()}
+                  </span>
+                </>
+              )}
+
+              <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
+              <div className="flex shrink-0 items-center gap-0.5">
                 <LuMessageCircle className="size-3.5" />
                 <Format.Number
                   value={feedback.comments?.totalCount ?? 0}
@@ -435,7 +451,8 @@ const FeedbackCard = ({
           </MenuRoot>
         </div>
 
-        {feedback.description &&
+        {!compact &&
+          feedback.description &&
           (isFeedbackRoute ? (
             // detail page: full rich content (HTML), or legacy plain text
             /<[a-z][\s\S]*>/i.test(feedback.description) ? (
@@ -477,7 +494,7 @@ const FeedbackCard = ({
             </p>
           ))}
 
-        {!!feedback.attachments?.nodes.length && (
+        {!compact && !!feedback.attachments?.nodes.length && (
           <AttachmentGallery
             attachments={feedback.attachments.nodes.filter(
               (node): node is NonNullable<typeof node> => node != null,
@@ -486,50 +503,52 @@ const FeedbackCard = ({
           />
         )}
 
-        <div className="mt-2 flex items-center justify-between">
-          {isFeedbackRoute && (
-            <span className="hidden text-foreground-subtle text-sm sm:inline-flex">
-              {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
-            </span>
-          )}
-
-          <div className="ml-auto flex items-center gap-2">
-            {canAdjustFeedback && (
-              <div className="flex items-center gap-2">
-                <UpdateFeedback
-                  feedback={feedback}
-                  triggerProps={{
-                    disabled: actionIsPending,
-                    onClick: (evt) => evt.stopPropagation(),
-                  }}
-                />
-
-                <DestructiveAction
-                  title={app.projectPage.projectFeedback.deletePost.title}
-                  description={
-                    app.projectPage.projectFeedback.deletePost.description
-                  }
-                  action={{
-                    label:
-                      app.projectPage.projectFeedback.deletePost.action.label,
-                    onClick: () => deletePost({ postId: feedback.rowId! }),
-                  }}
-                  triggerProps={{
-                    "aria-label":
-                      app.projectPage.projectFeedback.deletePost.title,
-                    size: "icon",
-                    variant: "ghost",
-                    className:
-                      "size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-                    disabled: actionIsPending,
-                    onClick: (evt) => evt.stopPropagation(),
-                  }}
-                  iconClassName="size-4"
-                />
-              </div>
+        {!compact && (
+          <div className="mt-2 flex items-center justify-between">
+            {isFeedbackRoute && (
+              <span className="hidden text-foreground-subtle text-sm sm:inline-flex">
+                {`Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`}
+              </span>
             )}
+
+            <div className="ml-auto flex items-center gap-2">
+              {canAdjustFeedback && (
+                <div className="flex items-center gap-2">
+                  <UpdateFeedback
+                    feedback={feedback}
+                    triggerProps={{
+                      disabled: actionIsPending,
+                      onClick: (evt) => evt.stopPropagation(),
+                    }}
+                  />
+
+                  <DestructiveAction
+                    title={app.projectPage.projectFeedback.deletePost.title}
+                    description={
+                      app.projectPage.projectFeedback.deletePost.description
+                    }
+                    action={{
+                      label:
+                        app.projectPage.projectFeedback.deletePost.action.label,
+                      onClick: () => deletePost({ postId: feedback.rowId! }),
+                    }}
+                    triggerProps={{
+                      "aria-label":
+                        app.projectPage.projectFeedback.deletePost.title,
+                      size: "icon",
+                      variant: "ghost",
+                      className:
+                        "size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+                      disabled: actionIsPending,
+                      onClick: (evt) => evt.stopPropagation(),
+                    }}
+                    iconClassName="size-4"
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
