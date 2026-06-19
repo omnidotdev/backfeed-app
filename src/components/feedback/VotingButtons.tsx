@@ -90,7 +90,12 @@ const VotingButtons = ({
   if (!isAuthenticated) {
     return (
       <SignInPrompt action="vote">
-        <div className="mr-3 flex min-w-12 flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]">
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: stop clicks bubbling to card navigation */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: stop clicks bubbling to card navigation */}
+        <div
+          className="mr-3 flex min-w-12 flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <LuArrowUp className="size-4 text-muted-foreground" />
           <span className="my-1 font-bold text-foreground text-lg leading-none">
             {netTotalVotes}
@@ -102,7 +107,9 @@ const VotingButtons = ({
   }
 
   return (
-    <div className={containerCls}>
+    // biome-ignore lint/a11y/noStaticElementInteractions: stop clicks bubbling to card navigation
+    // biome-ignore lint/a11y/useKeyWithClickEvents: stop clicks bubbling to card navigation
+    <div className={containerCls} onClick={(e) => e.stopPropagation()}>
       <Button
         variant="ghost"
         size="sm"
