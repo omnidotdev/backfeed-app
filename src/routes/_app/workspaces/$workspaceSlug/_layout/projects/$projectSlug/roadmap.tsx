@@ -137,7 +137,6 @@ function RoadmapPage() {
           { label: "Roadmap" },
         ],
         title: `${projectName} Roadmap`,
-        description: "What we're building, ranked by what users want most.",
       }}
     >
       {roadmapStatuses?.length ? (

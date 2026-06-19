@@ -28,7 +28,7 @@ const FEATURES: FeatureToggle[] = [
   {
     key: "showRoadmap",
     label: "Roadmap",
-    description: "A public board of what you're building, ranked by demand.",
+    description: "A public board of what you're working on, grouped by status.",
   },
   {
     key: "showChangelog",
