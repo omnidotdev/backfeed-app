@@ -8,16 +8,26 @@ export interface ResolvedFavicon {
   contentType: string;
 }
 
-/** Score given to scalable (SVG) icons so they rank above any raster candidate. */
-const SCALABLE_SCORE = 1_024;
+/** Score boost for apple-touch icons: author-designed app tiles, reliably framed. */
+const APPLE_TOUCH_BOOST = 1_000;
+
+/** Score for scalable (SVG) icons: a last resort, since emoji/tight-viewBox SVGs clip. */
+const SCALABLE_SCORE = 1;
 
 /** Output dimension for normalized raster favicons. */
 const RASTER_SIZE = 64;
 
+/** Transparent margin kept on each side so an icon never renders edge to edge. */
+const PADDING_RATIO = 0.08;
+
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 } as const;
+
 /**
- * Pull candidate icon URLs out of a page's HTML, best (largest) first. Considers
- * any <link> whose rel mentions "icon" (icon, shortcut icon, apple-touch-icon,
- * mask-icon) and ranks them by declared size, preferring SVG.
+ * Pull candidate icon URLs out of a page's HTML, best first. Considers any
+ * <link> whose rel mentions "icon" (icon, shortcut icon, apple-touch-icon,
+ * mask-icon). Prefers author-sized raster icons (apple-touch, then largest PNG)
+ * over SVG, because scalable icons are often emoji or logos in tight viewBoxes
+ * that touch the edge and are unreliable to rasterize server-side.
  */
 const parseIconLinks = (html: string, baseUrl: URL): string[] => {
   const candidates: { href: string; score: number }[] = [];
@@ -31,10 +41,12 @@ const parseIconLinks = (html: string, baseUrl: URL): string[] => {
 
     const sizes = tag.match(/\bsizes=["']([^"']+)["']/i)?.[1] ?? "";
     const isScalable = /\.svg(?:[?#]|$)/i.test(href) || /mask-icon/i.test(rel);
-    const declared = Number(sizes.match(/(\d+)x\d+/i)?.[1]);
-    const score = isScalable
-      ? SCALABLE_SCORE
-      : declared || (/apple-touch/i.test(rel) ? 180 : 16);
+    const declared = Number(sizes.match(/(\d+)x\d+/i)?.[1]) || 0;
+
+    let score: number;
+    if (/apple-touch/i.test(rel)) score = APPLE_TOUCH_BOOST + declared;
+    else if (isScalable) score = SCALABLE_SCORE;
+    else score = declared || 16;
 
     try {
       candidates.push({ href: new URL(href, baseUrl).toString(), score });
@@ -48,7 +60,7 @@ const parseIconLinks = (html: string, baseUrl: URL): string[] => {
     .map((candidate) => candidate.href);
 };
 
-/** Standardize raster icons to a square PNG; pass SVG and formats sharp cannot read through untouched. */
+/** Standardize raster icons to a padded square PNG; pass SVG and formats sharp cannot read through untouched. */
 const normalizeIcon = async (
   body: Uint8Array,
   contentType: string,
@@ -57,10 +69,16 @@ const normalizeIcon = async (
     return { body, contentType: "image/svg+xml" };
 
   try {
+    const inner = Math.round(RASTER_SIZE * (1 - PADDING_RATIO * 2));
+    const margin = Math.round((RASTER_SIZE - inner) / 2);
     const png = await sharp(body)
-      .resize(RASTER_SIZE, RASTER_SIZE, {
-        fit: "contain",
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      .resize(inner, inner, { fit: "contain", background: TRANSPARENT })
+      .extend({
+        top: margin,
+        bottom: margin,
+        left: margin,
+        right: margin,
+        background: TRANSPARENT,
       })
       .png()
       .toBuffer();
