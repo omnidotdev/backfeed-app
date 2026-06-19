@@ -3,6 +3,7 @@ import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import Page from "@/components/layout/Page";
+import ProjectLinks from "@/components/project/ProjectLinks";
 import RoadmapBoard from "@/components/project/RoadmapBoard";
 import { PostOrderBy } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -80,6 +81,12 @@ function RoadmapPage() {
     Route.useRouteContext();
   const navigate = useNavigate();
 
+  // already prefetched in the loader; read from cache for the project logo/links
+  const { data: project } = useQuery({
+    ...projectOptions({ organizationId, projectSlug }),
+    select: (data) => data.projects?.nodes?.[0],
+  });
+
   const {
     data: posts,
     hasNextPage,
@@ -136,7 +143,24 @@ function RoadmapPage() {
           },
           { label: "Roadmap" },
         ],
-        title: `${projectName} Roadmap`,
+        title: (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            {project?.image && (
+              <img
+                src={project.image}
+                alt=""
+                className="size-9 shrink-0 rounded-lg border border-border-subtle object-cover md:size-10"
+              />
+            )}
+            <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
+              {projectName} Roadmap
+            </h1>
+            <ProjectLinks
+              organizationId={organizationId}
+              projectSlug={projectSlug}
+            />
+          </div>
+        ),
       }}
     >
       {roadmapStatuses?.length ? (

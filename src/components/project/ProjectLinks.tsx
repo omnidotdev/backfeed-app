@@ -1,6 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
 import { useQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
 
@@ -18,17 +17,14 @@ import {
 import { projectOptions } from "@/lib/options/projects";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
-const projectRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-);
+import type { ProjectQueryVariables } from "@/generated/graphql";
+
+type Props = Pick<ProjectQueryVariables, "organizationId" | "projectSlug">;
 
 /**
  * Project links component. Displays project links with auto-fetched favicons.
  */
-const ProjectLinks = () => {
-  const { organizationId } = projectRoute.useRouteContext();
-  const { projectSlug } = projectRoute.useParams();
-
+const ProjectLinks = ({ organizationId, projectSlug }: Props) => {
   const { data: project } = useQuery({
     ...projectOptions({ organizationId, projectSlug }),
     select: (data) => data.projects?.nodes?.[0],

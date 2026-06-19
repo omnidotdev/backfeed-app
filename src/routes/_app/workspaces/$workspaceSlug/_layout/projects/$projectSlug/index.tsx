@@ -188,7 +188,10 @@ function ProjectPage() {
             <h1 className="font-bold text-2xl leading-tight tracking-[-0.02em] md:text-3xl">
               {project?.name}
             </h1>
-            <ProjectLinks />
+            <ProjectLinks
+              organizationId={organizationId}
+              projectSlug={projectSlug}
+            />
           </div>
         ),
         description: project?.description!,
