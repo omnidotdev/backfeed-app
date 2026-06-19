@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
 
 import {
-  PostOrderBy,
   VoteType,
   useCreateVoteMutation,
   useDeleteVoteMutation,
   useUpdateVoteMutation,
 } from "@/generated/graphql";
-import {
-  feedbackByIdOptions,
-  infiniteFeedbackOptions,
-} from "@/lib/options/feedback";
+import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectMetricsOptions } from "@/lib/options/projects";
 
-import type { InfiniteData, UseMutationOptions } from "@tanstack/react-query";
+import type {
+  InfiniteData,
+  QueryKey,
+  UseMutationOptions,
+} from "@tanstack/react-query";
 import type {
   FeedbackByIdQuery,
   Post,
@@ -22,6 +21,10 @@ import type {
   Project,
   Vote,
 } from "@/generated/graphql";
+
+/** Query key prefixes for every cache that holds vote data for a post. */
+const POSTS_KEY: QueryKey = ["Posts.infinite"];
+const FEEDBACK_KEY: QueryKey = ["FeedbackById"];
 
 interface Options {
   /** Feedback ID */
@@ -40,11 +43,22 @@ interface Options {
   mutationOptions?: UseMutationOptions;
 }
 
+/** Snapshots captured in onMutate so a failed vote can be rolled back. */
+interface VoteRollbackContext {
+  previousPosts: [QueryKey, InfiniteData<PostsQuery> | undefined][];
+  previousFeedback: [QueryKey, FeedbackByIdQuery | undefined][];
+}
+
 /**
  * Handle voting on feedback.
  * - If user has no vote, creates a vote with the specified type
  * - If user has the same vote type, removes the vote (toggle off)
  * - If user has a different vote type, updates the vote
+ *
+ * The optimistic update targets every cached posts list and feedback detail by
+ * key prefix, so the vote icons and count flip immediately on any view (project
+ * board, roadmap, single feedback) regardless of its sort or search, then
+ * reconcile with the server in onSettled. A failed vote rolls back in onError.
  */
 const useHandleVoteMutation = ({
   feedbackId,
@@ -56,8 +70,6 @@ const useHandleVoteMutation = ({
   mutationOptions,
 }: Options) => {
   const queryClient = useQueryClient();
-
-  const { excludedStatuses, orderBy, search } = useSearch({ strict: false });
 
   const { mutateAsync: createVote } = useCreateVoteMutation();
   const { mutateAsync: updateVote } = useUpdateVoteMutation();
@@ -94,29 +106,21 @@ const useHandleVoteMutation = ({
         });
       }
     },
-    onMutate: async () => {
-      const feedbackSnapshot = queryClient.getQueryData(
-        feedbackByIdOptions({
-          rowId: feedbackId,
-          userId: userId,
-        }).queryKey,
-      ) as FeedbackByIdQuery;
+    onMutate: async (): Promise<VoteRollbackContext> => {
+      // stop in-flight refetches so they cannot clobber the optimistic write
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: POSTS_KEY }),
+        queryClient.cancelQueries({ queryKey: FEEDBACK_KEY }),
+      ]);
 
-      const postsQueryKey = infiniteFeedbackOptions({
-        projectId,
-        excludedStatuses,
-        orderBy: orderBy
-          ? [orderBy as PostOrderBy, PostOrderBy.CreatedAtDesc]
-          : undefined,
-        search,
-        userId: userId,
-      }).queryKey;
+      // snapshot every affected list/detail query for rollback
+      const previousPosts = queryClient.getQueriesData<
+        InfiniteData<PostsQuery>
+      >({ queryKey: POSTS_KEY });
+      const previousFeedback = queryClient.getQueriesData<FeedbackByIdQuery>({
+        queryKey: FEEDBACK_KEY,
+      });
 
-      const postsSnapshot = queryClient.getQueryData(
-        postsQueryKey,
-      ) as InfiniteData<PostsQuery>;
-
-      // calculate optimistic updates
       const getOptimisticCounts = (
         currentUpvotes: number,
         currentDownvotes: number,
@@ -153,7 +157,8 @@ const useHandleVoteMutation = ({
             userUpvotes: { nodes: [] },
             userDownvotes: { nodes: [] },
           };
-        } else if (hasDifferentVote || !hasVote) {
+        }
+        if (hasDifferentVote || !hasVote) {
           // adding or changing vote
           return {
             userUpvotes: {
@@ -172,44 +177,44 @@ const useHandleVoteMutation = ({
         };
       };
 
-      if (feedbackSnapshot) {
-        const { upvotes, downvotes } = getOptimisticCounts(
-          feedbackSnapshot?.post?.upvotes?.totalCount ?? 0,
-          feedbackSnapshot?.post?.downvotes?.totalCount ?? 0,
-        );
+      // update every cached feedback detail for this post
+      queryClient.setQueriesData<FeedbackByIdQuery>(
+        { queryKey: FEEDBACK_KEY },
+        (old) => {
+          if (!old?.post || old.post.rowId !== feedbackId) return old;
 
-        queryClient.setQueryData(
-          feedbackByIdOptions({
-            rowId: feedbackId,
-            userId: userId,
-          }).queryKey,
-          {
+          const { upvotes, downvotes } = getOptimisticCounts(
+            old.post.upvotes?.totalCount ?? 0,
+            old.post.downvotes?.totalCount ?? 0,
+          );
+
+          return {
+            ...old,
             post: {
-              ...feedbackSnapshot?.post!,
+              ...old.post,
               ...getOptimisticUserVotes(),
-              upvotes: {
-                ...feedbackSnapshot?.post?.upvotes,
-                totalCount: upvotes,
-              },
-              downvotes: {
-                ...feedbackSnapshot?.post?.downvotes,
-                totalCount: downvotes,
-              },
+              upvotes: { ...old.post.upvotes, totalCount: upvotes },
+              downvotes: { ...old.post.downvotes, totalCount: downvotes },
             },
-          },
-        );
-      }
+          };
+        },
+      );
 
-      if (postsSnapshot) {
-        queryClient.setQueryData(postsQueryKey, {
-          ...postsSnapshot,
-          // @ts-expect-error TODO: properly type
-          pages: postsSnapshot.pages.map((page) => ({
-            ...page,
-            posts: {
-              ...page.posts,
-              nodes: page.posts?.nodes?.map((post) => {
-                if (post?.rowId === feedbackId) {
+      // update this post in every cached feedback list (board, roadmap, etc.)
+      queryClient.setQueriesData<InfiniteData<PostsQuery>>(
+        { queryKey: POSTS_KEY },
+        (old) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              posts: {
+                ...page.posts,
+                nodes: page.posts?.nodes?.map((post) => {
+                  if (post?.rowId !== feedbackId) return post;
+
                   const { upvotes, downvotes } = getOptimisticCounts(
                     post.upvotes.totalCount,
                     post.downvotes.totalCount,
@@ -218,22 +223,30 @@ const useHandleVoteMutation = ({
                   return {
                     ...post,
                     ...getOptimisticUserVotes(),
-                    upvotes: { totalCount: upvotes },
-                    downvotes: { totalCount: downvotes },
+                    upvotes: { ...post.upvotes, totalCount: upvotes },
+                    downvotes: { ...post.downvotes, totalCount: downvotes },
                   };
-                }
+                }),
+              },
+            })),
+          } as InfiniteData<PostsQuery>;
+        },
+      );
 
-                return post;
-              }),
-            },
-          })),
-        });
-      }
+      return { previousPosts, previousFeedback };
+    },
+    onError: (_error, _variables, context) => {
+      // a failed vote should not stick; restore every snapshot we took
+      const ctx = context as VoteRollbackContext | undefined;
+      for (const [key, data] of ctx?.previousPosts ?? [])
+        queryClient.setQueryData(key, data);
+      for (const [key, data] of ctx?.previousFeedback ?? [])
+        queryClient.setQueryData(key, data);
     },
     onSettled: async () => {
       if (isFeedbackRoute) {
         await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] }),
+          queryClient.invalidateQueries({ queryKey: POSTS_KEY }),
           queryClient.invalidateQueries({
             queryKey: projectMetricsOptions({ projectId }).queryKey,
           }),
@@ -259,7 +272,7 @@ const useHandleVoteMutation = ({
         }),
       ]);
 
-      return queryClient.invalidateQueries({ queryKey: ["Posts.infinite"] });
+      return queryClient.invalidateQueries({ queryKey: POSTS_KEY });
     },
     ...mutationOptions,
   });
