@@ -2,8 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { resolveFavicon } from "@/lib/server/resolveFavicon";
 
-/** Cache a resolved favicon for a day in the browser and a week at the edge. */
-const HIT_CACHE_CONTROL = "public, max-age=86400, s-maxage=604800, immutable";
+/**
+ * Cache a resolved favicon for a day, serving stale for a week while it
+ * revalidates. Not `immutable`: a site can change its icon and our resolver can
+ * improve, so the cache must be able to refresh.
+ */
+const HIT_CACHE_CONTROL =
+  "public, max-age=86400, stale-while-revalidate=604800";
 
 /** Briefly cache misses so a site without a favicon is not re-fetched on every render. */
 const MISS_CACHE_CONTROL = "public, max-age=600";
