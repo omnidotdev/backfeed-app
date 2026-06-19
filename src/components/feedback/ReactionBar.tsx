@@ -20,7 +20,7 @@ import {
 import toaster from "@/lib/util/toaster";
 import cn from "@/lib/utils";
 
-import type { ReactionTarget } from "@/lib/options/reactions";
+import type { Reaction, ReactionTarget } from "@/lib/options/reactions";
 
 /** Emoji set offered in the picker (mirrors GitHub's issue reactions). */
 const REACTION_EMOJIS = ["👍", "👎", "😄", "🎉", "😕", "❤️", "🚀", "👀"];
@@ -52,22 +52,52 @@ const ReactionBar = ({
   // exactly one of postId/commentId is set (enforced by the API CHECK constraint)
   const target = (commentId ? { commentId } : { postId }) as ReactionTarget;
 
+  const queryKey = reactionsQueryKey(target);
+
   const { data: reactions } = useQuery(reactionsOptions(target));
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: reactionsQueryKey(target) });
+  const invalidate = () => queryClient.invalidateQueries({ queryKey });
+
+  /** Snapshot, then apply an optimistic change to the cached reaction list. */
+  const optimistically = async (
+    update: (current: Reaction[]) => Reaction[],
+  ) => {
+    await queryClient.cancelQueries({ queryKey });
+    const previous = queryClient.getQueryData<Reaction[]>(queryKey);
+    queryClient.setQueryData<Reaction[]>(queryKey, (old) => update(old ?? []));
+    return { previous };
+  };
+
+  /** Restore the snapshot taken before an optimistic change failed. */
+  const rollback = (context: { previous?: Reaction[] } | undefined) =>
+    queryClient.setQueryData(queryKey, context?.previous);
 
   const { mutate: addReaction } = useMutation({
     mutationFn: (emoji: string) =>
       createReaction({ ...target, userId: userId!, emoji }),
-    onSuccess: invalidate,
-    onError: () => toaster.error({ title: "Could not add reaction" }),
+    onMutate: (emoji) =>
+      optimistically((current) => [
+        ...current,
+        { rowId: "pending", emoji, userId: userId! },
+      ]),
+    onError: (_error, _emoji, context) => {
+      rollback(context);
+      toaster.error({ title: "Could not add reaction" });
+    },
+    onSettled: invalidate,
   });
 
   const { mutate: removeReaction } = useMutation({
     mutationFn: (rowId: string) => deleteReaction(rowId),
-    onSuccess: invalidate,
-    onError: () => toaster.error({ title: "Could not remove reaction" }),
+    onMutate: (rowId) =>
+      optimistically((current) =>
+        current.filter((reaction) => reaction.rowId !== rowId),
+      ),
+    onError: (_error, _rowId, context) => {
+      rollback(context);
+      toaster.error({ title: "Could not remove reaction" });
+    },
+    onSettled: invalidate,
   });
 
   // group by emoji, tracking the current user's reaction id (if any)
@@ -81,6 +111,8 @@ const ReactionBar = ({
 
   const toggle = (emoji: string) => {
     const group = grouped.get(emoji);
+    // ignore clicks while an optimistic reaction is still settling
+    if (group?.mine === "pending") return;
     if (group?.mine) removeReaction(group.mine);
     else if (canReact && userId) addReaction(emoji);
   };
