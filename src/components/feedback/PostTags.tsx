@@ -21,6 +21,8 @@ import {
 } from "@/lib/options/tags";
 import toaster from "@/lib/util/toaster";
 
+import type { PostTagAssignment, PostTagsData } from "@/lib/options/tags";
+
 interface Props {
   /** Post rowId tags are assigned to */
   postId: string;
@@ -43,19 +45,67 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
     enabled: canAssign && Boolean(projectId),
   });
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: postTagsQueryKey(postId) });
+  const queryKey = postTagsQueryKey(postId);
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey });
+
+  /** Snapshot, then apply an optimistic change to the cached post-tag list. */
+  const optimistically = async (
+    update: (nodes: PostTagAssignment[]) => PostTagAssignment[],
+  ) => {
+    await queryClient.cancelQueries({ queryKey });
+    const previous = queryClient.getQueryData<PostTagsData>(queryKey);
+    queryClient.setQueryData<PostTagsData>(queryKey, (old) =>
+      old?.post
+        ? {
+            ...old,
+            post: {
+              ...old.post,
+              postTags: {
+                ...old.post.postTags,
+                nodes: update(old.post.postTags.nodes),
+              },
+            },
+          }
+        : old,
+    );
+    return { previous };
+  };
+
+  /** Restore the snapshot taken before an optimistic change failed. */
+  const rollback = (context: { previous?: PostTagsData } | undefined) =>
+    queryClient.setQueryData(queryKey, context?.previous);
 
   const { mutate: assignTag } = useMutation({
     mutationFn: (tagId: string) => createPostTag({ postId, tagId }),
-    onSuccess: invalidate,
-    onError: () => toaster.error({ title: "Could not add tag" }),
+    onMutate: (tagId) => {
+      const tag = (projectTags ?? []).find((t) => t.rowId === tagId);
+      return optimistically((nodes) => [
+        ...nodes,
+        {
+          rowId: "pending",
+          tag: tag
+            ? { rowId: tag.rowId, name: tag.name, color: tag.color }
+            : null,
+        },
+      ]);
+    },
+    onError: (_error, _tagId, context) => {
+      rollback(context);
+      toaster.error({ title: "Could not add tag" });
+    },
+    onSettled: invalidate,
   });
 
   const { mutate: unassignTag } = useMutation({
     mutationFn: (rowId: string) => deletePostTag(rowId),
-    onSuccess: invalidate,
-    onError: () => toaster.error({ title: "Could not remove tag" }),
+    onMutate: (rowId) =>
+      optimistically((nodes) => nodes.filter((node) => node.rowId !== rowId)),
+    onError: (_error, _rowId, context) => {
+      rollback(context);
+      toaster.error({ title: "Could not remove tag" });
+    },
+    onSettled: invalidate,
   });
 
   const assignedTagIds = new Set(
@@ -81,6 +131,7 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
                 variant="ghost"
                 className="size-5"
                 aria-label={`Remove ${assignment.tag.name}`}
+                disabled={assignment.rowId === "pending"}
                 onClick={() => unassignTag(assignment.rowId)}
               >
                 <LuX className="size-3" />

@@ -22,7 +22,8 @@ interface ProjectTagsData {
   };
 }
 
-interface PostTagsData {
+/** Raw response shape of the post-tags query, cached before `select` runs. */
+export interface PostTagsData {
   post: {
     rowId: string;
     postTags: {
