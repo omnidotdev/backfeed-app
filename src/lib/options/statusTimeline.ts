@@ -17,7 +17,8 @@ export interface StatusChange {
   } | null;
 }
 
-interface StatusTimelineData {
+/** Raw response shape of the status-timeline query, cached before `select` runs. */
+export interface StatusTimelineData {
   post: {
     rowId: string;
     postStatusChanges: { nodes: StatusChange[] };

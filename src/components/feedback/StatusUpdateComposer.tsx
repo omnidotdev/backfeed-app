@@ -9,6 +9,13 @@ import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";
 import toaster from "@/lib/util/toaster";
 import cn from "@/lib/utils";
 
+import type { QueryKey } from "@tanstack/react-query";
+import type { FeedbackByIdQuery } from "@/generated/graphql";
+import type { StatusTimelineData } from "@/lib/options/statusTimeline";
+
+/** Prefix for every cached feedback detail (holds the status badge). */
+const FEEDBACK_KEY: QueryKey = ["FeedbackById"];
+
 interface StatusOption {
   rowId: string | undefined;
   displayName: string | null | undefined;
@@ -24,6 +31,15 @@ interface Props {
   currentStatusId: string | undefined;
   /** Status options to move between. */
   statuses: StatusOption[] | undefined;
+  /** Current user, used to attribute the optimistic timeline entry. */
+  currentUser?: { username: string | null; avatarUrl: string | null };
+}
+
+/** Snapshots captured in onMutate so a failed status change can be rolled back. */
+interface StatusRollbackContext {
+  previousTimeline: StatusTimelineData | undefined;
+  previousFeedback: [QueryKey, FeedbackByIdQuery | undefined][];
+  previousNote: string;
 }
 
 /**
@@ -36,26 +52,112 @@ const StatusUpdateComposer = ({
   projectId,
   currentStatusId,
   statuses,
+  currentUser,
 }: Props) => {
   const queryClient = useQueryClient();
 
   const [targetStatusId, setTargetStatusId] = useState(currentStatusId);
   const [note, setNote] = useState("");
 
+  const timelineKey = statusTimelineQueryKey(postId);
+
   const { mutate: changeStatus, isPending } = useChangePostStatusMutation({
-    onSuccess: () => {
-      setNote("");
-      queryClient.invalidateQueries({
-        queryKey: statusTimelineQueryKey(postId),
+    onMutate: async (variables): Promise<StatusRollbackContext> => {
+      const target = statuses?.find(
+        (status) => status.rowId === variables.statusTemplateId,
+      );
+
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: timelineKey }),
+        queryClient.cancelQueries({ queryKey: FEEDBACK_KEY }),
+      ]);
+
+      const previousTimeline =
+        queryClient.getQueryData<StatusTimelineData>(timelineKey);
+      const previousFeedback = queryClient.getQueriesData<FeedbackByIdQuery>({
+        queryKey: FEEDBACK_KEY,
       });
+      const previousNote = note;
+
+      // clear the note right away so the composer feels responsive
+      setNote("");
+
+      // append an optimistic entry to the post's timeline (oldest first)
+      queryClient.setQueryData<StatusTimelineData>(timelineKey, (old) =>
+        old?.post
+          ? {
+              ...old,
+              post: {
+                ...old.post,
+                postStatusChanges: {
+                  ...old.post.postStatusChanges,
+                  nodes: [
+                    ...old.post.postStatusChanges.nodes,
+                    {
+                      rowId: "pending",
+                      createdAt: new Date().toISOString(),
+                      note: variables.note ?? null,
+                      toStatusTemplate: target
+                        ? {
+                            displayName: target.displayName ?? "",
+                            color: target.color ?? null,
+                          }
+                        : null,
+                      changedBy: {
+                        username: currentUser?.username ?? null,
+                        avatarUrl: currentUser?.avatarUrl ?? null,
+                      },
+                    },
+                  ],
+                },
+              },
+            }
+          : old,
+      );
+
+      // move the post's status badge on the detail page immediately
+      if (target)
+        queryClient.setQueriesData<FeedbackByIdQuery>(
+          { queryKey: FEEDBACK_KEY },
+          (old) => {
+            if (!old?.post || old.post.rowId !== postId) return old;
+            return {
+              ...old,
+              post: {
+                ...old.post,
+                statusTemplate: {
+                  ...old.post.statusTemplate,
+                  rowId: target.rowId ?? old.post.statusTemplate?.rowId ?? "",
+                  name: old.post.statusTemplate?.name ?? "",
+                  displayName: target.displayName ?? "",
+                  color: target.color ?? null,
+                },
+              },
+            };
+          },
+        );
+
+      return { previousTimeline, previousFeedback, previousNote };
+    },
+    onError: (_error, _variables, context) => {
+      const ctx = context as StatusRollbackContext | undefined;
+      if (ctx) {
+        queryClient.setQueryData(timelineKey, ctx.previousTimeline);
+        for (const [key, data] of ctx.previousFeedback)
+          queryClient.setQueryData(key, data);
+        setNote(ctx.previousNote);
+      }
+      toaster.error({ title: "Could not update status" });
+    },
+    onSuccess: () => toaster.success({ title: "Status updated" }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: timelineKey });
       // prefix match: refresh the post card regardless of the viewer's userId
-      queryClient.invalidateQueries({ queryKey: ["FeedbackById"] });
+      queryClient.invalidateQueries({ queryKey: FEEDBACK_KEY });
       queryClient.invalidateQueries({
         queryKey: statusBreakdownOptions({ projectId }).queryKey,
       });
-      toaster.success({ title: "Status updated" });
     },
-    onError: () => toaster.error({ title: "Could not update status" }),
   });
 
   if (!statuses?.length) return null;

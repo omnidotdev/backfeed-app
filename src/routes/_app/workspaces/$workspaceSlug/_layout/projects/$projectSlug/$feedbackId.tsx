@@ -209,6 +209,10 @@ function FeedbackPage() {
           projectId={feedback.project.rowId}
           currentStatusId={feedback.statusTemplate?.rowId}
           statuses={projectStatuses}
+          currentUser={{
+            username: session?.user?.username ?? null,
+            avatarUrl: session?.user?.image ?? null,
+          }}
         />
       )}
 
