@@ -278,6 +278,15 @@ const ProjectFeedback = () => {
     !excludedStatuses.includes(defaultStatus.name!) &&
     !orderBy;
 
+  // optimistically apply the status filter client-side so excluding a status
+  // removes its posts immediately, instead of lingering on the stale
+  // keepPreviousData list until the refetch returns. Mirrors the server filter:
+  // hide posts whose status is excluded, always keep status-less posts
+  const visiblePosts = (posts ?? []).filter((post) => {
+    const displayName = post?.statusTemplate?.displayName;
+    return !displayName || !excludedStatuses.includes(displayName);
+  });
+
   const allPosts = [
     ...(showPendingFeedback
       ? pendingFeedback.filter((feedback) =>
@@ -287,7 +296,7 @@ const ProjectFeedback = () => {
             .includes(search.toLowerCase()),
         )
       : []),
-    ...(posts ?? []),
+    ...visiblePosts,
   ];
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
