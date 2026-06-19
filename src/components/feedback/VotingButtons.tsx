@@ -72,7 +72,7 @@ const VotingButtons = ({
   const netTotalVotes = totalUpvotes - totalDownvotes;
 
   const containerCls = cn(
-    "flex min-w-12 flex-col items-center justify-center rounded-lg border py-2 transition-all [margin-right:0.75rem]",
+    "flex min-w-12 select-none flex-col items-center justify-center rounded-lg border py-2 transition-all [margin-right:0.75rem]",
     hasVote
       ? "border-[var(--colors-ruby-200)] bg-[var(--colors-ruby-50)] dark:border-[var(--colors-ruby-800)] dark:bg-[var(--colors-ruby-950)]/30"
       : "border-[var(--colors-neutral-200)] bg-white dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]",
@@ -93,7 +93,7 @@ const VotingButtons = ({
         {/* biome-ignore lint/a11y/noStaticElementInteractions: stop clicks bubbling to card navigation */}
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: stop clicks bubbling to card navigation */}
         <div
-          className="mr-3 flex min-w-12 flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]"
+          className="mr-3 flex min-w-12 select-none flex-col items-center justify-center rounded-lg border border-[var(--colors-neutral-200)] bg-white py-2 transition-all dark:border-[var(--colors-neutral-700)] dark:bg-[var(--colors-neutral-800)]"
           onClick={(e) => e.stopPropagation()}
         >
           <LuArrowUp className="size-4 text-muted-foreground" />
