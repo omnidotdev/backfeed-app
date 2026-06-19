@@ -1,10 +1,12 @@
 import { LuX } from "react-icons/lu";
+import { useDebounceValue } from "usehooks-ts";
 
 import Favicon from "@/components/core/Favicon";
 import Field from "@/components/form/Field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import { useFieldContext } from "@/lib/hooks/useForm";
 
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
@@ -40,13 +42,16 @@ const URLField = ({
 }: Props) => {
   const { handleChange, state, name } = useFieldContext<string>();
 
+  // debounce the favicon lookup so it does not hit the proxy on every keystroke
+  const [debouncedUrl] = useDebounceValue(state.value, DEBOUNCE_TIME);
+
   return (
     <Field errorMap={errorMap} errorProps={errorProps} {...containerProps}>
       {label && <Label htmlFor={name}>{label}</Label>}
 
       <div className="flex items-center gap-2">
         <Favicon
-          url={state.value}
+          url={debouncedUrl}
           size={5}
           className="text-foreground-subtle"
         />
