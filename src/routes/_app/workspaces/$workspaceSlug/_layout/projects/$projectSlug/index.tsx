@@ -26,6 +26,7 @@ import {
   statusBreakdownOptions,
 } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
+import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { ActionButton } from "@/components/core/CallToAction";
 
@@ -258,7 +259,10 @@ function ProjectPage() {
         {/* KPI stat strip: one compact, inline, divided bar so the feed stays above the fold */}
         <div className="grid grid-cols-2 divide-x divide-border-subtle overflow-hidden rounded-xl border border-border-subtle bg-background">
           <Aggregate
-            title="Posts"
+            title={setSingularOrPlural({
+              value: projectMetrics?.totalPosts ?? 0,
+              label: "Post",
+            })}
             value={projectMetrics?.totalPosts ?? 0}
             icon={HiFolder}
             accentColor="amber"
@@ -267,7 +271,10 @@ function ProjectPage() {
           />
 
           <Aggregate
-            title="Votes"
+            title={setSingularOrPlural({
+              value: projectMetrics?.totalEngagement ?? 0,
+              label: "Vote",
+            })}
             value={projectMetrics?.totalEngagement ?? 0}
             icon={HiBolt}
             accentColor="emerald"
