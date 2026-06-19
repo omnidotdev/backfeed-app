@@ -117,13 +117,21 @@ export const Route = createFileRoute(
       ogImageUrl: `${BASE_URL}/api/og/feedback/${workspaceSlug}/${projectSlug}/${feedback.number}`,
     };
   },
-  head: ({ loaderData }) => ({
-    meta: createMetaTags({
-      title: loaderData?.feedbackTitle ?? loaderData?.projectName,
-      description: loaderData?.feedbackDescription ?? undefined,
-      image: loaderData?.ogImageUrl,
-    }),
-  }),
+  head: ({ loaderData }) => {
+    // surface the project in social previews: "[post] | [project] | Backfeed"
+    const title =
+      loaderData?.feedbackTitle && loaderData?.projectName
+        ? `${loaderData.feedbackTitle} | ${loaderData.projectName}`
+        : (loaderData?.feedbackTitle ?? loaderData?.projectName);
+
+    return {
+      meta: createMetaTags({
+        title,
+        description: loaderData?.feedbackDescription ?? undefined,
+        image: loaderData?.ogImageUrl,
+      }),
+    };
+  },
   component: FeedbackPage,
 });
 
