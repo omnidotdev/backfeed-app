@@ -51,4 +51,11 @@ fragment Feedback on Post {
       rowId
     }
   }
+  postTags {
+    nodes {
+      tag {
+        rowId
+      }
+    }
+  }
 }

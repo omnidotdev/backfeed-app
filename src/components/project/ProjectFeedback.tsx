@@ -230,6 +230,9 @@ const ProjectFeedback = () => {
         userDownvotes: {
           nodes: [],
         },
+        postTags: {
+          nodes: [],
+        },
       } as FeedbackFragment;
     });
   }, [pendingMutations, defaultStatus, project, session, organizationId]);
@@ -305,11 +308,11 @@ const ProjectFeedback = () => {
     !excludedStatuses.includes(defaultStatus.name!) &&
     !orderBy;
 
-  // optimistically apply the status and search filters client-side so the list
-  // updates on click/keystroke instead of lingering on the stale keepPreviousData
-  // list until the refetch returns. Mirrors the server filters: hide posts whose
-  // status is excluded (always keep status-less posts), and match the search
-  // against the title only
+  // optimistically apply the status, search, and tag filters client-side so the
+  // list updates on click/keystroke instead of lingering on the stale
+  // keepPreviousData list until the refetch returns. Mirrors the server filters:
+  // hide excluded statuses (always keep status-less posts), match the search
+  // against the title only, and require any of the selected tags
   const searchQuery = searchInput.trim().toLowerCase();
 
   const visiblePosts = (posts ?? []).filter((post) => {
@@ -317,6 +320,12 @@ const ProjectFeedback = () => {
     if (displayName && excludedStatuses.includes(displayName)) return false;
     if (searchQuery && !post?.title?.toLowerCase().includes(searchQuery))
       return false;
+    if (tags.length) {
+      const postTagIds = new Set(
+        (post?.postTags?.nodes ?? []).map((node) => node?.tag?.rowId),
+      );
+      if (!tags.some((tagId) => postTagIds.has(tagId))) return false;
+    }
     return true;
   });
 
