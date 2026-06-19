@@ -55,13 +55,17 @@ const RoadmapBoard = ({
   }));
 
   return (
-    // bounded board height so columns are equal height and their lists scroll
-    // in place instead of stretching the page (standard kanban behavior)
-    <Board className={cn("h-[calc(100svh-13rem)] sm:items-stretch", className)}>
+    // on sm+ the board is a bounded-height kanban: equal-height columns whose
+    // lists scroll in place. on mobile the columns stack and flow naturally
+    // (the page scrolls) so each card is fully visible instead of crammed into
+    // a slice of a fixed-height container
+    <Board
+      className={cn("sm:h-[calc(100svh-13rem)] sm:items-stretch", className)}
+    >
       {columns.map(({ status, posts: columnPosts }) => (
         <BoardColumn
           key={status.rowId ?? status.displayName}
-          className="h-full min-h-0"
+          className="sm:h-full sm:min-h-0"
         >
           <BoardColumnHeader
             title={status.displayName ?? "Unknown"}
@@ -69,7 +73,7 @@ const RoadmapBoard = ({
             count={columnPosts.length}
           />
 
-          <BoardColumnBody className="min-h-0 flex-1 overflow-y-auto">
+          <BoardColumnBody className="sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
             {columnPosts.length ? (
               columnPosts.map((post) => (
                 <FeedbackCard
@@ -87,7 +91,7 @@ const RoadmapBoard = ({
                 />
               ))
             ) : (
-              <BoardColumnEmpty className="flex flex-1 items-center justify-center py-0">
+              <BoardColumnEmpty className="flex items-center justify-center py-6 sm:flex-1 sm:py-0">
                 Nothing here yet
               </BoardColumnEmpty>
             )}

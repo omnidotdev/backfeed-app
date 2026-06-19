@@ -421,8 +421,9 @@ const ProjectFeedback = () => {
         ) : (
           <RoadmapBoard
             // inline view carries the page header + tabs + filters above, so the
-            // board gets a shorter height than the dedicated roadmap route
-            className="h-[calc(100svh-20rem)]"
+            // board gets a shorter height than the dedicated roadmap route (sm+
+            // only; mobile flows naturally so cards aren't crammed)
+            className="sm:h-[calc(100svh-20rem)]"
             posts={allPosts.filter(
               (post): post is FeedbackFragment => post?.rowId !== "pending",
             )}
