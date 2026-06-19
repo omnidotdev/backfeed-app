@@ -1,19 +1,21 @@
 /**
- * Get favicon URL for a given website URL using Google's favicon service.
- * Returns null if the URL is invalid or empty.
+ * Build the URL for a website's favicon, served through our own caching proxy
+ * (see src/routes/api/favicon.ts) so we render the site's real icon rather than
+ * a third-party service's cached crop. Returns null for empty or non-web URLs.
  *
- * @param url - The website URL to get favicon for
- * @param size - The size of the favicon (default: 32)
- * @returns The favicon URL or null if invalid
+ * @param url - The website URL to get the favicon for
+ * @returns A same-origin proxy URL, or null if the input is not a valid http(s) URL
  */
-const getFaviconUrl = (url: string, size = 32): string | null => {
+const getFaviconUrl = (url: string): string | null => {
   if (!url) return null;
 
   try {
-    const { hostname } = new URL(url);
-    return `https://www.google.com/s2/favicons?domain=${hostname}&sz=${size}`;
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:")
+      return null;
+    return `/api/favicon?url=${encodeURIComponent(parsed.toString())}`;
   } catch {
-    // Invalid URL, return null
+    // invalid URL, return null
     return null;
   }
 };

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiFaviconRouteImport } from './routes/api/favicon'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppWorkspacesIndexRouteImport } from './routes/_app/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -44,6 +45,11 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFaviconRoute = ApiFaviconRouteImport.update({
+  id: '/api/favicon',
+  path: '/api/favicon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AppDashboardRoute
+  '/api/favicon': typeof ApiFaviconRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/profile/$userId': typeof AppProfileUserIdLayoutRouteWithChildren
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AppDashboardRoute
+  '/api/favicon': typeof ApiFaviconRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/profile/$userId': typeof AppProfileUserIdLayoutRouteWithChildren
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/pricing': typeof PricingRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/api/favicon': typeof ApiFaviconRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/workspaces/': typeof AppWorkspacesIndexRoute
   '/_app/profile/$userId/_layout': typeof AppProfileUserIdLayoutRouteWithChildren
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/api/favicon'
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/'
     | '/pricing'
     | '/dashboard'
+    | '/api/favicon'
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/pricing'
     | '/_app/dashboard'
+    | '/api/favicon'
     | '/api/auth/$'
     | '/_app/workspaces/'
     | '/_app/profile/$userId/_layout'
@@ -304,6 +316,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   PricingRoute: typeof PricingRoute
+  ApiFaviconRoute: typeof ApiFaviconRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiOgProjectWorkspaceSlugProjectSlugRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
   ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute: typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/favicon': {
+      id: '/api/favicon'
+      path: '/api/favicon'
+      fullPath: '/api/favicon'
+      preLoaderRoute: typeof ApiFaviconRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/dashboard': {
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   PricingRoute: PricingRoute,
+  ApiFaviconRoute: ApiFaviconRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiOgProjectWorkspaceSlugProjectSlugRoute:
     ApiOgProjectWorkspaceSlugProjectSlugRoute,
