@@ -53,6 +53,7 @@ const UserWorkspaces = () => {
             rowId: org.id,
             name: org.name,
             slug: org.slug,
+            logo: org.logo,
             projects: {
               totalCount: projectCountsByOrgId[org.id],
             },

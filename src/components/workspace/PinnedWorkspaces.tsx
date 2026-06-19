@@ -78,6 +78,7 @@ const PinnedWorkspaces = () => {
                 slug: org.slug,
                 organizationId: org.id,
                 type: org.type,
+                logo: org.logo,
                 projects: {
                   totalCount: projectCountsByOrgId[org.id],
                 },

@@ -1,7 +1,11 @@
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuBuilding2, LuChevronRight, LuUser } from "react-icons/lu";
 
-import OverflowText from "@/components/core/OverflowText";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -16,6 +20,7 @@ interface WorkspaceData {
   slug?: string;
   organizationId?: string;
   type?: "personal" | "team";
+  logo?: string | null;
   projects?: {
     totalCount?: number;
   };
@@ -42,10 +47,20 @@ const WorkspaceCard = ({ workspace, className, ...rest }: Props) => {
       {...rest}
     >
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <OverflowText className="line-clamp-2 font-semibold text-base leading-[1.3]">
+        <div className="flex items-start gap-2">
+          <AvatarRoot size="sm" className="mt-0.5 shrink-0">
+            <AvatarImage
+              src={workspace.logo ?? undefined}
+              alt={workspace.name}
+            />
+            <AvatarFallback className="font-semibold uppercase">
+              {workspace.name?.[0]?.toUpperCase()}
+            </AvatarFallback>
+          </AvatarRoot>
+
+          <span className="min-w-0 flex-1 break-words font-semibold text-base leading-[1.3]">
             {workspace.name}
-          </OverflowText>
+          </span>
 
           <span
             className={cn(

@@ -2,7 +2,11 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuExternalLink, LuInfo, LuLayers } from "react-icons/lu";
 
-import OverflowText from "@/components/core/OverflowText";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -111,10 +115,20 @@ function WorkspaceCard({ organization }: { organization: OrganizationClaim }) {
       preload="intent"
     >
       <div className="flex h-32 w-full cursor-pointer flex-col justify-between rounded-xl border border-[var(--colors-neutral-200)] bg-[var(--colors-card-item)] p-4 transition-all hover:bg-[var(--colors-neutral-100)] dark:border-[var(--colors-neutral-800)] dark:hover:bg-[var(--colors-neutral-800)]">
-        <div className="flex flex-col gap-1">
-          <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
+        <div className="flex items-center gap-3">
+          <AvatarRoot size="sm" className="shrink-0">
+            <AvatarImage
+              src={organization.logo ?? undefined}
+              alt={organization.name}
+            />
+            <AvatarFallback className="font-semibold uppercase">
+              {organization.name?.[0]?.toUpperCase()}
+            </AvatarFallback>
+          </AvatarRoot>
+
+          <span className="min-w-0 break-words font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
             {organization.name}
-          </OverflowText>
+          </span>
         </div>
 
         <div className="flex items-center gap-1">

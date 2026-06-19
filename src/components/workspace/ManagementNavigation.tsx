@@ -7,8 +7,11 @@ import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
-import OverflowText from "@/components/core/OverflowText";
-import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import cn from "@/lib/utils";
@@ -53,7 +56,7 @@ const ManagementNavigation = ({
   className,
   ...rest
 }: Props) => {
-  const { role, workspaceName } = manageRoute.useRouteContext();
+  const { role, workspaceName, workspaceLogo } = manageRoute.useRouteContext();
   const { workspaceSlug } = manageRoute.useParams();
   const navigate = useNavigate();
   const segment = useRouterState({
@@ -100,15 +103,15 @@ const ManagementNavigation = ({
   return (
     <div className={cn("flex flex-col", className)} {...rest}>
       <div className="flex w-full items-center gap-2 bg-[var(--colors-brand-primary-50)] p-4 dark:bg-[var(--colors-brand-primary-950)]">
-        {/* TODO: update with workspace image */}
-        <AvatarRoot size="xs">
+        <AvatarRoot size="xs" className="shrink-0">
+          <AvatarImage src={workspaceLogo ?? undefined} alt={workspaceName} />
           <AvatarFallback>{workspaceName?.[0]?.toUpperCase()}</AvatarFallback>
         </AvatarRoot>
 
         {isOpen && (
-          <OverflowText className="whitespace-nowrap text-center font-semibold text-sm">
+          <span className="break-words text-center font-semibold text-sm">
             {workspaceName}
-          </OverflowText>
+          </span>
         )}
       </div>
 

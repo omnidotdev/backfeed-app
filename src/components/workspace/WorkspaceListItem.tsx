@@ -2,7 +2,11 @@ import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { HiOutlineFolder } from "react-icons/hi2";
 
-import OverflowText from "@/components/core/OverflowText";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 /**
@@ -15,6 +19,7 @@ interface WorkspaceData {
   slug?: string;
   organizationId?: string;
   updatedAt?: Date | string;
+  logo?: string | null;
   projects?: {
     totalCount?: number;
   };
@@ -47,11 +52,21 @@ const WorkspaceListItem = ({ workspace }: Props) => {
     >
       <div className="relative mx-auto flex h-36 w-full max-w-full cursor-pointer flex-col justify-between rounded-xl border border-neutral-200 bg-card p-4 transition-all group-hover:bg-neutral-100 dark:border-neutral-800 dark:group-hover:bg-neutral-800">
         <div className="flex items-start justify-between">
-          <div className="flex max-w-[65svw] flex-col gap-2">
-            <div className="flex flex-col gap-1">
-              <OverflowText className="whitespace-nowrap font-semibold text-[var(--colors-brand-primary-700)] group-hover:text-[var(--colors-brand-primary-800)] dark:group-hover:text-[var(--colors-brand-primary-600)]">
+          <div className="flex max-w-[65svw] items-center gap-3">
+            <AvatarRoot size="sm" className="shrink-0">
+              <AvatarImage
+                src={workspace.logo ?? undefined}
+                alt={workspace.name}
+              />
+              <AvatarFallback className="font-semibold uppercase">
+                {workspace.name?.[0]?.toUpperCase()}
+              </AvatarFallback>
+            </AvatarRoot>
+
+            <div className="flex min-w-0 flex-col gap-1">
+              <span className="break-words font-semibold text-[var(--colors-brand-primary-700)] group-hover:text-[var(--colors-brand-primary-800)] dark:group-hover:text-[var(--colors-brand-primary-600)]">
                 {workspace.name}
-              </OverflowText>
+              </span>
 
               {workspace.updatedAt && (
                 <p className="text-muted-foreground text-sm">{`Updated ${dayjs(

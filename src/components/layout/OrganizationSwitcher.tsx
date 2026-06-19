@@ -1,5 +1,10 @@
 import { LuBuilding2, LuChevronDown, LuPlus, LuUser } from "react-icons/lu";
 
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -43,11 +48,19 @@ const OrganizationSwitcher = () => {
     >
       <MenuTrigger asChild>
         <Button variant="ghost" size="sm">
-          {currentOrganization.type === "personal" ? (
-            <LuUser />
-          ) : (
-            <LuBuilding2 />
-          )}
+          <AvatarRoot size="xs" className="size-5">
+            <AvatarImage
+              src={currentOrganization.logo ?? undefined}
+              alt={currentOrganization.slug}
+            />
+            <AvatarFallback>
+              {currentOrganization.type === "personal" ? (
+                <LuUser />
+              ) : (
+                <LuBuilding2 />
+              )}
+            </AvatarFallback>
+          </AvatarRoot>
           {currentOrganization.slug}
           <LuChevronDown />
         </Button>
@@ -62,7 +75,12 @@ const OrganizationSwitcher = () => {
                 value={org.id}
                 disabled={org.id === currentOrganization.id}
               >
-                {org.type === "personal" ? <LuUser /> : <LuBuilding2 />}
+                <AvatarRoot size="xs" className="size-5">
+                  <AvatarImage src={org.logo ?? undefined} alt={org.slug} />
+                  <AvatarFallback>
+                    {org.type === "personal" ? <LuUser /> : <LuBuilding2 />}
+                  </AvatarFallback>
+                </AvatarRoot>
                 {org.slug}
                 {org.type === "personal" && " (Personal)"}
               </MenuItem>
