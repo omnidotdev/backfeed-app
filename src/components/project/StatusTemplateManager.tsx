@@ -39,6 +39,8 @@ import { projectStatusesOptions } from "@/lib/options/projects";
 import slugify from "@/lib/util/slugify";
 import toaster from "@/lib/util/toaster";
 
+import type { ProjectStatusesQuery } from "@/generated/graphql";
+
 const settingsRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
 );
@@ -182,9 +184,38 @@ const StatusTemplateManager = () => {
       rowId: string;
       showOnRoadmap: boolean;
     }) => updateStatus({ rowId, patch: { showOnRoadmap } }),
+    // optimistically flip the switch so it responds instantly, then reconcile
+    onMutate: async ({ rowId, showOnRoadmap }) => {
+      await queryClient.cancelQueries({ queryKey: statusesOptions.queryKey });
+      const previous = queryClient.getQueryData<ProjectStatusesQuery>(
+        statusesOptions.queryKey,
+      );
+
+      queryClient.setQueryData<ProjectStatusesQuery>(
+        statusesOptions.queryKey,
+        (old) =>
+          old?.statusTemplates?.nodes
+            ? {
+                ...old,
+                statusTemplates: {
+                  ...old.statusTemplates,
+                  nodes: old.statusTemplates.nodes.map((node) =>
+                    node?.rowId === rowId ? { ...node, showOnRoadmap } : node,
+                  ),
+                },
+              }
+            : old,
+      );
+
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(statusesOptions.queryKey, context.previous);
+      }
+      toaster.error({ title: "Could not update roadmap visibility" });
+    },
     onSettled: invalidate,
-    onError: () =>
-      toaster.error({ title: "Could not update roadmap visibility" }),
   });
 
   // swap a status with its neighbor by exchanging sort orders

@@ -12,6 +12,8 @@ import { useUpdateProjectMutation } from "@/generated/graphql";
 import { projectOptions } from "@/lib/options/projects";
 import toaster from "@/lib/util/toaster";
 
+import type { ProjectQuery } from "@/generated/graphql";
+
 const settingsRoute = getRouteApi(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
 );
@@ -44,14 +46,52 @@ const ProjectFeatures = () => {
   const { projectSlug } = settingsRoute.useParams();
   const queryClient = useQueryClient();
 
+  const projectQueryKey = projectOptions({
+    organizationId,
+    projectSlug,
+  }).queryKey;
+
   const { data: project } = useQuery({
     ...projectOptions({ organizationId, projectSlug }),
     select: (data) => data?.projects?.nodes?.[0],
   });
 
   const { mutate: updateProject } = useUpdateProjectMutation({
+    // optimistically flip the switch so it responds instantly, then reconcile
+    onMutate: async ({ patch }) => {
+      await queryClient.cancelQueries({ queryKey: projectQueryKey });
+      const previous = queryClient.getQueryData<ProjectQuery>(projectQueryKey);
+
+      queryClient.setQueryData<ProjectQuery>(projectQueryKey, (old) =>
+        old?.projects?.nodes?.length
+          ? {
+              ...old,
+              projects: {
+                ...old.projects,
+                nodes: old.projects.nodes.map((node, index) =>
+                  index === 0 && node
+                    ? {
+                        ...node,
+                        showRoadmap: patch.showRoadmap ?? node.showRoadmap,
+                        showChangelog:
+                          patch.showChangelog ?? node.showChangelog,
+                      }
+                    : node,
+                ),
+              },
+            }
+          : old,
+      );
+
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(projectQueryKey, context.previous);
+      }
+      toaster.error({ title: "Could not update features" });
+    },
     onSettled: () => queryClient.invalidateQueries({ queryKey: ["Project"] }),
-    onError: () => toaster.error({ title: "Could not update features" }),
   });
 
   const toggle = (patch: Partial<Record<FeatureToggle["key"], boolean>>) => {
