@@ -35,8 +35,8 @@ const projectSearchSchema = z.object({
   tags: z.array(z.string()).default([]),
   search: z.string().default(""),
   orderBy: z
-    .enum([PostOrderBy.CreatedAtDesc, PostOrderBy.VotesCountDesc])
-    .default(PostOrderBy.VotesCountDesc),
+    .enum([PostOrderBy.CreatedAtDesc, PostOrderBy.VotesSumWeightDesc])
+    .default(PostOrderBy.VotesSumWeightDesc),
 });
 
 export const Route = createFileRoute(
@@ -54,7 +54,7 @@ export const Route = createFileRoute(
         search: "",
         excludedStatuses: [],
         tags: [],
-        orderBy: PostOrderBy.VotesCountDesc,
+        orderBy: PostOrderBy.VotesSumWeightDesc,
       }),
     ],
   },

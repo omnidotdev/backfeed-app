@@ -3160,6 +3160,8 @@ export enum PostOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserIdAsc = 'USER_ID_ASC',
   UserIdDesc = 'USER_ID_DESC',
+  VotesAverageWeightAsc = 'VOTES_AVERAGE_WEIGHT_ASC',
+  VotesAverageWeightDesc = 'VOTES_AVERAGE_WEIGHT_DESC',
   VotesCountAsc = 'VOTES_COUNT_ASC',
   VotesCountDesc = 'VOTES_COUNT_DESC',
   VotesDistinctCountCreatedAtAsc = 'VOTES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -3173,7 +3175,23 @@ export enum PostOrderBy {
   VotesDistinctCountUserIdAsc = 'VOTES_DISTINCT_COUNT_USER_ID_ASC',
   VotesDistinctCountUserIdDesc = 'VOTES_DISTINCT_COUNT_USER_ID_DESC',
   VotesDistinctCountVoteTypeAsc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_ASC',
-  VotesDistinctCountVoteTypeDesc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_DESC'
+  VotesDistinctCountVoteTypeDesc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_DESC',
+  VotesDistinctCountWeightAsc = 'VOTES_DISTINCT_COUNT_WEIGHT_ASC',
+  VotesDistinctCountWeightDesc = 'VOTES_DISTINCT_COUNT_WEIGHT_DESC',
+  VotesMaxWeightAsc = 'VOTES_MAX_WEIGHT_ASC',
+  VotesMaxWeightDesc = 'VOTES_MAX_WEIGHT_DESC',
+  VotesMinWeightAsc = 'VOTES_MIN_WEIGHT_ASC',
+  VotesMinWeightDesc = 'VOTES_MIN_WEIGHT_DESC',
+  VotesStddevPopulationWeightAsc = 'VOTES_STDDEV_POPULATION_WEIGHT_ASC',
+  VotesStddevPopulationWeightDesc = 'VOTES_STDDEV_POPULATION_WEIGHT_DESC',
+  VotesStddevSampleWeightAsc = 'VOTES_STDDEV_SAMPLE_WEIGHT_ASC',
+  VotesStddevSampleWeightDesc = 'VOTES_STDDEV_SAMPLE_WEIGHT_DESC',
+  VotesSumWeightAsc = 'VOTES_SUM_WEIGHT_ASC',
+  VotesSumWeightDesc = 'VOTES_SUM_WEIGHT_DESC',
+  VotesVariancePopulationWeightAsc = 'VOTES_VARIANCE_POPULATION_WEIGHT_ASC',
+  VotesVariancePopulationWeightDesc = 'VOTES_VARIANCE_POPULATION_WEIGHT_DESC',
+  VotesVarianceSampleWeightAsc = 'VOTES_VARIANCE_SAMPLE_WEIGHT_ASC',
+  VotesVarianceSampleWeightDesc = 'VOTES_VARIANCE_SAMPLE_WEIGHT_DESC'
 }
 
 /** Represents an update to a `Post`. Fields that are set will be updated. */
@@ -8851,6 +8869,8 @@ export enum UserOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UsernameAsc = 'USERNAME_ASC',
   UsernameDesc = 'USERNAME_DESC',
+  VotesAverageWeightAsc = 'VOTES_AVERAGE_WEIGHT_ASC',
+  VotesAverageWeightDesc = 'VOTES_AVERAGE_WEIGHT_DESC',
   VotesCountAsc = 'VOTES_COUNT_ASC',
   VotesCountDesc = 'VOTES_COUNT_DESC',
   VotesDistinctCountCreatedAtAsc = 'VOTES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -8864,7 +8884,23 @@ export enum UserOrderBy {
   VotesDistinctCountUserIdAsc = 'VOTES_DISTINCT_COUNT_USER_ID_ASC',
   VotesDistinctCountUserIdDesc = 'VOTES_DISTINCT_COUNT_USER_ID_DESC',
   VotesDistinctCountVoteTypeAsc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_ASC',
-  VotesDistinctCountVoteTypeDesc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_DESC'
+  VotesDistinctCountVoteTypeDesc = 'VOTES_DISTINCT_COUNT_VOTE_TYPE_DESC',
+  VotesDistinctCountWeightAsc = 'VOTES_DISTINCT_COUNT_WEIGHT_ASC',
+  VotesDistinctCountWeightDesc = 'VOTES_DISTINCT_COUNT_WEIGHT_DESC',
+  VotesMaxWeightAsc = 'VOTES_MAX_WEIGHT_ASC',
+  VotesMaxWeightDesc = 'VOTES_MAX_WEIGHT_DESC',
+  VotesMinWeightAsc = 'VOTES_MIN_WEIGHT_ASC',
+  VotesMinWeightDesc = 'VOTES_MIN_WEIGHT_DESC',
+  VotesStddevPopulationWeightAsc = 'VOTES_STDDEV_POPULATION_WEIGHT_ASC',
+  VotesStddevPopulationWeightDesc = 'VOTES_STDDEV_POPULATION_WEIGHT_DESC',
+  VotesStddevSampleWeightAsc = 'VOTES_STDDEV_SAMPLE_WEIGHT_ASC',
+  VotesStddevSampleWeightDesc = 'VOTES_STDDEV_SAMPLE_WEIGHT_DESC',
+  VotesSumWeightAsc = 'VOTES_SUM_WEIGHT_ASC',
+  VotesSumWeightDesc = 'VOTES_SUM_WEIGHT_DESC',
+  VotesVariancePopulationWeightAsc = 'VOTES_VARIANCE_POPULATION_WEIGHT_ASC',
+  VotesVariancePopulationWeightDesc = 'VOTES_VARIANCE_POPULATION_WEIGHT_DESC',
+  VotesVarianceSampleWeightAsc = 'VOTES_VARIANCE_SAMPLE_WEIGHT_ASC',
+  VotesVarianceSampleWeightDesc = 'VOTES_VARIANCE_SAMPLE_WEIGHT_DESC'
 }
 
 /** Represents an update to a `User`. Fields that are set will be updated. */
@@ -8975,21 +9011,64 @@ export type Vote = {
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
   voteType: VoteType;
+  weight: Scalars['Int']['output'];
 };
 
 export type VoteAggregates = {
   __typename?: 'VoteAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<VoteAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<VoteDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<VoteMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<VoteMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<VoteStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<VoteStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<VoteSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<VoteVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<VoteVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `Vote` object types. */
 export type VoteAggregatesFilter = {
+  /** Mean average aggregate over matching `Vote` objects. */
+  average?: InputMaybe<VoteAverageAggregateFilter>;
   /** Distinct count aggregate over matching `Vote` objects. */
   distinctCount?: InputMaybe<VoteDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `Vote` object to be included within the aggregate. */
   filter?: InputMaybe<VoteFilter>;
+  /** Maximum aggregate over matching `Vote` objects. */
+  max?: InputMaybe<VoteMaxAggregateFilter>;
+  /** Minimum aggregate over matching `Vote` objects. */
+  min?: InputMaybe<VoteMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `Vote` objects. */
+  stddevPopulation?: InputMaybe<VoteStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `Vote` objects. */
+  stddevSample?: InputMaybe<VoteStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `Vote` objects. */
+  sum?: InputMaybe<VoteSumAggregateFilter>;
+  /** Population variance aggregate over matching `Vote` objects. */
+  variancePopulation?: InputMaybe<VoteVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `Vote` objects. */
+  varianceSample?: InputMaybe<VoteVarianceSampleAggregateFilter>;
+};
+
+export type VoteAverageAggregateFilter = {
+  weight?: InputMaybe<BigFloatFilter>;
+};
+
+export type VoteAverageAggregates = {
+  __typename?: 'VoteAverageAggregates';
+  /** Mean average of weight across the matching connection */
+  weight?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A condition to be used against `Vote` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -9006,6 +9085,8 @@ export type VoteCondition = {
   userId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `voteType` field. */
   voteType?: InputMaybe<VoteType>;
+  /** Checks for equality with the object’s `weight` field. */
+  weight?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** A connection to a list of `Vote` values. */
@@ -9039,6 +9120,7 @@ export type VoteDistinctCountAggregateFilter = {
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
   voteType?: InputMaybe<BigIntFilter>;
+  weight?: InputMaybe<BigIntFilter>;
 };
 
 export type VoteDistinctCountAggregates = {
@@ -9055,6 +9137,8 @@ export type VoteDistinctCountAggregates = {
   userId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of voteType across the matching connection */
   voteType?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of weight across the matching connection */
+  weight?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Vote` edge in the connection. */
@@ -9090,6 +9174,8 @@ export type VoteFilter = {
   userId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `voteType` field. */
   voteType?: InputMaybe<VoteTypeFilter>;
+  /** Filter by the object’s `weight` field. */
+  weight?: InputMaybe<IntFilter>;
 };
 
 /** Grouping methods for `Vote` for usage during aggregation. */
@@ -9102,17 +9188,20 @@ export enum VoteGroupBy {
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
   UserId = 'USER_ID',
-  VoteType = 'VOTE_TYPE'
+  VoteType = 'VOTE_TYPE',
+  Weight = 'WEIGHT'
 }
 
 export type VoteHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 /** Conditions for `Vote` aggregates. */
@@ -9133,36 +9222,43 @@ export type VoteHavingInput = {
 export type VoteHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 export type VoteHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  weight?: InputMaybe<HavingIntFilter>;
 };
 
 /** An input for mutations affecting `Vote` */
@@ -9173,6 +9269,27 @@ export type VoteInput = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
   voteType: VoteType;
+  weight?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type VoteMaxAggregateFilter = {
+  weight?: InputMaybe<IntFilter>;
+};
+
+export type VoteMaxAggregates = {
+  __typename?: 'VoteMaxAggregates';
+  /** Maximum of weight across the matching connection */
+  weight?: Maybe<Scalars['Int']['output']>;
+};
+
+export type VoteMinAggregateFilter = {
+  weight?: InputMaybe<IntFilter>;
+};
+
+export type VoteMinAggregates = {
+  __typename?: 'VoteMinAggregates';
+  /** Minimum of weight across the matching connection */
+  weight?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `Vote`. */
@@ -9189,7 +9306,9 @@ export enum VoteOrderBy {
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC'
+  UserIdDesc = 'USER_ID_DESC',
+  WeightAsc = 'WEIGHT_ASC',
+  WeightDesc = 'WEIGHT_DESC'
 }
 
 /** Represents an update to a `Vote`. Fields that are set will be updated. */
@@ -9200,6 +9319,37 @@ export type VotePatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   voteType?: InputMaybe<VoteType>;
+  weight?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type VoteStddevPopulationAggregateFilter = {
+  weight?: InputMaybe<BigFloatFilter>;
+};
+
+export type VoteStddevPopulationAggregates = {
+  __typename?: 'VoteStddevPopulationAggregates';
+  /** Population standard deviation of weight across the matching connection */
+  weight?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type VoteStddevSampleAggregateFilter = {
+  weight?: InputMaybe<BigFloatFilter>;
+};
+
+export type VoteStddevSampleAggregates = {
+  __typename?: 'VoteStddevSampleAggregates';
+  /** Sample standard deviation of weight across the matching connection */
+  weight?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type VoteSumAggregateFilter = {
+  weight?: InputMaybe<BigIntFilter>;
+};
+
+export type VoteSumAggregates = {
+  __typename?: 'VoteSumAggregates';
+  /** Sum of weight across the matching connection */
+  weight: Scalars['BigInt']['output'];
 };
 
 export enum VoteType {
@@ -9231,6 +9381,26 @@ export type VoteTypeFilter = {
   notEqualTo?: InputMaybe<VoteType>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<VoteType>>;
+};
+
+export type VoteVariancePopulationAggregateFilter = {
+  weight?: InputMaybe<BigFloatFilter>;
+};
+
+export type VoteVariancePopulationAggregates = {
+  __typename?: 'VoteVariancePopulationAggregates';
+  /** Population variance of weight across the matching connection */
+  weight?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type VoteVarianceSampleAggregateFilter = {
+  weight?: InputMaybe<BigFloatFilter>;
+};
+
+export type VoteVarianceSampleAggregates = {
+  __typename?: 'VoteVarianceSampleAggregates';
+  /** Sample variance of weight across the matching connection */
+  weight?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type WardenSyncQueue = {

@@ -13,7 +13,7 @@ export interface SavedView {
     tags: string[];
     search: string;
     // narrowed to the sort options the route's search schema accepts
-    orderBy: PostOrderBy.CreatedAtDesc | PostOrderBy.VotesCountDesc;
+    orderBy: PostOrderBy.CreatedAtDesc | PostOrderBy.VotesSumWeightDesc;
   };
 }
 

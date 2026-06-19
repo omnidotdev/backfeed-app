@@ -68,7 +68,7 @@ const projectRoute = getRouteApi(
 const SORT_BY_OPTIONS = [
   {
     label: "Top Voted",
-    value: PostOrderBy.VotesCountDesc,
+    value: PostOrderBy.VotesSumWeightDesc,
   },
   {
     label: "Most Recent",
@@ -141,7 +141,7 @@ const ProjectFeedback = () => {
       excludedStatuses,
       // default to top-voted when no explicit sort is chosen
       orderBy: [
-        orderBy ?? PostOrderBy.VotesCountDesc,
+        orderBy ?? PostOrderBy.VotesSumWeightDesc,
         PostOrderBy.CreatedAtDesc,
       ],
       search,
@@ -318,11 +318,13 @@ const ProjectFeedback = () => {
         <div className="flex shrink-0 items-center justify-between gap-2 md:justify-end">
           <SelectRoot
             collection={createListCollection({ items: SORT_BY_OPTIONS })}
-            defaultValue={orderBy ? [orderBy] : [PostOrderBy.VotesCountDesc]}
+            defaultValue={
+              orderBy ? [orderBy] : [PostOrderBy.VotesSumWeightDesc]
+            }
             onValueChange={({ value }) => {
               const orderBy = value[0] as
                 | PostOrderBy.CreatedAtDesc
-                | PostOrderBy.VotesCountDesc;
+                | PostOrderBy.VotesSumWeightDesc;
 
               navigate({
                 search: (prev) => ({

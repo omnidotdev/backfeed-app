@@ -15,7 +15,10 @@ import { buildFeedbackKey } from "@/lib/util/feedbackUrl";
 import type { FeedbackFragment } from "@/generated/graphql";
 
 /** Posts ordered by demand (top-voted first), the public roadmap ranking. */
-const ROADMAP_ORDER = [PostOrderBy.VotesCountDesc, PostOrderBy.CreatedAtDesc];
+const ROADMAP_ORDER = [
+  PostOrderBy.VotesSumWeightDesc,
+  PostOrderBy.CreatedAtDesc,
+];
 
 export const Route = createFileRoute(
   "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap",
