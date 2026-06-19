@@ -6,7 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -102,6 +102,14 @@ const ProjectFeedback = () => {
   });
 
   const onSearchChange = useHandleSearch();
+
+  // live search text, used to filter the list client-side on every keystroke
+  // while useHandleSearch debounces the actual query. Kept in sync when the
+  // route search changes externally (e.g. a saved view applies a search)
+  const [searchInput, setSearchInput] = useState(search);
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
 
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
@@ -297,22 +305,25 @@ const ProjectFeedback = () => {
     !excludedStatuses.includes(defaultStatus.name!) &&
     !orderBy;
 
-  // optimistically apply the status filter client-side so excluding a status
-  // removes its posts immediately, instead of lingering on the stale
-  // keepPreviousData list until the refetch returns. Mirrors the server filter:
-  // hide posts whose status is excluded, always keep status-less posts
+  // optimistically apply the status and search filters client-side so the list
+  // updates on click/keystroke instead of lingering on the stale keepPreviousData
+  // list until the refetch returns. Mirrors the server filters: hide posts whose
+  // status is excluded (always keep status-less posts), and match the search
+  // against the title only
+  const searchQuery = searchInput.trim().toLowerCase();
+
   const visiblePosts = (posts ?? []).filter((post) => {
     const displayName = post?.statusTemplate?.displayName;
-    return !displayName || !excludedStatuses.includes(displayName);
+    if (displayName && excludedStatuses.includes(displayName)) return false;
+    if (searchQuery && !post?.title?.toLowerCase().includes(searchQuery))
+      return false;
+    return true;
   });
 
   const allPosts = [
     ...(showPendingFeedback
       ? pendingFeedback.filter((feedback) =>
-          // NB: search filter is a bit different than the others. If `showPendingFeedback` is true, we only want to optimistically add feedback that would be included with the search
-          feedback.title
-            ?.toLowerCase()
-            .includes(search.toLowerCase()),
+          feedback.title?.toLowerCase().includes(searchQuery),
         )
       : []),
     ...visiblePosts,
@@ -339,8 +350,11 @@ const ProjectFeedback = () => {
           ref={searchRef}
           placeholder={app.projectPage.projectFeedback.search.placeholder}
           className="w-full md:max-w-sm"
-          defaultValue={search}
-          onChange={onSearchChange}
+          value={searchInput}
+          onChange={(event) => {
+            setSearchInput(event.target.value);
+            onSearchChange(event);
+          }}
         />
 
         {/* Right: Controls */}
