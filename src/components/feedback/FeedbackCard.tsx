@@ -354,36 +354,24 @@ const FeedbackCard = ({
               {feedback.title}
             </span>
 
-            <div className="flex min-w-0 items-center gap-1.5 text-foreground-subtle text-xs">
-              <span className="shrink-0">
+            {/* full cards: key + author under the title. dense (roadmap) cards
+                move the key + count to a bottom-pinned row (below) so they stay
+                put regardless of how many lines the title wraps to */}
+            {!compact && (
+              <div className="flex min-w-0 items-center gap-2 text-foreground-subtle text-xs leading-none">
                 <FeedbackKey
+                  className="shrink-0 leading-none"
                   prefix={feedback.project?.prefix}
                   number={feedback.number}
                 />
-              </span>
 
-              {/* author sits next to the key; time + comments move to the
-                  footer on full cards. dense (roadmap) cards keep the count
-                  inline since they have no footer */}
-              {!compact && feedback.user?.username && (
-                <>
-                  <div className="size-1 shrink-0 rounded-full bg-foreground-subtle" />
-                  <span className="min-w-0 truncate">
+                {feedback.user?.username && (
+                  <span className="min-w-0 truncate leading-none">
                     {feedback.user.username}
                   </span>
-                </>
-              )}
-
-              {compact && (
-                <div className="ml-auto flex shrink-0 items-center gap-0.5">
-                  <LuMessageCircle className="size-3.5" />
-                  <Format.Number
-                    value={feedback.comments?.totalCount ?? 0}
-                    notation="compact"
-                  />
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
 
           <MenuRoot
@@ -555,6 +543,27 @@ const FeedbackCard = ({
                   />
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* dense (roadmap) cards: key + comment count pinned to the bottom so
+            they line up across cards no matter how tall the title is */}
+        {compact && (
+          <div className="mt-auto flex items-center gap-1.5 pt-1 text-foreground-subtle text-xs">
+            <span className="shrink-0">
+              <FeedbackKey
+                prefix={feedback.project?.prefix}
+                number={feedback.number}
+              />
+            </span>
+
+            <div className="ml-auto flex shrink-0 items-center gap-0.5">
+              <LuMessageCircle className="size-3.5" />
+              <Format.Number
+                value={feedback.comments?.totalCount ?? 0}
+                notation="compact"
+              />
             </div>
           </div>
         )}

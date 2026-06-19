@@ -384,6 +384,22 @@ const ProjectFeedback = () => {
       {/* Create Feedback Form */}
       {!!session && <CreateFeedback />}
 
+      {/* Mobile create FAB: the toolbar button is icon-only and easy to miss on
+          small screens, so surface an unmistakable floating "+" (desktop keeps
+          the labeled toolbar button) */}
+      {session && (
+        <Button
+          size="icon"
+          variant="solid"
+          aria-label={app.projectPage.projectFeedback.createPost.title}
+          onClick={() => setIsCreateFeedbackOpen(true)}
+          disabled={!canCreateFeedback}
+          className="fixed right-5 bottom-5 z-40 size-14 rounded-full shadow-lg sm:hidden"
+        >
+          <LuPlus className="size-6" />
+        </Button>
+      )}
+
       {/* Feedback List / Roadmap */}
       {isError ? (
         <ErrorBoundary message="Error fetching feedback" className="h-96" />

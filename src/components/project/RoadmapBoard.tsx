@@ -88,7 +88,7 @@ const RoadmapBoard = ({
               ))
             ) : (
               <BoardColumnEmpty className="flex flex-1 items-center justify-center py-0">
-                No feedback
+                Nothing here yet
               </BoardColumnEmpty>
             )}
           </BoardColumnBody>
