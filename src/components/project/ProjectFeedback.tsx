@@ -6,7 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -89,6 +89,9 @@ const ProjectFeedback = () => {
   });
 
   const viewState = useProjectViewStore((state) => state.viewState);
+  const cycleViewState = useProjectViewStore((state) => state.cycleViewState);
+
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const { data: project } = useQuery({
     ...projectOptions({
@@ -236,6 +239,22 @@ const ProjectFeedback = () => {
     [session, canCreateFeedback, setIsCreateFeedbackOpen],
   );
 
+  // "V" cycles the board view (ignored while typing in a field)
+  useHotkeys(
+    Hotkeys.CycleView,
+    () => cycleViewState(),
+    { preventDefault: true },
+    [cycleViewState],
+  );
+
+  // "/" focuses the feedback search (ignored while already typing in a field)
+  useHotkeys(
+    Hotkeys.FocusSearch,
+    () => searchRef.current?.focus(),
+    { preventDefault: true },
+    [],
+  );
+
   const { data: projectStatuses } = useQuery({
     ...projectStatusesOptions({
       organizationId,
@@ -317,6 +336,7 @@ const ProjectFeedback = () => {
       <div className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
         {/* Left: Search */}
         <Input
+          ref={searchRef}
           placeholder={app.projectPage.projectFeedback.search.placeholder}
           className="w-full md:max-w-sm"
           defaultValue={search}

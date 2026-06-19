@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { LuFolderPlus, LuPlus, LuSunMoon } from "react-icons/lu";
+import { LuColumns3, LuFolderPlus, LuPlus, LuSunMoon } from "react-icons/lu";
 
 import {
   CommandDialog,
@@ -13,6 +13,7 @@ import {
 import { Kbd } from "@/components/ui/kbd";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+import useProjectViewStore from "@/lib/store/useProjectViewStore";
 import { useTheme } from "@/providers/ThemeProvider";
 
 /**
@@ -30,6 +31,7 @@ const CommandPalette = () => {
   const { setIsOpen: setCreateProjectOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
+  const cycleViewState = useProjectViewStore((state) => state.cycleViewState);
 
   useHotkeys(Hotkeys.CommandPalette, () => setOpen((isOpen) => !isOpen), {
     enableOnFormTags: true,
@@ -65,6 +67,11 @@ const CommandPalette = () => {
         </CommandGroup>
 
         <CommandGroup heading="General">
+          <CommandItem onSelect={run(cycleViewState)}>
+            <LuColumns3 />
+            Switch view
+            <Kbd className="ml-auto">{hotkeyLabel(Hotkeys.CycleView)}</Kbd>
+          </CommandItem>
           <CommandItem
             onSelect={run(() => setTheme(theme === "dark" ? "light" : "dark"))}
           >

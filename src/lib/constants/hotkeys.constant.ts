@@ -10,6 +10,10 @@ export enum Hotkeys {
   CreatePost = "c",
   /** Create a project. */
   CreateProject = "mod+p",
+  /** Cycle the project board view (List, Grid, Roadmap). */
+  CycleView = "v",
+  /** Focus the feedback search input. */
+  FocusSearch = "/",
   /** Toggle the color theme. */
   ToggleTheme = "t",
 }
