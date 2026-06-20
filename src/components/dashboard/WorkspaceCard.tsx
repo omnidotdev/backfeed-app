@@ -47,7 +47,7 @@ const WorkspaceCard = ({ workspace, className, ...rest }: Props) => {
       {...rest}
     >
       <div className="flex flex-col gap-3">
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-2.5">
           <AvatarRoot size="sm" className="mt-0.5 shrink-0">
             <AvatarImage
               src={workspace.logo ?? undefined}
@@ -58,10 +58,14 @@ const WorkspaceCard = ({ workspace, className, ...rest }: Props) => {
             </AvatarFallback>
           </AvatarRoot>
 
-          <span className="min-w-0 flex-1 break-words font-semibold text-base leading-[1.3]">
+          {/* full remaining width so long names wrap normally instead of being
+              squished into a narrow column beside the badge */}
+          <span className="min-w-0 flex-1 break-words font-semibold text-base leading-snug">
             {workspace.name}
           </span>
+        </div>
 
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-foreground-subtle text-sm">
           <span
             className={cn(
               "inline-flex shrink-0 items-center gap-1 rounded-md border px-2 py-0.5 text-xs",
@@ -77,11 +81,9 @@ const WorkspaceCard = ({ workspace, className, ...rest }: Props) => {
             )}
             {isPersonal ? "Personal" : "Team"}
           </span>
-        </div>
 
-        <div className="flex items-center gap-1.5 text-foreground-subtle text-sm">
-          <HiOutlineFolder className="size-4" />
-          <span>
+          <span className="inline-flex items-center gap-1.5">
+            <HiOutlineFolder className="size-4 shrink-0" />
             {projectCount} {projectCount === 1 ? "project" : "projects"}
           </span>
         </div>
