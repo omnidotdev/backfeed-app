@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LuPanelLeftOpen } from "react-icons/lu";
+import { LuMenu } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
 import ProfileNavigation from "@/components/profile/ProfileNavigation";
@@ -54,7 +54,7 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
             onClick={() => setIsDrawerOpen(true)}
             className="ml-2"
           >
-            <LuPanelLeftOpen className="size-5" />
+            <LuMenu className="size-6" />
           </Button>
         </div>
         {children}
