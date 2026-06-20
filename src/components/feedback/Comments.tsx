@@ -18,6 +18,7 @@ import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import SectionContainer from "@/components/layout/SectionContainer";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import useScrollFade from "@/lib/hooks/useScrollFade";
 import {
   freeTierCommentsOptions,
   infiniteCommentsOptions,
@@ -129,6 +130,13 @@ const Comments = () => {
     disabled: isError,
   });
 
+  // only fade the bottom edge while the list is actually scrollable and not yet
+  // at the end, so the fade never clips the last comment's reply controls
+  const { ref: scrollFadeRef, showEndFade } = useScrollFade([
+    allComments.length,
+    isLoading,
+  ]);
+
   return (
     <SectionContainer
       ref={rootRef}
@@ -154,7 +162,10 @@ const Comments = () => {
             className="my-4 h-80"
           />
         ) : (
-          <div className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div
+            ref={scrollFadeRef}
+            className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
             {isLoading ? (
               <SkeletonArray count={5} className="h-28" />
             ) : allComments?.length ? (
@@ -180,7 +191,9 @@ const Comments = () => {
           </div>
         )}
 
-        {!!allComments.length && <GradientMask className="bottom-0" />}
+        {!!allComments.length && showEndFade && (
+          <GradientMask className="bottom-0" />
+        )}
       </div>
     </SectionContainer>
   );
