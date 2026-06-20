@@ -38,6 +38,7 @@ import {
   SelectValueText,
 } from "@/components/ui/select";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
+import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import { isStatusOnRoadmap } from "@/lib/constants/roadmap.constant";
@@ -237,10 +238,20 @@ const ProjectFeedback = () => {
     });
   }, [pendingMutations, defaultStatus, project, session, organizationId]);
 
-  const { isOpen: isCreateFeedbackOpen, setIsOpen: setIsCreateFeedbackOpen } =
-    useDialogStore({
-      type: DialogType.CreatePost,
-    });
+  const { setIsOpen: setIsCreateFeedbackOpen } = useDialogStore({
+    type: DialogType.CreatePost,
+  });
+
+  // signed-out users still see the create affordances (hiding them is confusing,
+  // especially on mobile); clicking sends them to sign-in with return-to-here
+  // instead of opening the dialog
+  const onCreatePost = () => {
+    if (!session) {
+      signIn({ redirectUrl: window.location.href });
+      return;
+    }
+    setIsCreateFeedbackOpen(true);
+  };
 
   // "C" opens the create-feedback dialog (ignored while typing in a field)
   useHotkeys(
@@ -410,22 +421,24 @@ const ProjectFeedback = () => {
 
           <SwitchFeedbackView />
 
-          {session && (
-            <Button
-              size="sm"
-              variant="solid"
-              onClick={() => setIsCreateFeedbackOpen(!isCreateFeedbackOpen)}
-              disabled={!canCreateFeedback}
-            >
-              <LuPlus />
-              <span className="hidden sm:flex">
-                {app.projectPage.projectFeedback.createPost.title}
-              </span>
+          <Button
+            size="sm"
+            variant="solid"
+            onClick={onCreatePost}
+            // signed-out users keep an enabled button (it routes to sign-in);
+            // only gate it on the create limit once signed in
+            disabled={!!session && !canCreateFeedback}
+          >
+            <LuPlus />
+            <span className="hidden sm:flex">
+              {app.projectPage.projectFeedback.createPost.title}
+            </span>
+            {session && (
               <Kbd className="ml-1 hidden border-current/30 bg-transparent text-current/80 sm:inline-flex">
                 {hotkeyLabel(Hotkeys.CreatePost)}
               </Kbd>
-            </Button>
-          )}
+            )}
+          </Button>
         </div>
       </div>
 
@@ -440,19 +453,18 @@ const ProjectFeedback = () => {
 
       {/* Mobile create FAB: the toolbar button is icon-only and easy to miss on
           small screens, so surface an unmistakable floating "+" (desktop keeps
-          the labeled toolbar button) */}
-      {session && (
-        <Button
-          size="icon"
-          variant="solid"
-          aria-label={app.projectPage.projectFeedback.createPost.title}
-          onClick={() => setIsCreateFeedbackOpen(true)}
-          disabled={!canCreateFeedback}
-          className="fixed right-5 bottom-5 z-40 size-14 rounded-full shadow-lg sm:hidden"
-        >
-          <LuPlus className="size-6" />
-        </Button>
-      )}
+          the labeled toolbar button). Shown to signed-out users too; it routes
+          them to sign-in rather than being hidden. */}
+      <Button
+        size="icon"
+        variant="solid"
+        aria-label={app.projectPage.projectFeedback.createPost.title}
+        onClick={onCreatePost}
+        disabled={!!session && !canCreateFeedback}
+        className="fixed right-5 bottom-5 z-40 size-14 rounded-full shadow-lg sm:hidden"
+      >
+        <LuPlus className="size-6" />
+      </Button>
 
       {/* Feedback List / Roadmap */}
       {isError ? (
