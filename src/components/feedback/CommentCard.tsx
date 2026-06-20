@@ -152,7 +152,7 @@ const CommentCard = ({
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 bg-transparent px-0 text-[var(--colors-ruby-500)] text-sm hover:opacity-80 disabled:opacity-80 dark:text-[var(--colors-ruby-400)]"
+              className="gap-1 bg-transparent px-0 text-[var(--colors-brand-primary)] text-sm hover:opacity-80 disabled:opacity-80"
               onClick={onToggleReplyForm}
               disabled={actionIsPending || !canReply}
             >
