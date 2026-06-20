@@ -1080,6 +1080,15 @@ const app = {
       currentStatus: "Current Status",
       created: "Created",
       updated: "Updated",
+      delete: {
+        title: "Remove status update",
+        description:
+          "This removes the entry from the status timeline. The post's current status will not change.",
+        action: {
+          label: "Remove",
+        },
+        error: "Could not remove status update",
+      },
     },
   },
 };

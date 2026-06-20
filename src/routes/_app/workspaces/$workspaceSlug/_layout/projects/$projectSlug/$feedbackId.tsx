@@ -79,17 +79,20 @@ export const Route = createFileRoute(
 
     if (!feedback) throw notFound();
 
-    // redirect legacy UUID permalinks and stale title slugs to the canonical key
-    const canonicalKey = buildFeedbackKey({
-      number: feedback.number,
-      title: feedback.title,
-    });
-    if (feedbackParam !== canonicalKey) {
-      throw redirect({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
-        params: { workspaceSlug, projectSlug, feedbackId: canonicalKey },
-        replace: true,
+    // redirect legacy UUID permalinks and stale title slugs to the canonical
+    // key (skipped only in the theoretical case of a post without a number)
+    if (feedback.number != null) {
+      const canonicalKey = buildFeedbackKey({
+        number: feedback.number,
+        title: feedback.title,
       });
+      if (feedbackParam !== canonicalKey) {
+        throw redirect({
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+          params: { workspaceSlug, projectSlug, feedbackId: canonicalKey },
+          replace: true,
+        });
+      }
     }
 
     const feedbackId = feedback.rowId;
@@ -234,7 +237,7 @@ function FeedbackPage() {
         />
       )}
 
-      <StatusTimeline postId={feedbackId} />
+      <StatusTimeline postId={feedbackId} canManage={hasAdminPrivileges} />
 
       <Comments />
     </Page>

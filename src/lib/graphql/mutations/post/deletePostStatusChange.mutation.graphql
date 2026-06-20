@@ -1,0 +1,5 @@
+mutation DeletePostStatusChange($rowId: UUID!) {
+  deletePostStatusChange(input: { rowId: $rowId }) {
+    id
+  }
+}
