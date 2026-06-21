@@ -421,11 +421,12 @@ const ProjectFeedback = () => {
             // signed-out users keep an enabled button (it routes to sign-in);
             // only gate it on the create limit once signed in
             disabled={!!session && !canCreateFeedback}
+            // on mobile the FAB owns this action, so hide the toolbar button to
+            // avoid two "+" affordances doing the same thing
+            className="hidden sm:inline-flex"
           >
             <LuPlus />
-            <span className="hidden sm:flex">
-              {app.projectPage.projectFeedback.createPost.title}
-            </span>
+            <span>{app.projectPage.projectFeedback.createPost.title}</span>
             {session && (
               <Kbd className="ml-1 hidden border-current/30 bg-transparent text-current/80 sm:inline-flex">
                 {hotkeyLabel(Hotkeys.CreatePost)}
@@ -445,10 +446,10 @@ const ProjectFeedback = () => {
           button, mobile FAB, or "C" hotkey) */}
       <CreateFeedback />
 
-      {/* Mobile create FAB: the toolbar button is icon-only and easy to miss on
-          small screens, so surface an unmistakable floating "+" (desktop keeps
-          the labeled toolbar button). Shown to signed-out users too; it opens
-          the composer rather than being hidden. */}
+      {/* Mobile create FAB: the toolbar button is hidden on small screens, so
+          the FAB is the sole add-post affordance here (desktop keeps the labeled
+          toolbar button). Shown to signed-out users too; it opens the composer
+          rather than being hidden. */}
       <Button
         size="icon"
         variant="solid"
