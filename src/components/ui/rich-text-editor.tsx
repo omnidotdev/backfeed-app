@@ -623,7 +623,10 @@ const RichTextEditor = ({
             contentEditable={
               <ContentEditable
                 className={cn(
-                  "min-h-20 px-3 py-2 outline-none",
+                  // 16px floor on mobile stops iOS Safari from auto-zooming the
+                  // viewport on focus (it zooms any field under 16px and never
+                  // zooms back out); drop to 14px from md up to match Input/Textarea
+                  "min-h-20 px-3 py-2 text-base outline-none md:text-sm",
                   editorClassName,
                 )}
                 spellCheck
