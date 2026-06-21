@@ -38,7 +38,6 @@ import {
   SelectValueText,
 } from "@/components/ui/select";
 import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
-import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import { isStatusOnRoadmap } from "@/lib/constants/roadmap.constant";
@@ -242,21 +241,15 @@ const ProjectFeedback = () => {
     type: DialogType.CreatePost,
   });
 
-  // signed-out users still see the create affordances (hiding them is confusing,
-  // especially on mobile); clicking sends them to sign-in with return-to-here
-  // instead of opening the dialog
-  const onCreatePost = () => {
-    if (!session) {
-      signIn({ redirectUrl: window.location.href });
-      return;
-    }
-    setIsCreateFeedbackOpen(true);
-  };
+  // signed-out users open the composer too; the dialog persists their draft and
+  // routes them to sign-in on submit, so nothing is lost
+  const onCreatePost = () => setIsCreateFeedbackOpen(true);
 
-  // "C" opens the create-feedback dialog (ignored while typing in a field)
+  // "C" opens the create-feedback dialog (ignored while typing in a field). only
+  // gate on the free-tier limit once signed in
   useHotkeys(
     Hotkeys.CreatePost,
-    () => session && canCreateFeedback && setIsCreateFeedbackOpen(true),
+    () => (!session || canCreateFeedback) && setIsCreateFeedbackOpen(true),
     { preventDefault: true },
     [session, canCreateFeedback, setIsCreateFeedbackOpen],
   );
@@ -448,13 +441,14 @@ const ProjectFeedback = () => {
       {/* Tag Filter Pills (filter the underlying posts; shown in every view) */}
       <TagFilterPills />
 
-      {/* Create Feedback Form */}
-      {!!session && <CreateFeedback />}
+      {/* Create Feedback dialog (rendered for everyone; opened via the toolbar
+          button, mobile FAB, or "C" hotkey) */}
+      <CreateFeedback />
 
       {/* Mobile create FAB: the toolbar button is icon-only and easy to miss on
           small screens, so surface an unmistakable floating "+" (desktop keeps
-          the labeled toolbar button). Shown to signed-out users too; it routes
-          them to sign-in rather than being hidden. */}
+          the labeled toolbar button). Shown to signed-out users too; it opens
+          the composer rather than being hidden. */}
       <Button
         size="icon"
         variant="solid"

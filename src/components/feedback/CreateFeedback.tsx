@@ -1,22 +1,28 @@
+import { Portal } from "@ark-ui/react/portal";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
 import PossibleDuplicates from "@/components/feedback/PossibleDuplicates";
 import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useCreateAttachmentMutation,
   useCreateFeedbackMutation,
 } from "@/generated/graphql";
+import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
@@ -64,10 +70,28 @@ const CreateFeedback = () => {
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
   const navigate = useNavigate();
 
-  // TODO: discuss. Not technically a dialog, but acts similarly to add state management globally
+  const isClient = useIsClient();
+  const isSignedIn = !!session?.user;
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreatePost,
   });
+
+  // signed-out users can compose a post; on submit we stash the draft and route
+  // them to sign-in, then rehydrate the composer when they return so nothing is
+  // lost. scoped per project so drafts don't bleed across boards
+  const draftKey = `backfeed:draft-post:${organizationId ?? "_"}:${projectSlug}`;
+  const [draft] = useState<{ title?: string; description?: string } | null>(
+    () => {
+      if (typeof window === "undefined") return null;
+      try {
+        const raw = window.localStorage.getItem(draftKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    },
+  );
   const { data: canCreateFeedback } = useQuery(
     freeTierFeedbackOptions({
       organizationId,
@@ -112,142 +136,165 @@ const CreateFeedback = () => {
   const [isUploadingAttachments, setIsUploadingAttachments] = useState(false);
   const [uploaderKey, setUploaderKey] = useState(0);
 
-  const { handleSubmit, AppField, AppForm, SubmitForm, reset, store } = useForm(
-    {
-      defaultValues: {
-        title: "",
-        description: "",
-      },
-      asyncDebounceMs: DEBOUNCE_TIME,
-      validators: {
-        onSubmitAsync: createFeedbackSchema,
-      },
-      onSubmit: async ({ value }) => {
-        // Validate that required data is available before submitting
-        if (!projectId || !session?.user?.rowId) {
-          toaster.error({
-            title: app.projectPage.projectFeedback.action.error.title,
-            description: "Missing required data. Please try again.",
-          });
-          return;
-        }
-
-        const userId = session.user.rowId;
-
-        return toaster.promise(
-          createFeedback({
-            input: {
-              post: {
-                // status is optional; a project without configured status
-                // templates still accepts posts (they start without a status)
-                ...(defaultStatusTemplateId && {
-                  statusTemplateId: defaultStatusTemplateId,
-                }),
-                projectId,
-                userId,
-                title: value.title.trim(),
-                description: value.description.trim(),
-              },
-            },
-          }).then(async (data) => {
-            // Link any uploaded attachments to the newly created post
-            const postId = data?.createPost?.post?.rowId;
-            if (postId && attachments.length) {
-              await Promise.all(
-                attachments.map((attachment) =>
-                  createAttachment({
-                    input: {
-                      attachment: {
-                        postId,
-                        userId,
-                        url: attachment.url,
-                        storageKey: attachment.storageKey,
-                        mimeType: attachment.mimeType,
-                        fileSize: attachment.fileSize,
-                        kind: attachment.kind,
-                        ...(attachment.width != null && {
-                          width: attachment.width,
-                        }),
-                        ...(attachment.height != null && {
-                          height: attachment.height,
-                        }),
-                      },
-                    },
-                  }),
-                ),
-              );
-            }
-
-            reset();
-            descriptionEditorApi.current?.clearContent();
-            setDescriptionLength(0);
-            setAttachments([]);
-            setUploaderKey((key) => key + 1);
-
-            const invalidations: Promise<void>[] = [
-              queryClient.invalidateQueries(
-                freeTierFeedbackOptions({
-                  organizationId,
-                  projectSlug,
-                }),
-              ),
-              queryClient.invalidateQueries({
-                queryKey: ["Posts.infinite"],
-              }),
-            ];
-
-            if (projectId) {
-              invalidations.push(
-                queryClient.invalidateQueries({
-                  queryKey: statusBreakdownOptions({ projectId }).queryKey,
-                }),
-                queryClient.invalidateQueries({
-                  queryKey: projectMetricsOptions({ projectId }).queryKey,
-                }),
-              );
-            }
-
-            await Promise.all(invalidations);
-
-            return { rowId: postId };
-          }),
-          {
-            loading: {
-              title: app.projectPage.projectFeedback.action.pending,
-            },
-            // a newly created post has no votes, so under the default
-            // top-voted sort it lands at the bottom of the feed. surface a
-            // "View" CTA so the author can jump straight to their post
-            success: ({ rowId }) => ({
-              title: app.projectPage.projectFeedback.action.success.title,
-              description:
-                app.projectPage.projectFeedback.action.success.description,
-              ...(rowId && {
-                duration: 8000,
-                action: {
-                  label: "View",
-                  onClick: () =>
-                    navigate({
-                      to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
-                      params: {
-                        workspaceSlug,
-                        projectSlug,
-                        feedbackId: rowId,
-                      },
-                    }),
-                },
-              }),
+  const {
+    handleSubmit,
+    AppField,
+    AppForm,
+    SubmitForm,
+    reset,
+    setFieldValue,
+    store,
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+    asyncDebounceMs: DEBOUNCE_TIME,
+    validators: {
+      onSubmitAsync: createFeedbackSchema,
+    },
+    onSubmit: async ({ value }) => {
+      // signed-out: persist the draft and route to sign-in. they return to a
+      // pre-filled composer (attachments stay gated until signed in)
+      if (!session?.user?.rowId) {
+        try {
+          window.localStorage.setItem(
+            draftKey,
+            JSON.stringify({
+              title: value.title,
+              description: value.description,
             }),
-            error: {
-              title: app.projectPage.projectFeedback.action.error.title,
-              description:
-                app.projectPage.projectFeedback.action.error.description,
+          );
+        } catch {}
+        signIn({ redirectUrl: window.location.href });
+        return;
+      }
+
+      // Validate that required data is available before submitting
+      if (!projectId || !session?.user?.rowId) {
+        toaster.error({
+          title: app.projectPage.projectFeedback.action.error.title,
+          description: "Missing required data. Please try again.",
+        });
+        return;
+      }
+
+      const userId = session.user.rowId;
+
+      return toaster.promise(
+        createFeedback({
+          input: {
+            post: {
+              // status is optional; a project without configured status
+              // templates still accepts posts (they start without a status)
+              ...(defaultStatusTemplateId && {
+                statusTemplateId: defaultStatusTemplateId,
+              }),
+              projectId,
+              userId,
+              title: value.title.trim(),
+              description: value.description.trim(),
             },
           },
-        );
-      },
+        }).then(async (data) => {
+          // Link any uploaded attachments to the newly created post
+          const postId = data?.createPost?.post?.rowId;
+          if (postId && attachments.length) {
+            await Promise.all(
+              attachments.map((attachment) =>
+                createAttachment({
+                  input: {
+                    attachment: {
+                      postId,
+                      userId,
+                      url: attachment.url,
+                      storageKey: attachment.storageKey,
+                      mimeType: attachment.mimeType,
+                      fileSize: attachment.fileSize,
+                      kind: attachment.kind,
+                      ...(attachment.width != null && {
+                        width: attachment.width,
+                      }),
+                      ...(attachment.height != null && {
+                        height: attachment.height,
+                      }),
+                    },
+                  },
+                }),
+              ),
+            );
+          }
+
+          reset();
+          descriptionEditorApi.current?.clearContent();
+          setDescriptionLength(0);
+          setAttachments([]);
+          setUploaderKey((key) => key + 1);
+          setIsOpen(false);
+
+          const invalidations: Promise<void>[] = [
+            queryClient.invalidateQueries(
+              freeTierFeedbackOptions({
+                organizationId,
+                projectSlug,
+              }),
+            ),
+            queryClient.invalidateQueries({
+              queryKey: ["Posts.infinite"],
+            }),
+          ];
+
+          if (projectId) {
+            invalidations.push(
+              queryClient.invalidateQueries({
+                queryKey: statusBreakdownOptions({ projectId }).queryKey,
+              }),
+              queryClient.invalidateQueries({
+                queryKey: projectMetricsOptions({ projectId }).queryKey,
+              }),
+            );
+          }
+
+          await Promise.all(invalidations);
+
+          return { rowId: postId };
+        }),
+        {
+          loading: {
+            title: app.projectPage.projectFeedback.action.pending,
+          },
+          // a newly created post has no votes, so under the default
+          // top-voted sort it lands at the bottom of the feed. surface a
+          // "View" CTA so the author can jump straight to their post
+          success: ({ rowId }) => ({
+            title: app.projectPage.projectFeedback.action.success.title,
+            description:
+              app.projectPage.projectFeedback.action.success.description,
+            ...(rowId && {
+              duration: 8000,
+              action: {
+                label: "View",
+                onClick: () =>
+                  navigate({
+                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                    params: {
+                      workspaceSlug,
+                      projectSlug,
+                      feedbackId: rowId,
+                    },
+                  }),
+              },
+            }),
+          }),
+          error: {
+            title: app.projectPage.projectFeedback.action.error.title,
+            description:
+              app.projectPage.projectFeedback.action.error.description,
+          },
+        },
+      );
     },
-  );
+  });
 
   const titleValue = useStore(store, (store) => store.values.title);
   // editor is uncontrolled, so track the plain-text length for the limit and
@@ -264,6 +311,19 @@ const CreateFeedback = () => {
     setPlaceholderIndex(Math.floor(Math.random() * placeholders.length));
   }, []);
 
+  // restore a draft saved before a sign-in redirect, reopen the composer so the
+  // user lands back where they left off, then clear the stored draft
+  // biome-ignore lint/correctness/useExhaustiveDependencies: restore the draft once on mount
+  useEffect(() => {
+    if (!draft) return;
+    setFieldValue("title", draft.title ?? "");
+    setFieldValue("description", draft.description ?? "");
+    setIsOpen(true);
+    try {
+      window.localStorage.removeItem(draftKey);
+    } catch {}
+  }, []);
+
   const titlePlaceholder =
     app.projectPage.projectFeedback.feedbackTitle.placeholders[
       placeholderIndex
@@ -273,8 +333,17 @@ const CreateFeedback = () => {
       placeholderIndex
     ];
 
+  // attachments require an authenticated user; the title/description stay open to
+  // signed-out users so they can compose before being routed to sign-in
+  const attachmentsDisabled = !isSignedIn || !canCreateFeedback;
+  // only gate the composer on the free-tier limit once signed in
+  const composerDisabled = isSignedIn && !canCreateFeedback;
+
+  if (!isClient) return null;
+
   return (
-    <CollapsibleRoot
+    <DialogRoot
+      open={isOpen}
       onOpenChange={({ open }) => {
         reset();
         descriptionEditorApi.current?.clearContent();
@@ -283,78 +352,90 @@ const CreateFeedback = () => {
         setUploaderKey((key) => key + 1);
         setIsOpen(open);
       }}
-      open={isOpen}
     >
-      <CollapsibleContent>
-        <form
-          className="flex flex-col gap-2 p-1"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            await handleSubmit();
-          }}
-        >
-          <AppField name="title">
-            {({ InputField }) => (
-              <InputField
-                label={app.projectPage.projectFeedback.feedbackTitle.label}
-                placeholder={titlePlaceholder}
-                disabled={!session?.user || !canCreateFeedback}
-              />
-            )}
-          </AppField>
+      <Portal>
+        <DialogBackdrop />
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-[32rem] sm:w-[28rem]">
+          <DialogTitle>
+            {app.projectPage.projectFeedback.createPost.title}
+          </DialogTitle>
+          <DialogCloseTrigger />
 
-          {projectId && (
-            <PossibleDuplicates projectId={projectId} content={titleValue} />
-          )}
-
-          <AppField name="description">
-            {(field) => (
-              <div className="flex flex-col gap-1.5">
-                <Label>
-                  {app.projectPage.projectFeedback.feedbackDescription.label}
-                </Label>
-                <RichTextEditor
-                  editorApi={descriptionEditorApi}
-                  placeholder={descriptionPlaceholder}
-                  editable={!!session?.user && !!canCreateFeedback}
-                  editorClassName="min-h-16"
-                  issueReferenceItems={issueReferenceItems}
-                  onUpdate={({ getHTML, getText, isEmpty }) => {
-                    field.handleChange(isEmpty ? "" : getHTML());
-                    setDescriptionLength(getText().trim().length);
-                  }}
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              await handleSubmit();
+            }}
+          >
+            <AppField name="title">
+              {({ InputField }) => (
+                <InputField
+                  label={app.projectPage.projectFeedback.feedbackTitle.label}
+                  placeholder={titlePlaceholder}
+                  disabled={composerDisabled}
                 />
-              </div>
+              )}
+            </AppField>
+
+            {projectId && (
+              <PossibleDuplicates projectId={projectId} content={titleValue} />
             )}
-          </AppField>
 
-          <AttachmentUploader
-            key={uploaderKey}
-            onAttachmentsChange={setAttachments}
-            onUploadingChange={setIsUploadingAttachments}
-            disabled={!session?.user || !canCreateFeedback}
-          />
+            <AppField name="description">
+              {(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Label>
+                    {app.projectPage.projectFeedback.feedbackDescription.label}
+                  </Label>
+                  <RichTextEditor
+                    editorApi={descriptionEditorApi}
+                    defaultContent={draft?.description || undefined}
+                    placeholder={descriptionPlaceholder}
+                    editable={!composerDisabled}
+                    editorClassName="min-h-16"
+                    issueReferenceItems={issueReferenceItems}
+                    onUpdate={({ getHTML, getText, isEmpty }) => {
+                      field.handleChange(isEmpty ? "" : getHTML());
+                      setDescriptionLength(getText().trim().length);
+                    }}
+                  />
+                </div>
+              )}
+            </AppField>
 
-          <div className="flex flex-row justify-between">
-            <CharacterLimit
-              value={descriptionLength}
-              max={MAX_DESCRIPTION_LENGTH}
-              className="place-self-start"
+            <AttachmentUploader
+              key={uploaderKey}
+              onAttachmentsChange={setAttachments}
+              onUploadingChange={setIsUploadingAttachments}
+              disabled={attachmentsDisabled}
             />
 
-            <AppForm>
-              <SubmitForm
-                action={app.projectPage.projectFeedback.action}
-                isPending={isPending || isUploadingAttachments}
-                disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
-                className="w-fit place-self-end"
+            <div className="flex flex-row justify-between">
+              <CharacterLimit
+                value={descriptionLength}
+                max={MAX_DESCRIPTION_LENGTH}
+                className="place-self-start"
               />
-            </AppForm>
-          </div>
-        </form>
-      </CollapsibleContent>
-    </CollapsibleRoot>
+
+              <AppForm>
+                <SubmitForm
+                  action={
+                    isSignedIn
+                      ? app.projectPage.projectFeedback.action
+                      : { submit: "Sign in to post", pending: "Redirecting..." }
+                  }
+                  isPending={isPending || isUploadingAttachments}
+                  disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
+                  className="w-fit place-self-end"
+                />
+              </AppForm>
+            </div>
+          </form>
+        </DialogContent>
+      </Portal>
+    </DialogRoot>
   );
 };
 
