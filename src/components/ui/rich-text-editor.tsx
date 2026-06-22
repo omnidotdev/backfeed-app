@@ -28,6 +28,10 @@ import {
   STRIKETHROUGH,
   UNORDERED_LIST,
 } from "@lexical/markdown";
+import {
+  AutoLinkPlugin,
+  createLinkMatcherWithRegExp,
+} from "@lexical/react/LexicalAutoLinkPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -132,6 +136,25 @@ const MARKDOWN_TRANSFORMERS = [
   STRIKETHROUGH,
   INLINE_CODE,
   LINK_TRANSFORMER,
+];
+
+// Matches absolute URLs (with scheme or a leading `www.`) so a bare link the
+// user types or pastes becomes an anchor. Bare domains like `example.com` are
+// intentionally left alone to avoid linkifying things like `file.txt`.
+const URL_MATCHER =
+  /((https?:\/\/(www\.)?)|(www\.))[-\w@:%.+~#=]{1,256}\.[a-z]{2,6}\b([-\w@:%+.~#?&/=]*)/i;
+const EMAIL_MATCHER = /[\w.+-]+@([\w-]+\.)+[a-z]{2,}/i;
+
+/**
+ * AutoLink matchers turning bare URLs and email addresses into links as the
+ * user types or pastes. Scheme-less URLs get an `https://` prefix; emails get a
+ * `mailto:` scheme.
+ */
+const AUTO_LINK_MATCHERS = [
+  createLinkMatcherWithRegExp(URL_MATCHER, (text) =>
+    text.startsWith("http") ? text : `https://${text}`,
+  ),
+  createLinkMatcherWithRegExp(EMAIL_MATCHER, (text) => `mailto:${text}`),
 ];
 
 /** Read the editor's content as an HTML string. */
@@ -649,6 +672,8 @@ const RichTextEditor = ({
           {/* markdown-style input: `- `, `1. `, `# `, `> `, `**bold**`, etc. */}
           <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
           <LinkPlugin />
+          {/* turn bare URLs / emails into links as they are typed or pasted */}
+          <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
           {mentionItems?.length ? (
             <MentionTypeahead items={mentionItems} />
           ) : null}
@@ -666,6 +691,61 @@ const RichTextEditor = ({
       </LexicalComposer>
     </div>
   );
+};
+
+// Matches a bare URL (scheme or `www.`) or email in a run of text. Combined
+// into one pass so a generated anchor is never re-scanned (e.g. the address in
+// `https://user@host` is not also matched as an email).
+const LINKIFY_PATTERN =
+  /(?:https?:\/\/|www\.)[^\s<]+|[^\s<@]+@[^\s<@]+\.[a-z]{2,}/gi;
+// Trailing sentence punctuation that should sit outside the link, not in it.
+const TRAILING_PUNCTUATION = /[.,!?;:)\]]+$/;
+
+/**
+ * Linkify bare URLs and email addresses in a rich-text HTML string so plain
+ * links in stored content render as anchors. Splits on tags so matching only
+ * happens in text (never inside attributes), and skips text already inside an
+ * anchor so existing links are never double-wrapped.
+ */
+const linkifyBareUrls = (html: string): string => {
+  let anchorDepth = 0;
+  return html
+    .split(/(<[^>]+>)/)
+    .map((segment) => {
+      if (segment.startsWith("<")) {
+        if (/^<a[\s>]/i.test(segment)) anchorDepth++;
+        else if (/^<\/a\s*>/i.test(segment) && anchorDepth > 0) anchorDepth--;
+        return segment;
+      }
+      if (anchorDepth > 0) return segment;
+      return segment.replace(LINKIFY_PATTERN, (match) => {
+        const isEmail =
+          match.includes("@") && !/^(https?:\/\/|www\.)/i.test(match);
+        const trailing = isEmail
+          ? ""
+          : (TRAILING_PUNCTUATION.exec(match)?.[0] ?? "");
+        const core = trailing ? match.slice(0, -trailing.length) : match;
+        const href = isEmail
+          ? `mailto:${core}`
+          : core.startsWith("http")
+            ? core
+            : `https://${core}`;
+        return `<a href="${href}">${core}</a>${trailing}`;
+      });
+    })
+    .join("");
+};
+
+/**
+ * Open external links in a new tab without leaking the opener. Relative links
+ * (e.g. in-app issue references) are left to navigate in the same tab.
+ */
+const openLinksInNewTab = (node: Element): void => {
+  const href = node.tagName === "A" ? node.getAttribute("href") : null;
+  if (href && /^https?:\/\//i.test(href)) {
+    node.setAttribute("target", "_blank");
+    node.setAttribute("rel", "noopener noreferrer");
+  }
 };
 
 interface RichTextContentProps extends ComponentProps<"div"> {
@@ -687,7 +767,11 @@ const RichTextContent = ({
 }: RichTextContentProps) => {
   if (!html?.trim()) return <>{fallback}</>;
 
-  const clean = DOMPurify.sanitize(html, {
+  // Linkify bare URLs/emails (incl. legacy plain-text content), then add the
+  // hook around this single synchronous sanitize so the new-tab behavior does
+  // not leak onto other DOMPurify callers.
+  DOMPurify.addHook("afterSanitizeAttributes", openLinksInNewTab);
+  const clean = DOMPurify.sanitize(linkifyBareUrls(html), {
     ALLOWED_TAGS: [
       "p",
       "br",
@@ -714,6 +798,7 @@ const RichTextContent = ({
     ],
     ALLOWED_ATTR: ["href", "target", "rel", "class"],
   });
+  DOMPurify.removeHook("afterSanitizeAttributes");
 
   return (
     <div
