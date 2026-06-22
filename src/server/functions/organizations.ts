@@ -32,29 +32,6 @@ export const createOrganization = createServerFn({ method: "POST" })
     return gatekeeperOrg.createOrganization(data, accessToken);
   });
 
-const inviteOrganizationMemberSchema = z.object({
-  organizationId: z.string(),
-  email: z.email(),
-  role: z.enum(["admin", "member"]),
-});
-
-/**
- * Invite a member to an organization via Gatekeeper.
- * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
- */
-export const inviteOrganizationMember = createServerFn({ method: "POST" })
-  .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const accessToken = context.session.accessToken;
-
-    if (!accessToken) {
-      throw new Error("No access token available");
-    }
-
-    return gatekeeperOrg.inviteMember(data, accessToken);
-  });
-
 const resendOrganizationInvitationSchema = z.object({
   organizationId: z.string(),
   email: z.email(),

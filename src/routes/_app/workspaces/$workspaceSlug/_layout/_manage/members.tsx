@@ -1,18 +1,20 @@
+import { ManageTeamLink } from "@omnidotdev/providers/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { LuCirclePlus, LuUserPlus } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
-import InviteMemberDialog from "@/components/workspace/InviteMemberDialog";
+import { buttonVariants } from "@/components/ui/button";
 import Members from "@/components/workspace/Members";
 import Owners from "@/components/workspace/Owners";
 import PendingInvitations from "@/components/workspace/PendingInvitations";
 import app from "@/lib/config/app.config";
-import { isDevEnv } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
 import { organizationMembersOptions } from "@/lib/options/organizationMembers";
 import { isAdminOrOwner } from "@/lib/permissions";
 import { DialogType } from "@/lib/store/useDialogStore";
 import createMetaTags from "@/lib/util/createMetaTags";
+import cn from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
@@ -51,14 +53,6 @@ function WorkspaceMembersPage() {
 
   const ctaButtons = [];
 
-  if (isAdminOrOwner(role)) {
-    ctaButtons.push({
-      label: "Invite Member",
-      icon: <LuUserPlus />,
-      dialogType: DialogType.InviteMember,
-    });
-  }
-
   // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.
   if (role === "owner" && isDevEnv) {
     ctaButtons.push({
@@ -86,13 +80,26 @@ function WorkspaceMembersPage() {
       }}
       className="pt-0"
     >
+      {/* Team membership is managed centrally at Gatekeeper (the shared IDP);
+          invite/role/remove happen there, not re-implemented per app */}
+      {isAdminOrOwner(role) && workspaceSlug && AUTH_BASE_URL && (
+        <div className="mb-4 flex justify-end">
+          <ManageTeamLink
+            identityBaseUrl={AUTH_BASE_URL}
+            orgSlug={workspaceSlug}
+            className={cn(buttonVariants({ variant: "outline" }), "gap-1.5")}
+          >
+            <LuUserPlus className="h-4 w-4" />
+            Manage team
+          </ManageTeamLink>
+        </div>
+      )}
+
       <Owners />
 
       <Members />
 
       <PendingInvitations />
-
-      <InviteMemberDialog />
     </Page>
   );
 }
