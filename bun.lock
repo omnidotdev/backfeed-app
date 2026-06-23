@@ -12,7 +12,7 @@
         "@lexical/markdown": "0.39.0",
         "@lexical/react": "^0.39.0",
         "@lexical/rich-text": "^0.39.0",
-        "@omnidotdev/providers": "github:omnidotdev/providers#84d9097",
+        "@omnidotdev/providers": "github:omnidotdev/providers#c9f5a96",
         "@tanstack/react-form": "^1.27.7",
         "@tanstack/react-query": "^5.90.16",
         "@tanstack/react-router": "1.147.3",
@@ -606,7 +606,7 @@
 
     "@npmcli/redact": ["@npmcli/redact@4.0.0", "", {}, "sha512-gOBg5YHMfZy+TfHArfVogwgfBeQnKbbGo3pSUyK/gSI0AVu+pEiDVcKlQb0D8Mg1LNRZILZ6XG8I5dJ4KuAd9Q=="],
 
-    "@omnidotdev/providers": ["@omnidotdev/providers@github:omnidotdev/providers#84d9097", { "dependencies": { "ajv": "^8.18.0", "jose": "^6.1.3" }, "peerDependencies": { "@aws-sdk/client-s3": ">=3.0.0", "@aws-sdk/s3-request-presigner": ">=3.0.0", "@envelop/types": ">=5.0.0", "@escape.tech/graphql-armor": ">=3.0.0", "@iggy.rs/sdk": ">=1.0.0", "@openfeature/server-sdk": ">=1.0.0", "@tanstack/query-core": ">=5.0.0", "ajv": ">=8.0.0", "graphile-export": ">=1.0.0-rc.0", "postgraphile": ">=5.0.0-rc.0", "react": ">=19.0.0", "unleash-client": ">=6.0.0" }, "optionalPeers": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner", "@envelop/types", "@escape.tech/graphql-armor", "@iggy.rs/sdk", "@openfeature/server-sdk", "@tanstack/query-core", "ajv", "graphile-export", "postgraphile", "react", "unleash-client"] }, "omnidotdev-providers-84d9097", "sha512-wipR1tTUdpaW1mfFJdMGwhopUAi8T9H3uS6jvU1rGhL73x/yM08RTSUAuPSimwW5gLobvxigICKzA72gGmzzBg=="],
+    "@omnidotdev/providers": ["@omnidotdev/providers@github:omnidotdev/providers#c9f5a96", { "dependencies": { "ajv": "^8.18.0", "jose": "^6.1.3" }, "peerDependencies": { "@aws-sdk/client-s3": ">=3.0.0", "@aws-sdk/s3-request-presigner": ">=3.0.0", "@envelop/types": ">=5.0.0", "@escape.tech/graphql-armor": ">=3.0.0", "@iggy.rs/sdk": ">=1.0.0", "@openfeature/server-sdk": ">=1.0.0", "@tanstack/query-core": ">=5.0.0", "ajv": ">=8.0.0", "graphile-export": ">=1.0.0-rc.0", "postgraphile": ">=5.0.0-rc.0", "react": ">=19.0.0", "unleash-client": ">=6.0.0" }, "optionalPeers": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner", "@envelop/types", "@escape.tech/graphql-armor", "@iggy.rs/sdk", "@openfeature/server-sdk", "@tanstack/query-core", "ajv", "graphile-export", "postgraphile", "react", "unleash-client"] }, "omnidotdev-providers-c9f5a96", "sha512-agzrJVvWnhmoI7/DsK/yHwOLwghWgKT1HeRhGjgCaGzGY2jJ9y+OA04Qoq/9zy2azHYAoEbbcihvLaexMzzh9Q=="],
 
     "@oozcitak/dom": ["@oozcitak/dom@2.0.2", "", { "dependencies": { "@oozcitak/infra": "^2.0.2", "@oozcitak/url": "^3.0.0", "@oozcitak/util": "^10.0.0" } }, "sha512-GjpKhkSYC3Mj4+lfwEyI1dqnsKTgwGy48ytZEhm4A/xnH/8z9M3ZVXKr/YGQi3uCLs1AEBS+x5T2JPiueEDW8w=="],
 
