@@ -201,9 +201,9 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   return (
     <>
       <Card
-        contentProps={{ className: "flex h-full flex-col p-0" }}
+        contentProps={{ className: "flex flex-1 flex-col p-0" }}
         className={cn(
-          "relative flex h-full w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
+          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
           isRecommendedTier &&
             "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
         )}
@@ -227,7 +227,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
         )}
 
         {/* modest top padding clears the ribbon badge above the card */}
-        <div className="flex h-full w-full flex-col items-center pt-8">
+        <div className="flex w-full flex-1 flex-col items-center pt-8">
           <div className="flex w-full flex-col items-center px-6">
             <h2 className="text-center font-bold text-2xl">
               {capitalizeFirstLetter(tier)}
