@@ -10608,7 +10608,7 @@ export type RecentFeedbackQueryVariables = Exact<{
 }>;
 
 
-export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, number?: number | null, createdAt: Date, title?: string | null, description?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null } | null } | null> } | null };
+export type RecentFeedbackQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'PostEdge', node?: { __typename?: 'Post', rowId: string, number?: number | null, createdAt: Date, title?: string | null, project?: { __typename?: 'Project', name: string, slug: string, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, displayName: string, color?: string | null } | null } | null } | null> } | null };
 
 export type RepliesQueryVariables = Exact<{
   commentId: Scalars['UUID']['input'];
@@ -11264,7 +11264,6 @@ export const RecentFeedbackDocument = gql`
         number
         createdAt
         title
-        description
         project {
           name
           slug
@@ -11274,10 +11273,6 @@ export const RecentFeedbackDocument = gql`
           rowId
           displayName
           color
-        }
-        user {
-          rowId
-          username
         }
       }
     }

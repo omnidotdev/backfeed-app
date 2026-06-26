@@ -16,7 +16,6 @@ query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
         number
         createdAt
         title
-        description
         project {
           name
           slug
@@ -26,10 +25,6 @@ query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
           rowId
           displayName
           color
-        }
-        user {
-          rowId
-          username
         }
       }
     }
