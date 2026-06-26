@@ -26,8 +26,10 @@ import {
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
+import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
+import { projectParticipantsOptions } from "@/lib/options/mentionableUsers";
 import toaster from "@/lib/util/toaster";
 
 import type { ComponentProps } from "react";
@@ -78,6 +80,12 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
       organizationId: feedback.project?.organizationId ?? "",
     }),
   );
+
+  // project participants, offered in the `@`-mention typeahead
+  const { data: projectParticipants } = useQuery(
+    projectParticipantsOptions({ projectId: feedback.project?.rowId }),
+  );
+  const mentionItems = useMentionableUsers(projectParticipants);
 
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
@@ -274,6 +282,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                     }
                     editorClassName="min-h-32"
                     issueReferenceItems={issueReferenceItems}
+                    mentionItems={mentionItems}
                     // keep clicks inside the editor from reaching the card
                     onClick={(evt) => evt.stopPropagation()}
                     onUpdate={({ getHTML, getText, isEmpty }) => {
