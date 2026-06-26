@@ -666,6 +666,28 @@ export const mockObserverQuery = (resolver: GraphQLResponseResolver<Types.Observ
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockPostReferencesQuery(
+ *   ({ query, variables }) => {
+ *     const { targetPostId } = variables;
+ *     return HttpResponse.json({
+ *       data: { postReferences }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockPostReferencesQuery = (resolver: GraphQLResponseResolver<Types.PostReferencesQuery, Types.PostReferencesQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.PostReferencesQuery, Types.PostReferencesQueryVariables>(
+    'PostReferences',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockPostsQuery(
  *   ({ query, variables }) => {
  *     const { projectId, after, pageSize, orderBy, excludedStatuses, search, userId, tagFilter } = variables;
@@ -679,6 +701,28 @@ export const mockObserverQuery = (resolver: GraphQLResponseResolver<Types.Observ
 export const mockPostsQuery = (resolver: GraphQLResponseResolver<Types.PostsQuery, Types.PostsQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.PostsQuery, Types.PostsQueryVariables>(
     'Posts',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockPostsByRowIdsQuery(
+ *   ({ query, variables }) => {
+ *     const { rowIds } = variables;
+ *     return HttpResponse.json({
+ *       data: { posts }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockPostsByRowIdsQuery = (resolver: GraphQLResponseResolver<Types.PostsByRowIdsQuery, Types.PostsByRowIdsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.PostsByRowIdsQuery, Types.PostsByRowIdsQueryVariables>(
+    'PostsByRowIds',
     resolver,
     options
   )

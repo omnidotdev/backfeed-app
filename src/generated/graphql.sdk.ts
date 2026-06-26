@@ -1064,6 +1064,39 @@ export type CreatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the create `PostReference` mutation. */
+export type CreatePostReferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `PostReference` to be created by this mutation. */
+  postReference: PostReferenceInput;
+};
+
+/** The output of our create `PostReference` mutation. */
+export type CreatePostReferencePayload = {
+  __typename?: 'CreatePostReferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostReference` that was created by this mutation. */
+  postReference?: Maybe<PostReference>;
+  /** An edge for our `PostReference`. May be used by Relay 1. */
+  postReferenceEdge?: Maybe<PostReferenceEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `PostReference` mutation. */
+export type CreatePostReferencePayloadPostReferenceEdgeArgs = {
+  orderBy?: Array<PostReferenceOrderBy>;
+};
+
 /** All input for the create `PostTag` mutation. */
 export type CreatePostTagInput = {
   /**
@@ -1549,6 +1582,38 @@ export type DeletePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the `deletePostReference` mutation. */
+export type DeletePostReferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `PostReference` mutation. */
+export type DeletePostReferencePayload = {
+  __typename?: 'DeletePostReferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostReference` that was deleted by this mutation. */
+  postReference?: Maybe<PostReference>;
+  /** An edge for our `PostReference`. May be used by Relay 1. */
+  postReferenceEdge?: Maybe<PostReferenceEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `PostReference` mutation. */
+export type DeletePostReferencePayloadPostReferenceEdgeArgs = {
+  orderBy?: Array<PostReferenceOrderBy>;
+};
+
 export type DeletePostStatusChangeInput = {
   rowId: Scalars['UUID']['input'];
 };
@@ -1986,6 +2051,8 @@ export type Mutation = {
   createComment?: Maybe<CreateCommentPayload>;
   /** Creates a single `Post`. */
   createPost?: Maybe<CreatePostPayload>;
+  /** Creates a single `PostReference`. */
+  createPostReference?: Maybe<CreatePostReferencePayload>;
   /** Creates a single `PostTag`. */
   createPostTag?: Maybe<CreatePostTagPayload>;
   /** Creates a single `Project`. */
@@ -2014,6 +2081,8 @@ export type Mutation = {
   deleteComment?: Maybe<DeleteCommentPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
+  /** Deletes a single `PostReference` using a unique key. */
+  deletePostReference?: Maybe<DeletePostReferencePayload>;
   /**
    * Remove a single entry from a post's status timeline. Admin-only. Does not
    * change the post's current status (use changePostStatus for that).
@@ -2051,6 +2120,8 @@ export type Mutation = {
   updateComment?: Maybe<UpdateCommentPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
+  /** Updates a single `PostReference` using a unique key and a patch. */
+  updatePostReference?: Maybe<UpdatePostReferencePayload>;
   /** Updates a single `PostTag` using a unique key and a patch. */
   updatePostTag?: Maybe<UpdatePostTagPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
@@ -2097,6 +2168,12 @@ export type MutationCreateCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreatePostArgs = {
   input: CreatePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreatePostReferenceArgs = {
+  input: CreatePostReferenceInput;
 };
 
 
@@ -2181,6 +2258,12 @@ export type MutationDeleteCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeletePostArgs = {
   input: DeletePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeletePostReferenceArgs = {
+  input: DeletePostReferenceInput;
 };
 
 
@@ -2289,6 +2372,12 @@ export type MutationUpdateCommentArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePostArgs = {
   input: UpdatePostInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdatePostReferenceArgs = {
+  input: UpdatePostReferenceInput;
 };
 
 
@@ -2408,6 +2497,8 @@ export type Post = {
   duplicateOf?: Maybe<Post>;
   duplicateOfId?: Maybe<Scalars['UUID']['output']>;
   number?: Maybe<Scalars['Int']['output']>;
+  /** Reads and enables pagination through a set of `PostReference`. */
+  postReferencesByTargetPostId: PostReferenceConnection;
   /** Reads and enables pagination through a set of `PostStatusChange`. */
   postStatusChanges: PostStatusChangeConnection;
   /** Reads and enables pagination through a set of `PostTag`. */
@@ -2460,6 +2551,18 @@ export type PostCommentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+export type PostPostReferencesByTargetPostIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostReferenceCondition>;
+  filter?: InputMaybe<PostReferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostReferenceOrderBy>>;
 };
 
 
@@ -2747,6 +2850,10 @@ export type PostFilter = {
   number?: InputMaybe<IntFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `postReferencesByTargetPostId` relation. */
+  postReferencesByTargetPostId?: InputMaybe<PostToManyPostReferenceFilter>;
+  /** Some related `postReferencesByTargetPostId` exist. */
+  postReferencesByTargetPostIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `postStatusChanges` relation. */
   postStatusChanges?: InputMaybe<PostToManyPostStatusChangeFilter>;
   /** Some related `postStatusChanges` exist. */
@@ -3105,6 +3212,28 @@ export enum PostOrderBy {
   PostsByDuplicateOfIdVariancePopulationNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_POPULATION_NUMBER_DESC',
   PostsByDuplicateOfIdVarianceSampleNumberAsc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_ASC',
   PostsByDuplicateOfIdVarianceSampleNumberDesc = 'POSTS_BY_DUPLICATE_OF_ID_VARIANCE_SAMPLE_NUMBER_DESC',
+  PostReferencesByTargetPostIdCountAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_COUNT_ASC',
+  PostReferencesByTargetPostIdCountDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_COUNT_DESC',
+  PostReferencesByTargetPostIdDistinctCountCreatedAtAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  PostReferencesByTargetPostIdDistinctCountCreatedAtDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  PostReferencesByTargetPostIdDistinctCountFiredAtAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_FIRED_AT_ASC',
+  PostReferencesByTargetPostIdDistinctCountFiredAtDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_FIRED_AT_DESC',
+  PostReferencesByTargetPostIdDistinctCountKeywordAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_KEYWORD_ASC',
+  PostReferencesByTargetPostIdDistinctCountKeywordDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_KEYWORD_DESC',
+  PostReferencesByTargetPostIdDistinctCountOrganizationIdAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  PostReferencesByTargetPostIdDistinctCountOrganizationIdDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  PostReferencesByTargetPostIdDistinctCountRefKindAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_REF_KIND_ASC',
+  PostReferencesByTargetPostIdDistinctCountRefKindDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_REF_KIND_DESC',
+  PostReferencesByTargetPostIdDistinctCountRowIdAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  PostReferencesByTargetPostIdDistinctCountRowIdDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  PostReferencesByTargetPostIdDistinctCountSourceIdAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_SOURCE_ID_ASC',
+  PostReferencesByTargetPostIdDistinctCountSourceIdDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_SOURCE_ID_DESC',
+  PostReferencesByTargetPostIdDistinctCountSourceTypeAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_SOURCE_TYPE_ASC',
+  PostReferencesByTargetPostIdDistinctCountSourceTypeDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_SOURCE_TYPE_DESC',
+  PostReferencesByTargetPostIdDistinctCountTargetPostIdAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_TARGET_POST_ID_ASC',
+  PostReferencesByTargetPostIdDistinctCountTargetPostIdDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_TARGET_POST_ID_DESC',
+  PostReferencesByTargetPostIdDistinctCountUpdatedAtAsc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  PostReferencesByTargetPostIdDistinctCountUpdatedAtDesc = 'POST_REFERENCES_BY_TARGET_POST_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
   PostStatusChangesCountAsc = 'POST_STATUS_CHANGES_COUNT_ASC',
   PostStatusChangesCountDesc = 'POST_STATUS_CHANGES_COUNT_DESC',
   PostStatusChangesDistinctCountChangedByIdAsc = 'POST_STATUS_CHANGES_DISTINCT_COUNT_CHANGED_BY_ID_ASC',
@@ -3248,6 +3377,309 @@ export type PostPatch = {
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type PostReference = {
+  __typename?: 'PostReference';
+  createdAt: Scalars['Datetime']['output'];
+  firedAt?: Maybe<Scalars['Datetime']['output']>;
+  keyword?: Maybe<Scalars['String']['output']>;
+  organizationId: Scalars['String']['output'];
+  refKind: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  sourceId: Scalars['UUID']['output'];
+  sourceType: Scalars['String']['output'];
+  /** Reads a single `Post` that is related to this `PostReference`. */
+  targetPost?: Maybe<Post>;
+  targetPostId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type PostReferenceAggregates = {
+  __typename?: 'PostReferenceAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<PostReferenceDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `PostReference` object types. */
+export type PostReferenceAggregatesFilter = {
+  /** Distinct count aggregate over matching `PostReference` objects. */
+  distinctCount?: InputMaybe<PostReferenceDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `PostReference` object to be included within the aggregate. */
+  filter?: InputMaybe<PostReferenceFilter>;
+};
+
+/**
+ * A condition to be used against `PostReference` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type PostReferenceCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `firedAt` field. */
+  firedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `keyword` field. */
+  keyword?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `refKind` field. */
+  refKind?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sourceId` field. */
+  sourceId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sourceType` field. */
+  sourceType?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `targetPostId` field. */
+  targetPostId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `PostReference` values. */
+export type PostReferenceConnection = {
+  __typename?: 'PostReferenceConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<PostReferenceAggregates>;
+  /** A list of edges which contains the `PostReference` and cursor to aid in pagination. */
+  edges: Array<Maybe<PostReferenceEdge>>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<PostReferenceAggregates>>;
+  /** A list of `PostReference` objects. */
+  nodes: Array<Maybe<PostReference>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostReference` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `PostReference` values. */
+export type PostReferenceConnectionGroupedAggregatesArgs = {
+  groupBy: Array<PostReferenceGroupBy>;
+  having?: InputMaybe<PostReferenceHavingInput>;
+};
+
+export type PostReferenceDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  firedAt?: InputMaybe<BigIntFilter>;
+  keyword?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  refKind?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  sourceId?: InputMaybe<BigIntFilter>;
+  sourceType?: InputMaybe<BigIntFilter>;
+  targetPostId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type PostReferenceDistinctCountAggregates = {
+  __typename?: 'PostReferenceDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of firedAt across the matching connection */
+  firedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of keyword across the matching connection */
+  keyword?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of refKind across the matching connection */
+  refKind?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sourceId across the matching connection */
+  sourceId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sourceType across the matching connection */
+  sourceType?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of targetPostId across the matching connection */
+  targetPostId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `PostReference` edge in the connection. */
+export type PostReferenceEdge = {
+  __typename?: 'PostReferenceEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `PostReference` at the end of the edge. */
+  node?: Maybe<PostReference>;
+};
+
+/** A filter to be used against `PostReference` object types. All fields are combined with a logical ‘and.’ */
+export type PostReferenceFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PostReferenceFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `firedAt` field. */
+  firedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `keyword` field. */
+  keyword?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PostReferenceFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PostReferenceFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `refKind` field. */
+  refKind?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `sourceId` field. */
+  sourceId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `sourceType` field. */
+  sourceType?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `targetPost` relation. */
+  targetPost?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `targetPostId` field. */
+  targetPostId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `PostReference` for usage during aggregation. */
+export enum PostReferenceGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  FiredAt = 'FIRED_AT',
+  FiredAtTruncatedToDay = 'FIRED_AT_TRUNCATED_TO_DAY',
+  FiredAtTruncatedToHour = 'FIRED_AT_TRUNCATED_TO_HOUR',
+  Keyword = 'KEYWORD',
+  OrganizationId = 'ORGANIZATION_ID',
+  RefKind = 'REF_KIND',
+  SourceId = 'SOURCE_ID',
+  SourceType = 'SOURCE_TYPE',
+  TargetPostId = 'TARGET_POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type PostReferenceHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `PostReference` aggregates. */
+export type PostReferenceHavingInput = {
+  AND?: InputMaybe<Array<PostReferenceHavingInput>>;
+  OR?: InputMaybe<Array<PostReferenceHavingInput>>;
+  average?: InputMaybe<PostReferenceHavingAverageInput>;
+  distinctCount?: InputMaybe<PostReferenceHavingDistinctCountInput>;
+  max?: InputMaybe<PostReferenceHavingMaxInput>;
+  min?: InputMaybe<PostReferenceHavingMinInput>;
+  stddevPopulation?: InputMaybe<PostReferenceHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<PostReferenceHavingStddevSampleInput>;
+  sum?: InputMaybe<PostReferenceHavingSumInput>;
+  variancePopulation?: InputMaybe<PostReferenceHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<PostReferenceHavingVarianceSampleInput>;
+};
+
+export type PostReferenceHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type PostReferenceHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  firedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `PostReference` */
+export type PostReferenceInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  firedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  keyword?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['String']['input'];
+  refKind: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sourceId: Scalars['UUID']['input'];
+  sourceType: Scalars['String']['input'];
+  targetPostId: Scalars['UUID']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `PostReference`. */
+export enum PostReferenceOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  FiredAtAsc = 'FIRED_AT_ASC',
+  FiredAtDesc = 'FIRED_AT_DESC',
+  KeywordAsc = 'KEYWORD_ASC',
+  KeywordDesc = 'KEYWORD_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RefKindAsc = 'REF_KIND_ASC',
+  RefKindDesc = 'REF_KIND_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SourceIdAsc = 'SOURCE_ID_ASC',
+  SourceIdDesc = 'SOURCE_ID_DESC',
+  SourceTypeAsc = 'SOURCE_TYPE_ASC',
+  SourceTypeDesc = 'SOURCE_TYPE_DESC',
+  TargetPostIdAsc = 'TARGET_POST_ID_ASC',
+  TargetPostIdDesc = 'TARGET_POST_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `PostReference`. Fields that are set will be updated. */
+export type PostReferencePatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  firedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  keyword?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  refKind?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sourceId?: InputMaybe<Scalars['UUID']['input']>;
+  sourceType?: InputMaybe<Scalars['String']['input']>;
+  targetPostId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
 export type PostStatusChange = {
@@ -3739,6 +4171,18 @@ export type PostToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `PostReference` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostReferenceFilter = {
+  /** Aggregates across related `PostReference` match the filter criteria. */
+  aggregates?: InputMaybe<PostReferenceAggregatesFilter>;
+  /** Every related `PostReference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostReferenceFilter>;
+  /** No related `PostReference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostReferenceFilter>;
+  /** Some related `PostReference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostReferenceFilter>;
 };
 
 /** A filter to be used against many `PostStatusChange` object types. All fields are combined with a logical ‘and.’ */
@@ -5386,6 +5830,12 @@ export type Query = Node & {
   post?: Maybe<Post>;
   /** Get a single `Post`. */
   postByProjectIdAndNumber?: Maybe<Post>;
+  /** Get a single `PostReference`. */
+  postReference?: Maybe<PostReference>;
+  /** Get a single `PostReference`. */
+  postReferenceBySourceTypeAndSourceIdAndTargetPostIdAndKeyword?: Maybe<PostReference>;
+  /** Reads and enables pagination through a set of `PostReference`. */
+  postReferences?: Maybe<PostReferenceConnection>;
   /** Get a single `PostStatusChange`. */
   postStatusChange?: Maybe<PostStatusChange>;
   /** Reads and enables pagination through a set of `PostStatusChange`. */
@@ -5528,6 +5978,34 @@ export type QueryPostArgs = {
 export type QueryPostByProjectIdAndNumberArgs = {
   number: Scalars['Int']['input'];
   projectId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostReferenceArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostReferenceBySourceTypeAndSourceIdAndTargetPostIdAndKeywordArgs = {
+  keyword: Scalars['String']['input'];
+  sourceId: Scalars['UUID']['input'];
+  sourceType: Scalars['String']['input'];
+  targetPostId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostReferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostReferenceCondition>;
+  filter?: InputMaybe<PostReferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostReferenceOrderBy>>;
 };
 
 
@@ -6978,6 +7456,7 @@ export type StatusTemplate = {
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
+  keywordRole?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   organizationId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `PostStatusChange`. */
@@ -7070,6 +7549,8 @@ export type StatusTemplateCondition = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `displayName` field. */
   displayName?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `keywordRole` field. */
+  keywordRole?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
@@ -7118,6 +7599,8 @@ export type StatusTemplateDistinctCountAggregates = {
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of displayName across the matching connection */
   displayName?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of keywordRole across the matching connection */
+  keywordRole?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of organizationId across the matching connection */
@@ -7153,6 +7636,8 @@ export type StatusTemplateFilter = {
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `displayName` field. */
   displayName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `keywordRole` field. */
+  keywordRole?: InputMaybe<StringFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -7191,6 +7676,7 @@ export enum StatusTemplateGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   DisplayName = 'DISPLAY_NAME',
+  KeywordRole = 'KEYWORD_ROLE',
   Name = 'NAME',
   OrganizationId = 'ORGANIZATION_ID',
   ShowOnRoadmap = 'SHOW_ON_ROADMAP',
@@ -7275,6 +7761,7 @@ export type StatusTemplateInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   displayName: Scalars['String']['input'];
+  keywordRole?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -7305,6 +7792,8 @@ export enum StatusTemplateOrderBy {
   DescriptionDesc = 'DESCRIPTION_DESC',
   DisplayNameAsc = 'DISPLAY_NAME_ASC',
   DisplayNameDesc = 'DISPLAY_NAME_DESC',
+  KeywordRoleAsc = 'KEYWORD_ROLE_ASC',
+  KeywordRoleDesc = 'KEYWORD_ROLE_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -7428,6 +7917,7 @@ export type StatusTemplatePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
+  keywordRole?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -7983,6 +8473,40 @@ export type UpdatePostPayload = {
 /** The output of our update `Post` mutation. */
 export type UpdatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
+};
+
+/** All input for the `updatePostReference` mutation. */
+export type UpdatePostReferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `PostReference` being updated. */
+  patch: PostReferencePatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `PostReference` mutation. */
+export type UpdatePostReferencePayload = {
+  __typename?: 'UpdatePostReferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `PostReference` that was updated by this mutation. */
+  postReference?: Maybe<PostReference>;
+  /** An edge for our `PostReference`. May be used by Relay 1. */
+  postReferenceEdge?: Maybe<PostReferenceEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `PostReference` mutation. */
+export type UpdatePostReferencePayloadPostReferenceEdgeArgs = {
+  orderBy?: Array<PostReferenceOrderBy>;
 };
 
 /** All input for the `updatePostTag` mutation. */
@@ -10008,6 +10532,13 @@ export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ObserverQuery = { __typename?: 'Query', observer?: { __typename?: 'Observer', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string } | null };
 
+export type PostReferencesQueryVariables = Exact<{
+  targetPostId: Scalars['UUID']['input'];
+}>;
+
+
+export type PostReferencesQuery = { __typename?: 'Query', postReferences?: { __typename?: 'PostReferenceConnection', nodes: Array<{ __typename?: 'PostReference', rowId: string, sourceId: string, sourceType: string, refKind: string, keyword?: string | null } | null> } | null };
+
 export type PostsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -10021,6 +10552,13 @@ export type PostsQueryVariables = Exact<{
 
 
 export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string } | null } | null> } } | null> } | null };
+
+export type PostsByRowIdsQueryVariables = Exact<{
+  rowIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+}>;
+
+
+export type PostsByRowIdsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null } | null> } | null };
 
 export type ProjectQueryVariables = Exact<{
   projectSlug: Scalars['String']['input'];
@@ -10556,6 +11094,22 @@ export const ObserverDocument = gql`
   }
 }
     `;
+export const PostReferencesDocument = gql`
+    query PostReferences($targetPostId: UUID!) {
+  postReferences(
+    condition: {targetPostId: $targetPostId, sourceType: "post"}
+    orderBy: [CREATED_AT_DESC]
+  ) {
+    nodes {
+      rowId
+      sourceId
+      sourceType
+      refKind
+      keyword
+    }
+  }
+}
+    `;
 export const PostsDocument = gql`
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID, $tagFilter: PostToManyPostTagFilter) {
   posts(
@@ -10577,6 +11131,17 @@ export const PostsDocument = gql`
   }
 }
     ${FeedbackFragmentDoc}`;
+export const PostsByRowIdsDocument = gql`
+    query PostsByRowIds($rowIds: [UUID!]) {
+  posts(filter: {rowId: {in: $rowIds}}, first: 50, orderBy: [NUMBER_DESC]) {
+    nodes {
+      rowId
+      number
+      title
+    }
+  }
+}
+    `;
 export const ProjectDocument = gql`
     query Project($projectSlug: String!, $organizationId: UUID!, $userId: UUID) {
   projects(
@@ -10904,8 +11469,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Observer(variables?: ObserverQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ObserverQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ObserverQuery>({ document: ObserverDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Observer', 'query', variables);
     },
+    PostReferences(variables: PostReferencesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostReferencesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PostReferencesQuery>({ document: PostReferencesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'PostReferences', 'query', variables);
+    },
     Posts(variables: PostsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<PostsQuery>({ document: PostsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Posts', 'query', variables);
+    },
+    PostsByRowIds(variables?: PostsByRowIdsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostsByRowIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PostsByRowIdsQuery>({ document: PostsByRowIdsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'PostsByRowIds', 'query', variables);
     },
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);

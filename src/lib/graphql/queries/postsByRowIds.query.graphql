@@ -1,0 +1,9 @@
+query PostsByRowIds($rowIds: [UUID!]) {
+  posts(filter: { rowId: { in: $rowIds } }, first: 50, orderBy: [NUMBER_DESC]) {
+    nodes {
+      rowId
+      number
+      title
+    }
+  }
+}

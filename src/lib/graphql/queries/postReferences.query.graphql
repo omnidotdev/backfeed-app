@@ -1,0 +1,14 @@
+query PostReferences($targetPostId: UUID!) {
+  postReferences(
+    condition: { targetPostId: $targetPostId, sourceType: "post" }
+    orderBy: [CREATED_AT_DESC]
+  ) {
+    nodes {
+      rowId
+      sourceId
+      sourceType
+      refKind
+      keyword
+    }
+  }
+}
