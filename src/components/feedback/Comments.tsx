@@ -18,13 +18,13 @@ import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import SectionContainer from "@/components/layout/SectionContainer";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
 import useScrollFade from "@/lib/hooks/useScrollFade";
 import {
   freeTierCommentsOptions,
   infiniteCommentsOptions,
 } from "@/lib/options/comments";
 
-import type { MentionItem } from "@/components/ui/rich-text-editor";
 import type {
   CommentFragment,
   CreateCommentMutationVariables,
@@ -108,20 +108,11 @@ const Comments = () => {
   const allComments = [...pendingComments, ...(comments ?? [])];
 
   // offer the thread's participants in the @-mention typeahead
-  const mentionableUsers = useMemo<MentionItem[]>(() => {
-    const byId = new Map<string, MentionItem>();
-    for (const comment of comments ?? []) {
-      const user = comment?.user;
-      if (user?.rowId && user?.username && !byId.has(user.rowId)) {
-        byId.set(user.rowId, {
-          id: user.rowId,
-          label: user.username,
-          url: `/profile/${user.rowId}/account`,
-        });
-      }
-    }
-    return [...byId.values()];
-  }, [comments]);
+  const threadParticipants = useMemo(
+    () => (comments ?? []).map((comment) => comment?.user),
+    [comments],
+  );
+  const mentionableUsers = useMentionableUsers(threadParticipants);
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,

@@ -26,8 +26,10 @@ import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
+import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
+import { projectParticipantsOptions } from "@/lib/options/mentionableUsers";
 import {
   projectMetricsOptions,
   projectOptions,
@@ -113,6 +115,13 @@ const CreateFeedback = () => {
   const { data: issueReferenceItems } = useQuery(
     projectIssueRefsOptions({ projectSlug, organizationId }),
   );
+
+  // project participants, offered in the `@`-mention typeahead (a new post has
+  // no comment thread to source mentionable users from)
+  const { data: projectParticipants } = useQuery(
+    projectParticipantsOptions({ projectId }),
+  );
+  const mentionItems = useMentionableUsers(projectParticipants);
 
   const { data: defaultStatusTemplateId } = useQuery({
     ...projectStatusesOptions({ organizationId: organizationId! }),
@@ -395,6 +404,7 @@ const CreateFeedback = () => {
                     placeholder={descriptionPlaceholder}
                     editable={!composerDisabled}
                     editorClassName="min-h-16"
+                    mentionItems={mentionItems}
                     issueReferenceItems={issueReferenceItems}
                     onUpdate={({ getHTML, getText, isEmpty }) => {
                       field.handleChange(isEmpty ? "" : getHTML());
