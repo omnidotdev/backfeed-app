@@ -11,26 +11,33 @@ export interface MentionableUser {
 }
 
 /**
- * Shared `@`-mention typeahead builder. Maps users to deduped {@link MentionItem}s
- * linking to `/profile/<rowId>/account`. The server-side mention parser keys on
- * that `/profile/<uuid>` link to resolve the mentioned user, so the url shape is
- * load-bearing and must stay in sync with it.
+ * Map users to deduped {@link MentionItem}s linking to `/profile/<rowId>/account`.
+ * The server-side mention parser keys on that `/profile/<uuid>` link to resolve
+ * the mentioned user, so the url shape is load-bearing and must stay in sync
+ * with it. Users missing a rowId or username are skipped.
+ */
+export const toMentionItems = (
+  users: ReadonlyArray<MentionableUser | null | undefined> | null | undefined,
+): MentionItem[] => {
+  const byId = new Map<string, MentionItem>();
+  for (const user of users ?? []) {
+    if (user?.rowId && user?.username && !byId.has(user.rowId)) {
+      byId.set(user.rowId, {
+        id: user.rowId,
+        label: user.username,
+        url: `/profile/${user.rowId}/account`,
+      });
+    }
+  }
+  return [...byId.values()];
+};
+
+/**
+ * Shared `@`-mention typeahead builder hook. Memoizes {@link toMentionItems}
+ * over the provided user list.
  */
 const useMentionableUsers = (
   users: ReadonlyArray<MentionableUser | null | undefined> | null | undefined,
-): MentionItem[] =>
-  useMemo(() => {
-    const byId = new Map<string, MentionItem>();
-    for (const user of users ?? []) {
-      if (user?.rowId && user?.username && !byId.has(user.rowId)) {
-        byId.set(user.rowId, {
-          id: user.rowId,
-          label: user.username,
-          url: `/profile/${user.rowId}/account`,
-        });
-      }
-    }
-    return [...byId.values()];
-  }, [users]);
+): MentionItem[] => useMemo(() => toMentionItems(users), [users]);
 
 export default useMentionableUsers;

@@ -25,6 +25,41 @@ export const backReferencesQueryKey = (projectId: string, number: number) =>
   ["PostBackReferences", projectId, number] as const;
 
 /**
+ * Distinct source-post ids from the reference edges, excluding the post's own
+ * id (a self-reference is never shown as an inbound reference).
+ */
+export const referenceSourceIds = (
+  nodes: ReadonlyArray<{ sourceId: string } | null> | null | undefined,
+  selfRowId: string,
+): string[] =>
+  [
+    ...new Set(
+      (nodes ?? [])
+        .filter((node): node is NonNullable<typeof node> => node != null)
+        .map((node) => node.sourceId),
+    ),
+  ].filter((sourceId) => sourceId !== selfRowId);
+
+/** Map resolved source posts into the `BackReference` shape the panel renders. */
+export const toBackReferences = (
+  nodes:
+    | ReadonlyArray<{
+        rowId: string;
+        number?: number | null;
+        title?: string | null;
+      } | null>
+    | null
+    | undefined,
+): BackReference[] =>
+  (nodes ?? [])
+    .filter((node): node is NonNullable<typeof node> => node != null)
+    .map((node) => ({
+      rowId: node.rowId,
+      number: node.number ?? 0,
+      title: node.title ?? null,
+    }));
+
+/**
  * Posts that reference the target post, read from the authoritative
  * `post_reference` edges. Fetches the edges whose `targetPostId` is this post
  * (restricted to `post` sources, since the panel links to posts), then resolves
@@ -44,13 +79,7 @@ export const backReferencesOptions = (params: {
         PostReferencesQueryVariables
       >(PostReferencesDocument, { targetPostId: params.rowId })();
 
-      const sourceIds = [
-        ...new Set(
-          (postReferences?.nodes ?? [])
-            .filter((node): node is NonNullable<typeof node> => node != null)
-            .map((node) => node.sourceId),
-        ),
-      ].filter((sourceId) => sourceId !== params.rowId);
+      const sourceIds = referenceSourceIds(postReferences?.nodes, params.rowId);
 
       if (!sourceIds.length) return [];
 
@@ -59,13 +88,7 @@ export const backReferencesOptions = (params: {
         PostsByRowIdsQueryVariables
       >(PostsByRowIdsDocument, { rowIds: sourceIds })();
 
-      return (posts?.nodes ?? [])
-        .filter((post): post is NonNullable<typeof post> => post != null)
-        .map((post) => ({
-          rowId: post.rowId,
-          number: post.number ?? 0,
-          title: post.title ?? null,
-        }));
+      return toBackReferences(posts?.nodes);
     },
     enabled: Boolean(params.projectId && params.rowId),
   });
