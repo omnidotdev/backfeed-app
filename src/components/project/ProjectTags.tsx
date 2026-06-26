@@ -158,7 +158,15 @@ const ProjectTags = ({ projectId }: Props) => {
         </ul>
       ) : (
         <p className="text-foreground-subtle text-sm">
-          No tags yet. Create one to start categorizing feedback.
+          No tags yet.{" "}
+          <Button
+            variant="link"
+            className="h-auto p-0 align-baseline text-sm"
+            onClick={openCreate}
+          >
+            Create one
+          </Button>{" "}
+          to start categorizing feedback.
         </p>
       )}
 
