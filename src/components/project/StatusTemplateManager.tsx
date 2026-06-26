@@ -356,7 +356,15 @@ const StatusTemplateManager = () => {
         </ul>
       ) : (
         <p className="text-foreground-subtle text-sm">
-          No statuses yet. Create one to start organizing feedback.
+          No statuses yet.{" "}
+          <Button
+            variant="link"
+            className="h-auto p-0 align-baseline text-sm"
+            onClick={openCreate}
+          >
+            Create one
+          </Button>{" "}
+          to start organizing feedback.
         </p>
       )}
 
