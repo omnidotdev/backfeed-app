@@ -12,6 +12,7 @@ import DestructiveAction from "@/components/core/DestructiveAction";
 import StatusBadge from "@/components/core/StatusBadge";
 import AttachmentGallery from "@/components/feedback/AttachmentGallery";
 import FeedbackKey from "@/components/feedback/FeedbackKey";
+import TagBadge from "@/components/feedback/TagBadge";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
@@ -306,6 +307,11 @@ const FeedbackCard = ({
 
   const actionIsPending = isFeedbackPending || isDeleteFeedbackPending;
 
+  // tags assigned to the post, shown read-only on the card (full and roadmap)
+  const tags = (feedback.postTags?.nodes ?? [])
+    .map((node) => node?.tag)
+    .filter((tag): tag is NonNullable<typeof tag> => Boolean(tag));
+
   // Alternating background for odd rows (when index is provided)
   const hasAlternatingBg =
     index !== undefined && index % 2 === 1 && !disableHover;
@@ -435,6 +441,14 @@ const FeedbackCard = ({
             </Portal>
           </MenuRoot>
         </div>
+
+        {tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {tags.map((tag) => (
+              <TagBadge key={tag.rowId} name={tag.name} color={tag.color} />
+            ))}
+          </div>
+        )}
 
         {!compact &&
           feedback.description &&

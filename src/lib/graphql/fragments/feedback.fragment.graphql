@@ -55,6 +55,8 @@ fragment Feedback on Post {
     nodes {
       tag {
         rowId
+        name
+        color
       }
     }
   }
