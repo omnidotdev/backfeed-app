@@ -26,8 +26,8 @@ const LogoLink = ({ width, className, ...rest }: Props) => {
           height={width / 2}
         />
 
-        <span className="rounded-md border border-primary px-2 py-0.5 font-medium text-primary text-xs">
-          Beta
+        <span className="font-semibold text-lg text-neutral-900 dark:text-neutral-100">
+          {app.name}
         </span>
       </div>
     </Link>
