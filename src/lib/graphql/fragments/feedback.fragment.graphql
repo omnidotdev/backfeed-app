@@ -23,6 +23,7 @@ fragment Feedback on Post {
   user {
     rowId
     username
+    avatarUrl
   }
   attachments {
     nodes {

@@ -1,0 +1,6 @@
+mutation UpdatePostStatusChange($rowId: UUID!, $note: String) {
+  updatePostStatusChange(input: { rowId: $rowId, note: $note }) {
+    id
+    note
+  }
+}

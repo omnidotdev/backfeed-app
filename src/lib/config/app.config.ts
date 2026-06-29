@@ -1093,6 +1093,13 @@ const app = {
         },
         error: "Could not remove status update",
       },
+      edit: {
+        title: "Edit note",
+        placeholder: "Add an optional note (e.g. shipping next release)",
+        save: "Save",
+        cancel: "Cancel",
+        error: "Could not update status note",
+      },
     },
   },
 };

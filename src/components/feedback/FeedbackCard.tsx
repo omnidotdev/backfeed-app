@@ -17,6 +17,11 @@ import TagPicker from "@/components/feedback/TagPicker";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
+import {
   MenuContent,
   MenuItem,
   MenuItemGroup,
@@ -523,8 +528,18 @@ const FeedbackCard = ({
           // vote rail gives the card; wraps instead of overflowing on mobile
           <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-foreground-subtle text-xs">
             {feedback.user?.username && (
-              <span className="min-w-0 max-w-[10rem] shrink truncate">
-                {feedback.user.username}
+              <span className="flex min-w-0 max-w-[10rem] shrink items-center gap-1.5">
+                <AvatarRoot className="size-4 shrink-0 rounded-full text-[0.55rem]">
+                  <AvatarImage
+                    src={feedback.user.avatarUrl ?? undefined}
+                    alt={feedback.user.username}
+                  />
+                  <AvatarFallback className="bg-muted">
+                    {feedback.user.username.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </AvatarRoot>
+
+                <span className="truncate">{feedback.user.username}</span>
               </span>
             )}
 
