@@ -160,13 +160,13 @@ const ReactionBar = ({
 
           <Portal>
             <MenuPositioner>
-              <MenuContent>
-                <MenuItemGroup className="flex max-w-[12rem] flex-wrap gap-1 p-1">
+              <MenuContent className="min-w-0">
+                <MenuItemGroup className="grid grid-cols-4 gap-0.5">
                   {REACTION_EMOJIS.map((emoji) => (
                     <MenuItem
                       key={emoji}
                       value={emoji}
-                      className="justify-center text-lg"
+                      className="size-9 justify-center p-0 text-lg"
                     >
                       {emoji}
                     </MenuItem>
