@@ -24,8 +24,6 @@ const LogoLink = ({ width, className, ...rest }: Props) => {
           alt={`${app.name} logo`}
           width={width}
           height={width / 2}
-          // adjust color based on color theme
-          className="brightness-0 dark:invert"
         />
 
         <span className="rounded-md border border-primary px-2 py-0.5 font-medium text-primary text-xs">

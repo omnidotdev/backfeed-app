@@ -106,7 +106,7 @@ export const renderOgImage = async ({
           justifyContent: "space-between",
           padding: "60px 80px",
           background:
-            "linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffe4e6 100%)",
+            "linear-gradient(135deg, #ffffff 0%, #fff5f3 50%, #ffe8e3 100%)",
           fontFamily: "Inter",
           color: "#1a1a1a",
         },
@@ -157,7 +157,7 @@ export const renderOgImage = async ({
                           style: {
                             fontSize: "28px",
                             fontWeight: 700,
-                            color: "#e11d48",
+                            color: "#f04a2c",
                             letterSpacing: "0.02em",
                           },
                           children: eyebrow,
