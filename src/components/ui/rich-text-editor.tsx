@@ -736,6 +736,40 @@ const linkifyBareUrls = (html: string): string => {
     .join("");
 };
 
+// Markdown inline link `[text](url)`, restricted to real link targets
+// (http(s), mailto, or a root-relative path) so prose like `[label](note)` is
+// left alone. DOMPurify is the backstop for the resulting href.
+const MARKDOWN_LINK_PATTERN =
+  /\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|\/[^\s)]*)\)/g;
+
+/**
+ * Collapse markdown inline links `[text](url)` into anchors. The keystroke-only
+ * MarkdownShortcutPlugin never converts links that are pasted (or otherwise not
+ * typed character by character), so they reach storage as literal markdown;
+ * this renders them as proper labeled links. Splits on tags so matching only
+ * happens in text, and skips text already inside an anchor. Run before
+ * {@link linkifyBareUrls} so the target becomes the href instead of being
+ * re-linkified as bare text.
+ */
+const linkifyMarkdownLinks = (html: string): string => {
+  let anchorDepth = 0;
+  return html
+    .split(/(<[^>]+>)/)
+    .map((segment) => {
+      if (segment.startsWith("<")) {
+        if (/^<a[\s>]/i.test(segment)) anchorDepth++;
+        else if (/^<\/a\s*>/i.test(segment) && anchorDepth > 0) anchorDepth--;
+        return segment;
+      }
+      if (anchorDepth > 0) return segment;
+      return segment.replace(
+        MARKDOWN_LINK_PATTERN,
+        (_match, text, url) => `<a href="${url}">${text}</a>`,
+      );
+    })
+    .join("");
+};
+
 /**
  * Open external links in a new tab without leaking the opener. Relative links
  * (e.g. in-app issue references) are left to navigate in the same tab.
@@ -767,37 +801,41 @@ const RichTextContent = ({
 }: RichTextContentProps) => {
   if (!html?.trim()) return <>{fallback}</>;
 
-  // Linkify bare URLs/emails (incl. legacy plain-text content), then add the
-  // hook around this single synchronous sanitize so the new-tab behavior does
-  // not leak onto other DOMPurify callers.
+  // Collapse pasted markdown links first, then linkify any remaining bare
+  // URLs/emails (incl. legacy plain-text content); add the hook around this
+  // single synchronous sanitize so the new-tab behavior does not leak onto
+  // other DOMPurify callers.
   DOMPurify.addHook("afterSanitizeAttributes", openLinksInNewTab);
-  const clean = DOMPurify.sanitize(linkifyBareUrls(html), {
-    ALLOWED_TAGS: [
-      "p",
-      "br",
-      "b",
-      "strong",
-      "i",
-      "em",
-      "u",
-      "s",
-      "code",
-      "pre",
-      "ul",
-      "ol",
-      "li",
-      "a",
-      "h1",
-      "h2",
-      "h3",
-      "h4",
-      "h5",
-      "h6",
-      "blockquote",
-      "span",
-    ],
-    ALLOWED_ATTR: ["href", "target", "rel", "class"],
-  });
+  const clean = DOMPurify.sanitize(
+    linkifyBareUrls(linkifyMarkdownLinks(html)),
+    {
+      ALLOWED_TAGS: [
+        "p",
+        "br",
+        "b",
+        "strong",
+        "i",
+        "em",
+        "u",
+        "s",
+        "code",
+        "pre",
+        "ul",
+        "ol",
+        "li",
+        "a",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "blockquote",
+        "span",
+      ],
+      ALLOWED_ATTR: ["href", "target", "rel", "class"],
+    },
+  );
   DOMPurify.removeHook("afterSanitizeAttributes");
 
   return (
