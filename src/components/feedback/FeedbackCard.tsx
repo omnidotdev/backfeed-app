@@ -361,9 +361,9 @@ const FeedbackCard = ({
               {feedback.title}
             </span>
 
-            {/* full cards: key + author under the title. dense (roadmap) cards
-                move the key + count to a bottom-pinned row (below) so they stay
-                put regardless of how many lines the title wraps to */}
+            {/* full cards: the copyable key under the title (the author moves to
+                the bottom meta row, with the date). dense (roadmap) cards move
+                the key + count to a bottom-pinned row (below). */}
             {!compact && (
               <div className="flex min-w-0 items-center gap-2 text-foreground-subtle text-xs leading-none">
                 <FeedbackKey
@@ -371,12 +371,6 @@ const FeedbackCard = ({
                   prefix={feedback.project?.prefix}
                   number={feedback.number}
                 />
-
-                {feedback.user?.username && (
-                  <span className="min-w-0 truncate leading-none">
-                    {feedback.user.username}
-                  </span>
-                )}
               </div>
             )}
           </div>
@@ -528,6 +522,12 @@ const FeedbackCard = ({
           // pinned to the bottom (mt-auto) so short posts fill the height the
           // vote rail gives the card; wraps instead of overflowing on mobile
           <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-foreground-subtle text-xs">
+            {feedback.user?.username && (
+              <span className="min-w-0 max-w-[10rem] shrink truncate">
+                {feedback.user.username}
+              </span>
+            )}
+
             <span className="shrink-0 whitespace-nowrap">
               {isFeedbackRoute
                 ? `Updated ${dayjs(isUpdateStatusPending ? new Date() : feedback.statusUpdatedAt).fromNow()}`
