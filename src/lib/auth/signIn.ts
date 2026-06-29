@@ -15,7 +15,9 @@ const signIn = async ({ redirectUrl, action = "sign-in" }: Params) => {
     // TODO env var/derive for the self-hosting fam
     providerId: "omni",
     callbackURL: redirectUrl,
-    // Pass screen_hint to OIDC provider to show sign-up form
+    // Flag a sign-up so the server config promotes it to OIDC `prompt=create`
+    // (see `authorizationUrlParams` in auth.ts); `additionalData` on its own
+    // never reaches the authorization URL
     ...(action === "sign-up" && {
       additionalData: { screen_hint: "signup" },
     }),
