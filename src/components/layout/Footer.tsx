@@ -1,4 +1,9 @@
-import { FaDiscord, FaGithub, FaXTwitter as FaX } from "react-icons/fa6";
+import {
+  FaDiscord,
+  FaGithub,
+  FaThreads,
+  FaXTwitter as FaX,
+} from "react-icons/fa6";
 
 import app from "@/lib/config/app.config";
 
@@ -71,6 +76,15 @@ const Footer = () => (
           className={linkClass}
         >
           <FaX className="size-4" />
+        </a>
+
+        <a
+          href={app.socials.threads}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
+          <FaThreads className="size-5" />
         </a>
       </div>
     </div>

@@ -13,6 +13,7 @@ const app = {
     discord: "https://discord.gg/omnidotdev",
     github: "https://github.com/omnidotdev/backfeed-stack",
     x: "https://x.com/omnidotdev",
+    threads: "https://www.threads.com/@omnidotdev",
   },
   organization: {
     name: "Omni",
@@ -895,6 +896,9 @@ const app = {
           singular: "Sort By",
           plural: "Sort By",
         },
+      },
+      tags: {
+        label: "Tags",
       },
       feedbackTitle: {
         label: "Title",

@@ -1,27 +1,9 @@
-import { Portal } from "@ark-ui/react/portal";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LuPlus, LuX } from "react-icons/lu";
+import { LuX } from "react-icons/lu";
 
 import TagBadge from "@/components/feedback/TagBadge";
+import TagPicker from "@/components/feedback/TagPicker";
 import { Button } from "@/components/ui/button";
-import {
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
-import {
-  createPostTag,
-  deletePostTag,
-  postTagsOptions,
-  postTagsQueryKey,
-  projectTagsOptions,
-} from "@/lib/options/tags";
-import toaster from "@/lib/util/toaster";
-
-import type { PostTagAssignment, PostTagsData } from "@/lib/options/tags";
+import usePostTagEditor from "@/lib/hooks/usePostTagEditor";
 
 interface Props {
   /** Post rowId tags are assigned to */
@@ -37,90 +19,13 @@ interface Props {
  * user assign or unassign tags from the project's available tags.
  */
 const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
-  const queryClient = useQueryClient();
+  const { assignedTags, toggleTag } = usePostTagEditor({ postId, projectId });
 
-  const { data: assigned } = useQuery(postTagsOptions(postId));
-  const { data: projectTags } = useQuery({
-    ...projectTagsOptions(projectId),
-    enabled: canAssign && Boolean(projectId),
-  });
-
-  const queryKey = postTagsQueryKey(postId);
-
-  const invalidate = () => queryClient.invalidateQueries({ queryKey });
-
-  /** Snapshot, then apply an optimistic change to the cached post-tag list. */
-  const optimistically = async (
-    update: (nodes: PostTagAssignment[]) => PostTagAssignment[],
-  ) => {
-    await queryClient.cancelQueries({ queryKey });
-    const previous = queryClient.getQueryData<PostTagsData>(queryKey);
-    queryClient.setQueryData<PostTagsData>(queryKey, (old) =>
-      old?.post
-        ? {
-            ...old,
-            post: {
-              ...old.post,
-              postTags: {
-                ...old.post.postTags,
-                nodes: update(old.post.postTags.nodes),
-              },
-            },
-          }
-        : old,
-    );
-    return { previous };
-  };
-
-  /** Restore the snapshot taken before an optimistic change failed. */
-  const rollback = (context: { previous?: PostTagsData } | undefined) =>
-    queryClient.setQueryData(queryKey, context?.previous);
-
-  const { mutate: assignTag } = useMutation({
-    mutationFn: (tagId: string) => createPostTag({ postId, tagId }),
-    onMutate: (tagId) => {
-      const tag = (projectTags ?? []).find((t) => t.rowId === tagId);
-      return optimistically((nodes) => [
-        ...nodes,
-        {
-          rowId: "pending",
-          tag: tag
-            ? { rowId: tag.rowId, name: tag.name, color: tag.color }
-            : null,
-        },
-      ]);
-    },
-    onError: (_error, _tagId, context) => {
-      rollback(context);
-      toaster.error({ title: "Could not add tag" });
-    },
-    onSettled: invalidate,
-  });
-
-  const { mutate: unassignTag } = useMutation({
-    mutationFn: (rowId: string) => deletePostTag(rowId),
-    onMutate: (rowId) =>
-      optimistically((nodes) => nodes.filter((node) => node.rowId !== rowId)),
-    onError: (_error, _rowId, context) => {
-      rollback(context);
-      toaster.error({ title: "Could not remove tag" });
-    },
-    onSettled: invalidate,
-  });
-
-  const assignedTagIds = new Set(
-    (assigned ?? []).map((assignment) => assignment.tag?.rowId),
-  );
-
-  const availableTags = (projectTags ?? []).filter(
-    (tag) => !assignedTagIds.has(tag.rowId),
-  );
-
-  if (!canAssign && !assigned?.length) return null;
+  if (!canAssign && !assignedTags.length) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {(assigned ?? []).map((assignment) =>
+      {assignedTags.map((assignment) =>
         assignment.tag ? (
           <span key={assignment.rowId} className="inline-flex items-center">
             <TagBadge name={assignment.tag.name} color={assignment.tag.color} />
@@ -132,7 +37,7 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
                 className="size-5"
                 aria-label={`Remove ${assignment.tag.name}`}
                 disabled={assignment.rowId === "pending"}
-                onClick={() => unassignTag(assignment.rowId)}
+                onClick={() => toggleTag(assignment.tag!.rowId)}
               >
                 <LuX className="size-3" />
               </Button>
@@ -141,33 +46,7 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
         ) : null,
       )}
 
-      {canAssign && availableTags.length > 0 && (
-        <MenuRoot
-          positioning={{ placement: "bottom-start" }}
-          onSelect={({ value }) => assignTag(value)}
-        >
-          <MenuTrigger asChild>
-            <Button size="sm" variant="outline">
-              <LuPlus className="size-4" />
-              Add tag
-            </Button>
-          </MenuTrigger>
-
-          <Portal>
-            <MenuPositioner>
-              <MenuContent>
-                <MenuItemGroup>
-                  {availableTags.map((tag) => (
-                    <MenuItem key={tag.rowId} value={tag.rowId}>
-                      <TagBadge name={tag.name} color={tag.color} />
-                    </MenuItem>
-                  ))}
-                </MenuItemGroup>
-              </MenuContent>
-            </MenuPositioner>
-          </Portal>
-        </MenuRoot>
-      )}
+      {canAssign && <TagPicker postId={postId} projectId={projectId} />}
     </div>
   );
 };

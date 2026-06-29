@@ -11,6 +11,7 @@ query ProjectStatuses($organizationId: UUID!, $isEnabled: Boolean) {
       color
       sortOrder
       showOnRoadmap
+      showOnBoard
     }
   }
   projectStatusConfigs(condition: { isEnabled: $isEnabled }) {

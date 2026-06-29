@@ -7450,6 +7450,7 @@ export type StatusTemplate = {
   /** Reads and enables pagination through a set of `ProjectStatusConfig`. */
   projectStatusConfigs: ProjectStatusConfigConnection;
   rowId: Scalars['UUID']['output'];
+  showOnBoard?: Maybe<Scalars['Boolean']['output']>;
   showOnRoadmap?: Maybe<Scalars['Boolean']['output']>;
   sortOrder?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['Datetime']['output'];
@@ -7541,6 +7542,8 @@ export type StatusTemplateCondition = {
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `showOnBoard` field. */
+  showOnBoard?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `showOnRoadmap` field. */
   showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `sortOrder` field. */
@@ -7591,6 +7594,8 @@ export type StatusTemplateDistinctCountAggregates = {
   organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of showOnBoard across the matching connection */
+  showOnBoard?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of showOnRoadmap across the matching connection */
   showOnRoadmap?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of sortOrder across the matching connection */
@@ -7644,6 +7649,8 @@ export type StatusTemplateFilter = {
   projectStatusConfigsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `showOnBoard` field. */
+  showOnBoard?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `showOnRoadmap` field. */
   showOnRoadmap?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `sortOrder` field. */
@@ -7663,6 +7670,7 @@ export enum StatusTemplateGroupBy {
   KeywordRole = 'KEYWORD_ROLE',
   Name = 'NAME',
   OrganizationId = 'ORGANIZATION_ID',
+  ShowOnBoard = 'SHOW_ON_BOARD',
   ShowOnRoadmap = 'SHOW_ON_ROADMAP',
   SortOrder = 'SORT_ORDER',
   UpdatedAt = 'UPDATED_AT',
@@ -7749,6 +7757,7 @@ export type StatusTemplateInput = {
   name: Scalars['String']['input'];
   organizationId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showOnBoard?: InputMaybe<Scalars['Boolean']['input']>;
   showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -7887,6 +7896,8 @@ export enum StatusTemplateOrderBy {
   ProjectStatusConfigsVarianceSampleSortOrderDesc = 'PROJECT_STATUS_CONFIGS_VARIANCE_SAMPLE_SORT_ORDER_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  ShowOnBoardAsc = 'SHOW_ON_BOARD_ASC',
+  ShowOnBoardDesc = 'SHOW_ON_BOARD_DESC',
   ShowOnRoadmapAsc = 'SHOW_ON_ROADMAP_ASC',
   ShowOnRoadmapDesc = 'SHOW_ON_ROADMAP_DESC',
   SortOrderAsc = 'SORT_ORDER_ASC',
@@ -7905,6 +7916,7 @@ export type StatusTemplatePatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  showOnBoard?: InputMaybe<Scalars['Boolean']['input']>;
   showOnRoadmap?: InputMaybe<Scalars['Boolean']['input']>;
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -10439,7 +10451,7 @@ export type UpdateStatusTemplateMutationVariables = Exact<{
 }>;
 
 
-export type UpdateStatusTemplateMutation = { __typename?: 'Mutation', updateStatusTemplate?: { __typename?: 'UpdateStatusTemplatePayload', clientMutationId?: string | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, color?: string | null, description?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null } | null } | null };
+export type UpdateStatusTemplateMutation = { __typename?: 'Mutation', updateStatusTemplate?: { __typename?: 'UpdateStatusTemplatePayload', clientMutationId?: string | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, color?: string | null, description?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null, showOnBoard?: boolean | null } | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   identityProviderId: Scalars['UUID']['input'];
@@ -10574,7 +10586,7 @@ export type ProjectStatusesQueryVariables = Exact<{
 }>;
 
 
-export type ProjectStatusesQuery = { __typename?: 'Query', statusTemplates?: { __typename?: 'StatusTemplateConnection', nodes: Array<{ __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null } | null> } | null, projectStatusConfigs?: { __typename?: 'ProjectStatusConfigConnection', nodes: Array<{ __typename?: 'ProjectStatusConfig', rowId: string, projectId: string, statusTemplateId: string, customColor?: string | null, customDescription?: string | null, isEnabled?: boolean | null, isDefault?: boolean | null, sortOrder?: number | null } | null> } | null };
+export type ProjectStatusesQuery = { __typename?: 'Query', statusTemplates?: { __typename?: 'StatusTemplateConnection', nodes: Array<{ __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null, sortOrder?: number | null, showOnRoadmap?: boolean | null, showOnBoard?: boolean | null } | null> } | null, projectStatusConfigs?: { __typename?: 'ProjectStatusConfigConnection', nodes: Array<{ __typename?: 'ProjectStatusConfig', rowId: string, projectId: string, statusTemplateId: string, customColor?: string | null, customDescription?: string | null, isEnabled?: boolean | null, isDefault?: boolean | null, sortOrder?: number | null } | null> } | null };
 
 export type ProjectsQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -10976,6 +10988,7 @@ export const UpdateStatusTemplateDocument = gql`
       description
       sortOrder
       showOnRoadmap
+      showOnBoard
     }
   }
 }
@@ -11187,6 +11200,7 @@ export const ProjectStatusesDocument = gql`
       color
       sortOrder
       showOnRoadmap
+      showOnBoard
     }
   }
   projectStatusConfigs(condition: {isEnabled: $isEnabled}) {
