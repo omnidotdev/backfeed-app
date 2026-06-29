@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/tooltip";
 import signIn from "@/lib/auth/signIn";
 
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, MouseEvent, ReactNode } from "react";
 
 interface Props extends Omit<ComponentProps<typeof Button>, "children"> {
   /** Action description (e.g., "vote", "comment"). */
@@ -20,7 +20,10 @@ interface Props extends Omit<ComponentProps<typeof Button>, "children"> {
  * Sign in prompt that redirects to sign-in with current URL as return destination.
  */
 const SignInPrompt = ({ action, children, ...rest }: Props) => {
-  const handleClick = () => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    // stop the click from reaching an ancestor (e.g. a clickable feedback
+    // card) so signing in does not also navigate to the post
+    event.stopPropagation();
     // Use current URL as return destination after sign in
     const returnUrl = window.location.href;
     signIn({ redirectUrl: returnUrl });
@@ -32,7 +35,9 @@ const SignInPrompt = ({ action, children, ...rest }: Props) => {
         {children ? (
           <button
             type="button"
-            onClick={handleClick}
+            // capture so the click fires before an inner handler (e.g. a vote
+            // button's stopPropagation) can swallow it
+            onClickCapture={handleClick}
             className="cursor-pointer"
           >
             {children}
