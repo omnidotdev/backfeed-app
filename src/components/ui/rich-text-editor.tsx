@@ -55,9 +55,14 @@ import {
   $createParagraphNode,
   $createTextNode,
   $getRoot,
+  $getSelection,
   $insertNodes,
+  $isRangeSelection,
   $setSelection,
+  COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
+  KEY_MODIFIER_COMMAND,
+  PASTE_COMMAND,
 } from "lexical";
 import {
   Bold,
@@ -156,6 +161,21 @@ const AUTO_LINK_MATCHERS = [
   ),
   createLinkMatcherWithRegExp(EMAIL_MATCHER, (text) => `mailto:${text}`),
 ];
+
+/**
+ * Normalize a pasted token into a link href, or null when it is not a single
+ * URL/email. Drives "paste a URL over a selection to link it": only a lone
+ * token (no whitespace) that reads as a URL or email becomes a link, so pasting
+ * a sentence still replaces the selection as text.
+ */
+const linkFromText = (text: string): string | null => {
+  const value = text.trim();
+  if (!value || /\s/.test(value)) return null;
+  if (/^https?:\/\/\S+$/i.test(value)) return value;
+  if (/^www\.\S+$/i.test(value)) return `https://${value}`;
+  if (/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(value)) return `mailto:${value}`;
+  return null;
+};
 
 /** Read the editor's content as an HTML string. */
 const exportToHtml = (editor: LexicalEditor): string => {
@@ -284,6 +304,66 @@ const EditablePlugin = ({ editable }: { editable: boolean }) => {
   useEffect(() => {
     editor.setEditable(editable);
   }, [editor, editable]);
+
+  return null;
+};
+
+/**
+ * Link affordances for selections: paste a URL over highlighted text to wrap it
+ * in a link, and Cmd/Ctrl+K to link the selection (the keyboard equivalent of
+ * the toolbar link button). Both no-op on a collapsed selection so normal paste
+ * and other shortcuts are untouched.
+ */
+const LinkShortcutsPlugin = () => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const unregisterPaste = editor.registerCommand<ClipboardEvent>(
+      PASTE_COMMAND,
+      (event) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+          return false;
+        }
+        const href = linkFromText(
+          event.clipboardData?.getData("text/plain") ?? "",
+        );
+        if (!href) return false;
+        event.preventDefault();
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, href);
+        return true;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
+
+    const unregisterShortcut = editor.registerCommand<KeyboardEvent>(
+      KEY_MODIFIER_COMMAND,
+      (event) => {
+        const isLinkShortcut =
+          (event.metaKey || event.ctrlKey) &&
+          !event.altKey &&
+          event.key.toLowerCase() === "k";
+        if (!isLinkShortcut) return false;
+
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+          return false;
+        }
+        event.preventDefault();
+        const url = window.prompt("Link URL");
+        if (url?.trim()) {
+          editor.dispatchCommand(TOGGLE_LINK_COMMAND, url.trim());
+        }
+        return true;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
+
+    return () => {
+      unregisterPaste();
+      unregisterShortcut();
+    };
+  }, [editor]);
 
   return null;
 };
@@ -672,6 +752,8 @@ const RichTextEditor = ({
           {/* markdown-style input: `- `, `1. `, `# `, `> `, `**bold**`, etc. */}
           <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
           <LinkPlugin />
+          {/* paste a URL over a selection to link it; Cmd/Ctrl+K to link */}
+          <LinkShortcutsPlugin />
           {/* turn bare URLs / emails into links as they are typed or pasted */}
           <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
           {mentionItems?.length ? (
