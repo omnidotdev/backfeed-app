@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import EditorHints from "@/components/feedback/EditorHints";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -159,11 +160,14 @@ const CreateComment = ({ canCreateComment, mentionableUsers }: Props) => {
       </AppField>
 
       <div className="flex flex-row justify-between gap-2">
-        <CharacterLimit
-          value={messageLength}
-          max={MAX_COMMENT_LENGTH}
-          className="place-self-start"
-        />
+        <div className="flex items-center gap-2">
+          <CharacterLimit
+            value={messageLength}
+            max={MAX_COMMENT_LENGTH}
+            className="place-self-start"
+          />
+          <EditorHints />
+        </div>
 
         <AppForm>
           <SubmitForm

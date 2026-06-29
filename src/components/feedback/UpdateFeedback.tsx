@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
+import EditorHints from "@/components/feedback/EditorHints";
 import PostTags from "@/components/feedback/PostTags";
 import { Button } from "@/components/ui/button";
 import {
@@ -359,11 +360,14 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
             />
 
             <div className="flex flex-row justify-between">
-              <CharacterLimit
-                value={descriptionLength}
-                max={MAX_DESCRIPTION_LENGTH}
-                className="place-self-start"
-              />
+              <div className="flex items-center gap-2">
+                <CharacterLimit
+                  value={descriptionLength}
+                  max={MAX_DESCRIPTION_LENGTH}
+                  className="place-self-start"
+                />
+                <EditorHints />
+              </div>
 
               <AppForm>
                 <SubmitForm

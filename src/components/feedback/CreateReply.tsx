@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
+import EditorHints from "@/components/feedback/EditorHints";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -176,11 +177,14 @@ const CreateReply = ({
             </AppField>
 
             <div className="flex flex-row justify-between bg-background-subtle p-2 dark:bg-background-subtle/20">
-              <CharacterLimit
-                value={messageLength}
-                max={MAX_COMMENT_LENGTH}
-                className="place-self-start"
-              />
+              <div className="flex items-center gap-2">
+                <CharacterLimit
+                  value={messageLength}
+                  max={MAX_COMMENT_LENGTH}
+                  className="place-self-start"
+                />
+                <EditorHints />
+              </div>
 
               <AppForm>
                 <SubmitForm
