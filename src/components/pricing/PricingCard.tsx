@@ -1,4 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useMutation } from "@tanstack/react-query";
 import {
   Link,
@@ -12,7 +13,6 @@ import { LuBuilding, LuCheck, LuClockAlert, LuPlus } from "react-icons/lu";
 import { match } from "ts-pattern";
 
 import CreateWorkspaceModal from "@/components/pricing/CreateWorkspaceModal";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {

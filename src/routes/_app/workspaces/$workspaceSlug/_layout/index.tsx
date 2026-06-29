@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
@@ -5,7 +6,6 @@ import { LuCirclePlus } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
 import CreateProject from "@/components/project/CreateProject";
-import { Badge } from "@/components/ui/badge";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";

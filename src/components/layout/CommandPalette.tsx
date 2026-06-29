@@ -1,3 +1,4 @@
+import { Kbd } from "@omnidotdev/thornberry/kbd";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LuColumns3, LuFolderPlus, LuPlus, LuSunMoon } from "react-icons/lu";
@@ -10,7 +11,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Kbd } from "@/components/ui/kbd";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import useProjectViewStore from "@/lib/store/useProjectViewStore";

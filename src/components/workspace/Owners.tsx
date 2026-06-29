@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@tanstack/react-table";
 import { useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,

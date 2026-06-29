@@ -1,4 +1,5 @@
 import { createListCollection } from "@ark-ui/react";
+import { Kbd } from "@omnidotdev/thornberry/kbd";
 import {
   keepPreviousData,
   useInfiniteQuery,
@@ -24,7 +25,6 @@ import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import TagFilterPills from "@/components/project/TagFilterPills";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Kbd } from "@/components/ui/kbd";
 import {
   SelectContent,
   SelectControl,

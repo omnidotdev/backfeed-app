@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -9,7 +10,6 @@ import {
 import { useMemo } from "react";
 import { match } from "ts-pattern";
 
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,

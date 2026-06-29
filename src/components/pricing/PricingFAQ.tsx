@@ -3,7 +3,8 @@ import {
   AccordionItemContent,
   AccordionItemTrigger,
   AccordionRoot,
-} from "@/components/ui/accordion";
+} from "@omnidotdev/thornberry/accordion";
+
 import app from "@/lib/config/app.config";
 import cn from "@/lib/utils";
 
