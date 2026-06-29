@@ -13,6 +13,7 @@ import StatusBadge from "@/components/core/StatusBadge";
 import AttachmentGallery from "@/components/feedback/AttachmentGallery";
 import FeedbackKey from "@/components/feedback/FeedbackKey";
 import TagBadge from "@/components/feedback/TagBadge";
+import TagPicker from "@/components/feedback/TagPicker";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
 import {
@@ -442,11 +443,32 @@ const FeedbackCard = ({
           </MenuRoot>
         </div>
 
-        {tags.length > 0 && (
+        {(tags.length > 0 ||
+          (isAuthenticated &&
+            !isFeedbackPending &&
+            feedback.project?.rowId)) && (
           <div className="flex flex-wrap items-center gap-1.5">
             {tags.map((tag) => (
               <TagBadge key={tag.rowId} name={tag.name} color={tag.color} />
             ))}
+
+            {isAuthenticated &&
+              !isFeedbackPending &&
+              feedback.rowId &&
+              feedback.project?.rowId && (
+                <TagPicker
+                  postId={feedback.rowId}
+                  projectId={feedback.project.rowId}
+                  label={compact ? "" : "Tag"}
+                  triggerProps={{
+                    variant: "ghost",
+                    size: "sm",
+                    "aria-label": "Edit tags",
+                    className:
+                      "h-6 gap-1 px-1.5 text-foreground-subtle text-xs hover:text-foreground",
+                  }}
+                />
+              )}
           </div>
         )}
 

@@ -896,6 +896,9 @@ const app = {
           plural: "Sort By",
         },
       },
+      tags: {
+        label: "Tags",
+      },
       feedbackTitle: {
         label: "Title",
         placeholders: [

@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
+import PostTags from "@/components/feedback/PostTags";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -293,6 +294,21 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                 </div>
               )}
             </AppField>
+
+            {/* mount only while open so closed cards don't each fetch tags */}
+            {isOpen &&
+              feedback.rowId &&
+              feedback.rowId !== "pending" &&
+              feedback.project?.rowId && (
+                <div className="flex flex-col gap-1.5">
+                  <Label>{app.projectPage.projectFeedback.tags.label}</Label>
+                  <PostTags
+                    postId={feedback.rowId}
+                    projectId={feedback.project.rowId}
+                    canAssign
+                  />
+                </div>
+              )}
 
             {!!existingAttachments.length && (
               <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
