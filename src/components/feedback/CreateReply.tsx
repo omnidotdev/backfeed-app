@@ -1,3 +1,4 @@
+import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useRef, useState } from "react";
@@ -8,7 +9,6 @@ import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -23,8 +23,11 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import toaster from "@/lib/util/toaster";
 
+import type {
+  EditorApi,
+  MentionItem,
+} from "@omnidotdev/thornberry/rich-text-editor";
 import type { ComponentProps } from "react";
-import type { EditorApi, MentionItem } from "@/components/ui/rich-text-editor";
 import type { Comment } from "@/generated/graphql";
 
 const MAX_COMMENT_LENGTH = 240;

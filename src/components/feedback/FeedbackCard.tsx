@@ -1,4 +1,5 @@
 import { Format, Portal } from "@ark-ui/react";
+import { RichTextContent } from "@omnidotdev/thornberry/rich-text-editor";
 import {
   useNavigate,
   useParams,
@@ -29,7 +30,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { RichTextContent } from "@/components/ui/rich-text-editor";
 import {
   VoteType,
   useDeletePostMutation,

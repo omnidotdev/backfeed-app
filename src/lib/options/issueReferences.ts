@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
 
-import type { IssueReferenceItem } from "@/components/ui/rich-text-editor";
+import type { IssueReferenceItem } from "@omnidotdev/thornberry/rich-text-editor";
 
 interface ProjectIssueRefsData {
   projects: {

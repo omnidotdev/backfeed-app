@@ -1,4 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
+import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
@@ -17,7 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useCreateAttachmentMutation,
   useCreateFeedbackMutation,
@@ -39,8 +39,8 @@ import {
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import toaster from "@/lib/util/toaster";
 
+import type { EditorApi } from "@omnidotdev/thornberry/rich-text-editor";
 import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
-import type { EditorApi } from "@/components/ui/rich-text-editor";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 

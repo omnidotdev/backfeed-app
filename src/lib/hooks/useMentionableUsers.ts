@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import type { MentionItem } from "@/components/ui/rich-text-editor";
+import type { MentionItem } from "@omnidotdev/thornberry/rich-text-editor";
 
 /** A user that can be offered in the `@`-mention typeahead. */
 export interface MentionableUser {

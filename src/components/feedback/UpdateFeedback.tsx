@@ -1,4 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
+import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useRef, useState } from "react";
@@ -18,7 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useCreateAttachmentMutation,
   useDeleteAttachmentMutation,
@@ -33,9 +33,9 @@ import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import { projectParticipantsOptions } from "@/lib/options/mentionableUsers";
 import toaster from "@/lib/util/toaster";
 
+import type { EditorApi } from "@omnidotdev/thornberry/rich-text-editor";
 import type { ComponentProps } from "react";
 import type { UploadedAttachment } from "@/components/feedback/AttachmentUploader";
-import type { EditorApi } from "@/components/ui/rich-text-editor";
 import type { AttachmentFragment, FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;

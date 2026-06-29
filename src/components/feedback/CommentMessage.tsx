@@ -1,6 +1,6 @@
+import { RichTextContent } from "@omnidotdev/thornberry/rich-text-editor";
 import { Link, useParams } from "@tanstack/react-router";
 
-import { RichTextContent } from "@/components/ui/rich-text-editor";
 import { linkifyIssueRefsHtml, splitIssueRefs } from "@/lib/util/issueRefs";
 
 interface Props {

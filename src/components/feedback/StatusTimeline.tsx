@@ -1,3 +1,4 @@
+import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -6,7 +7,6 @@ import { LuGitCommitHorizontal, LuPencil } from "react-icons/lu";
 import DestructiveAction from "@/components/core/DestructiveAction";
 import CommentMessage from "@/components/feedback/CommentMessage";
 import { Button } from "@/components/ui/button";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   useDeletePostStatusChangeMutation,
   useUpdatePostStatusChangeMutation,

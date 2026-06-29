@@ -22,8 +22,8 @@ import { feedbackByIdOptions } from "@/lib/options/feedback";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import cn from "@/lib/utils";
 
+import type { MentionItem } from "@omnidotdev/thornberry/rich-text-editor";
 import type { ComponentProps } from "react";
-import type { MentionItem } from "@/components/ui/rich-text-editor";
 import type { CommentFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
