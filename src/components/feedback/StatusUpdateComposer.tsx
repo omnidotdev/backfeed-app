@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import CharacterLimit from "@/components/core/CharacterLimit";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useChangePostStatusMutation } from "@/generated/graphql";
 import { statusBreakdownOptions } from "@/lib/options/projects";
 import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";
@@ -10,8 +11,12 @@ import toaster from "@/lib/util/toaster";
 import cn from "@/lib/utils";
 
 import type { QueryKey } from "@tanstack/react-query";
+import type { EditorApi } from "@/components/ui/rich-text-editor";
 import type { FeedbackByIdQuery } from "@/generated/graphql";
 import type { StatusTimelineData } from "@/lib/options/statusTimeline";
+
+/** Plain-text length cap for a status note (HTML is stored, text is measured). */
+const MAX_NOTE_LENGTH = 500;
 
 /** Prefix for every cached feedback detail (holds the status badge). */
 const FEEDBACK_KEY: QueryKey = ["FeedbackById"];
@@ -39,7 +44,6 @@ interface Props {
 interface StatusRollbackContext {
   previousTimeline: StatusTimelineData | undefined;
   previousFeedback: [QueryKey, FeedbackByIdQuery | undefined][];
-  previousNote: string;
 }
 
 /**
@@ -57,7 +61,10 @@ const StatusUpdateComposer = ({
   const queryClient = useQueryClient();
 
   const [targetStatusId, setTargetStatusId] = useState(currentStatusId);
+  // editor is uncontrolled; `note` mirrors its HTML, `noteLength` its plain text
+  const noteEditorApi = useRef<EditorApi | null>(null);
   const [note, setNote] = useState("");
+  const [noteLength, setNoteLength] = useState(0);
 
   const timelineKey = statusTimelineQueryKey(postId);
 
@@ -77,10 +84,6 @@ const StatusUpdateComposer = ({
       const previousFeedback = queryClient.getQueriesData<FeedbackByIdQuery>({
         queryKey: FEEDBACK_KEY,
       });
-      const previousNote = note;
-
-      // clear the note right away so the composer feels responsive
-      setNote("");
 
       // append an optimistic entry to the post's timeline (oldest first)
       queryClient.setQueryData<StatusTimelineData>(timelineKey, (old) =>
@@ -137,7 +140,7 @@ const StatusUpdateComposer = ({
           },
         );
 
-      return { previousTimeline, previousFeedback, previousNote };
+      return { previousTimeline, previousFeedback };
     },
     onError: (_error, _variables, context) => {
       const ctx = context as StatusRollbackContext | undefined;
@@ -145,11 +148,16 @@ const StatusUpdateComposer = ({
         queryClient.setQueryData(timelineKey, ctx.previousTimeline);
         for (const [key, data] of ctx.previousFeedback)
           queryClient.setQueryData(key, data);
-        setNote(ctx.previousNote);
       }
       toaster.error({ title: "Could not update status" });
     },
-    onSuccess: () => toaster.success({ title: "Status updated" }),
+    onSuccess: () => {
+      // clear the composer only once the change persists (preserve on error)
+      noteEditorApi.current?.clearContent();
+      setNote("");
+      setNoteLength(0);
+      toaster.success({ title: "Status updated" });
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: timelineKey });
       // prefix match: refresh the post card regardless of the viewer's userId
@@ -162,7 +170,7 @@ const StatusUpdateComposer = ({
 
   if (!statuses?.length) return null;
 
-  const isUnchanged = targetStatusId === currentStatusId && !note.trim();
+  const isUnchanged = targetStatusId === currentStatusId && noteLength === 0;
 
   return (
     <section className="flex flex-col gap-3 rounded-lg border border-border-subtle p-4">
@@ -198,22 +206,31 @@ const StatusUpdateComposer = ({
         })}
       </div>
 
-      <Textarea
-        value={note}
-        onChange={(event) => setNote(event.target.value)}
+      <RichTextEditor
+        editorApi={noteEditorApi}
         placeholder="Add an optional note (e.g. shipping next release)"
-        rows={2}
+        editorClassName="min-h-16"
+        onUpdate={({ getHTML, getText, isEmpty }) => {
+          setNote(isEmpty ? "" : getHTML());
+          setNoteLength(getText().trim().length);
+        }}
       />
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-2">
+        <CharacterLimit
+          value={noteLength}
+          max={MAX_NOTE_LENGTH}
+          className="place-self-start"
+        />
+
         <Button
           size="sm"
-          disabled={isUnchanged || isPending}
+          disabled={isUnchanged || isPending || noteLength > MAX_NOTE_LENGTH}
           onClick={() =>
             changeStatus({
               postId,
               statusTemplateId: targetStatusId ?? null,
-              note: note.trim() || null,
+              note: note || null,
             })
           }
         >

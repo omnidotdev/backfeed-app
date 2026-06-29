@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { LuGitCommitHorizontal } from "react-icons/lu";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
+import CommentMessage from "@/components/feedback/CommentMessage";
 import { useDeletePostStatusChangeMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import {
@@ -131,10 +132,12 @@ const StatusTimeline = ({ postId, canManage }: Props) => {
             </div>
 
             {change.note ? (
-              // align the note under the text, past the commit icon
-              <p className="ml-6 border-border border-l-2 pl-3 text-muted-foreground text-sm">
-                {change.note}
-              </p>
+              // align the note under the text, past the commit icon. notes are
+              // rich text (HTML); legacy notes are plain text. CommentMessage
+              // renders both and linkifies #refs
+              <div className="ml-6 border-border border-l-2 pl-3 text-muted-foreground text-sm">
+                <CommentMessage message={change.note} />
+              </div>
             ) : null}
           </li>
         ))}
