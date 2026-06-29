@@ -27,7 +27,7 @@ import {
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
-import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
+import useMentionCandidates from "@/lib/hooks/useMentionCandidates";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import { projectParticipantsOptions } from "@/lib/options/mentionableUsers";
@@ -82,11 +82,16 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
     }),
   );
 
-  // project participants, offered in the `@`-mention typeahead
+  // the whole org roster, offered in the `@`-mention typeahead, plus the
+  // project's prior participants (who may be external reporters, not org members)
   const { data: projectParticipants } = useQuery(
     projectParticipantsOptions({ projectId: feedback.project?.rowId }),
   );
-  const mentionItems = useMentionableUsers(projectParticipants);
+  const mentionItems = useMentionCandidates({
+    organizationId: feedback.project?.organizationId,
+    accessToken: session?.accessToken,
+    participants: projectParticipants,
+  });
 
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);

@@ -26,7 +26,7 @@ import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import useForm from "@/lib/hooks/useForm";
-import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
+import useMentionCandidates from "@/lib/hooks/useMentionCandidates";
 import { freeTierFeedbackOptions } from "@/lib/options/feedback";
 import { projectIssueRefsOptions } from "@/lib/options/issueReferences";
 import { projectParticipantsOptions } from "@/lib/options/mentionableUsers";
@@ -116,12 +116,16 @@ const CreateFeedback = () => {
     projectIssueRefsOptions({ projectSlug, organizationId }),
   );
 
-  // project participants, offered in the `@`-mention typeahead (a new post has
-  // no comment thread to source mentionable users from)
+  // the whole org roster, offered in the `@`-mention typeahead, plus the
+  // project's prior participants (who may be external reporters, not org members)
   const { data: projectParticipants } = useQuery(
     projectParticipantsOptions({ projectId }),
   );
-  const mentionItems = useMentionableUsers(projectParticipants);
+  const mentionItems = useMentionCandidates({
+    organizationId,
+    accessToken: session?.accessToken,
+    participants: projectParticipants,
+  });
 
   const { data: defaultStatusTemplateId } = useQuery({
     ...projectStatusesOptions({ organizationId: organizationId! }),

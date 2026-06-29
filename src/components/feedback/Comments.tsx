@@ -18,7 +18,7 @@ import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import SectionContainer from "@/components/layout/SectionContainer";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
-import useMentionableUsers from "@/lib/hooks/useMentionableUsers";
+import useMentionCandidates from "@/lib/hooks/useMentionCandidates";
 import useScrollFade from "@/lib/hooks/useScrollFade";
 import {
   freeTierCommentsOptions,
@@ -107,12 +107,17 @@ const Comments = () => {
 
   const allComments = [...pendingComments, ...(comments ?? [])];
 
-  // offer the thread's participants in the @-mention typeahead
+  // offer the whole org roster in the @-mention typeahead, plus this thread's
+  // participants (who may be external reporters, not org members)
   const threadParticipants = useMemo(
     () => (comments ?? []).map((comment) => comment?.user),
     [comments],
   );
-  const mentionableUsers = useMentionableUsers(threadParticipants);
+  const mentionableUsers = useMentionCandidates({
+    organizationId,
+    accessToken: session?.accessToken,
+    participants: threadParticipants,
+  });
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
