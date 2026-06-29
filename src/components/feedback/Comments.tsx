@@ -96,6 +96,7 @@ const Comments = () => {
         createdAt: getPendingDate(mutation.state.submittedAt),
         user: {
           rowId: session?.user?.rowId!,
+          identityProviderId: session?.user?.identityProviderId ?? "",
           username: session?.user?.username,
         },
         childComments: {

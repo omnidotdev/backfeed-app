@@ -207,6 +207,7 @@ const ProjectFeedback = () => {
         },
         user: {
           rowId: session?.user?.rowId ?? "",
+          identityProviderId: session?.user?.identityProviderId ?? "",
           username: session?.user?.username,
         },
         attachments: {

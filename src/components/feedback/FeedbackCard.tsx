@@ -13,6 +13,7 @@ import DestructiveAction from "@/components/core/DestructiveAction";
 import StatusBadge from "@/components/core/StatusBadge";
 import AttachmentGallery from "@/components/feedback/AttachmentGallery";
 import FeedbackKey from "@/components/feedback/FeedbackKey";
+import RoleBadge from "@/components/feedback/RoleBadge";
 import TagBadge from "@/components/feedback/TagBadge";
 import TagPicker from "@/components/feedback/TagPicker";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
@@ -36,6 +37,7 @@ import {
   useUpdatePostMutation,
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";
 import {
   feedbackByIdOptions,
   infiniteFeedbackOptions,
@@ -114,6 +116,8 @@ const FeedbackCard = ({
   const { session, queryClient } = useRouteContext({
     from: "__root__",
   });
+
+  const roleMap = useOrgRoleMap(feedback.project?.organizationId);
 
   // Use prop if provided, otherwise derive from session existence
   const isAuthenticated = isAuthenticatedProp ?? !!session;
@@ -540,6 +544,10 @@ const FeedbackCard = ({
                 </AvatarRoot>
 
                 <span className="truncate">{feedback.user.username}</span>
+
+                <RoleBadge
+                  role={roleMap.get(feedback.user.identityProviderId)}
+                />
               </span>
             )}
 

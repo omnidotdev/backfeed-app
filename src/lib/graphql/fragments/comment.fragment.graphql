@@ -3,6 +3,7 @@ fragment Comment on Comment {
   message
   user {
     rowId
+    identityProviderId
     username
     avatarUrl
   }

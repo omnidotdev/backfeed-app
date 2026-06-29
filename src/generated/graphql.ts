@@ -2110,6 +2110,10 @@ export type Mutation = {
   /** Deletes a single `WardenSyncQueue` using a unique key. */
   deleteWardenSyncQueue?: Maybe<DeleteWardenSyncQueuePayload>;
   ingestSignal?: Maybe<IngestSignalPayload>;
+  /** Mark all the current user's notifications read. Returns the number updated. */
+  markAllNotificationsRead: Scalars['Int']['output'];
+  /** Mark the given notifications (the current user's) read. Returns the number updated. */
+  markNotificationsRead: Scalars['Int']['output'];
   promoteSignalToPost?: Maybe<PromoteSignalToPostPayload>;
   /** Update the current user's email notification settings. */
   setNotificationPreference?: Maybe<NotificationPreference>;
@@ -2351,6 +2355,12 @@ export type MutationIngestSignalArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationMarkNotificationsReadArgs = {
+  ids: Array<Scalars['UUID']['input']>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationPromoteSignalToPostArgs = {
   input: PromoteSignalToPostInput;
 };
@@ -2461,6 +2471,34 @@ export type MutationUpdateWardenSyncQueueArgs = {
 export type Node = {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+};
+
+/** An in-app notification for the current user. */
+export type Notification = {
+  __typename?: 'Notification';
+  actor?: Maybe<NotificationActor>;
+  commentId?: Maybe<Scalars['UUID']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  /** Reaction emoji (reaction notifications only). */
+  emoji?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  isRead: Scalars['Boolean']['output'];
+  organizationId?: Maybe<Scalars['String']['output']>;
+  postId?: Maybe<Scalars['UUID']['output']>;
+  postNumber?: Maybe<Scalars['Int']['output']>;
+  postTitle?: Maybe<Scalars['String']['output']>;
+  projectSlug?: Maybe<Scalars['String']['output']>;
+  /** New status display name (status_change notifications only). */
+  statusName?: Maybe<Scalars['String']['output']>;
+  /** One of: mention, reply, reaction, status_change. */
+  type: Scalars['String']['output'];
+};
+
+/** The user who triggered a notification. */
+export type NotificationActor = {
+  __typename?: 'NotificationActor';
+  image?: Maybe<Scalars['String']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 export type NotificationPreference = {
@@ -5830,6 +5868,8 @@ export type Query = Node & {
   id: Scalars['ID']['output'];
   /** The current user's email notification settings (defaults applied). */
   myNotificationPreference?: Maybe<NotificationPreference>;
+  /** The current user's most recent notifications, newest first. */
+  myNotifications: Array<Notification>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /**
@@ -5912,6 +5952,8 @@ export type Query = Node & {
   tagByProjectIdAndName?: Maybe<Tag>;
   /** Reads and enables pagination through a set of `Tag`. */
   tags?: Maybe<TagConnection>;
+  /** Count of the current user's unread notifications. */
+  unreadNotificationCount: Scalars['Int']['output'];
   /** Get a single `User`. */
   user?: Maybe<User>;
   /** Get a single `User`. */
@@ -5970,6 +6012,12 @@ export type QueryCommentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommentOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMyNotificationsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -10335,13 +10383,13 @@ export type WardenSyncQueueVarianceSampleAggregates = {
 
 export type AttachmentFragment = { __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null };
 
-export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
+export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } };
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, showRoadmap: boolean, showChangelog: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
-export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null };
+export type ReplyFragment = { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, name: string, email: string, avatarUrl?: string | null };
 
@@ -10372,6 +10420,18 @@ export type DeleteCommentMutationVariables = Exact<{
 
 
 export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment?: { __typename?: 'DeleteCommentPayload', clientMutationId?: string | null } | null };
+
+export type MarkAllNotificationsReadMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarkAllNotificationsReadMutation = { __typename?: 'Mutation', markAllNotificationsRead: number };
+
+export type MarkNotificationsReadMutationVariables = Exact<{
+  ids: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+
+export type MarkNotificationsReadMutation = { __typename?: 'Mutation', markNotificationsRead: number };
 
 export type ChangePostStatusMutationVariables = Exact<{
   postId: Scalars['UUID']['input'];
@@ -10545,7 +10605,7 @@ export type CommentsQueryVariables = Exact<{
 }>;
 
 
-export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
+export type CommentsQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } } | null } | null> } | null };
 
 export type FeedbackByIdQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -10553,7 +10613,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
 
 export type FeedbackByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -10562,12 +10622,19 @@ export type FeedbackByNumberQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
+export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
 
 export type MyNotificationPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MyNotificationPreferenceQuery = { __typename?: 'Query', myNotificationPreference?: { __typename?: 'NotificationPreference', postUpdates: boolean } | null };
+
+export type NotificationsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', myNotifications: Array<{ __typename?: 'Notification', id: string, type: string, emoji?: string | null, statusName?: string | null, isRead: boolean, createdAt: Date, postId?: string | null, commentId?: string | null, postNumber?: number | null, postTitle?: string | null, projectSlug?: string | null, organizationId?: string | null, actor?: { __typename?: 'NotificationActor', username?: string | null, image?: string | null } | null }> };
 
 export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10593,7 +10660,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null> } | null };
 
 export type PostsByRowIdsQueryVariables = Exact<{
   rowIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
@@ -10659,7 +10726,7 @@ export type RepliesQueryVariables = Exact<{
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, username?: string | null, avatarUrl?: string | null } | null } | null } | null> } | null };
+export type RepliesQuery = { __typename?: 'Query', comments?: { __typename?: 'CommentConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges: Array<{ __typename?: 'CommentEdge', node?: { __typename?: 'Comment', rowId: string, parentId?: string | null, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null } | null } | null> } | null };
 
 export type StatusBreakdownQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -10667,6 +10734,11 @@ export type StatusBreakdownQueryVariables = Exact<{
 
 
 export type StatusBreakdownQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', groupedAggregates?: Array<{ __typename?: 'PostAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'PostDistinctCountAggregates', rowId?: string | null } | null }> | null } | null };
+
+export type UnreadNotificationCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UnreadNotificationCountQuery = { __typename?: 'Query', unreadNotificationCount: number };
 
 export type UserQueryVariables = Exact<{
   identityProviderId: Scalars['UUID']['input'];
@@ -10703,6 +10775,7 @@ export const CommentFragmentDoc = `
   message
   user {
     rowId
+    identityProviderId
     username
     avatarUrl
   }
@@ -10748,6 +10821,7 @@ export const FeedbackFragmentDoc = `
   }
   user {
     rowId
+    identityProviderId
     username
     avatarUrl
   }
@@ -10832,6 +10906,7 @@ export const ReplyFragmentDoc = `
   message
   user {
     rowId
+    identityProviderId
     username
     avatarUrl
   }
@@ -10953,6 +11028,54 @@ useDeleteCommentMutation.getKey = () => ['DeleteComment'];
 
 
 useDeleteCommentMutation.fetcher = (variables: DeleteCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, variables, options);
+
+export const MarkAllNotificationsReadDocument = `
+    mutation MarkAllNotificationsRead {
+  markAllNotificationsRead
+}
+    `;
+
+export const useMarkAllNotificationsReadMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<MarkAllNotificationsReadMutation, TError, MarkAllNotificationsReadMutationVariables, TContext>) => {
+    
+    return useMutation<MarkAllNotificationsReadMutation, TError, MarkAllNotificationsReadMutationVariables, TContext>(
+      {
+    mutationKey: ['MarkAllNotificationsRead'],
+    mutationFn: (variables?: MarkAllNotificationsReadMutationVariables) => graphqlFetch<MarkAllNotificationsReadMutation, MarkAllNotificationsReadMutationVariables>(MarkAllNotificationsReadDocument, variables)(),
+    ...options
+  }
+    )};
+
+useMarkAllNotificationsReadMutation.getKey = () => ['MarkAllNotificationsRead'];
+
+
+useMarkAllNotificationsReadMutation.fetcher = (variables?: MarkAllNotificationsReadMutationVariables, options?: RequestInit['headers']) => graphqlFetch<MarkAllNotificationsReadMutation, MarkAllNotificationsReadMutationVariables>(MarkAllNotificationsReadDocument, variables, options);
+
+export const MarkNotificationsReadDocument = `
+    mutation MarkNotificationsRead($ids: [UUID!]!) {
+  markNotificationsRead(ids: $ids)
+}
+    `;
+
+export const useMarkNotificationsReadMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<MarkNotificationsReadMutation, TError, MarkNotificationsReadMutationVariables, TContext>) => {
+    
+    return useMutation<MarkNotificationsReadMutation, TError, MarkNotificationsReadMutationVariables, TContext>(
+      {
+    mutationKey: ['MarkNotificationsRead'],
+    mutationFn: (variables?: MarkNotificationsReadMutationVariables) => graphqlFetch<MarkNotificationsReadMutation, MarkNotificationsReadMutationVariables>(MarkNotificationsReadDocument, variables)(),
+    ...options
+  }
+    )};
+
+useMarkNotificationsReadMutation.getKey = () => ['MarkNotificationsRead'];
+
+
+useMarkNotificationsReadMutation.fetcher = (variables: MarkNotificationsReadMutationVariables, options?: RequestInit['headers']) => graphqlFetch<MarkNotificationsReadMutation, MarkNotificationsReadMutationVariables>(MarkNotificationsReadDocument, variables, options);
 
 export const ChangePostStatusDocument = `
     mutation ChangePostStatus($postId: UUID!, $statusTemplateId: UUID, $note: String) {
@@ -11804,6 +11927,71 @@ useInfiniteMyNotificationPreferenceQuery.getKey = (variables?: MyNotificationPre
 
 useMyNotificationPreferenceQuery.fetcher = (variables?: MyNotificationPreferenceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MyNotificationPreferenceQuery, MyNotificationPreferenceQueryVariables>(MyNotificationPreferenceDocument, variables, options);
 
+export const NotificationsDocument = `
+    query Notifications($limit: Int) {
+  myNotifications(limit: $limit) {
+    id
+    type
+    emoji
+    statusName
+    isRead
+    createdAt
+    actor {
+      username
+      image
+    }
+    postId
+    commentId
+    postNumber
+    postTitle
+    projectSlug
+    organizationId
+  }
+}
+    `;
+
+export const useNotificationsQuery = <
+      TData = NotificationsQuery,
+      TError = unknown
+    >(
+      variables?: NotificationsQueryVariables,
+      options?: Omit<UseQueryOptions<NotificationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<NotificationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<NotificationsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Notifications'] : ['Notifications', variables],
+    queryFn: graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, variables),
+    ...options
+  }
+    )};
+
+useNotificationsQuery.getKey = (variables?: NotificationsQueryVariables) => variables === undefined ? ['Notifications'] : ['Notifications', variables];
+
+export const useInfiniteNotificationsQuery = <
+      TData = InfiniteData<NotificationsQuery>,
+      TError = unknown
+    >(
+      variables: NotificationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<NotificationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<NotificationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<NotificationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Notifications.infinite'] : ['Notifications.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteNotificationsQuery.getKey = (variables?: NotificationsQueryVariables) => variables === undefined ? ['Notifications.infinite'] : ['Notifications.infinite', variables];
+
+
+useNotificationsQuery.fetcher = (variables?: NotificationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, variables, options);
+
 export const ObserverDocument = `
     query Observer {
   observer {
@@ -12549,6 +12737,54 @@ useInfiniteStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariabl
 
 
 useStatusBreakdownQuery.fetcher = (variables: StatusBreakdownQueryVariables, options?: RequestInit['headers']) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables, options);
+
+export const UnreadNotificationCountDocument = `
+    query UnreadNotificationCount {
+  unreadNotificationCount
+}
+    `;
+
+export const useUnreadNotificationCountQuery = <
+      TData = UnreadNotificationCountQuery,
+      TError = unknown
+    >(
+      variables?: UnreadNotificationCountQueryVariables,
+      options?: Omit<UseQueryOptions<UnreadNotificationCountQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UnreadNotificationCountQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UnreadNotificationCountQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['UnreadNotificationCount'] : ['UnreadNotificationCount', variables],
+    queryFn: graphqlFetch<UnreadNotificationCountQuery, UnreadNotificationCountQueryVariables>(UnreadNotificationCountDocument, variables),
+    ...options
+  }
+    )};
+
+useUnreadNotificationCountQuery.getKey = (variables?: UnreadNotificationCountQueryVariables) => variables === undefined ? ['UnreadNotificationCount'] : ['UnreadNotificationCount', variables];
+
+export const useInfiniteUnreadNotificationCountQuery = <
+      TData = InfiniteData<UnreadNotificationCountQuery>,
+      TError = unknown
+    >(
+      variables: UnreadNotificationCountQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UnreadNotificationCountQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UnreadNotificationCountQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UnreadNotificationCountQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['UnreadNotificationCount.infinite'] : ['UnreadNotificationCount.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UnreadNotificationCountQuery, UnreadNotificationCountQueryVariables>(UnreadNotificationCountDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUnreadNotificationCountQuery.getKey = (variables?: UnreadNotificationCountQueryVariables) => variables === undefined ? ['UnreadNotificationCount.infinite'] : ['UnreadNotificationCount.infinite', variables];
+
+
+useUnreadNotificationCountQuery.fetcher = (variables?: UnreadNotificationCountQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UnreadNotificationCountQuery, UnreadNotificationCountQueryVariables>(UnreadNotificationCountDocument, variables, options);
 
 export const UserDocument = `
     query User($identityProviderId: UUID!) {

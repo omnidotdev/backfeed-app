@@ -1,0 +1,20 @@
+query Notifications($limit: Int) {
+  myNotifications(limit: $limit) {
+    id
+    type
+    emoji
+    statusName
+    isRead
+    createdAt
+    actor {
+      username
+      image
+    }
+    postId
+    commentId
+    postNumber
+    postTitle
+    projectSlug
+    organizationId
+  }
+}

@@ -6,6 +6,7 @@ import { useIsClient } from "usehooks-ts";
 
 import LogoLink from "@/components/core/LogoLink";
 import AccountInformation from "@/components/layout/AccountInformation";
+import NotificationBell from "@/components/layout/NotificationBell";
 import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
@@ -70,6 +71,7 @@ const HeaderActions = () => {
 
         {session ? (
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <OrganizationSwitcher />
             <AccountInformation />
           </div>
@@ -95,6 +97,7 @@ const HeaderActions = () => {
       <ThemeToggle />
 
       <div className="flex items-center gap-2">
+        {session && <NotificationBell />}
         {session && <OrganizationSwitcher />}
 
         <SheetRoot

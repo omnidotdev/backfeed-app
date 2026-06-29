@@ -4,6 +4,7 @@ fragment Reply on Comment {
   message
   user {
     rowId
+    identityProviderId
     username
     avatarUrl
   }

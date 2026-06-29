@@ -69,6 +69,7 @@ const Replies = ({ commentId, ...rest }: Props) => {
         createdAt: new Date(),
         user: {
           rowId: session?.user?.rowId!,
+          identityProviderId: session?.user?.identityProviderId ?? "",
           username: session?.user?.username,
         },
       };

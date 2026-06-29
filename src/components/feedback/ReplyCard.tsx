@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
 import CommentMessage from "@/components/feedback/CommentMessage";
+import RoleBadge from "@/components/feedback/RoleBadge";
 import {
   AvatarFallback,
   AvatarImage,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/avatar";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";
 import {
   infiniteCommentsOptions,
   infiniteRepliesOptions,
@@ -32,9 +34,11 @@ interface Props extends ComponentProps<"div"> {
  * Reply card.
  */
 const ReplyCard = ({ reply, className, ...rest }: Props) => {
-  const { session, queryClient, hasAdminPrivileges } =
+  const { session, queryClient, hasAdminPrivileges, organizationId } =
     feedbackRoute.useRouteContext();
   const { feedbackId } = feedbackRoute.useLoaderData();
+
+  const roleMap = useOrgRoleMap(organizationId);
 
   const { mutate: deleteReply, isPending: isDeletePending } =
     useDeleteCommentMutation({
@@ -81,6 +85,10 @@ const ReplyCard = ({ reply, className, ...rest }: Props) => {
             <span className="font-semibold text-sm">
               {reply.user?.username}
             </span>
+
+            <RoleBadge
+              role={roleMap.get(reply.user?.identityProviderId ?? "")}
+            />
 
             <div className="size-1 rounded-full bg-foreground-subtle" />
 

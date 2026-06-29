@@ -9,6 +9,7 @@ import CommentMessage from "@/components/feedback/CommentMessage";
 import CreateReply from "@/components/feedback/CreateReply";
 import ReactionBar from "@/components/feedback/ReactionBar";
 import Replies from "@/components/feedback/Replies";
+import RoleBadge from "@/components/feedback/RoleBadge";
 import {
   AvatarFallback,
   AvatarImage,
@@ -17,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";
 import { infiniteCommentsOptions } from "@/lib/options/comments";
 import { feedbackByIdOptions } from "@/lib/options/feedback";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
@@ -48,9 +50,11 @@ const CommentCard = ({
   mentionableUsers,
   ...rest
 }: Props) => {
-  const { session, queryClient, hasAdminPrivileges } =
+  const { session, queryClient, hasAdminPrivileges, organizationId } =
     feedbackRoute.useRouteContext();
   const { feedbackId } = feedbackRoute.useLoaderData();
+
+  const roleMap = useOrgRoleMap(organizationId);
 
   const [hoveredRepliesToggle, setHoveredRepliesToggle] = useState(false);
 
@@ -114,6 +118,10 @@ const CommentCard = ({
         <div className="mt-1 flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="font-semibold">{comment?.user?.username}</span>
+
+            <RoleBadge
+              role={roleMap.get(comment?.user?.identityProviderId ?? "")}
+            />
 
             <div className="size-1 rounded-full bg-foreground-subtle" />
 
