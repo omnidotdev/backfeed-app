@@ -9,6 +9,7 @@ mutation UpdateStatusTemplate($rowId: UUID!, $patch: StatusTemplatePatch!) {
       description
       sortOrder
       showOnRoadmap
+      showOnBoard
     }
   }
 }

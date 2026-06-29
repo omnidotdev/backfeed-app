@@ -34,6 +34,7 @@ import {
   useDeleteStatusTemplateMutation,
   useUpdateStatusTemplateMutation,
 } from "@/generated/graphql";
+import { isStatusOnBoard } from "@/lib/constants/board.constant";
 import { isStatusOnRoadmap } from "@/lib/constants/roadmap.constant";
 import { projectStatusesOptions } from "@/lib/options/projects";
 import slugify from "@/lib/util/slugify";
@@ -65,6 +66,7 @@ interface Status {
   color?: string | null;
   sortOrder?: number | null;
   showOnRoadmap?: boolean | null;
+  showOnBoard?: boolean | null;
 }
 
 /**
@@ -218,6 +220,48 @@ const StatusTemplateManager = () => {
     onSettled: invalidate,
   });
 
+  const { mutate: toggleBoard } = useMutation({
+    mutationFn: ({
+      rowId,
+      showOnBoard,
+    }: {
+      rowId: string;
+      showOnBoard: boolean;
+    }) => updateStatus({ rowId, patch: { showOnBoard } }),
+    // optimistically flip the switch so it responds instantly, then reconcile
+    onMutate: async ({ rowId, showOnBoard }) => {
+      await queryClient.cancelQueries({ queryKey: statusesOptions.queryKey });
+      const previous = queryClient.getQueryData<ProjectStatusesQuery>(
+        statusesOptions.queryKey,
+      );
+
+      queryClient.setQueryData<ProjectStatusesQuery>(
+        statusesOptions.queryKey,
+        (old) =>
+          old?.statusTemplates?.nodes
+            ? {
+                ...old,
+                statusTemplates: {
+                  ...old.statusTemplates,
+                  nodes: old.statusTemplates.nodes.map((node) =>
+                    node?.rowId === rowId ? { ...node, showOnBoard } : node,
+                  ),
+                },
+              }
+            : old,
+      );
+
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(statusesOptions.queryKey, context.previous);
+      }
+      toaster.error({ title: "Could not update board visibility" });
+    },
+    onSettled: invalidate,
+  });
+
   // swap a status with its neighbor by exchanging sort orders
   const { mutate: reorder } = useMutation({
     mutationFn: async ({
@@ -291,6 +335,28 @@ const StatusTemplateManager = () => {
               </div>
 
               <div className="flex shrink-0 items-center gap-1">
+                <span className="mr-1 flex items-center gap-1.5 text-foreground-subtle text-xs">
+                  <span className="hidden sm:inline">Board</span>
+                  <SwitchRoot
+                    aria-label={`Show ${status.displayName} on the board by default`}
+                    checked={isStatusOnBoard({
+                      name: status.name,
+                      showOnBoard: status.showOnBoard,
+                    })}
+                    onCheckedChange={({ checked }) =>
+                      toggleBoard({
+                        rowId: status.rowId,
+                        showOnBoard: checked,
+                      })
+                    }
+                  >
+                    <SwitchControl>
+                      <SwitchThumb />
+                    </SwitchControl>
+                    <SwitchHiddenInput />
+                  </SwitchRoot>
+                </span>
+
                 <span className="mr-1 flex items-center gap-1.5 text-foreground-subtle text-xs">
                   <span className="hidden sm:inline">Roadmap</span>
                   <SwitchRoot

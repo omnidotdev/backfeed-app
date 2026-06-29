@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   notFound,
+  redirect,
   stripSearchParams,
 } from "@tanstack/react-router";
 import { HiBolt, HiFolder, HiOutlineFolder } from "react-icons/hi2";
@@ -15,6 +16,7 @@ import ProjectLinks from "@/components/project/ProjectLinks";
 import { PostOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
+import { isStatusOnBoard } from "@/lib/constants/board.constant";
 import {
   freeTierFeedbackOptions,
   infiniteFeedbackOptions,
@@ -61,19 +63,24 @@ export const Route = createFileRoute(
   },
   loader: async ({
     context: { session, queryClient, organizationId },
-    params: { projectSlug },
+    params: { workspaceSlug, projectSlug },
     location,
   }) => {
     const { search, excludedStatuses, tags, orderBy } =
       projectSearchSchema.parse(location.search);
 
-    const { projects } = await queryClient.ensureQueryData({
-      ...projectOptions({
-        organizationId,
-        projectSlug,
+    // project gates the page; statuses seed the board's default status filter.
+    // Both are independent, so fetch them together.
+    const [{ projects }, statusData] = await Promise.all([
+      queryClient.ensureQueryData({
+        ...projectOptions({ organizationId, projectSlug }),
+        revalidateIfStale: true,
       }),
-      revalidateIfStale: true,
-    });
+      queryClient.ensureQueryData({
+        ...projectStatusesOptions({ organizationId }),
+        revalidateIfStale: true,
+      }),
+    ]);
 
     if (!projects?.nodes.length) throw notFound();
 
@@ -87,13 +94,36 @@ export const Route = createFileRoute(
     const projectId = project.rowId;
     const projectName = project.name;
 
+    // On first entry (no explicit status filter), hide terminal statuses
+    // (Completed / Closed) by default so resolved items don't bury open
+    // feedback. Seeding the URL keeps every consumer (list query key, pills,
+    // optimistic updates) in sync; since filters aren't loader deps, in-session
+    // toggles (including "show all") are preserved.
+    if (!excludedStatuses.length) {
+      const defaultHidden = (statusData?.statusTemplates?.nodes ?? [])
+        .filter(
+          (status): status is NonNullable<typeof status> =>
+            !!status &&
+            !isStatusOnBoard({
+              name: status.name,
+              showOnBoard: status.showOnBoard,
+            }),
+        )
+        .map((status) => status.displayName)
+        .sort();
+
+      if (defaultHidden.length) {
+        throw redirect({
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          params: { workspaceSlug, projectSlug },
+          search: { search, tags, orderBy, excludedStatuses: defaultHidden },
+        });
+      }
+    }
+
     await Promise.all([
       queryClient.ensureQueryData({
         ...statusBreakdownOptions({ projectId }),
-        revalidateIfStale: true,
-      }),
-      queryClient.ensureQueryData({
-        ...projectStatusesOptions({ organizationId }),
         revalidateIfStale: true,
       }),
       queryClient.ensureQueryData(projectMetricsOptions({ projectId })),
