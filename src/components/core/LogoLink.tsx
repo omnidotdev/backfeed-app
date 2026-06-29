@@ -1,7 +1,7 @@
+import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
 import { Link, useRouteContext } from "@tanstack/react-router";
 
 import app from "@/lib/config/app.config";
-import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
@@ -18,18 +18,19 @@ const LogoLink = ({ width, className, ...rest }: Props) => {
 
   return (
     <Link to={session ? "/dashboard" : "/"}>
-      <div className={cn("flex items-center gap-2", className)} {...rest}>
-        <img
-          src="/img/logo.png"
-          alt={`${app.name} logo`}
-          width={width}
-          height={width / 2}
-        />
-
-        <span className="font-semibold text-lg text-neutral-900 dark:text-neutral-100">
-          {app.name}
-        </span>
-      </div>
+      <LogoLockup
+        className={className}
+        name={app.name}
+        logo={
+          <img
+            src="/img/logo.png"
+            alt={`${app.name} logo`}
+            width={width}
+            height={width / 2}
+          />
+        }
+        {...rest}
+      />
     </Link>
   );
 };
