@@ -25,6 +25,7 @@ import {
   useNotificationsQuery,
   useUnreadNotificationCountQuery,
 } from "@/generated/graphql";
+import useNotificationStream from "@/lib/hooks/useNotificationStream";
 import {
   notificationsOptions,
   unreadNotificationCountOptions,
@@ -81,6 +82,9 @@ const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const signedIn = !!session?.user?.rowId;
+
+  // realtime push (SSE); the polling below is the fallback if the stream drops
+  useNotificationStream({ enabled: signedIn, limit: NOTIFICATION_LIMIT });
 
   const { data: unreadCount } = useQuery({
     ...unreadNotificationCountOptions(),
