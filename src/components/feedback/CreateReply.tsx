@@ -149,7 +149,7 @@ const CreateReply = ({
   return (
     <CollapsibleRoot {...rest}>
       <CollapsibleContent>
-        <div className="mt-2 flex flex-col rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-accent focus-within:ring-1 focus-within:ring-accent sm:ml-10">
+        <div className="mt-2 flex flex-col rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary sm:ml-10">
           <form
             className="flex flex-col"
             onSubmit={async (e) => {

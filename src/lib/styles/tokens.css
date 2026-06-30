@@ -1382,9 +1382,9 @@
   --colors-primary-emphasized: var(--colors-omni-coral-600);
   --colors-primary-foreground: var(--colors-white);
   --colors-primary-text: var(--colors-omni-coral-700);
-  --colors-accent-default: var(--colors-omni-coral-500);
-  --colors-accent-emphasized: var(--colors-omni-coral-600);
-  --colors-accent-foreground: var(--colors-white);
+  --colors-accent-default: var(--colors-neutral-100);
+  --colors-accent-emphasized: var(--colors-neutral-200);
+  --colors-accent-foreground: var(--colors-foreground-default);
   --colors-ruby-50: var(--colors-omni-coral-50);
   --colors-ruby-100: var(--colors-omni-coral-100);
   --colors-ruby-200: var(--colors-omni-coral-200);
@@ -1592,9 +1592,9 @@
   --colors-primary-emphasized: var(--colors-omni-coral-300);
   --colors-primary-foreground: var(--colors-white);
   --colors-primary-text: var(--colors-omni-coral-300);
-  --colors-accent-default: var(--colors-omni-coral-400);
-  --colors-accent-emphasized: var(--colors-omni-coral-300);
-  --colors-accent-foreground: var(--colors-white);
+  --colors-accent-default: var(--colors-neutral-800);
+  --colors-accent-emphasized: var(--colors-neutral-700);
+  --colors-accent-foreground: var(--colors-foreground-default);
   --colors-ruby-default: var(--colors-omni-coral-400);
   --colors-ruby-emphasized: var(--colors-omni-coral-300);
   --colors-ruby-foreground: var(--colors-neutral-950);

@@ -56,7 +56,7 @@ const URLField = ({
           className="text-foreground-subtle"
         />
 
-        <div className="flex flex-1 items-center overflow-hidden rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-accent focus-within:ring-1 focus-within:ring-accent">
+        <div className="flex flex-1 items-center overflow-hidden rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
           <Input
             id={name}
             placeholder="https://example.com"
