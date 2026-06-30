@@ -37,6 +37,7 @@ import {
   useUpdatePostMutation,
 } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
+import { FEED_SORT } from "@/lib/constants/sort.constant";
 import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";
 import {
   feedbackByIdOptions,
@@ -57,10 +58,10 @@ import type { ComponentProps } from "react";
 import type {
   FeedbackByIdQuery,
   FeedbackFragment,
-  PostOrderBy,
   PostsQuery,
   StatusTemplate,
 } from "@/generated/graphql";
+import type { FeedSortSlug } from "@/lib/constants/sort.constant";
 
 interface ProjectStatus {
   /** Status template row ID. */
@@ -205,7 +206,7 @@ const FeedbackCard = ({
         const postsQueryKey = infiniteFeedbackOptions({
           projectId: feedback.project?.rowId!,
           excludedStatuses,
-          orderBy: orderBy ? (orderBy as PostOrderBy) : undefined,
+          orderBy: orderBy ? FEED_SORT[orderBy as FeedSortSlug] : undefined,
           search,
           userId: session?.user?.rowId,
         }).queryKey;

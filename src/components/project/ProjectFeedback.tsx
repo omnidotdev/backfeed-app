@@ -37,10 +37,11 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
-import { PostOrderBy, useCreateFeedbackMutation } from "@/generated/graphql";
+import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
 import { isStatusOnRoadmap } from "@/lib/constants/roadmap.constant";
+import { feedOrderBy } from "@/lib/constants/sort.constant";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 import {
   freeTierFeedbackOptions,
@@ -58,6 +59,7 @@ import type {
   CreateFeedbackMutationVariables,
   FeedbackFragment,
 } from "@/generated/graphql";
+import type { FeedSortSlug } from "@/lib/constants/sort.constant";
 
 // TODO: figure out how to properly handle refresh for view state management.
 
@@ -68,11 +70,11 @@ const projectRoute = getRouteApi(
 const SORT_BY_OPTIONS = [
   {
     label: "Top Voted",
-    value: PostOrderBy.VotesSumWeightDesc,
+    value: "top",
   },
   {
     label: "Most Recent",
-    value: PostOrderBy.CreatedAtDesc,
+    value: "newest",
   },
 ];
 
@@ -151,10 +153,7 @@ const ProjectFeedback = () => {
       projectId: projectId!,
       excludedStatuses,
       // default to top-voted when no explicit sort is chosen
-      orderBy: [
-        orderBy ?? PostOrderBy.VotesSumWeightDesc,
-        PostOrderBy.CreatedAtDesc,
-      ],
+      orderBy: feedOrderBy(orderBy),
       search,
       userId: session?.user?.rowId,
       tagFilter: tags.length ? { some: { tagId: { in: tags } } } : undefined,
@@ -375,13 +374,9 @@ const ProjectFeedback = () => {
         <div className="flex shrink-0 items-center justify-between gap-2 md:justify-end">
           <SelectRoot
             collection={createListCollection({ items: SORT_BY_OPTIONS })}
-            defaultValue={
-              orderBy ? [orderBy] : [PostOrderBy.VotesSumWeightDesc]
-            }
+            defaultValue={[orderBy]}
             onValueChange={({ value }) => {
-              const orderBy = value[0] as
-                | PostOrderBy.CreatedAtDesc
-                | PostOrderBy.VotesSumWeightDesc;
+              const orderBy = value[0] as FeedSortSlug;
 
               navigate({
                 search: (prev) => ({

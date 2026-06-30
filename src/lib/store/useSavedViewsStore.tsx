@@ -2,7 +2,7 @@ import { persist } from "zustand/middleware";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
-import type { PostOrderBy } from "@/generated/graphql";
+import type { FeedSortSlug } from "@/lib/constants/sort.constant";
 
 /** A saved feed filter/sort combination for a project. */
 export interface SavedView {
@@ -13,7 +13,7 @@ export interface SavedView {
     tags: string[];
     search: string;
     // narrowed to the sort options the route's search schema accepts
-    orderBy: PostOrderBy.CreatedAtDesc | PostOrderBy.VotesSumWeightDesc;
+    orderBy: FeedSortSlug;
   };
 }
 

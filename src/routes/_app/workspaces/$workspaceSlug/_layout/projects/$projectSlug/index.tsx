@@ -13,10 +13,10 @@ import Aggregate from "@/components/dashboard/Aggregate";
 import Page from "@/components/layout/Page";
 import ProjectFeedback from "@/components/project/ProjectFeedback";
 import ProjectLinks from "@/components/project/ProjectLinks";
-import { PostOrderBy } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import { isStatusOnBoard } from "@/lib/constants/board.constant";
+import { feedOrderBy } from "@/lib/constants/sort.constant";
 import {
   freeTierFeedbackOptions,
   infiniteFeedbackOptions,
@@ -37,9 +37,7 @@ const projectSearchSchema = z.object({
   // selected tag rowIds to filter the feed by (any-of)
   tags: z.array(z.string()).default([]),
   search: z.string().default(""),
-  orderBy: z
-    .enum([PostOrderBy.CreatedAtDesc, PostOrderBy.VotesSumWeightDesc])
-    .default(PostOrderBy.VotesSumWeightDesc),
+  orderBy: z.enum(["top", "newest"]).default("top"),
 });
 
 export const Route = createFileRoute(
@@ -57,7 +55,7 @@ export const Route = createFileRoute(
         search: "",
         excludedStatuses: [],
         tags: [],
-        orderBy: PostOrderBy.VotesSumWeightDesc,
+        orderBy: "top",
       }),
     ],
   },
@@ -139,7 +137,7 @@ export const Route = createFileRoute(
           projectId,
           search,
           excludedStatuses,
-          orderBy: [orderBy, PostOrderBy.CreatedAtDesc],
+          orderBy: feedOrderBy(orderBy),
           userId: session?.user?.rowId,
           tagFilter: tags.length
             ? { some: { tagId: { in: tags } } }
