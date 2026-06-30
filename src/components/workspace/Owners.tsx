@@ -85,7 +85,7 @@ const Owners = () => {
     <Table className="mb-2">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id} className="bg-background-subtle">
+          <TableRow key={headerGroup.id} className="bg-background-subtle/40">
             {headerGroup.headers.map((header) => (
               <TableHead key={header.id}>
                 {header.isPlaceholder

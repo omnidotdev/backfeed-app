@@ -154,7 +154,7 @@ const Members = () => {
     <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id} className="bg-background-subtle">
+          <TableRow key={headerGroup.id} className="bg-background-subtle/40">
             {headerGroup.headers.map((header) => (
               <TableHead key={header.id}>
                 {header.isPlaceholder
