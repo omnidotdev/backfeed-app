@@ -63,6 +63,7 @@ export const Route = createFileRoute(
     context: { session, queryClient, organizationId },
     params: { workspaceSlug, projectSlug },
     location,
+    preload,
   }) => {
     const { search, excludedStatuses, tags, orderBy } =
       projectSearchSchema.parse(location.search);
@@ -97,7 +98,10 @@ export const Route = createFileRoute(
     // feedback. Seeding the URL keeps every consumer (list query key, pills,
     // optimistic updates) in sync; since filters aren't loader deps, in-session
     // toggles (including "show all") are preserved.
-    if (!excludedStatuses.length) {
+    // Skip the default-filter seeding redirect during preload (hover/intent);
+    // with defaultPreload:"intent" a redirect thrown here navigates on hover.
+    // The real navigation (preload=false) still seeds the URL.
+    if (!preload && !excludedStatuses.length) {
       const defaultHidden = (statusData?.statusTemplates?.nodes ?? [])
         .filter(
           (status): status is NonNullable<typeof status> =>
