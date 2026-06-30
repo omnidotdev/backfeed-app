@@ -49,7 +49,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
   const { organizationId } = projectRoute.useRouteContext();
 
   const excludedStatuses = projectRoute.useSearch({
-    select: ({ excludedStatuses }) => excludedStatuses,
+    select: ({ excluded_statuses }) => excluded_statuses,
   });
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -88,9 +88,9 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
   });
 
   const handleToggleStatus = (status: Status) => {
-    const isExcluded = excludedStatuses.includes(status?.displayName!);
+    const isExcluded = excludedStatuses.includes(status?.name!);
     const filteredStatuses = excludedStatuses.filter(
-      (s) => s !== status?.displayName!,
+      (s) => s !== status?.name!,
     );
 
     if (isExcluded) {
@@ -98,7 +98,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excludedStatuses: filteredStatuses,
+          excluded_statuses: filteredStatuses,
         }),
       });
     } else {
@@ -106,17 +106,17 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excludedStatuses: [...filteredStatuses, status?.displayName!].sort(),
+          excluded_statuses: [...filteredStatuses, status?.name!].sort(),
         }),
       });
     }
   };
 
   const handleToggleAll = () => {
-    const allStatusDisplayNames =
-      projectStatuses?.map((s) => s.displayName!).filter(Boolean) ?? [];
-    const allExcluded = allStatusDisplayNames.every((displayName) =>
-      excludedStatuses.includes(displayName),
+    const allStatusNames =
+      projectStatuses?.map((s) => s.name!).filter(Boolean) ?? [];
+    const allExcluded = allStatusNames.every((name) =>
+      excludedStatuses.includes(name),
     );
 
     if (allExcluded || excludedStatuses.length > 0) {
@@ -124,7 +124,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excludedStatuses: [],
+          excluded_statuses: [],
         }),
       });
     } else {
@@ -132,7 +132,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excludedStatuses: allStatusDisplayNames.sort(),
+          excluded_statuses: allStatusNames.sort(),
         }),
       });
     }
@@ -169,7 +169,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       </button>
 
       {breakdown.map(({ status, count }) => {
-        const isActive = !excludedStatuses.includes(status?.displayName!);
+        const isActive = !excludedStatuses.includes(status?.name!);
         const bgColor = getBackgroundColor(
           status?.color,
           isActive ? 0.12 : 0.05,

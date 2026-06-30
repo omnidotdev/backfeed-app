@@ -19,7 +19,7 @@ query Posts(
       # include posts whose status is not excluded, plus posts with no status
       # (status-less posts can't be filtered by a status pill, so always show)
       or: [
-        { statusTemplate: { displayName: { notIn: $excludedStatuses } } }
+        { statusTemplate: { name: { notIn: $excludedStatuses } } }
         { statusTemplateId: { isNull: true } }
       ]
       postTags: $tagFilter

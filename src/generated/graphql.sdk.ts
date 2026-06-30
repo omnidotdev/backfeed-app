@@ -11278,7 +11278,7 @@ export const PostsDocument = gql`
     after: $after
     first: $pageSize
     orderBy: $orderBy
-    filter: {projectId: {equalTo: $projectId}, title: {includesInsensitive: $search}, or: [{statusTemplate: {displayName: {notIn: $excludedStatuses}}}, {statusTemplateId: {isNull: true}}], postTags: $tagFilter}
+    filter: {projectId: {equalTo: $projectId}, title: {includesInsensitive: $search}, or: [{statusTemplate: {name: {notIn: $excludedStatuses}}}, {statusTemplateId: {isNull: true}}], postTags: $tagFilter}
   ) {
     pageInfo {
       startCursor

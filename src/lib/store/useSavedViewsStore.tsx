@@ -9,7 +9,7 @@ export interface SavedView {
   id: string;
   name: string;
   search: {
-    excludedStatuses: string[];
+    excluded_statuses: string[];
     tags: string[];
     search: string;
     // narrowed to the sort options the route's search schema accepts

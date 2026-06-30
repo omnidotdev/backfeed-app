@@ -42,7 +42,7 @@ const SavedViews = () => {
       id: crypto.randomUUID(),
       name: name.trim(),
       search: {
-        excludedStatuses: search.excludedStatuses,
+        excluded_statuses: search.excluded_statuses,
         tags: search.tags,
         search: search.search,
         orderBy: search.orderBy,
