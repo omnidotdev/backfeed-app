@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 
 import DestructiveAction from "@/components/core/DestructiveAction";
 import CommentMessage from "@/components/feedback/CommentMessage";
+import ReactionBar from "@/components/feedback/ReactionBar";
 import RoleBadge from "@/components/feedback/RoleBadge";
 import {
   AvatarFallback,
@@ -100,6 +101,14 @@ const ReplyCard = ({ reply, className, ...rest }: Props) => {
           <p className="break-words text-muted-foreground text-sm">
             <CommentMessage message={reply.message} />
           </p>
+
+          {!isPending && (
+            <ReactionBar
+              commentId={reply.rowId}
+              userId={session?.user?.rowId}
+              canReact={!!session?.user?.rowId}
+            />
+          )}
         </div>
       </div>
 
