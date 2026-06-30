@@ -126,11 +126,7 @@ const FeedbackCard = ({
     projectSlug,
     feedbackId: isFeedbackRoute,
   } = useParams({ strict: false });
-  const {
-    excluded_statuses: excludedStatuses,
-    search,
-    orderBy,
-  } = useSearch({
+  const { excludedStatuses, search, orderBy } = useSearch({
     strict: false,
   });
   const navigate = useNavigate();

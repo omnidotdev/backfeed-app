@@ -49,7 +49,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
   const { organizationId } = projectRoute.useRouteContext();
 
   const excludedStatuses = projectRoute.useSearch({
-    select: ({ excluded_statuses }) => excluded_statuses,
+    select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -98,7 +98,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excluded_statuses: filteredStatuses,
+          excludedStatuses: filteredStatuses,
         }),
       });
     } else {
@@ -106,7 +106,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excluded_statuses: [...filteredStatuses, status?.name!].sort(),
+          excludedStatuses: [...filteredStatuses, status?.name!].sort(),
         }),
       });
     }
@@ -124,7 +124,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excluded_statuses: [],
+          excludedStatuses: [],
         }),
       });
     } else {
@@ -132,7 +132,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          excluded_statuses: allStatusNames.sort(),
+          excludedStatuses: allStatusNames.sort(),
         }),
       });
     }

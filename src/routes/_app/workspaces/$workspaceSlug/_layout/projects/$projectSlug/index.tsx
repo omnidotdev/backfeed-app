@@ -33,7 +33,7 @@ import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import type { ActionButton } from "@/components/core/CallToAction";
 
 const projectSearchSchema = z.object({
-  excluded_statuses: z.array(z.string()).default([]),
+  excludedStatuses: z.array(z.string()).default([]),
   // selected tag rowIds to filter the feed by (any-of)
   tags: z.array(z.string()).default([]),
   search: z.string().default(""),
@@ -55,7 +55,7 @@ export const Route = createFileRoute(
     middlewares: [
       stripSearchParams({
         search: "",
-        excluded_statuses: [],
+        excludedStatuses: [],
         tags: [],
         orderBy: PostOrderBy.VotesSumWeightDesc,
       }),
@@ -66,12 +66,8 @@ export const Route = createFileRoute(
     params: { workspaceSlug, projectSlug },
     location,
   }) => {
-    const {
-      search,
-      excluded_statuses: excludedStatuses,
-      tags,
-      orderBy,
-    } = projectSearchSchema.parse(location.search);
+    const { search, excludedStatuses, tags, orderBy } =
+      projectSearchSchema.parse(location.search);
 
     // project gates the page; statuses seed the board's default status filter.
     // Both are independent, so fetch them together.
@@ -120,7 +116,7 @@ export const Route = createFileRoute(
         throw redirect({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug",
           params: { workspaceSlug, projectSlug },
-          search: { search, tags, orderBy, excluded_statuses: defaultHidden },
+          search: { search, tags, orderBy, excludedStatuses: defaultHidden },
         });
       }
     }

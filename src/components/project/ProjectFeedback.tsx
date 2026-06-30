@@ -83,12 +83,7 @@ const ProjectFeedback = () => {
   const { session, hasAdminPrivileges, organizationId } =
     projectRoute.useRouteContext();
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
-  const {
-    excluded_statuses: excludedStatuses,
-    tags,
-    search,
-    orderBy,
-  } = projectRoute.useSearch();
+  const { excludedStatuses, tags, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
