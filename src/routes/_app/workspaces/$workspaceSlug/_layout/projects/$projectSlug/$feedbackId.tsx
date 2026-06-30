@@ -31,6 +31,7 @@ export const Route = createFileRoute(
   loader: async ({
     context: { session, queryClient, organizationId },
     params: { workspaceSlug, projectSlug, feedbackId: feedbackParam },
+    preload,
   }) => {
     const userId = session?.user?.rowId;
 
@@ -86,7 +87,9 @@ export const Route = createFileRoute(
         number: feedback.number,
         title: feedback.title,
       });
-      if (feedbackParam !== canonicalKey) {
+      // skip the canonical redirect during preload (hover) so it doesn't
+      // navigate on hover; the real navigation still canonicalizes the URL
+      if (!preload && feedbackParam !== canonicalKey) {
         throw redirect({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
           params: { workspaceSlug, projectSlug, feedbackId: canonicalKey },

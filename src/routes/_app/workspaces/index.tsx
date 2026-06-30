@@ -20,7 +20,7 @@ import {
 import type { OrganizationClaim } from "@/lib/auth/getAuth";
 
 export const Route = createFileRoute("/_app/workspaces/")({
-  beforeLoad: async ({ context: { session }, location }) => {
+  beforeLoad: async ({ context: { session }, location, preload }) => {
     if (!session?.user?.rowId) {
       throw redirect({
         to: "/",
@@ -32,7 +32,13 @@ export const Route = createFileRoute("/_app/workspaces/")({
     if (!organizations.length) return;
 
     const lastSlug = await getLastWorkspaceCookie();
-    if (lastSlug && organizations.some((org) => org.slug === lastSlug)) {
+    // skip the last-workspace redirect during preload (hover) so hovering a
+    // /workspaces link doesn't auto-navigate; real navigation still redirects
+    if (
+      !preload &&
+      lastSlug &&
+      organizations.some((org) => org.slug === lastSlug)
+    ) {
       throw redirect({
         to: "/workspaces/$workspaceSlug",
         params: { workspaceSlug: lastSlug },
