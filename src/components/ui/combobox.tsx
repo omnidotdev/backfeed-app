@@ -60,7 +60,7 @@ const Combobox = ({
               <ArkCombobox.Item
                 key={item.value}
                 item={item}
-                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-popover-foreground text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
+                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-popover-foreground text-sm outline-none data-[highlighted]:bg-muted"
               >
                 <ArkCombobox.ItemIndicator>
                   <Check className="size-4" />

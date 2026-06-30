@@ -21,7 +21,7 @@ const SelectTrigger = ({
 }: ComponentProps<typeof ArkSelect.Trigger>) => (
   <ArkSelect.Trigger
     className={cn(
-      "inline-flex h-9 cursor-pointer items-center justify-between gap-2 rounded-md border border-input bg-background px-3 text-foreground text-sm shadow-xs outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+      "inline-flex h-9 cursor-pointer items-center justify-between gap-2 rounded-md border border-input bg-background px-3 text-foreground text-sm shadow-xs outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
       className,
     )}
     {...rest}
