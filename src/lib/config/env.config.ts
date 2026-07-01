@@ -16,6 +16,8 @@ export const {
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
+  // server-to-server: Gatekeeper's org-sync members endpoint (never sent to the browser)
+  ORG_SYNC_SERVICE_TOKEN,
 
   // feature flags
   VITE_FLAGS_API_HOST: FLAGS_API_HOST,
@@ -57,6 +59,10 @@ export const ENABLE_MSW = process.env.ENABLE_MSW || isTestEnv;
 export const hasBilling = !!BILLING_BASE_URL;
 
 // Startup warnings for optional integrations
+if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)
+  console.warn(
+    "ORG_SYNC_SERVICE_TOKEN not set, workspace member listing disabled",
+  );
 if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
 if (!FLAGS_API_HOST)

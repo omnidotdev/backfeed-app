@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { ORG_SYNC_SERVICE_TOKEN } from "@/lib/config/env.config";
 import gatekeeperOrg from "@/lib/config/gatekeeper";
 import { authMiddleware } from "@/server/middleware";
 
@@ -137,22 +138,34 @@ const listOrganizationMembersSchema = z.object({
 
 /**
  * List members for an organization via Gatekeeper.
- * Runs server-side (authMiddleware) so the caller's session access token is used
- * against Better Auth's permission-checked org endpoint, which the IDP resolves
- * to a session and authorizes by membership. Never call the IDP member API from
- * the browser (CORS + token exposure)
+ *
+ * Gatekeeper's members endpoint is a server-to-server read gated on
+ * `ORG_SYNC_SERVICE_TOKEN`, so the call runs on the server where the secret
+ * lives, never in the browser. Authorization is enforced here: the authenticated
+ * session must itself be a member of the requested org, so the service token
+ * cannot be used to enumerate arbitrary orgs' members. (The user-context Better
+ * Auth path is unusable because Gatekeeper's opaque-token->session bridge does
+ * not resolve the current hashed access tokens.)
  */
 export const listOrganizationMembers = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
-    const accessToken = context.session.accessToken;
-
-    if (!accessToken) {
-      throw new Error("No access token available");
+    const isMember = context.session.organizations?.some(
+      (org) => org.id === data.organizationId,
+    );
+    if (!isMember) {
+      throw new Error("Forbidden: not a member of this organization");
     }
 
-    return gatekeeperOrg.listMembers(data.organizationId, accessToken);
+    if (!ORG_SYNC_SERVICE_TOKEN) {
+      throw new Error("ORG_SYNC_SERVICE_TOKEN not configured");
+    }
+
+    return gatekeeperOrg.listMembersViaService(
+      data.organizationId,
+      ORG_SYNC_SERVICE_TOKEN,
+    );
   });
 
 const updateOrganizationMemberRoleSchema = z.object({
