@@ -1,9 +1,13 @@
-import { API_GRAPHQL_URL } from "../config/env.config";
-
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import type { Types } from "@graphql-codegen/plugin-helpers";
 
 type GraphQLCodegenConfig = Types.ConfiguredOutput;
+
+// offline schema source: the API's committed SDL, generated from the database
+// (no running server or introspection needed). Override with GRAPHQL_SCHEMA_URL
+// to point at a live endpoint if ever required
+const LOCAL_SCHEMA_PATH =
+  "../backfeed-api/src/generated/graphql/schema.graphql";
 
 /**
  * Shared plugins across the generated GraphQL Codegen artifacts.
@@ -36,7 +40,7 @@ const sharedConfig: GraphQLCodegenConfig["config"] = {
  * GraphQL Code Generator configuration. This generates various artifacts based on the GraphQL schema.
  */
 const graphqlCodegenConfig: CodegenConfig = {
-  schema: API_GRAPHQL_URL,
+  schema: process.env.GRAPHQL_SCHEMA_URL || LOCAL_SCHEMA_PATH,
   documents: "src/lib/graphql/**/*.graphql",
   // suppress non-zero exit code if there are no documents to generate
   ignoreNoDocuments: true,
