@@ -46,7 +46,6 @@ function WorkspaceSettingsPage() {
         ],
         title: `${workspaceName} ${app.workspaceSettingsPage.breadcrumb}`,
       }}
-      className="pt-0"
     >
       <WorkspaceSettings prices={prices as ExpandedProductPrice[]} />
     </Page>

@@ -77,7 +77,6 @@ function WorkspaceMembersPage() {
         description: app.workspaceMembersPage.description,
         cta: ctaButtons.length > 0 ? ctaButtons : undefined,
       }}
-      className="pt-0"
     >
       {/* Team membership is managed centrally at Gatekeeper (the shared IDP);
           invite/role/remove happen there, not re-implemented per app */}
