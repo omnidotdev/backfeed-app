@@ -10,6 +10,11 @@ import {
 import { useMemo } from "react";
 import { match } from "ts-pattern";
 
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -103,11 +108,25 @@ const Members = () => {
               className: "px-2",
             }}
             label={
-              <div className="flex flex-col py-4">
-                <span className="text-lg">{row.original.user.name}</span>
-                <span className="text-foreground-subtle">
-                  {row.original.user.email}
-                </span>
+              <div className="flex items-center gap-3 py-3">
+                <AvatarRoot size="sm">
+                  <AvatarImage
+                    src={row.original.user.image ?? undefined}
+                    alt={row.original.user.name ?? row.original.user.email}
+                  />
+                  <AvatarFallback>
+                    {(row.original.user.name ?? row.original.user.email)
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </AvatarRoot>
+
+                <div className="flex flex-col">
+                  <span className="text-lg">{row.original.user.name}</span>
+                  <span className="text-foreground-subtle">
+                    {row.original.user.email}
+                  </span>
+                </div>
               </div>
             }
             controlProps={{
