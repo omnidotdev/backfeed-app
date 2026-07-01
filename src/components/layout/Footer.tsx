@@ -50,6 +50,24 @@ const Footer = () => (
         Feedback
       </a>
 
+      <a
+        href={app.legal.privacy}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`text-sm ${linkClass}`}
+      >
+        Privacy
+      </a>
+
+      <a
+        href={app.legal.terms}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`text-sm ${linkClass}`}
+      >
+        Terms
+      </a>
+
       <div className="flex items-center gap-3">
         <a
           href={app.socials.github}

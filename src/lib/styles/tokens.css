@@ -397,7 +397,7 @@
   --colors-brand-primary-800: var(--colors-omni-coral-800);
   --colors-brand-primary-900: var(--colors-omni-coral-900);
   --colors-brand-primary-950: var(--colors-omni-coral-950);
-  --colors-brand-primary: var(--colors-omni-coral-500);
+  --colors-brand-primary: var(--colors-omni-coral-700);
   --colors-brand-primary-50a: rgba(239, 254, 252, 0.5);
   --colors-brand-primary-100a: rgba(199, 255, 249, 0.1);
   --colors-brand-primary-200a: rgba(143, 255, 243, 0.2);
@@ -1377,7 +1377,7 @@
     var(--colors-background-subtle) 70%,
     transparent
   );
-  --colors-primary: var(--colors-omni-coral-500);
+  --colors-primary: var(--colors-omni-coral-700);
   --colors-primary-default: var(--colors-omni-coral-500);
   --colors-primary-emphasized: var(--colors-omni-coral-600);
   --colors-primary-foreground: var(--colors-white);
@@ -1585,9 +1585,9 @@
     var(--colors-background-subtle) 20%,
     transparent
   );
-  --colors-brand-primary: var(--colors-omni-coral-400);
+  --colors-brand-primary: var(--colors-omni-coral-700);
   --colors-brand-secondary: var(--colors-omni-amethyst-400);
-  --colors-primary: var(--colors-omni-coral-400);
+  --colors-primary: var(--colors-omni-coral-700);
   --colors-primary-default: var(--colors-omni-coral-400);
   --colors-primary-emphasized: var(--colors-omni-coral-300);
   --colors-primary-foreground: var(--colors-white);
