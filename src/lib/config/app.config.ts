@@ -466,12 +466,14 @@ const app = {
         owners: "Owners",
         role: "Role",
       },
+      emptyState: "No owners to display.",
     },
     membersTable: {
       headers: {
         members: "Members",
         role: "Role",
       },
+      emptyState: "No members yet.",
     },
     cta: {
       addOwner: {
