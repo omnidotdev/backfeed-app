@@ -13,9 +13,9 @@
 @theme inline {
   /* Map Sigil's CSS variables to Tailwind utilities */
   --color-primary: var(--colors-brand-primary);
-  /* dark text on the vibrant coral primary (coral-500) keeps WCAG AA contrast
-     while reading coral, not the darker rusty coral-700 that looked red */
-  --color-primary-foreground: oklch(0.21 0 0);
+  /* white text on the coral primary; button labels are bold/large enough to
+     clear WCAG AA (3:1) against coral-500 */
+  --color-primary-foreground: oklch(0.985 0.001 0);
   --color-secondary: var(--colors-brand-secondary);
   --color-muted: var(--colors-background-muted);
   --color-muted-foreground: var(--colors-foreground-muted);
