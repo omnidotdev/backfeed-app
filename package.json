@@ -30,7 +30,7 @@
     "@lexical/markdown": "0.39.0",
     "@lexical/react": "^0.39.0",
     "@lexical/rich-text": "^0.39.0",
-    "@omnidotdev/providers": "github:omnidotdev/providers#892ecba",
+    "@omnidotdev/providers": "github:omnidotdev/providers#d6ce542",
     "@omnidotdev/thornberry": "github:omnidotdev/thornberry#4549481",
     "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.90.16",

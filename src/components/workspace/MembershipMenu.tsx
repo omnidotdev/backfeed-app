@@ -49,7 +49,7 @@ const MembershipMenu = ({
   toggleRowSelection,
   ...rest
 }: Props) => {
-  const { isOwner, organizationId, session } = membersRoute.useRouteContext();
+  const { isOwner, organizationId } = membersRoute.useRouteContext();
 
   const selectedRowsAreAdmins = selectedRows.every(
     (row) => row.original.role === "admin",
@@ -69,7 +69,6 @@ const MembershipMenu = ({
             organizationId: organizationId!,
             memberId: member.id,
             role: "admin",
-            accessToken: session?.accessToken!,
           }),
         )
         .with(MenuAction.RemoveAdmin, () =>
@@ -77,14 +76,12 @@ const MembershipMenu = ({
             organizationId: organizationId!,
             memberId: member.id,
             role: "member",
-            accessToken: session?.accessToken!,
           }),
         )
         .with(MenuAction.RemoveMember, () =>
           removeMember({
             organizationId: organizationId!,
             memberId: member.id,
-            accessToken: session?.accessToken!,
           }),
         )
         .exhaustive();

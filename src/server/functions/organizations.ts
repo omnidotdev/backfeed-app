@@ -133,17 +133,26 @@ export const fetchOrganizationBySlug = createServerFn()
 
 const listOrganizationMembersSchema = z.object({
   organizationId: z.string(),
-  accessToken: z.string(),
 });
 
 /**
- * List members for an organization via Gatekeeper
- * @knipignore
+ * List members for an organization via Gatekeeper.
+ * Runs server-side (authMiddleware) so the caller's session access token is used
+ * against Better Auth's permission-checked org endpoint, which the IDP resolves
+ * to a session and authorizes by membership. Never call the IDP member API from
+ * the browser (CORS + token exposure)
  */
 export const listOrganizationMembers = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
-  .handler(async ({ data }) => {
-    return gatekeeperOrg.listMembers(data.organizationId, data.accessToken);
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
+
+    return gatekeeperOrg.listMembers(data.organizationId, accessToken);
   });
 
 const updateOrganizationMemberRoleSchema = z.object({
@@ -154,7 +163,6 @@ const updateOrganizationMemberRoleSchema = z.object({
 
 /**
  * Update a member's role via Gatekeeper
- * @knipignore
  */
 export const updateOrganizationMemberRole = createServerFn({ method: "POST" })
   .inputValidator((data) => updateOrganizationMemberRoleSchema.parse(data))
@@ -176,7 +184,6 @@ const removeOrganizationMemberSchema = z.object({
 
 /**
  * Remove a member from an organization via Gatekeeper
- * @knipignore
  */
 export const removeOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => removeOrganizationMemberSchema.parse(data))

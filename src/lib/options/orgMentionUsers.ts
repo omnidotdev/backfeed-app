@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
-import { fetchOrganizationMembers } from "@/lib/idp";
+import { listOrganizationMembers } from "@/server/functions/organizations";
 
 import type { MentionableUser } from "@/lib/hooks/useMentionableUsers";
 
@@ -54,10 +54,9 @@ export const orgMentionUsersOptions = (params: {
   queryOptions({
     queryKey: orgMentionUsersQueryKey(params.organizationId ?? ""),
     queryFn: async (): Promise<MentionableUser[]> => {
-      const { data: members } = await fetchOrganizationMembers(
-        params.organizationId!,
-        params.accessToken!,
-      );
+      const { data: members } = await listOrganizationMembers({
+        data: { organizationId: params.organizationId! },
+      });
 
       // IDP `userId` is the OIDC `sub`, mapped to backfeed `identityProviderId`
       const nameBySub = new Map<string, string>();
