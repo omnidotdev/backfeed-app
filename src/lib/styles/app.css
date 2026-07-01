@@ -13,7 +13,9 @@
 @theme inline {
   /* Map Sigil's CSS variables to Tailwind utilities */
   --color-primary: var(--colors-brand-primary);
-  --color-primary-foreground: oklch(0.985 0.001 0);
+  /* dark text on the vibrant coral primary (coral-500) keeps WCAG AA contrast
+     while reading coral, not the darker rusty coral-700 that looked red */
+  --color-primary-foreground: oklch(0.21 0 0);
   --color-secondary: var(--colors-brand-secondary);
   --color-muted: var(--colors-background-muted);
   --color-muted-foreground: var(--colors-foreground-muted);
@@ -42,9 +44,9 @@
 }
 
 /* ============================================
-   Backfeed Space Ruby Theme
+   Backfeed Space Coral Theme
 
-   Ruby gemstone branding. The brand.primary token resolves to omni.ruby via
+   Coral gemstone branding. The brand.primary token resolves to omni.coral via
    the committed design tokens in tokens.css. Glow colors are exposed as
    --colors-glow-ruby / --colors-glow-magenta (see tokens.css).
    ============================================ */
