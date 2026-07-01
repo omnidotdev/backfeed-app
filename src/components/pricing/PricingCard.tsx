@@ -196,7 +196,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
 
   const buttonClassName = isRecommendedTier
     ? "bg-primary text-primary-foreground hover:bg-primary/90"
-    : "border-primary text-primary hover:bg-primary/10";
+    : "border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]";
 
   return (
     <>

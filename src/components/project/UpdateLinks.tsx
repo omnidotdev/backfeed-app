@@ -139,7 +139,7 @@ const ReorderableLinks = ({
         <Button
           size="sm"
           variant="outline"
-          className="w-fit border-primary text-primary hover:bg-primary/10"
+          className="w-fit border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
           onClick={(evt) => {
             evt.preventDefault();
             onAdd();

@@ -33,7 +33,7 @@ const Field = ({
 
       {!!errors.length && (
         <span
-          className="absolute top-0 right-0 h-5 text-primary text-sm"
+          className="absolute top-0 right-0 h-5 text-primary text-sm dark:text-[var(--colors-brand-primary-400)]"
           {...errorProps}
         >
           {errors[0].message}

@@ -79,7 +79,7 @@ const HeaderActions = () => {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              className="border-primary text-primary hover:bg-primary/10"
+              className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
               onClick={handleSignIn}
             >
               {app.auth.signIn.label}
@@ -146,7 +146,7 @@ const HeaderActions = () => {
                 <div className="flex flex-col gap-2">
                   <Button
                     variant="outline"
-                    className="border-primary text-primary hover:bg-primary/10"
+                    className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
                     onClick={handleSignIn}
                   >
                     {app.auth.signIn.label}

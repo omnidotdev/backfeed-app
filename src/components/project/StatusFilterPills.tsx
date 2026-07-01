@@ -161,7 +161,9 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
         <span
           className={cn(
             "whitespace-nowrap font-medium text-sm",
-            allActive ? "text-primary" : "text-muted-foreground",
+            allActive
+              ? "text-primary dark:text-[var(--colors-brand-primary-400)]"
+              : "text-muted-foreground",
           )}
         >
           All

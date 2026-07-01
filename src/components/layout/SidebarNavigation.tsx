@@ -51,7 +51,11 @@ const SidebarNavigation = () => {
               <CollapsibleTrigger asChild>
                 <Button
                   variant="ghost"
-                  className={cn(navButton, isActive && "text-primary")}
+                  className={cn(
+                    navButton,
+                    isActive &&
+                      "text-primary dark:text-[var(--colors-brand-primary-400)]",
+                  )}
                 >
                   <span className="flex items-center gap-2">
                     {Icon && <Icon className="size-4" />}
@@ -100,7 +104,8 @@ const SidebarNavigation = () => {
                                   variant="ghost"
                                   className={cn(
                                     navButton,
-                                    isActive && "text-primary",
+                                    isActive &&
+                                      "text-primary dark:text-[var(--colors-brand-primary-400)]",
                                   )}
                                 >
                                   <span className="flex items-center gap-2">
@@ -147,7 +152,8 @@ const SidebarNavigation = () => {
                                                 tabIndex={-1}
                                                 className={cn(
                                                   "w-full justify-start",
-                                                  isActive && "text-primary",
+                                                  isActive &&
+                                                    "text-primary dark:text-[var(--colors-brand-primary-400)]",
                                                 )}
                                               >
                                                 {label}
@@ -174,7 +180,8 @@ const SidebarNavigation = () => {
                                     tabIndex={-1}
                                     className={cn(
                                       "w-full justify-start",
-                                      isActive && "text-primary",
+                                      isActive &&
+                                        "text-primary dark:text-[var(--colors-brand-primary-400)]",
                                     )}
                                   >
                                     {label}
@@ -202,7 +209,8 @@ const SidebarNavigation = () => {
                     tabIndex={-1}
                     className={cn(
                       "w-full justify-start bg-background-subtle hover:bg-muted/80",
-                      isActive && "text-primary",
+                      isActive &&
+                        "text-primary dark:text-[var(--colors-brand-primary-400)]",
                     )}
                   >
                     {label}

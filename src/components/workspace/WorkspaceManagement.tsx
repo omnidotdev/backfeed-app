@@ -94,7 +94,7 @@ const WorkspaceManagement = () => {
             <Button
               key={label}
               variant="outline"
-              className="border-primary text-primary hover:bg-primary/10"
+              className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
               {...rest}
             >
               <ActionIcon className="size-4" />

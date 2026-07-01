@@ -96,7 +96,7 @@ const MembershipMenu = ({
         <Button
           size="sm"
           variant="outline"
-          className="border-primary text-primary hover:bg-primary/10"
+          className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
         >
           {`${selectedRows.length} Selected`}
 
@@ -112,7 +112,7 @@ const MembershipMenu = ({
                 <MenuItem
                   value={MenuAction.RemoveAdmin}
                   disabled={!isOwner}
-                  className={`text-primary ${menuItemClassName}`}
+                  className={`text-primary dark:text-[var(--colors-brand-primary-400)] ${menuItemClassName}`}
                   onClick={() =>
                     handleMenuAction({ type: MenuAction.RemoveAdmin })
                   }
@@ -135,7 +135,7 @@ const MembershipMenu = ({
               <MenuItem
                 value={MenuAction.RemoveMember}
                 disabled={!isOwner}
-                className={`text-primary ${menuItemClassName}`}
+                className={`text-primary dark:text-[var(--colors-brand-primary-400)] ${menuItemClassName}`}
                 onClick={() =>
                   handleMenuAction({ type: MenuAction.RemoveMember })
                 }

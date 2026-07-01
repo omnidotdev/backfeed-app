@@ -29,7 +29,7 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
         <p className="max-w-lg text-muted-foreground">
           An unexpected error occurred. Please try again or contact{" "}
           <a href={`mailto:${app.organization.supportEmailAddress}`}>
-            <span className="text-primary">
+            <span className="text-primary dark:text-[var(--colors-brand-primary-400)]">
               {app.organization.supportEmailAddress}
             </span>
           </a>

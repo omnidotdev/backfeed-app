@@ -51,7 +51,7 @@ const EmptyState = ({ message, action, className }: Props) => (
             size="sm"
             disabled={action.disabled}
             onClick={action.onClick}
-            className="border-primary text-primary hover:bg-primary/10"
+            className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
           >
             {action.icon && <action.icon className="size-4" />}
             {action.label}

@@ -13,7 +13,7 @@ interface Props {
 const ErrorBoundary = ({ message, className }: Props) => (
   <div
     className={cn(
-      "flex items-center justify-center rounded-md border border-primary border-dashed text-primary",
+      "flex items-center justify-center rounded-md border border-primary border-dashed text-primary dark:text-[var(--colors-brand-primary-400)]",
       className,
     )}
   >
