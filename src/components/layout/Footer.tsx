@@ -68,6 +68,15 @@ const Footer = () => (
         Terms
       </a>
 
+      <a
+        href={app.legal.cookies}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`text-sm ${linkClass}`}
+      >
+        Cookies
+      </a>
+
       <div className="flex items-center gap-3">
         <a
           href={app.socials.github}

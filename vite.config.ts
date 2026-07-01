@@ -27,6 +27,14 @@ const viteConfig = defineConfig(({ command }) => ({
     nitroV2Plugin({
       preset: "node-server",
       externals: { inline: ["srvx", "react-dom"] },
+      routeRules: {
+        "/**": {
+          headers: {
+            "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
+            "Cache-Control": "public, max-age=0, must-revalidate",
+          },
+        },
+      },
     }),
     react(),
   ],

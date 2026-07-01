@@ -104,6 +104,7 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: app.productionUrl },
       {
         rel: "icon",
         href: "/favicon.ico",
@@ -124,6 +125,18 @@ export const Route = createRootRouteWithContext<{
         rel: "apple-touch-icon",
         sizes: "180x180",
         href: "/apple-touch-icon.png",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: app.name,
+          url: app.productionUrl,
+          description: app.description,
+        }),
       },
     ],
   }),
