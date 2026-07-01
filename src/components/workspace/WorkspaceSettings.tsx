@@ -2,10 +2,10 @@ import { Format } from "@ark-ui/react";
 import { Portal } from "@ark-ui/react/portal";
 import { useMutation } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { LuCheck, LuClockAlert } from "react-icons/lu";
+import { LuCheck, LuClockAlert, LuExternalLink } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   MenuContent,
   MenuItem,
@@ -16,9 +16,10 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
+import cn from "@/lib/utils";
 import {
   getBillingPortalUrl,
   getCreateSubscriptionUrl,
@@ -94,18 +95,26 @@ const WorkspaceSettings = ({ prices }: Props) => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Organization name/slug are managed in Gatekeeper */}
+      {/* Organization name/slug are managed centrally in the Omni account */}
       <SectionContainer
         title="Organization Settings"
-        description="Organization details are managed in your identity provider."
+        description="Your organization's name and URL are managed in your Omni account."
       >
         <p>
           <span className="font-semibold">Name:</span> {workspaceName}
         </p>
-        <p className="text-muted-foreground text-sm">
-          To update organization name or slug, visit your organization settings
-          in Gatekeeper.
-        </p>
+        <a
+          href={`${AUTH_BASE_URL}/dashboard/organizations/${workspaceSlug}`}
+          target="_blank"
+          rel="noreferrer"
+          className={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "w-fit gap-1.5",
+          )}
+        >
+          <LuExternalLink className="size-4" />
+          Manage organization
+        </a>
       </SectionContainer>
 
       {isOwner && (
