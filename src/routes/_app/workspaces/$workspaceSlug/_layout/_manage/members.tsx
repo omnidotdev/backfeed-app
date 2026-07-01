@@ -5,7 +5,6 @@ import { LuCirclePlus, LuUserPlus } from "react-icons/lu";
 import Page from "@/components/layout/Page";
 import { buttonVariants } from "@/components/ui/button";
 import Members from "@/components/workspace/Members";
-import Owners from "@/components/workspace/Owners";
 import PendingInvitations from "@/components/workspace/PendingInvitations";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL, isDevEnv } from "@/lib/config/env.config";
@@ -94,8 +93,6 @@ function WorkspaceMembersPage() {
           </ManageTeamLink>
         </div>
       )}
-
-      <Owners />
 
       <Members />
 

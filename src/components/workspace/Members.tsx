@@ -46,11 +46,18 @@ const Members = () => {
     }),
   });
 
-  // Filter out owners - they're shown in the Owners component
-  const members = useMemo(
-    () => membersData?.data?.filter((m) => m.role !== "owner") ?? [],
-    [membersData],
-  );
+  // Single roster: owners first, then admins, then members, each alphabetical.
+  // Owners are shown read-only (not selectable); only non-owners are manageable.
+  const members = useMemo(() => {
+    const roleRank: Record<string, number> = { owner: 0, admin: 1, member: 2 };
+    return [...(membersData?.data ?? [])].sort(
+      (a, b) =>
+        (roleRank[a.role] ?? 3) - (roleRank[b.role] ?? 3) ||
+        (a.user.name ?? a.user.email).localeCompare(
+          b.user.name ?? b.user.email,
+        ),
+    );
+  }, [membersData]);
 
   const columns = useMemo(
     () => [
@@ -104,9 +111,9 @@ const Members = () => {
               </div>
             }
             controlProps={{
-              className: isOwner ? "flex" : "hidden",
+              className: row.getCanSelect() ? "flex" : "hidden",
             }}
-            disabled={!isOwner}
+            disabled={!row.getCanSelect()}
             checked={row.getIsSelected()}
             onCheckedChange={({ checked }) =>
               row.toggleSelected(checked as boolean)
@@ -119,9 +126,10 @@ const Members = () => {
         cell: (info) => {
           const accentColor = match(info.getValue())
             .with(
-              "admin",
-              () => "var(--colors-brand-secondary)" as string | undefined,
+              "owner",
+              () => "var(--colors-brand-primary)" as string | undefined,
             )
+            .with("admin", () => "var(--colors-brand-secondary)")
             .with("member", () => "var(--colors-brand-tertiary)")
             .otherwise(() => undefined);
 
@@ -148,6 +156,8 @@ const Members = () => {
     data: members,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    // Owners are read-only; only non-owners are selectable, and only for owners
+    enableRowSelection: (row) => isOwner && row.original.role !== "owner",
   });
 
   return (
