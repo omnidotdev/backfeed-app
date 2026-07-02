@@ -31,7 +31,7 @@ const Footer = () => (
     <div className="hidden h-4 w-px bg-border sm:block" />
 
     {/* Links */}
-    <div className="flex items-center gap-4">
+    <div className="flex flex-wrap items-center justify-center gap-4">
       <a
         href={app.docsUrl}
         target="_blank"

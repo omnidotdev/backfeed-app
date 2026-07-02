@@ -360,7 +360,10 @@ const FeedbackCard = ({
       />
 
       {/* Content on the right */}
-      <div className="flex h-full w-full flex-1 flex-col gap-1">
+      {/* min-w-0 lets this flex column shrink below its content's intrinsic
+          width so long unbreakable strings (e.g. URLs) wrap instead of forcing
+          the card wider than the viewport and getting clipped on mobile */}
+      <div className="flex h-full w-full min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <span
