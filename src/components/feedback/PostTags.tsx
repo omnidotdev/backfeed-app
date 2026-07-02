@@ -12,13 +12,20 @@ interface Props {
   projectId: string;
   /** When false, tags are shown read-only (no add/remove controls) */
   canAssign?: boolean;
+  /** When true, admins can create a new tag inline from the picker */
+  canCreate?: boolean;
 }
 
 /**
  * Post tags. Shows the tags assigned to a post and, when allowed, lets the
  * user assign or unassign tags from the project's available tags.
  */
-const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
+const PostTags = ({
+  postId,
+  projectId,
+  canAssign = false,
+  canCreate = false,
+}: Props) => {
   const { assignedTags, toggleTag } = usePostTagEditor({ postId, projectId });
 
   if (!canAssign && !assignedTags.length) return null;
@@ -46,7 +53,13 @@ const PostTags = ({ postId, projectId, canAssign = false }: Props) => {
         ) : null,
       )}
 
-      {canAssign && <TagPicker postId={postId} projectId={projectId} />}
+      {canAssign && (
+        <TagPicker
+          postId={postId}
+          projectId={projectId}
+          canCreate={canCreate}
+        />
+      )}
     </div>
   );
 };

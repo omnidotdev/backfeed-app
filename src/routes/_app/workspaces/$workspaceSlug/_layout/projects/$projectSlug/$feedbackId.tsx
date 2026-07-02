@@ -214,6 +214,7 @@ function FeedbackPage() {
           postId={feedbackId}
           projectId={feedback.project.rowId}
           canAssign={!!session?.user?.rowId}
+          canCreate={hasAdminPrivileges}
         />
       )}
 

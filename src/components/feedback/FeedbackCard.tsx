@@ -465,6 +465,7 @@ const FeedbackCard = ({
                 <TagPicker
                   postId={feedback.rowId}
                   projectId={feedback.project.rowId}
+                  canCreate={canManageFeedback}
                   label={compact ? "" : "Tag"}
                   triggerProps={{
                     variant: "ghost",

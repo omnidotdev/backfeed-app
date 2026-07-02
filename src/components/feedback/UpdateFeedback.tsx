@@ -71,7 +71,8 @@ interface Props extends ComponentProps<typeof DialogRoot> {
  * Update feedback form.
  */
 const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
-  const { session, queryClient } = workspaceLayoutRoute.useRouteContext();
+  const { session, queryClient, hasAdminPrivileges } =
+    workspaceLayoutRoute.useRouteContext();
 
   const isClient = useIsClient();
 
@@ -315,6 +316,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                     postId={feedback.rowId}
                     projectId={feedback.project.rowId}
                     canAssign
+                    canCreate={hasAdminPrivileges}
                   />
                 </div>
               )}

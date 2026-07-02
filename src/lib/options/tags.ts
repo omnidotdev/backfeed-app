@@ -10,6 +10,31 @@ export interface Tag {
   color: string | null;
 }
 
+/** Suggested label colors, friendly defaults like GitHub labels. */
+export const TAG_COLOR_PRESETS = [
+  "#ef4444",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#06b6d4",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#64748b",
+];
+
+/**
+ * Deterministically pick a preset color for a tag name, so a given name always
+ * maps to the same color (e.g. when created inline from the tag picker).
+ */
+export const pickTagColor = (name: string): string => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) | 0;
+  }
+  return TAG_COLOR_PRESETS[Math.abs(hash) % TAG_COLOR_PRESETS.length]!;
+};
+
 /** A tag assignment on a post, including the resolved tag. */
 export interface PostTagAssignment {
   rowId: string;

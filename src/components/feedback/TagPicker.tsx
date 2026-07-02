@@ -21,6 +21,8 @@ interface Props {
   projectId: string;
   /** Trigger button label. */
   label?: string;
+  /** When true, admins can create a new tag inline from the search box. */
+  canCreate?: boolean;
   /** Props forwarded to the trigger button (size, variant, className, etc). */
   triggerProps?: ComponentProps<typeof Button>;
 }
@@ -34,6 +36,7 @@ const TagPicker = ({
   postId,
   projectId,
   label = "Add tag",
+  canCreate = false,
   triggerProps,
 }: Props) => {
   const [open, setOpen] = useState(false);
@@ -43,18 +46,35 @@ const TagPicker = ({
   // feedback list does not fire a query per card
   const [hasOpened, setHasOpened] = useState(false);
 
-  const { projectTags, assignedTagIds, toggleTag } = usePostTagEditor({
-    postId,
-    projectId,
-    enabled: hasOpened,
-  });
+  const { projectTags, assignedTagIds, toggleTag, createAndAssignTag } =
+    usePostTagEditor({
+      postId,
+      projectId,
+      enabled: hasOpened,
+    });
+
+  const trimmed = inputValue.trim();
 
   const filteredTags = useMemo(() => {
-    const needle = inputValue.trim().toLowerCase();
+    const needle = trimmed.toLowerCase();
     return needle
       ? projectTags.filter((tag) => tag.name.toLowerCase().includes(needle))
       : projectTags;
-  }, [projectTags, inputValue]);
+  }, [projectTags, trimmed]);
+
+  // offer inline creation to admins when the query has no exact tag match
+  const canCreateCurrent =
+    canCreate &&
+    trimmed.length > 0 &&
+    !projectTags.some(
+      (tag) => tag.name.toLowerCase() === trimmed.toLowerCase(),
+    );
+
+  const handleCreate = () => {
+    if (!canCreateCurrent) return;
+    createAndAssignTag(trimmed);
+    setInputValue("");
+  };
 
   const collection = useMemo(
     () =>
@@ -136,16 +156,34 @@ const TagPicker = ({
                 </ArkCombobox.Item>
               ))}
 
-              {!projectTags.length && (
+              {!projectTags.length && !canCreateCurrent && (
                 <p className="px-2 py-4 text-center text-muted-foreground text-sm">
                   No tags yet
                 </p>
               )}
 
-              {!!projectTags.length && !filteredTags.length && (
-                <p className="px-2 py-4 text-center text-muted-foreground text-sm">
-                  No matches
-                </p>
+              {!!projectTags.length &&
+                !filteredTags.length &&
+                !canCreateCurrent && (
+                  <p className="px-2 py-4 text-center text-muted-foreground text-sm">
+                    No matches
+                  </p>
+                )}
+
+              {canCreateCurrent && (
+                <button
+                  type="button"
+                  onClick={handleCreate}
+                  className="mt-0.5 flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-popover-foreground text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                >
+                  <LuPlus className="size-4 shrink-0 text-muted-foreground" />
+                  <span className="flex-1 truncate">
+                    Create <span className="font-medium">{trimmed}</span>
+                  </span>
+                  <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground uppercase tracking-wide">
+                    Admin
+                  </span>
+                </button>
               )}
             </div>
           </ArkCombobox.Content>

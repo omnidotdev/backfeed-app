@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  TAG_COLOR_PRESETS,
   createTag,
   deleteTag,
   projectTagsOptions,
@@ -26,19 +27,6 @@ import {
 import toaster from "@/lib/util/toaster";
 
 import type { Tag } from "@/lib/options/tags";
-
-/** Suggested label colors, friendly defaults like GitHub labels. */
-const TAG_COLOR_PRESETS = [
-  "#ef4444",
-  "#f97316",
-  "#eab308",
-  "#22c55e",
-  "#06b6d4",
-  "#3b82f6",
-  "#8b5cf6",
-  "#ec4899",
-  "#64748b",
-];
 
 interface Props {
   /** Project rowId tags belong to */

@@ -2,10 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   createPostTag,
+  createTag,
   deletePostTag,
+  pickTagColor,
   postTagsOptions,
   postTagsQueryKey,
   projectTagsOptions,
+  projectTagsQueryKey,
 } from "@/lib/options/tags";
 import toaster from "@/lib/util/toaster";
 
@@ -168,6 +171,30 @@ const usePostTagEditor = ({ postId, projectId, enabled = true }: Params) => {
     onSettled: invalidate,
   });
 
+  const { mutate: createAndAssignTag } = useMutation({
+    mutationFn: async (name: string) => {
+      const {
+        createTag: { tag },
+      } = await createTag({ projectId, name, color: pickTagColor(name) });
+      await createPostTag({ postId, tagId: tag.rowId });
+      return tag;
+    },
+    onSuccess: (tag) => {
+      // reflect the newly created + assigned tag on every surface until refetch
+      patchEverySurface((nodes) => [
+        ...nodes,
+        { tag: { rowId: tag.rowId, name: tag.name, color: tag.color } },
+      ]);
+    },
+    onError: () => toaster.error({ title: "Could not create tag" }),
+    onSettled: () => {
+      invalidate();
+      queryClient.invalidateQueries({
+        queryKey: projectTagsQueryKey(projectId),
+      });
+    },
+  });
+
   const assignedTagIds = (assignedTags ?? [])
     .map((node) => node.tag?.rowId)
     .filter((id): id is string => Boolean(id));
@@ -184,6 +211,7 @@ const usePostTagEditor = ({ postId, projectId, enabled = true }: Params) => {
     assignedTagIds,
     isAssigned,
     toggleTag,
+    createAndAssignTag,
     isLoading: isLoadingAssigned || isLoadingProjectTags,
   };
 };
