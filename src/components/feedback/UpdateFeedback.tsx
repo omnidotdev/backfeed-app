@@ -192,6 +192,9 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
                       ...(attachment.height != null && {
                         height: attachment.height,
                       }),
+                      ...(attachment.lqip != null && {
+                        lqip: attachment.lqip,
+                      }),
                     },
                   },
                 }),

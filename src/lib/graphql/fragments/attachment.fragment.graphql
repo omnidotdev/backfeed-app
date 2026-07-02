@@ -6,4 +6,5 @@ fragment Attachment on Attachment {
   width
   height
   fileSize
+  lqip
 }

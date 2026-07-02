@@ -15,6 +15,8 @@ export interface AttachmentUploadResult {
   fileSize: number;
   /** Resolved media kind */
   kind: MediaKind;
+  /** Inline base64 blur-up placeholder, present for images */
+  lqip?: string;
 }
 
 /**
