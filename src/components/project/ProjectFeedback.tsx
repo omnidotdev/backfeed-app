@@ -7,7 +7,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -317,30 +317,42 @@ const ProjectFeedback = () => {
   // keepPreviousData list until the refetch returns. Mirrors the server filters:
   // hide excluded statuses (always keep status-less posts), match the search
   // against the title only, and require any of the selected tags
-  const searchQuery = searchInput.trim().toLowerCase();
+  // defer the live search text so the expensive client-side filter and full
+  // FeedbackCard list re-render happen at low priority. keystrokes commit the
+  // input update immediately while the list catches up on an interruptible
+  // render, keeping typing smooth even with many posts loaded
+  const deferredSearch = useDeferredValue(searchInput);
+  const searchQuery = deferredSearch.trim().toLowerCase();
 
-  const visiblePosts = (posts ?? []).filter((post) => {
-    const displayName = post?.statusTemplate?.displayName;
-    if (displayName && excludedStatuses.includes(displayName)) return false;
-    if (searchQuery && !post?.title?.toLowerCase().includes(searchQuery))
-      return false;
-    if (tags.length) {
-      const postTagIds = new Set(
-        (post?.postTags?.nodes ?? []).map((node) => node?.tag?.rowId),
-      );
-      if (!tags.some((tagId) => postTagIds.has(tagId))) return false;
-    }
-    return true;
-  });
+  const visiblePosts = useMemo(
+    () =>
+      (posts ?? []).filter((post) => {
+        const displayName = post?.statusTemplate?.displayName;
+        if (displayName && excludedStatuses.includes(displayName)) return false;
+        if (searchQuery && !post?.title?.toLowerCase().includes(searchQuery))
+          return false;
+        if (tags.length) {
+          const postTagIds = new Set(
+            (post?.postTags?.nodes ?? []).map((node) => node?.tag?.rowId),
+          );
+          if (!tags.some((tagId) => postTagIds.has(tagId))) return false;
+        }
+        return true;
+      }),
+    [posts, excludedStatuses, searchQuery, tags],
+  );
 
-  const allPosts = [
-    ...(showPendingFeedback
-      ? pendingFeedback.filter((feedback) =>
-          feedback.title?.toLowerCase().includes(searchQuery),
-        )
-      : []),
-    ...visiblePosts,
-  ];
+  const allPosts = useMemo(
+    () => [
+      ...(showPendingFeedback
+        ? pendingFeedback.filter((feedback) =>
+            feedback.title?.toLowerCase().includes(searchQuery),
+          )
+        : []),
+      ...visiblePosts,
+    ],
+    [showPendingFeedback, pendingFeedback, searchQuery, visiblePosts],
+  );
 
   const [loaderRef, { rootRef }] = useInfiniteScroll({
     // include the next-page fetch so the hook knows a load is in progress and

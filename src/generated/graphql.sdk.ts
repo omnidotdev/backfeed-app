@@ -2502,6 +2502,13 @@ export type NotificationActor = {
   username?: Maybe<Scalars['String']['output']>;
 };
 
+/** A lightweight signal that the current user received a notification. */
+export type NotificationEvent = {
+  __typename?: 'NotificationEvent';
+  id?: Maybe<Scalars['UUID']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
 export type NotificationPreference = {
   __typename?: 'NotificationPreference';
   /** Email me when a post I reported or upvoted changes status. */
@@ -8140,6 +8147,13 @@ export type StringFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
   /** Starts with the specified string (case-insensitive). */
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
+export type Subscription = {
+  __typename?: 'Subscription';
+  /** Fires when the current user receives a new notification. */
+  notificationReceived?: Maybe<NotificationEvent>;
 };
 
 export type Tag = {

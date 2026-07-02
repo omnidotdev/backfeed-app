@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
+import StatusBadge from "@/components/core/StatusBadge";
 import { similarPostsOptions } from "@/lib/options/similarPosts";
 
 interface Props {
@@ -36,7 +37,7 @@ const PossibleDuplicates = ({ projectId, content }: Props) => {
       </p>
       <ul className="flex flex-col gap-1">
         {similar.map((post) => (
-          <li key={post.id}>
+          <li key={post.id} className="flex items-center gap-2">
             <Link
               to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
               params={{
@@ -44,11 +45,19 @@ const PossibleDuplicates = ({ projectId, content }: Props) => {
                 projectSlug: projectSlug as string,
                 feedbackId: post.number ? String(post.number) : post.id,
               }}
-              className="text-[var(--colors-brand-primary)] hover:underline"
+              className="truncate text-[var(--colors-brand-primary)] hover:underline"
             >
               {post.number ? `#${post.number} ` : ""}
               {post.title ?? "Untitled"}
             </Link>
+            {/* surface the status so an already-completed/closed match reads as
+                resolved rather than something still open to duplicate */}
+            {post.status && (
+              <StatusBadge
+                status={post.status}
+                className="shrink-0 px-2 py-0.5"
+              />
+            )}
           </li>
         ))}
       </ul>

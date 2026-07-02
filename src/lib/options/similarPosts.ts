@@ -7,6 +7,8 @@ export interface SimilarPost {
   number: number | null;
   title: string | null;
   score: number;
+  /** Current status of the candidate (null when the post has no status). */
+  status: { displayName: string; color: string | null } | null;
 }
 
 interface SimilarPostsData {
@@ -26,6 +28,10 @@ const SIMILAR_POSTS_QUERY = `
       number
       title
       score
+      status {
+        displayName
+        color
+      }
     }
   }
 `;
