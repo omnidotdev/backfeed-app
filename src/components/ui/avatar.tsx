@@ -52,7 +52,17 @@ const AvatarImage = ({
   ...rest
 }: ComponentProps<typeof ArkAvatar.Image>) => (
   <ArkAvatar.Image
-    className={cn("aspect-square size-full", className)}
+    hidden={false}
+    ref={(img) => {
+      if (img?.complete && img.naturalWidth > 0) {
+        img.style.transition = "none";
+        img.style.opacity = "1";
+      }
+    }}
+    className={cn(
+      "aspect-square size-full opacity-0 transition-opacity duration-300 ease-out data-[state=visible]:opacity-100",
+      className,
+    )}
     alt="Avatar"
     {...rest}
   />
