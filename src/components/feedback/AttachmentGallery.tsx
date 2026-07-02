@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuPlay, LuX } from "react-icons/lu";
 
+import { Image } from "@/components/core/Image";
 import cn from "@/lib/utils";
 
 import type { AttachmentFragment } from "@/generated/graphql";
@@ -64,11 +65,16 @@ const AttachmentGallery = ({
                   if (!compact) setLightbox(attachment);
                 }}
               >
-                <img
+                <Image
                   src={attachment.url}
                   alt=""
-                  loading="lazy"
-                  className="size-full object-cover"
+                  lqip={attachment.lqip}
+                  sizes={
+                    compact
+                      ? "(min-width: 640px) 16vw, 25vw"
+                      : "(min-width: 640px) 33vw, 50vw"
+                  }
+                  className="size-full"
                 />
               </button>
             ) : compact ? (

@@ -232,6 +232,9 @@ const CreateFeedback = () => {
                       ...(attachment.height != null && {
                         height: attachment.height,
                       }),
+                      ...(attachment.lqip != null && {
+                        lqip: attachment.lqip,
+                      }),
                     },
                   },
                 }),

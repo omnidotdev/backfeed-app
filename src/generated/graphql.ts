@@ -45,6 +45,7 @@ export type Attachment = {
   fileSize?: Maybe<Scalars['Int']['output']>;
   height?: Maybe<Scalars['Int']['output']>;
   kind: Scalars['String']['output'];
+  lqip?: Maybe<Scalars['String']['output']>;
   mimeType: Scalars['String']['output'];
   /** Reads a single `Post` that is related to this `Attachment`. */
   post?: Maybe<Post>;
@@ -134,6 +135,8 @@ export type AttachmentCondition = {
   height?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `kind` field. */
   kind?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `lqip` field. */
+  lqip?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `mimeType` field. */
   mimeType?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `postId` field. */
@@ -179,6 +182,7 @@ export type AttachmentDistinctCountAggregateFilter = {
   fileSize?: InputMaybe<BigIntFilter>;
   height?: InputMaybe<BigIntFilter>;
   kind?: InputMaybe<BigIntFilter>;
+  lqip?: InputMaybe<BigIntFilter>;
   mimeType?: InputMaybe<BigIntFilter>;
   postId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -198,6 +202,8 @@ export type AttachmentDistinctCountAggregates = {
   height?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of kind across the matching connection */
   kind?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of lqip across the matching connection */
+  lqip?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of mimeType across the matching connection */
   mimeType?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of postId across the matching connection */
@@ -235,6 +241,8 @@ export type AttachmentFilter = {
   height?: InputMaybe<IntFilter>;
   /** Filter by the object’s `kind` field. */
   kind?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lqip` field. */
+  lqip?: InputMaybe<StringFilter>;
   /** Filter by the object’s `mimeType` field. */
   mimeType?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -267,6 +275,7 @@ export enum AttachmentGroupBy {
   FileSize = 'FILE_SIZE',
   Height = 'HEIGHT',
   Kind = 'KIND',
+  Lqip = 'LQIP',
   MimeType = 'MIME_TYPE',
   PostId = 'POST_ID',
   StorageKey = 'STORAGE_KEY',
@@ -359,6 +368,7 @@ export type AttachmentInput = {
   fileSize?: InputMaybe<Scalars['Int']['input']>;
   height?: InputMaybe<Scalars['Int']['input']>;
   kind: Scalars['String']['input'];
+  lqip?: InputMaybe<Scalars['String']['input']>;
   mimeType: Scalars['String']['input'];
   postId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -410,6 +420,8 @@ export enum AttachmentOrderBy {
   HeightDesc = 'HEIGHT_DESC',
   KindAsc = 'KIND_ASC',
   KindDesc = 'KIND_DESC',
+  LqipAsc = 'LQIP_ASC',
+  LqipDesc = 'LQIP_DESC',
   MimeTypeAsc = 'MIME_TYPE_ASC',
   MimeTypeDesc = 'MIME_TYPE_DESC',
   Natural = 'NATURAL',
@@ -435,6 +447,7 @@ export type AttachmentPatch = {
   fileSize?: InputMaybe<Scalars['Int']['input']>;
   height?: InputMaybe<Scalars['Int']['input']>;
   kind?: InputMaybe<Scalars['String']['input']>;
+  lqip?: InputMaybe<Scalars['String']['input']>;
   mimeType?: InputMaybe<Scalars['String']['input']>;
   postId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3135,6 +3148,8 @@ export enum PostOrderBy {
   AttachmentsDistinctCountHeightDesc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_DESC',
   AttachmentsDistinctCountKindAsc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_ASC',
   AttachmentsDistinctCountKindDesc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_DESC',
+  AttachmentsDistinctCountLqipAsc = 'ATTACHMENTS_DISTINCT_COUNT_LQIP_ASC',
+  AttachmentsDistinctCountLqipDesc = 'ATTACHMENTS_DISTINCT_COUNT_LQIP_DESC',
   AttachmentsDistinctCountMimeTypeAsc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_ASC',
   AttachmentsDistinctCountMimeTypeDesc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_DESC',
   AttachmentsDistinctCountPostIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_ASC',
@@ -7513,7 +7528,14 @@ export type SimilarPost = {
   id: Scalars['UUID']['output'];
   number?: Maybe<Scalars['Int']['output']>;
   score: Scalars['Float']['output'];
+  status?: Maybe<SimilarPostStatus>;
   title?: Maybe<Scalars['String']['output']>;
+};
+
+export type SimilarPostStatus = {
+  __typename?: 'SimilarPostStatus';
+  color?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
 };
 
 export type StatusTemplate = {
@@ -9325,6 +9347,8 @@ export enum UserOrderBy {
   AttachmentsDistinctCountHeightDesc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_DESC',
   AttachmentsDistinctCountKindAsc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_ASC',
   AttachmentsDistinctCountKindDesc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_DESC',
+  AttachmentsDistinctCountLqipAsc = 'ATTACHMENTS_DISTINCT_COUNT_LQIP_ASC',
+  AttachmentsDistinctCountLqipDesc = 'ATTACHMENTS_DISTINCT_COUNT_LQIP_DESC',
   AttachmentsDistinctCountMimeTypeAsc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_ASC',
   AttachmentsDistinctCountMimeTypeDesc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_DESC',
   AttachmentsDistinctCountPostIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_ASC',
@@ -10395,11 +10419,11 @@ export type WardenSyncQueueVarianceSampleAggregates = {
   maxAttempts?: Maybe<Scalars['BigFloat']['output']>;
 };
 
-export type AttachmentFragment = { __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null };
+export type AttachmentFragment = { __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null };
 
 export type CommentFragment = { __typename?: 'Comment', rowId: string, message?: string | null, createdAt: Date, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, childComments: { __typename?: 'CommentConnection', totalCount: number } };
 
-export type FeedbackFragment = { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } };
+export type FeedbackFragment = { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } };
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, image?: string | null, slug: string, prefix?: string | null, organizationId: string, nextPostNumber: number, isPublic: boolean, showRoadmap: boolean, showChangelog: boolean, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, projectId: string, url: string, title?: string | null, order: number } | null> }, posts: { __typename?: 'PostConnection', aggregates?: { __typename?: 'PostAggregates', distinctCount?: { __typename?: 'PostDistinctCountAggregates', userId?: string | null } | null } | null }, userPosts: { __typename?: 'PostConnection', nodes: Array<{ __typename?: 'Post', rowId: string } | null> } };
 
@@ -10412,7 +10436,7 @@ export type CreateAttachmentMutationVariables = Exact<{
 }>;
 
 
-export type CreateAttachmentMutation = { __typename?: 'Mutation', createAttachment?: { __typename?: 'CreateAttachmentPayload', attachment?: { __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null } | null };
+export type CreateAttachmentMutation = { __typename?: 'Mutation', createAttachment?: { __typename?: 'CreateAttachmentPayload', attachment?: { __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null } | null } | null };
 
 export type DeleteAttachmentMutationVariables = Exact<{
   input: DeleteAttachmentInput;
@@ -10627,7 +10651,7 @@ export type FeedbackByIdQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
+export type FeedbackByIdQuery = { __typename?: 'Query', post?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
 
 export type FeedbackByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -10636,7 +10660,7 @@ export type FeedbackByNumberQueryVariables = Exact<{
 }>;
 
 
-export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
+export type FeedbackByNumberQuery = { __typename?: 'Query', postByProjectIdAndNumber?: { __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null };
 
 export type MyNotificationPreferenceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10674,7 +10698,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null> } | null };
+export type PostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, nodes: Array<{ __typename?: 'Post', rowId: string, number?: number | null, title?: string | null, description?: string | null, statusUpdatedAt: Date, createdAt: Date, updatedAt: Date, project?: { __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, organizationId: string } | null, statusTemplate?: { __typename?: 'StatusTemplate', rowId: string, name: string, displayName: string, description?: string | null, color?: string | null } | null, user?: { __typename?: 'User', rowId: string, identityProviderId: string, username?: string | null, avatarUrl?: string | null } | null, attachments: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, url: string, mimeType: string, kind: string, width?: number | null, height?: number | null, fileSize?: number | null, lqip?: string | null } | null> }, comments: { __typename?: 'CommentConnection', totalCount: number }, commentsWithReplies: { __typename?: 'CommentConnection', totalCount: number }, upvotes: { __typename?: 'VoteConnection', totalCount: number }, userUpvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, downvotes: { __typename?: 'VoteConnection', totalCount: number }, userDownvotes: { __typename?: 'VoteConnection', nodes: Array<{ __typename?: 'Vote', rowId: string } | null> }, postTags: { __typename?: 'PostTagConnection', nodes: Array<{ __typename?: 'PostTag', tag?: { __typename?: 'Tag', rowId: string, name: string, color?: string | null } | null } | null> } } | null> } | null };
 
 export type PostsByRowIdsQueryVariables = Exact<{
   rowIds?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
@@ -10808,6 +10832,7 @@ export const AttachmentFragmentDoc = `
   width
   height
   fileSize
+  lqip
 }
     `;
 export const FeedbackFragmentDoc = `
