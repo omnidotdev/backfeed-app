@@ -44,12 +44,12 @@ const columnHelper = createColumnHelper<IdpMember>();
 const Members = () => {
   const { isOwner, organizationId, session } = membersRoute.useRouteContext();
 
-  const { data: membersData } = useQuery({
-    ...organizationMembersOptions({
+  const { data: membersData } = useQuery(
+    organizationMembersOptions({
       organizationId: organizationId!,
-      accessToken: session?.accessToken!,
+      enabled: !!session?.user,
     }),
-  });
+  );
 
   // Single roster: owners first, then admins, then members, each alphabetical.
   // Owners are shown read-only (not selectable); only non-owners are manageable.

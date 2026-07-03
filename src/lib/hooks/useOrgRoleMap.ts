@@ -11,20 +11,18 @@ export type OrgRole = "owner" | "admin" | "member";
  * Map an organization's members to their roles, keyed by `identityProviderId`
  * (the IDP user id, which equals a backfeed user's `identityProviderId`). Lets a
  * card resolve an author's role for a {@link RoleBadge}. Sourced from the IDP
- * (the membership SSOT), so it is empty for signed-out viewers (no access token)
+ * (the membership SSOT), so it is empty for signed-out viewers (not signed in)
  * and for non-members.
  */
 const useOrgRoleMap = (organizationId?: string): Map<string, OrgRole> => {
   const { session } = useRouteContext({ from: "__root__" });
-  const accessToken = session?.accessToken;
 
-  const { data } = useQuery({
-    ...organizationMembersOptions({
+  const { data } = useQuery(
+    organizationMembersOptions({
       organizationId: organizationId ?? "",
-      accessToken: accessToken ?? "",
+      enabled: !!session?.user,
     }),
-    enabled: Boolean(organizationId) && Boolean(accessToken),
-  });
+  );
 
   return useMemo(() => {
     const roles = new Map<string, OrgRole>();

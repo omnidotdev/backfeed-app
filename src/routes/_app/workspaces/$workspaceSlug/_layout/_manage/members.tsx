@@ -22,13 +22,13 @@ export const Route = createFileRoute(
     context: { queryClient, organizationId, workspaceName, session },
   }) => {
     // Prefetch organization members from Gatekeeper
-    if (organizationId && session?.accessToken) {
-      await queryClient.prefetchQuery({
-        ...organizationMembersOptions({
+    if (organizationId && session?.user) {
+      await queryClient.prefetchQuery(
+        organizationMembersOptions({
           organizationId,
-          accessToken: session.accessToken,
+          enabled: true,
         }),
-      });
+      );
     }
 
     // Prefetch pending invitations

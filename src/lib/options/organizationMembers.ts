@@ -14,10 +14,11 @@ import { listOrganizationMembers } from "@/server/functions/organizations";
 export interface OrganizationMembersVariables {
   organizationId: string;
   /**
-   * Auth-presence signal used to gate the query. The IDP call uses the server
-   * session access token, not this value.
+   * Auth-presence gate: the roster is only readable for a signed-in caller. The
+   * IDP call authenticates server-side, so gate on a stable signed-in signal
+   * rather than the (transient) client access token.
    */
-  accessToken: string;
+  enabled?: boolean;
 }
 
 /**
@@ -25,10 +26,10 @@ export interface OrganizationMembersVariables {
  */
 export const organizationMembersOptions = ({
   organizationId,
-  accessToken,
+  enabled = true,
 }: OrganizationMembersVariables) =>
   queryOptions({
     queryKey: ["organizationMembers", organizationId],
     queryFn: () => listOrganizationMembers({ data: { organizationId } }),
-    enabled: !!organizationId && !!accessToken,
+    enabled: !!organizationId && enabled,
   });
