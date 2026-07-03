@@ -7,7 +7,14 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LuPlus } from "react-icons/lu";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -103,14 +110,27 @@ const ProjectFeedback = () => {
     select: (data) => data?.projects?.nodes?.[0],
   });
 
-  const onSearchChange = useHandleSearch();
+  // remember the value our own debounced navigate last pushed to the URL, so
+  // the sync effect below can ignore that echo and only adopt genuinely
+  // external search changes
+  const lastPushedSearchRef = useRef(search);
+  const onSearchChange = useHandleSearch({
+    onNavigate: useCallback((value: string) => {
+      lastPushedSearchRef.current = value;
+    }, []),
+  });
 
   // live search text, used to filter the list client-side on every keystroke
-  // while useHandleSearch debounces the actual query. Kept in sync when the
-  // route search changes externally (e.g. a saved view applies a search)
+  // while useHandleSearch debounces the actual query. Adopt the route search
+  // only when it changes externally (e.g. a saved view applies a search); the
+  // echo of our own navigate is skipped so it cannot overwrite characters typed
+  // while the URL update was in flight
   const [searchInput, setSearchInput] = useState(search);
   useEffect(() => {
-    setSearchInput(search);
+    if (search !== lastPushedSearchRef.current) {
+      lastPushedSearchRef.current = search;
+      setSearchInput(search);
+    }
   }, [search]);
 
   const { data: canCreateFeedback } = useQuery(
