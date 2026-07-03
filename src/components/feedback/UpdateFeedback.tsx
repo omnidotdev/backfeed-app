@@ -91,7 +91,7 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
   );
   const mentionItems = useMentionCandidates({
     organizationId: feedback.project?.organizationId,
-    accessToken: session?.accessToken,
+    enabled: !!session?.user,
     participants: projectParticipants,
   });
 

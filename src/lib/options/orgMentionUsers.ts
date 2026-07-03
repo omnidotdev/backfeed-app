@@ -49,7 +49,8 @@ export const orgMentionUsersQueryKey = (organizationId: string) =>
  */
 export const orgMentionUsersOptions = (params: {
   organizationId?: string;
-  accessToken?: string;
+  /** Auth-presence gate: the roster is only readable for a signed-in caller. */
+  enabled?: boolean;
 }) =>
   queryOptions({
     queryKey: orgMentionUsersQueryKey(params.organizationId ?? ""),
@@ -77,5 +78,10 @@ export const orgMentionUsersOptions = (params: {
         username: user.username ?? nameBySub.get(user.identityProviderId),
       }));
     },
-    enabled: Boolean(params.organizationId) && Boolean(params.accessToken),
+    // `listOrganizationMembers` and `graphqlFetch` resolve the session
+    // server-side, so this query never uses a client access token; gating on the
+    // transient token (rather than a stable signed-in signal) risks silently
+    // emptying the roster. Gate on the org plus an explicit auth-presence flag so
+    // the roster is not fetched for anonymous board viewers
+    enabled: Boolean(params.organizationId) && (params.enabled ?? true),
   });

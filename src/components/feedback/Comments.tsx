@@ -116,7 +116,7 @@ const Comments = () => {
   );
   const mentionableUsers = useMentionCandidates({
     organizationId,
-    accessToken: session?.accessToken,
+    enabled: !!session?.user,
     participants: threadParticipants,
   });
 

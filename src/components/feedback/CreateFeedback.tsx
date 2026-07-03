@@ -124,7 +124,7 @@ const CreateFeedback = () => {
   );
   const mentionItems = useMentionCandidates({
     organizationId,
-    accessToken: session?.accessToken,
+    enabled: isSignedIn,
     participants: projectParticipants,
   });
 
