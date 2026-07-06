@@ -1,27 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import app from "@/lib/config/app.config";
-import payments from "@/lib/payments";
+import billing from "@/lib/providers/billing";
 
-import type Stripe from "stripe";
+import type { Price } from "@/lib/providers/billing";
 
-/**
- * Expand a Stripe Price object (https://docs.stripe.com/api/prices/object) with a Stripe Product object (https://docs.stripe.com/api/products/object).
- */
-export interface ExpandedProductPrice extends Stripe.Price {
-  product: Stripe.Product;
-}
+export type { Price };
+
+/** @deprecated use Price; kept for existing imports */
+export type ExpandedProductPrice = Price;
 
 export const getPrices = createServerFn().handler(async () => {
-  const prices = await payments.prices.search({
-    query: `active:"true" AND metadata["app"]:"${app.name.toLowerCase()}"`,
-    expand: ["data.product"],
-  });
+  const prices = await billing.getPrices("backfeed");
 
   // Filter to valid tiers only and deduplicate by tier + interval
   const VALID_TIERS = new Set(["free", "pro", "team", "starter"]);
   const seen = new Set<string>();
-  const filtered = prices.data.filter((p) => {
+  const filtered = prices.filter((p) => {
     const tier = p.metadata?.tier;
     if (!tier || !VALID_TIERS.has(tier)) return false;
     const interval = p.recurring?.interval ?? "one_time";
@@ -31,7 +25,5 @@ export const getPrices = createServerFn().handler(async () => {
     return true;
   });
 
-  return filtered.sort(
-    (a, b) => a.unit_amount! - b.unit_amount!,
-  ) as ExpandedProductPrice[];
+  return filtered.sort((a, b) => (a.unit_amount ?? 0) - (b.unit_amount ?? 0));
 });

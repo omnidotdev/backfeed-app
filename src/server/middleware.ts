@@ -1,7 +1,5 @@
 import { createMiddleware } from "@tanstack/react-start";
 
-import { hasBilling } from "@/lib/config/env.config";
-import payments from "@/lib/payments";
 import { fetchSession } from "@/server/functions/auth";
 
 export const authMiddleware = createMiddleware().server(async ({ next }) => {
@@ -11,21 +9,3 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
 
   return next({ context: { session } });
 });
-
-export const customerMiddleware = createMiddleware()
-  .middleware([authMiddleware])
-  .server(async ({ next, context }) => {
-    if (!hasBilling) {
-      return next({
-        context: { customer: null },
-      });
-    }
-
-    const { data: customers } = await payments.customers.search({
-      query: `metadata["externalId"]:"${context.session.user.identityProviderId!}"`,
-    });
-
-    return next({
-      context: { customer: customers.length ? customers[0] : null },
-    });
-  });

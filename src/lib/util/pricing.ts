@@ -1,4 +1,5 @@
-import type Stripe from "stripe";
+/** A product marketing feature (matches the billing provider's product shape). */
+type MarketingFeature = { name?: string | null };
 
 /**
  * Default product details for the free tier.
@@ -17,10 +18,10 @@ export const FREE_PRODUCT_DETAILS = {
 /**
  * Sort benefits to put "Everything in..." at the front.
  */
-export const sortBenefits = (benefits: Stripe.Product.MarketingFeature[]) => {
+export const sortBenefits = (benefits: MarketingFeature[]) => {
   const everythingInPrefix = "Everything in";
-  let everythingInBenefit: Stripe.Product.MarketingFeature | undefined;
-  const otherBenefits: Stripe.Product.MarketingFeature[] = [];
+  let everythingInBenefit: MarketingFeature | undefined;
+  const otherBenefits: MarketingFeature[] = [];
 
   for (const benefit of benefits) {
     if (benefit.name?.startsWith(everythingInPrefix)) {

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import app from "@/lib/config/app.config";
 import billing, { type Subscription } from "@/lib/providers/billing";
-import { authMiddleware, customerMiddleware } from "@/server/middleware";
+import { authMiddleware } from "@/server/middleware";
 
 /**
  * Schema for organization-based billing operations.
@@ -47,12 +47,12 @@ const checkoutWithWorkspaceSchema = z
  */
 export const getSubscription = createServerFn()
   .inputValidator((data) => organizationSchema.parse(data))
-  .middleware([customerMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }): Promise<Subscription | null> => {
     if (!context.session?.accessToken) return null;
 
     return billing.getSubscription(
-      "backfeed/organization",
+      "organization",
       data.organizationId,
       context.session.accessToken,
     );
@@ -64,12 +64,12 @@ export const getSubscription = createServerFn()
  */
 export const revokeSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => organizationSchema.parse(data))
-  .middleware([customerMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session?.accessToken) throw new Error("Unauthorized");
 
     return billing.cancelSubscription(
-      "backfeed/organization",
+      "organization",
       data.organizationId,
       context.session.accessToken,
     );
@@ -82,12 +82,12 @@ export const revokeSubscription = createServerFn({ method: "POST" })
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => billingPortalSchema.parse(data))
-  .middleware([customerMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session?.accessToken) throw new Error("Unauthorized");
 
     return billing.getBillingPortalUrl(
-      "backfeed/organization",
+      "organization",
       data.organizationId,
       "backfeed",
       data.returnUrl,
@@ -97,14 +97,13 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
 
 export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => createSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     return billing.createCheckoutSession({
       priceId: data.priceId,
       successUrl: data.successUrl,
       customerEmail: context.session.user.email!,
       customerName: context.session.user.name ?? undefined,
-      customerId: context.customer?.id,
       metadata: {
         externalId: context.session.user.identityProviderId!,
         app_id: "backfeed",
@@ -119,12 +118,12 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
  */
 export const renewSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => organizationSchema.parse(data))
-  .middleware([customerMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session?.accessToken) throw new Error("Unauthorized");
 
     await billing.renewSubscription(
-      "backfeed/organization",
+      "organization",
       data.organizationId,
       context.session.accessToken,
     );
