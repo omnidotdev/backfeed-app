@@ -168,6 +168,48 @@ export const listOrganizationMembers = createServerFn({ method: "GET" })
     );
   });
 
+/**
+ * List the privileged (owner/admin) member roles for an organization, without
+ * authentication.
+ *
+ * Powers the public feedback board's author role badges: a signed-out visitor
+ * (or a signed-in non-member) still sees an "Owner"/"Admin" chip beside staff
+ * replies, matching how public issue trackers flag maintainers. Only a minimal
+ * `{ userId, role }` projection is returned, filtered to owner/admin, so no
+ * member PII (names, emails) and no ordinary-reporter membership is exposed. The
+ * service token stays server-side (never reaches the browser), and this mirrors
+ * the existing unauthenticated `fetchOrganizationBySlug` public-board read.
+ */
+export const fetchOrganizationMemberRoles = createServerFn({ method: "GET" })
+  .inputValidator((data) => listOrganizationMembersSchema.parse(data))
+  .handler(async ({ data }) => {
+    if (!ORG_SYNC_SERVICE_TOKEN) {
+      console.warn(
+        "ORG_SYNC_SERVICE_TOKEN not set, author role badges disabled",
+      );
+      return { data: [] as { userId: string; role: "owner" | "admin" }[] };
+    }
+
+    try {
+      const { data: members } = await gatekeeperOrg.listMembersViaService(
+        data.organizationId,
+        ORG_SYNC_SERVICE_TOKEN,
+      );
+
+      return {
+        data: members
+          .filter((member) => member.role !== "member")
+          .map((member) => ({
+            userId: member.userId,
+            role: member.role as "owner" | "admin",
+          })),
+      };
+    } catch (error) {
+      console.error("Error fetching organization member roles:", error);
+      return { data: [] as { userId: string; role: "owner" | "admin" }[] };
+    }
+  });
+
 const updateOrganizationMemberRoleSchema = z.object({
   organizationId: z.string(),
   memberId: z.string(),
