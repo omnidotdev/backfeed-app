@@ -21,7 +21,9 @@ type FetchOptions = {
  */
 export const graphqlFetch =
   <TData, TVariables>(
-    query: string,
+    // typescript-react-query v7 emits operations as string-like `TypedDocumentString`
+    // instances (they extend `String`) rather than plain strings, so accept either
+    query: string | { toString(): string },
     variables?: TVariables,
     options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>

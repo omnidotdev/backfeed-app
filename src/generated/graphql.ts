@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
 import { graphqlFetch } from '@/lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
@@ -10807,7 +10808,25 @@ export type WorkspaceMetricsQueryVariables = Exact<{
 export type WorkspaceMetricsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, posts?: { __typename?: 'PostConnection', totalCount: number } | null };
 
 
-export const CommentFragmentDoc = `
+export class TypedDocumentString<TResult, TVariables>
+  extends String
+  implements DocumentTypeDecoration<TResult, TVariables>
+{
+  __apiType?: NonNullable<DocumentTypeDecoration<TResult, TVariables>['__apiType']>;
+  private value: string;
+  public __meta__?: Record<string, any> | undefined;
+
+  constructor(value: string, __meta__?: Record<string, any> | undefined) {
+    super(value);
+    this.value = value;
+    this.__meta__ = __meta__;
+  }
+
+  override toString(): string & DocumentTypeDecoration<TResult, TVariables> {
+    return this.value;
+  }
+}
+export const CommentFragmentDoc = new TypedDocumentString(`
     fragment Comment on Comment {
   rowId
   message
@@ -10822,8 +10841,8 @@ export const CommentFragmentDoc = `
     totalCount
   }
 }
-    `;
-export const AttachmentFragmentDoc = `
+    `, {"fragmentName":"Comment"});
+export const AttachmentFragmentDoc = new TypedDocumentString(`
     fragment Attachment on Attachment {
   rowId
   url
@@ -10834,8 +10853,8 @@ export const AttachmentFragmentDoc = `
   fileSize
   lqip
 }
-    `;
-export const FeedbackFragmentDoc = `
+    `, {"fragmentName":"Attachment"});
+export const FeedbackFragmentDoc = new TypedDocumentString(`
     fragment Feedback on Post {
   rowId
   number
@@ -10901,8 +10920,17 @@ export const FeedbackFragmentDoc = `
     }
   }
 }
-    ${AttachmentFragmentDoc}`;
-export const ProjectFragmentDoc = `
+    fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+  lqip
+}`, {"fragmentName":"Feedback"});
+export const ProjectFragmentDoc = new TypedDocumentString(`
     fragment Project on Project {
   rowId
   name
@@ -10937,8 +10965,8 @@ export const ProjectFragmentDoc = `
     }
   }
 }
-    `;
-export const ReplyFragmentDoc = `
+    `, {"fragmentName":"Project"});
+export const ReplyFragmentDoc = new TypedDocumentString(`
     fragment Reply on Comment {
   rowId
   parentId
@@ -10951,8 +10979,8 @@ export const ReplyFragmentDoc = `
   }
   createdAt
 }
-    `;
-export const UserFragmentDoc = `
+    `, {"fragmentName":"Reply"});
+export const UserFragmentDoc = new TypedDocumentString(`
     fragment User on User {
   rowId
   identityProviderId
@@ -10961,8 +10989,8 @@ export const UserFragmentDoc = `
   email
   avatarUrl
 }
-    `;
-export const CreateAttachmentDocument = `
+    `, {"fragmentName":"User"});
+export const CreateAttachmentDocument = new TypedDocumentString(`
     mutation CreateAttachment($input: CreateAttachmentInput!) {
   createAttachment(input: $input) {
     attachment {
@@ -10970,7 +10998,16 @@ export const CreateAttachmentDocument = `
     }
   }
 }
-    ${AttachmentFragmentDoc}`;
+    fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+  lqip
+}`);
 
 export const useCreateAttachmentMutation = <
       TError = unknown,
@@ -10990,13 +11027,13 @@ useCreateAttachmentMutation.getKey = () => ['CreateAttachment'];
 
 useCreateAttachmentMutation.fetcher = (variables: CreateAttachmentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateAttachmentMutation, CreateAttachmentMutationVariables>(CreateAttachmentDocument, variables, options);
 
-export const DeleteAttachmentDocument = `
+export const DeleteAttachmentDocument = new TypedDocumentString(`
     mutation DeleteAttachment($input: DeleteAttachmentInput!) {
   deleteAttachment(input: $input) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteAttachmentMutation = <
       TError = unknown,
@@ -11016,13 +11053,13 @@ useDeleteAttachmentMutation.getKey = () => ['DeleteAttachment'];
 
 useDeleteAttachmentMutation.fetcher = (variables: DeleteAttachmentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteAttachmentMutation, DeleteAttachmentMutationVariables>(DeleteAttachmentDocument, variables, options);
 
-export const CreateCommentDocument = `
+export const CreateCommentDocument = new TypedDocumentString(`
     mutation CreateComment($input: CreateCommentInput!) {
   createComment(input: $input) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useCreateCommentMutation = <
       TError = unknown,
@@ -11042,13 +11079,13 @@ useCreateCommentMutation.getKey = () => ['CreateComment'];
 
 useCreateCommentMutation.fetcher = (variables: CreateCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, variables, options);
 
-export const DeleteCommentDocument = `
+export const DeleteCommentDocument = new TypedDocumentString(`
     mutation DeleteComment($rowId: UUID!) {
   deleteComment(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteCommentMutation = <
       TError = unknown,
@@ -11068,11 +11105,11 @@ useDeleteCommentMutation.getKey = () => ['DeleteComment'];
 
 useDeleteCommentMutation.fetcher = (variables: DeleteCommentMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, variables, options);
 
-export const MarkAllNotificationsReadDocument = `
+export const MarkAllNotificationsReadDocument = new TypedDocumentString(`
     mutation MarkAllNotificationsRead {
   markAllNotificationsRead
 }
-    `;
+    `);
 
 export const useMarkAllNotificationsReadMutation = <
       TError = unknown,
@@ -11092,11 +11129,11 @@ useMarkAllNotificationsReadMutation.getKey = () => ['MarkAllNotificationsRead'];
 
 useMarkAllNotificationsReadMutation.fetcher = (variables?: MarkAllNotificationsReadMutationVariables, options?: RequestInit['headers']) => graphqlFetch<MarkAllNotificationsReadMutation, MarkAllNotificationsReadMutationVariables>(MarkAllNotificationsReadDocument, variables, options);
 
-export const MarkNotificationsReadDocument = `
+export const MarkNotificationsReadDocument = new TypedDocumentString(`
     mutation MarkNotificationsRead($ids: [UUID!]!) {
   markNotificationsRead(ids: $ids)
 }
-    `;
+    `);
 
 export const useMarkNotificationsReadMutation = <
       TError = unknown,
@@ -11116,7 +11153,7 @@ useMarkNotificationsReadMutation.getKey = () => ['MarkNotificationsRead'];
 
 useMarkNotificationsReadMutation.fetcher = (variables: MarkNotificationsReadMutationVariables, options?: RequestInit['headers']) => graphqlFetch<MarkNotificationsReadMutation, MarkNotificationsReadMutationVariables>(MarkNotificationsReadDocument, variables, options);
 
-export const ChangePostStatusDocument = `
+export const ChangePostStatusDocument = new TypedDocumentString(`
     mutation ChangePostStatus($postId: UUID!, $statusTemplateId: UUID, $note: String) {
   changePostStatus(
     input: {postId: $postId, statusTemplateId: $statusTemplateId, note: $note}
@@ -11125,7 +11162,7 @@ export const ChangePostStatusDocument = `
     statusTemplateId
   }
 }
-    `;
+    `);
 
 export const useChangePostStatusMutation = <
       TError = unknown,
@@ -11145,7 +11182,7 @@ useChangePostStatusMutation.getKey = () => ['ChangePostStatus'];
 
 useChangePostStatusMutation.fetcher = (variables: ChangePostStatusMutationVariables, options?: RequestInit['headers']) => graphqlFetch<ChangePostStatusMutation, ChangePostStatusMutationVariables>(ChangePostStatusDocument, variables, options);
 
-export const CreateFeedbackDocument = `
+export const CreateFeedbackDocument = new TypedDocumentString(`
     mutation CreateFeedback($input: CreatePostInput!) {
   createPost(input: $input) {
     post {
@@ -11153,7 +11190,7 @@ export const CreateFeedbackDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateFeedbackMutation = <
       TError = unknown,
@@ -11173,13 +11210,13 @@ useCreateFeedbackMutation.getKey = () => ['CreateFeedback'];
 
 useCreateFeedbackMutation.fetcher = (variables: CreateFeedbackMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateFeedbackMutation, CreateFeedbackMutationVariables>(CreateFeedbackDocument, variables, options);
 
-export const DeletePostDocument = `
+export const DeletePostDocument = new TypedDocumentString(`
     mutation DeletePost($postId: UUID!) {
   deletePost(input: {rowId: $postId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeletePostMutation = <
       TError = unknown,
@@ -11199,13 +11236,13 @@ useDeletePostMutation.getKey = () => ['DeletePost'];
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
 
-export const DeletePostStatusChangeDocument = `
+export const DeletePostStatusChangeDocument = new TypedDocumentString(`
     mutation DeletePostStatusChange($rowId: UUID!) {
   deletePostStatusChange(input: {rowId: $rowId}) {
     id
   }
 }
-    `;
+    `);
 
 export const useDeletePostStatusChangeMutation = <
       TError = unknown,
@@ -11225,13 +11262,13 @@ useDeletePostStatusChangeMutation.getKey = () => ['DeletePostStatusChange'];
 
 useDeletePostStatusChangeMutation.fetcher = (variables: DeletePostStatusChangeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostStatusChangeMutation, DeletePostStatusChangeMutationVariables>(DeletePostStatusChangeDocument, variables, options);
 
-export const UpdatePostDocument = `
+export const UpdatePostDocument = new TypedDocumentString(`
     mutation UpdatePost($rowId: UUID!, $patch: PostPatch!) {
   updatePost(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useUpdatePostMutation = <
       TError = unknown,
@@ -11251,14 +11288,14 @@ useUpdatePostMutation.getKey = () => ['UpdatePost'];
 
 useUpdatePostMutation.fetcher = (variables: UpdatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables, options);
 
-export const UpdatePostStatusChangeDocument = `
+export const UpdatePostStatusChangeDocument = new TypedDocumentString(`
     mutation UpdatePostStatusChange($rowId: UUID!, $note: String) {
   updatePostStatusChange(input: {rowId: $rowId, note: $note}) {
     id
     note
   }
 }
-    `;
+    `);
 
 export const useUpdatePostStatusChangeMutation = <
       TError = unknown,
@@ -11278,7 +11315,7 @@ useUpdatePostStatusChangeMutation.getKey = () => ['UpdatePostStatusChange'];
 
 useUpdatePostStatusChangeMutation.fetcher = (variables: UpdatePostStatusChangeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostStatusChangeMutation, UpdatePostStatusChangeMutationVariables>(UpdatePostStatusChangeDocument, variables, options);
 
-export const CreateProjectDocument = `
+export const CreateProjectDocument = new TypedDocumentString(`
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
     project {
@@ -11288,7 +11325,7 @@ export const CreateProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateProjectMutation = <
       TError = unknown,
@@ -11308,7 +11345,7 @@ useCreateProjectMutation.getKey = () => ['CreateProject'];
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
-export const DeleteProjectDocument = `
+export const DeleteProjectDocument = new TypedDocumentString(`
     mutation DeleteProject($rowId: UUID!) {
   deleteProject(input: {rowId: $rowId}) {
     project {
@@ -11316,7 +11353,7 @@ export const DeleteProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectMutation = <
       TError = unknown,
@@ -11336,7 +11373,7 @@ useDeleteProjectMutation.getKey = () => ['DeleteProject'];
 
 useDeleteProjectMutation.fetcher = (variables: DeleteProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables, options);
 
-export const UpdateProjectDocument = `
+export const UpdateProjectDocument = new TypedDocumentString(`
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
   updateProject(input: {rowId: $rowId, patch: $patch}) {
     project {
@@ -11344,7 +11381,7 @@ export const UpdateProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateProjectMutation = <
       TError = unknown,
@@ -11364,13 +11401,13 @@ useUpdateProjectMutation.getKey = () => ['UpdateProject'];
 
 useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
 
-export const CreateProjectLinkDocument = `
+export const CreateProjectLinkDocument = new TypedDocumentString(`
     mutation CreateProjectLink($input: CreateProjectLinkInput!) {
   createProjectLink(input: $input) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useCreateProjectLinkMutation = <
       TError = unknown,
@@ -11390,13 +11427,13 @@ useCreateProjectLinkMutation.getKey = () => ['CreateProjectLink'];
 
 useCreateProjectLinkMutation.fetcher = (variables: CreateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables, options);
 
-export const DeleteProjectLinkDocument = `
+export const DeleteProjectLinkDocument = new TypedDocumentString(`
     mutation DeleteProjectLink($linkId: UUID!) {
   deleteProjectLink(input: {rowId: $linkId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectLinkMutation = <
       TError = unknown,
@@ -11416,7 +11453,7 @@ useDeleteProjectLinkMutation.getKey = () => ['DeleteProjectLink'];
 
 useDeleteProjectLinkMutation.fetcher = (variables: DeleteProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables, options);
 
-export const CreateProjectStatusConfigDocument = `
+export const CreateProjectStatusConfigDocument = new TypedDocumentString(`
     mutation CreateProjectStatusConfig($input: CreateProjectStatusConfigInput!) {
   createProjectStatusConfig(input: $input) {
     clientMutationId
@@ -11432,7 +11469,7 @@ export const CreateProjectStatusConfigDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateProjectStatusConfigMutation = <
       TError = unknown,
@@ -11452,13 +11489,13 @@ useCreateProjectStatusConfigMutation.getKey = () => ['CreateProjectStatusConfig'
 
 useCreateProjectStatusConfigMutation.fetcher = (variables: CreateProjectStatusConfigMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectStatusConfigMutation, CreateProjectStatusConfigMutationVariables>(CreateProjectStatusConfigDocument, variables, options);
 
-export const DeleteProjectStatusConfigDocument = `
+export const DeleteProjectStatusConfigDocument = new TypedDocumentString(`
     mutation DeleteProjectStatusConfig($rowId: UUID!) {
   deleteProjectStatusConfig(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectStatusConfigMutation = <
       TError = unknown,
@@ -11478,7 +11515,7 @@ useDeleteProjectStatusConfigMutation.getKey = () => ['DeleteProjectStatusConfig'
 
 useDeleteProjectStatusConfigMutation.fetcher = (variables: DeleteProjectStatusConfigMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectStatusConfigMutation, DeleteProjectStatusConfigMutationVariables>(DeleteProjectStatusConfigDocument, variables, options);
 
-export const UpdateProjectStatusConfigDocument = `
+export const UpdateProjectStatusConfigDocument = new TypedDocumentString(`
     mutation UpdateProjectStatusConfig($rowId: UUID!, $patch: ProjectStatusConfigPatch!) {
   updateProjectStatusConfig(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
@@ -11494,7 +11531,7 @@ export const UpdateProjectStatusConfigDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateProjectStatusConfigMutation = <
       TError = unknown,
@@ -11514,7 +11551,7 @@ useUpdateProjectStatusConfigMutation.getKey = () => ['UpdateProjectStatusConfig'
 
 useUpdateProjectStatusConfigMutation.fetcher = (variables: UpdateProjectStatusConfigMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectStatusConfigMutation, UpdateProjectStatusConfigMutationVariables>(UpdateProjectStatusConfigDocument, variables, options);
 
-export const CreateStatusTemplateDocument = `
+export const CreateStatusTemplateDocument = new TypedDocumentString(`
     mutation CreateStatusTemplate($input: CreateStatusTemplateInput!) {
   createStatusTemplate(input: $input) {
     clientMutationId
@@ -11528,7 +11565,7 @@ export const CreateStatusTemplateDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateStatusTemplateMutation = <
       TError = unknown,
@@ -11548,13 +11585,13 @@ useCreateStatusTemplateMutation.getKey = () => ['CreateStatusTemplate'];
 
 useCreateStatusTemplateMutation.fetcher = (variables: CreateStatusTemplateMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateStatusTemplateMutation, CreateStatusTemplateMutationVariables>(CreateStatusTemplateDocument, variables, options);
 
-export const DeleteStatusTemplateDocument = `
+export const DeleteStatusTemplateDocument = new TypedDocumentString(`
     mutation DeleteStatusTemplate($rowId: UUID!) {
   deleteStatusTemplate(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteStatusTemplateMutation = <
       TError = unknown,
@@ -11574,7 +11611,7 @@ useDeleteStatusTemplateMutation.getKey = () => ['DeleteStatusTemplate'];
 
 useDeleteStatusTemplateMutation.fetcher = (variables: DeleteStatusTemplateMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteStatusTemplateMutation, DeleteStatusTemplateMutationVariables>(DeleteStatusTemplateDocument, variables, options);
 
-export const UpdateStatusTemplateDocument = `
+export const UpdateStatusTemplateDocument = new TypedDocumentString(`
     mutation UpdateStatusTemplate($rowId: UUID!, $patch: StatusTemplatePatch!) {
   updateStatusTemplate(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
@@ -11590,7 +11627,7 @@ export const UpdateStatusTemplateDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateStatusTemplateMutation = <
       TError = unknown,
@@ -11610,7 +11647,7 @@ useUpdateStatusTemplateMutation.getKey = () => ['UpdateStatusTemplate'];
 
 useUpdateStatusTemplateMutation.fetcher = (variables: UpdateStatusTemplateMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateStatusTemplateMutation, UpdateStatusTemplateMutationVariables>(UpdateStatusTemplateDocument, variables, options);
 
-export const CreateUserDocument = `
+export const CreateUserDocument = new TypedDocumentString(`
     mutation CreateUser($identityProviderId: UUID!, $username: String, $name: String!, $email: String!) {
   createUser(
     input: {user: {identityProviderId: $identityProviderId, username: $username, name: $name, email: $email}}
@@ -11620,7 +11657,7 @@ export const CreateUserDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateUserMutation = <
       TError = unknown,
@@ -11640,13 +11677,13 @@ useCreateUserMutation.getKey = () => ['CreateUser'];
 
 useCreateUserMutation.fetcher = (variables: CreateUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, variables, options);
 
-export const SetNotificationPreferenceDocument = `
+export const SetNotificationPreferenceDocument = new TypedDocumentString(`
     mutation SetNotificationPreference($postUpdates: Boolean!) {
   setNotificationPreference(input: {postUpdates: $postUpdates}) {
     postUpdates
   }
 }
-    `;
+    `);
 
 export const useSetNotificationPreferenceMutation = <
       TError = unknown,
@@ -11666,7 +11703,7 @@ useSetNotificationPreferenceMutation.getKey = () => ['SetNotificationPreference'
 
 useSetNotificationPreferenceMutation.fetcher = (variables: SetNotificationPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<SetNotificationPreferenceMutation, SetNotificationPreferenceMutationVariables>(SetNotificationPreferenceDocument, variables, options);
 
-export const CreateVoteDocument = `
+export const CreateVoteDocument = new TypedDocumentString(`
     mutation CreateVote($input: CreateVoteInput!) {
   createVote(input: $input) {
     clientMutationId
@@ -11676,7 +11713,7 @@ export const CreateVoteDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateVoteMutation = <
       TError = unknown,
@@ -11696,13 +11733,13 @@ useCreateVoteMutation.getKey = () => ['CreateVote'];
 
 useCreateVoteMutation.fetcher = (variables: CreateVoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateVoteMutation, CreateVoteMutationVariables>(CreateVoteDocument, variables, options);
 
-export const DeleteVoteDocument = `
+export const DeleteVoteDocument = new TypedDocumentString(`
     mutation DeleteVote($rowId: UUID!) {
   deleteVote(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteVoteMutation = <
       TError = unknown,
@@ -11722,7 +11759,7 @@ useDeleteVoteMutation.getKey = () => ['DeleteVote'];
 
 useDeleteVoteMutation.fetcher = (variables: DeleteVoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteVoteMutation, DeleteVoteMutationVariables>(DeleteVoteDocument, variables, options);
 
-export const UpdateVoteDocument = `
+export const UpdateVoteDocument = new TypedDocumentString(`
     mutation UpdateVote($rowId: UUID!, $patch: VotePatch!) {
   updateVote(input: {rowId: $rowId, patch: $patch}) {
     clientMutationId
@@ -11732,7 +11769,7 @@ export const UpdateVoteDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateVoteMutation = <
       TError = unknown,
@@ -11752,7 +11789,7 @@ useUpdateVoteMutation.getKey = () => ['UpdateVote'];
 
 useUpdateVoteMutation.fetcher = (variables: UpdateVoteMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateVoteMutation, UpdateVoteMutationVariables>(UpdateVoteDocument, variables, options);
 
-export const CommentsDocument = `
+export const CommentsDocument = new TypedDocumentString(`
     query Comments($feedbackId: UUID!, $pageSize: Int = 10, $after: Cursor) {
   comments(
     first: $pageSize
@@ -11772,7 +11809,20 @@ export const CommentsDocument = `
     }
   }
 }
-    ${CommentFragmentDoc}`;
+    fragment Comment on Comment {
+  rowId
+  message
+  user {
+    rowId
+    identityProviderId
+    username
+    avatarUrl
+  }
+  createdAt
+  childComments {
+    totalCount
+  }
+}`);
 
 export const useCommentsQuery = <
       TData = CommentsQuery,
@@ -11816,13 +11866,87 @@ useInfiniteCommentsQuery.getKey = (variables: CommentsQueryVariables) => ['Comme
 
 useCommentsQuery.fetcher = (variables: CommentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CommentsQuery, CommentsQueryVariables>(CommentsDocument, variables, options);
 
-export const FeedbackByIdDocument = `
+export const FeedbackByIdDocument = new TypedDocumentString(`
     query FeedbackById($rowId: UUID!, $userId: UUID) {
   post(rowId: $rowId) {
     ...Feedback
   }
 }
-    ${FeedbackFragmentDoc}`;
+    fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+  lqip
+}
+fragment Feedback on Post {
+  rowId
+  number
+  title
+  description
+  statusUpdatedAt
+  createdAt
+  updatedAt
+  project {
+    rowId
+    name
+    slug
+    prefix
+    organizationId
+  }
+  statusTemplate {
+    rowId
+    name
+    displayName
+    description
+    color
+  }
+  user {
+    rowId
+    identityProviderId
+    username
+    avatarUrl
+  }
+  attachments {
+    nodes {
+      ...Attachment
+    }
+  }
+  comments(condition: {parentId: null}) {
+    totalCount
+  }
+  commentsWithReplies: comments {
+    totalCount
+  }
+  upvotes: votes(condition: {voteType: up}) {
+    totalCount
+  }
+  userUpvotes: votes(condition: {userId: $userId, voteType: up}) {
+    nodes {
+      rowId
+    }
+  }
+  downvotes: votes(condition: {voteType: down}) {
+    totalCount
+  }
+  userDownvotes: votes(condition: {userId: $userId, voteType: down}) {
+    nodes {
+      rowId
+    }
+  }
+  postTags {
+    nodes {
+      tag {
+        rowId
+        name
+        color
+      }
+    }
+  }
+}`);
 
 export const useFeedbackByIdQuery = <
       TData = FeedbackByIdQuery,
@@ -11866,13 +11990,87 @@ useInfiniteFeedbackByIdQuery.getKey = (variables: FeedbackByIdQueryVariables) =>
 
 useFeedbackByIdQuery.fetcher = (variables: FeedbackByIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByIdQuery, FeedbackByIdQueryVariables>(FeedbackByIdDocument, variables, options);
 
-export const FeedbackByNumberDocument = `
+export const FeedbackByNumberDocument = new TypedDocumentString(`
     query FeedbackByNumber($projectId: UUID!, $number: Int!, $userId: UUID) {
   postByProjectIdAndNumber(projectId: $projectId, number: $number) {
     ...Feedback
   }
 }
-    ${FeedbackFragmentDoc}`;
+    fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+  lqip
+}
+fragment Feedback on Post {
+  rowId
+  number
+  title
+  description
+  statusUpdatedAt
+  createdAt
+  updatedAt
+  project {
+    rowId
+    name
+    slug
+    prefix
+    organizationId
+  }
+  statusTemplate {
+    rowId
+    name
+    displayName
+    description
+    color
+  }
+  user {
+    rowId
+    identityProviderId
+    username
+    avatarUrl
+  }
+  attachments {
+    nodes {
+      ...Attachment
+    }
+  }
+  comments(condition: {parentId: null}) {
+    totalCount
+  }
+  commentsWithReplies: comments {
+    totalCount
+  }
+  upvotes: votes(condition: {voteType: up}) {
+    totalCount
+  }
+  userUpvotes: votes(condition: {userId: $userId, voteType: up}) {
+    nodes {
+      rowId
+    }
+  }
+  downvotes: votes(condition: {voteType: down}) {
+    totalCount
+  }
+  userDownvotes: votes(condition: {userId: $userId, voteType: down}) {
+    nodes {
+      rowId
+    }
+  }
+  postTags {
+    nodes {
+      tag {
+        rowId
+        name
+        color
+      }
+    }
+  }
+}`);
 
 export const useFeedbackByNumberQuery = <
       TData = FeedbackByNumberQuery,
@@ -11916,13 +12114,13 @@ useInfiniteFeedbackByNumberQuery.getKey = (variables: FeedbackByNumberQueryVaria
 
 useFeedbackByNumberQuery.fetcher = (variables: FeedbackByNumberQueryVariables, options?: RequestInit['headers']) => graphqlFetch<FeedbackByNumberQuery, FeedbackByNumberQueryVariables>(FeedbackByNumberDocument, variables, options);
 
-export const MyNotificationPreferenceDocument = `
+export const MyNotificationPreferenceDocument = new TypedDocumentString(`
     query MyNotificationPreference {
   myNotificationPreference {
     postUpdates
   }
 }
-    `;
+    `);
 
 export const useMyNotificationPreferenceQuery = <
       TData = MyNotificationPreferenceQuery,
@@ -11966,7 +12164,7 @@ useInfiniteMyNotificationPreferenceQuery.getKey = (variables?: MyNotificationPre
 
 useMyNotificationPreferenceQuery.fetcher = (variables?: MyNotificationPreferenceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MyNotificationPreferenceQuery, MyNotificationPreferenceQueryVariables>(MyNotificationPreferenceDocument, variables, options);
 
-export const NotificationsDocument = `
+export const NotificationsDocument = new TypedDocumentString(`
     query Notifications($limit: Int) {
   myNotifications(limit: $limit) {
     id
@@ -11987,7 +12185,7 @@ export const NotificationsDocument = `
     organizationId
   }
 }
-    `;
+    `);
 
 export const useNotificationsQuery = <
       TData = NotificationsQuery,
@@ -12031,7 +12229,7 @@ useInfiniteNotificationsQuery.getKey = (variables?: NotificationsQueryVariables)
 
 useNotificationsQuery.fetcher = (variables?: NotificationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, variables, options);
 
-export const ObserverDocument = `
+export const ObserverDocument = new TypedDocumentString(`
     query Observer {
   observer {
     rowId
@@ -12041,7 +12239,7 @@ export const ObserverDocument = `
     email
   }
 }
-    `;
+    `);
 
 export const useObserverQuery = <
       TData = ObserverQuery,
@@ -12085,7 +12283,7 @@ useInfiniteObserverQuery.getKey = (variables?: ObserverQueryVariables) => variab
 
 useObserverQuery.fetcher = (variables?: ObserverQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables, options);
 
-export const PostReferencesDocument = `
+export const PostReferencesDocument = new TypedDocumentString(`
     query PostReferences($targetPostId: UUID!) {
   postReferences(
     condition: {targetPostId: $targetPostId, sourceType: "post"}
@@ -12100,7 +12298,7 @@ export const PostReferencesDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const usePostReferencesQuery = <
       TData = PostReferencesQuery,
@@ -12144,7 +12342,7 @@ useInfinitePostReferencesQuery.getKey = (variables: PostReferencesQueryVariables
 
 usePostReferencesQuery.fetcher = (variables: PostReferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostReferencesQuery, PostReferencesQueryVariables>(PostReferencesDocument, variables, options);
 
-export const PostsDocument = `
+export const PostsDocument = new TypedDocumentString(`
     query Posts($projectId: UUID!, $after: Cursor, $pageSize: Int = 10, $orderBy: [PostOrderBy!] = CREATED_AT_DESC, $excludedStatuses: [String!], $search: String, $userId: UUID, $tagFilter: PostToManyPostTagFilter) {
   posts(
     after: $after
@@ -12164,7 +12362,81 @@ export const PostsDocument = `
     }
   }
 }
-    ${FeedbackFragmentDoc}`;
+    fragment Attachment on Attachment {
+  rowId
+  url
+  mimeType
+  kind
+  width
+  height
+  fileSize
+  lqip
+}
+fragment Feedback on Post {
+  rowId
+  number
+  title
+  description
+  statusUpdatedAt
+  createdAt
+  updatedAt
+  project {
+    rowId
+    name
+    slug
+    prefix
+    organizationId
+  }
+  statusTemplate {
+    rowId
+    name
+    displayName
+    description
+    color
+  }
+  user {
+    rowId
+    identityProviderId
+    username
+    avatarUrl
+  }
+  attachments {
+    nodes {
+      ...Attachment
+    }
+  }
+  comments(condition: {parentId: null}) {
+    totalCount
+  }
+  commentsWithReplies: comments {
+    totalCount
+  }
+  upvotes: votes(condition: {voteType: up}) {
+    totalCount
+  }
+  userUpvotes: votes(condition: {userId: $userId, voteType: up}) {
+    nodes {
+      rowId
+    }
+  }
+  downvotes: votes(condition: {voteType: down}) {
+    totalCount
+  }
+  userDownvotes: votes(condition: {userId: $userId, voteType: down}) {
+    nodes {
+      rowId
+    }
+  }
+  postTags {
+    nodes {
+      tag {
+        rowId
+        name
+        color
+      }
+    }
+  }
+}`);
 
 export const usePostsQuery = <
       TData = PostsQuery,
@@ -12208,7 +12480,7 @@ useInfinitePostsQuery.getKey = (variables: PostsQueryVariables) => ['Posts.infin
 
 usePostsQuery.fetcher = (variables: PostsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostsQuery, PostsQueryVariables>(PostsDocument, variables, options);
 
-export const PostsByRowIdsDocument = `
+export const PostsByRowIdsDocument = new TypedDocumentString(`
     query PostsByRowIds($rowIds: [UUID!]) {
   posts(filter: {rowId: {in: $rowIds}}, first: 50, orderBy: [NUMBER_DESC]) {
     nodes {
@@ -12218,7 +12490,7 @@ export const PostsByRowIdsDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const usePostsByRowIdsQuery = <
       TData = PostsByRowIdsQuery,
@@ -12262,7 +12534,7 @@ useInfinitePostsByRowIdsQuery.getKey = (variables?: PostsByRowIdsQueryVariables)
 
 usePostsByRowIdsQuery.fetcher = (variables?: PostsByRowIdsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostsByRowIdsQuery, PostsByRowIdsQueryVariables>(PostsByRowIdsDocument, variables, options);
 
-export const ProjectDocument = `
+export const ProjectDocument = new TypedDocumentString(`
     query Project($projectSlug: String!, $organizationId: UUID!, $userId: UUID) {
   projects(
     first: 1
@@ -12273,7 +12545,40 @@ export const ProjectDocument = `
     }
   }
 }
-    ${ProjectFragmentDoc}`;
+    fragment Project on Project {
+  rowId
+  name
+  description
+  image
+  slug
+  prefix
+  organizationId
+  nextPostNumber
+  isPublic
+  showRoadmap
+  showChangelog
+  projectLinks(orderBy: ORDER_ASC) {
+    nodes {
+      rowId
+      projectId
+      url
+      title
+      order
+    }
+  }
+  posts {
+    aggregates {
+      distinctCount {
+        userId
+      }
+    }
+  }
+  userPosts: posts(first: 1, condition: {userId: $userId}) {
+    nodes {
+      rowId
+    }
+  }
+}`);
 
 export const useProjectQuery = <
       TData = ProjectQuery,
@@ -12317,14 +12622,14 @@ useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
-export const ProjectBySlugDocument = `
+export const ProjectBySlugDocument = new TypedDocumentString(`
     query ProjectBySlug($slug: String!, $organizationId: UUID!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
     name
   }
 }
-    `;
+    `);
 
 export const useProjectBySlugQuery = <
       TData = ProjectBySlugQuery,
@@ -12368,7 +12673,7 @@ useInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) 
 
 useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
 
-export const ProjectMetricsDocument = `
+export const ProjectMetricsDocument = new TypedDocumentString(`
     query ProjectMetrics($projectId: UUID!) {
   project(rowId: $projectId) {
     createdAt
@@ -12392,7 +12697,7 @@ export const ProjectMetricsDocument = `
     totalCount
   }
 }
-    `;
+    `);
 
 export const useProjectMetricsQuery = <
       TData = ProjectMetricsQuery,
@@ -12436,7 +12741,7 @@ useInfiniteProjectMetricsQuery.getKey = (variables: ProjectMetricsQueryVariables
 
 useProjectMetricsQuery.fetcher = (variables: ProjectMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectMetricsQuery, ProjectMetricsQueryVariables>(ProjectMetricsDocument, variables, options);
 
-export const ProjectStatusesDocument = `
+export const ProjectStatusesDocument = new TypedDocumentString(`
     query ProjectStatuses($organizationId: UUID!, $isEnabled: Boolean) {
   statusTemplates(
     condition: {organizationId: $organizationId}
@@ -12466,7 +12771,7 @@ export const ProjectStatusesDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useProjectStatusesQuery = <
       TData = ProjectStatusesQuery,
@@ -12510,7 +12815,7 @@ useInfiniteProjectStatusesQuery.getKey = (variables: ProjectStatusesQueryVariabl
 
 useProjectStatusesQuery.fetcher = (variables: ProjectStatusesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectStatusesQuery, ProjectStatusesQueryVariables>(ProjectStatusesDocument, variables, options);
 
-export const ProjectsDocument = `
+export const ProjectsDocument = new TypedDocumentString(`
     query Projects($pageSize: Int!, $offset: Int!, $organizationId: UUID!, $search: String) {
   projects(
     orderBy: POSTS_COUNT_DESC
@@ -12537,7 +12842,7 @@ export const ProjectsDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useProjectsQuery = <
       TData = ProjectsQuery,
@@ -12581,7 +12886,7 @@ useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Proje
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
 
-export const RecentFeedbackDocument = `
+export const RecentFeedbackDocument = new TypedDocumentString(`
     query RecentFeedback($organizationIds: [UUID!], $after: Cursor) {
   posts(
     first: 10
@@ -12614,7 +12919,7 @@ export const RecentFeedbackDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useRecentFeedbackQuery = <
       TData = RecentFeedbackQuery,
@@ -12658,7 +12963,7 @@ useInfiniteRecentFeedbackQuery.getKey = (variables?: RecentFeedbackQueryVariable
 
 useRecentFeedbackQuery.fetcher = (variables?: RecentFeedbackQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RecentFeedbackQuery, RecentFeedbackQueryVariables>(RecentFeedbackDocument, variables, options);
 
-export const RepliesDocument = `
+export const RepliesDocument = new TypedDocumentString(`
     query Replies($commentId: UUID!, $pageSize: Int = 3, $after: Cursor) {
   comments(
     first: $pageSize
@@ -12678,7 +12983,18 @@ export const RepliesDocument = `
     }
   }
 }
-    ${ReplyFragmentDoc}`;
+    fragment Reply on Comment {
+  rowId
+  parentId
+  message
+  user {
+    rowId
+    identityProviderId
+    username
+    avatarUrl
+  }
+  createdAt
+}`);
 
 export const useRepliesQuery = <
       TData = RepliesQuery,
@@ -12722,7 +13038,7 @@ useInfiniteRepliesQuery.getKey = (variables: RepliesQueryVariables) => ['Replies
 
 useRepliesQuery.fetcher = (variables: RepliesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<RepliesQuery, RepliesQueryVariables>(RepliesDocument, variables, options);
 
-export const StatusBreakdownDocument = `
+export const StatusBreakdownDocument = new TypedDocumentString(`
     query StatusBreakdown($projectId: UUID!) {
   posts(condition: {projectId: $projectId}) {
     groupedAggregates(groupBy: STATUS_TEMPLATE_ID) {
@@ -12733,7 +13049,7 @@ export const StatusBreakdownDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useStatusBreakdownQuery = <
       TData = StatusBreakdownQuery,
@@ -12777,11 +13093,11 @@ useInfiniteStatusBreakdownQuery.getKey = (variables: StatusBreakdownQueryVariabl
 
 useStatusBreakdownQuery.fetcher = (variables: StatusBreakdownQueryVariables, options?: RequestInit['headers']) => graphqlFetch<StatusBreakdownQuery, StatusBreakdownQueryVariables>(StatusBreakdownDocument, variables, options);
 
-export const UnreadNotificationCountDocument = `
+export const UnreadNotificationCountDocument = new TypedDocumentString(`
     query UnreadNotificationCount {
   unreadNotificationCount
 }
-    `;
+    `);
 
 export const useUnreadNotificationCountQuery = <
       TData = UnreadNotificationCountQuery,
@@ -12825,13 +13141,20 @@ useInfiniteUnreadNotificationCountQuery.getKey = (variables?: UnreadNotification
 
 useUnreadNotificationCountQuery.fetcher = (variables?: UnreadNotificationCountQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UnreadNotificationCountQuery, UnreadNotificationCountQueryVariables>(UnreadNotificationCountDocument, variables, options);
 
-export const UserDocument = `
+export const UserDocument = new TypedDocumentString(`
     query User($identityProviderId: UUID!) {
   userByIdentityProviderId(identityProviderId: $identityProviderId) {
     ...User
   }
 }
-    ${UserFragmentDoc}`;
+    fragment User on User {
+  rowId
+  identityProviderId
+  username
+  name
+  email
+  avatarUrl
+}`);
 
 export const useUserQuery = <
       TData = UserQuery,
@@ -12875,7 +13198,7 @@ useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
-export const UserByEmailDocument = `
+export const UserByEmailDocument = new TypedDocumentString(`
     query userByEmail($email: String!) {
   userByEmail(email: $email) {
     rowId
@@ -12885,7 +13208,7 @@ export const UserByEmailDocument = `
     email
   }
 }
-    `;
+    `);
 
 export const useUserByEmailQuery = <
       TData = UserByEmailQuery,
@@ -12929,7 +13252,7 @@ useInfiniteUserByEmailQuery.getKey = (variables: UserByEmailQueryVariables) => [
 
 useUserByEmailQuery.fetcher = (variables: UserByEmailQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByEmailQuery, UserByEmailQueryVariables>(UserByEmailDocument, variables, options);
 
-export const WorkspaceDocument = `
+export const WorkspaceDocument = new TypedDocumentString(`
     query Workspace($organizationId: UUID!) {
   projects(
     condition: {organizationId: $organizationId}
@@ -12954,7 +13277,7 @@ export const WorkspaceDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useWorkspaceQuery = <
       TData = WorkspaceQuery,
@@ -12998,7 +13321,7 @@ useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Wor
 
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
 
-export const WorkspaceMetricsDocument = `
+export const WorkspaceMetricsDocument = new TypedDocumentString(`
     query WorkspaceMetrics($organizationId: UUID!) {
   projects(condition: {organizationId: $organizationId}) {
     totalCount
@@ -13007,7 +13330,7 @@ export const WorkspaceMetricsDocument = `
     totalCount
   }
 }
-    `;
+    `);
 
 export const useWorkspaceMetricsQuery = <
       TData = WorkspaceMetricsQuery,
