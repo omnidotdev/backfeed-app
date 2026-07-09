@@ -3,7 +3,10 @@ import { z } from "zod";
 
 import { ORG_SYNC_SERVICE_TOKEN } from "@/lib/config/env.config";
 import gatekeeperOrg from "@/lib/config/gatekeeper";
+import { toPrivilegedMemberRoles } from "@/lib/util/orgRoles";
 import { authMiddleware } from "@/server/middleware";
+
+import type { MemberRole } from "@/lib/util/orgRoles";
 
 export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers/auth";
 
@@ -182,12 +185,12 @@ export const listOrganizationMembers = createServerFn({ method: "GET" })
  */
 export const fetchOrganizationMemberRoles = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ data: MemberRole[] }> => {
     if (!ORG_SYNC_SERVICE_TOKEN) {
       console.warn(
         "ORG_SYNC_SERVICE_TOKEN not set, author role badges disabled",
       );
-      return { data: [] as { userId: string; role: "owner" | "admin" }[] };
+      return { data: [] };
     }
 
     try {
@@ -196,17 +199,10 @@ export const fetchOrganizationMemberRoles = createServerFn({ method: "GET" })
         ORG_SYNC_SERVICE_TOKEN,
       );
 
-      return {
-        data: members
-          .filter((member) => member.role !== "member")
-          .map((member) => ({
-            userId: member.userId,
-            role: member.role as "owner" | "admin",
-          })),
-      };
+      return { data: toPrivilegedMemberRoles(members) };
     } catch (error) {
       console.error("Error fetching organization member roles:", error);
-      return { data: [] as { userId: string; role: "owner" | "admin" }[] };
+      return { data: [] };
     }
   });
 

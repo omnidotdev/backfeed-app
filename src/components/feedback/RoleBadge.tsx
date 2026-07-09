@@ -26,7 +26,7 @@ const RoleBadge = ({ role, className }: Props) => {
   return (
     <span
       className={cn(
-        "rounded-full border border-border-subtle bg-background-subtle px-1.5 py-0.5 font-medium text-[0.625rem] text-foreground-subtle uppercase leading-none",
+        "rounded-full border border-border-subtle bg-background-subtle px-1.5 py-0.5 font-medium text-[0.625rem] text-foreground-subtle leading-none",
         className,
       )}
     >
