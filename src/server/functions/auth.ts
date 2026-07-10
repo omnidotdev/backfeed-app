@@ -1,9 +1,9 @@
+import { buildIdpLogoutUrl } from "@omnidotdev/providers/auth";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import auth from "@/lib/auth/auth";
 import { getAuth } from "@/lib/auth/getAuth";
-import { buildIdpLogoutUrl } from "@/lib/auth/idpLogout";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
