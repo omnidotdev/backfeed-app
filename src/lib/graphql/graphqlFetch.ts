@@ -50,13 +50,25 @@ export const graphqlFetch =
         },
       });
     } catch (error) {
-      // Redirect to re-auth on 401 (expired/invalid token)
+      // Only sign out on a genuine 401 / UNAUTHENTICATED from the server.
+      // Network errors (aborted requests, timeouts during page transitions) are
+      // not ClientErrors and must never trigger sign-out; guarding `response`
+      // also avoids throwing a TypeError over the original error.
       if (
         error instanceof ClientError &&
-        error.response.status === 401 &&
-        typeof window !== "undefined"
+        typeof window !== "undefined" &&
+        error.response
       ) {
-        window.location.href = "/";
+        const isHttp401 = error.response.status === 401;
+        const isUnauthenticated = error.response.errors?.some(
+          (e) => e.extensions?.code === "UNAUTHENTICATED",
+        );
+
+        if (isHttp401 || isUnauthenticated) {
+          await fetch("/api/auth/sign-out", { method: "POST" });
+          window.location.href = "/";
+          return new Promise(() => {}) as Promise<TData>;
+        }
       }
 
       throw error;
