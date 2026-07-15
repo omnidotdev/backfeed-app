@@ -179,11 +179,16 @@ const CreateWorkspaceButton = ({ children, className }: Props) => {
 
               {slug.length >= MIN_HANDLE_LENGTH && availability === "taken" && (
                 <p className="text-destructive text-xs">
-                  That handle is already taken
+                  That handle is already taken. Handles are unique across Omni.
                 </p>
               )}
 
               {error && <p className="text-destructive text-xs">{error}</p>}
+
+              <p className="text-muted-foreground text-xs">
+                Your workspace is part of your Omni account and works across
+                Omni products.
+              </p>
 
               <div className="mt-2 flex justify-end gap-2">
                 <button
