@@ -13,7 +13,7 @@
         "@lexical/react": "^0.39.0",
         "@lexical/rich-text": "^0.39.0",
         "@omnidotdev/providers": "github:omnidotdev/providers#67cb527",
-        "@omnidotdev/thornberry": "github:omnidotdev/thornberry#4549481",
+        "@omnidotdev/thornberry": "github:omnidotdev/thornberry#6f878df",
         "@tanstack/react-form": "^1.27.7",
         "@tanstack/react-query": "^5.90.16",
         "@tanstack/react-router": "1.147.3",
@@ -609,7 +609,7 @@
 
     "@omnidotdev/providers": ["@omnidotdev/providers@github:omnidotdev/providers#67cb527", { "dependencies": { "ajv": "^8.18.0", "jose": "^6.1.3" }, "peerDependencies": { "@aws-sdk/client-s3": ">=3.0.0", "@aws-sdk/s3-request-presigner": ">=3.0.0", "@envelop/types": ">=5.0.0", "@escape.tech/graphql-armor": ">=3.0.0", "@iggy.rs/sdk": ">=1.0.0", "@openfeature/server-sdk": ">=1.0.0", "@tanstack/query-core": ">=5.0.0", "ajv": ">=8.0.0", "graphile-export": ">=1.0.0-rc.0", "postgraphile": ">=5.0.0-rc.0", "react": ">=19.0.0", "unleash-client": ">=6.0.0" }, "optionalPeers": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner", "@envelop/types", "@escape.tech/graphql-armor", "@iggy.rs/sdk", "@openfeature/server-sdk", "@tanstack/query-core", "ajv", "graphile-export", "postgraphile", "react", "unleash-client"] }, "omnidotdev-providers-67cb527", "sha512-IPM2pytXkWc0Hn1BOwzz8LYPrXWawazAl+BDapHQ6HKl9fPPNqLjnHmNDsGPEFgxbN+Fi+wo5nov1pvRcDQFAA=="],
 
-    "@omnidotdev/thornberry": ["@omnidotdev/thornberry@github:omnidotdev/thornberry#4549481", { "peerDependencies": { "@ark-ui/react": ">=5.0.0", "@lexical/html": ">=0.39.0", "@lexical/link": ">=0.39.0", "@lexical/list": ">=0.39.0", "@lexical/markdown": ">=0.39.0", "@lexical/react": ">=0.39.0", "@lexical/rich-text": ">=0.39.0", "@unpic/react": ">=1.0.0", "@xyflow/react": ">=12.0.0", "cmdk": ">=1.0.0", "isomorphic-dompurify": ">=3.0.0", "lexical": ">=0.39.0", "lucide-react": ">=0.500.0", "react": ">=19.0.0", "react-dom": ">=19.0.0", "react-hotkeys-hook": ">=5.0.0" } }, "omnidotdev-thornberry-4549481", "sha512-hQqv9+wKHLndqcD/uqv7o5bNVYIWogBtH7NvtC+xTm+FuCr2BK6OXjse2piu7O6KYfr5+OJKNvKtuZqjuGva9w=="],
+    "@omnidotdev/thornberry": ["@omnidotdev/thornberry@github:omnidotdev/thornberry#6f878df", { "peerDependencies": { "@ark-ui/react": ">=5.0.0", "@lexical/html": ">=0.39.0", "@lexical/link": ">=0.39.0", "@lexical/list": ">=0.39.0", "@lexical/markdown": ">=0.39.0", "@lexical/react": ">=0.39.0", "@lexical/rich-text": ">=0.39.0", "@unpic/react": ">=1.0.0", "@xyflow/react": ">=12.0.0", "cmdk": ">=1.0.0", "isomorphic-dompurify": ">=3.0.0", "lexical": ">=0.39.0", "lucide-react": ">=0.500.0", "react": ">=19.0.0", "react-dom": ">=19.0.0", "react-hotkeys-hook": ">=5.0.0" } }, "omnidotdev-thornberry-6f878df", "sha512-o4CYVM+1BgMiBGOMfjcVS0aSPNaiMAIdgLi8eb9S+0zyj14dH/SgjrUvuspZTPusvoYhdYKI41673agOOTYMdw=="],
 
     "@oozcitak/dom": ["@oozcitak/dom@2.0.2", "", { "dependencies": { "@oozcitak/infra": "^2.0.2", "@oozcitak/url": "^3.0.0", "@oozcitak/util": "^10.0.0" } }, "sha512-GjpKhkSYC3Mj4+lfwEyI1dqnsKTgwGy48ytZEhm4A/xnH/8z9M3ZVXKr/YGQi3uCLs1AEBS+x5T2JPiueEDW8w=="],
 
