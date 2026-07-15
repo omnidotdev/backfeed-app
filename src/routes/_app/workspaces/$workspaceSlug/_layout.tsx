@@ -1,7 +1,10 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { isAdminOrOwner, isOwner } from "@/lib/permissions";
-import { fetchOrganizationBySlug } from "@/server/functions/organizations";
+import {
+  fetchOrganizationBySlug,
+  getOrganizationBySlug,
+} from "@/server/functions/organizations";
 
 import type { IdpRole } from "@/lib/permissions";
 
@@ -37,6 +40,30 @@ export const Route = createFileRoute("/_app/workspaces/$workspaceSlug/_layout")(
           isAuthenticated,
           session,
         };
+      }
+
+      // A just-created workspace is not yet in the JWT claims (they are hydrated
+      // from a short-lived cache), so for authenticated users fall back to a
+      // live authenticated Gatekeeper lookup before the public read. Lets the
+      // owner land on the new workspace immediately, with privileges catching up
+      // once claims refresh on the next load.
+      if (isAuthenticated) {
+        const authedOrg = await getOrganizationBySlug({
+          data: { slug: workspaceSlug },
+        });
+
+        if (authedOrg) {
+          return {
+            workspaceName: authedOrg.name ?? authedOrg.slug,
+            workspaceLogo: authedOrg.logo ?? null,
+            organizationId: authedOrg.id,
+            role: null,
+            isOwner: false,
+            hasAdminPrivileges: false,
+            isAuthenticated,
+            session,
+          };
+        }
       }
 
       // For unauthenticated users (or users not in this org), fetch from IDP

@@ -7,6 +7,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
+import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -71,6 +72,10 @@ function WorkspacesPage() {
             ? "Select a workspace"
             : "Create a workspace to get started"}
         </h1>
+
+        <CreateWorkspaceButton className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 font-medium text-primary-foreground text-sm shadow-xs transition-colors hover:bg-primary/90">
+          {organizations.length ? "New workspace" : "Create workspace"}
+        </CreateWorkspaceButton>
       </div>
 
       {!!organizations.length && (
