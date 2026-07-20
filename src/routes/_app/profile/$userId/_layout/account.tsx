@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 interface ProfileField {
@@ -69,7 +69,8 @@ function UserAccountPage() {
             label: app.profileAccountPage.cta.updateProfile.label,
             icon: <LuPencil />,
             linkOptions: {
-              href: AUTH_BASE_URL!,
+              // Account/profile management lives in the account console
+              href: CONSOLE_URL ? `${CONSOLE_URL}/profile` : AUTH_BASE_URL!,
             },
           },
         ],

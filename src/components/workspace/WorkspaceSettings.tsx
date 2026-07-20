@@ -1,5 +1,6 @@
 import { Format } from "@ark-ui/react";
 import { Portal } from "@ark-ui/react/portal";
+import { ManageTeamLink } from "@omnidotdev/providers/react";
 import { useMutation } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert, LuExternalLink } from "react-icons/lu";
@@ -95,26 +96,27 @@ const WorkspaceSettings = ({ prices }: Props) => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Organization name/slug are managed centrally in the Omni account */}
+      {/* Organization name/slug are managed centrally at the Gatekeeper identity dashboard */}
       <SectionContainer
         title="Organization Settings"
-        description="Your organization's name and URL are managed in your Omni account."
+        description="Your organization's name and URL are managed in your Omni organization settings."
       >
         <p>
           <span className="font-semibold">Name:</span> {workspaceName}
         </p>
-        <a
-          href={`${AUTH_BASE_URL}/dashboard/organizations/${workspaceSlug}`}
-          target="_blank"
-          rel="noreferrer"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "w-fit gap-1.5",
-          )}
-        >
-          <LuExternalLink className="size-4" />
-          Manage organization
-        </a>
+        {AUTH_BASE_URL && workspaceSlug && (
+          <ManageTeamLink
+            identityBaseUrl={AUTH_BASE_URL}
+            orgSlug={workspaceSlug}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "w-fit gap-1.5",
+            )}
+          >
+            <LuExternalLink className="size-4" />
+            Manage organization
+          </ManageTeamLink>
+        )}
       </SectionContainer>
 
       {isOwner && (
