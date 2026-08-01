@@ -1,3 +1,8 @@
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
@@ -10,11 +15,6 @@ import {
 import { useMemo } from "react";
 import { match } from "ts-pattern";
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,

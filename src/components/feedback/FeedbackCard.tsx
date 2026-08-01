@@ -1,4 +1,9 @@
 import { Format, Portal } from "@ark-ui/react";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { RichTextContent } from "@omnidotdev/thornberry/rich-text-editor";
 import {
   useNavigate,
@@ -18,11 +23,6 @@ import TagBadge from "@/components/feedback/TagBadge";
 import TagPicker from "@/components/feedback/TagPicker";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import {
   MenuContent,
   MenuItem,

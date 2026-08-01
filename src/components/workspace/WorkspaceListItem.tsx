@@ -1,12 +1,12 @@
-import { Link } from "@tanstack/react-router";
-import dayjs from "dayjs";
-import { HiOutlineFolder } from "react-icons/hi2";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { Link } from "@tanstack/react-router";
+import dayjs from "dayjs";
+import { HiOutlineFolder } from "react-icons/hi2";
+
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 /**

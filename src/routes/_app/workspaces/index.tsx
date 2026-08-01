@@ -1,12 +1,12 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuExternalLink, LuInfo, LuLayers } from "react-icons/lu";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { LuExternalLink, LuInfo, LuLayers } from "react-icons/lu";
+
 import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";

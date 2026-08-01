@@ -1,3 +1,8 @@
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
@@ -5,11 +10,6 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { LuExternalLink } from "react-icons/lu";
 import { useOnClickOutside } from "usehooks-ts";
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,

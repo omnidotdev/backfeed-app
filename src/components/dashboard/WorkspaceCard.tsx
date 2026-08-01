@@ -1,11 +1,11 @@
-import { HiOutlineFolder } from "react-icons/hi2";
-import { LuBuilding2, LuChevronRight, LuUser } from "react-icons/lu";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { HiOutlineFolder } from "react-icons/hi2";
+import { LuBuilding2, LuChevronRight, LuUser } from "react-icons/lu";
+
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";

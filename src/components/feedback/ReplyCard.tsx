@@ -1,3 +1,8 @@
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
@@ -5,11 +10,6 @@ import DestructiveAction from "@/components/core/DestructiveAction";
 import CommentMessage from "@/components/feedback/CommentMessage";
 import ReactionBar from "@/components/feedback/ReactionBar";
 import RoleBadge from "@/components/feedback/RoleBadge";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";
