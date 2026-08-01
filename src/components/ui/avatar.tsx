@@ -60,7 +60,7 @@ const AvatarImage = ({
       }
     }}
     className={cn(
-      "aspect-square size-full opacity-0 transition-opacity duration-300 ease-out data-[state=visible]:opacity-100",
+      "aspect-square size-full object-cover opacity-0 transition-opacity duration-300 ease-out data-[state=visible]:opacity-100",
       className,
     )}
     alt="Avatar"
