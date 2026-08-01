@@ -1,4 +1,9 @@
 import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
+import {
   getRouteApi,
   useNavigate,
   useRouterState,
@@ -6,11 +11,6 @@ import {
 import { PiCreditCardLight, PiUserCircle } from "react-icons/pi";
 
 import OverflowText from "@/components/core/OverflowText";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import cn from "@/lib/utils";

@@ -1,10 +1,10 @@
-import { LuBuilding2, LuChevronDown, LuPlus, LuUser } from "react-icons/lu";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { LuBuilding2, LuChevronDown, LuPlus, LuUser } from "react-icons/lu";
+
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
