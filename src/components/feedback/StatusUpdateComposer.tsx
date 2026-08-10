@@ -188,7 +188,7 @@ const StatusUpdateComposer = ({
               type="button"
               onClick={() => setTargetStatusId(status.rowId)}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-sm transition-colors",
+                "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-sm transition-colors",
                 isSelected
                   ? "border-transparent bg-muted font-medium"
                   : "border-border-subtle text-muted-foreground hover:bg-muted/60",
