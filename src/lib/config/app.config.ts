@@ -5,6 +5,9 @@
  */
 const app = {
   name: "Backfeed",
+  // Product symbol, mirrors the omni-api catalog SSOT (`catalog/products.ts`
+  // backfeed `icon`). Used in the "Made with <symbol> by Omni" footer credit.
+  icon: "📣",
   description: "Streamlined user feedback",
   productionUrl: "https://backfeed.omni.dev",
   docsUrl: "https://docs.omni.dev/core/backfeed",
@@ -23,6 +26,7 @@ const app = {
   },
   organization: {
     name: "Omni",
+    url: "https://omni.dev",
     supportEmailAddress: "support@omni.dev",
   },
   breadcrumb: "Home",

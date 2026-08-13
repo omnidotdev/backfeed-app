@@ -1,128 +1,81 @@
 import {
-  FaDiscord,
-  FaGithub,
-  FaThreads,
-  FaXTwitter as FaX,
-} from "react-icons/fa6";
+  SiDiscord as DiscordIcon,
+  SiGithub as GithubIcon,
+  SiThreads as ThreadsIcon,
+  SiX as XIcon,
+} from "@icons-pack/react-simple-icons";
+import { AppFooter } from "@omnidotdev/thornberry/app-footer";
 
 import app from "@/lib/config/app.config";
 
-const linkClass =
-  "text-neutral-500 transition-colors hover:text-foreground dark:text-neutral-400 dark:hover:text-neutral-200";
+const socialLinkClass =
+  "rounded px-2 py-1 transition-colors hover:text-foreground";
 
 /**
- * Layout footer.
+ * Layout footer. Renders the shared Omni `<AppFooter>`, which bakes in the
+ * "Made with <symbol> by Omni" credit, the omni.dev link, and the legal links so
+ * they can't drift. Backfeed supplies only its catalog symbol, docs link, its
+ * Feedback link, and its social block.
  */
 const Footer = () => (
-  <footer className="bottom-0 flex w-full flex-col items-center justify-center gap-4 border-neutral-200 border-t bg-neutral-50 px-4 py-6 sm:flex-row dark:border-neutral-800 dark:bg-neutral-950">
-    {/* Made with megaphone */}
-    <p className="text-neutral-500 text-sm dark:text-neutral-400">
-      Made with 📣 by{" "}
-      <a
-        href="https://omni.dev"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-foreground transition-colors hover:text-[var(--colors-brand-primary-600)] dark:text-neutral-200 dark:hover:text-[var(--colors-brand-primary-400)]"
-      >
-        {app.organization.name}
-      </a>
-    </p>
-
-    <div className="hidden h-4 w-px bg-border sm:block" />
-
-    {/* Links */}
-    <div className="flex flex-wrap items-center justify-center gap-4">
-      <a
-        href={app.docsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`text-sm ${linkClass}`}
-      >
-        Docs
-      </a>
-
+  <AppFooter
+    appSymbol={app.icon}
+    docsUrl={app.docsUrl}
+    orgUrl={app.organization.url}
+    links={
       <a
         href={app.feedbackUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className={`text-sm ${linkClass}`}
+        className="rounded px-2 py-1 text-sm transition-colors hover:text-foreground"
       >
         Feedback
       </a>
-
-      <a
-        href={app.legal.privacy}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`text-sm ${linkClass}`}
-      >
-        Privacy
-      </a>
-
-      <a
-        href={app.legal.terms}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`text-sm ${linkClass}`}
-      >
-        Terms
-      </a>
-
-      <a
-        href={app.legal.cookies}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`text-sm ${linkClass}`}
-      >
-        Cookies
-      </a>
-
-      <div className="flex items-center gap-3">
+    }
+    socials={
+      <>
         <a
           href={app.socials.github}
           target="_blank"
           rel="noopener noreferrer"
-          className={linkClass}
+          aria-label="GitHub"
+          className={socialLinkClass}
         >
-          <FaGithub className="size-5" />
+          <GithubIcon className="size-5" />
         </a>
 
         <a
           href={app.socials.discord}
           target="_blank"
           rel="noopener noreferrer"
-          className={linkClass}
+          aria-label="Discord"
+          className={socialLinkClass}
         >
-          <FaDiscord className="size-5" />
+          <DiscordIcon className="size-5" />
         </a>
 
         <a
           href={app.socials.x}
           target="_blank"
           rel="noopener noreferrer"
-          className={linkClass}
+          aria-label="X"
+          className={socialLinkClass}
         >
-          <FaX className="size-4" />
+          <XIcon className="size-5" />
         </a>
 
         <a
           href={app.socials.threads}
           target="_blank"
           rel="noopener noreferrer"
-          className={linkClass}
+          aria-label="Threads"
+          className={socialLinkClass}
         >
-          <FaThreads className="size-5" />
+          <ThreadsIcon className="size-5" />
         </a>
-      </div>
-    </div>
-
-    <div className="hidden h-4 w-px bg-border sm:block" />
-
-    {/* Copyright */}
-    <p className="text-neutral-500 text-sm dark:text-neutral-400">
-      &copy; {new Date().getFullYear()} {app.organization.name}
-    </p>
-  </footer>
+      </>
+    }
+  />
 );
 
 export default Footer;
