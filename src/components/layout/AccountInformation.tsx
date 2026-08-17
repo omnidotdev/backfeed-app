@@ -119,9 +119,9 @@ const AccountInformation = () => {
               <MenuItem
                 value="logout"
                 onClick={handleLogout}
-                className="text-primary [&_svg]:text-destructive dark:text-[var(--colors-brand-primary-400)]"
+                className="text-primary dark:text-[var(--colors-brand-primary-400)]"
               >
-                <FiLogOut />
+                <FiLogOut className="text-destructive" />
                 {app.auth.signOut.label}
               </MenuItem>
             </MenuItemGroup>
@@ -153,9 +153,9 @@ const AccountInformation = () => {
             <Button
               variant="outline"
               onClick={handleLogout}
-              className="border-primary text-primary [&_svg]:text-destructive dark:text-[var(--colors-brand-primary-400)]"
+              className="border-primary text-primary dark:text-[var(--colors-brand-primary-400)]"
             >
-              <FiLogOut />
+              <FiLogOut className="text-destructive" />
               {app.auth.signOut.label}
             </Button>
           </div>
