@@ -65,9 +65,7 @@ const createProjectSchema = z
     }
   });
 
-const workspaceLayoutRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout",
-);
+const workspaceLayoutRoute = getRouteApi("/_app/@$workspaceSlug/_layout");
 
 interface Props {
   /** Slug of the workspace to create the project under. */
@@ -148,7 +146,7 @@ const CreateProject = ({ workspaceSlug }: Props) => {
             });
 
             navigate({
-              to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+              to: "/@$workspaceSlug/$projectSlug",
               params: {
                 workspaceSlug,
                 projectSlug,

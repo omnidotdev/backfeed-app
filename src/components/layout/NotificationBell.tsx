@@ -125,7 +125,7 @@ const NotificationBell = () => {
 
     if (workspaceSlug && notification.projectSlug && notification.postNumber) {
       navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+        to: "/@$workspaceSlug/$projectSlug/$feedbackId",
         params: {
           workspaceSlug,
           projectSlug: notification.projectSlug,

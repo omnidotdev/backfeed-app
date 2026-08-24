@@ -19,7 +19,6 @@ describe("infiniteFeedbackOptions", () => {
     const variables = { projectId: "proj-1" };
     const options = infiniteFeedbackOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: undefined } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(
@@ -37,7 +36,6 @@ describe("infiniteFeedbackOptions", () => {
     const variables = { projectId: "proj-1" };
     const options = infiniteFeedbackOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: { after: "cursor_abc" } } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(
@@ -56,7 +54,6 @@ describe("infiniteFeedbackOptions", () => {
     );
 
     const options = infiniteFeedbackOptions({ projectId: "proj-1" });
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     const result = options.queryFn!({ pageParam: undefined } as any);
 
     expect(mockThunk).toHaveBeenCalled();

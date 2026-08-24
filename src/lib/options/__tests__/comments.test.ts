@@ -19,7 +19,6 @@ describe("infiniteCommentsOptions", () => {
     const variables = { feedbackId: "fb-1" };
     const options = infiniteCommentsOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: undefined } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(
@@ -37,7 +36,6 @@ describe("infiniteCommentsOptions", () => {
     const variables = { feedbackId: "fb-1" };
     const options = infiniteCommentsOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: { after: "cursor_abc" } } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(
@@ -110,7 +108,6 @@ describe("infiniteRepliesOptions", () => {
     const variables = { commentId: "comment-1" };
     const options = infiniteRepliesOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: undefined } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(
@@ -128,7 +125,6 @@ describe("infiniteRepliesOptions", () => {
     const variables = { commentId: "comment-1" };
     const options = infiniteRepliesOptions(variables);
 
-    // biome-ignore lint/style/noNonNullAssertion: test helper
     options.queryFn!({ pageParam: { after: "cursor_def" } } as any);
 
     expect(graphqlFetchModule.graphqlFetch).toHaveBeenCalledWith(

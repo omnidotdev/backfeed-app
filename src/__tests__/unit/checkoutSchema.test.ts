@@ -24,7 +24,7 @@ const checkoutWithWorkspaceSchema = z
 describe("checkout with workspace schema", () => {
   const validBase = {
     priceId: "price_abc123",
-    successUrl: "https://backfeed.omni.dev/workspaces/__SLUG__/settings",
+    successUrl: "https://backfeed.omni.dev/@__SLUG__/~/settings",
     cancelUrl: "https://backfeed.omni.dev/pricing",
     workspaceId: "550e8400-e29b-41d4-a716-446655440000",
   };

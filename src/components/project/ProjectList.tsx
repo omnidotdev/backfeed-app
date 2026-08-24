@@ -13,9 +13,7 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { Project } from "@/generated/graphql";
 
-const projectsRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/",
-);
+const projectsRoute = getRouteApi("/_app/@$workspaceSlug/_layout/");
 
 interface Props {
   /** Whether the user has necessary permissions to create projects. */
@@ -30,7 +28,7 @@ const ProjectList = ({ canCreateProjects }: Props) => {
   const { workspaceSlug } = projectsRoute.useParams();
   const { page, pageSize, search } = projectsRoute.useSearch();
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects",
+    from: "/@$workspaceSlug",
   });
 
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({

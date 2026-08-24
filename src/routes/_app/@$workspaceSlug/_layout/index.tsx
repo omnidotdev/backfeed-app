@@ -1,20 +1,19 @@
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { HiOutlineFolder } from "react-icons/hi2";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
+import { z } from "zod";
 
 import Page from "@/components/layout/Page";
 import CreateProject from "@/components/project/CreateProject";
+import ProjectFilters from "@/components/project/ProjectFilters";
+import ProjectList from "@/components/project/ProjectList";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
-import WorkspaceProjects from "@/components/workspace/WorkspaceProjects";
 import app from "@/lib/config/app.config";
 import { checkLimitOptions } from "@/lib/options/entitlements";
-import {
-  workspaceMetricsOptions,
-  workspaceOptions,
-} from "@/lib/options/workspaces";
+import { projectsOptions } from "@/lib/options/projects";
+import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import { DialogType } from "@/lib/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -28,11 +27,24 @@ const subscriptionOptions = (organizationId: string) =>
     staleTime: 5 * 60 * 1000,
   });
 
-export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/",
-)({
+// The handle home is the primary project-browse surface (golden/URL-GRAMMAR.md:
+// resources are flat under the handle), so it carries the project search and
+// pagination the dedicated list page used to own.
+const projectSearchSchema = z.object({
+  page: z.number().nonnegative().default(1),
+  pageSize: z.number().nonnegative().default(10),
+  search: z.string().default(""),
+});
+
+export const Route = createFileRoute("/_app/@$workspaceSlug/_layout/")({
+  validateSearch: projectSearchSchema,
+  search: {
+    middlewares: [stripSearchParams({ page: 1, pageSize: 10, search: "" })],
+  },
+  loaderDeps: ({ search }) => search,
   loader: async ({
     context: { queryClient, organizationId, workspaceName },
+    deps: { page, pageSize, search },
   }) => {
     await Promise.all([
       queryClient.ensureQueryData({
@@ -41,7 +53,15 @@ export const Route = createFileRoute(
         }),
         revalidateIfStale: true,
       }),
-      queryClient.ensureQueryData(workspaceOptions({ organizationId })),
+      queryClient.ensureQueryData({
+        ...projectsOptions({
+          pageSize,
+          offset: (page - 1) * pageSize,
+          search,
+          organizationId,
+        }),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return { workspaceName };
@@ -112,35 +132,23 @@ function WorkspacePage() {
           label: "Dashboard",
           to: "/",
         },
-        cta: isAuthenticated
-          ? [
-              {
-                label: app.workspacePage.header.cta.viewProjects.label,
-                variant: "outline",
-                icon: <HiOutlineFolder />,
-                linkOptions: {
-                  to: "/workspaces/$workspaceSlug/projects",
-                  params: { workspaceSlug },
+        cta:
+          isAuthenticated && hasAdminPrivileges
+            ? [
+                {
+                  label: app.workspacePage.header.cta.newProject.label,
+                  icon: <LuCirclePlus />,
+                  disabled: !canCreateProjects,
+                  dialogType: DialogType.CreateProject,
+                  tooltip: app.workspacePage.header.cta.newProject.tooltip,
                 },
-                disabled: !projectCount,
-                tooltip: app.workspacePage.header.cta.viewProjects.tooltip,
-              },
-              ...(hasAdminPrivileges
-                ? [
-                    {
-                      label: app.workspacePage.header.cta.newProject.label,
-                      icon: <LuCirclePlus />,
-                      disabled: !canCreateProjects,
-                      dialogType: DialogType.CreateProject,
-                      tooltip: app.workspacePage.header.cta.newProject.tooltip,
-                    },
-                  ]
-                : []),
-            ]
-          : [],
+              ]
+            : [],
       }}
     >
-      <WorkspaceProjects canCreateProjects={canCreateProjects} />
+      <ProjectFilters />
+
+      <ProjectList canCreateProjects={canCreateProjects} />
 
       {isAuthenticated && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

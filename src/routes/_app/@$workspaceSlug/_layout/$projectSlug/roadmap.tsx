@@ -22,7 +22,7 @@ const ROADMAP_ORDER = [
 ];
 
 export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/roadmap",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },
@@ -66,7 +66,7 @@ export const Route = createFileRoute(
     meta: loaderData
       ? createMetaTags({
           title: `${loaderData.projectName} Roadmap`,
-          url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/roadmap`,
+          url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}/roadmap`,
           image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
         })
       : undefined,
@@ -133,12 +133,12 @@ function RoadmapPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/workspaces/$workspaceSlug",
+            to: "/@$workspaceSlug",
             params: { workspaceSlug },
           },
           {
             label: projectName,
-            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+            to: "/@$workspaceSlug/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           { label: "Roadmap" },
@@ -173,11 +173,12 @@ function RoadmapPage() {
           canManageFeedback={false}
           onSelectPost={(post) =>
             navigate({
-              to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+              to: "/@$workspaceSlug/$projectSlug/$feedbackId",
               params: {
                 workspaceSlug,
                 projectSlug,
                 feedbackId: buildFeedbackKey({
+                  prefix: post.project?.prefix,
                   number: post.number!,
                   title: post.title,
                 }),

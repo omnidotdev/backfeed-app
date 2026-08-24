@@ -110,7 +110,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       return createCheckoutWithWorkspace({
         data: {
           priceId: price.id,
-          successUrl: `${BASE_URL}/workspaces/__SLUG__/settings`,
+          successUrl: `${BASE_URL}/@__SLUG__/~/settings`,
           cancelUrl: `${BASE_URL}/pricing`,
           quantity: params.quantity ?? 1,
           ...params,
@@ -158,7 +158,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       } else {
         const firstOrg = session.organizations[0];
         navigate({
-          to: "/workspaces/$workspaceSlug",
+          to: "/@$workspaceSlug",
           params: { workspaceSlug: firstOrg.slug },
         });
       }
@@ -358,7 +358,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                     asChild
                   >
                     <Link
-                      to="/workspaces/$workspaceSlug"
+                      to="/@$workspaceSlug"
                       params={{ workspaceSlug: session.organizations[0].slug }}
                     >
                       Go to Workspace

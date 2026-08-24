@@ -43,7 +43,7 @@ import toaster from "@/lib/util/toaster";
 import type { ProjectStatusesQuery } from "@/generated/graphql";
 
 const settingsRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/~/settings",
 );
 
 /** Friendly default status colors, in the same family as the tag presets. */

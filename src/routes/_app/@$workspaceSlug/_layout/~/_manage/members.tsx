@@ -16,7 +16,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import cn from "@/lib/utils";
 
 export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
+  "/_app/@$workspaceSlug/_layout/~/_manage/members",
 )({
   loader: async ({
     context: { queryClient, organizationId, workspaceName, session },
@@ -68,7 +68,7 @@ function WorkspaceMembersPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/workspaces/$workspaceSlug",
+            to: "/@$workspaceSlug",
             params: { workspaceSlug },
           },
           { label: app.workspaceMembersPage.breadcrumb },

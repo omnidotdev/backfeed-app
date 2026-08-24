@@ -9,9 +9,7 @@ import app from "@/lib/config/app.config";
 
 import type { IconType } from "react-icons";
 
-const workspaceLayoutRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/",
-);
+const workspaceLayoutRoute = getRouteApi("/_app/@$workspaceSlug/_layout/");
 
 interface Action {
   /** Action label. */
@@ -40,7 +38,7 @@ const WorkspaceManagement = () => {
       icon: HiOutlineUserGroup,
       onClick: () =>
         navigate({
-          to: "/workspaces/$workspaceSlug/members",
+          to: "/@$workspaceSlug/~/members",
           params: { workspaceSlug },
         }),
     },
@@ -50,7 +48,7 @@ const WorkspaceManagement = () => {
       icon: FiUserPlus,
       // onClick: () =>
       //   navigate({
-      //     to: "/workspaces/$workspaceSlug/invitations",
+      //     to: "/@$workspaceSlug/invitations",
       //     params: { workspaceSlug },
       //   }),
       disabled: true,
@@ -60,7 +58,7 @@ const WorkspaceManagement = () => {
       icon: LuSettings,
       onClick: () =>
         navigate({
-          to: "/workspaces/$workspaceSlug/settings",
+          to: "/@$workspaceSlug/~/settings",
           params: { workspaceSlug },
         }),
       disabled: !role,
@@ -70,7 +68,7 @@ const WorkspaceManagement = () => {
       icon: HiOutlineFolder,
       onClick: () =>
         navigate({
-          to: "/workspaces/$workspaceSlug/projects",
+          to: "/@$workspaceSlug",
           params: { workspaceSlug },
         }),
       disabled: !!role,

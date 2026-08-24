@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_app/workspaces/")({
       organizations.some((org) => org.slug === lastSlug)
     ) {
       throw redirect({
-        to: "/workspaces/$workspaceSlug",
+        to: "/@$workspaceSlug",
         params: { workspaceSlug: lastSlug },
       });
     }
@@ -120,7 +120,7 @@ function WorkspaceCard({ organization }: { organization: OrganizationClaim }) {
 
   return (
     <Link
-      to="/workspaces/$workspaceSlug"
+      to="/@$workspaceSlug"
       params={{ workspaceSlug: organization.slug! }}
       onClick={() => setLastWorkspaceCookie({ data: organization.slug! })}
       preload="intent"

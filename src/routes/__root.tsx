@@ -19,6 +19,7 @@ import CommandPalette from "@/components/layout/CommandPalette";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import NotFound from "@/components/layout/NotFound";
 import app from "@/lib/config/app.config";
 import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/app.css?url";
@@ -141,6 +142,10 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
   errorComponent: DefaultCatchBoundary,
+  // Render 404s in-shell: a thrown `notFound()` renders here inside RootDocument
+  // (globals + layout), not as a bare unstyled page. Pairs with the router's
+  // `defaultNotFoundComponent` for unmatched routes.
+  notFoundComponent: () => <NotFound />,
   component: RootComponent,
 });
 

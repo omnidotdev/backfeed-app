@@ -6,6 +6,11 @@
  *
  * A reference must sit on a word boundary (so hex colors like `#fff` or ids like
  * `abc#12` are left alone) and have at least one digit.
+ *
+ * TODO: support cross-project `PREFIX-<number>` references (e.g. `API-42`) per
+ * golden/URL-GRAMMAR.md rule 5. That needs resolving a project prefix to its
+ * project within the workspace, so it is deferred as a follow-up; same-project
+ * `#<number>` refs are unchanged.
  */
 
 export type MessageSegment =

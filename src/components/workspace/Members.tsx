@@ -32,7 +32,7 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import type { IdpMember } from "@/lib/idp";
 
 const membersRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/_manage/members",
+  "/_app/@$workspaceSlug/_layout/~/_manage/members",
 );
 
 const columnHelper = createColumnHelper<IdpMember>();

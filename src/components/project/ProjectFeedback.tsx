@@ -70,9 +70,7 @@ import type { FeedSortSlug } from "@/lib/constants/sort.constant";
 
 // TODO: figure out how to properly handle refresh for view state management.
 
-const projectRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-);
+const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
 
 const SORT_BY_OPTIONS = [
   {
@@ -94,7 +92,7 @@ const ProjectFeedback = () => {
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
   const { excludedStatuses, tags, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/@$workspaceSlug/$projectSlug",
   });
 
   const viewState = useProjectViewStore((state) => state.viewState);
@@ -519,11 +517,12 @@ const ProjectFeedback = () => {
             projectStatuses={projectStatuses}
             onSelectPost={(post) =>
               navigate({
-                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                to: "/@$workspaceSlug/$projectSlug/$feedbackId",
                 params: {
                   workspaceSlug,
                   projectSlug,
                   feedbackId: buildFeedbackKey({
+                    prefix: post.project?.prefix,
                     number: post.number!,
                     title: post.title,
                   }),
@@ -585,11 +584,12 @@ const ProjectFeedback = () => {
                       onClick={() =>
                         !isPending
                           ? navigate({
-                              to: "/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId",
+                              to: "/@$workspaceSlug/$projectSlug/$feedbackId",
                               params: {
                                 workspaceSlug,
                                 projectSlug,
                                 feedbackId: buildFeedbackKey({
+                                  prefix: feedback?.project?.prefix,
                                   number: feedback?.number!,
                                   title: feedback?.title,
                                 }),

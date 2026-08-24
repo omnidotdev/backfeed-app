@@ -16,22 +16,30 @@ import { Route as ApiFaviconRouteImport } from './routes/api/favicon'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppWorkspacesIndexRouteImport } from './routes/_app/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AppWorkspacesWorkspaceSlugLayoutRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout'
+import { Route as AppAtworkspaceSlugLayoutRouteImport } from './routes/_app/@$workspaceSlug/_layout'
+import { Route as AppWorkspacesWorkspaceSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/index'
+import { Route as AppAtworkspaceSlugLayoutIndexRouteImport } from './routes/_app/@$workspaceSlug/_layout/index'
+import { Route as AppWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/settings'
+import { Route as AppWorkspacesWorkspaceSlugMembersRouteImport } from './routes/_app/workspaces/$workspaceSlug/members'
 import { Route as AppProfileUserIdLayoutRouteImport } from './routes/_app/profile/$userId/_layout'
-import { Route as AppWorkspacesWorkspaceSlugLayoutIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/index'
+import { Route as AppWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/index'
+import { Route as AppAtworkspaceSlugLayoutProjectSlugIndexRouteImport } from './routes/_app/@$workspaceSlug/_layout/$projectSlug/index'
 import { Route as ApiOgProjectWorkspaceSlugProjectSlugRouteImport } from './routes/api/og/project.$workspaceSlug.$projectSlug'
-import { Route as AppWorkspacesWorkspaceSlugLayoutManageRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/_manage'
 import { Route as AppProfileUserIdLayoutWorkspacesRouteImport } from './routes/_app/profile/$userId/_layout/workspaces'
 import { Route as AppProfileUserIdLayoutAccountRouteImport } from './routes/_app/profile/$userId/_layout/account'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/index'
+import { Route as AppAtworkspaceSlugLayoutChar126ManageRouteImport } from './routes/_app/@$workspaceSlug/_layout/~/_manage'
+import { Route as AppAtworkspaceSlugLayoutProjectSlugRoadmapRouteImport } from './routes/_app/@$workspaceSlug/_layout/$projectSlug/roadmap'
+import { Route as AppAtworkspaceSlugLayoutProjectSlugChangelogRouteImport } from './routes/_app/@$workspaceSlug/_layout/$projectSlug/changelog'
+import { Route as AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRouteImport } from './routes/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId'
+import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/index'
 import { Route as ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport } from './routes/api/og/feedback.$workspaceSlug.$projectSlug.$number'
-import { Route as AppWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
-import { Route as AppWorkspacesWorkspaceSlugLayoutManageMembersRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/_manage/members'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/index'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
-import { Route as AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRouteImport } from './routes/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
+import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
+import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
+import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
+import { Route as AppAtworkspaceSlugLayoutChar126ManageSettingsRouteImport } from './routes/_app/@$workspaceSlug/_layout/~/_manage/settings'
+import { Route as AppAtworkspaceSlugLayoutChar126ManageMembersRouteImport } from './routes/_app/@$workspaceSlug/_layout/~/_manage/members'
+import { Route as AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRouteImport } from './routes/_app/@$workspaceSlug/_layout/$projectSlug/~/settings'
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -67,10 +75,34 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppWorkspacesWorkspaceSlugLayoutRoute =
-  AppWorkspacesWorkspaceSlugLayoutRouteImport.update({
-    id: '/workspaces/$workspaceSlug/_layout',
-    path: '/workspaces/$workspaceSlug',
+const AppAtworkspaceSlugLayoutRoute =
+  AppAtworkspaceSlugLayoutRouteImport.update({
+    id: '/@$workspaceSlug/_layout',
+    path: '/@$workspaceSlug',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugIndexRoute =
+  AppWorkspacesWorkspaceSlugIndexRouteImport.update({
+    id: '/workspaces/$workspaceSlug/',
+    path: '/workspaces/$workspaceSlug/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutIndexRoute =
+  AppAtworkspaceSlugLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugSettingsRoute =
+  AppWorkspacesWorkspaceSlugSettingsRouteImport.update({
+    id: '/workspaces/$workspaceSlug/settings',
+    path: '/workspaces/$workspaceSlug/settings',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugMembersRoute =
+  AppWorkspacesWorkspaceSlugMembersRouteImport.update({
+    id: '/workspaces/$workspaceSlug/members',
+    path: '/workspaces/$workspaceSlug/members',
     getParentRoute: () => AppRoute,
   } as any)
 const AppProfileUserIdLayoutRoute = AppProfileUserIdLayoutRouteImport.update({
@@ -78,22 +110,23 @@ const AppProfileUserIdLayoutRoute = AppProfileUserIdLayoutRouteImport.update({
   path: '/profile/$userId',
   getParentRoute: () => AppRoute,
 } as any)
-const AppWorkspacesWorkspaceSlugLayoutIndexRoute =
-  AppWorkspacesWorkspaceSlugLayoutIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
+const AppWorkspacesWorkspaceSlugProjectsIndexRoute =
+  AppWorkspacesWorkspaceSlugProjectsIndexRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/',
+    path: '/workspaces/$workspaceSlug/projects/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutProjectSlugIndexRoute =
+  AppAtworkspaceSlugLayoutProjectSlugIndexRouteImport.update({
+    id: '/$projectSlug/',
+    path: '/$projectSlug/',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
   } as any)
 const ApiOgProjectWorkspaceSlugProjectSlugRoute =
   ApiOgProjectWorkspaceSlugProjectSlugRouteImport.update({
     id: '/api/og/project/$workspaceSlug/$projectSlug',
     path: '/api/og/project/$workspaceSlug/$projectSlug',
     getParentRoute: () => rootRouteImport,
-  } as any)
-const AppWorkspacesWorkspaceSlugLayoutManageRoute =
-  AppWorkspacesWorkspaceSlugLayoutManageRouteImport.update({
-    id: '/_manage',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
   } as any)
 const AppProfileUserIdLayoutWorkspacesRoute =
   AppProfileUserIdLayoutWorkspacesRouteImport.update({
@@ -107,11 +140,35 @@ const AppProfileUserIdLayoutAccountRoute =
     path: '/account',
     getParentRoute: () => AppProfileUserIdLayoutRoute,
   } as any)
-const AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport.update({
-    id: '/projects/',
-    path: '/projects/',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
+const AppAtworkspaceSlugLayoutChar126ManageRoute =
+  AppAtworkspaceSlugLayoutChar126ManageRouteImport.update({
+    id: '/~/_manage',
+    path: '/~',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute =
+  AppAtworkspaceSlugLayoutProjectSlugRoadmapRouteImport.update({
+    id: '/$projectSlug/roadmap',
+    path: '/$projectSlug/roadmap',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutProjectSlugChangelogRoute =
+  AppAtworkspaceSlugLayoutProjectSlugChangelogRouteImport.update({
+    id: '/$projectSlug/changelog',
+    path: '/$projectSlug/changelog',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute =
+  AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRouteImport.update({
+    id: '/$projectSlug/$feedbackId',
+    path: '/$projectSlug/$feedbackId',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute =
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/',
+    getParentRoute: () => AppRoute,
   } as any)
 const ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute =
   ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport.update({
@@ -119,77 +176,80 @@ const ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute =
     path: '/api/og/feedback/$workspaceSlug/$projectSlug/$number',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute =
-  AppWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport.update({
+const AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute =
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/settings',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute =
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute =
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/changelog',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/changelog',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute =
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppAtworkspaceSlugLayoutChar126ManageSettingsRoute =
+  AppAtworkspaceSlugLayoutChar126ManageSettingsRouteImport.update({
     id: '/settings',
     path: '/settings',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutManageRoute,
+    getParentRoute: () => AppAtworkspaceSlugLayoutChar126ManageRoute,
   } as any)
-const AppWorkspacesWorkspaceSlugLayoutManageMembersRoute =
-  AppWorkspacesWorkspaceSlugLayoutManageMembersRouteImport.update({
+const AppAtworkspaceSlugLayoutChar126ManageMembersRoute =
+  AppAtworkspaceSlugLayoutChar126ManageMembersRouteImport.update({
     id: '/members',
     path: '/members',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutManageRoute,
+    getParentRoute: () => AppAtworkspaceSlugLayoutChar126ManageRoute,
   } as any)
-const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport.update({
-    id: '/projects/$projectSlug/',
-    path: '/projects/$projectSlug/',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
+const AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute =
+  AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRouteImport.update({
+    id: '/$projectSlug/~/settings',
+    path: '/$projectSlug/~/settings',
+    getParentRoute: () => AppAtworkspaceSlugLayoutRoute,
   } as any)
-const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRouteImport.update(
-    {
-      id: '/projects/$projectSlug/settings',
-      path: '/projects/$projectSlug/settings',
-      getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
-    } as any,
-  )
-const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport.update({
-    id: '/projects/$projectSlug/roadmap',
-    path: '/projects/$projectSlug/roadmap',
-    getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
-  } as any)
-const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport.update(
-    {
-      id: '/projects/$projectSlug/changelog',
-      path: '/projects/$projectSlug/changelog',
-      getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
-    } as any,
-  )
-const AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute =
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRouteImport.update(
-    {
-      id: '/projects/$projectSlug/$feedbackId',
-      path: '/projects/$projectSlug/$feedbackId',
-      getParentRoute: () => AppWorkspacesWorkspaceSlugLayoutRoute,
-    } as any,
-  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/dashboard': typeof AppDashboardRoute
   '/api/favicon': typeof ApiFaviconRoute
+  '/@$workspaceSlug': typeof AppAtworkspaceSlugLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/profile/$userId': typeof AppProfileUserIdLayoutRouteWithChildren
-  '/workspaces/$workspaceSlug': typeof AppWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
+  '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugMembersRoute
+  '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/@$workspaceSlug/': typeof AppAtworkspaceSlugLayoutIndexRoute
+  '/workspaces/$workspaceSlug': typeof AppWorkspacesWorkspaceSlugIndexRoute
+  '/@$workspaceSlug/$projectSlug/$feedbackId': typeof AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute
+  '/@$workspaceSlug/$projectSlug/changelog': typeof AppAtworkspaceSlugLayoutProjectSlugChangelogRoute
+  '/@$workspaceSlug/$projectSlug/roadmap': typeof AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute
+  '/@$workspaceSlug/~': typeof AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren
   '/profile/$userId/account': typeof AppProfileUserIdLayoutAccountRoute
   '/profile/$userId/workspaces': typeof AppProfileUserIdLayoutWorkspacesRoute
   '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
-  '/workspaces/$workspaceSlug/': typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
-  '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
-  '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/@$workspaceSlug/$projectSlug': typeof AppAtworkspaceSlugLayoutProjectSlugIndexRoute
+  '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/@$workspaceSlug/$projectSlug/~/settings': typeof AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute
+  '/@$workspaceSlug/~/members': typeof AppAtworkspaceSlugLayoutChar126ManageMembersRoute
+  '/@$workspaceSlug/~/settings': typeof AppAtworkspaceSlugLayoutChar126ManageSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
-  '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -199,19 +259,28 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/profile/$userId': typeof AppProfileUserIdLayoutRouteWithChildren
+  '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugMembersRoute
+  '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/@$workspaceSlug': typeof AppAtworkspaceSlugLayoutIndexRoute
+  '/workspaces/$workspaceSlug': typeof AppWorkspacesWorkspaceSlugIndexRoute
+  '/@$workspaceSlug/$projectSlug/$feedbackId': typeof AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute
+  '/@$workspaceSlug/$projectSlug/changelog': typeof AppAtworkspaceSlugLayoutProjectSlugChangelogRoute
+  '/@$workspaceSlug/$projectSlug/roadmap': typeof AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute
+  '/@$workspaceSlug/~': typeof AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren
   '/profile/$userId/account': typeof AppProfileUserIdLayoutAccountRoute
   '/profile/$userId/workspaces': typeof AppProfileUserIdLayoutWorkspacesRoute
-  '/workspaces/$workspaceSlug': typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
   '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
-  '/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
-  '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/@$workspaceSlug/$projectSlug': typeof AppAtworkspaceSlugLayoutProjectSlugIndexRoute
+  '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/@$workspaceSlug/$projectSlug/~/settings': typeof AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute
+  '/@$workspaceSlug/~/members': typeof AppAtworkspaceSlugLayoutChar126ManageMembersRoute
+  '/@$workspaceSlug/~/settings': typeof AppAtworkspaceSlugLayoutChar126ManageSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
-  '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -220,24 +289,32 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/api/favicon': typeof ApiFaviconRoute
+  '/_app/@$workspaceSlug/_layout': typeof AppAtworkspaceSlugLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/workspaces/': typeof AppWorkspacesIndexRoute
   '/_app/profile/$userId/_layout': typeof AppProfileUserIdLayoutRouteWithChildren
-  '/_app/workspaces/$workspaceSlug/_layout': typeof AppWorkspacesWorkspaceSlugLayoutRouteWithChildren
+  '/_app/workspaces/$workspaceSlug/members': typeof AppWorkspacesWorkspaceSlugMembersRoute
+  '/_app/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/_app/@$workspaceSlug/_layout/': typeof AppAtworkspaceSlugLayoutIndexRoute
+  '/_app/workspaces/$workspaceSlug/': typeof AppWorkspacesWorkspaceSlugIndexRoute
+  '/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId': typeof AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute
+  '/_app/@$workspaceSlug/_layout/$projectSlug/changelog': typeof AppAtworkspaceSlugLayoutProjectSlugChangelogRoute
+  '/_app/@$workspaceSlug/_layout/$projectSlug/roadmap': typeof AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute
+  '/_app/@$workspaceSlug/_layout/~/_manage': typeof AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren
   '/_app/profile/$userId/_layout/account': typeof AppProfileUserIdLayoutAccountRoute
   '/_app/profile/$userId/_layout/workspaces': typeof AppProfileUserIdLayoutWorkspacesRoute
-  '/_app/workspaces/$workspaceSlug/_layout/_manage': typeof AppWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
   '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
-  '/_app/workspaces/$workspaceSlug/_layout/': typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
-  '/_app/workspaces/$workspaceSlug/_layout/_manage/members': typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
-  '/_app/workspaces/$workspaceSlug/_layout/_manage/settings': typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
+  '/_app/@$workspaceSlug/_layout/$projectSlug/': typeof AppAtworkspaceSlugLayoutProjectSlugIndexRoute
+  '/_app/workspaces/$workspaceSlug/projects/': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/_app/@$workspaceSlug/_layout/$projectSlug/~/settings': typeof AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute
+  '/_app/@$workspaceSlug/_layout/~/_manage/members': typeof AppAtworkspaceSlugLayoutChar126ManageMembersRoute
+  '/_app/@$workspaceSlug/_layout/~/_manage/settings': typeof AppAtworkspaceSlugLayoutChar126ManageSettingsRoute
+  '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute
+  '/_app/workspaces/$workspaceSlug/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute
+  '/_app/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute
+  '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/api/og/feedback/$workspaceSlug/$projectSlug/$number': typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/': typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
-  '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/': typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
+  '/_app/workspaces/$workspaceSlug/projects/$projectSlug/': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -246,22 +323,31 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard'
     | '/api/favicon'
+    | '/@$workspaceSlug'
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
+    | '/workspaces/$workspaceSlug/members'
+    | '/workspaces/$workspaceSlug/settings'
+    | '/@$workspaceSlug/'
     | '/workspaces/$workspaceSlug'
+    | '/@$workspaceSlug/$projectSlug/$feedbackId'
+    | '/@$workspaceSlug/$projectSlug/changelog'
+    | '/@$workspaceSlug/$projectSlug/roadmap'
+    | '/@$workspaceSlug/~'
     | '/profile/$userId/account'
     | '/profile/$userId/workspaces'
     | '/api/og/project/$workspaceSlug/$projectSlug'
-    | '/workspaces/$workspaceSlug/'
-    | '/workspaces/$workspaceSlug/members'
-    | '/workspaces/$workspaceSlug/settings'
-    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
+    | '/@$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects'
+    | '/@$workspaceSlug/$projectSlug/~/settings'
+    | '/@$workspaceSlug/~/members'
+    | '/@$workspaceSlug/~/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -272,18 +358,27 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/workspaces'
     | '/profile/$userId'
-    | '/profile/$userId/account'
-    | '/profile/$userId/workspaces'
-    | '/workspaces/$workspaceSlug'
-    | '/api/og/project/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/members'
     | '/workspaces/$workspaceSlug/settings'
-    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
+    | '/@$workspaceSlug'
+    | '/workspaces/$workspaceSlug'
+    | '/@$workspaceSlug/$projectSlug/$feedbackId'
+    | '/@$workspaceSlug/$projectSlug/changelog'
+    | '/@$workspaceSlug/$projectSlug/roadmap'
+    | '/@$workspaceSlug/~'
+    | '/profile/$userId/account'
+    | '/profile/$userId/workspaces'
+    | '/api/og/project/$workspaceSlug/$projectSlug'
+    | '/@$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects'
+    | '/@$workspaceSlug/$projectSlug/~/settings'
+    | '/@$workspaceSlug/~/members'
+    | '/@$workspaceSlug/~/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
@@ -292,24 +387,32 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/_app/dashboard'
     | '/api/favicon'
+    | '/_app/@$workspaceSlug/_layout'
     | '/api/auth/$'
     | '/_app/workspaces/'
     | '/_app/profile/$userId/_layout'
-    | '/_app/workspaces/$workspaceSlug/_layout'
+    | '/_app/workspaces/$workspaceSlug/members'
+    | '/_app/workspaces/$workspaceSlug/settings'
+    | '/_app/@$workspaceSlug/_layout/'
+    | '/_app/workspaces/$workspaceSlug/'
+    | '/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId'
+    | '/_app/@$workspaceSlug/_layout/$projectSlug/changelog'
+    | '/_app/@$workspaceSlug/_layout/$projectSlug/roadmap'
+    | '/_app/@$workspaceSlug/_layout/~/_manage'
     | '/_app/profile/$userId/_layout/account'
     | '/_app/profile/$userId/_layout/workspaces'
-    | '/_app/workspaces/$workspaceSlug/_layout/_manage'
     | '/api/og/project/$workspaceSlug/$projectSlug'
-    | '/_app/workspaces/$workspaceSlug/_layout/'
-    | '/_app/workspaces/$workspaceSlug/_layout/_manage/members'
-    | '/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
+    | '/_app/@$workspaceSlug/_layout/$projectSlug/'
+    | '/_app/workspaces/$workspaceSlug/projects/'
+    | '/_app/@$workspaceSlug/_layout/$projectSlug/~/settings'
+    | '/_app/@$workspaceSlug/_layout/~/_manage/members'
+    | '/_app/@$workspaceSlug/_layout/~/_manage/settings'
+    | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
+    | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
+    | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
+    | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
-    | '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/'
+    | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -373,11 +476,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/workspaces/$workspaceSlug/_layout': {
-      id: '/_app/workspaces/$workspaceSlug/_layout'
+    '/_app/@$workspaceSlug/_layout': {
+      id: '/_app/@$workspaceSlug/_layout'
+      path: '/@$workspaceSlug'
+      fullPath: '/@$workspaceSlug'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/workspaces/$workspaceSlug/': {
+      id: '/_app/workspaces/$workspaceSlug/'
       path: '/workspaces/$workspaceSlug'
       fullPath: '/workspaces/$workspaceSlug'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutRouteImport
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/@$workspaceSlug/_layout/': {
+      id: '/_app/@$workspaceSlug/_layout/'
+      path: '/'
+      fullPath: '/@$workspaceSlug/'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutIndexRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
+    }
+    '/_app/workspaces/$workspaceSlug/settings': {
+      id: '/_app/workspaces/$workspaceSlug/settings'
+      path: '/workspaces/$workspaceSlug/settings'
+      fullPath: '/workspaces/$workspaceSlug/settings'
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/workspaces/$workspaceSlug/members': {
+      id: '/_app/workspaces/$workspaceSlug/members'
+      path: '/workspaces/$workspaceSlug/members'
+      fullPath: '/workspaces/$workspaceSlug/members'
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugMembersRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/profile/$userId/_layout': {
@@ -387,12 +518,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileUserIdLayoutRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/workspaces/$workspaceSlug/_layout/': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/'
-      path: '/'
-      fullPath: '/workspaces/$workspaceSlug/'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutIndexRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+    '/_app/workspaces/$workspaceSlug/projects/': {
+      id: '/_app/workspaces/$workspaceSlug/projects/'
+      path: '/workspaces/$workspaceSlug/projects'
+      fullPath: '/workspaces/$workspaceSlug/projects'
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/@$workspaceSlug/_layout/$projectSlug/': {
+      id: '/_app/@$workspaceSlug/_layout/$projectSlug/'
+      path: '/$projectSlug'
+      fullPath: '/@$workspaceSlug/$projectSlug'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutProjectSlugIndexRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
     }
     '/api/og/project/$workspaceSlug/$projectSlug': {
       id: '/api/og/project/$workspaceSlug/$projectSlug'
@@ -400,13 +538,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/og/project/$workspaceSlug/$projectSlug'
       preLoaderRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_app/workspaces/$workspaceSlug/_layout/_manage': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/_manage'
-      path: ''
-      fullPath: '/workspaces/$workspaceSlug'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
     }
     '/_app/profile/$userId/_layout/workspaces': {
       id: '/_app/profile/$userId/_layout/workspaces'
@@ -422,12 +553,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileUserIdLayoutAccountRouteImport
       parentRoute: typeof AppProfileUserIdLayoutRoute
     }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/'
-      path: '/projects'
-      fullPath: '/workspaces/$workspaceSlug/projects'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+    '/_app/@$workspaceSlug/_layout/~/_manage': {
+      id: '/_app/@$workspaceSlug/_layout/~/_manage'
+      path: '/~'
+      fullPath: '/@$workspaceSlug/~'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutChar126ManageRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
+    }
+    '/_app/@$workspaceSlug/_layout/$projectSlug/roadmap': {
+      id: '/_app/@$workspaceSlug/_layout/$projectSlug/roadmap'
+      path: '/$projectSlug/roadmap'
+      fullPath: '/@$workspaceSlug/$projectSlug/roadmap'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutProjectSlugRoadmapRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
+    }
+    '/_app/@$workspaceSlug/_layout/$projectSlug/changelog': {
+      id: '/_app/@$workspaceSlug/_layout/$projectSlug/changelog'
+      path: '/$projectSlug/changelog'
+      fullPath: '/@$workspaceSlug/$projectSlug/changelog'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutProjectSlugChangelogRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
+    }
+    '/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId': {
+      id: '/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId'
+      path: '/$projectSlug/$feedbackId'
+      fullPath: '/@$workspaceSlug/$projectSlug/$feedbackId'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
+    }
+    '/_app/workspaces/$workspaceSlug/projects/$projectSlug/': {
+      id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/api/og/feedback/$workspaceSlug/$projectSlug/$number': {
       id: '/api/og/feedback/$workspaceSlug/$projectSlug/$number'
@@ -436,57 +595,107 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOgFeedbackWorkspaceSlugProjectSlugNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/workspaces/$workspaceSlug/_layout/_manage/settings': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/_manage/settings'
-      path: '/settings'
-      fullPath: '/workspaces/$workspaceSlug/settings'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageRoute
-    }
-    '/_app/workspaces/$workspaceSlug/_layout/_manage/members': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/_manage/members'
-      path: '/members'
-      fullPath: '/workspaces/$workspaceSlug/members'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageRoute
-    }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/'
-      path: '/projects/$projectSlug'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
-    }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings'
-      path: '/projects/$projectSlug/settings'
+    '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings': {
+      id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/roadmap'
-      path: '/projects/$projectSlug/roadmap'
+    '/_app/workspaces/$workspaceSlug/projects/$projectSlug/roadmap': {
+      id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/roadmap'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog'
-      path: '/projects/$projectSlug/changelog'
+    '/_app/workspaces/$workspaceSlug/projects/$projectSlug/changelog': {
+      id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/changelog'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId': {
-      id: '/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId'
-      path: '/projects/$projectSlug/$feedbackId'
+    '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId': {
+      id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId'
-      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRouteImport
-      parentRoute: typeof AppWorkspacesWorkspaceSlugLayoutRoute
+      preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/@$workspaceSlug/_layout/~/_manage/settings': {
+      id: '/_app/@$workspaceSlug/_layout/~/_manage/settings'
+      path: '/settings'
+      fullPath: '/@$workspaceSlug/~/settings'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutChar126ManageSettingsRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutChar126ManageRoute
+    }
+    '/_app/@$workspaceSlug/_layout/~/_manage/members': {
+      id: '/_app/@$workspaceSlug/_layout/~/_manage/members'
+      path: '/members'
+      fullPath: '/@$workspaceSlug/~/members'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutChar126ManageMembersRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutChar126ManageRoute
+    }
+    '/_app/@$workspaceSlug/_layout/$projectSlug/~/settings': {
+      id: '/_app/@$workspaceSlug/_layout/$projectSlug/~/settings'
+      path: '/$projectSlug/~/settings'
+      fullPath: '/@$workspaceSlug/$projectSlug/~/settings'
+      preLoaderRoute: typeof AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRouteImport
+      parentRoute: typeof AppAtworkspaceSlugLayoutRoute
     }
   }
 }
+
+interface AppAtworkspaceSlugLayoutChar126ManageRouteChildren {
+  AppAtworkspaceSlugLayoutChar126ManageMembersRoute: typeof AppAtworkspaceSlugLayoutChar126ManageMembersRoute
+  AppAtworkspaceSlugLayoutChar126ManageSettingsRoute: typeof AppAtworkspaceSlugLayoutChar126ManageSettingsRoute
+}
+
+const AppAtworkspaceSlugLayoutChar126ManageRouteChildren: AppAtworkspaceSlugLayoutChar126ManageRouteChildren =
+  {
+    AppAtworkspaceSlugLayoutChar126ManageMembersRoute:
+      AppAtworkspaceSlugLayoutChar126ManageMembersRoute,
+    AppAtworkspaceSlugLayoutChar126ManageSettingsRoute:
+      AppAtworkspaceSlugLayoutChar126ManageSettingsRoute,
+  }
+
+const AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren =
+  AppAtworkspaceSlugLayoutChar126ManageRoute._addFileChildren(
+    AppAtworkspaceSlugLayoutChar126ManageRouteChildren,
+  )
+
+interface AppAtworkspaceSlugLayoutRouteChildren {
+  AppAtworkspaceSlugLayoutIndexRoute: typeof AppAtworkspaceSlugLayoutIndexRoute
+  AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute: typeof AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute
+  AppAtworkspaceSlugLayoutProjectSlugChangelogRoute: typeof AppAtworkspaceSlugLayoutProjectSlugChangelogRoute
+  AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute: typeof AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute
+  AppAtworkspaceSlugLayoutChar126ManageRoute: typeof AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren
+  AppAtworkspaceSlugLayoutProjectSlugIndexRoute: typeof AppAtworkspaceSlugLayoutProjectSlugIndexRoute
+  AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute: typeof AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute
+}
+
+const AppAtworkspaceSlugLayoutRouteChildren: AppAtworkspaceSlugLayoutRouteChildren =
+  {
+    AppAtworkspaceSlugLayoutIndexRoute: AppAtworkspaceSlugLayoutIndexRoute,
+    AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute:
+      AppAtworkspaceSlugLayoutProjectSlugFeedbackIdRoute,
+    AppAtworkspaceSlugLayoutProjectSlugChangelogRoute:
+      AppAtworkspaceSlugLayoutProjectSlugChangelogRoute,
+    AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute:
+      AppAtworkspaceSlugLayoutProjectSlugRoadmapRoute,
+    AppAtworkspaceSlugLayoutChar126ManageRoute:
+      AppAtworkspaceSlugLayoutChar126ManageRouteWithChildren,
+    AppAtworkspaceSlugLayoutProjectSlugIndexRoute:
+      AppAtworkspaceSlugLayoutProjectSlugIndexRoute,
+    AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute:
+      AppAtworkspaceSlugLayoutProjectSlugChar126SettingsRoute,
+  }
+
+const AppAtworkspaceSlugLayoutRouteWithChildren =
+  AppAtworkspaceSlugLayoutRoute._addFileChildren(
+    AppAtworkspaceSlugLayoutRouteChildren,
+  )
 
 interface AppProfileUserIdLayoutRouteChildren {
   AppProfileUserIdLayoutAccountRoute: typeof AppProfileUserIdLayoutAccountRoute
@@ -505,73 +714,44 @@ const AppProfileUserIdLayoutRouteWithChildren =
     AppProfileUserIdLayoutRouteChildren,
   )
 
-interface AppWorkspacesWorkspaceSlugLayoutManageRouteChildren {
-  AppWorkspacesWorkspaceSlugLayoutManageMembersRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageMembersRoute
-  AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute
-}
-
-const AppWorkspacesWorkspaceSlugLayoutManageRouteChildren: AppWorkspacesWorkspaceSlugLayoutManageRouteChildren =
-  {
-    AppWorkspacesWorkspaceSlugLayoutManageMembersRoute:
-      AppWorkspacesWorkspaceSlugLayoutManageMembersRoute,
-    AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute:
-      AppWorkspacesWorkspaceSlugLayoutManageSettingsRoute,
-  }
-
-const AppWorkspacesWorkspaceSlugLayoutManageRouteWithChildren =
-  AppWorkspacesWorkspaceSlugLayoutManageRoute._addFileChildren(
-    AppWorkspacesWorkspaceSlugLayoutManageRouteChildren,
-  )
-
-interface AppWorkspacesWorkspaceSlugLayoutRouteChildren {
-  AppWorkspacesWorkspaceSlugLayoutManageRoute: typeof AppWorkspacesWorkspaceSlugLayoutManageRouteWithChildren
-  AppWorkspacesWorkspaceSlugLayoutIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutIndexRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute
-  AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute: typeof AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute
-}
-
-const AppWorkspacesWorkspaceSlugLayoutRouteChildren: AppWorkspacesWorkspaceSlugLayoutRouteChildren =
-  {
-    AppWorkspacesWorkspaceSlugLayoutManageRoute:
-      AppWorkspacesWorkspaceSlugLayoutManageRouteWithChildren,
-    AppWorkspacesWorkspaceSlugLayoutIndexRoute:
-      AppWorkspacesWorkspaceSlugLayoutIndexRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsIndexRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugFeedbackIdRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugChangelogRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugRoadmapRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugSettingsRoute,
-    AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute:
-      AppWorkspacesWorkspaceSlugLayoutProjectsProjectSlugIndexRoute,
-  }
-
-const AppWorkspacesWorkspaceSlugLayoutRouteWithChildren =
-  AppWorkspacesWorkspaceSlugLayoutRoute._addFileChildren(
-    AppWorkspacesWorkspaceSlugLayoutRouteChildren,
-  )
-
 interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
+  AppAtworkspaceSlugLayoutRoute: typeof AppAtworkspaceSlugLayoutRouteWithChildren
   AppWorkspacesIndexRoute: typeof AppWorkspacesIndexRoute
   AppProfileUserIdLayoutRoute: typeof AppProfileUserIdLayoutRouteWithChildren
-  AppWorkspacesWorkspaceSlugLayoutRoute: typeof AppWorkspacesWorkspaceSlugLayoutRouteWithChildren
+  AppWorkspacesWorkspaceSlugMembersRoute: typeof AppWorkspacesWorkspaceSlugMembersRoute
+  AppWorkspacesWorkspaceSlugSettingsRoute: typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  AppWorkspacesWorkspaceSlugIndexRoute: typeof AppWorkspacesWorkspaceSlugIndexRoute
+  AppWorkspacesWorkspaceSlugProjectsIndexRoute: typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
+  AppAtworkspaceSlugLayoutRoute: AppAtworkspaceSlugLayoutRouteWithChildren,
   AppWorkspacesIndexRoute: AppWorkspacesIndexRoute,
   AppProfileUserIdLayoutRoute: AppProfileUserIdLayoutRouteWithChildren,
-  AppWorkspacesWorkspaceSlugLayoutRoute:
-    AppWorkspacesWorkspaceSlugLayoutRouteWithChildren,
+  AppWorkspacesWorkspaceSlugMembersRoute:
+    AppWorkspacesWorkspaceSlugMembersRoute,
+  AppWorkspacesWorkspaceSlugSettingsRoute:
+    AppWorkspacesWorkspaceSlugSettingsRoute,
+  AppWorkspacesWorkspaceSlugIndexRoute: AppWorkspacesWorkspaceSlugIndexRoute,
+  AppWorkspacesWorkspaceSlugProjectsIndexRoute:
+    AppWorkspacesWorkspaceSlugProjectsIndexRoute,
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute:
+    AppWorkspacesWorkspaceSlugProjectsProjectSlugFeedbackIdRoute,
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute:
+    AppWorkspacesWorkspaceSlugProjectsProjectSlugChangelogRoute,
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute:
+    AppWorkspacesWorkspaceSlugProjectsProjectSlugRoadmapRoute,
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute:
+    AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute,
+  AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute:
+    AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

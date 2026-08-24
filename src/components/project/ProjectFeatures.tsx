@@ -15,7 +15,7 @@ import toaster from "@/lib/util/toaster";
 import type { ProjectQuery } from "@/generated/graphql";
 
 const settingsRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/~/settings",
 );
 
 interface FeatureToggle {
