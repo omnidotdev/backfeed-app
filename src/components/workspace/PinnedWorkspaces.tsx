@@ -66,7 +66,7 @@ const PinnedWorkspaces = () => {
         {pinnedOrgs.map((org) => (
           <Link
             key={org.id}
-            to="/workspaces/$workspaceSlug"
+            to="/@$workspaceSlug"
             params={{ workspaceSlug: org.slug }}
             role="group"
             className="group"

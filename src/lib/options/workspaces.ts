@@ -1,20 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import {
-  useWorkspaceMetricsQuery,
-  useWorkspaceQuery,
-} from "@/generated/graphql";
+import { useWorkspaceMetricsQuery } from "@/generated/graphql";
 
-import type {
-  WorkspaceMetricsQueryVariables,
-  WorkspaceQueryVariables,
-} from "@/generated/graphql";
-
-export const workspaceOptions = (variables: WorkspaceQueryVariables) =>
-  queryOptions({
-    queryKey: useWorkspaceQuery.getKey(variables),
-    queryFn: useWorkspaceQuery.fetcher(variables),
-  });
+import type { WorkspaceMetricsQueryVariables } from "@/generated/graphql";
 
 export const workspaceMetricsOptions = (
   variables: WorkspaceMetricsQueryVariables,

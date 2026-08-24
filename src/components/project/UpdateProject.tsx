@@ -31,7 +31,7 @@ import toaster from "@/lib/util/toaster";
 import type { ProjectLink } from "@/lib/form/updateProjectOptions";
 
 const projectSettingsRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/settings",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/~/settings",
 );
 
 const updateProjectDetails = app.projectSettingsPage.cta.updateProject;
@@ -148,7 +148,7 @@ const UpdateProject = () => {
         toaster.success({ title: "Project updated" });
 
         navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+          to: "/@$workspaceSlug/$projectSlug/~/settings",
           params: { workspaceSlug, projectSlug: generateSlug(value.name)! },
           replace: true,
         });

@@ -11,9 +11,7 @@ import cn from "@/lib/utils";
 import type { ComponentProps } from "react";
 import type { StatusTemplate } from "@/generated/graphql";
 
-const projectRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-);
+const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
 
 interface Status {
   rowId: StatusTemplate["rowId"] | undefined;
@@ -52,7 +50,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
     select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/@$workspaceSlug/$projectSlug",
   });
 
   const { data: projectStatuses } = useQuery({

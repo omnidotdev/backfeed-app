@@ -26,8 +26,7 @@ const CommentMessage = ({ message }: Props) => {
     const html = canLink
       ? linkifyIssueRefsHtml(
           message,
-          (number) =>
-            `/workspaces/${workspaceSlug}/projects/${projectSlug}/${number}`,
+          (number) => `/@${workspaceSlug}/${projectSlug}/${number}`,
         )
       : message;
 
@@ -44,7 +43,7 @@ const CommentMessage = ({ message }: Props) => {
               <Link
                 // biome-ignore lint/suspicious/noArrayIndexKey: positional segment
                 key={segmentIndex}
-                to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+                to="/@$workspaceSlug/$projectSlug/$feedbackId"
                 params={{
                   workspaceSlug: workspaceSlug as string,
                   projectSlug: projectSlug as string,

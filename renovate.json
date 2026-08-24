@@ -1,7 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>omnidotdev/.github",
-    "customManagers:biomeVersions"
-  ]
+  "extends": ["github>omnidotdev/.github", "customManagers:biomeVersions"]
 }

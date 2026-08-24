@@ -10,7 +10,7 @@ import { getSubscription } from "@/server/functions/subscriptions";
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/_manage/settings",
+  "/_app/@$workspaceSlug/_layout/~/_manage/settings",
 )({
   loader: async ({ context: { organizationId, workspaceName } }) => {
     // Members are managed via IDP (Gatekeeper), billing via Aether
@@ -39,7 +39,7 @@ function WorkspaceSettingsPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/workspaces/$workspaceSlug",
+            to: "/@$workspaceSlug",
             params: { workspaceSlug },
           },
           { label: app.workspaceSettingsPage.breadcrumb },

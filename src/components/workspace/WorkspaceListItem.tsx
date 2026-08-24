@@ -45,7 +45,7 @@ const WorkspaceListItem = ({ workspace }: Props) => {
 
   return (
     <Link
-      to="/workspaces/$workspaceSlug"
+      to="/@$workspaceSlug"
       params={{ workspaceSlug: workspace.slug! }}
       role="group"
       className="group"

@@ -5,9 +5,7 @@ import TagBadge from "@/components/feedback/TagBadge";
 import { projectTagsOptions } from "@/lib/options/tags";
 import cn from "@/lib/utils";
 
-const projectRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
-);
+const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
 
 /**
  * Tag filter pills. Toggling a tag filters the feed to posts carrying any of
@@ -17,7 +15,7 @@ const TagFilterPills = () => {
   const { projectId } = projectRoute.useLoaderData();
   const selectedTags = projectRoute.useSearch({ select: ({ tags }) => tags });
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/@$workspaceSlug/$projectSlug",
   });
 
   const { data: tags } = useQuery(projectTagsOptions(projectId));

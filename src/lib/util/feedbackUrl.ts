@@ -2,23 +2,29 @@ import generateSlug from "@/lib/util/generateSlug";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const NUMBER_KEY_PATTERN = /^(\d+)(?:-(.*))?$/;
+// Canonical item key: an optional `{PREFIX}-` (letters, then letters/digits),
+// a load-bearing `{number}`, and an optional decorative `-{slug}` tail. Both
+// the prefixed form (`API-42-login-bug`) and the legacy bare-number form
+// (`42-login-bug`) parse; only the number is used for lookup.
+const NUMBER_KEY_PATTERN = /^(?:([A-Za-z][A-Za-z0-9]*)-)?(\d+)(?:-(.*))?$/;
 
 /**
  * Parsed form of the dynamic feedback route segment.
  *
  * - `uuid`: a legacy permalink keyed by the post's `rowId`
- * - `number`: a vanity key of `{number}-{slug}` (slug optional/decorative)
+ * - `number`: a vanity key of `{prefix}-{number}-{slug}` (prefix and slug both
+ *   optional/decorative; only the number is load-bearing)
  * - `invalid`: neither form, the route should 404
  */
 export type ParsedFeedbackParam =
   | { type: "uuid"; rowId: string }
-  | { type: "number"; number: number; slug?: string }
+  | { type: "number"; number: number; prefix?: string; slug?: string }
   | { type: "invalid" };
 
 /**
  * Parse the `$feedbackId` route segment into a lookup strategy. Supports the
- * legacy UUID permalink and the vanity `{number}-{slug}` form.
+ * legacy UUID permalink and the vanity `{prefix}-{number}-{slug}` form (the
+ * prefix and slug are decorative and self-heal via the canonical redirect).
  */
 export const parseFeedbackParam = (param: string): ParsedFeedbackParam => {
   if (UUID_PATTERN.test(param)) {
@@ -29,8 +35,9 @@ export const parseFeedbackParam = (param: string): ParsedFeedbackParam => {
   if (match) {
     return {
       type: "number",
-      number: Number(match[1]),
-      slug: match[2] || undefined,
+      prefix: match[1] || undefined,
+      number: Number(match[2]),
+      slug: match[3] || undefined,
     };
   }
 
@@ -51,17 +58,23 @@ export const buildFeedbackDisplayKey = ({
 }): string => (prefix ? `${prefix}-${number}` : `#${number}`);
 
 /**
- * Build the canonical vanity key for a post: `{number}-{slug}`, falling back to
- * the bare number when the title has no slugifiable content.
+ * Build the canonical vanity key for a post: `{prefix}-{number}-{slug}` (e.g.
+ * `API-42-login-bug`). The prefix is included when the project has one so the
+ * key is self-describing when pasted into a changelog, PR, or another product
+ * (golden/URL-GRAMMAR.md rule 5). Falls back to dropping the prefix and/or slug
+ * when either is absent, down to the bare number.
  */
 export const buildFeedbackKey = ({
+  prefix,
   number,
   title,
 }: {
+  prefix?: string | null;
   number: number;
   title?: string | null;
 }): string => {
+  const base = prefix ? `${prefix}-${number}` : `${number}`;
   const slug = generateSlug(title ?? undefined);
 
-  return slug ? `${number}-${slug}` : `${number}`;
+  return slug ? `${base}-${slug}` : base;
 };

@@ -43,7 +43,7 @@ const PostBackReferences = ({
         {references.map((reference) => (
           <li key={reference.rowId}>
             <Link
-              to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+              to="/@$workspaceSlug/$projectSlug/$feedbackId"
               params={{
                 workspaceSlug,
                 projectSlug,

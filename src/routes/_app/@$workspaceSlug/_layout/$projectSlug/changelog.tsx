@@ -8,7 +8,7 @@ import { projectOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/changelog",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/changelog",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },
@@ -40,7 +40,7 @@ export const Route = createFileRoute(
     meta: loaderData
       ? createMetaTags({
           title: `${loaderData.projectName} Changelog`,
-          url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/changelog`,
+          url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}/changelog`,
           image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
         })
       : undefined,
@@ -60,12 +60,12 @@ function ChangelogPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/workspaces/$workspaceSlug",
+            to: "/@$workspaceSlug",
             params: { workspaceSlug },
           },
           {
             label: projectName,
-            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+            to: "/@$workspaceSlug/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           { label: "Changelog" },

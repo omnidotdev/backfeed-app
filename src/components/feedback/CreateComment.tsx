@@ -27,7 +27,7 @@ import type {
 const MAX_COMMENT_LENGTH = 500;
 
 const feedbackRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/$feedbackId",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId",
 );
 
 // TODO adjust schema in this file after closure on https://linear.app/omnidev/issue/OMNI-166/strategize-runtime-and-server-side-validation-approach and https://linear.app/omnidev/issue/OMNI-167/refine-validation-schemas

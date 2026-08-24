@@ -183,7 +183,7 @@ const FeedbackCard = ({
 
         if (isFeedbackRoute) {
           navigate({
-            to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+            to: "/@$workspaceSlug/$projectSlug",
             params: {
               workspaceSlug: workspaceSlug!,
               projectSlug: projectSlug!,
@@ -493,7 +493,7 @@ const FeedbackCard = ({
                     ? linkifyIssueRefsHtml(
                         feedback.description,
                         (number) =>
-                          `/workspaces/${workspaceSlug}/projects/${projectSlug}/${number}`,
+                          `/@${workspaceSlug}/${projectSlug}/${number}`,
                       )
                     : feedback.description
                 }

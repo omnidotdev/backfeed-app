@@ -82,13 +82,16 @@ const RecentFeedback = ({ minH }: Props) => {
                 return (
                   <Link
                     key={feedback?.rowId}
-                    to="/workspaces/$workspaceSlug/projects/$projectSlug/$feedbackId"
+                    to="/@$workspaceSlug/$projectSlug/$feedbackId"
                     params={{
                       workspaceSlug:
                         session?.organizations?.find(
                           (org) => org.id === feedback?.project?.organizationId,
                         )?.slug ?? "",
                       projectSlug: feedback?.project?.slug!,
+                      // no prefix on this dashboard query's project selection;
+                      // the bare-number URL self-heals to the canonical
+                      // PREFIX-NUMBER key via the item route's redirect
                       feedbackId: buildFeedbackKey({
                         number: feedback?.number!,
                         title: feedback?.title,

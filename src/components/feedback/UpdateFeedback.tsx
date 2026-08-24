@@ -41,9 +41,7 @@ import type { AttachmentFragment, FeedbackFragment } from "@/generated/graphql";
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
-const workspaceLayoutRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout",
-);
+const workspaceLayoutRoute = getRouteApi("/_app/@$workspaceSlug/_layout");
 
 const updatePostDetails = app.projectPage.projectFeedback.updatePost;
 

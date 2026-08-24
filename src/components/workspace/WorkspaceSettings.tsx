@@ -30,7 +30,7 @@ import {
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 const settingsRoute = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/_layout/_manage/settings",
+  "/_app/@$workspaceSlug/_layout/~/_manage/settings",
 );
 
 interface Props {
@@ -71,7 +71,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
         data: {
           priceId,
           organizationId,
-          successUrl: `${BASE_URL}/workspaces/${workspaceSlug}/settings`,
+          successUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
         },
       });
 
@@ -85,7 +85,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
       const portalUrl = await getBillingPortalUrl({
         data: {
           organizationId,
-          returnUrl: `${BASE_URL}/workspaces/${workspaceSlug}/settings`,
+          returnUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
         },
       });
 

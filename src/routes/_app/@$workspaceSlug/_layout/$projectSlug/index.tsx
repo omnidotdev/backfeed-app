@@ -41,7 +41,7 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/_layout/projects/$projectSlug/",
+  "/_app/@$workspaceSlug/_layout/$projectSlug/",
 )({
   validateSearch: projectSearchSchema,
   // NB: filters are intentionally NOT in loaderDeps. Re-running the loader on every
@@ -116,7 +116,7 @@ export const Route = createFileRoute(
 
       if (defaultHidden.length) {
         throw redirect({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          to: "/@$workspaceSlug/$projectSlug",
           params: { workspaceSlug, projectSlug },
           search: { search, tags, orderBy, excludedStatuses: defaultHidden },
         });
@@ -157,7 +157,7 @@ export const Route = createFileRoute(
     meta: loaderData
       ? createMetaTags({
           title: loaderData.projectName,
-          url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
+          url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}`,
           image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
         })
       : undefined,
@@ -204,7 +204,7 @@ function ProjectPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/workspaces/$workspaceSlug",
+            to: "/@$workspaceSlug",
             params: { workspaceSlug },
           },
           { label: project?.name },
@@ -238,7 +238,7 @@ function ProjectPage() {
                   icon: <LuMap />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/roadmap",
+                    to: "/@$workspaceSlug/$projectSlug/roadmap",
                     params: { workspaceSlug, projectSlug },
                   },
                 } satisfies ActionButton,
@@ -252,7 +252,7 @@ function ProjectPage() {
                   icon: <LuRocket />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/changelog",
+                    to: "/@$workspaceSlug/$projectSlug/changelog",
                     params: { workspaceSlug, projectSlug },
                   },
                 } satisfies ActionButton,
@@ -265,7 +265,7 @@ function ProjectPage() {
                   icon: <HiOutlineFolder />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/workspaces/$workspaceSlug/projects",
+                    to: "/@$workspaceSlug",
                     params: { workspaceSlug },
                   },
                 } satisfies ActionButton,
@@ -276,7 +276,7 @@ function ProjectPage() {
                         icon: <LuSettings />,
                         variant: "outline",
                         linkOptions: {
-                          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                          to: "/@$workspaceSlug/$projectSlug/~/settings",
                           params: { workspaceSlug, projectSlug },
                         },
                       } satisfies ActionButton,
