@@ -70,7 +70,7 @@ const useSidebarNavigationItems = () => {
         isVisible: !!session,
         children: [
           {
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
             label: workspaceName!,
             isVisible: !!workspaceSlug,
@@ -83,14 +83,14 @@ const useSidebarNavigationItems = () => {
             isVisible: !!session && !!workspaceSlug,
             children: [
               {
-                to: "/@$workspaceSlug",
+                to: "/@{$workspaceSlug}",
                 params: { workspaceSlug },
                 label: app.workspacePage.header.cta.viewProjects.label,
                 isVisible: true,
                 isActive: pathname === `/@${workspaceSlug}`,
               },
               {
-                to: "/@$workspaceSlug/$projectSlug",
+                to: "/@{$workspaceSlug}/$projectSlug",
                 params: { workspaceSlug, projectSlug },
                 label: project?.name ?? projectSlug!,
                 isVisible: !!projectSlug,

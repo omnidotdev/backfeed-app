@@ -41,7 +41,7 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/",
 )({
   validateSearch: projectSearchSchema,
   // NB: filters are intentionally NOT in loaderDeps. Re-running the loader on every
@@ -116,7 +116,7 @@ export const Route = createFileRoute(
 
       if (defaultHidden.length) {
         throw redirect({
-          to: "/@$workspaceSlug/$projectSlug",
+          to: "/@{$workspaceSlug}/$projectSlug",
           params: { workspaceSlug, projectSlug },
           search: { search, tags, orderBy, excludedStatuses: defaultHidden },
         });
@@ -204,7 +204,7 @@ function ProjectPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
           },
           { label: project?.name },
@@ -238,7 +238,7 @@ function ProjectPage() {
                   icon: <LuMap />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/@$workspaceSlug/$projectSlug/roadmap",
+                    to: "/@{$workspaceSlug}/$projectSlug/roadmap",
                     params: { workspaceSlug, projectSlug },
                   },
                 } satisfies ActionButton,
@@ -252,7 +252,7 @@ function ProjectPage() {
                   icon: <LuRocket />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/@$workspaceSlug/$projectSlug/changelog",
+                    to: "/@{$workspaceSlug}/$projectSlug/changelog",
                     params: { workspaceSlug, projectSlug },
                   },
                 } satisfies ActionButton,
@@ -265,7 +265,7 @@ function ProjectPage() {
                   icon: <HiOutlineFolder />,
                   variant: "outline",
                   linkOptions: {
-                    to: "/@$workspaceSlug",
+                    to: "/@{$workspaceSlug}",
                     params: { workspaceSlug },
                   },
                 } satisfies ActionButton,
@@ -276,7 +276,7 @@ function ProjectPage() {
                         icon: <LuSettings />,
                         variant: "outline",
                         linkOptions: {
-                          to: "/@$workspaceSlug/$projectSlug/~/settings",
+                          to: "/@{$workspaceSlug}/$projectSlug/~/settings",
                           params: { workspaceSlug, projectSlug },
                         },
                       } satisfies ActionButton,

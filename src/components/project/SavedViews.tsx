@@ -14,7 +14,9 @@ import {
 import useSavedViewsStore from "@/lib/store/useSavedViewsStore";
 import toaster from "@/lib/util/toaster";
 
-const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
+const projectRoute = getRouteApi(
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/",
+);
 
 /**
  * Saved views. Save the current feed filter/sort/tag combination under a name
@@ -25,7 +27,7 @@ const SavedViews = () => {
   const { projectId } = projectRoute.useLoaderData();
   const search = projectRoute.useSearch();
   const navigate = useNavigate({
-    from: "/@$workspaceSlug/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug",
   });
 
   const views = useSavedViewsStore((state) => state.views[projectId] ?? []);

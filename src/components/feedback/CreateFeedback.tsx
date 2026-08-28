@@ -45,7 +45,9 @@ import type { UploadedAttachment } from "@/components/feedback/AttachmentUploade
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
-const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
+const projectRoute = getRouteApi(
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/",
+);
 
 const postSchemaErrors = app.projectPage.projectFeedback.createPost.errors;
 
@@ -291,7 +293,7 @@ const CreateFeedback = () => {
                 label: "View",
                 onClick: () =>
                   navigate({
-                    to: "/@$workspaceSlug/$projectSlug/$feedbackId",
+                    to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
                     params: {
                       workspaceSlug,
                       projectSlug,

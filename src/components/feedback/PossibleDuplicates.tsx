@@ -39,7 +39,7 @@ const PossibleDuplicates = ({ projectId, content }: Props) => {
         {similar.map((post) => (
           <li key={post.id} className="flex items-center gap-2">
             <Link
-              to="/@$workspaceSlug/$projectSlug/$feedbackId"
+              to="/@{$workspaceSlug}/$projectSlug/$feedbackId"
               params={{
                 workspaceSlug: workspaceSlug as string,
                 projectSlug: projectSlug as string,

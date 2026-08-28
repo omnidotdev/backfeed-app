@@ -30,7 +30,7 @@ import {
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
 const settingsRoute = getRouteApi(
-  "/_app/@$workspaceSlug/_layout/~/_manage/settings",
+  "/_app/@{$workspaceSlug}/_layout/~/_manage/settings",
 );
 
 interface Props {

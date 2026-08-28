@@ -9,7 +9,7 @@ export const Route = createFileRoute(
 )({
   beforeLoad: ({ params }) => {
     throw redirect({
-      to: "/@$workspaceSlug/$projectSlug/changelog",
+      to: "/@{$workspaceSlug}/$projectSlug/changelog",
       params: {
         workspaceSlug: params.workspaceSlug,
         projectSlug: params.projectSlug,

@@ -82,7 +82,7 @@ const RecentFeedback = ({ minH }: Props) => {
                 return (
                   <Link
                     key={feedback?.rowId}
-                    to="/@$workspaceSlug/$projectSlug/$feedbackId"
+                    to="/@{$workspaceSlug}/$projectSlug/$feedbackId"
                     params={{
                       workspaceSlug:
                         session?.organizations?.find(

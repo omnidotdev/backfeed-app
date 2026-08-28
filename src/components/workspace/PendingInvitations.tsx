@@ -15,7 +15,7 @@ import { getInviteTimeInfo } from "@/lib/validation/invitation";
 import type { GatekeeperInvitation } from "@omnidotdev/providers/auth";
 
 const membersRoute = getRouteApi(
-  "/_app/@$workspaceSlug/_layout/~/_manage/members",
+  "/_app/@{$workspaceSlug}/_layout/~/_manage/members",
 );
 
 interface InvitationRowProps {

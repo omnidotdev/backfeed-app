@@ -8,7 +8,7 @@ import {
 
 import type { IdpRole } from "@/lib/permissions";
 
-export const Route = createFileRoute("/_app/@$workspaceSlug/_layout")({
+export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
   beforeLoad: async ({ context: { session }, params: { workspaceSlug } }) => {
     const isAuthenticated = !!session;
 
