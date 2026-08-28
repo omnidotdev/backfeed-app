@@ -70,7 +70,9 @@ import type { FeedSortSlug } from "@/lib/constants/sort.constant";
 
 // TODO: figure out how to properly handle refresh for view state management.
 
-const projectRoute = getRouteApi("/_app/@$workspaceSlug/_layout/$projectSlug/");
+const projectRoute = getRouteApi(
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/",
+);
 
 const SORT_BY_OPTIONS = [
   {
@@ -92,7 +94,7 @@ const ProjectFeedback = () => {
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
   const { excludedStatuses, tags, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
-    from: "/@$workspaceSlug/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug",
   });
 
   const viewState = useProjectViewStore((state) => state.viewState);
@@ -517,7 +519,7 @@ const ProjectFeedback = () => {
             projectStatuses={projectStatuses}
             onSelectPost={(post) =>
               navigate({
-                to: "/@$workspaceSlug/$projectSlug/$feedbackId",
+                to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
                 params: {
                   workspaceSlug,
                   projectSlug,
@@ -584,7 +586,7 @@ const ProjectFeedback = () => {
                       onClick={() =>
                         !isPending
                           ? navigate({
-                              to: "/@$workspaceSlug/$projectSlug/$feedbackId",
+                              to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
                               params: {
                                 workspaceSlug,
                                 projectSlug,

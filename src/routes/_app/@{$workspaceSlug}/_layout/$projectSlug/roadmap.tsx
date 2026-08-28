@@ -22,7 +22,7 @@ const ROADMAP_ORDER = [
 ];
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/roadmap",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/roadmap",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },
@@ -133,12 +133,12 @@ function RoadmapPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
           },
           {
             label: projectName,
-            to: "/@$workspaceSlug/$projectSlug",
+            to: "/@{$workspaceSlug}/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           { label: "Roadmap" },
@@ -173,7 +173,7 @@ function RoadmapPage() {
           canManageFeedback={false}
           onSelectPost={(post) =>
             navigate({
-              to: "/@$workspaceSlug/$projectSlug/$feedbackId",
+              to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
               params: {
                 workspaceSlug,
                 projectSlug,

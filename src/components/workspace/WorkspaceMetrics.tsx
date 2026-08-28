@@ -9,7 +9,7 @@ import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 
 import type { IconType } from "react-icons";
 
-const workspaceLayoutRoute = getRouteApi("/_app/@$workspaceSlug/_layout/");
+const workspaceLayoutRoute = getRouteApi("/_app/@{$workspaceSlug}/_layout/");
 
 interface WorkspaceMetric {
   /** Human-readable title. */

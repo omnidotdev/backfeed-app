@@ -26,7 +26,7 @@ import stripHtml from "@/lib/util/stripHtml";
 import type { FeedbackFragment } from "@/generated/graphql";
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/$feedbackId",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },
@@ -92,7 +92,7 @@ export const Route = createFileRoute(
       // navigate on hover; the real navigation still canonicalizes the URL
       if (!preload && feedbackParam !== canonicalKey) {
         throw redirect({
-          to: "/@$workspaceSlug/$projectSlug/$feedbackId",
+          to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
           params: { workspaceSlug, projectSlug, feedbackId: canonicalKey },
           replace: true,
         });
@@ -180,12 +180,12 @@ function FeedbackPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
           },
           {
             label: projectName,
-            to: "/@$workspaceSlug/$projectSlug",
+            to: "/@{$workspaceSlug}/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           {

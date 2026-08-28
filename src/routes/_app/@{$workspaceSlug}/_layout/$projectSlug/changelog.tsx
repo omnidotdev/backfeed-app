@@ -8,7 +8,7 @@ import { projectOptions } from "@/lib/options/projects";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/changelog",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/changelog",
 )({
   loader: async ({
     context: { session, queryClient, organizationId },
@@ -60,12 +60,12 @@ function ChangelogPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
           },
           {
             label: projectName,
-            to: "/@$workspaceSlug/$projectSlug",
+            to: "/@{$workspaceSlug}/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           { label: "Changelog" },

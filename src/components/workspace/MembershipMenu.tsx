@@ -25,7 +25,7 @@ import type { IdpMember } from "@/lib/idp";
 const menuItemClassName = "disabled:cursor-not-allowed disabled:opacity-50";
 
 const membersRoute = getRouteApi(
-  "/_app/@$workspaceSlug/_layout/~/_manage/members",
+  "/_app/@{$workspaceSlug}/_layout/~/_manage/members",
 );
 
 enum MenuAction {

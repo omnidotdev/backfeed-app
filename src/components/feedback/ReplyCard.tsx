@@ -23,7 +23,7 @@ import type { ComponentProps } from "react";
 import type { ReplyFragment } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/$feedbackId",
 );
 
 interface Props extends ComponentProps<"div"> {

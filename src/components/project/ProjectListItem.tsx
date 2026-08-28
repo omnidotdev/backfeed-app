@@ -11,7 +11,7 @@ import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { Project } from "@/generated/graphql";
 
-const projectsRoute = getRouteApi("/_app/@$workspaceSlug/_layout/");
+const projectsRoute = getRouteApi("/_app/@{$workspaceSlug}/_layout/");
 
 interface Props {
   /** Project details. */
@@ -45,7 +45,7 @@ const ProjectListItem = ({
 
   return (
     <Link
-      to="/@$workspaceSlug/$projectSlug"
+      to="/@{$workspaceSlug}/$projectSlug"
       params={{
         workspaceSlug,
         projectSlug: slug!,
@@ -79,7 +79,7 @@ const ProjectListItem = ({
                     e.preventDefault();
                     e.stopPropagation();
                     navigate({
-                      to: "/@$workspaceSlug/$projectSlug/~/settings",
+                      to: "/@{$workspaceSlug}/$projectSlug/~/settings",
                       params: { workspaceSlug, projectSlug: slug! },
                     });
                   }}

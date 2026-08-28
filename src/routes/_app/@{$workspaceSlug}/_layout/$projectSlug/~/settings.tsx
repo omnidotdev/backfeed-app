@@ -20,7 +20,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 const deleteProjectDetails = app.projectSettingsPage.cta.deleteProject;
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/~/settings",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/~/settings",
 )({
   beforeLoad: async ({ context: { session }, location }) => {
     // Settings requires authentication
@@ -70,7 +70,7 @@ function ProjectSettingsPage() {
   const { mutate: deleteProject } = useDeleteProjectMutation({
     onMutate: () =>
       navigate({
-        to: "/@$workspaceSlug",
+        to: "/@{$workspaceSlug}",
         replace: true,
       }),
     onSettled: () => {
@@ -92,12 +92,12 @@ function ProjectSettingsPage() {
           {
             label: workspaceName,
             image: workspaceLogo,
-            to: "/@$workspaceSlug",
+            to: "/@{$workspaceSlug}",
             params: { workspaceSlug },
           },
           {
             label: project?.name,
-            to: "/@$workspaceSlug/$projectSlug",
+            to: "/@{$workspaceSlug}/$projectSlug",
             params: { workspaceSlug, projectSlug },
           },
           { label: "Settings" },

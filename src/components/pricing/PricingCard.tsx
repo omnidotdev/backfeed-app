@@ -158,7 +158,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       } else {
         const firstOrg = session.organizations[0];
         navigate({
-          to: "/@$workspaceSlug",
+          to: "/@{$workspaceSlug}",
           params: { workspaceSlug: firstOrg.slug },
         });
       }
@@ -358,7 +358,7 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                     asChild
                   >
                     <Link
-                      to="/@$workspaceSlug"
+                      to="/@{$workspaceSlug}"
                       params={{ workspaceSlug: session.organizations[0].slug }}
                     >
                       Go to Workspace

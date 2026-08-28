@@ -20,7 +20,7 @@ import type {
 } from "@/generated/graphql";
 
 const feedbackRoute = getRouteApi(
-  "/_app/@$workspaceSlug/_layout/$projectSlug/$feedbackId",
+  "/_app/@{$workspaceSlug}/_layout/$projectSlug/$feedbackId",
 );
 
 interface Props extends ComponentProps<typeof CollapsibleRoot> {

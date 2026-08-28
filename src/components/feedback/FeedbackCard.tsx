@@ -183,7 +183,7 @@ const FeedbackCard = ({
 
         if (isFeedbackRoute) {
           navigate({
-            to: "/@$workspaceSlug/$projectSlug",
+            to: "/@{$workspaceSlug}/$projectSlug",
             params: {
               workspaceSlug: workspaceSlug!,
               projectSlug: projectSlug!,

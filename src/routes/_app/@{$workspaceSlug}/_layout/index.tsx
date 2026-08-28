@@ -36,7 +36,7 @@ const projectSearchSchema = z.object({
   search: z.string().default(""),
 });
 
-export const Route = createFileRoute("/_app/@$workspaceSlug/_layout/")({
+export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout/")({
   validateSearch: projectSearchSchema,
   search: {
     middlewares: [stripSearchParams({ page: 1, pageSize: 10, search: "" })],
