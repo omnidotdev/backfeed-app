@@ -1,3 +1,4 @@
+import { accountUrl } from "@omnidotdev/providers/react";
 import {
   AvatarFallback,
   AvatarImage,
@@ -27,7 +28,7 @@ import {
 } from "@/components/ui/menu";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { CONSOLE_URL, isDevEnv } from "@/lib/config/env.config";
+import { ACCOUNT_URL, isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
@@ -97,13 +98,13 @@ const AccountInformation = () => {
                 {app.auth.profile.label}
               </MenuItem>
 
-              {CONSOLE_URL && (
+              {ACCOUNT_URL && (
                 <>
                   <MenuSeparator />
 
                   <MenuItem value="manage-account" asChild>
                     <a
-                      href={CONSOLE_URL}
+                      href={accountUrl(ACCOUNT_URL)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -141,8 +142,12 @@ const AccountInformation = () => {
               {app.auth.profile.label}
             </Button>
 
-            {CONSOLE_URL && (
-              <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
+            {ACCOUNT_URL && (
+              <a
+                href={accountUrl(ACCOUNT_URL)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Button variant="outline" className="w-full">
                   <LuExternalLink />
                   Manage account

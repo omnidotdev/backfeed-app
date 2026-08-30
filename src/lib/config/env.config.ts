@@ -33,6 +33,8 @@ export const AUTH_INTERNAL_URL =
 
 export const CONSOLE_URL = import.meta.env.VITE_CONSOLE_URL;
 
+export const ACCOUNT_URL = import.meta.env.VITE_ACCOUNT_URL;
+
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // Internal API URL for server-to-server communication (Docker service name)
@@ -67,3 +69,5 @@ if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
 if (!FLAGS_API_HOST)
   console.warn("FLAGS_API_HOST not set, feature flags disabled");
+if (!ACCOUNT_URL)
+  console.warn("ACCOUNT_URL not set, manage-account link disabled");
