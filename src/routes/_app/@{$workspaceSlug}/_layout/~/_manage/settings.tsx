@@ -4,6 +4,7 @@ import Page from "@/components/layout/Page";
 import WorkspaceSettings from "@/components/workspace/WorkspaceSettings";
 import app from "@/lib/config/app.config";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { getEntitlements } from "@/server/functions/entitlements";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscription } from "@/server/functions/subscriptions";
 
@@ -13,13 +14,22 @@ export const Route = createFileRoute(
   "/_app/@{$workspaceSlug}/_layout/~/_manage/settings",
 )({
   loader: async ({ context: { organizationId, workspaceName } }) => {
-    // Members are managed via IDP (Gatekeeper), billing via Aether
-    const [prices, subscription] = await Promise.all([
+    // Members are managed via IDP (Gatekeeper), billing via Aether.
+    // Entitlements are fetched alongside the subscription so a comped or
+    // manually-granted tier (no Stripe subscription) still renders correctly.
+    const [prices, subscription, entitlements] = await Promise.all([
       getPrices(),
-      getSubscription({ data: { organizationId } }),
+      getSubscription({ data: { organizationId } }).catch(() => null),
+      getEntitlements({
+        data: {
+          entityType: "backfeed/organization",
+          entityId: organizationId,
+          productId: "backfeed",
+        },
+      }).catch(() => null),
     ]);
 
-    return { prices, subscription, workspaceName };
+    return { prices, subscription, entitlements, workspaceName };
   },
   head: ({ loaderData }) => ({
     meta: createMetaTags({ title: `${loaderData?.workspaceName} Settings` }),

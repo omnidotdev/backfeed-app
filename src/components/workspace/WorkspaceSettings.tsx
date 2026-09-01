@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/menu";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
 import cn from "@/lib/utils";
 import {
@@ -48,7 +49,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
   const { workspaceSlug } = settingsRoute.useParams();
   const { isOwner, organizationId, workspaceName } =
     settingsRoute.useRouteContext();
-  const { subscription } = settingsRoute.useLoaderData();
+  const { subscription, entitlements } = settingsRoute.useLoaderData();
   const navigate = useNavigate();
 
   const subscriptionPrice = prices.find(
@@ -57,10 +58,12 @@ const WorkspaceSettings = ({ prices }: Props) => {
       price.id === subscription?.priceId,
   );
 
-  // Derive tier from subscription - if no subscription, it's free tier
+  // Derive the tier from the live subscription first, then fall back to the
+  // entitlement tier (covers comped or manually-granted tiers that have no
+  // Stripe subscription), then finally the free tier.
   const tier = subscription
     ? (subscriptionPrice?.metadata?.tier ?? "pro")
-    : "free";
+    : (getTierFromEntitlements(entitlements) ?? "free");
 
   const {
     mutateAsync: createSubscription,
