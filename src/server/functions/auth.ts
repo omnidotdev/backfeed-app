@@ -47,7 +47,7 @@ export const signOutLocal = createServerFn({ method: "POST" }).handler(
     let idToken: string | undefined;
     try {
       const tokenResult = await auth.api.getAccessToken({
-        body: { providerId: "omni" },
+        body: { useAccountCookie: true },
         headers,
       });
       idToken = tokenResult?.idToken;

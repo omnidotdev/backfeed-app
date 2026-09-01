@@ -11,15 +11,15 @@ interface Params {
  * Sign in or sign up with OAuth2 provider.
  */
 const signIn = async ({ redirectUrl, action = "sign-in" }: Params) => {
-  await authClient.signIn.oauth2({
+  await authClient.signIn.social({
     // TODO env var/derive for the self-hosting fam
-    providerId: "omni",
+    provider: "omni",
     callbackURL: redirectUrl,
-    // Flag a sign-up so the server config promotes it to OIDC `prompt=create`
-    // (see `authorizationUrlParams` in auth.ts); `additionalData` on its own
-    // never reaches the authorization URL
+    // Forward an explicit sign-up to the IDP via the standard OIDC
+    // `prompt=create` (the IDP's sign-up page). `additionalParams` reaches the
+    // authorization URL directly and overrides the provider's default `prompt`
     ...(action === "sign-up" && {
-      additionalData: { screen_hint: "signup" },
+      additionalParams: { prompt: "create" },
     }),
   });
 };

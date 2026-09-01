@@ -65,22 +65,17 @@ const auth = betterAuth({
           accessType: "offline",
           pkce: true,
           prompt: "login",
-          // Forward an explicit sign-up request to the IDP via the standard
-          // OIDC `prompt=create` (the IDP's sign-up page). `additionalData`
-          // alone never reaches the authorization URL (Better Auth only puts
-          // it in the OAuth state), so the hint must be promoted to a real
-          // auth-URL param here. Applied last, so it overrides `prompt` above
-          authorizationUrlParams: (ctx): Record<string, string> =>
-            ctx.body?.additionalData?.screen_hint === "signup"
-              ? { prompt: "create" }
-              : {},
           // Map OIDC standard claims to Better Auth user fields
           // TODO: Check if BA genericOAuth should auto-map `picture` → `image` by default
           mapProfileToUser: (profile) => ({
             name: profile.name,
             email: profile.email,
-            emailVerified: profile.email_verified,
-            image: profile.picture,
+            emailVerified:
+              typeof profile.email_verified === "boolean"
+                ? profile.email_verified
+                : undefined,
+            image:
+              typeof profile.picture === "string" ? profile.picture : undefined,
           }),
         },
       ],
