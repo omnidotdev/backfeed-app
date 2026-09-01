@@ -52,7 +52,7 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
     select: ({ excludedStatuses }) => excludedStatuses,
   });
   const navigate = useNavigate({
-    from: "/@{$workspaceSlug}/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug/",
   });
 
   const { data: projectStatuses } = useQuery({

@@ -94,7 +94,7 @@ const ProjectFeedback = () => {
   const { workspaceSlug, projectSlug } = projectRoute.useParams();
   const { excludedStatuses, tags, search, orderBy } = projectRoute.useSearch();
   const navigate = useNavigate({
-    from: "/@{$workspaceSlug}/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug/",
   });
 
   const viewState = useProjectViewStore((state) => state.viewState);

@@ -27,7 +27,7 @@ const SavedViews = () => {
   const { projectId } = projectRoute.useLoaderData();
   const search = projectRoute.useSearch();
   const navigate = useNavigate({
-    from: "/@{$workspaceSlug}/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug/",
   });
 
   const views = useSavedViewsStore((state) => state.views[projectId] ?? []);

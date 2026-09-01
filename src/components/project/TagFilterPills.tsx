@@ -17,7 +17,7 @@ const TagFilterPills = () => {
   const { projectId } = projectRoute.useLoaderData();
   const selectedTags = projectRoute.useSearch({ select: ({ tags }) => tags });
   const navigate = useNavigate({
-    from: "/@{$workspaceSlug}/$projectSlug",
+    from: "/@{$workspaceSlug}/$projectSlug/",
   });
 
   const { data: tags } = useQuery(projectTagsOptions(projectId));
