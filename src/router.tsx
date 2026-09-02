@@ -54,7 +54,7 @@ export function getRouter() {
 
   const router = createTanStackRouter({
     routeTree,
-    context: { queryClient, session: null, isMaintenanceMode: false },
+    context: { queryClient, session: null },
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,

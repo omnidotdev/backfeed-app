@@ -18,10 +18,6 @@ export const {
   AUTH_CLIENT_SECRET,
   // server-to-server: Gatekeeper's org-sync members endpoint (never sent to the browser)
   ORG_SYNC_SERVICE_TOKEN,
-
-  // feature flags
-  VITE_FLAGS_API_HOST: FLAGS_API_HOST,
-  VITE_FLAGS_CLIENT_KEY: FLAGS_CLIENT_KEY,
 } = env;
 
 // Internal auth URL for server-to-server communication (Docker service name)
@@ -67,7 +63,5 @@ if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)
   );
 if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
-if (!FLAGS_API_HOST)
-  console.warn("FLAGS_API_HOST not set, feature flags disabled");
 if (!ACCOUNT_URL)
   console.warn("ACCOUNT_URL not set, manage-account link disabled");
