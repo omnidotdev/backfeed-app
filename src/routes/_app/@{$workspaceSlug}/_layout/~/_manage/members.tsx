@@ -5,7 +5,7 @@ import { LuExternalLink } from "react-icons/lu";
 import Page from "@/components/layout/Page";
 import { buttonVariants } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import cn from "@/lib/utils";
 
@@ -23,8 +23,8 @@ function WorkspaceMembersPage() {
   const { workspaceName, workspaceLogo } = Route.useRouteContext();
   const { workspaceSlug } = Route.useParams();
 
-  const manageUrl = AUTH_BASE_URL
-    ? gatekeeperOrgManageUrl(AUTH_BASE_URL, workspaceSlug)
+  const manageUrl = ACCOUNT_URL
+    ? gatekeeperOrgManageUrl(ACCOUNT_URL, workspaceSlug)
     : undefined;
 
   return (
