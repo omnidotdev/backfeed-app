@@ -1,45 +1,18 @@
-import { ManageTeamLink } from "@omnidotdev/providers/react";
+import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { LuCirclePlus, LuUserPlus } from "react-icons/lu";
+import { LuExternalLink } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
 import { buttonVariants } from "@/components/ui/button";
-import Members from "@/components/workspace/Members";
-import PendingInvitations from "@/components/workspace/PendingInvitations";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL, isDevEnv } from "@/lib/config/env.config";
-import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
-import { organizationMembersOptions } from "@/lib/options/organizationMembers";
-import { isAdminOrOwner } from "@/lib/permissions";
-import { DialogType } from "@/lib/store/useDialogStore";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import cn from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_app/@{$workspaceSlug}/_layout/~/_manage/members",
 )({
-  loader: async ({
-    context: { queryClient, organizationId, workspaceName, session },
-  }) => {
-    // Prefetch organization members from Gatekeeper
-    if (organizationId && session?.user) {
-      await queryClient.prefetchQuery(
-        organizationMembersOptions({
-          organizationId,
-          enabled: true,
-        }),
-      );
-    }
-
-    // Prefetch pending invitations
-    if (organizationId) {
-      await queryClient.prefetchQuery({
-        ...organizationInvitationsOptions({ organizationId }),
-      });
-    }
-
-    return { workspaceName };
-  },
+  loader: ({ context: { workspaceName } }) => ({ workspaceName }),
   head: ({ loaderData }) => ({
     meta: createMetaTags({ title: `${loaderData?.workspaceName} Members` }),
   }),
@@ -47,19 +20,12 @@ export const Route = createFileRoute(
 });
 
 function WorkspaceMembersPage() {
-  const { role, workspaceName, workspaceLogo } = Route.useRouteContext();
+  const { workspaceName, workspaceLogo } = Route.useRouteContext();
   const { workspaceSlug } = Route.useParams();
 
-  const ctaButtons = [];
-
-  // TODO: allow adding owners when transferring ownership is resolved. Restricting to single ownership for now.
-  if (role === "owner" && isDevEnv) {
-    ctaButtons.push({
-      label: app.workspaceMembersPage.cta.addOwner.label,
-      icon: <LuCirclePlus />,
-      dialogType: DialogType.AddOwner,
-    });
-  }
+  const manageUrl = AUTH_BASE_URL
+    ? gatekeeperOrgManageUrl(AUTH_BASE_URL, workspaceSlug)
+    : undefined;
 
   return (
     <Page
@@ -75,27 +41,29 @@ function WorkspaceMembersPage() {
         ],
         title: `${workspaceName} ${app.workspaceMembersPage.breadcrumb}`,
         description: app.workspaceMembersPage.description,
-        cta: ctaButtons.length > 0 ? ctaButtons : undefined,
       }}
     >
       {/* Team membership is managed centrally at Gatekeeper (the shared IDP);
           invite/role/remove happen there, not re-implemented per app */}
-      {isAdminOrOwner(role) && workspaceSlug && AUTH_BASE_URL && (
-        <div className="mb-4 flex justify-end">
-          <ManageTeamLink
-            identityBaseUrl={AUTH_BASE_URL}
-            orgSlug={workspaceSlug}
-            className={cn(buttonVariants({ variant: "outline" }), "gap-1.5")}
-          >
-            <LuUserPlus className="h-4 w-4" />
-            Manage team
-          </ManageTeamLink>
-        </div>
+      <p className="text-muted-foreground">
+        Team members and roles are managed in your Omni account, so they stay
+        consistent across every Omni product you use.
+      </p>
+
+      {manageUrl && (
+        <a
+          href={manageUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "mt-4 w-fit gap-1.5",
+          )}
+        >
+          <LuExternalLink className="size-4" />
+          Manage members in Omni
+        </a>
       )}
-
-      <Members />
-
-      <PendingInvitations />
     </Page>
   );
 }

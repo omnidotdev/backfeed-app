@@ -6,7 +6,9 @@ import { expect } from "bun:test";
 
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import * as rtlDomMatchers from "@testing-library/jest-dom/matchers";
+import { setupServer } from "msw/node";
 
+import { mockOidcDiscovery, mockOidcJwks } from "@/__mocks__/handlers/auth";
 import "@/__mocks__/payments.mock";
 
 // import { mswNodeServer } from "test/e2e/util";
@@ -28,7 +30,16 @@ expect.extend(rtlDomMatchers as unknown as ExpectExtendMatchers<typeof expect>);
  */
 GlobalRegistrator.register();
 
-// TODO enable below, blocked by https://github.com/oven-sh/bun/issues/13072. Good reference for MSW integration: https://kentcdodds.com/blog/stop-mocking-fetch
+/**
+ * Serve mocked OIDC endpoints so Better Auth's `genericOAuth` discovery (eager
+ * since 1.7) resolves without reaching the network when the auth module is
+ * transitively imported by a test. Unmatched requests pass through untouched.
+ */
+const authServer = setupServer(mockOidcDiscovery, mockOidcJwks);
+
+authServer.listen({ onUnhandledRequest: "bypass" });
+
+// TODO enable full network mocking below, blocked by https://github.com/oven-sh/bun/issues/13072. Good reference for MSW integration: https://kentcdodds.com/blog/stop-mocking-fetch
 // beforeAll(() => mswNodeServer.listen());
 // reset handlers after each test (particularly useful if a handler is added in a specific test)
 // afterEach(() => mswNodeServer.resetHandlers());

@@ -457,7 +457,8 @@ const app = {
   },
   workspaceMembersPage: {
     breadcrumb: "Members",
-    description: "View and manage the workspace's members and their roles.",
+    description:
+      "Team members and roles are managed centrally in your Omni account.",
     filters: {
       search: {
         placeholder: "Search all workspace members...",
