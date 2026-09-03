@@ -4,6 +4,7 @@ import { getRequest } from "@tanstack/react-start/server";
 
 import auth from "@/lib/auth/auth";
 import { getAuth } from "@/lib/auth/getAuth";
+import { isSessionDegraded } from "@/lib/auth/sessionState";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -15,7 +16,13 @@ export const fetchSession = createServerFn().handler(async () => {
 
   const session = await getAuth(request);
 
-  return { session };
+  // A degraded session is authenticated (getAuth returned it) but carries no
+  // access token: the refresh-token grant failed, so getAuth served the session
+  // without a fresh token and userinfo org hydration was skipped, leaving
+  // organizations empty. This is distinct from a genuinely workspace-less user
+  // (who has a valid access token), and the workspaces page uses it to prompt a
+  // re-login instead of the silent "Create a workspace to get started" state
+  return { session, authDegraded: isSessionDegraded(session) };
 });
 
 /**

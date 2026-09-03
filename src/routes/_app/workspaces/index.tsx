@@ -5,14 +5,21 @@ import {
 } from "@omnidotdev/thornberry/avatar";
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { HiOutlineFolder } from "react-icons/hi2";
-import { LuExternalLink, LuInfo, LuLayers } from "react-icons/lu";
+import {
+  LuExternalLink,
+  LuInfo,
+  LuLayers,
+  LuTriangleAlert,
+} from "react-icons/lu";
 
 import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
+import authClient from "@/lib/auth/authClient";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 import { useOrganization } from "@/providers/OrganizationProvider";
+import { signOutLocal } from "@/server/functions/auth";
 import {
   getLastWorkspaceCookie,
   setLastWorkspaceCookie,
@@ -62,6 +69,54 @@ export const Route = createFileRoute("/_app/workspaces/")({
 function WorkspacesPage() {
   const orgContext = useOrganization();
   const organizations = orgContext?.organizations ?? [];
+  // A degraded session (refresh-token grant failed) is authenticated but has no
+  // access token, so organizations came back empty. Without a signal it renders
+  // identically to a genuinely workspace-less user; distinguish it so the user
+  // gets a re-login prompt instead of a dead-end "create a workspace" state.
+  const { authDegraded } = Route.useRouteContext();
+
+  // Refresh failed and we have nothing to show: prompt a re-login rather than
+  // the create-workspace empty state the user cannot act on.
+  if (!organizations.length && authDegraded) {
+    return (
+      <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center gap-6 px-4 py-12">
+        <div className="flex flex-col items-center gap-4 rounded-lg border border-gray-300 border-dashed bg-gray-50 p-8 text-center dark:border-gray-600 dark:bg-gray-800">
+          <LuTriangleAlert className="size-8 text-muted-foreground" />
+          <div className="flex flex-col gap-2">
+            <h1 className="font-semibold text-foreground text-xl">
+              Your session expired
+            </h1>
+            <p className="mx-auto max-w-sm text-muted-foreground text-sm">
+              We could not refresh your session, so your workspaces could not be
+              loaded. Sign in again to restore access.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              // The better-auth session is still valid (only the OAuth refresh
+              // token is dead), so signing in with an active session just
+              // bounces back to the callback without re-authorizing. Clear the
+              // local session first so the OAuth redirect actually fires and
+              // mints a fresh token family.
+              try {
+                await signOutLocal();
+              } catch {
+                // Proceed with re-auth even if local sign-out fails.
+              }
+              await authClient.signIn.social({
+                provider: "omni",
+                callbackURL: "/workspaces",
+              });
+            }}
+            className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 font-medium text-primary-foreground text-sm shadow-xs transition-colors hover:bg-primary/90"
+          >
+            Sign in again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex h-full w-full max-w-4xl flex-col gap-8 px-4 py-12">

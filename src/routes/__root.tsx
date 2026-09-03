@@ -53,11 +53,12 @@ dayjs.extend(utc);
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
+  authDegraded: boolean;
 }>()({
   beforeLoad: async () => {
-    const { session } = await fetchSession();
+    const { session, authDegraded } = await fetchSession();
 
-    return { session };
+    return { session, authDegraded };
   },
   loader: () => getTheme(),
   head: () => ({
