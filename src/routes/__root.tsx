@@ -19,6 +19,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import NotFound from "@/components/layout/NotFound";
 import app from "@/lib/config/app.config";
+import { isDevEnv } from "@/lib/config/env.config";
 import appCss from "@/lib/styles/app.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -169,18 +170,20 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           </div>
         </ThemeProvider>
 
-        <TanStackDevtools
-          plugins={[
-            {
-              name: "Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            {
-              name: "Query",
-              render: <ReactQueryDevtoolsPanel />,
-            },
-          ]}
-        />
+        {isDevEnv && (
+          <TanStackDevtools
+            plugins={[
+              {
+                name: "Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+              {
+                name: "Query",
+                render: <ReactQueryDevtoolsPanel />,
+              },
+            ]}
+          />
+        )}
 
         <Scripts />
       </body>
