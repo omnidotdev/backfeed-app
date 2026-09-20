@@ -192,7 +192,7 @@ function WorkspaceCard({ organization }: { organization: OrganizationClaim }) {
             </AvatarFallback>
           </AvatarRoot>
 
-          <span className="min-w-0 break-words font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
+          <span className="line-clamp-2 min-w-0 break-words font-semibold text-[var(--colors-brand-primary-700)] dark:text-[var(--colors-brand-primary-400)]">
             {organization.name}
           </span>
         </div>
