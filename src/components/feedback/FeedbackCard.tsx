@@ -50,6 +50,10 @@ import {
 import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";
 import useStatusMenuStore from "@/lib/store/useStatusMenuStore";
 import { linkifyIssueRefsHtml } from "@/lib/util/issueRefs";
+import {
+  statusTextColorClassName,
+  statusTextColorStyle,
+} from "@/lib/util/statusColors";
 import stripHtml from "@/lib/util/stripHtml";
 import cn from "@/lib/utils";
 
@@ -424,10 +428,11 @@ const FeedbackCard = ({
                       <MenuItem
                         key={status.rowId}
                         value={status.rowId!}
-                        className="flex items-center justify-between"
-                        style={
-                          status.color ? { color: status.color } : undefined
-                        }
+                        className={cn(
+                          "flex items-center justify-between",
+                          statusTextColorClassName,
+                        )}
+                        style={statusTextColorStyle(status.color)}
                         onClick={() =>
                           updateStatus({
                             rowId: feedback.rowId!,

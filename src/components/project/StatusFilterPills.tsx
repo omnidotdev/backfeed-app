@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import Color from "colorjs.io";
 
 import {
   projectStatusesOptions,
   statusBreakdownOptions,
 } from "@/lib/options/projects";
+import {
+  getStatusBackgroundColor,
+  statusTextColorClassName,
+  statusTextColorStyle,
+} from "@/lib/util/statusColors";
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -23,23 +27,6 @@ interface Status {
 }
 
 interface StatusFilterPillsProps extends ComponentProps<"div"> {}
-
-/**
- * Get background color with opacity from status color.
- */
-const getBackgroundColor = (
-  color: string | null | undefined,
-  opacity = 0.15,
-): string | undefined => {
-  if (!color) return undefined;
-  try {
-    const parsed = new Color(color);
-    parsed.alpha = opacity;
-    return parsed.toString({ format: "rgba" });
-  } catch {
-    return undefined;
-  }
-};
 
 /**
  * Horizontal status filter pills for filtering feedback by status.
@@ -172,44 +159,42 @@ const StatusFilterPills = ({ ...rest }: StatusFilterPillsProps) => {
 
       {breakdown.map(({ status, count }) => {
         const isActive = !excludedStatuses.includes(status?.name!);
-        const bgColor = getBackgroundColor(
-          status?.color,
-          isActive ? 0.12 : 0.05,
-        );
-        const countBgColor = getBackgroundColor(
+        const bgColor = getStatusBackgroundColor(status?.color, 0.12);
+        const countBgColor = getStatusBackgroundColor(
           status?.color,
           isActive ? 0.2 : 0.1,
         );
+        const textColorStyle = statusTextColorStyle(status?.color);
 
         return (
           <button
             type="button"
             key={status?.rowId}
             onClick={() => handleToggleStatus(status)}
-            className="flex cursor-pointer select-none items-center gap-2 rounded-full py-1 pr-1 pl-3 transition-all hover:opacity-85"
-            style={{
-              backgroundColor: isActive ? bgColor : "var(--colors-neutral-100)",
-              opacity: isActive ? 1 : 0.7,
-            }}
+            className={cn(
+              "flex cursor-pointer select-none items-center gap-2 rounded-full py-1 pr-1 pl-3 transition-all hover:opacity-85",
+              // excluded pills fall back to a theme-aware neutral chip
+              !isActive &&
+                "bg-[var(--colors-neutral-100)] opacity-70 dark:bg-[var(--colors-neutral-800)]",
+            )}
+            style={isActive ? { backgroundColor: bgColor } : undefined}
           >
             <span
               className={cn(
                 "whitespace-nowrap font-medium text-sm",
-                !isActive && "text-muted-foreground",
+                isActive ? statusTextColorClassName : "text-muted-foreground",
               )}
-              style={{
-                color: isActive ? (status?.color ?? undefined) : undefined,
-              }}
+              style={isActive ? textColorStyle : undefined}
             >
               {status?.displayName ?? "Unknown"}
             </span>
 
             <span
-              className="flex h-5 min-w-5 items-center justify-center rounded-full font-semibold text-xs"
-              style={{
-                backgroundColor: countBgColor,
-                color: isActive ? (status?.color ?? undefined) : undefined,
-              }}
+              className={cn(
+                "flex h-5 min-w-5 items-center justify-center rounded-full font-semibold text-xs",
+                isActive && statusTextColorClassName,
+              )}
+              style={{ backgroundColor: countBgColor, ...textColorStyle }}
             >
               {count}
             </span>
