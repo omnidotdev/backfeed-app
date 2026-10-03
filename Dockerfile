@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
-FROM oven/bun:1.4.2 AS base
+FROM oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 AS base
 WORKDIR /app
 
 # Build
@@ -14,7 +14,7 @@ RUN bun run build
 # Bun doesn't properly resolve externalized Nitro packages (srvx, react-dom/server)
 # Error: Cannot find package 'srvx' from '/app/.output/server/chunks/virtual/entry.mjs'
 # Error: Cannot find module 'react-dom/server'
-FROM node:22-alpine AS runner
+FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
