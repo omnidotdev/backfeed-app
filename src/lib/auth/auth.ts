@@ -18,6 +18,14 @@ const { AUTH_SECRET } = process.env;
  */
 const auth = betterAuth({
   advanced: {
+    // Resolve the real client IP from Cloudflare's `cf-connecting-ip` header so
+    // Better Auth rate-limit buckets are keyed per client. Without it, getIp
+    // sees a multi-hop `x-forwarded-for` behind Cloudflare, resolves to null,
+    // and collapses every request into one global shared bucket, sharing the
+    // per-IP browser limits (e.g. /sign-in at 3/10s) across all users
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip"],
+    },
     // use custom cookie prefix to avoid collision with IDP cookies
     cookiePrefix: "backfeed",
   },
