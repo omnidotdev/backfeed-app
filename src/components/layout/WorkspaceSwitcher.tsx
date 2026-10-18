@@ -16,52 +16,52 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 /**
- * Organization switcher component.
- * Only renders when user has multiple organizations.
- * Safe to use outside OrganizationProvider (renders nothing).
+ * Workspace switcher component.
+ * Only renders when user has multiple workspaces.
+ * Safe to use outside WorkspaceProvider (renders nothing).
  */
-const OrganizationSwitcher = () => {
-  const orgContext = useOrganization();
+const WorkspaceSwitcher = () => {
+  const workspaceContext = useWorkspace();
 
-  // Not in auth context or no organizations
-  if (!orgContext) return null;
+  // Not in auth context or no workspaces
+  if (!workspaceContext) return null;
 
   const {
-    organizations,
-    currentOrganization,
-    setCurrentOrganization,
-    hasMultipleOrgs,
-  } = orgContext;
+    organizations: workspaces,
+    currentOrganization: currentWorkspace,
+    setCurrentOrganization: setCurrentWorkspace,
+    hasMultipleOrgs: hasMultipleWorkspaces,
+  } = workspaceContext;
 
-  // Only show switcher when user has multiple orgs
-  if (!hasMultipleOrgs) return null;
+  // Only show switcher when user has multiple workspaces
+  if (!hasMultipleWorkspaces) return null;
 
   return (
     <MenuRoot
       onSelect={(details) => {
-        const orgId = details.value;
-        if (orgId) setCurrentOrganization(orgId);
+        const workspaceId = details.value;
+        if (workspaceId) setCurrentWorkspace(workspaceId);
       }}
     >
       <MenuTrigger asChild>
         <Button variant="ghost" size="sm">
           <AvatarRoot size="xs" className="size-5">
             <AvatarImage
-              src={currentOrganization.logo ?? undefined}
-              alt={currentOrganization.slug}
+              src={currentWorkspace.logo ?? undefined}
+              alt={currentWorkspace.slug}
             />
             <AvatarFallback>
-              {currentOrganization.type === "personal" ? (
+              {currentWorkspace.type === "personal" ? (
                 <LuUser />
               ) : (
                 <LuBuilding2 />
               )}
             </AvatarFallback>
           </AvatarRoot>
-          {currentOrganization.slug}
+          {currentWorkspace.slug}
           <LuChevronDown />
         </Button>
       </MenuTrigger>
@@ -69,20 +69,27 @@ const OrganizationSwitcher = () => {
       <MenuPositioner>
         <MenuContent>
           <MenuItemGroup>
-            {organizations.map((org) => (
+            {workspaces.map((workspace) => (
               <MenuItem
-                key={org.id}
-                value={org.id}
-                disabled={org.id === currentOrganization.id}
+                key={workspace.id}
+                value={workspace.id}
+                disabled={workspace.id === currentWorkspace.id}
               >
                 <AvatarRoot size="xs" className="size-5">
-                  <AvatarImage src={org.logo ?? undefined} alt={org.slug} />
+                  <AvatarImage
+                    src={workspace.logo ?? undefined}
+                    alt={workspace.slug}
+                  />
                   <AvatarFallback>
-                    {org.type === "personal" ? <LuUser /> : <LuBuilding2 />}
+                    {workspace.type === "personal" ? (
+                      <LuUser />
+                    ) : (
+                      <LuBuilding2 />
+                    )}
                   </AvatarFallback>
                 </AvatarRoot>
-                {org.slug}
-                {org.type === "personal" && " (Personal)"}
+                {workspace.slug}
+                {workspace.type === "personal" && " (Personal)"}
               </MenuItem>
             ))}
           </MenuItemGroup>
@@ -104,4 +111,4 @@ const OrganizationSwitcher = () => {
   );
 };
 
-export default OrganizationSwitcher;
+export default WorkspaceSwitcher;

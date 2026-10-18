@@ -2,7 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import NotFound from "@/components/layout/NotFound";
 import { EventsProvider } from "@/providers/EventsProvider";
-import OrganizationProvider from "@/providers/OrganizationProvider";
+import WorkspaceProvider from "@/providers/WorkspaceProvider";
 
 // Noop provider for client-side (main @omnidotdev/providers entry requires Node.js)
 const eventsProvider = {
@@ -19,7 +19,7 @@ const eventsProvider = {
  *
  * This layout allows both authenticated and unauthenticated access.
  * Routes under this layout render differently based on auth state:
- * - Authenticated: Full features with EventsProvider and OrganizationProvider
+ * - Authenticated: Full features with EventsProvider and WorkspaceProvider
  * - Unauthenticated: Read-only view with login prompts
  */
 export const Route = createFileRoute("/_app")({
@@ -35,9 +35,9 @@ function AppLayout() {
   if (session?.user?.rowId) {
     return (
       <EventsProvider provider={eventsProvider}>
-        <OrganizationProvider organizations={session?.organizations ?? []}>
+        <WorkspaceProvider organizations={session?.organizations ?? []}>
           <Outlet />
-        </OrganizationProvider>
+        </WorkspaceProvider>
       </EventsProvider>
     );
   }

@@ -7,9 +7,9 @@ import { useIsClient } from "usehooks-ts";
 import LogoLink from "@/components/core/LogoLink";
 import AccountInformation from "@/components/layout/AccountInformation";
 import NotificationBell from "@/components/layout/NotificationBell";
-import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
+import WorkspaceSwitcher from "@/components/layout/WorkspaceSwitcher";
 import { Button } from "@/components/ui/button";
 import {
   SheetCloseTrigger,
@@ -72,7 +72,7 @@ const HeaderActions = () => {
         {session ? (
           <div className="flex items-center gap-2">
             <NotificationBell />
-            <OrganizationSwitcher />
+            <WorkspaceSwitcher />
             <AccountInformation />
           </div>
         ) : (
@@ -98,7 +98,7 @@ const HeaderActions = () => {
 
       <div className="flex items-center gap-2">
         {session && <NotificationBell />}
-        {session && <OrganizationSwitcher />}
+        {session && <WorkspaceSwitcher />}
 
         <SheetRoot
           open={isMobileSidebarOpen}

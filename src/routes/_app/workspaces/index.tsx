@@ -18,7 +18,7 @@ import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { signOutLocal } from "@/server/functions/auth";
 import {
   getLastWorkspaceCookie,
@@ -67,17 +67,17 @@ export const Route = createFileRoute("/_app/workspaces/")({
 });
 
 function WorkspacesPage() {
-  const orgContext = useOrganization();
-  const organizations = orgContext?.organizations ?? [];
+  const workspaceContext = useWorkspace();
+  const workspaces = workspaceContext?.organizations ?? [];
   // A degraded session (refresh-token grant failed) is authenticated but has no
-  // access token, so organizations came back empty. Without a signal it renders
+  // access token, so workspaces came back empty. Without a signal it renders
   // identically to a genuinely workspace-less user; distinguish it so the user
   // gets a re-login prompt instead of a dead-end "create a workspace" state.
   const { authDegraded } = Route.useRouteContext();
 
   // Refresh failed and we have nothing to show: prompt a re-login rather than
   // the create-workspace empty state the user cannot act on.
-  if (!organizations.length && authDegraded) {
+  if (!workspaces.length && authDegraded) {
     return (
       <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center gap-6 px-4 py-12">
         <div className="flex flex-col items-center gap-4 rounded-lg border border-gray-300 border-dashed bg-gray-50 p-8 text-center dark:border-gray-600 dark:bg-gray-800">
@@ -123,19 +123,19 @@ function WorkspacesPage() {
       <div className="flex flex-col items-center gap-4">
         <LuLayers className="size-12 text-muted-foreground" />
         <h1 className="text-center font-semibold text-2xl text-foreground">
-          {organizations.length
+          {workspaces.length
             ? "Select a workspace"
             : "Create a workspace to get started"}
         </h1>
 
         <CreateWorkspaceButton className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 font-medium text-primary-foreground text-sm shadow-xs transition-colors hover:bg-primary/90">
-          {organizations.length ? "New workspace" : "Create workspace"}
+          {workspaces.length ? "New workspace" : "Create workspace"}
         </CreateWorkspaceButton>
       </div>
 
-      {!!organizations.length && (
+      {!!workspaces.length && (
         <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))]">
-          {organizations.map((org) => (
+          {workspaces.map((org) => (
             <WorkspaceCard key={org.id} organization={org} />
           ))}
         </div>
