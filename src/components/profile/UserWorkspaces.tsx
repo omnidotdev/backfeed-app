@@ -66,7 +66,7 @@ const UserWorkspaces = () => {
         <LuInfo className="size-6 text-gray-500" />
         <div className="flex flex-col gap-2">
           <p className="text-gray-700 text-sm dark:text-gray-300">
-            Workspaces are currently managed via Omni Organizations.
+            Workspaces are currently managed via Omni Workspaces.
           </p>
           <p className="text-gray-500 text-xs">
             This experience will be improved soon.
@@ -76,7 +76,7 @@ const UserWorkspaces = () => {
           href={AUTH_BASE_URL}
           className="inline-flex items-center gap-2 text-blue-500 text-sm"
         >
-          Manage Organizations
+          Manage Workspaces
           <LuExternalLink className="size-3" />
         </a>
       </div>

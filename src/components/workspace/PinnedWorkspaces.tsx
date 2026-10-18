@@ -53,7 +53,7 @@ const PinnedWorkspaces = () => {
         <a href={AUTH_BASE_URL}>
           <span className="mt-1 flex items-center gap-1.5 font-medium text-foreground text-sm hover:underline">
             <LuPlus className="size-4" />
-            Create Organization
+            Create Workspace
           </span>
         </a>
       </div>
@@ -94,7 +94,7 @@ const PinnedWorkspaces = () => {
               <LuPlus className="size-5" />
               <span className="font-medium text-sm">Add Workspace</span>
               <span className="text-muted-foreground text-xs">
-                via Omni Organizations
+                via Omni Workspaces
               </span>
             </div>
           </a>

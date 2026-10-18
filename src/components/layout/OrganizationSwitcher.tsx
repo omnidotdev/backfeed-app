@@ -94,7 +94,7 @@ const OrganizationSwitcher = () => {
             <MenuItem value="manage-orgs" asChild>
               <a href={AUTH_BASE_URL}>
                 <LuPlus />
-                Manage Organizations
+                Manage Workspaces
               </a>
             </MenuItem>
           </MenuItemGroup>

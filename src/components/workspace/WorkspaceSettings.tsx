@@ -101,8 +101,8 @@ const WorkspaceSettings = ({ prices }: Props) => {
     <div className="flex flex-col gap-6">
       {/* Organization name/slug are managed centrally at the Gatekeeper identity dashboard */}
       <SectionContainer
-        title="Organization Settings"
-        description="Your organization's name and URL are managed in your Omni organization settings."
+        title="Workspace Settings"
+        description="Your workspace's name and URL are managed in your Omni workspace settings."
       >
         <p>
           <span className="font-semibold">Name:</span> {workspaceName}
@@ -117,7 +117,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
             )}
           >
             <LuExternalLink className="size-4" />
-            Manage organization
+            Manage workspace
           </ManageTeamLink>
         )}
       </SectionContainer>
