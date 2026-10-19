@@ -1,113 +1,48 @@
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@omnidotdev/thornberry/avatar";
-import { LuBuilding2, LuChevronDown, LuPlus, LuUser } from "react-icons/lu";
+import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import { WorkspaceSwitcher as SharedWorkspaceSwitcher } from "@omnidotdev/thornberry/workspace-switcher";
 
-import { Button } from "@/components/ui/button";
-import {
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuPositioner,
-  MenuRoot,
-  MenuSeparator,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 /**
- * Workspace switcher component.
- * Only renders when user has multiple workspaces.
- * Safe to use outside WorkspaceProvider (renders nothing).
+ * Workspace (organization) switcher shown in the header.
+ *
+ * Membership comes from the signed-in user's identity claims; selecting a
+ * workspace updates the in-memory active organization. Presentation is the
+ * shared thornberry switcher, and creating/managing workspaces is delegated to
+ * the identity dashboard. A single-workspace user sees a static label.
  */
 const WorkspaceSwitcher = () => {
   const workspaceContext = useWorkspace();
 
-  // Not in auth context or no workspaces
   if (!workspaceContext) return null;
 
   const {
     organizations: workspaces,
     currentOrganization: currentWorkspace,
     setCurrentOrganization: setCurrentWorkspace,
-    hasMultipleOrgs: hasMultipleWorkspaces,
   } = workspaceContext;
 
-  // Only show switcher when user has multiple workspaces
-  if (!hasMultipleWorkspaces) return null;
+  if (!currentWorkspace) return null;
+
+  const handleSelect = (id: string) => {
+    if (id === currentWorkspace.id) return;
+    setCurrentWorkspace(id);
+  };
 
   return (
-    <MenuRoot
-      onSelect={(details) => {
-        const workspaceId = details.value;
-        if (workspaceId) setCurrentWorkspace(workspaceId);
-      }}
-    >
-      <MenuTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <AvatarRoot size="xs" className="size-5">
-            <AvatarImage
-              src={currentWorkspace.logo ?? undefined}
-              alt={currentWorkspace.slug}
-            />
-            <AvatarFallback>
-              {currentWorkspace.type === "personal" ? (
-                <LuUser />
-              ) : (
-                <LuBuilding2 />
-              )}
-            </AvatarFallback>
-          </AvatarRoot>
-          {currentWorkspace.slug}
-          <LuChevronDown />
-        </Button>
-      </MenuTrigger>
-
-      <MenuPositioner>
-        <MenuContent>
-          <MenuItemGroup>
-            {workspaces.map((workspace) => (
-              <MenuItem
-                key={workspace.id}
-                value={workspace.id}
-                disabled={workspace.id === currentWorkspace.id}
-              >
-                <AvatarRoot size="xs" className="size-5">
-                  <AvatarImage
-                    src={workspace.logo ?? undefined}
-                    alt={workspace.slug}
-                  />
-                  <AvatarFallback>
-                    {workspace.type === "personal" ? (
-                      <LuUser />
-                    ) : (
-                      <LuBuilding2 />
-                    )}
-                  </AvatarFallback>
-                </AvatarRoot>
-                {workspace.slug}
-                {workspace.type === "personal" && " (Personal)"}
-              </MenuItem>
-            ))}
-          </MenuItemGroup>
-
-          <MenuSeparator />
-
-          {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
-          <MenuItemGroup>
-            <MenuItem value="manage-orgs" asChild>
-              <a href={AUTH_BASE_URL}>
-                <LuPlus />
-                Manage Workspaces
-              </a>
-            </MenuItem>
-          </MenuItemGroup>
-        </MenuContent>
-      </MenuPositioner>
-    </MenuRoot>
+    <SharedWorkspaceSwitcher
+      workspaces={workspaces.map((workspace) => ({
+        id: workspace.id,
+        name: workspace.name,
+        logo: workspace.logo,
+      }))}
+      currentWorkspaceId={currentWorkspace.id}
+      onSelect={handleSelect}
+      {...(AUTH_BASE_URL && {
+        manageUrl: gatekeeperDashboardUrl(AUTH_BASE_URL),
+      })}
+    />
   );
 };
 
