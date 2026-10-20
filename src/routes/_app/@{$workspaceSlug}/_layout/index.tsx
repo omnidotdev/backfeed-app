@@ -8,6 +8,7 @@ import Page from "@/components/layout/Page";
 import CreateProject from "@/components/project/CreateProject";
 import ProjectFilters from "@/components/project/ProjectFilters";
 import ProjectList from "@/components/project/ProjectList";
+import WorkspaceLinks from "@/components/workspace/WorkspaceLinks";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import app from "@/lib/config/app.config";
@@ -80,6 +81,7 @@ function WorkspacePage() {
     organizationId,
     workspaceName,
     workspaceLogo,
+    workspaceLinks,
   } = Route.useRouteContext();
 
   const { data: metrics } = useQuery({
@@ -126,6 +128,7 @@ function WorkspacePage() {
             <Badge className="rounded-lg">
               {capitalizeFirstLetter(hasPaidSubscription ? "paid" : "free")}
             </Badge>
+            <WorkspaceLinks links={workspaceLinks} />
           </div>
         ),
         backLink: {
