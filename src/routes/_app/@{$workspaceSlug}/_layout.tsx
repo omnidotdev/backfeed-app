@@ -4,6 +4,7 @@ import { isAdminOrOwner, isOwner } from "@/lib/permissions";
 import { publicWorkspaceLinks } from "@/lib/util/orgLinks";
 import {
   fetchOrganizationBySlug,
+  fetchOrganizationMemberRoles,
   getOrganizationBySlug,
 } from "@/server/functions/organizations";
 
@@ -12,83 +13,71 @@ import type { IdpRole } from "@/lib/permissions";
 export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
   beforeLoad: async ({ context: { session }, params: { workspaceSlug } }) => {
     const isAuthenticated = !!session;
+    // The IDP user id; equals a Gatekeeper member row's `userId`.
+    const userIdpId = session?.user?.identityProviderId;
 
-    // For authenticated users, resolve org from JWT claims
+    // Resolve the workspace: prefer the JWT claim (carries name/logo/links and
+    // the caller's role), then a live authenticated lookup (e.g. a just-created
+    // workspace not yet in the claim), then an unauthenticated public read.
     const orgFromClaims = session?.organizations?.find(
       (org) => org.slug === workspaceSlug,
     );
 
+    let org:
+      | {
+          id: string;
+          name?: string | null;
+          slug: string;
+          logo?: string | null;
+        }
+      | null
+      | undefined = orgFromClaims;
+
+    // Role from the claim (highest privilege), when present.
+    let role: IdpRole | null = null;
     if (orgFromClaims) {
-      // Role comes from JWT organization claims
-      // roles is an array, take the highest privilege role
       const roles = orgFromClaims.roles ?? [];
-      const role: IdpRole | null = roles.includes("owner")
+      role = roles.includes("owner")
         ? "owner"
         : roles.includes("admin")
           ? "admin"
           : roles.includes("member")
             ? "member"
             : null;
-
-      return {
-        workspaceName: orgFromClaims.name ?? orgFromClaims.slug,
-        workspaceLogo: orgFromClaims.logo ?? null,
-        workspaceLinks: publicWorkspaceLinks(
-          (orgFromClaims as { links?: unknown }).links,
-        ),
-        organizationId: orgFromClaims.id,
-        role,
-        isOwner: isOwner(role),
-        hasAdminPrivileges: isAdminOrOwner(role),
-        isAuthenticated,
-        session,
-      };
     }
 
-    // A just-created workspace is not yet in the JWT claims (they are hydrated
-    // from a short-lived cache), so for authenticated users fall back to a
-    // live authenticated Gatekeeper lookup before the public read. Lets the
-    // owner land on the new workspace immediately, with privileges catching up
-    // once claims refresh on the next load.
-    if (isAuthenticated) {
-      const authedOrg = await getOrganizationBySlug({
-        data: { slug: workspaceSlug },
+    if (!org && isAuthenticated) {
+      org = await getOrganizationBySlug({ data: { slug: workspaceSlug } });
+    }
+    if (!org) {
+      org = await fetchOrganizationBySlug({ data: { slug: workspaceSlug } });
+    }
+    if (!org) throw notFound();
+
+    // The JWT claim can lag or be missing the workspace entirely (a just-granted
+    // role, claim truncation, or a degraded session with no org claims), which
+    // would wrongly hide owner/admin controls. When the claim doesn't already
+    // confer privileges, confirm the caller's role live via the service-token
+    // member lookup so owners/admins are never locked out of their own
+    // workspace. Skipped for anonymous visitors and already-privileged users.
+    if (isAuthenticated && userIdpId && !isAdminOrOwner(role)) {
+      const { data: privilegedRoles } = await fetchOrganizationMemberRoles({
+        data: { organizationId: org.id },
       });
-
-      if (authedOrg) {
-        return {
-          workspaceName: authedOrg.name ?? authedOrg.slug,
-          workspaceLogo: authedOrg.logo ?? null,
-          workspaceLinks: publicWorkspaceLinks(
-            (authedOrg as { links?: unknown }).links,
-          ),
-          organizationId: authedOrg.id,
-          role: null,
-          isOwner: false,
-          hasAdminPrivileges: false,
-          isAuthenticated,
-          session,
-        };
-      }
+      const mine = privilegedRoles.find(
+        (member) => member.userId === userIdpId,
+      );
+      if (mine) role = mine.role as IdpRole;
     }
-
-    // For unauthenticated users (or users not in this org), fetch from IDP
-    const publicOrg = await fetchOrganizationBySlug({
-      data: { slug: workspaceSlug },
-    });
-
-    if (!publicOrg) throw notFound();
 
     return {
-      workspaceName: publicOrg.name ?? publicOrg.slug,
-      workspaceLogo: publicOrg.logo ?? null,
-      workspaceLinks: publicWorkspaceLinks(
-        (publicOrg as { links?: unknown }).links,
-      ),
-      organizationId: publicOrg.id,
-      role: null,
-      isOwner: false,
-      hasAdminPrivileges: false,
+      workspaceName: org.name ?? org.slug,
+      workspaceLogo: org.logo ?? null,
+      workspaceLinks: publicWorkspaceLinks((org as { links?: unknown }).links),
+      organizationId: org.id,
+      role,
+      isOwner: isOwner(role),
+      hasAdminPrivileges: isAdminOrOwner(role),
       isAuthenticated,
       session,
     };
