@@ -1,7 +1,8 @@
+import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
-import { LuCirclePlus } from "react-icons/lu";
+import { LuCirclePlus, LuExternalLink } from "react-icons/lu";
 import { z } from "zod";
 
 import Page from "@/components/layout/Page";
@@ -12,6 +13,7 @@ import WorkspaceLinks from "@/components/workspace/WorkspaceLinks";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import app from "@/lib/config/app.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { checkLimitOptions } from "@/lib/options/entitlements";
 import { projectsOptions } from "@/lib/options/projects";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
@@ -129,6 +131,17 @@ function WorkspacePage() {
               {capitalizeFirstLetter(hasPaidSubscription ? "paid" : "free")}
             </Badge>
             <WorkspaceLinks links={workspaceLinks} />
+            {hasAdminPrivileges && ACCOUNT_URL && (
+              <a
+                href={gatekeeperOrgManageUrl(ACCOUNT_URL, workspaceSlug)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground"
+              >
+                <LuExternalLink className="size-3.5" />
+                Manage links
+              </a>
+            )}
           </div>
         ),
         backLink: {
