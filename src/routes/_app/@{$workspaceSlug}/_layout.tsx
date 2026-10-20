@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { isAdminOrOwner, isOwner } from "@/lib/permissions";
-import { parseOrgLinks } from "@/lib/util/orgLinks";
+import { publicWorkspaceLinks } from "@/lib/util/orgLinks";
 import {
   fetchOrganizationBySlug,
   getOrganizationBySlug,
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
       return {
         workspaceName: orgFromClaims.name ?? orgFromClaims.slug,
         workspaceLogo: orgFromClaims.logo ?? null,
-        workspaceLinks: parseOrgLinks(
+        workspaceLinks: publicWorkspaceLinks(
           (orgFromClaims as { links?: unknown }).links,
         ),
         organizationId: orgFromClaims.id,
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
         return {
           workspaceName: authedOrg.name ?? authedOrg.slug,
           workspaceLogo: authedOrg.logo ?? null,
-          workspaceLinks: parseOrgLinks(
+          workspaceLinks: publicWorkspaceLinks(
             (authedOrg as { links?: unknown }).links,
           ),
           organizationId: authedOrg.id,
@@ -82,7 +82,9 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
     return {
       workspaceName: publicOrg.name ?? publicOrg.slug,
       workspaceLogo: publicOrg.logo ?? null,
-      workspaceLinks: parseOrgLinks((publicOrg as { links?: unknown }).links),
+      workspaceLinks: publicWorkspaceLinks(
+        (publicOrg as { links?: unknown }).links,
+      ),
       organizationId: publicOrg.id,
       role: null,
       isOwner: false,
