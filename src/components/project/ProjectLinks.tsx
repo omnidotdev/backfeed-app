@@ -4,7 +4,6 @@ import { useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
 
 import Favicon from "@/components/core/Favicon";
-import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -38,6 +37,7 @@ const ProjectLinks = ({ organizationId, projectSlug }: Props) => {
     .map((link) => ({
       url: link?.url ?? "",
       rowId: link?.rowId ?? "",
+      title: link?.title ?? null,
     }));
 
   const visibleLinks = allLinks.slice(0, 3);
@@ -48,21 +48,18 @@ const ProjectLinks = ({ organizationId, projectSlug }: Props) => {
   return (
     <div className="ml-1 flex shrink-0 items-center gap-0.5 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
       {visibleLinks.map((link) => (
-        <Tooltip
+        <a
           key={link.rowId}
-          trigger={
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
-            >
-              <Favicon url={link.url} size={4} />
-            </a>
-          }
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1 text-muted-foreground text-sm hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
         >
-          {getDomainLabel(link.url)}
-        </Tooltip>
+          <Favicon url={link.url} size={4} />
+          <span className="max-w-[12rem] truncate">
+            {link.title || getDomainLabel(link.url)}
+          </span>
+        </a>
       ))}
 
       {!!overflowLinks.length && (
@@ -95,7 +92,7 @@ const ProjectLinks = ({ organizationId, projectSlug }: Props) => {
                       >
                         <Favicon url={link.url} size={4} />
                         <span className="text-foreground-subtle">
-                          {getDomainLabel(link.url)}
+                          {link.title || getDomainLabel(link.url)}
                         </span>
                       </a>
                     </MenuItem>

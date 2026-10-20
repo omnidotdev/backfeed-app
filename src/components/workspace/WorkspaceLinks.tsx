@@ -1,5 +1,4 @@
 import Favicon from "@/components/core/Favicon";
-import Tooltip from "@/components/core/Tooltip";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
 import type { WorkspaceLink } from "@/lib/util/orgLinks";
@@ -9,9 +8,8 @@ interface Props {
 }
 
 /**
- * Workspace links (website, socials, etc.), shown on the public workspace page
- * as favicon badges. Read from the Gatekeeper organization, the shared source of
- * truth across every Omni product.
+ * Workspace links (website, socials) shown on the public workspace page as
+ * favicon + label chips. Receives public links only (filtered upstream).
  */
 const WorkspaceLinks = ({ links }: Props) => {
   const visible = links.filter((link) => link.url);
@@ -19,23 +17,20 @@ const WorkspaceLinks = ({ links }: Props) => {
   if (!visible.length) return null;
 
   return (
-    <div className="flex shrink-0 items-center gap-0.5 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
+    <div className="flex flex-wrap items-center gap-1 border-[var(--colors-neutral-200)] border-l pl-3 dark:border-[var(--colors-neutral-700)]">
       {visible.map((link) => (
-        <Tooltip
+        <a
           key={link.url}
-          trigger={
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
-            >
-              <Favicon url={link.url} size={4} />
-            </a>
-          }
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1 text-muted-foreground text-sm hover:bg-[var(--colors-neutral-100)] hover:text-foreground dark:hover:bg-[var(--colors-neutral-800)]"
         >
-          {link.title || getDomainLabel(link.url)}
-        </Tooltip>
+          <Favicon url={link.url} size={4} />
+          <span className="max-w-[12rem] truncate">
+            {link.title || getDomainLabel(link.url)}
+          </span>
+        </a>
       ))}
     </div>
   );
