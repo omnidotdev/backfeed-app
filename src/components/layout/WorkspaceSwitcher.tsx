@@ -17,11 +17,8 @@ const WorkspaceSwitcher = () => {
 
   if (!workspaceContext) return null;
 
-  const {
-    organizations: workspaces,
-    currentOrganization: currentWorkspace,
-    setCurrentOrganization: setCurrentWorkspace,
-  } = workspaceContext;
+  const { workspaces, currentWorkspace, setCurrentWorkspace } =
+    workspaceContext;
 
   if (!currentWorkspace) return null;
 

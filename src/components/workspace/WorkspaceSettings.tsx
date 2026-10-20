@@ -17,7 +17,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
@@ -107,9 +107,9 @@ const WorkspaceSettings = ({ prices }: Props) => {
         <p>
           <span className="font-semibold">Name:</span> {workspaceName}
         </p>
-        {AUTH_BASE_URL && workspaceSlug && (
+        {ACCOUNT_URL && workspaceSlug && (
           <ManageTeamLink
-            identityBaseUrl={AUTH_BASE_URL}
+            accountBaseUrl={ACCOUNT_URL}
             orgSlug={workspaceSlug}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),

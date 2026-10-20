@@ -68,7 +68,7 @@ export const Route = createFileRoute("/_app/workspaces/")({
 
 function WorkspacesPage() {
   const workspaceContext = useWorkspace();
-  const workspaces = workspaceContext?.organizations ?? [];
+  const workspaces = workspaceContext?.workspaces ?? [];
   // A degraded session (refresh-token grant failed) is authenticated but has no
   // access token, so workspaces came back empty. Without a signal it renders
   // identically to a genuinely workspace-less user; distinguish it so the user

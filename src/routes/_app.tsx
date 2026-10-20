@@ -35,7 +35,7 @@ function AppLayout() {
   if (session?.user?.rowId) {
     return (
       <EventsProvider provider={eventsProvider}>
-        <WorkspaceProvider organizations={session?.organizations ?? []}>
+        <WorkspaceProvider workspaces={session?.organizations ?? []}>
           <Outlet />
         </WorkspaceProvider>
       </EventsProvider>
