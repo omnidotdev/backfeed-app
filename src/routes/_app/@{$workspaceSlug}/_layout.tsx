@@ -68,6 +68,31 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout")({
         (member) => member.userId === userIdpId,
       );
       if (mine) role = mine.role as IdpRole;
+      // TEMP DIAGNOSTIC (remove): trace live role resolution
+      console.warn(
+        "[wsctx-diag]",
+        JSON.stringify({
+          slug: workspaceSlug,
+          orgId: org.id,
+          uid: userIdpId,
+          claimHadOrg: !!orgFromClaims,
+          privilegedCount: privilegedRoles.length,
+          sampleUserIds: privilegedRoles.slice(0, 5).map((m) => m.userId),
+          matched: !!mine,
+          finalRole: role,
+        }),
+      );
+    } else {
+      // TEMP DIAGNOSTIC (remove): trace skip reason
+      console.warn(
+        "[wsctx-diag] skipped live check",
+        JSON.stringify({
+          slug: workspaceSlug,
+          auth: isAuthenticated,
+          uid: userIdpId ?? null,
+          claimRole: role,
+        }),
+      );
     }
 
     return {
