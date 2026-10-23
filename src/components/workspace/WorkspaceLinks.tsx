@@ -1,7 +1,7 @@
 import Favicon from "@/components/core/Favicon";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
-import type { WorkspaceLink } from "@/lib/util/orgLinks";
+import type { WorkspaceLink } from "@omnidotdev/providers/workspace-links";
 
 interface Props {
   links: WorkspaceLink[];

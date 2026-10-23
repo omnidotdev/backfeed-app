@@ -1,7 +1,7 @@
+import { publicWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { isAdminOrOwner, isOwner } from "@/lib/permissions";
-import { publicWorkspaceLinks } from "@/lib/util/orgLinks";
 import {
   fetchOrganizationBySlug,
   fetchOrganizationMemberRoles,
