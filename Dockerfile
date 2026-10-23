@@ -14,7 +14,7 @@ RUN bun run build
 # Bun doesn't properly resolve externalized Nitro packages (srvx, react-dom/server)
 # Error: Cannot find package 'srvx' from '/app/.output/server/chunks/virtual/entry.mjs'
 # Error: Cannot find module 'react-dom/server'
-FROM node:22-alpine AS runner
+FROM node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
