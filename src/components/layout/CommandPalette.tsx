@@ -1,7 +1,11 @@
 import { CommandPalette as CommandPaletteShell } from "@omnidotdev/thornberry/command-palette";
+import {
+  GLOBAL_HOTKEYS,
+  hotkeyLabel,
+} from "@omnidotdev/thornberry/use-hotkeys";
 import { LuColumns3, LuFolderPlus, LuPlus, LuSunMoon } from "react-icons/lu";
 
-import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
+import { Hotkeys } from "@/lib/constants/hotkeys.constant";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import useProjectViewStore from "@/lib/store/useProjectViewStore";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -43,7 +47,7 @@ const CommandPalette = () => {
     {
       id: "switch-view",
       label: "Switch view",
-      group: "General",
+      group: "Preferences",
       icon: LuColumns3,
       shortcut: hotkeyLabel(Hotkeys.CycleView),
       onSelect: cycleViewState,
@@ -51,9 +55,9 @@ const CommandPalette = () => {
     {
       id: "toggle-theme",
       label: "Toggle theme",
-      group: "General",
+      group: "Preferences",
       icon: LuSunMoon,
-      shortcut: hotkeyLabel(Hotkeys.ToggleTheme),
+      shortcut: hotkeyLabel(GLOBAL_HOTKEYS.toggleTheme),
       onSelect: () => setTheme(theme === "dark" ? "light" : "dark"),
     },
   ];
@@ -61,7 +65,7 @@ const CommandPalette = () => {
   return (
     <CommandPaletteShell
       commands={commands}
-      triggerKey={Hotkeys.CommandPalette}
+      triggerKey={GLOBAL_HOTKEYS.commandPalette}
       placeholder="Type a command or search..."
     />
   );
