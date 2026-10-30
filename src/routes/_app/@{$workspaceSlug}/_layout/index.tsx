@@ -13,7 +13,7 @@ import WorkspaceLinks from "@/components/workspace/WorkspaceLinks";
 import WorkspaceManagement from "@/components/workspace/WorkspaceManagement";
 import WorkspaceMetrics from "@/components/workspace/WorkspaceMetrics";
 import app from "@/lib/config/app.config";
-import { ACCOUNT_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import { checkLimitOptions } from "@/lib/options/entitlements";
 import { projectsOptions } from "@/lib/options/projects";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
@@ -69,8 +69,13 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/_layout/")({
 
     return { workspaceName };
   },
-  head: ({ loaderData }) => ({
-    meta: createMetaTags({ title: loaderData?.workspaceName }),
+  head: ({ loaderData, params }) => ({
+    meta: createMetaTags({
+      title: loaderData?.workspaceName,
+      // canonical handle URL so crawlers key the preview to the workspace, not
+      // the site root (createMetaTags defaults og:url to BASE_URL otherwise)
+      url: `${BASE_URL}/@${params.workspaceSlug}`,
+    }),
   }),
   component: WorkspacePage,
 });

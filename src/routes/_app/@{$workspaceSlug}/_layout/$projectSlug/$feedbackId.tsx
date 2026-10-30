@@ -124,7 +124,7 @@ export const Route = createFileRoute(
       ogImageUrl: `${BASE_URL}/api/og/feedback/${workspaceSlug}/${projectSlug}/${feedback.number}`,
     };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     // surface the project in social previews: "[post] | [project] | Backfeed"
     const title =
       loaderData?.feedbackTitle && loaderData?.projectName
@@ -136,6 +136,9 @@ export const Route = createFileRoute(
         title,
         description: loaderData?.feedbackDescription ?? undefined,
         image: loaderData?.ogImageUrl,
+        // canonical per-post URL; without it og:url falls back to the site
+        // root, so crawlers dedupe the preview under the homepage
+        url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}/${params.feedbackId}`,
       }),
     };
   },
