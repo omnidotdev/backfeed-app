@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"bun graphql:generate:watch\" \"bun dev:vite\"",
     "dev:vite": "bun --env-file .env.local --env-file .env.development vite dev",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && bun scripts/copy-lexical-node-builds.mjs",
     "start": "node .output/server/index.mjs",
     "check": "biome check",
     "format": "biome format --write",
