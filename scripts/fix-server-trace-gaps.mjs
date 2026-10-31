@@ -5,7 +5,7 @@
 // errors at runtime.
 
 import { existsSync } from "node:fs";
-import { copyFile, readdir } from "node:fs/promises";
+import { copyFile, cp, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const serverModules = join(process.cwd(), ".output", "server", "node_modules");
@@ -58,13 +58,19 @@ for (const scope of ["@lexical", "lexical"]) {
 }
 
 // Gap 2 - undici. jsdom does `require("undici")`, which resolves undici's `main`
-// (index.js). The trace copies undici's `lib/` and package.json but misses the
-// top-level entry files, so the require throws (degrading jsdom-backed features such
-// as OG image rendering). index.js only requires `./lib/*` (already present), so
-// copying the entries completes it.
-await fillPackageFiles("undici", ["index.js", "index-fetch.js"]);
+// (index.js). nft traces undici incompletely - it emits only part of `lib/` and
+// misses the top-level entry plus internal modules those entries require (e.g.
+// `lib/dispatcher/client`), so the require throws and degrades jsdom-backed features
+// such as OG image rendering. undici has no dependencies of its own, so copy the whole
+// package tree over the partial one to guarantee completeness.
+const undiciSrc = join(sourceModules, "undici");
+const undiciOut = join(serverModules, "undici");
+if (existsSync(undiciOut) && existsSync(undiciSrc)) {
+  await cp(undiciSrc, undiciOut, { recursive: true, force: true });
+  copied += 1;
+}
 
 // biome-ignore lint/suspicious/noConsole: build-time script reporting its result
 console.log(
-  `[fix-server-trace-gaps] filled ${copied} missing file(s) in the server bundle`,
+  `[fix-server-trace-gaps] filled ${copied} trace gap(s) in the server bundle`,
 );
