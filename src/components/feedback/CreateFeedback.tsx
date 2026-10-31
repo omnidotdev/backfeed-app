@@ -274,35 +274,46 @@ const CreateFeedback = () => {
 
           await Promise.all(invalidations);
 
-          return { rowId: postId };
+          return { rowId: postId, title: value.title.trim() };
         }),
         {
           loading: {
             title: app.projectPage.projectFeedback.action.pending,
           },
-          // a newly created post has no votes, so under the default
-          // top-voted sort it lands at the bottom of the feed. surface a
-          // "View" CTA so the author can jump straight to their post
-          success: ({ rowId }) => ({
-            title: app.projectPage.projectFeedback.action.success.title,
-            description:
-              app.projectPage.projectFeedback.action.success.description,
-            ...(rowId && {
-              duration: 8000,
-              action: {
-                label: "View",
-                onClick: () =>
-                  navigate({
-                    to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
-                    params: {
-                      workspaceSlug,
-                      projectSlug,
-                      feedbackId: rowId,
-                    },
-                  }),
-              },
-            }),
-          }),
+          // name the post in the toast so the confirmation describes what was
+          // created, not a generic "Post created". a newly created post has no
+          // votes, so under the default top-voted sort it lands at the bottom
+          // of the feed. surface a "View" CTA so the author can jump to it
+          success: ({ rowId, title }) => {
+            const trimmed = title?.trim();
+            const name =
+              trimmed && trimmed.length > 60
+                ? `${trimmed.slice(0, 59)}…`
+                : trimmed;
+
+            return {
+              title: name
+                ? `Posted “${name}”`
+                : app.projectPage.projectFeedback.action.success.title,
+              description:
+                "Your feedback is live. New posts start at the bottom of the feed until they gather votes.",
+              ...(rowId && {
+                duration: 8000,
+                action: {
+                  label: "View",
+                  onClick: () =>
+                    navigate({
+                      to: "/@{$workspaceSlug}/$projectSlug/$feedbackId",
+                      params: {
+                        workspaceSlug,
+                        projectSlug,
+                        feedbackId: rowId,
+                      },
+                    }),
+                },
+              }),
+            };
+          },
           error: {
             title: app.projectPage.projectFeedback.action.error.title,
             description:
