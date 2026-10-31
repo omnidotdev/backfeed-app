@@ -25,17 +25,6 @@ const viteConfig = defineConfig(({ command }) => ({
       preset: "node-server",
       externals: {
         inline: ["srvx", "react-dom", "better-auth", "@better-auth"],
-        // Trace externalized dependencies with the `node` export condition so the
-        // files Nitro copies into the server bundle match what the deployed
-        // plain-Node runtime actually resolves. Nitro otherwise prepends
-        // `production`, and Lexical's `exports` lists `production` before `node`,
-        // so the trace copied LexicalHtml.prod.mjs while Node resolved the `node`
-        // condition (LexicalHtml.node.mjs) at runtime, which was never copied,
-        // 500ing every SSR render of the rich-text editor. Node never sets the
-        // `production` condition, so tracing with `node` mirrors runtime exactly
-        traceOptions: {
-          conditions: ["node"],
-        },
       },
       routeRules: {
         "/**": {
