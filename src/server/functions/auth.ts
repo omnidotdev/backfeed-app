@@ -11,10 +11,19 @@ import {
   BASE_URL,
 } from "@/lib/config/env.config";
 
-export const fetchSession = createServerFn().handler(async () => {
+/**
+ * Resolve the current session and its degraded state.
+ *
+ * `forceRefreshOrgs` bypasses getAuth's in-memory org display cache and
+ * re-hydrates the organization list live from userinfo, so a workspace created
+ * out-of-band (in the account portal) is reflected immediately instead of after
+ * the cache TTL. The fresh result is written back, so subsequent normal reads
+ * benefit too.
+ */
+const loadSession = async (forceRefreshOrgs = false) => {
   const request = getRequest();
 
-  const session = await getAuth(request);
+  const session = await getAuth(request, { forceRefreshOrgs });
 
   // Recover the IDP user id (OIDC `sub` == a backfeed user's
   // `identityProviderId`) when getAuth could not supply it. getAuth derives it
@@ -49,7 +58,22 @@ export const fetchSession = createServerFn().handler(async () => {
   // (who has a valid access token), and the workspaces page uses it to prompt a
   // re-login instead of the silent "Create a workspace to get started" state
   return { session, authDegraded: isSessionDegraded(session) };
-});
+};
+
+/**
+ * Fetch the current user session.
+ * Returns session with user info if authenticated, null otherwise.
+ */
+export const fetchSession = createServerFn().handler(() => loadSession());
+
+/**
+ * Fetch the session with a live organization re-hydration (bypasses the org
+ * display cache). Used by the workspaces list so a workspace just created in
+ * the account portal appears without waiting out the cache TTL.
+ */
+export const fetchFreshSession = createServerFn().handler(() =>
+  loadSession(true),
+);
 
 /**
  * Build the IDP end_session URL for federated logout
