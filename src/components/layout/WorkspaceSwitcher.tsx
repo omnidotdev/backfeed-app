@@ -1,7 +1,7 @@
-import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import { workspacesUrl } from "@omnidotdev/providers/react";
 import { WorkspaceSwitcher as SharedWorkspaceSwitcher } from "@omnidotdev/thornberry/workspace-switcher";
 
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 /**
@@ -10,7 +10,7 @@ import { useWorkspace } from "@/providers/WorkspaceProvider";
  * Membership comes from the signed-in user's identity claims; selecting a
  * workspace updates the in-memory active organization. Presentation is the
  * shared thornberry switcher, and creating/managing workspaces is delegated to
- * the identity dashboard. A single-workspace user sees a static label.
+ * the account hub workspaces console. A single-workspace user sees a static label.
  */
 const WorkspaceSwitcher = () => {
   const workspaceContext = useWorkspace();
@@ -36,8 +36,8 @@ const WorkspaceSwitcher = () => {
       }))}
       currentWorkspaceId={currentWorkspace.id}
       onSelect={handleSelect}
-      {...(AUTH_BASE_URL && {
-        manageUrl: gatekeeperDashboardUrl(AUTH_BASE_URL),
+      {...(ACCOUNT_URL && {
+        manageUrl: workspacesUrl(ACCOUNT_URL),
       })}
     />
   );
