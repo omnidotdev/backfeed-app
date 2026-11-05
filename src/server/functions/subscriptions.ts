@@ -45,7 +45,7 @@ const checkoutWithWorkspaceSchema = z
 /**
  * Get subscription details for an organization via billing service.
  */
-export const getSubscription = createServerFn()
+export const getSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => organizationSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }): Promise<Subscription | null> => {

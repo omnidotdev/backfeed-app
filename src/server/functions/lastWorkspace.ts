@@ -4,9 +4,9 @@ import { getCookie, setCookie } from "@tanstack/react-start/server";
 const COOKIE_NAME = "backfeed:lastWorkspaceSlug";
 const COOKIE_TTL = 60 * 60 * 24 * 7; // 7 days
 
-export const getLastWorkspaceCookie = createServerFn({ method: "GET" }).handler(
-  async () => getCookie(COOKIE_NAME) ?? null,
-);
+export const getLastWorkspaceCookie = createServerFn({
+  method: "POST",
+}).handler(async () => getCookie(COOKIE_NAME) ?? null);
 
 export const setLastWorkspaceCookie = createServerFn({ method: "POST" })
   .inputValidator((data: string) => data)
