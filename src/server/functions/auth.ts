@@ -64,15 +64,17 @@ const loadSession = async (forceRefreshOrgs = false) => {
  * Fetch the current user session.
  * Returns session with user info if authenticated, null otherwise.
  */
-export const fetchSession = createServerFn().handler(() => loadSession());
+export const fetchSession = createServerFn({ method: "POST" }).handler(() =>
+  loadSession(),
+);
 
 /**
  * Fetch the session with a live organization re-hydration (bypasses the org
  * display cache). Used by the workspaces list so a workspace just created in
  * the account portal appears without waiting out the cache TTL.
  */
-export const fetchFreshSession = createServerFn().handler(() =>
-  loadSession(true),
+export const fetchFreshSession = createServerFn({ method: "POST" }).handler(
+  () => loadSession(true),
 );
 
 /**

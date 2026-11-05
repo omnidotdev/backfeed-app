@@ -22,7 +22,7 @@ const getOrganizationBySlugSchema = z.object({
  * Get an organization by slug.
  * Used when JWT claims are stale and don't include a newly created org
  */
-export const getOrganizationBySlug = createServerFn({ method: "GET" })
+export const getOrganizationBySlug = createServerFn({ method: "POST" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
@@ -39,7 +39,7 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
  * Fetch an organization by slug without authentication.
  * Used for public board access when no JWT is available
  */
-export const fetchOrganizationBySlug = createServerFn()
+export const fetchOrganizationBySlug = createServerFn({ method: "POST" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .handler(async ({ data }) => {
     try {
@@ -65,7 +65,7 @@ const listOrganizationMembersSchema = z.object({
  * Auth path is unusable because Gatekeeper's opaque-token->session bridge does
  * not resolve the current hashed access tokens.)
  */
-export const listOrganizationMembers = createServerFn({ method: "GET" })
+export const listOrganizationMembers = createServerFn({ method: "POST" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
@@ -98,7 +98,7 @@ export const listOrganizationMembers = createServerFn({ method: "GET" })
  * service token stays server-side (never reaches the browser), and this mirrors
  * the existing unauthenticated `fetchOrganizationBySlug` public-board read.
  */
-export const fetchOrganizationMemberRoles = createServerFn({ method: "GET" })
+export const fetchOrganizationMemberRoles = createServerFn({ method: "POST" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
   .handler(async ({ data }): Promise<{ data: MemberRole[] }> => {
     if (!ORG_SYNC_SERVICE_TOKEN) {

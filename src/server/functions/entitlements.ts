@@ -46,7 +46,7 @@ const checkLimitSchema = z.object({
 /**
  * Get all entitlements for an entity.
  */
-export const getEntitlements = createServerFn()
+export const getEntitlements = createServerFn({ method: "POST" })
   .inputValidator((data) => entitySchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }): Promise<EntitlementsResponse | null> => {
@@ -62,7 +62,7 @@ export const getEntitlements = createServerFn()
  * Check if an entity has a specific entitlement.
  * Returns the entitlement value if found, null otherwise.
  */
-export const checkEntitlement = createServerFn()
+export const checkEntitlement = createServerFn({ method: "POST" })
   .inputValidator((data) => checkEntitlementSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }): Promise<string | null> => {
@@ -79,7 +79,7 @@ export const checkEntitlement = createServerFn()
  * Check whether an entity is within its entitlement limit for a given feature.
  * Falls back to hardcoded constants if Aether is unreachable.
  */
-export const checkLimit = createServerFn()
+export const checkLimit = createServerFn({ method: "POST" })
   .inputValidator((data) => checkLimitSchema.parse(data))
   .middleware([authMiddleware])
   .handler(
