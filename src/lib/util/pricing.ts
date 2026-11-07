@@ -7,11 +7,10 @@ type MarketingFeature = { name?: string | null };
 export const FREE_PRODUCT_DETAILS = {
   description: "Start collecting feedback",
   marketing_features: [
-    { name: "2 projects per workspace" },
-    { name: "Unlimited feedback users" },
-    { name: "50 comments per post" },
-    { name: "Community support" },
-    { name: "Community voting & discussions" },
+    { name: "Up to 2 projects" },
+    { name: "Unlimited feedback submissions" },
+    { name: "In-app & email feedback capture" },
+    { name: "Up to 5 members" },
   ],
 };
 
