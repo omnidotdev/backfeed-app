@@ -1,0 +1,35 @@
+name: Release 🏗️
+
+# Changesets-driven release (golden AGENTS.md "Changesets and changelogs"). A
+# push to master opens or updates the "version packages" PR from pending
+# changesets; merging it runs `bun release` (changeset publish), which tags the
+# private package (privatePackages.tag in .changeset/config.json) and creates
+# the GitHub Release with its notes. Nothing is published to a registry. Never
+# release by hand-editing the version or tagging
+on:
+  push:
+    branches: [master]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Handle release 🦋
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Create release PR or tag release
+        uses: changesets/action@v2
+        with:
+          publish-script: bun release
+          pr-title: "feature(release): version packages"
+          commit-message: "ci(changesets): version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
