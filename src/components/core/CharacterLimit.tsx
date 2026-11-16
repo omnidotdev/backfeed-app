@@ -1,11 +1,10 @@
-import { match } from "ts-pattern";
-
 import {
   ProgressCircle,
   ProgressCircleRange,
   ProgressCircleTrack,
   ProgressRoot,
-} from "@/components/ui/progress";
+} from "@omnidotdev/thornberry/progress";
+import { match } from "ts-pattern";
 
 import type { CSSProperties, ComponentProps } from "react";
 
