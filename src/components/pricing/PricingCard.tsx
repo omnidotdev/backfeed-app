@@ -1,18 +1,16 @@
 import { Portal } from "@ark-ui/react/portal";
+import { workspacesUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
-import { useMutation } from "@tanstack/react-query";
 import {
   Link,
   useNavigate,
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
-import { useState } from "react";
 import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuBuilding, LuCheck, LuClockAlert, LuPlus } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import CreateWorkspaceModal from "@/components/pricing/CreateWorkspaceModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -26,14 +24,13 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import signIn from "@/lib/auth/signIn";
+import { upgradePlanUrl } from "@/lib/billing/hubLinks";
 import app from "@/lib/config/app.config";
-import { BASE_URL, hasBilling } from "@/lib/config/env.config";
-import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+import { ACCOUNT_URL, BASE_URL, hasBilling } from "@/lib/config/env.config";
 import { Tier } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
 import cn from "@/lib/utils";
-import { createCheckoutWithWorkspace } from "@/server/functions/subscriptions";
 
 import type { ComponentProps } from "react";
 import type { Subscription } from "@/lib/providers/billing";
@@ -47,17 +44,15 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 /**
- * Pricing card. Provides pricing information and benefits attached to a product.
+ * Pricing card. Provides pricing information and benefits attached to a
+ * product. A paid plan is bought on the Omni account hub, the one place Omni
+ * plans are sold: picking a workspace opens the hub's confirm step for that
+ * plan and workspace, which runs checkout and returns here
  */
 const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   const { session } = useRouteContext({ from: "/pricing" });
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { tier?: string };
-  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
-
-  const { setIsOpen: setCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
 
   const isPerMonthPricing = price?.recurring?.interval === "month";
 
@@ -99,46 +94,29 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   // Check if this card's tier matches the URL param (for post-sign-in auto-open)
   const shouldAutoOpen = search.tier === tier && !!session;
 
-  const { mutateAsync: initiateCheckout } = useMutation({
-    mutationFn: async (params: {
-      workspaceId?: string;
-      createWorkspace?: { name: string; slug: string };
-      quantity?: number;
-    }) => {
-      if (!price?.id) throw new Error("Price ID required");
-      setIsCheckoutLoading(true);
-      return createCheckoutWithWorkspace({
-        data: {
-          priceId: price.id,
-          successUrl: `${BASE_URL}/@__SLUG__/~/settings`,
-          cancelUrl: `${BASE_URL}/pricing`,
-          quantity: params.quantity ?? 1,
-          ...params,
-        },
-      });
-    },
-    onSuccess: (result) => {
-      // Redirect to Stripe checkout
-      window.location.href = result.checkoutUrl;
-    },
-    onError: () => {
-      setIsCheckoutLoading(false);
-    },
-  });
+  const interval = price?.recurring?.interval === "year" ? "year" : "month";
+
+  // The account hub's confirm step for this plan, for a workspace or (none
+  // given) letting the hub ask
+  const planUrl = (workspaceSlug?: string) =>
+    upgradePlanUrl(ACCOUNT_URL, BASE_URL, {
+      plan: tier,
+      interval,
+      workspaceSlug,
+    });
+
+  // A new workspace is created on the account hub's workspaces console, the
+  // one place workspaces are made
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
 
   // Handle workspace selection from dropdown
   const handleWorkspaceSelect = (workspaceId: string) => {
-    if (workspaceId === "create-new") {
-      setCreateWorkspaceOpen(true);
-    } else {
-      initiateCheckout({ workspaceId });
-    }
-  };
+    const href =
+      workspaceId === "create-new"
+        ? newWorkspaceHref
+        : planUrl(allOrgs.find((org) => org.id === workspaceId)?.slug);
 
-  // Handle new workspace creation from modal
-  const handleCreateWorkspace = (name: string, slug: string) => {
-    setCreateWorkspaceOpen(false);
-    initiateCheckout({ createWorkspace: { name, slug } });
+    if (href) window.location.assign(href);
   };
 
   const handleClick = () => {
@@ -171,9 +149,10 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       return;
     }
 
-    // Paid tier without orgs - open create workspace modal
+    // Paid tier without orgs: the hub explains a plan needs a workspace
     if (!session.organizations?.length) {
-      setCreateWorkspaceOpen(true);
+      const href = planUrl();
+      if (href) window.location.assign(href);
       return;
     }
 
@@ -199,94 +178,115 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
     : "border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]";
 
   return (
-    <>
-      <Card
-        contentProps={{ className: "flex flex-1 flex-col p-0" }}
-        className={cn(
-          "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
-          isRecommendedTier &&
-            "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
-        )}
-        {...rest}
-      >
-        {(isRecommendedTier || isFreeTier || isEnterpriseTier) && (
-          <Badge
-            className={cn(
-              "-top-3 -translate-x-1/2 absolute left-1/2 z-10 whitespace-nowrap rounded-full border-none px-3 py-1 font-semibold text-xs shadow-sm",
-              isRecommendedTier
-                ? "bg-[var(--colors-brand-primary)] text-white"
-                : "bg-background-muted text-foreground-subtle",
+    <Card
+      contentProps={{ className: "flex flex-1 flex-col p-0" }}
+      className={cn(
+        "relative flex w-full max-w-2xl flex-col gap-4 shadow-md xl:max-w-xs",
+        isRecommendedTier &&
+          "outline outline-2 outline-[var(--colors-brand-primary)] outline-offset-[1.5px]",
+      )}
+      {...rest}
+    >
+      {(isRecommendedTier || isFreeTier || isEnterpriseTier) && (
+        <Badge
+          className={cn(
+            "-top-3 -translate-x-1/2 absolute left-1/2 z-10 whitespace-nowrap rounded-full border-none px-3 py-1 font-semibold text-xs shadow-sm",
+            isRecommendedTier
+              ? "bg-[var(--colors-brand-primary)] text-white"
+              : "bg-background-muted text-foreground-subtle",
+          )}
+        >
+          {isRecommendedTier
+            ? app.pricingPage.pricingTiers.recommended
+            : isFreeTier
+              ? "No credit card required"
+              : app.pricingPage.pricingTiers.comingSoon}
+        </Badge>
+      )}
+
+      {/* modest top padding clears the ribbon badge above the card */}
+      <div className="flex w-full flex-1 flex-col items-center pt-8">
+        <div className="flex w-full flex-col items-center px-6">
+          <h2 className="text-center font-bold text-2xl">
+            {capitalizeFirstLetter(tier)}
+          </h2>
+
+          <p className="text-center text-foreground-subtle">
+            {price?.product.description ?? FREE_PRODUCT_DETAILS.description}
+          </p>
+
+          <div className="inline-flex items-center gap-2">
+            <h3 className="font-bold text-4xl">
+              {!isEnterpriseTier && <sup className="text-lg">$</sup>}
+
+              {price ? price.unit_amount! / 100 : 0}
+            </h3>
+
+            {!isEnterpriseTier && (
+              <span className="mt-2 ml-[-0.375rem] text-foreground-subtle text-lg">
+                {!isFreeTier &&
+                  (isPerMonthPricing
+                    ? `/${app.pricingPage.pricingCard.month}`
+                    : `/${app.pricingPage.pricingCard.year}`)}
+                {isFreeTier && "/forever"}
+              </span>
             )}
-          >
-            {isRecommendedTier
-              ? app.pricingPage.pricingTiers.recommended
-              : isFreeTier
-                ? "No credit card required"
-                : app.pricingPage.pricingTiers.comingSoon}
-          </Badge>
-        )}
+          </div>
 
-        {/* modest top padding clears the ribbon badge above the card */}
-        <div className="flex w-full flex-1 flex-col items-center pt-8">
-          <div className="flex w-full flex-col items-center px-6">
-            <h2 className="text-center font-bold text-2xl">
-              {capitalizeFirstLetter(tier)}
-            </h2>
+          {showDropdown ? (
+            <MenuRoot
+              defaultOpen={shouldAutoOpen}
+              onSelect={({ value }) => handleWorkspaceSelect(value)}
+              positioning={{ sameWidth: true }}
+            >
+              <MenuTrigger asChild>
+                <Button
+                  className={cn("w-full text-lg", buttonClassName)}
+                  variant={isRecommendedTier ? "solid" : "outline"}
+                >
+                  {ActionIcon && <ActionIcon className="size-4" />}
+                  {buttonContent}
+                </Button>
+              </MenuTrigger>
 
-            <p className="text-center text-foreground-subtle">
-              {price?.product.description ?? FREE_PRODUCT_DETAILS.description}
-            </p>
+              <Portal>
+                <MenuPositioner>
+                  <MenuContent>
+                    {allOrgs.length > 0 && (
+                      <>
+                        <MenuItemGroup>
+                          <MenuItemGroupLabel className="text-foreground-subtle">
+                            Your workspaces
+                          </MenuItemGroupLabel>
 
-            <div className="inline-flex items-center gap-2">
-              <h3 className="font-bold text-4xl">
-                {!isEnterpriseTier && <sup className="text-lg">$</sup>}
+                          {upgradeableOrgs.map((org) => (
+                            <MenuItem
+                              key={org.id}
+                              value={org.id}
+                              className="cursor-pointer"
+                            >
+                              <div className="flex w-full items-center gap-2">
+                                <LuBuilding className="size-4 text-foreground-subtle" />
+                                <span className="flex-1 truncate font-medium text-sm">
+                                  {org.name}
+                                </span>
+                                <Badge variant="outline" className="text-xs">
+                                  Upgrade
+                                </Badge>
+                              </div>
+                            </MenuItem>
+                          ))}
 
-                {price ? price.unit_amount! / 100 : 0}
-              </h3>
+                          {nonUpgradeableOrgs.map((org) => {
+                            const orgTier = getOrgTier(org.id);
+                            const isSameTier = orgTier === tier;
 
-              {!isEnterpriseTier && (
-                <span className="mt-2 ml-[-0.375rem] text-foreground-subtle text-lg">
-                  {!isFreeTier &&
-                    (isPerMonthPricing
-                      ? `/${app.pricingPage.pricingCard.month}`
-                      : `/${app.pricingPage.pricingCard.year}`)}
-                  {isFreeTier && "/forever"}
-                </span>
-              )}
-            </div>
-
-            {showDropdown ? (
-              <MenuRoot
-                defaultOpen={shouldAutoOpen}
-                onSelect={({ value }) => handleWorkspaceSelect(value)}
-                positioning={{ sameWidth: true }}
-              >
-                <MenuTrigger asChild>
-                  <Button
-                    className={cn("w-full text-lg", buttonClassName)}
-                    variant={isRecommendedTier ? "solid" : "outline"}
-                    disabled={isCheckoutLoading}
-                  >
-                    {ActionIcon && <ActionIcon className="size-4" />}
-                    {isCheckoutLoading ? "Loading..." : buttonContent}
-                  </Button>
-                </MenuTrigger>
-
-                <Portal>
-                  <MenuPositioner>
-                    <MenuContent>
-                      {allOrgs.length > 0 && (
-                        <>
-                          <MenuItemGroup>
-                            <MenuItemGroupLabel className="text-foreground-subtle">
-                              Your workspaces
-                            </MenuItemGroupLabel>
-
-                            {upgradeableOrgs.map((org) => (
+                            return (
                               <MenuItem
                                 key={org.id}
                                 value={org.id}
-                                className="cursor-pointer"
+                                disabled
+                                className="opacity-60"
                               >
                                 <div className="flex w-full items-center gap-2">
                                   <LuBuilding className="size-4 text-foreground-subtle" />
@@ -294,46 +294,21 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                                     {org.name}
                                   </span>
                                   <Badge variant="outline" className="text-xs">
-                                    Upgrade
+                                    {isSameTier
+                                      ? "Current plan"
+                                      : capitalizeFirstLetter(orgTier)}
                                   </Badge>
                                 </div>
                               </MenuItem>
-                            ))}
+                            );
+                          })}
+                        </MenuItemGroup>
 
-                            {nonUpgradeableOrgs.map((org) => {
-                              const orgTier = getOrgTier(org.id);
-                              const isSameTier = orgTier === tier;
+                        <MenuSeparator />
+                      </>
+                    )}
 
-                              return (
-                                <MenuItem
-                                  key={org.id}
-                                  value={org.id}
-                                  disabled
-                                  className="opacity-60"
-                                >
-                                  <div className="flex w-full items-center gap-2">
-                                    <LuBuilding className="size-4 text-foreground-subtle" />
-                                    <span className="flex-1 truncate font-medium text-sm">
-                                      {org.name}
-                                    </span>
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      {isSameTier
-                                        ? "Current plan"
-                                        : capitalizeFirstLetter(orgTier)}
-                                    </Badge>
-                                  </div>
-                                </MenuItem>
-                              );
-                            })}
-                          </MenuItemGroup>
-
-                          <MenuSeparator />
-                        </>
-                      )}
-
+                    {newWorkspaceHref && (
                       <MenuItemGroup>
                         <MenuItem value="create-new" className="cursor-pointer">
                           <div className="flex w-full items-center gap-2">
@@ -344,123 +319,127 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
                           </div>
                         </MenuItem>
                       </MenuItemGroup>
-                    </MenuContent>
-                  </MenuPositioner>
-                </Portal>
-              </MenuRoot>
-            ) : session?.user ? (
-              // Logged in but not showing dropdown (free tier or no billing)
-              isFreeTier ? (
-                session.organizations?.length ? (
-                  <Button
-                    className={cn("w-full text-lg", buttonClassName)}
-                    variant={isRecommendedTier ? "solid" : "outline"}
-                    asChild
-                  >
-                    <Link
-                      to="/@{$workspaceSlug}"
-                      params={{ workspaceSlug: session.organizations[0].slug }}
-                    >
-                      Go to Workspace
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button
-                    className={cn("w-full text-lg", buttonClassName)}
-                    variant={isRecommendedTier ? "solid" : "outline"}
-                    asChild
-                  >
-                    <Link to="/workspaces">Go to Workspaces</Link>
-                  </Button>
-                )
-              ) : isEnterpriseTier ? (
+                    )}
+                  </MenuContent>
+                </MenuPositioner>
+              </Portal>
+            </MenuRoot>
+          ) : session?.user ? (
+            // Logged in but not showing dropdown (free tier or no billing)
+            isFreeTier ? (
+              session.organizations?.length ? (
                 <Button
                   className={cn("w-full text-lg", buttonClassName)}
                   variant={isRecommendedTier ? "solid" : "outline"}
-                  disabled
+                  asChild
                 >
-                  {app.pricingPage.pricingCard.enterprise}
+                  <Link
+                    to="/@{$workspaceSlug}"
+                    params={{ workspaceSlug: session.organizations[0].slug }}
+                  >
+                    Go to Workspace
+                  </Link>
                 </Button>
               ) : (
                 <Button
                   className={cn("w-full text-lg", buttonClassName)}
                   variant={isRecommendedTier ? "solid" : "outline"}
-                  onClick={handleClick}
-                  disabled={isCheckoutLoading}
+                  asChild
                 >
-                  {ActionIcon && <ActionIcon className="size-4" />}
-                  {isCheckoutLoading ? "Loading..." : buttonContent}
+                  <Link to="/workspaces">Go to Workspaces</Link>
                 </Button>
               )
-            ) : (
-              // Not logged in
+            ) : isEnterpriseTier ? (
               <Button
                 className={cn("w-full text-lg", buttonClassName)}
-                disabled={isEnterpriseTier}
                 variant={isRecommendedTier ? "solid" : "outline"}
-                onClick={() =>
-                  signIn({
-                    redirectUrl: `${BASE_URL}/pricing?tier=${tier}`,
-                    action: "sign-up",
-                  })
-                }
+                disabled
+              >
+                {app.pricingPage.pricingCard.enterprise}
+              </Button>
+            ) : hasBilling && planUrl() ? (
+              // Paid tier without workspaces: the hub asks which workspace
+              <Button
+                className={cn("w-full text-lg", buttonClassName)}
+                variant={isRecommendedTier ? "solid" : "outline"}
+                asChild
+              >
+                <a href={planUrl()}>
+                  {ActionIcon && <ActionIcon className="size-4" />}
+                  {buttonContent}
+                </a>
+              </Button>
+            ) : (
+              <Button
+                className={cn("w-full text-lg", buttonClassName)}
+                variant={isRecommendedTier ? "solid" : "outline"}
+                onClick={handleClick}
               >
                 {ActionIcon && <ActionIcon className="size-4" />}
-
-                {isEnterpriseTier
-                  ? app.pricingPage.pricingCard.enterprise
-                  : app.pricingPage.pricingCard.getStarted}
+                {buttonContent}
               </Button>
-            )}
-          </div>
-
-          <div className="mt-6 flex w-full flex-1 flex-col bg-background-subtle p-6 dark:bg-background-subtle/25">
-            <div className="grid w-full grid-cols-1 leading-normal sm:grid-cols-2 lg:grid-cols-1">
-              {sortBenefits(
-                price?.product.marketing_features ??
-                  FREE_PRODUCT_DETAILS.marketing_features,
-              ).map((feature) => {
-                const isComingSoon = feature.name?.includes("coming soon");
-
-                const iconColor = match({
-                  isEnterpriseTier,
-                  isRecommendedTier,
-                  isComingSoon,
+            )
+          ) : (
+            // Not logged in
+            <Button
+              className={cn("w-full text-lg", buttonClassName)}
+              disabled={isEnterpriseTier}
+              variant={isRecommendedTier ? "solid" : "outline"}
+              onClick={() =>
+                signIn({
+                  redirectUrl: `${BASE_URL}/pricing?tier=${tier}`,
+                  action: "sign-up",
                 })
-                  .with(
-                    { isComingSoon: true, isEnterpriseTier: false },
-                    () => "text-yellow-500",
-                  )
-                  .with(
-                    { isRecommendedTier: true },
-                    () => "text-[var(--colors-brand-primary)]",
-                  )
-                  .otherwise(() => "text-foreground-subtle");
+              }
+            >
+              {ActionIcon && <ActionIcon className="size-4" />}
 
-                const FeatureIcon = isComingSoon ? LuClockAlert : LuCheck;
+              {isEnterpriseTier
+                ? app.pricingPage.pricingCard.enterprise
+                : app.pricingPage.pricingCard.getStarted}
+            </Button>
+          )}
+        </div>
 
-                return (
-                  <div key={feature.name} className="flex gap-2">
-                    <span className="flex h-6 items-center">
-                      <FeatureIcon className={cn("size-4", iconColor)} />
-                    </span>
+        <div className="mt-6 flex w-full flex-1 flex-col bg-background-subtle p-6 dark:bg-background-subtle/25">
+          <div className="grid w-full grid-cols-1 leading-normal sm:grid-cols-2 lg:grid-cols-1">
+            {sortBenefits(
+              price?.product.marketing_features ??
+                FREE_PRODUCT_DETAILS.marketing_features,
+            ).map((feature) => {
+              const isComingSoon = feature.name?.includes("coming soon");
 
-                    {feature.name?.split(" (coming soon)")[0]}
-                  </div>
-                );
-              })}
-            </div>
+              const iconColor = match({
+                isEnterpriseTier,
+                isRecommendedTier,
+                isComingSoon,
+              })
+                .with(
+                  { isComingSoon: true, isEnterpriseTier: false },
+                  () => "text-yellow-500",
+                )
+                .with(
+                  { isRecommendedTier: true },
+                  () => "text-[var(--colors-brand-primary)]",
+                )
+                .otherwise(() => "text-foreground-subtle");
+
+              const FeatureIcon = isComingSoon ? LuClockAlert : LuCheck;
+
+              return (
+                <div key={feature.name} className="flex gap-2">
+                  <span className="flex h-6 items-center">
+                    <FeatureIcon className={cn("size-4", iconColor)} />
+                  </span>
+
+                  {feature.name?.split(" (coming soon)")[0]}
+                </div>
+              );
+            })}
           </div>
         </div>
-      </Card>
-
-      {/* Modal for creating new workspace */}
-      <CreateWorkspaceModal
-        tierName={capitalizeFirstLetter(tier) ?? tier}
-        onSubmit={handleCreateWorkspace}
-        isLoading={isCheckoutLoading}
-      />
-    </>
+      </div>
+    </Card>
   );
 };
 
